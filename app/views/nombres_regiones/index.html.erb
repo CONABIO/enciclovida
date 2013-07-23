@@ -1,0 +1,25 @@
+<h1>Listing nombres_regiones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @nombres_regiones.each do |nombr_regione| %>
+      <tr>
+        <td><%= link_to 'Show', nombr_regione %></td>
+        <td><%= link_to 'Edit', edit_nombr_regione_path(nombr_regione) %></td>
+        <td><%= link_to 'Destroy', nombr_regione, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Nombre region', new_nombr_regione_path %>

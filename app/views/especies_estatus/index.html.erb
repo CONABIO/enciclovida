@@ -1,0 +1,25 @@
+<h1>Listing especies_estatus</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @especies_estatus.each do |especie_estatus| %>
+      <tr>
+        <td><%= link_to 'Show', especie_estatus %></td>
+        <td><%= link_to 'Edit', edit_especie_estatus_path(especie_estatus) %></td>
+        <td><%= link_to 'Destroy', especie_estatus, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Especie estatus', new_especie_estatus_path %>

@@ -1,0 +1,25 @@
+<h1>Listing especies_bibliografia</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @especies_bibliografia.each do |especie_bibliografia| %>
+      <tr>
+        <td><%= link_to 'Show', especie_bibliografia %></td>
+        <td><%= link_to 'Edit', edit_especie_bibliografia_path(especie_bibliografia) %></td>
+        <td><%= link_to 'Destroy', especie_bibliografia, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Especie bibliografia', new_especie_bibliografia_path %>

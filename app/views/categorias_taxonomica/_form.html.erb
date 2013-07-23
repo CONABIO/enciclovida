@@ -1,0 +1,17 @@
+<%= form_for(@categoria_taxonomica) do |f| %>
+  <% if @categoria_taxonomica.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@categoria_taxonomica.errors.count, "error") %> prohibited this categoria_taxonomica from being saved:</h2>
+
+      <ul>
+      <% @categoria_taxonomica.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

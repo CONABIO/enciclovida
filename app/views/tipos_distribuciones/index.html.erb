@@ -1,0 +1,25 @@
+<h1>Listing tipos_distribuciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tipos_distribuciones.each do |tipo_distribucion| %>
+      <tr>
+        <td><%= link_to 'Show', tipo_distribucion %></td>
+        <td><%= link_to 'Edit', edit_tipo_distribucion_path(tipo_distribucion) %></td>
+        <td><%= link_to 'Destroy', tipo_distribucion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Tipo distribucion', new_tipo_distribucion_path %>

@@ -1,0 +1,17 @@
+<%= form_for(@especie_estatus) do |f| %>
+  <% if @especie_estatus.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@especie_estatus.errors.count, "error") %> prohibited this especie_estatus from being saved:</h2>
+
+      <ul>
+      <% @especie_estatus.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

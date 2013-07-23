@@ -1,0 +1,2 @@
+module EstatusesHelper
+end

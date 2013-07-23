@@ -1,0 +1,17 @@
+<%= form_for(@especie_bibliografia) do |f| %>
+  <% if @especie_bibliografia.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@especie_bibliografia.errors.count, "error") %> prohibited this especie_bibliografia from being saved:</h2>
+
+      <ul>
+      <% @especie_bibliografia.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

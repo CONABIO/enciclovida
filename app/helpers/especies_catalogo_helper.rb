@@ -1,0 +1,2 @@
+module EspeciesCatalogoHelper
+end

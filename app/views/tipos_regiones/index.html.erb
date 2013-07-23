@@ -1,0 +1,25 @@
+<h1>Listing tipos_regiones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tipos_regiones.each do |tipo_region| %>
+      <tr>
+        <td><%= link_to 'Show', tipo_region %></td>
+        <td><%= link_to 'Edit', edit_tipo_region_path(tipo_region) %></td>
+        <td><%= link_to 'Destroy', tipo_region, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Tipo region', new_tipo_region_path %>

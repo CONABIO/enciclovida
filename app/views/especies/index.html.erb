@@ -1,0 +1,40 @@
+<h1>Busca y administra las especies</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Estatus</th>
+      <th>Fuente</th>
+      <th>Nombre autoridad</th>
+      <th>Número filogenético</th>
+      <th>Cita nomenclatural</th>
+      <th>Sistema de clasificación del catalogo</th>
+      <th>Anotación</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @especies.each do |especie| %>
+      <tr>
+        <td><%= especie.nombre %></td>
+        <td><%= especie.estatus %></td>
+        <td><%= especie.fuente %></td>
+        <td><%= especie.nombre_autoridad %></td>
+        <td><%= especie.numero_filogenetico %></td>
+        <td><%= especie.cita_nomenclatural %></td>
+        <td><%= especie.sis_clas_cat_dicc %></td>
+        <td><%= especie.anotacion %></td>
+        <td><%= link_to 'Ver', especie %></td>
+        <td><%= link_to 'Editar', edit_especie_path(especie) %></td>
+        <td><%= link_to 'Eliminar', especie, method: :delete, data: { confirm: '¿Estás seguro de eliminar esta especie?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'Nueva especie', '/especies/new' %>
