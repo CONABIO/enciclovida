@@ -1,4 +1,74 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_especie_path(@especie) %> |
-<%= link_to 'Back', especies_path %>
+<p>
+  <strong>Identificador único:</strong>
+  <%= @especie.id %>
+</p>
+
+<p>
+  <strong>Nombre:</strong>
+  <%= @especie.nombre %>
+</p>
+
+<p>
+  <strong>Categoria taxonómica:</strong>
+  <%= @especie.categoria_taxonomica_id %>
+</p>
+
+<p>
+  <strong>Ascendente:</strong>
+  <%= @especie.id_nombre_ascendente %>
+</p>
+
+<p>
+  <strong>Ascendente obligatorio:</strong>
+  <%= @especie.id_ascend_obligatorio %>
+</p>
+
+<p>
+  <strong>Estatus:</strong>
+  <%= @especie.estatus %>
+</p>
+
+<p>
+  <strong>Fuente:</strong>
+  <%= @especie.fuente %>
+</p>
+
+<p>
+  <strong>Nombre autoridad:</strong>
+  <%= @especie.nombre_autoridad %>
+</p>
+
+<p>
+  <strong>Número filogenético:</strong>
+  <%= @especie.numero_filogenetico %>
+</p>
+
+<p>
+  <strong>Cita nomenclatural:</strong>
+  <%= @especie.cita_nomenclatural %>
+</p>
+
+<p>
+  <strong>Sistema de clasificación del catalogo:</strong>
+  <%= @especie.sis_clas_cat_dicc %>
+</p>
+
+<p>
+  <strong>Anotación:</strong>
+  <%= @especie.anotacion %>
+</p>
+
+<p>
+  <strong>Fecha de Captura:</strong>
+  <%= @especie.created_at %>
+</p>
+
+<p>
+  <strong>Fecha de modificación:</strong>
+  <%= @especie.updated_at %>
+</p>
+
+<%= link_to 'Editar', edit_especy_path(@especie) %> |
+<%= link_to 'Regresar', especies_path %>

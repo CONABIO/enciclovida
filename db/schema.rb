@@ -99,9 +99,9 @@ ActiveRecord::Schema.define(version: 0) do
   create_table "especies_regiones", primary_key: "especie_id", force: true do |t|
     t.integer  "region_id",            null: false
     t.text     "observaciones"
-    t.datetime "creatde_at",           null: false
+    t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-    t.integer  "tipo_distribucion_id", null: false
+    t.integer  "tipo_distribucion_id"
   end
 
   create_table "estatuses", force: true do |t|
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 0) do
 
   create_table "regiones", force: true do |t|
     t.string   "nombre_region",  null: false
+    t.string   "clave_region",   null: false
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.integer  "tipo_region_id", null: false
@@ -180,9 +181,14 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "tipos_regiones", force: true do |t|
-    t.string   "descripcion", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "descripcion",                       null: false
+    t.integer  "nivel1",      limit: 2,             null: false
+    t.integer  "nivel2",      limit: 2, default: 0, null: false
+    t.integer  "nivel3",      limit: 2, default: 0, null: false
+    t.integer  "nivel4",      limit: 2,             null: false
+    t.integer  "nivel5",      limit: 2, default: 0, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   create_table "usuarios", force: true do |t|

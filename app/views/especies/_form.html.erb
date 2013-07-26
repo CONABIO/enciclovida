@@ -1,7 +1,7 @@
 <%= form_for(@especie) do |f| %>
     <% if @especie.errors.any? %>
         <div id="error_explanation">
-          <h2><%= pluralize(@especie.errors.count, "error") %> prohibited this especie from being saved:</h2>
+          <h2><%= pluralize(@especie.errors.count, "error") %> La especie no pudo ser guardada o modificada:</h2>
 
           <ul>
             <% @especie.errors.full_messages.each do |msg| %>
@@ -15,6 +15,22 @@
       <%= f.label :nombre %><br>
       <%= f.text_field :nombre %>
     </div>
+
+    <div class="field">
+      <%= f.label :categoria_taxonomica_id %><br>
+      <%= f.text_field :categoria_taxonomica_id %>
+    </div>
+
+    <div class="field">
+      <%= f.label :id_nombre_ascendente %><br>
+      <%= f.text_field :id_nombre_ascendente %>
+    </div>
+
+    <div class="field">
+      <%= f.label :id_ascend_obligatorio %><br>
+      <%= f.text_field :id_ascend_obligatorio %>
+    </div>
+
     <div class="field">
       <%= f.label :estatus %><br>
       <%= f.text_area :estatus %>
@@ -45,6 +61,6 @@
     </div>
 
     <div class="actions">
-      <%= f.submit %>
+      <%= f.submit  %>
     </div>
 <% end %>

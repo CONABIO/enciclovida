@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0.rc1'
 
+#gem 'rake', '0.8.7' # ubuntu seems to freak with the most recent version
+
 # Use postgresql as the database for Active Record
 gem 'pg'
 
@@ -43,3 +45,10 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+#simple datatables para hacer el buscador
+#gem 'simple_datatables'
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'jquery-ui-rails'
+
+gem 'will_paginate'

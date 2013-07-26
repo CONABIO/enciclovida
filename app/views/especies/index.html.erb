@@ -1,40 +1,59 @@
 <h1>Busca y administra las especies</h1>
 
-<table>
+<table id="especies" class="display" data-source="<%= especies_url(format: "json") %>">
+
   <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Estatus</th>
-      <th>Fuente</th>
-      <th>Nombre autoridad</th>
-      <th>Número filogenético</th>
-      <th>Cita nomenclatural</th>
-      <th>Sistema de clasificación del catalogo</th>
-      <th>Anotación</th>
-      <th></th>
-      <th></th>
-    </tr>
+  <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Categoria taxonómica</th>
+    <th>Ascendente</th>
+    <th>Ascendente Obligatorio</th>
+    <th>Estatus</th>
+    <th>Fuente</th>
+    <th>Nombre autoridad</th>
+    <th>Número filogenético</th>
+    <th>Cita nomenclatural</th>
+    <th>Sistema de clasificación del catalogo</th>
+    <th>Anotación</th>
+    <th>Fecha de captura</th>
+    <th>Fecha de modificación</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
   </thead>
 
   <tbody>
-    <% @especies.each do |especie| %>
-      <tr>
-        <td><%= especie.nombre %></td>
-        <td><%= especie.estatus %></td>
-        <td><%= especie.fuente %></td>
-        <td><%= especie.nombre_autoridad %></td>
-        <td><%= especie.numero_filogenetico %></td>
-        <td><%= especie.cita_nomenclatural %></td>
-        <td><%= especie.sis_clas_cat_dicc %></td>
-        <td><%= especie.anotacion %></td>
-        <td><%= link_to 'Ver', especie %></td>
-        <td><%= link_to 'Editar', edit_especie_path(especie) %></td>
-        <td><%= link_to 'Eliminar', especie, method: :delete, data: { confirm: '¿Estás seguro de eliminar esta especie?' } %></td>
-      </tr>
-    <% end %>
   </tbody>
+
+  <tfoot>
+  <tr>
+    <th><input type="text" id="identificador"></input></th>
+    <th><input type="text" id="nombre"></input></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th><select id="estatus">
+      <option value="">Todos</option>
+      <option value="2">Activo</option>
+      <option value="1">Inactivo</option>
+    </select></th>
+    <th><input type="text" id="fuente"></th>
+    <th><input type="text" id="nombre_autoridad"></th>
+    <th><input type="text" id="numero_filogenetico"></th>
+    <th><input type="text" id="cita_nomenclatural"></th>
+    <th><input type="text" id="sistema_de_clasificacion"></th>
+    <th><input type="text" id="anotacion"></th>
+    <th><input type="date" id="created_at"></th>
+    <th><input type="date" id="updated_at"></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  </tfoot>
 </table>
 
 <br>
 
-<%= link_to 'Nueva especie', '/especies/new' %>
+<%= link_to 'Nueva especie', new_especy_path %>

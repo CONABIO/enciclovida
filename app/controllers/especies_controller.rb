@@ -4,7 +4,11 @@ class EspeciesController < ApplicationController
   # GET /especies
   # GET /especies.json
   def index
-    @especies = Especie.all
+
+    respond_to do |format|
+      format.html
+      format.json { render json: EspecieDatatable.new(view_context) }
+    end
   end
 
   # GET /especies/1

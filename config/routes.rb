@@ -1,9 +1,47 @@
 Buscador::Application.routes.draw do
+  resources :listas
+
+  resources :roles
+
+  resources :catalogos
+
+  resources :categorias_taxonomica
+
+  resources :usuarios
+
+  resources :estatuses
+
+  resources :especies_catalogo
+
+  resources :especies
+
+  resources :especies_bibliografia
+
+  resources :especies_estatus
+
+  resources :tipos_regiones
+
+  resources :regiones
+
+  resources :especies_regiones
+
+  resources :tipos_distribuciones
+
+  resources :especies_estatus_bibliografia
+
+  resources :nombres_comunes
+
+  resources :nombres_regiones
+
+  resources :nombre_regiones_bibliografias
+
+  resources :bibliografias
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'especies#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

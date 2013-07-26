@@ -77,10 +77,10 @@ ALTER SEQUENCE bibliografias_id_seq OWNED BY bibliografias.id;
 
 
 --
--- Name: catalogos_especies; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: catalogos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE catalogos_especies (
+CREATE TABLE catalogos (
     id integer NOT NULL,
     descripcion character varying(255) NOT NULL,
     nivel1 smallint NOT NULL,
@@ -94,17 +94,17 @@ CREATE TABLE catalogos_especies (
 
 
 --
--- Name: TABLE catalogos_especies; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE catalogos; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON TABLE catalogos_especies IS 'Catalogo de los estados de conservacion';
+COMMENT ON TABLE catalogos IS 'Catalogo de los estados de conservacion';
 
 
 --
--- Name: catalogos_especies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: catalogos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE catalogos_especies_id_seq
+CREATE SEQUENCE catalogos_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -113,10 +113,10 @@ CREATE SEQUENCE catalogos_especies_id_seq
 
 
 --
--- Name: catalogos_especies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: catalogos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE catalogos_especies_id_seq OWNED BY catalogos_especies.id;
+ALTER SEQUENCE catalogos_id_seq OWNED BY catalogos.id;
 
 
 --
@@ -250,6 +250,64 @@ ALTER SEQUENCE especies_bibliografias_especie_id_seq OWNED BY especies_bibliogra
 
 
 --
+-- Name: especies_catalogos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE especies_catalogos (
+    especie_id integer NOT NULL,
+    catalogo_id integer NOT NULL,
+    observaciones text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE especies_catalogos; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE especies_catalogos IS 'Relacion del tipo de estado de conservacioncon la especie';
+
+
+--
+-- Name: especies_catalogos_catalogo_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE especies_catalogos_catalogo_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: especies_catalogos_catalogo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE especies_catalogos_catalogo_id_seq OWNED BY especies_catalogos.catalogo_id;
+
+
+--
+-- Name: especies_catalogos_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE especies_catalogos_especie_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: especies_catalogos_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE especies_catalogos_especie_id_seq OWNED BY especies_catalogos.especie_id;
+
+
+--
 -- Name: especies_categoria_taxonomica_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -266,6 +324,26 @@ CREATE SEQUENCE especies_categoria_taxonomica_id_seq
 --
 
 ALTER SEQUENCE especies_categoria_taxonomica_id_seq OWNED BY especies.categoria_taxonomica_id;
+
+
+--
+-- Name: especies_estatuses; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE especies_estatuses (
+    especie_id integer NOT NULL,
+    estatus_id integer NOT NULL,
+    observaciones text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE especies_estatuses; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE especies_estatuses IS 'Relacion entre el nombre y si esta activa o no';
 
 
 --
@@ -347,6 +425,44 @@ ALTER SEQUENCE especies_estatuses_bibliografias_estatus_id_seq OWNED BY especies
 
 
 --
+-- Name: especies_estatuses_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE especies_estatuses_especie_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: especies_estatuses_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE especies_estatuses_especie_id_seq OWNED BY especies_estatuses.especie_id;
+
+
+--
+-- Name: especies_estatuses_estatus_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE especies_estatuses_estatus_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: especies_estatuses_estatus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE especies_estatuses_estatus_id_seq OWNED BY especies_estatuses.estatus_id;
+
+
+--
 -- Name: especies_id_ascend_obligatorio_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -411,9 +527,9 @@ CREATE TABLE especies_regiones (
     especie_id integer NOT NULL,
     region_id integer NOT NULL,
     observaciones text,
-    creatde_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    tipo_distribucion_id integer NOT NULL
+    tipo_distribucion_id integer
 );
 
 
@@ -628,64 +744,6 @@ ALTER SEQUENCE nombres_comunes_id_seq OWNED BY nombres_comunes.id;
 
 
 --
--- Name: nombres_estatuses; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE nombres_estatuses (
-    especie_id integer NOT NULL,
-    estatus_id integer NOT NULL,
-    observaciones text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: TABLE nombres_estatuses; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON TABLE nombres_estatuses IS 'Relacion entre el nombre y si esta activa o no';
-
-
---
--- Name: nombres_estatuses_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE nombres_estatuses_especie_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: nombres_estatuses_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE nombres_estatuses_especie_id_seq OWNED BY nombres_estatuses.especie_id;
-
-
---
--- Name: nombres_estatuses_estatus_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE nombres_estatuses_estatus_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: nombres_estatuses_estatus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE nombres_estatuses_estatus_id_seq OWNED BY nombres_estatuses.estatus_id;
-
-
---
 -- Name: nombres_regiones; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -868,6 +926,7 @@ ALTER SEQUENCE nombres_regiones_region_id_seq OWNED BY nombres_regiones.region_i
 CREATE TABLE regiones (
     id integer NOT NULL,
     nombre_region character varying(255) NOT NULL,
+    clave_region character varying(255) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     tipo_region_id integer NOT NULL,
@@ -937,64 +996,6 @@ CREATE SEQUENCE regiones_tipo_region_id_seq
 --
 
 ALTER SEQUENCE regiones_tipo_region_id_seq OWNED BY regiones.tipo_region_id;
-
-
---
--- Name: rel_nombre_catalago; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE rel_nombre_catalago (
-    especie_id integer NOT NULL,
-    catalogo_especie_id integer NOT NULL,
-    observaciones text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: TABLE rel_nombre_catalago; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON TABLE rel_nombre_catalago IS 'Relacion del tipo de estado de conservacioncon la especie';
-
-
---
--- Name: rel_nombre_catalago_catalogo_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE rel_nombre_catalago_catalogo_especie_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: rel_nombre_catalago_catalogo_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE rel_nombre_catalago_catalogo_especie_id_seq OWNED BY rel_nombre_catalago.catalogo_especie_id;
-
-
---
--- Name: rel_nombre_catalago_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE rel_nombre_catalago_especie_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: rel_nombre_catalago_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE rel_nombre_catalago_especie_id_seq OWNED BY rel_nombre_catalago.especie_id;
 
 
 --
@@ -1096,6 +1097,11 @@ ALTER SEQUENCE tipos_distribuciones_id_seq OWNED BY tipos_distribuciones.id;
 CREATE TABLE tipos_regiones (
     id integer NOT NULL,
     descripcion character varying(255) NOT NULL,
+    nivel1 smallint NOT NULL,
+    nivel2 smallint DEFAULT 0 NOT NULL,
+    nivel3 smallint DEFAULT 0 NOT NULL,
+    nivel4 smallint NOT NULL,
+    nivel5 smallint DEFAULT 0 NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -1202,7 +1208,7 @@ ALTER TABLE ONLY bibliografias ALTER COLUMN id SET DEFAULT nextval('bibliografia
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY catalogos_especies ALTER COLUMN id SET DEFAULT nextval('catalogos_especies_id_seq'::regclass);
+ALTER TABLE ONLY catalogos ALTER COLUMN id SET DEFAULT nextval('catalogos_id_seq'::regclass);
 
 
 --
@@ -1252,6 +1258,34 @@ ALTER TABLE ONLY especies_bibliografias ALTER COLUMN especie_id SET DEFAULT next
 --
 
 ALTER TABLE ONLY especies_bibliografias ALTER COLUMN bibliografia_id SET DEFAULT nextval('especies_bibliografias_bibliografia_id_seq'::regclass);
+
+
+--
+-- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_catalogos ALTER COLUMN especie_id SET DEFAULT nextval('especies_catalogos_especie_id_seq'::regclass);
+
+
+--
+-- Name: catalogo_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_catalogos ALTER COLUMN catalogo_id SET DEFAULT nextval('especies_catalogos_catalogo_id_seq'::regclass);
+
+
+--
+-- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_estatuses ALTER COLUMN especie_id SET DEFAULT nextval('especies_estatuses_especie_id_seq'::regclass);
+
+
+--
+-- Name: estatus_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_estatuses ALTER COLUMN estatus_id SET DEFAULT nextval('especies_estatuses_estatus_id_seq'::regclass);
 
 
 --
@@ -1325,20 +1359,6 @@ ALTER TABLE ONLY nombres_comunes ALTER COLUMN id SET DEFAULT nextval('nombres_co
 
 
 --
--- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY nombres_estatuses ALTER COLUMN especie_id SET DEFAULT nextval('nombres_estatuses_especie_id_seq'::regclass);
-
-
---
--- Name: estatus_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY nombres_estatuses ALTER COLUMN estatus_id SET DEFAULT nextval('nombres_estatuses_estatus_id_seq'::regclass);
-
-
---
 -- Name: nombre_comun_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1409,20 +1429,6 @@ ALTER TABLE ONLY regiones ALTER COLUMN id_region_asc SET DEFAULT nextval('region
 
 
 --
--- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY rel_nombre_catalago ALTER COLUMN especie_id SET DEFAULT nextval('rel_nombre_catalago_especie_id_seq'::regclass);
-
-
---
--- Name: catalogo_especie_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY rel_nombre_catalago ALTER COLUMN catalogo_especie_id SET DEFAULT nextval('rel_nombre_catalago_catalogo_especie_id_seq'::regclass);
-
-
---
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1466,11 +1472,11 @@ ALTER TABLE ONLY bibliografias
 
 
 --
--- Name: id_catalogos_especies; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: id_catalogos; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY catalogos_especies
-    ADD CONSTRAINT id_catalogos_especies PRIMARY KEY (id);
+ALTER TABLE ONLY catalogos
+    ADD CONSTRAINT id_catalogos PRIMARY KEY (id);
 
 
 --
@@ -1495,6 +1501,22 @@ ALTER TABLE ONLY especies
 
 ALTER TABLE ONLY especies_bibliografias
     ADD CONSTRAINT id_especies_bibliografias PRIMARY KEY (especie_id, bibliografia_id);
+
+
+--
+-- Name: id_especies_catalogos; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY especies_catalogos
+    ADD CONSTRAINT id_especies_catalogos PRIMARY KEY (especie_id, catalogo_id);
+
+
+--
+-- Name: id_especies_estatuses; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY especies_estatuses
+    ADD CONSTRAINT id_especies_estatuses PRIMARY KEY (especie_id, estatus_id);
 
 
 --
@@ -1538,14 +1560,6 @@ ALTER TABLE ONLY nombres_comunes
 
 
 --
--- Name: id_nombres_estatuses; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY nombres_estatuses
-    ADD CONSTRAINT id_nombres_estatuses PRIMARY KEY (especie_id, estatus_id);
-
-
---
 -- Name: id_nombres_regiones; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1567,14 +1581,6 @@ ALTER TABLE ONLY nombres_regiones_bibliografias
 
 ALTER TABLE ONLY regiones
     ADD CONSTRAINT id_regiones PRIMARY KEY (id);
-
-
---
--- Name: id_rel_nombre_catalago; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY rel_nombre_catalago
-    ADD CONSTRAINT id_rel_nombre_catalago PRIMARY KEY (especie_id, catalogo_especie_id);
 
 
 --
@@ -1644,8 +1650,8 @@ ALTER TABLE ONLY nombres_regiones_bibliografias
 -- Name: catalogonombre_relnombrecatalogo_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY rel_nombre_catalago
-    ADD CONSTRAINT catalogonombre_relnombrecatalogo_fk FOREIGN KEY (catalogo_especie_id) REFERENCES catalogos_especies(id);
+ALTER TABLE ONLY especies_catalogos
+    ADD CONSTRAINT catalogonombre_relnombrecatalogo_fk FOREIGN KEY (catalogo_id) REFERENCES catalogos(id);
 
 
 --
@@ -1676,7 +1682,7 @@ ALTER TABLE ONLY especies
 -- Name: nombre_nombrerelacion_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY nombres_estatuses
+ALTER TABLE ONLY especies_estatuses
     ADD CONSTRAINT nombre_nombrerelacion_fk FOREIGN KEY (especie_id) REFERENCES especies(id);
 
 
@@ -1692,7 +1698,7 @@ ALTER TABLE ONLY especies_bibliografias
 -- Name: nombre_relnombrecatalogo_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY rel_nombre_catalago
+ALTER TABLE ONLY especies_catalogos
     ADD CONSTRAINT nombre_relnombrecatalogo_fk FOREIGN KEY (especie_id) REFERENCES especies(id);
 
 
@@ -1709,7 +1715,7 @@ ALTER TABLE ONLY especies_regiones
 --
 
 ALTER TABLE ONLY especies_estatuses_bibliografias
-    ADD CONSTRAINT nombrerelacion_relacionbibliografia_fk FOREIGN KEY (especie_id, estatus_id) REFERENCES nombres_estatuses(especie_id, estatus_id);
+    ADD CONSTRAINT nombrerelacion_relacionbibliografia_fk FOREIGN KEY (especie_id, estatus_id) REFERENCES especies_estatuses(especie_id, estatus_id);
 
 
 --
@@ -1780,7 +1786,7 @@ ALTER TABLE ONLY regiones
 -- Name: tiporelacion_nombrerelacion_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY nombres_estatuses
+ALTER TABLE ONLY especies_estatuses
     ADD CONSTRAINT tiporelacion_nombrerelacion_fk FOREIGN KEY (estatus_id) REFERENCES estatuses(id);
 
 
