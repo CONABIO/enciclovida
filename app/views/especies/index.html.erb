@@ -4,12 +4,16 @@
 
   <thead>
   <tr>
+    <th><%= check_box_tag("box_especie", "todos") %></th>
     <th>ID</th>
     <th>Nombre</th>
     <th>Categoria taxonómica</th>
-    <th>Ascendente</th>
-    <th>Ascendente Obligatorio</th>
+    <th>Ascendente directo</th>
+    <th>Ascendente obligatorio</th>
     <th>Estatus</th>
+    <th>Regiones, nombres comunes y bibliografias</th>
+    <th></th>
+    <th></th>
     <th>Fuente</th>
     <th>Nombre autoridad</th>
     <th>Número filogenético</th>
@@ -29,9 +33,11 @@
 
   <tfoot>
   <tr>
-    <th><input type="text" id="identificador"></input></th>
-    <th><input type="text" id="nombre"></input></th>
     <th></th>
+    <th><input type="text" id="id_especie"></input></th>
+    <th><input type="text" id="nombre"></input></th>
+    <th><%= select("especies", "categoria_taxonomica_id", CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect {|r| [ r.nombre_categoria_taxonomica.humanize, r.id ] },
+                   { :include_blank => 'Todas' }) %></th>
     <th></th>
     <th></th>
     <th><select id="estatus">
@@ -39,6 +45,9 @@
       <option value="2">Activo</option>
       <option value="1">Inactivo</option>
     </select></th>
+    <th></th>
+    <th></th>
+    <th></th>
     <th><input type="text" id="fuente"></th>
     <th><input type="text" id="nombre_autoridad"></th>
     <th><input type="text" id="numero_filogenetico"></th>
