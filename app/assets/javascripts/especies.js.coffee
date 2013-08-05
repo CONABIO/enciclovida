@@ -36,6 +36,7 @@ jQuery ->
       '<option value="200">200</option>'+
       '</select> resultados por página'
 
+    sScrollX: "500px"
     sScrollY: "500px"
     sPaginationType: "full_numbers"
     bJQueryUI: "true"

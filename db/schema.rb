@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20130731020042) do
 
   create_table "bibliografias", force: true do |t|
     t.string   "autor",                                          null: false
@@ -52,20 +52,25 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "especies", force: true do |t|
-    t.string   "nombre",                                           null: false
-    t.integer  "estatus",                 limit: 2,                null: false
-    t.string   "fuente",                                           null: false
-    t.string   "nombre_autoridad",                  default: "ND", null: false
+    t.string   "nombre",                                                  null: false
+    t.integer  "estatus",                        limit: 2,                null: false
+    t.string   "fuente",                                                  null: false
+    t.string   "nombre_autoridad",                         default: "ND", null: false
     t.string   "numero_filogenetico"
     t.text     "cita_nomenclatural"
-    t.string   "sis_clas_cat_dicc",                 default: "ND", null: false
+    t.string   "sis_clas_cat_dicc",                        default: "ND", null: false
     t.string   "anotacion"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.integer  "id_nombre_ascendente",                             null: false
-    t.integer  "id_ascend_obligatorio",                            null: false
-    t.integer  "categoria_taxonomica_id",                          null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
+    t.integer  "id_nombre_ascendente",                                    null: false
+    t.integer  "id_ascend_obligatorio",                                   null: false
+    t.integer  "categoria_taxonomica_id",                                 null: false
+    t.string   "ancestry_acendente_directo"
+    t.string   "ancestry_acendente_obligatorio"
   end
+
+  add_index "especies", ["ancestry_acendente_directo"], name: "index_especies_on_ancestry_acendente_directo", using: :btree
+  add_index "especies", ["ancestry_acendente_obligatorio"], name: "index_especies_on_ancestry_acendente_obligatorio", using: :btree
 
   create_table "especies_bibliografias", primary_key: "especie_id", force: true do |t|
     t.integer  "bibliografia_id", null: false
@@ -135,17 +140,17 @@ ActiveRecord::Schema.define(version: 0) do
     t.datetime "updated_at",    null: false
   end
 
-  create_table "nombres_regiones", primary_key: "nombre_comun_id", force: true do |t|
-    t.integer  "especie_id",    null: false
-    t.integer  "region_id",     null: false
+  create_table "nombres_regiones", primary_key: "especie_id", force: true do |t|
+    t.integer  "region_id",       null: false
+    t.integer  "nombre_comun_id", null: false
     t.text     "observaciones"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
-  create_table "nombres_regiones_bibliografias", primary_key: "nombre_comun_id", force: true do |t|
-    t.integer  "especie_id",      null: false
+  create_table "nombres_regiones_bibliografias", primary_key: "especie_id", force: true do |t|
     t.integer  "region_id",       null: false
+    t.integer  "nombre_comun_id", null: false
     t.integer  "bibliografia_id", null: false
     t.text     "observaciones"
     t.datetime "created_at",      null: false
@@ -159,7 +164,10 @@ ActiveRecord::Schema.define(version: 0) do
     t.datetime "updated_at",     null: false
     t.integer  "tipo_region_id", null: false
     t.integer  "id_region_asc",  null: false
+    t.string   "ancestry"
   end
+
+  add_index "regiones", ["ancestry"], name: "index_regiones_on_ancestry", using: :btree
 
   create_table "roles", force: true do |t|
     t.string   "nombre_rol",                                 null: false

@@ -1,7 +1,6 @@
 class EspecieDatatable
 
-  include ActionView::Helpers::FormTagHelper
-  delegate :params, :h, :link_to, :number_to_currency, to: :@view
+  delegate :params, :h, :link_to, :check_box_tag, :number_to_currency, to: :@view
 
   def is_integer?(object)
     true if Integer(object) rescue false
@@ -17,7 +16,6 @@ class EspecieDatatable
         iTotalRecords: Especie.count,
         iTotalDisplayRecords: datosEspecies.total_entries,
         aaData: data,
-
     }
   end
 
@@ -34,7 +32,9 @@ class EspecieDatatable
           especie.is_root? ? 'Raíz' : especie.parent_id,
           especie.id_ascend_obligatorio,
           especie.estatus == 2 ? 'Activo' : 'Inactivo',
+          Especie.dameEstadoDeConservacion(especie),
           Especie.dameRegionesNombresBibliografia(especie),
+          '',
           especie.fuente,
           especie.nombre_autoridad.to_s.truncate(20),
           especie.numero_filogenetico,
@@ -55,7 +55,7 @@ class EspecieDatatable
   end
 
   def fetch_especies
-    especies = Especie.ordenar(sort_column, sort_direction)
+    especies = Especie.limit(params[:iDisplayLength]).ordenar(sort_column, sort_direction)
     especies = especies.page(page).per_page(per_page)
 
     if params[:sSearch].present?

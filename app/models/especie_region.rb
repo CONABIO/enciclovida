@@ -4,6 +4,6 @@ class EspecieRegion < ActiveRecord::Base
   belongs_to :region
   belongs_to :especie
   belongs_to :tipo_distribucion
-  has_many :nombres_regiones_especie, :class_name => 'NombreRegion', :foreign_key => 'especie_id'
+  has_many :nombres_regiones, :class_name => 'NombreRegion', :foreign_key => 'especie_id'
 
 end
