@@ -18,7 +18,22 @@ class EspeciesController < ApplicationController
 
   # GET /especies/new
   def new
-    @especie = Especie.new
+    begin
+      @especie = Especie.new(:parent_id => params[:parent_id])
+
+      begin
+        @parent=Especie.find(params[:parent_id])
+        @cat_taxonomica=@parent.categoria_taxonomica.nombre_categoria_taxonomica
+
+      rescue
+        @parent=nil
+      end
+
+    rescue
+      respond_to do |format|
+        format.html { redirect_to :root, notice: "No existe un grupo o especie con el identificador: #{params[:parent_id]}." }
+      end
+    end
   end
 
   # GET /especies/1/edit
@@ -74,6 +89,6 @@ class EspeciesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def especie_params
     params.require(:especie).permit(:nombre, :estatus, :fuente, :nombre_autoridad, :numero_filogenetico,
-                                    :cita_nomenclatural, :sis_clas_cat_dicc, :anotacion)
+                                    :cita_nomenclatural, :sis_clas_cat_dicc, :anotacion, :categoria_taxonomica_id, :parent_id)
   end
 end

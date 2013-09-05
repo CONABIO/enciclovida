@@ -1,4 +1,10 @@
-<h1>Busca y administra las especies</h1>
+<% content_for(:title) do %>
+    <%= @titulo="Administra tus especies" %>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+<h1><%= @titulo %></h1>
 
 <table id="especies" class="display" data-source="<%= especies_url(format: "json") %>">
 
@@ -6,13 +12,13 @@
   <tr>
     <th><%= check_box_tag("box_especie", "todos") %></th>
     <th>ID</th>
-    <th>Nombre (científico)</th>
+    <th>Nombre científico</th>
     <th>Categoria taxonómica</th>
     <th>Ascendente directo</th>
     <th>Ascendente obligatorio</th>
     <th>Estatus</th>
     <th>Estado de conservación</th>
-    <th>Distribuciones, nombres comunes y bibliografias</th>
+    <th>Nombres comunes, regiones, distribuciones y bibliografias</th>
     <th></th>
     <th>Fuente</th>
     <th>Nombre autoridad</th>
@@ -25,6 +31,8 @@
     <th></th>
     <th></th>
     <th></th>
+    <th></th>
+    <th></th>
   </tr>
   </thead>
 
@@ -34,19 +42,23 @@
   <tfoot>
   <tr>
     <th></th>
-    <th><input type="text" id="id_especie"></input></th>
-    <th><input type="text" id="nombre"></input></th>
-    <th><%= select("especies", "categoria_taxonomica_id", CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect {|r| [ r.nombre_categoria_taxonomica.humanize, r.id ] },
+    <th><input type="text" id="id_especie" placeholder="ID"></th>
+    <th><input type="text" id="nombre" placeholder="Nombre científico"></th>
+    <th>Categoria taxonómica: <%= select("especies", "categoria_taxonomica_id", CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect {|r| [ r.nombre_categoria_taxonomica.humanize, r.id ] },
                    { :include_blank => 'Todas' }) %></th>
     <th></th>
     <th></th>
-    <th><select id="estatus">
+    <th>Estatus: <select id="estatus">
       <option value="">Todos</option>
       <option value="2">Activo</option>
       <option value="1">Inactivo</option>
     </select></th>
-    <th></th>
-    <th></th>
+    <th><input type="text" id="estado_conservacion"></th>
+    <th><input type="text" id="nombre_comun" placeholder="Nombre común">
+    <br><input type="text" id="region" placeholder="Región">
+    <br>Tipo de Distribución: <%= select("tipos_distribuciones", "tipo_distribucion_id", TipoDistribucion.order('descripcion ASC').load.collect {|r| [ r.descripcion, r.id ] },
+                   { :include_blank => 'Todos' }) %>
+    </th>
     <th></th>
     <th><input type="text" id="fuente"></th>
     <th><input type="text" id="nombre_autoridad"></th>
@@ -59,10 +71,12 @@
     <th></th>
     <th></th>
     <th></th>
+    <th></th>
+    <th></th>
   </tr>
   </tfoot>
 </table>
 
 <br>
 
-<%= link_to 'Nueva especie', new_especy_path %>
+<%= link_to 'Nueva especie o grupo raíz', new_especy_path %>

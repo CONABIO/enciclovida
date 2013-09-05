@@ -1,33 +1,40 @@
 <p id="notice"><%= notice %></p>
 
+<p><%= enlacesDeTaxonomia(@especie) %></p>
+<% content_for(:title) do %>
+    <%= @titulo="#{@especie.nombre} (#{CategoriaTaxonomica.cat_taxonom(@especie.categoria_taxonomica_id)})" %>
+<% end %>
+
+<h1><%= @titulo %></h1>
+
 <p>
   <strong>Identificador único:</strong>
   <%= @especie.id %>
 </p>
 
 <p>
-  <strong>Nombre:</strong>
-  <%= @especie.nombre %>
-</p>
-
-<p>
-  <strong>Categoria taxonómica:</strong>
-  <%= @especie.categoria_taxonomica_id %>
-</p>
-
-<p>
-  <strong>Ascendente:</strong>
-  <%= @especie.id_nombre_ascendente %>
+  <strong>Ascendente directo:</strong>
+  <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
 </p>
 
 <p>
   <strong>Ascendente obligatorio:</strong>
-  <%= @especie.id_ascend_obligatorio %>
+  <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
 </p>
 
 <p>
   <strong>Estatus:</strong>
-  <%= @especie.estatus %>
+  <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
+</p>
+
+<p>
+  <strong>Estado de conservación:</strong>
+  <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
+</p>
+
+<p>
+  <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
+  <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
 </p>
 
 <p>
@@ -71,4 +78,9 @@
 </p>
 
 <%= link_to 'Editar', edit_especy_path(@especie) %> |
-<%= link_to 'Regresar', especies_path %>
+<%= link_to 'Regresar al buscador', especies_path %>
+<br>
+
+<%= link_to("Nueva especie o grupo derivada de esta".html_safe,
+            new_especy_path(:parent_id => @especie)).html_safe %> |
+<%= link_to 'Nueva especie o grupo raíz', new_especy_path %>

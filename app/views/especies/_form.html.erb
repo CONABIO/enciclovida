@@ -11,56 +11,59 @@
         </div>
     <% end %>
 
+    <%= f.hidden_field :parent_id %>
+
     <div class="field">
       <%= f.label :nombre %><br>
-      <%= f.text_field :nombre %>
+      <%= f.text_field :nombre, :maxlength => 255, :size => 45, :placeholder => 'Escribe el nombre científico' %>
     </div>
 
     <div class="field">
-      <%= f.label :categoria_taxonomica_id %><br>
-      <%= f.text_field :categoria_taxonomica_id %>
+      <%= f.label :categoria_taxonomica_id, 'Categoria taxonómica' %><br>
+      <%= f.select :categoria_taxonomica_id, CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect { |r| [ r.nombre_categoria_taxonomica, r.id ] },
+                   :include_blank => '---Selecciona una categoria---' %>
     </div>
 
     <div class="field">
-      <%= f.label :id_nombre_ascendente %><br>
+      <%= f.label :id_nombre_ascendente, 'Ascendente directo' %><br>
       <%= f.text_field :id_nombre_ascendente %>
     </div>
 
     <div class="field">
-      <%= f.label :id_ascend_obligatorio %><br>
+      <%= f.label :id_ascend_obligatorio, 'Ascendente obligatorio' %><br>
       <%= f.text_field :id_ascend_obligatorio %>
     </div>
 
     <div class="field">
-      <%= f.label :estatus %><br>
-      <%= f.text_area :estatus %>
+      <%= f.label :estatus, 'Estatus del nombre científico' %><br>
+      <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona un estatus---' %>
     </div>
     <div class="field">
       <%= f.label :fuente %><br>
-      <%= f.text_field :fuente %>
+      <%= f.text_field :fuente, :maxlength => 255, :size => 45, :placeholder => 'Fuente bibliográfica' %>
     </div>
     <div class="field">
       <%= f.label :nombre_autoridad %><br>
-      <%= f.text_field :nombre_autoridad %>
+      <%= f.text_field :nombre_autoridad, :maxlength => 255, :size => 45, :placeholder => 'Nombre de la autoridad' %>
     </div>
     <div class="field">
       <%= f.label :numero_filogenetico %><br>
-      <%= f.text_field :numero_filogenetico %>
+      <%= f.text_field :numero_filogenetico, :maxlength => 255, :size => 45, :placeholder => 'Número filogenético' %>
     </div>
     <div class="field">
       <%= f.label :cita_nomenclatural %><br>
-      <%= f.text_field :cita_nomenclatural %>
+      <%= f.text_area :cita_nomenclatural, :rows => 6, :cols => 35, :placeholder => 'Cita nomenclatural' %>
     </div>
     <div class="field">
       <%= f.label :sis_clas_cat_dicc %><br>
-      <%= f.text_field :sis_clas_cat_dicc %>
+      <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
     </div>
     <div class="field">
       <%= f.label :anotacion %><br>
-      <%= f.text_field :anotacion %>
+      <%= f.text_field :anotacion, :maxlength => 255, :size => 45, :placeholder => 'Anotación' %>
     </div>
 
     <div class="actions">
-      <%= f.submit  %>
+      <%= @especie.new_record? ? f.submit('Crear') : f.submit('Actualizar') %>
     </div>
 <% end %>

@@ -44,7 +44,7 @@ Buscador::Application.routes.draw do
   root 'especies#index'
 
   # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+  post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => "new"
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

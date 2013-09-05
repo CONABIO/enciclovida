@@ -1,6 +1,9 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require File.expand_path('../config', __FILE__)
+
+CONFIG = BuscadorConfig.new(File.expand_path('../config.yml', __FILE__))
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -21,4 +24,8 @@ module Buscador
     # config.i18n.default_locale = :de
     #config.sass.preferred_syntax=:sass
   end
+
+# General settings
+  SITE_NAME = CONFIG.site_name
+  SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
 end

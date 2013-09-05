@@ -1,5 +1,15 @@
-<h1>Nueva especie o grupo</h1>
+<% content_for(:title) do %>
+
+    <% if @parent %>
+        <%= @titulo="Nueva especie o grupo derivada de #{link_to(@parent.nombre, @parent)} (#{@cat_taxonomica})".html_safe %>
+    <% else %>
+        <%= @titulo="Nueva especie o grupo raíz" %>
+    <% end %>
+
+<% end %>
+
+<h1><%= @titulo %></h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Regresar', especies_path %>
+<%= link_to 'Regresar al buscador', especies_path %>

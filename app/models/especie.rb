@@ -12,37 +12,45 @@ class Especie < ActiveRecord::Base
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
       joins('LEFT JOIN categoria_taxonomica')}
-  scope :nombres, ->(ids) { find(ids) }
 
   CON_REGION = [19, 50]
-  ESTATUSES = ['Activo', 'Inactivo']
+  ESTATUSES = [
+      [2, 'Activo'],
+      [1, 'Inactivo']
+  ]
 
 
-  def self.dameRegionesNombresBibliografia(especie)
-    region='<table><tr>'
+  def self.dameRegionesNombresBibliografia(especie, detalles=nil)
+    region="<div style='max-width:700px; overflow-x: scroll;'><table cellpadding='20'><tr>"
 
     if especie.especies_regiones.count > 0
 
       especie.especies_regiones.each do |e|
-        region+="<td><ul id='lista_region'>"
+        region+="<td style='min-width:200px;'><ul>"
 
         if !e.region.is_root?
           e.region.ancestor_ids.each do |a|
             subregion=Region.find(a)
 
             if !subregion.is_root?
-              region+="<li>#{subregion.nombre_region}(#{subregion.clave_region})</li>"
+              region+="<li>#{subregion.nombre_region} (#{subregion.clave_region})</li>"
             end
           end
         end
 
-        region+="<li>#{e.region.nombre_region}(#{e.region.clave_region})</li></ul>"
+        region+="<li>#{e.region.nombre_region} (#{e.region.clave_region})</li></ul>"
 
         region+='<ol>'
         e.nombres_regiones.where(:region_id => e.region_id).each do |n|
-          region+="<li>#{n.nombre_comun.nombre_comun.titleize}(#{n.nombre_comun.lengua.titleize})</li>"
+          region+="<li>#{n.nombre_comun.nombre_comun} (#{n.nombre_comun.lengua.downcase})</li>"
           n.nombres_regiones_bibliografias.where(:region_id => n.region_id).where(:nombre_comun_id => n.nombre_comun_id).each do |b|
-            region+="<p>#{b.bibliografia.autor.truncate(25)}</p>"
+
+            if detalles
+              region+="<p><b>Bibliografía:</b> #{b.bibliografia.autor}</p>"
+            else
+              region+="<p><b>Bibliografía:</b> #{b.bibliografia.autor.truncate(25)}</p>"
+            end
+
           end
         end
         region+='</ol>'
@@ -52,11 +60,11 @@ class Especie < ActiveRecord::Base
             region+='</td>'
 
           else
-            region+='- SD</td>'
+            region+='<b>Distribución:</b> SD</td>'
           end
 
         else
-          region+="- #{e.tipo_distribucion.descripcion}</td>"
+          region+="<b>Distribución:</b> #{e.tipo_distribucion.descripcion}</td>"
         end
 
 
@@ -69,7 +77,7 @@ class Especie < ActiveRecord::Base
       region=''
     end
 
-    region + '</tr></table>'
+    region + '</tr></table></div>'
   end
 
 
@@ -83,9 +91,52 @@ class Especie < ActiveRecord::Base
     conservacion+='</ul>'
   end
 
-  def self.dameIdsDelNombre(nombre)
-    idsEspecie=Especie.caso_insensitivo('nombre', nombre)
-    ids
+
+  def self.dameIdsDelNombre(nombre, tipo=nil)
+    identificadores=''
+
+    sentencia="SELECT nr.especie_id AS ids FROM nombres_regiones nr
+    LEFT JOIN nombres_comunes nc ON nc.id=nr.nombre_comun_id
+    WHERE lower_unaccent(nc.nombre_comun) LIKE lower_unaccent('%#{nombre}%')"
+
+    if tipo.nil?
+      sentencia+="UNION SELECT e.id from especies e WHERE lower_unaccent(e.nombre) LIKE lower_unaccent('%#{nombre}%')"
+    end
+
+    sentencia=Especie.find_by_sql(sentencia)
+
+    sentencia.each do |i|
+      identificadores+="#{i.ids}, "
+    end
+
+    identificadores[0..-3]
+  end
+
+
+  def self.dameIdsDeLaRegion(nombre)
+    identificadores=''
+    sentencia=Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
+                              LEFT JOIN regiones r ON er.region_id=r.id
+                              WHERE lower_unaccent(r.nombre_region) LIKE lower_unaccent('%#{nombre}%') ORDER BY ids")
+
+    sentencia.each do |i|
+      identificadores+="#{i.ids}, "
+    end
+
+    identificadores[0..-3]
+  end
+
+
+  def self.dameIdsDeLaDistribucion(distribucion)
+    identificadores=''
+    sentencia=Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
+                                    WHERE tipo_distribucion_id=#{distribucion} ORDER BY ids;")
+
+    sentencia.each do |i|
+      identificadores+="#{i.ids}, "
+    end
+
+    identificadores[0..-3]
   end
 
 end

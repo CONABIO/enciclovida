@@ -1,6 +1,10 @@
-<h1>Edita la especie o grupo</h1>
+<% content_for(:title) do %>
+    <%= @titulo="Editando #{Especie.find(@especie).nombre}" %>
+<% end %>
+
+<h1><%= @titulo %></h1>
 
 <%= render 'form' %>
 
 <%= link_to 'Ver', @especie %> |
-<%= link_to 'Regresar', especies_path %>
+<%= link_to 'Regresar al buscador', especies_path %>

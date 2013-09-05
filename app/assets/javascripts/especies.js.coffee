@@ -36,6 +36,58 @@ jQuery ->
       '<option value="200">200</option>'+
       '</select> resultados por página'
 
+  #bStateSave: "true"
+
+    aoColumns: [
+
+      mDataProp: "0"
+    ,
+      mDataProp: "1"
+    ,
+      mDataProp: "2"
+    ,
+      mDataProp: "3"
+    ,
+      mDataProp: "4"
+    ,
+      mDataProp: "5"
+    ,
+      mDataProp: "6"
+    ,
+      mDataProp: "7"
+    ,
+      mDataProp: "8"
+    ,
+      mDataProp: "9"
+    ,
+      mDataProp: "10"
+    ,
+      mDataProp: "11"
+    ,
+      mDataProp: "12"
+    ,
+      mDataProp: "13"
+    ,
+      mDataProp: "14"
+    ,
+      mDataProp: "15"
+    ,
+      mDataProp: "16"
+    ,
+      mDataProp: "17"
+    ,
+      mDataProp: "18"
+    ,
+      mDataProp: "19"
+    ,
+      mDataProp: "20"
+    ,
+      mDataProp: "21"
+    ,
+      mDataProp: "22"
+    ,
+    ]
+
     sScrollX: "500px"
     sScrollY: "500px"
     sPaginationType: "full_numbers"
@@ -45,7 +97,7 @@ jQuery ->
     sAjaxSource: $("#especies").data("source")
     aoColumnDefs: [
       bSortable: false
-      aTargets: [ 0, 3, 6 ]
+      aTargets: [ 0, 1 ]
     ]
 
   )
@@ -57,22 +109,22 @@ jQuery ->
     oTable.fnFilter @value, 2
 
   $("#fuente").keyup ->
-    oTable.fnFilter @value, 7
-
-  $("#nombre_autoridad").keyup ->
-    oTable.fnFilter @value, 8
-
-  $("#numero_filogenetico").keyup ->
-    oTable.fnFilter @value, 9
-
-  $("#cita_nomenclatural").keyup ->
     oTable.fnFilter @value, 10
 
-  $("#sistema_de_clasificacion").keyup ->
+  $("#nombre_autoridad").keyup ->
     oTable.fnFilter @value, 11
 
-  $("#anotacion").keyup ->
+  $("#numero_filogenetico").keyup ->
     oTable.fnFilter @value, 12
+
+  $("#cita_nomenclatural").keyup ->
+    oTable.fnFilter @value, 13
+
+  $("#sistema_de_clasificacion").keyup ->
+    oTable.fnFilter @value, 14
+
+  $("#anotacion").keyup ->
+    oTable.fnFilter @value, 15
 
   $("#box_especie").change ->
     oTable.fnFilter $(this).val(), 0
@@ -83,8 +135,20 @@ jQuery ->
   $("#estatus").change ->
     oTable.fnFilter $(this).val(), 6
 
+  $("#estado_conservacion").keyup ->
+    oTable.fnFilter $(this).val(), 7
+
+  $("#nombre_comun").keyup ->
+    oTable.fnFilter $(this).val(), 8
+
+  $("#tipos_distribuciones_tipo_distribucion_id").change ->
+    oTable.fnFilter $(this).val(), 9
+
+  $("#region").keyup ->
+    oTable.fnFilter $(this).val(), 10
+
   $("#created_at").change ->
-    oTable.fnFilter $(this).val(), 13
+    oTable.fnFilter $(this).val(), 16
 
   $("#updated_at").change ->
-    oTable.fnFilter $(this).val(), 14
+    oTable.fnFilter $(this).val(), 17

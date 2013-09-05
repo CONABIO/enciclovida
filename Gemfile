@@ -54,3 +54,5 @@ gem 'jquery-ui-rails'
 gem 'will_paginate'
 #gem 'rcore-ext'
 gem 'ancestry'
+
+#gem 'ya2yaml'
