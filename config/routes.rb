@@ -1,4 +1,7 @@
 Buscador::Application.routes.draw do
+
+  resources :bitacoras
+
   resources :listas
 
   resources :roles
@@ -7,13 +10,32 @@ Buscador::Application.routes.draw do
 
   resources :categorias_taxonomica
 
-  resources :usuarios
+  resources :usuarios do
+    collection do
+      get :inicia_sesion
+      post :intento_sesion
+      put :cierra_sesion
+    end
+  end
 
   resources :estatuses
 
-  resources :especies_catalogo
+  resources :especies_catalogo do
+    collection do
+      get :autocomplete_catalogo_descripcion
+    end
+  end
 
-  resources :especies
+  resources :especies do
+    collection do
+      post :destruye_seleccionados
+      get :buscaDescendientes
+      get :muestraTaxonomia
+      get :autocomplete_especie_nombre
+      post :resultados
+      get :resultados
+    end
+  end
 
   resources :especies_bibliografia
 
@@ -23,19 +45,32 @@ Buscador::Application.routes.draw do
 
   resources :regiones
 
-  resources :especies_regiones
+  resources :especies_regiones do
+    collection do
+      get :autocomplete_region_nombre
+    end
+  end
 
   resources :tipos_distribuciones
 
   resources :especies_estatus_bibliografia
 
-  resources :nombres_comunes
+  resources :nombres_comunes do
+    collection do
+      get :buscar
+      get :autocomplete_nombre_comun_comun
+    end
+  end
 
   resources :nombres_regiones
 
   resources :nombre_regiones_bibliografias
 
-  resources :bibliografias
+  resources :bibliografias do
+    collection do
+      get :autocomplete_bibliografia_autor
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

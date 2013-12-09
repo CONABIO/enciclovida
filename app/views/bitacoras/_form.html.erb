@@ -1,0 +1,17 @@
+<%= form_for(@bitacora) do |f| %>
+  <% if @bitacora.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bitacora.errors.count, "error") %> prohibited this bitacora from being saved:</h2>
+
+      <ul>
+      <% @bitacora.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

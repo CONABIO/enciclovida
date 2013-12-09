@@ -13,9 +13,13 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= stub especies.js.coffee
 //= require_tree .
-
 //= require dataTables/jquery.dataTables
+//= require cocoon
+
+
+//= require autocomplete-rails
 
 
 

@@ -1,5 +1,7 @@
 class BibliografiasController < ApplicationController
   before_action :set_bibliografia, only: [:show, :edit, :update, :destroy]
+  autocomplete :bibliografia, :autor, :full => true, :display_value => :personalizaBusqueda,
+               :extra_data => [:autor, :titulo_publicacion, :anio], :limit => 30
 
   # GET /bibliografias
   # GET /bibliografias.json
@@ -62,13 +64,17 @@ class BibliografiasController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_bibliografia
+  # Use callbacks to share common setup or constraints between actions.
+  def set_bibliografia
+    begin
       @bibliografia = Bibliografia.find(params[:id])
+    rescue
+      @bibliografia={:autor => nil}
     end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def bibliografia_params
-      params[:bibliografia]
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def bibliografia_params
+    params[:bibliografia]
+  end
 end

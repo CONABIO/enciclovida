@@ -1,0 +1,37 @@
+.nested-fields
+  %br
+  %table
+    %tr
+      %td{:valign => 'top'}
+        = f.hidden_field :region_id, :value => @region
+        = f.hidden_field :nombre_comun_id, :value => @nombre_comun
+        = f.label :bibliografia_id, 'Bibliografía'
+        %br
+        - biblio=f.text_field(:bibliografia_id).to_param.split(' ')[4].split('=').last.delete('"')
+        - if (biblio != '/>')
+          = f.autocomplete_field :bibliografia_id_falsa, '/bibliografias/autocomplete_bibliografia_autor', :maxlength => 255, :size => 30, :value => Bibliografia.find(biblio).autor
+        - else
+          = f.autocomplete_field :bibliografia_id_falsa, '/bibliografias/autocomplete_bibliografia_autor', :maxlength => 255, :size => 30
+        = f.hidden_field :bibliografia_id
+        %br
+      %td{:valign => 'top'}
+        = f.label :observaciones, 'Observaciones'
+        %br
+        = f.text_area :observaciones, :rows => 4, :cols => 30
+        .elimina
+          = link_to_remove_association(image_tag('app/24x24/delete.png'), f)
+        %br
+
+:javascript
+  $(document).ready(function() {
+              $(":input[name$='bibliografia_id_falsa]']").bind('railsAutocomplete.select', function(event, data){
+                  var separa=$(this).attr('name').split(']');
+                  var numero=separa[1].substr(1);
+                  $(this).val(data.item.autor);
+                  $('#especie_nombres_regiones_bibliografias_attributes_'+numero+'_bibliografia_id').val(data.item.id)
+              });
+          });
+
+
+
+

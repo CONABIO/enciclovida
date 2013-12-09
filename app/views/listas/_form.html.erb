@@ -1,17 +1,57 @@
 <%= form_for(@lista) do |f| %>
-  <% if @lista.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@lista.errors.count, "error") %> prohibited this lista from being saved:</h2>
 
-      <ul>
-      <% @lista.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+    <table width="1000" id="tabla_form"><tr>
+      <td width="40%" valign="top">
+        <fieldset>
+          <legend class="leyenda">Datos</legend>
+          <div class="field">
+            <%= f.label :nombre_lista, 'Nombre de la lista' %><br>
+            <%= f.text_field :nombre_lista, :maxlength => 255, :size => 45, :placeholder => 'nombre de la lista' %>
+          </div>
+
+          <% if @lista.new_record? %>
+              <div class="field">
+                <%= f.label :columnas, 'Columnas de la base (tecla SHIFT para más de una columna)' %><br>
+                <%= f.select :columnas, Lista::ATRIBUTOS_TABLAS.map{|k,v| [v, k]}, {}, {:multiple => true, :size => Lista::ATRIBUTOS_TABLAS.size} %>
+              </div>
+          <% else %>
+              <div class="field">
+                <%= f.label :columnas, 'Columnas de la base (tecla SHIFT para más de una columna)' %><br>
+                <%= atributoColumnas(@lista).html_safe %>
+              </div>
+          <% end %>
+
+          <% if !@lista.new_record? %>
+              <div class="field">
+                <%= f.label :cadena_especies, 'Taxones a exportar' %><br>
+                <%= f.text_field :cadena_especies, :maxlength => 255, :size => 45, :placeholder => 'cadena especies' %>
+              </div>
+          <% end %>
+        </fieldset>
+      </td>
+
+      <td width="60%" valign="top">
+        <% if @lista.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@lista.errors.count, "error") %>, porfavor corrige los siguientes campos:</h2>
+
+              <ul>
+                <% @lista.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+        <% end %>
+      </td>
+    </tr></table>
+
+    <div class="pie">
+      <div class="actions">
+        <% if @lista.new_record? %>
+            <%= f.submit('Crear lista', :disable_with => 'Creando ...') %>
+        <% else %>
+            <%= f.submit('Guardar', :disable_with => 'Guardando ...') %>
+        <% end %>
+      </div>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
 <% end %>

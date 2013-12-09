@@ -4,15 +4,51 @@
       xmlns:fb="http://www.facebook.com/2008/fbml"
       xmlns:og="http://ogp.me/ns#">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= CONFIG.site_name %> &middot; <%= yield :title %></title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
 </head>
+
 <body>
+<ul id=menu_principal>
+  <li><%= link_to 'Inicio (Administrador)', especies_url %></li>
+  <li><%= link_to 'Listas', listas_url %></li>
+  <%- if session[:usuario].present?  %>
+      <li>
+        <%= link_to 'Propiedades de tu cuenta', "/usuarios/#{session[:usuario]}" %>
+      </li>
+      <li>
+        <%= link_to "Cerrar sesión (#{Usuario.find(session[:usuario]).usuario})", cierra_sesion_usuarios_url, :method => :put, data: { confirm: '¿Estás seguro que deseas cerra la sesión?' } %>
+      </li>
+  <%- else %>
+      <li><%= link_to 'Inicia sesión', inicia_sesion_usuarios_url %></li>
+  <%- end %>
+</ul>
+
+<%= render :template => 'especies/busqueda'
+%>
+
+<br>
 
 <%= yield %>
+
+
+<% if session[:usuario].present? %>
+<br><br>
+    <table width="1000" class="tabla_formato"><tr>
+      <td>
+        <fieldset>
+          <legend class="leyenda">Bitácora</legend>
+        <%= bitacora.html_safe %>
+        </fieldset>
+      </td>
+    </tr></table>
+<% end %>
 
 </body>
 </html>

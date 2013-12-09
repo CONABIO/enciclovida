@@ -1,38 +1,72 @@
+<%= javascript_include_tag params[:controller] %>
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    muestraArbol = function(id) {
+        $.ajax({
+            url: "/especies/muestraTaxonomia",
+            data: {
+                id: id.substring(6)
+            }
+        }).done(function(arbol) {
+                    return $("#vista_arbol").html(arbol);
+                });
+        return false;
+    };
+
+    despliegaOcontrae = function(id) {
+        var sufijo;
+        sufijo = id.substring(5);
+        if ($("#nodo_" + sufijo + " li").length > 0) {
+            $("#nodo_" + sufijo + " li").remove();
+        } else {
+            $.ajax({
+                url: "/especies/buscaDescendientes",
+                data: {
+                    id: sufijo
+                }
+            }).done(function(nodo) {
+                        return $("#nodo_" + sufijo).append(nodo);
+                    });
+        }
+        return false;
+    };
+</script>
+
 <% content_for(:title) do %>
-    <%= @titulo="Administra tus especies" %>
+    <%= @titulo='Administrador de especies' %>
 <% end %>
 
+<%= form_tag '/especies/destruye_seleccionados' %>
 <p id="notice"><%= notice %></p>
 
-<h1><%= @titulo %></h1>
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
 
-<table id="especies" class="display" data-source="<%= especies_url(format: "json") %>">
+<table id="especies" class="display" data-source="/especies.json">
 
   <thead>
   <tr>
-    <th><%= check_box_tag("box_especie", "todos") %></th>
+    <th><%= check_box_tag 'box_especie', 'todos' %></th>
+    <th></th>
+    <th></th>
     <th>ID</th>
     <th>Nombre científico</th>
-    <th>Categoria taxonómica</th>
+    <th>Nombre autoridad</th>
+    <th>Categoria taxonómica<%=raw "&nbsp;"*6 %></th>
     <th>Ascendente directo</th>
     <th>Ascendente obligatorio</th>
     <th>Estatus</th>
-    <th>Estado de conservación</th>
+    <th>Situaciones de los nombres cientificos</th>
+    <th>Caracacterística del taxón</th>
     <th>Nombres comunes, regiones, distribuciones y bibliografias</th>
     <th></th>
+    <th></th>
     <th>Fuente</th>
-    <th>Nombre autoridad</th>
-    <th>Número filogenético</th>
     <th>Cita nomenclatural</th>
-    <th>Sistema de clasificación del catalogo</th>
+    <th>Sistema de clasificación, catálogo o diccionario</th>
     <th>Anotación</th>
     <th>Fecha de captura</th>
     <th>Fecha de modificación</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
   </tr>
   </thead>
 
@@ -42,32 +76,21 @@
   <tfoot>
   <tr>
     <th></th>
-    <th><input type="text" id="id_especie" placeholder="ID"></th>
-    <th><input type="text" id="nombre" placeholder="Nombre científico"></th>
-    <th>Categoria taxonómica: <%= select("especies", "categoria_taxonomica_id", CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect {|r| [ r.nombre_categoria_taxonomica.humanize, r.id ] },
-                   { :include_blank => 'Todas' }) %></th>
     <th></th>
     <th></th>
-    <th>Estatus: <select id="estatus">
-      <option value="">Todos</option>
-      <option value="2">Activo</option>
-      <option value="1">Inactivo</option>
-    </select></th>
-    <th><input type="text" id="estado_conservacion"></th>
-    <th><input type="text" id="nombre_comun" placeholder="Nombre común">
-    <br><input type="text" id="region" placeholder="Región">
-    <br>Tipo de Distribución: <%= select("tipos_distribuciones", "tipo_distribucion_id", TipoDistribucion.order('descripcion ASC').load.collect {|r| [ r.descripcion, r.id ] },
-                   { :include_blank => 'Todos' }) %>
-    </th>
     <th></th>
-    <th><input type="text" id="fuente"></th>
-    <th><input type="text" id="nombre_autoridad"></th>
-    <th><input type="text" id="numero_filogenetico"></th>
-    <th><input type="text" id="cita_nomenclatural"></th>
-    <th><input type="text" id="sistema_de_clasificacion"></th>
-    <th><input type="text" id="anotacion"></th>
-    <th><input type="date" id="created_at"></th>
-    <th><input type="date" id="updated_at"></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
     <th></th>
     <th></th>
     <th></th>
@@ -76,7 +99,42 @@
   </tr>
   </tfoot>
 </table>
-
 <br>
 
-<%= link_to 'Nueva especie o grupo raíz', new_especy_path %>
+<div class="pie">
+  <%= button_tag 'Limpiar busqueda', :id => 'limpiar', :type => :button %>
+  <%= submit_tag 'Añade los seleccionados a la lista' , data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
+  <%= submit_tag 'Destruye los seleccionados' , data: { confirm: '¿Estás seguro de eliminar los selecoinados?' } %>
+  <%= #link_to 'Nuevo taxón', new_especy_path
+  %>
+  <%= #NombreComun.search(:conditions => {:nom => "rufo"})
+  %>
+</div>
+
+<br><br>
+<table width="1000" id="tabla_form"><tr>
+  <td width="60%" valign="top">
+    <fieldset>
+      <legend class="leyenda">Árbol taxonómico</legend>
+      <div id="vista_arbol">
+        <%= arbolTaxonomico.html_safe %>
+      </div>
+    </fieldset>
+  </td>
+  <td>
+
+    <fieldset>
+      <legend class="leyenda">Listas</legend>
+      <div width="40%" id="listas" valign="top">
+        <% if @listas.nil? %>
+            Debes iniciar sesión para poder ver tus listas.
+        <% elsif @listas == 0 %>
+            Aún no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
+        <% else %>
+            Puedes añadir taxones a más de una lista. (tecla SHIFT)
+            <%= select_tag 'listas', opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
+        <% end %>
+      </div>
+    </fieldset>
+  </td>
+</tr></table>

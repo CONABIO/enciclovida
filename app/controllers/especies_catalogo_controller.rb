@@ -1,5 +1,6 @@
 class EspeciesCatalogoController < ApplicationController
   before_action :set_especie_catalogo, only: [:show, :edit, :update, :destroy]
+  autocomplete :catalogo, :descripcion, :full => true, :extra_data => [:descripcion], :limit => 30
 
   # GET /especies_catalogo
   # GET /especies_catalogo.json
@@ -62,13 +63,17 @@ class EspeciesCatalogoController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_especie_catalogo
+  # Use callbacks to share common setup or constraints between actions.
+  def set_especie_catalogo
+    begin
       @especie_catalogo = EspecieCatalogo.find(params[:id])
+    rescue
+      @especie_catalogo={:descripcion => nil}
     end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def especie_catalogo_params
-      params[:especie_catalogo]
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def especie_catalogo_params
+    params[:especie_catalogo]
+  end
 end

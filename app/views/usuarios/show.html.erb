@@ -1,4 +1,41 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_usuario_path(@usuario) %> |
-<%= link_to 'Back', usuarios_path %>
+<% content_for(:title) do %>
+    <%= @titulo=gradoYnombre(@usuario) %>
+<% end %>
+
+<table style="max-width:1000px;" id="tabla_form"><tr>
+  <td valign="top">
+    <fieldset>
+      <legend class="leyenda"><%= @titulo %></legend>
+      <p>
+        <strong>Usuario:</strong>
+        <%= @usuario.usuario %>
+      </p>
+      <p>
+        <strong>Correo:</strong>
+        <%= @usuario.correo %>
+      </p>
+      <p>
+        <strong>Institución:</strong>
+        <%= @usuario.institucion %>
+      </p>
+      <p>
+        <strong>Nivel de permisos:</strong>
+        <%= @usuario.rol.nombre_rol %>
+      </p>
+      <p>
+        <strong>Fecha de creación:</strong>
+        <%= @usuario.created_at %>
+      </p>
+      <p>
+        <strong>Fecha de la última actualización:</strong>
+        <%= @usuario.updated_at %>
+      </p>
+    </fieldset>
+  </td>
+</tr></table>
+
+<br>
+<%= link_to 'Editar', edit_usuario_path(@usuario) %>
+

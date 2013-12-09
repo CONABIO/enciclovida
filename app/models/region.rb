@@ -5,4 +5,15 @@ class Region < ActiveRecord::Base
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'region_id'
   has_ancestry
 
+  def personalizaBusqueda
+    if self.ancestry.present?
+      parientes ||=''
+      Region.find(self.ancestry.split('/').push(self.id)).each do |reg|
+        parientes+="#{reg.nombre_region} (#{TipoRegion.find(reg.tipo_region_id).descripcion}) > "
+      end
+      parientes[0..-4]
+    else
+      "#{self.nombre_region} (#{TipoRegion.find(self.tipo_region_id).descripcion})"
+    end
+  end
 end

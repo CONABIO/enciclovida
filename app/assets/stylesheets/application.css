@@ -17,3 +17,17 @@
 *= require jquery.ui.theme
 *= require dataTables/src/demo_table_jui
 */
+
+#notice, .enlaces_acciones, #bitacora {
+    text-align: center;
+}
+
+.tabla_formato {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabla_paginacion {
+    text-align: right;
+}
+

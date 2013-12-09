@@ -1,5 +1,7 @@
 class EspeciesRegionesController < ApplicationController
   before_action :set_especie_region, only: [:show, :edit, :update, :destroy]
+  autocomplete :region, :nombre, :column_name => 'nombre_region', :full => true, :display_value => :personalizaBusqueda,
+               :extra_data => [:nombre_region, :tipo_region_id, :ancestry], :limit => 30
 
   # GET /especies_regiones
   # GET /especies_regiones.json
@@ -62,13 +64,17 @@ class EspeciesRegionesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_especie_region
+  # Use callbacks to share common setup or constraints between actions.
+  def set_especie_region
+    begin
       @especie_region = EspecieRegion.find(params[:id])
+    rescue
+      @especie_region={:nombre_region => nil}
     end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def especie_region_params
-      params[:especie_region]
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def especie_region_params
+    params[:especie_region]
+  end
 end

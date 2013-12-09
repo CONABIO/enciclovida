@@ -1,0 +1,36 @@
+.nested-fields
+  %br
+  %table
+    %tr
+      %td{:valign => 'top'}
+        = f.hidden_field :region_id, :value => @region
+        = f.label :nombre_comun_id, 'Nombre común'
+        %br
+        - nomComun=f.text_field(:nombre_comun_id).to_param.split(' ')[4].split('=').last.delete('"')
+        - if (nomComun != '/>')
+          = f.autocomplete_field(:nombre_comun_id_falso, '/nombres_comunes/autocomplete_nombre_comun_comun', :maxlength => 255, :size => 30, :value => NombreComun.find(nomComun).nombre_comun)
+        - else
+          = f.autocomplete_field :nombre_comun_id_falso, '/nombres_comunes/autocomplete_nombre_comun_comun', :maxlength => 255, :size => 30
+        =f.hidden_field :nombre_comun_id
+        %br
+      %td{:valign => 'top'}
+        = f.label :observaciones, 'Observaciones'
+        %br
+        = f.text_area :observaciones, :rows => 4, :cols => 30
+        .elimina
+          = link_to_remove_association(image_tag('app/24x24/delete.png'), f)
+        %br
+
+:javascript
+  $(document).ready(function() {
+              $(":input[name$='nombre_comun_id_falso]']").bind('railsAutocomplete.select', function(event, data){
+                  var separa=$(this).attr('name').split(']');
+                  var numero=separa[1].substr(1);
+                  $(this).val(data.item.nombre_comun);
+                  $('#especie_nombres_regiones_attributes_'+numero+'_nombre_comun_id').val(data.item.id)
+              });
+          });
+
+
+
+

@@ -1,3 +1,40 @@
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    muestraArbol = function(id) {
+        $.ajax({
+            url: "/especies/muestraTaxonomia",
+            data: {
+                id: id
+            }
+        }).done(function(arbol) {
+                    return $("#vista_arbol").html(arbol);
+                });
+    };
+
+    despliegaOcontrae = function(id) {
+        var sufijo;
+        sufijo = id.substring(5);
+        if ($("#nodo_" + sufijo + " li").length > 0) {
+            $("#nodo_" + sufijo + " li").remove();
+        } else {
+            $.ajax({
+                url: "/especies/buscaDescendientes",
+                data: {
+                    id: sufijo
+                }
+            }).done(function(nodo) {
+                        return $("#nodo_" + sufijo).append(nodo);
+                    });
+        }
+        return false;
+    };
+
+    <% if !@especie.is_root? && !@especie.new_record? %>
+    muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
+    <% elsif params[:parent_id].present? && @especie.new_record? %>
+    muestraArbol($.parseHTML("<%= "#{params[:parent_id]}" %>")[0].textContent);
+    <% end %>
+</script>
+
 <%= form_for(@especie) do |f| %>
     <% if @especie.errors.any? %>
         <div id="error_explanation">
@@ -11,59 +48,162 @@
         </div>
     <% end %>
 
-    <%= f.hidden_field :parent_id %>
+    <table width="1000" class="tabla_formato"><tr>
+      <td valign="top">
+        <table><tr>
+          <td valign="top">
+            <%= f.hidden_field :parent_id %>
 
-    <div class="field">
-      <%= f.label :nombre %><br>
-      <%= f.text_field :nombre, :maxlength => 255, :size => 45, :placeholder => 'Escribe el nombre científico' %>
-    </div>
+            <fieldset>
+              <legend class="leyenda">Datos Básicos</legend>
+              <div class="field">
+                <%= f.label :nombre, 'Nombre científico' %><br>
+                <%= f.text_field :nombre, :maxlength => 255, :size => 45, :placeholder => 'Escribe el nombre científico', :class => 'typeahead' %>
+              </div>
+              <div class="field">
+                <%= f.label :categoria_taxonomica_id, 'Categoria taxonómica: ' %>
+                <% if @especie.new_record? %>
+                    <%= f.select :categoria_taxonomica_id, CategoriaTaxonomica.all.collect { |r|
+                      [ if r.nivel2 == 0 && r.nivel1 != 1 && r.nivel1 != 2
+                          "división ✓ #{r.nombre_categoria_taxonomica}"
+                        elsif r.nivel2 == 1 && r.nivel1 != 1 && r.nivel1 != 2
+                          "phylum ✓ #{r.nombre_categoria_taxonomica}"
+                        else
+                          "✓ #{r.nombre_categoria_taxonomica}"
+                        end,
+                        r.id ]
+                    }, :include_blank => '---Selecciona---' %>
+                <% else %>
+                    <%= f.select :categoria_taxonomica_id, CategoriaTaxonomica.where(:nivel2 => @especie.categoria_taxonomica.nivel2).collect { |r|
+                      [ if r.nivel2 == 0 && r.nivel1 != 1 && r.nivel1 != 2
+                          "división ✓ #{r.nombre_categoria_taxonomica}"
+                        elsif r.nivel2 == 1 && r.nivel1 != 1 && r.nivel1 != 2
+                          "phylum ✓ #{r.nombre_categoria_taxonomica}"
+                        else
+                          "✓ #{r.nombre_categoria_taxonomica}"
+                        end,
+                        r.id ]
+                    }, :include_blank => '---Selecciona---' %>
+                <% end %>
+              </div>
+              <div class="field">
+                <%= f.label :estatus, 'Estatus del nombre científico: ' %>
+                <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
+              </div>
 
-    <div class="field">
-      <%= f.label :categoria_taxonomica_id, 'Categoria taxonómica' %><br>
-      <%= f.select :categoria_taxonomica_id, CategoriaTaxonomica.order('nombre_categoria_taxonomica ASC').load.collect { |r| [ r.nombre_categoria_taxonomica, r.id ] },
-                   :include_blank => '---Selecciona una categoria---' %>
-    </div>
+              <div class="field">
+                <%= f.label :fuente, 'Fuente bibliográfica: ' %><br>
+                <%= f.text_field :fuente, :maxlength => 255, :size => 45, :placeholder => 'Fuente bibliográfica' %>
+              </div>
+              <div class="field">
+                <%= f.label :nombre_autoridad, 'Nombre de la autoridad' %><br>
+                <%= f.text_field :nombre_autoridad, :maxlength => 255, :size => 45, :placeholder => 'Nombre de la autoridad' %>
+              </div>
+              <div class="field">
+                <%= f.label :numero_filogenetico, 'Número filogenético' %><br>
+                <%= f.text_field :numero_filogenetico, :maxlength => 255, :size => 45, :placeholder => 'Número filogenético' %>
+              </div>
+              <div class="field">
+                <%= f.label :cita_nomenclatural, 'Cita nomenclatural' %><br>
+                <%= f.text_area :cita_nomenclatural, :rows => 6, :cols => 35, :placeholder => 'Cita nomenclatural' %>
+              </div>
+              <div class="field">
+                <%= f.label :sis_clas_cat_dicc, 'Sistema de clasificación' %><br>
+                <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
+              </div>
+              <div class="field">
+                <%= f.label :anotacion, 'Anotación' %><br>
+                <%= f.text_field :anotacion, :maxlength => 255, :size => 45, :placeholder => 'Anotación' %>
+              </div>
+            </fieldset>
 
-    <div class="field">
-      <%= f.label :id_nombre_ascendente, 'Ascendente directo' %><br>
-      <%= f.text_field :id_nombre_ascendente %>
-    </div>
+            <fieldset>
+              <legend class="leyenda">Estados de conservación</legend>
+              <div class="field">
+                <%= f.fields_for :especies_catalogos do |ec| %>
+                    <%= render 'especie_catalogos_fields', :f => ec %>
+                <% end -%>
+                <div class="aniade">
+                  <%= link_to_add_association image_tag('app/32x32/add_page.png'), f, :especies_catalogos %>
+                </div>
+              </div>
+            </fieldset>
 
-    <div class="field">
-      <%= f.label :id_ascend_obligatorio, 'Ascendente obligatorio' %><br>
-      <%= f.text_field :id_ascend_obligatorio %>
-    </div>
+              <fieldset>
+                <legend class="leyenda">Árbol taxonómico</legend>
+                <div id='vista_arbol'>
+                  <% if @especie.is_root? %>
+                      <%= arbolTaxonomico.html_safe %>
+                  <% end %>
+                </div>
+              </fieldset>
+          </td>
+        </tr></table>
+      </td>
 
-    <div class="field">
-      <%= f.label :estatus, 'Estatus del nombre científico' %><br>
-      <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona un estatus---' %>
-    </div>
-    <div class="field">
-      <%= f.label :fuente %><br>
-      <%= f.text_field :fuente, :maxlength => 255, :size => 45, :placeholder => 'Fuente bibliográfica' %>
-    </div>
-    <div class="field">
-      <%= f.label :nombre_autoridad %><br>
-      <%= f.text_field :nombre_autoridad, :maxlength => 255, :size => 45, :placeholder => 'Nombre de la autoridad' %>
-    </div>
-    <div class="field">
-      <%= f.label :numero_filogenetico %><br>
-      <%= f.text_field :numero_filogenetico, :maxlength => 255, :size => 45, :placeholder => 'Número filogenético' %>
-    </div>
-    <div class="field">
-      <%= f.label :cita_nomenclatural %><br>
-      <%= f.text_area :cita_nomenclatural, :rows => 6, :cols => 35, :placeholder => 'Cita nomenclatural' %>
-    </div>
-    <div class="field">
-      <%= f.label :sis_clas_cat_dicc %><br>
-      <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
-    </div>
-    <div class="field">
-      <%= f.label :anotacion %><br>
-      <%= f.text_field :anotacion, :maxlength => 255, :size => 45, :placeholder => 'Anotación' %>
-    </div>
+      <td valign="top">
+        <table id="tabla_editar"><tr>
+          <td valign="top">
+            <fieldset class="fieldset_regiones">
+              <legend class="leyenda">Regiones y distribuciones</legend>
+              <div class="field">
+                <%= f.fields_for :especies_regiones do |er| %>
+                    <% @region=er.text_field(:region_id).to_param.split(' ')[4].split('=').last.delete('"') %>
+                    <%= render 'especie_region_fields', :f => er %>
 
-    <div class="actions">
-      <%= @especie.new_record? ? f.submit('Crear') : f.submit('Actualizar') %>
+                    <fieldset class="fieldset_nombres">
+                      <legend class="leyenda">Nombres comunes en la región</legend>
+                      <div class="field">
+
+                        <%= f.fields_for :nombres_regiones do |nr| %>
+                            <% @nombre_comun=nr.text_field(:nombre_comun_id).to_param.split(' ')[4].split('=').last.delete('"') %>
+                            <% if nr.text_field(:region_id).to_param.split(' ')[4].split('=').last.delete('"') == @region %>
+                                <%= render('nombr_regione_fields', :f => nr) %>
+
+                                <fieldset class="fieldset_bibliografias">
+                                  <legend class="leyenda">Bibliografía del nombre común</legend>
+                                  <div class="field">
+                                    <%= f.fields_for :nombres_regiones_bibliografias do |nrb| %>
+                                        <% if nrb.text_field(:nombre_comun_id).to_param.split(' ')[4].split('=').last.delete('"') == @nombre_comun %>
+                                            <%= render('nombres_region_bibliografia_fields', :f => nrb) %>
+                                        <% end %>
+                                    <% end -%>
+                                    <div class="aniade">
+                                      <%= link_to_add_association image_tag('app/32x32/add_page.png'), f, :nombres_regiones_bibliografias %>Bibliografía
+                                    </div>
+                                  </div>
+                                </fieldset>
+
+                            <% end %>
+                        <% end -%>
+                        <div class="aniade">
+                          <%= link_to_add_association image_tag('app/32x32/add_page.png'), f, :nombres_regiones %>Nombre común
+                        </div>
+                      </div>
+                    </fieldset>
+
+                <% end -%>
+                <div class="aniade">
+                  <%= link_to_add_association image_tag('app/32x32/add_page.png'), f, :especies_regiones %>Región
+                </div>
+              </div>
+            </fieldset>
+          </td>
+        </tr>
+        </table>
+      </td>
+    </tr></table>
+
+    <br>
+    <div class="pie">
+      <div class="actions">
+        <% if @especie.new_record? %>
+            <%= f.submit('Crear', :disable_with => 'Creando ...') %>
+            <%= f.submit('Crear y seguir editando', :disable_with => 'Creando ...') %>
+        <% else %>
+            <%= f.submit('Guardar', :disable_with => 'Actualizando ...') %>
+            <%= f.submit('Guardar y seguir editando', :disable_with => 'Actualizando ...') %>
+        <% end %>
+      </div>
     </div>
 <% end %>

@@ -1,6 +1,12 @@
-<h1>Editing lista</h1>
+<% content_for(:title) do %>
+    <%= @titulo="Editando: <br><br>#{@lista.nombre_lista}".html_safe %>
+<% end %>
+
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
 
 <%= render 'form' %>
-
-<%= link_to 'Show', @lista %> |
-<%= link_to 'Back', listas_path %>
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@lista, @accion).html_safe %>
+</div>

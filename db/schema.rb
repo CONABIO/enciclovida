@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130731020042) do
+ActiveRecord::Schema.define(version: 20131028180853) do
 
   create_table "bibliografias", force: true do |t|
     t.string   "autor",                                          null: false
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20130731020042) do
     t.text     "observaciones"
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
+  end
+
+  create_table "bitacoras", force: true do |t|
+    t.text     "descripcion"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "usuario_id",  null: false
   end
 
   create_table "catalogos", force: true do |t|
@@ -67,10 +74,12 @@ ActiveRecord::Schema.define(version: 20130731020042) do
     t.integer  "categoria_taxonomica_id",                                 null: false
     t.string   "ancestry_acendente_directo"
     t.string   "ancestry_acendente_obligatorio"
+    t.string   "nombre_cientifico"
   end
 
   add_index "especies", ["ancestry_acendente_directo"], name: "index_especies_on_ancestry_acendente_directo", using: :btree
   add_index "especies", ["ancestry_acendente_obligatorio"], name: "index_especies_on_ancestry_acendente_obligatorio", using: :btree
+  add_index "especies", ["nombre_cientifico"], name: "index_especies_on_nombre_cientifico", using: :btree
 
   create_table "especies_bibliografias", primary_key: "especie_id", force: true do |t|
     t.integer  "bibliografia_id", null: false
@@ -86,7 +95,8 @@ ActiveRecord::Schema.define(version: 20130731020042) do
     t.datetime "updated_at",    null: false
   end
 
-  create_table "especies_estatuses", primary_key: "especie_id", force: true do |t|
+  create_table "especies_estatuses", primary_key: "especie_id1", force: true do |t|
+    t.integer  "especie_id2",   null: false
     t.integer  "estatus_id",    null: false
     t.text     "observaciones"
     t.datetime "created_at",    null: false
@@ -123,8 +133,8 @@ ActiveRecord::Schema.define(version: 20130731020042) do
 
   create_table "listas", force: true do |t|
     t.string   "nombre_lista",                          null: false
-    t.text     "columnas",                              null: false
-    t.string   "formato",                               null: false
+    t.text     "columnas"
+    t.string   "formato"
     t.integer  "esta_activa",     limit: 2, default: 0, null: false
     t.text     "cadena_especies"
     t.datetime "created_at",                            null: false
@@ -200,16 +210,17 @@ ActiveRecord::Schema.define(version: 20130731020042) do
   end
 
   create_table "usuarios", force: true do |t|
-    t.string   "usuario",         null: false
-    t.string   "correo",          null: false
-    t.string   "nombre",          null: false
-    t.string   "apellido",        null: false
-    t.string   "institucion",     null: false
-    t.string   "grado_academico", null: false
-    t.string   "contrasenia",     null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.integer  "rol_id",          null: false
+    t.string   "usuario",                     null: false
+    t.string   "correo",                      null: false
+    t.string   "nombre",                      null: false
+    t.string   "apellido",                    null: false
+    t.string   "institucion",                 null: false
+    t.string   "grado_academico",             null: false
+    t.string   "contrasenia",                 null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "rol_id",          default: 1, null: false
+    t.string   "salt"
   end
 
 end

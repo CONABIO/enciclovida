@@ -1,0 +1,25 @@
+<h1>Listing bitacoras</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bitacoras.each do |bitacora| %>
+      <tr>
+        <td><%= link_to 'Show', bitacora %></td>
+        <td><%= link_to 'Edit', edit_bitacora_path(bitacora) %></td>
+        <td><%= link_to 'Destroy', bitacora, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Bitacora', new_bitacora_path %>

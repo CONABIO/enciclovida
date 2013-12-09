@@ -1,5 +1,7 @@
 class NombresComunesController < ApplicationController
   before_action :set_nombr_comune, only: [:show, :edit, :update, :destroy]
+  autocomplete :nombre_comun, :comun, :column_name => 'nombre_comun', :full => true, :display_value => :personalizaBusqueda,
+               :extra_data => [:lengua, :nombre_comun], :limit => 30#, :scopes => [:caso_insensitivo]
 
   # GET /nombres_comunes
   # GET /nombres_comunes.json
@@ -61,14 +63,41 @@ class NombresComunesController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_nombr_comune
-      @nombr_comune = NombreComun.find(params[:id])
+  def buscar
+    referencia = NombreComun.all.order('nombre_comun ASC')
+    @q = params[:q].to_s
+    if @q.present?
+      nombresComunes = referencia.select(:nombre_comun).where("lower_unaccent(nombre_comun) LIKE lower_unaccent('%#{@q}%')")
     end
+    @nombresComunes=''
+    #@nombresComunes.page(params[:page])
+    respond_to do |format|
+      format.html {@nombresComunes=nombresComunes.first.nombre_comun}
+      format.json do
+        #haml_pretty do
+        nombresComunes.each do |nc|
+          #nc.html=view_context.render_in_format(:html, :partial => 'escogio', :object => nc).gsub(/\n/, '')
+          #@users[i].html = view_context.render_in_format(:html, :partial => "users/chooser", :object => user).gsub(/\n/, '')
+          #@nombresComunes+=nc.nombre_comun
+          #end
+        end
+        render :json => nombresComunes.first.nombre_comun.to_json
+      end
+    end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def nombr_comune_params
-      params[:nombr_comune]
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_nombr_comune
+    begin
+      @nombr_comune = NombreComun.find(params[:id])
+    rescue
+      @nombr_comune={:nombre_comun => nil}
     end
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def nombr_comune_params
+    params[:nombr_comune]
+  end
 end

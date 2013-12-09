@@ -24,6 +24,21 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
+--
+-- Name: lower_unaccent(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION lower_unaccent(text) RETURNS text
+    LANGUAGE sql IMMUTABLE STRICT
+    AS $_$
+SELECT lower(translate($1
+     , '¹²³áàâãäåāăąÀÁÂÃÄÅĀĂĄÆćčç©ĆČÇĐÐèéêёëēĕėęěÉÈÊËЁĒĔĖĘĚ€ğĞıìíîïìĩīĭÌÍÎÏЇÌĨĪĬłŁńňñŃŇÑòóôõöōŏőøÒÓÔÕÖŌŎŐØŒř®ŘšşșßŠŞȘùúûüũūŭůÙÚÛÜŨŪŬŮýÿÝŸžżźŽŻŹ'
+     , '123aaaaaaaaaaaaaaaaaaacccccccddeeeeeeeeeeeeeeeeeeeeeggiiiiiiiiiiiiiiiiiillnnnnnnooooooooooooooooooorrrsssssssuuuuuuuuuuuuuuuuyyyyzzzzzz'
+     ));
+
+     $_$;
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -74,6 +89,64 @@ CREATE SEQUENCE bibliografias_id_seq
 --
 
 ALTER SEQUENCE bibliografias_id_seq OWNED BY bibliografias.id;
+
+
+--
+-- Name: bitacoras; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bitacoras (
+    id integer NOT NULL,
+    descripcion text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    usuario_id integer NOT NULL
+);
+
+
+--
+-- Name: TABLE bitacoras; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE bitacoras IS 'Lleva el control de las modificaciones';
+
+
+--
+-- Name: bitacoras_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE bitacoras_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: bitacoras_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE bitacoras_id_seq OWNED BY bitacoras.id;
+
+
+--
+-- Name: bitacoras_usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE bitacoras_usuario_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: bitacoras_usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE bitacoras_usuario_id_seq OWNED BY bitacoras.usuario_id;
 
 
 --
@@ -180,7 +253,10 @@ CREATE TABLE especies (
     updated_at timestamp without time zone NOT NULL,
     id_nombre_ascendente integer NOT NULL,
     id_ascend_obligatorio integer NOT NULL,
-    categoria_taxonomica_id integer NOT NULL
+    categoria_taxonomica_id integer NOT NULL,
+    ancestry_acendente_directo character varying(255),
+    ancestry_acendente_obligatorio character varying(255),
+    nombre_cientifico character varying(255)
 );
 
 
@@ -331,7 +407,8 @@ ALTER SEQUENCE especies_categoria_taxonomica_id_seq OWNED BY especies.categoria_
 --
 
 CREATE TABLE especies_estatuses (
-    especie_id integer NOT NULL,
+    especie_id1 integer NOT NULL,
+    especie_id2 integer NOT NULL,
     estatus_id integer NOT NULL,
     observaciones text,
     created_at timestamp without time zone NOT NULL,
@@ -425,10 +502,10 @@ ALTER SEQUENCE especies_estatuses_bibliografias_estatus_id_seq OWNED BY especies
 
 
 --
--- Name: especies_estatuses_especie_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: especies_estatuses_especie_id1_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE especies_estatuses_especie_id_seq
+CREATE SEQUENCE especies_estatuses_especie_id1_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -437,10 +514,29 @@ CREATE SEQUENCE especies_estatuses_especie_id_seq
 
 
 --
--- Name: especies_estatuses_especie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: especies_estatuses_especie_id1_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE especies_estatuses_especie_id_seq OWNED BY especies_estatuses.especie_id;
+ALTER SEQUENCE especies_estatuses_especie_id1_seq OWNED BY especies_estatuses.especie_id1;
+
+
+--
+-- Name: especies_estatuses_especie_id2_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE especies_estatuses_especie_id2_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: especies_estatuses_especie_id2_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE especies_estatuses_especie_id2_seq OWNED BY especies_estatuses.especie_id2;
 
 
 --
@@ -648,8 +744,8 @@ ALTER SEQUENCE estatuses_id_seq OWNED BY estatuses.id;
 CREATE TABLE listas (
     id integer NOT NULL,
     nombre_lista character varying(255) NOT NULL,
-    columnas text NOT NULL,
-    formato character varying(255) NOT NULL,
+    columnas text,
+    formato character varying(255),
     esta_activa smallint DEFAULT 0 NOT NULL,
     cadena_especies text,
     created_at timestamp without time zone NOT NULL,
@@ -748,9 +844,9 @@ ALTER SEQUENCE nombres_comunes_id_seq OWNED BY nombres_comunes.id;
 --
 
 CREATE TABLE nombres_regiones (
-    nombre_comun_id integer NOT NULL,
     especie_id integer NOT NULL,
     region_id integer NOT NULL,
+    nombre_comun_id integer NOT NULL,
     observaciones text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -769,9 +865,9 @@ COMMENT ON TABLE nombres_regiones IS 'Relaciones del nombre comun con la especie
 --
 
 CREATE TABLE nombres_regiones_bibliografias (
-    nombre_comun_id integer NOT NULL,
     especie_id integer NOT NULL,
     region_id integer NOT NULL,
+    nombre_comun_id integer NOT NULL,
     bibliografia_id integer NOT NULL,
     observaciones text,
     created_at timestamp without time zone NOT NULL,
@@ -930,7 +1026,8 @@ CREATE TABLE regiones (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     tipo_region_id integer NOT NULL,
-    id_region_asc integer NOT NULL
+    id_region_asc integer NOT NULL,
+    ancestry character varying(255)
 );
 
 
@@ -1148,7 +1245,8 @@ CREATE TABLE usuarios (
     contrasenia character varying(255) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    rol_id integer NOT NULL
+    rol_id integer DEFAULT 1 NOT NULL,
+    salt character varying(255)
 );
 
 
@@ -1202,6 +1300,20 @@ ALTER SEQUENCE usuarios_rol_id_seq OWNED BY usuarios.rol_id;
 --
 
 ALTER TABLE ONLY bibliografias ALTER COLUMN id SET DEFAULT nextval('bibliografias_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY bitacoras ALTER COLUMN id SET DEFAULT nextval('bitacoras_id_seq'::regclass);
+
+
+--
+-- Name: usuario_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY bitacoras ALTER COLUMN usuario_id SET DEFAULT nextval('bitacoras_usuario_id_seq'::regclass);
 
 
 --
@@ -1275,10 +1387,17 @@ ALTER TABLE ONLY especies_catalogos ALTER COLUMN catalogo_id SET DEFAULT nextval
 
 
 --
--- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: especie_id1; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY especies_estatuses ALTER COLUMN especie_id SET DEFAULT nextval('especies_estatuses_especie_id_seq'::regclass);
+ALTER TABLE ONLY especies_estatuses ALTER COLUMN especie_id1 SET DEFAULT nextval('especies_estatuses_especie_id1_seq'::regclass);
+
+
+--
+-- Name: especie_id2; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_estatuses ALTER COLUMN especie_id2 SET DEFAULT nextval('especies_estatuses_especie_id2_seq'::regclass);
 
 
 --
@@ -1359,13 +1478,6 @@ ALTER TABLE ONLY nombres_comunes ALTER COLUMN id SET DEFAULT nextval('nombres_co
 
 
 --
--- Name: nombre_comun_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY nombres_regiones ALTER COLUMN nombre_comun_id SET DEFAULT nextval('nombres_regiones_nombre_comun_id_seq'::regclass);
-
-
---
 -- Name: especie_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1383,7 +1495,7 @@ ALTER TABLE ONLY nombres_regiones ALTER COLUMN region_id SET DEFAULT nextval('no
 -- Name: nombre_comun_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY nombres_regiones_bibliografias ALTER COLUMN nombre_comun_id SET DEFAULT nextval('nombres_regiones_bibliografias_nombre_comun_id_seq'::regclass);
+ALTER TABLE ONLY nombres_regiones ALTER COLUMN nombre_comun_id SET DEFAULT nextval('nombres_regiones_nombre_comun_id_seq'::regclass);
 
 
 --
@@ -1398,6 +1510,13 @@ ALTER TABLE ONLY nombres_regiones_bibliografias ALTER COLUMN especie_id SET DEFA
 --
 
 ALTER TABLE ONLY nombres_regiones_bibliografias ALTER COLUMN region_id SET DEFAULT nextval('nombres_regiones_bibliografias_region_id_seq'::regclass);
+
+
+--
+-- Name: nombre_comun_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY nombres_regiones_bibliografias ALTER COLUMN nombre_comun_id SET DEFAULT nextval('nombres_regiones_bibliografias_nombre_comun_id_seq'::regclass);
 
 
 --
@@ -1457,18 +1576,19 @@ ALTER TABLE ONLY usuarios ALTER COLUMN id SET DEFAULT nextval('usuarios_id_seq':
 
 
 --
--- Name: rol_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY usuarios ALTER COLUMN rol_id SET DEFAULT nextval('usuarios_rol_id_seq'::regclass);
-
-
---
 -- Name: id_bibliografias; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY bibliografias
     ADD CONSTRAINT id_bibliografias PRIMARY KEY (id);
+
+
+--
+-- Name: id_bitacoras; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bitacoras
+    ADD CONSTRAINT id_bitacoras PRIMARY KEY (id);
 
 
 --
@@ -1516,7 +1636,7 @@ ALTER TABLE ONLY especies_catalogos
 --
 
 ALTER TABLE ONLY especies_estatuses
-    ADD CONSTRAINT id_especies_estatuses PRIMARY KEY (especie_id, estatus_id);
+    ADD CONSTRAINT id_especies_estatuses PRIMARY KEY (especie_id1, especie_id2, estatus_id);
 
 
 --
@@ -1564,7 +1684,7 @@ ALTER TABLE ONLY nombres_comunes
 --
 
 ALTER TABLE ONLY nombres_regiones
-    ADD CONSTRAINT id_nombres_regiones PRIMARY KEY (nombre_comun_id, especie_id, region_id);
+    ADD CONSTRAINT id_nombres_regiones PRIMARY KEY (especie_id, region_id, nombre_comun_id);
 
 
 --
@@ -1572,7 +1692,7 @@ ALTER TABLE ONLY nombres_regiones
 --
 
 ALTER TABLE ONLY nombres_regiones_bibliografias
-    ADD CONSTRAINT id_nombres_regiones_bibliografias PRIMARY KEY (nombre_comun_id, especie_id, region_id, bibliografia_id);
+    ADD CONSTRAINT id_nombres_regiones_bibliografias PRIMARY KEY (especie_id, region_id, nombre_comun_id, bibliografia_id);
 
 
 --
@@ -1613,6 +1733,34 @@ ALTER TABLE ONLY tipos_regiones
 
 ALTER TABLE ONLY usuarios
     ADD CONSTRAINT id_usuarios PRIMARY KEY (id);
+
+
+--
+-- Name: index_especies_on_ancestry_acendente_directo; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_especies_on_ancestry_acendente_directo ON especies USING btree (ancestry_acendente_directo);
+
+
+--
+-- Name: index_especies_on_ancestry_acendente_obligatorio; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_especies_on_ancestry_acendente_obligatorio ON especies USING btree (ancestry_acendente_obligatorio);
+
+
+--
+-- Name: index_especies_on_nombre_cientifico; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_especies_on_nombre_cientifico ON especies USING btree (nombre_cientifico);
+
+
+--
+-- Name: index_regiones_on_ancestry; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_regiones_on_ancestry ON regiones USING btree (ancestry);
 
 
 --
@@ -1679,11 +1827,19 @@ ALTER TABLE ONLY especies
 
 
 --
--- Name: nombre_nombrerelacion_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: nombre_nombrerelacion1_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY especies_estatuses
-    ADD CONSTRAINT nombre_nombrerelacion_fk FOREIGN KEY (especie_id) REFERENCES especies(id);
+    ADD CONSTRAINT nombre_nombrerelacion1_fk FOREIGN KEY (especie_id1) REFERENCES especies(id);
+
+
+--
+-- Name: nombre_nombrerelacion2_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY especies_estatuses
+    ADD CONSTRAINT nombre_nombrerelacion2_fk FOREIGN KEY (especie_id2) REFERENCES especies(id);
 
 
 --
@@ -1708,14 +1864,6 @@ ALTER TABLE ONLY especies_catalogos
 
 ALTER TABLE ONLY especies_regiones
     ADD CONSTRAINT nombre_relnombreregion_fk FOREIGN KEY (especie_id) REFERENCES especies(id);
-
-
---
--- Name: nombrerelacion_relacionbibliografia_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY especies_estatuses_bibliografias
-    ADD CONSTRAINT nombrerelacion_relacionbibliografia_fk FOREIGN KEY (especie_id, estatus_id) REFERENCES especies_estatuses(especie_id, estatus_id);
 
 
 --
@@ -1747,7 +1895,7 @@ ALTER TABLE ONLY especies_regiones
 --
 
 ALTER TABLE ONLY nombres_regiones
-    ADD CONSTRAINT relnombreregion_relnomnomcomunregion_fk FOREIGN KEY (especie_id, region_id) REFERENCES especies_regiones(especie_id, region_id);
+    ADD CONSTRAINT relnombreregion_relnomnomcomunregion_fk FOREIGN KEY (especie_id, region_id) REFERENCES especies_regiones(especie_id, region_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -1755,7 +1903,7 @@ ALTER TABLE ONLY nombres_regiones
 --
 
 ALTER TABLE ONLY nombres_regiones_bibliografias
-    ADD CONSTRAINT relnomnomcomunregion_relnomnomcomunregionbiblio_fk FOREIGN KEY (nombre_comun_id, especie_id, region_id) REFERENCES nombres_regiones(nombre_comun_id, especie_id, region_id);
+    ADD CONSTRAINT relnomnomcomunregion_relnomnomcomunregionbiblio_fk FOREIGN KEY (nombre_comun_id, especie_id, region_id) REFERENCES nombres_regiones(nombre_comun_id, especie_id, region_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -1791,6 +1939,14 @@ ALTER TABLE ONLY especies_estatuses
 
 
 --
+-- Name: usuarios_bitacoras_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY bitacoras
+    ADD CONSTRAINT usuarios_bitacoras_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(id);
+
+
+--
 -- Name: usuarios_listas_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1804,4 +1960,20 @@ ALTER TABLE ONLY listas
 
 SET search_path TO "$user",public;
 
+INSERT INTO schema_migrations (version) VALUES ('20130730181035');
 
+INSERT INTO schema_migrations (version) VALUES ('20130730181247');
+
+INSERT INTO schema_migrations (version) VALUES ('20130730181959');
+
+INSERT INTO schema_migrations (version) VALUES ('20130731015842');
+
+INSERT INTO schema_migrations (version) VALUES ('20130731020042');
+
+INSERT INTO schema_migrations (version) VALUES ('20131018142400');
+
+INSERT INTO schema_migrations (version) VALUES ('20131021221425');
+
+INSERT INTO schema_migrations (version) VALUES ('20131021222103');
+
+INSERT INTO schema_migrations (version) VALUES ('20131028180853');

@@ -1,0 +1,35 @@
+.nested-fields
+  %br
+  %table
+    %tr
+      %td{:valign => 'top'}
+        = f.label :region_id, 'Región'
+        %br
+        - region=f.text_field(:region_id).to_param.split(' ')[4].split('=').last.delete('"')
+        - if (region != '/>')
+          = f.autocomplete_field(:region_id_falso, '/especies_regiones/autocomplete_region_nombre', :maxlength => 255, :size => 30, :value => Region.find(region).nombre_region)
+        - else
+          = f.autocomplete_field :region_id_falso, '/especies_regiones/autocomplete_region_nombre', :maxlength => 255, :size => 30
+        %br
+        = f.hidden_field :region_id
+        %br
+        = f.label :tipo_distribucion_id, 'Tipo de distribución: '
+        = f.select :tipo_distribucion_id, TipoDistribucion.order('descripcion ASC').load.collect { |td| [ td.descripcion, td.id ] },
+                                                    :include_blank => '---Selecciona---'
+      %td{:valign => 'top'}
+        = f.label :observaciones, 'Observaciones'
+        %br
+        = f.text_area :observaciones, :rows => 4, :cols => 30
+        .elimina
+          = link_to_remove_association(image_tag('app/24x24/delete.png'), f)
+        %br
+
+:javascript
+  $(document).ready(function() {
+    $(":input[name$='region_id_falso]']").bind('railsAutocomplete.select', function(event, data){
+      var separa=$(this).attr('name').split(']');
+      var numero=separa[1].substr(1);
+      $(this).val(data.item.nombre_region);
+      $('#especie_especies_regiones_attributes_'+numero+'_region_id').val(data.item.id)
+    });
+  });

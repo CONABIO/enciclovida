@@ -1,0 +1,29 @@
+.nested-fields
+  %br
+  %table
+    %tr
+      %td{:valign => 'top'}
+        = f.label :catalogo_id, 'Estado de conservación'
+        %br
+        - estConservacion=f.text_field(:catalogo_id).to_param.split(' ')[4].split('=').last.delete('"')
+        - if (estConservacion != '/>')
+          = f.autocomplete_field(:catalogo_id_falso, '/especies_catalogo/autocomplete_catalogo_descripcion', :maxlength => 255, :size => 25, :value => Catalogo.find(estConservacion).descripcion)
+        - else
+          = f.autocomplete_field :catalogo_id_falso, '/especies_catalogo/autocomplete_catalogo_descripcion', :maxlength => 255, :size => 25
+        = f.hidden_field :catalogo_id
+        %br
+      %td{:valign => 'top'}
+        = f.label :observaciones, 'Observaciones'
+        %br
+        = f.text_area :observaciones, :rows => 4, :cols => 20
+        .elimina
+          = link_to_remove_association(image_tag('app/24x24/delete.png'), f)
+
+:javascript
+  $(document).ready(function() {
+    $(":input[name$='catalogo_id_falso]']").bind('railsAutocomplete.select', function(event, data){
+      var separa=$(this).attr('name').split(']');
+      var numero=separa[1].substr(1);
+      $('#especie_especies_catalogos_attributes_'+numero+'_catalogo_id').val(data.item.id)
+    });
+  });

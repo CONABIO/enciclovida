@@ -1,5 +1,10 @@
 class UsuariosController < ApplicationController
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
+  before_filter :entroAlSistema?, :only => [:show]
+  before_filter :tienePermiso?, :only => [:index]
+  before_filter :only => [:edit, :update, :destroy] do |c|
+    c.tienePermiso? @usuario.id
+  end
 
   # GET /usuarios
   # GET /usuarios.json
@@ -28,7 +33,7 @@ class UsuariosController < ApplicationController
 
     respond_to do |format|
       if @usuario.save
-        format.html { redirect_to @usuario, notice: 'Usuario was successfully created.' }
+        format.html { redirect_to inicia_sesion_usuarios_url, notice: 'Tu cuenta fue creada exitosamente.' }
         format.json { render action: 'show', status: :created, location: @usuario }
       else
         format.html { render action: 'new' }
@@ -42,7 +47,7 @@ class UsuariosController < ApplicationController
   def update
     respond_to do |format|
       if @usuario.update(usuario_params)
-        format.html { redirect_to @usuario, notice: 'Usuario was successfully updated.' }
+        format.html { redirect_to @usuario, notice: 'Tu cuenta ha sido actualizada exitosamente.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -61,14 +66,39 @@ class UsuariosController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_usuario
-      @usuario = Usuario.find(params[:id])
-    end
+  def inicia_sesion
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def usuario_params
-      params[:usuario]
+  def intento_sesion
+    usuario=Usuario.autentica(params[:login], params[:contrasenia])
+    if usuario.present?
+      ponSesion(usuario)
+      respond_to do |format|
+        format.html { redirect_to root_url, :notice => "Bienvenido #{usuario.nombre} #{usuario.apellido}" }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'El usuario/correo o contraseña son incorrectos' }
+      end
     end
+  end
+
+  def cierra_sesion
+    cierraSesion
+    respond_to do |format|
+      format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'La sesión se cerró correctamente.' }
+    end
+  end
+
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_usuario
+    @usuario = Usuario.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def usuario_params
+    params.require(:usuario).permit(:usuario, :correo, :nombre, :apellido, :institucion,
+                                    :grado_academico, :contrasenia, :confirma_contrasenia)
+  end
 end

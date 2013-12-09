@@ -1,86 +1,152 @@
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    muestraArbol = function(id) {
+        $.ajax({
+            url: "/especies/muestraTaxonomia",
+            data: {
+                id: id
+            }
+        }).done(function(arbol) {
+                    return $("#vista_arbol").html(arbol);
+                });
+    };
+
+    despliegaOcontrae = function(id) {
+        var sufijo;
+        sufijo = id.substring(5);
+        if ($("#nodo_" + sufijo + " li").length > 0) {
+            $("#nodo_" + sufijo + " li").remove();
+        } else {
+            $.ajax({
+                url: "/especies/buscaDescendientes",
+                data: {
+                    id: sufijo
+                }
+            }).done(function(nodo) {
+                        return $("#nodo_" + sufijo).append(nodo);
+                    });
+        }
+        return false;
+    };
+
+    <% if !@especie.is_root? %>
+    muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
+    <% end %>
+</script>
+
 <p id="notice"><%= notice %></p>
 
 <p><%= enlacesDeTaxonomia(@especie) %></p>
+
 <% content_for(:title) do %>
-    <%= @titulo="#{@especie.nombre} (#{CategoriaTaxonomica.cat_taxonom(@especie.categoria_taxonomica_id)})" %>
+    <%= @titulo="#{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe %>
 <% end %>
 
-<h1><%= @titulo %></h1>
+<table width="1000" id="tabla_form"><tr>
+  <td width="40%" valign="top">
+    <fieldset>
+      <legend class="leyenda"><%= @titulo %></legend>
+      <p>
+        <strong>Identificador único:</strong>
+        <%= @especie.id %>
+      </p>
 
-<p>
-  <strong>Identificador único:</strong>
-  <%= @especie.id %>
-</p>
+      <p>
+        <strong>Ascendente directo:</strong>
+        <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
+      </p>
 
-<p>
-  <strong>Ascendente directo:</strong>
-  <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
-</p>
+      <p>
+        <strong>Ascendente obligatorio:</strong>
+        <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
+      </p>
 
-<p>
-  <strong>Ascendente obligatorio:</strong>
-  <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
-</p>
+      <p>
+        <strong>Estatus:</strong>
+        <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
+      </p>
 
-<p>
-  <strong>Estatus:</strong>
-  <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
-</p>
+      <p>
+        <strong>Situación de los nombres cientificos:</strong>
+        <%= Especie.dameEspecieEstatuses(@especie).html_safe %>
+      </p>
 
-<p>
-  <strong>Estado de conservación:</strong>
-  <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
-</p>
+      <p>
+        <strong>Estado de conservación:</strong>
+        <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
+      </p>
 
-<p>
-  <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
-  <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
-</p>
+      <p>
+        <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
+        <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
+      </p>
 
-<p>
-  <strong>Fuente:</strong>
-  <%= @especie.fuente %>
-</p>
+      <p>
+        <strong>Fuente:</strong>
+        <%= @especie.fuente %>
+      </p>
 
-<p>
-  <strong>Nombre autoridad:</strong>
-  <%= @especie.nombre_autoridad %>
-</p>
+      <p>
+        <strong>Nombre autoridad:</strong>
+        <%= @especie.nombre_autoridad %>
+      </p>
 
-<p>
-  <strong>Número filogenético:</strong>
-  <%= @especie.numero_filogenetico %>
-</p>
+      <p>
+        <strong>Número filogenético:</strong>
+        <%= @especie.numero_filogenetico %>
+      </p>
 
-<p>
-  <strong>Cita nomenclatural:</strong>
-  <%= @especie.cita_nomenclatural %>
-</p>
+      <p>
+        <strong>Cita nomenclatural:</strong>
+        <%= @especie.cita_nomenclatural %>
+      </p>
 
-<p>
-  <strong>Sistema de clasificación del catalogo:</strong>
-  <%= @especie.sis_clas_cat_dicc %>
-</p>
+      <p>
+        <strong>Sistema de clasificación del catalogo:</strong>
+        <%= @especie.sis_clas_cat_dicc %>
+      </p>
 
-<p>
-  <strong>Anotación:</strong>
-  <%= @especie.anotacion %>
-</p>
+      <p>
+        <strong>Anotación:</strong>
+        <%= @especie.anotacion %>
+      </p>
 
-<p>
-  <strong>Fecha de Captura:</strong>
-  <%= @especie.created_at %>
-</p>
+      <p>
+        <strong>Fecha de Captura:</strong>
+        <%= @especie.created_at %>
+      </p>
 
-<p>
-  <strong>Fecha de modificación:</strong>
-  <%= @especie.updated_at %>
-</p>
+      <p>
+        <strong>Fecha de modificación:</strong>
+        <%= @especie.updated_at %>
+      </p>
+    </fieldset>
+  </td>
 
-<%= link_to 'Editar', edit_especy_path(@especie) %> |
-<%= link_to 'Regresar al buscador', especies_path %>
+
+  <td width="60%" valign="top">
+    <fieldset>
+      <legend class="leyenda">Descendientes directos</legend>
+      <div id='hijos'>
+        <%= Especie.dameDescendientesDirectos(@especie).html_safe %>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend class="leyenda">Árbol taxonómico</legend>
+      <div id='vista_arbol'>
+        <% if @especie.is_root? %>
+            <%= arbolTaxonomico.html_safe %>
+        <% end %>
+      </div>
+    </fieldset>
+  </td>
+</tr></table>
+
 <br>
-
-<%= link_to("Nueva especie o grupo derivada de esta".html_safe,
-            new_especy_path(:parent_id => @especie)).html_safe %> |
-<%= link_to 'Nueva especie o grupo raíz', new_especy_path %>
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@especie, @accion).html_safe %><br>
+<%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
+            new_especy_path(:parent_id => @especie)).html_safe %>
+</div>
+<%= #link_to 'Nueva especie o grupo raíz', new_especy_path
+%>

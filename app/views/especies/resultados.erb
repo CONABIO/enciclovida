@@ -1,0 +1,18 @@
+<% content_for(:title) do %>
+    <%= @titulo="Resultados (#{@taxones.length})" %>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
+
+<%= @resultado %>
+<%= @resultado2 %>
+<%= render @vista, :taxones => @taxones
+%>
+
+<p class="enlaces_acciones">
+<%= 'Tu búsqueda no dio ningún resultado.' if @taxones.length == 0 %>
+</p>

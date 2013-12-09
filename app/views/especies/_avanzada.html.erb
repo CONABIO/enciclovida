@@ -1,0 +1,12 @@
+<% columnas=0 %>
+
+<table width="1000" class="tabla_formato" CELLPADDING="10">
+  <% taxones.each do |taxon| %>
+      <%= '</tr>'.html_safe if columnas != 0 && columnas % 3 == 0 %>
+      <%= '<tr>'.html_safe if columnas % 3 == 0 %>
+      <td>
+        <%= taxon.nombre_cientifico %>
+      </td>
+      <% columnas+=1 %>
+  <% end %>
+  <%= columnas % 3 != 0 ? "#{'<td></td>'*(3-(columnas % 3))}</tr></table>".html_safe : '</table>'.html_safe %></table>

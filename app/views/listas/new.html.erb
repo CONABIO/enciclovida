@@ -1,5 +1,9 @@
-<h1>New lista</h1>
-
+<% content_for(:title) do %>
+    <%= @titulo='Crea una lista' %>
+<% end %>
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
+<br>
+<br>
 <%= render 'form' %>
-
-<%= link_to 'Back', listas_path %>

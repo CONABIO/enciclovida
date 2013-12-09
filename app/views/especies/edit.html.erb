@@ -1,10 +1,18 @@
 <% content_for(:title) do %>
-    <%= @titulo="Editando #{Especie.find(@especie).nombre}" %>
+    <%= @titulo="Editando :<br><br>#{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe %>
 <% end %>
 
-<h1><%= @titulo %></h1>
+<p id="notice"><%= notice %></p>
+
+<div class="titulo">
+  <p><%= enlacesDeTaxonomia(@especie) %></p>
+  <h1><%= @titulo %></h1>
+</div>
 
 <%= render 'form' %>
 
-<%= link_to 'Ver', @especie %> |
-<%= link_to 'Regresar al buscador', especies_path %>
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@especie, @accion).html_safe %><br>
+  <%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
+              new_especy_path(:parent_id => @especie)).html_safe %>
+</div>

@@ -1,4 +1,34 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_lista_path(@lista) %> |
-<%= link_to 'Back', listas_path %>
+<% content_for(:title) do %>
+    <%= @titulo=@lista.nombre_lista %>
+<% end %>
+
+<table style="max-width:1000px;" id="tabla_form"><tr>
+  <td valign="top">
+    <fieldset>
+      <legend class="leyenda"><%= @titulo %></legend>
+      <p>
+        <strong>Columnas de la base:</strong>
+        <%= ListasHelper.nombreComunAtributos(@lista).html_safe %>
+      </p>
+      <p>
+        <strong>Taxones a exportar:</strong>
+        <%= @lista.cadena_especies %>
+      </p>
+      <p>
+        <strong>Fecha de creación:</strong>
+        <%= @lista.created_at %>
+      </p>
+      <p>
+        <strong>Fecha de la última actualización:</strong>
+        <%= @lista.updated_at %>
+      </p>
+    </fieldset>
+  </td>
+</tr></table>
+
+<br>
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@lista, @accion).html_safe %>
+</div>

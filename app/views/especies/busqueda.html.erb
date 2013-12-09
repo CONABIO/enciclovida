@@ -1,0 +1,178 @@
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    getCookie = function(c_name)
+    {
+        var c_end, c_start;
+        c_end = void 0;
+        c_start = void 0;
+        if (document.cookie.length > 0)
+        {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start !== -1)
+            {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end === -1)
+                {
+                    c_end = document.cookie.length;
+                }
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
+    };
+
+    guardaBusquedas = function()
+    {
+        var busqueda={};
+        var numerosFiltros='';
+        var checkboxSeleccionadas='';
+        $(".busqueda_atributo").each(function()
+        {
+            var id=$(this).attr('id');
+            var valor=$(this).val();
+            eval("busqueda."+id+"=\""+valor+"\"");
+        });
+
+        if ($("[id^='bAtributo_']").length > 0)
+        {
+            $("[id^='bAtributo_']").each(function()
+            {
+                if ($(this).attr('id') != 'bAtributo_1')
+                {
+                    var valor=$(this).attr('id').substring(10);
+                    numerosFiltros+=valor+',';
+                }
+            });
+            busqueda.adicionales=numerosFiltros.substring(0, numerosFiltros.length-1);
+        }
+
+        $(".busqueda_atributo_checkbox").each(function()
+        {
+            if ($(this).is(':checked'))
+            {
+                checkboxSeleccionadas+=$(this).val()+','
+            }
+        });
+
+        busqueda.tipo_distribucion=checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
+        document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda) + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
+    }
+
+    cargaBusquedas = function(atributos)
+    {
+        if (atributos.adicionales !== "")
+        {
+            $.each(atributos.adicionales.split(','), function(){
+                $('#atributos_extra').append(estructuraFiltro(this));
+            });
+        }
+
+        $(".busqueda_atributo").each(function()
+        {
+            var id=$(this).attr('id');
+            $(this).val(eval("atributos." + id));
+        });
+
+        if (atributos.tipo_distribucion !== "")
+        {
+            $.each(atributos.tipo_distribucion.split(','), function(k, v){
+                $('#tipo_distribucion_'+v).attr('checked', true);
+
+            });
+        }
+    }
+
+    estructuraFiltro = function(numeroAtributos)
+    {
+        var bAtributo, cAtributo, vAtributo, imagenQuitar, anteriores;
+        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
+        bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
+        bAtributo+="<option value='nombre_comun'>nombre común</option>";
+        bAtributo+="<option value='nombre_region'>nombre región</option>";
+        bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
+        bAtributo+="<option value='nombre_autoridad'>autoridad</option></select>";
+
+        cAtributo="<select class='busqueda_atributo' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
+        cAtributo+="<option value='1'>contiene</option>";
+        cAtributo+="<option value='2'>empieza con</option>";
+        cAtributo+="<option value='3'>igual a</option>";
+        cAtributo+="<option value='4'>termina con</option></select>";
+
+        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='45' type='text'>";
+        imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>"
+
+        return bAtributo+cAtributo+vAtributo+imagenQuitar;
+    }
+
+    masFiltros = function()
+    {
+        var numeroAtributos=$("[id^='bAtributo_']").length +1;
+        $('#atributos_extra').append(estructuraFiltro(numeroAtributos));
+
+        guardaBusquedas();
+        return false;
+    }
+
+    quitaFiltros = function(id)
+    {
+        $('#capa_'+id.substring(14)).html("");
+        guardaBusquedas();
+        return false;
+    }
+
+    $(document).ready(function()
+    {
+        var cookie=getCookie('busqueda_taxones')
+
+        if (cookie == "")
+        {
+            guardaBusquedas();
+        } else {
+            cargaBusquedas(JSON.parse(cookie));
+        }
+
+        $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox", function() {
+            guardaBusquedas();
+        });
+    });
+</script>
+
+<%= form_tag '/especies/resultados' do %>
+    <%= hidden_field_tag 'busqueda_oculto', 'basica_comun' %>
+    Nombre común<br>
+    <%= select_tag 'condicion_nombre_comun', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'condicion_nombre_comun', :class => 'busqueda_atributo' %>
+    <%= text_field_tag 'nombre_comun', nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => 'nombre_comun', :class => 'busqueda_atributo' %>
+    <%= submit_tag 'buscar' %>
+<% end %>
+
+<%= form_tag '/especies/resultados' do %>
+    <%= hidden_field_tag 'busqueda_oculto', 'basica_cientifico' %>
+    Nombre científico<br>
+    <%= select_tag 'condicion_nombre_cientifico', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'condicion_nombre_cientifico', :class => 'busqueda_atributo' %>
+    <%= text_field_tag 'nombre_cientifico', nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => 'nombre_cientifico', :class => 'busqueda_atributo' %>
+    <%= submit_tag 'buscar' %>
+    <br><%= link_to '[Búsqueda avanzada]', '', :id => 'busqueda_avanzada' %>
+<% end %>
+
+<div id="busqueda_avanzada">
+  <%= form_tag '/especies/resultados' do %>
+      <%= hidden_field_tag 'busqueda_oculto', 'avanzada' %>
+      Buscar por<br>
+      <div id="atributos_extra">
+        <%= select_tag 'bAtributo_1', busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :id => 'bAtributo_1', :class => 'busqueda_atributo' %>
+        <%= select_tag 'cAtributo_1', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'cAtributo_1', :class => 'busqueda_atributo' %>
+        <%= text_field_tag 'vAtributo_1', nil, :maxlength => 255, :size => 45, :id => 'vAtributo_1', :class => 'busqueda_atributo' %>
+      </div>
+      <%= link_to '[Añade más filtros]', '', :id => 'enalce_mas_filtros', :onClick => 'return masFiltros();' %>
+      <br><br>con tipo de distribución<br>
+      <%= checkboxTipoDistribucion.html_safe  %>
+      <br><br>con la categoria taxonómica<br>
+      <%= select_tag 'comparador', busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => 'comparador', :class => 'busqueda_atributo' %>
+      <%= select_tag 'id_1', options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => 'id_1', :class => 'busqueda_atributo' %>
+      <br><%= submit_tag 'buscar' %>
+      <br><%= link_to '[Búsqueda básica]', '', :id => 'busqueda_basica' %>
+  <% end %>
+</div>
+
+<br>
+

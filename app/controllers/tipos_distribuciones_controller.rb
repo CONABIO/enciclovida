@@ -4,7 +4,7 @@ class TiposDistribucionesController < ApplicationController
   # GET /tipos_distribuciones
   # GET /tipos_distribuciones.json
   def index
-    @tipos_distribuciones = TipoDistribucion.all
+    @tipos_distribuciones = TipoDistribucion.all.order('descripcion ASC')
   end
 
   # GET /tipos_distribuciones/1

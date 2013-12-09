@@ -1,25 +1,63 @@
-<h1>Listing listas</h1>
+<% content_for(:title) do %>
+    <%= @titulo='Tus listas' %>
+<% end %>
 
-<table>
+<p id="notice"><%= notice %></p>
+
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
+
+<table width="1000" class="tabla_formato" CELLPADDING="10">
   <thead>
-    <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
+  <tr>
+    <th></th>
+    <th>Nombre de la lista</th>
+    <th>Columnas de la base</th>
+    <th>Taxones a exportar</th>
+    <th>Fecha de creación</th>
+    <th>Fecha de la última actualización</th>
+  </tr>
   </thead>
 
   <tbody>
-    <% @listas.each do |lista| %>
+  <% @listas.each do |lista| %>
       <tr>
-        <td><%= link_to 'Show', lista %></td>
-        <td><%= link_to 'Edit', edit_lista_path(lista) %></td>
-        <td><%= link_to 'Destroy', lista, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <%= accionesEnlaces(lista, 'listas', true).html_safe %>
+        </td>
+        <td width="20%"><%= truncate(lista.nombre_lista, :length => 50) %></td>
+        <td width="20%"><%= truncate ListasHelper.nombreComunAtributos(lista), :length => 100 %></td>
+        <% begin %>
+            <% Especie.find(lista.cadena_especies.split(',')).first(6).each do |taxon| %>
+                <% @taxones+="#{taxon.nombre_cientifico}, " %>
+            <% end %>
+        <% rescue %>
+            <%= @taxones='' %>
+        <% end %>
+        <td width="40%"><%= truncate @taxones[0..-3], :length => 150  %></td>
+        <td width="10%"><%= lista.created_at %></td>
+        <td width="10%"><%= lista.updated_at %></td>
       </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 
+<br><br>
+<table width="1000" class="tabla_paginacion">
+  <tr>
+    <td>
+      <%= will_paginate @listas, :previous_label => 'Anterior', :next_label => 'Suguiente', :class => 'paginacion' %>
+    </td>
+  </tr>
+</table>
+
+
 <br>
 
-<%= link_to 'New Lista', new_lista_path %>
+<div class="enlaces_acciones">
+  <%= link_to image_tag('app/32x32/add_page.png'), new_lista_url %>
+</div>
+
+<br><br>
+
