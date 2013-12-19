@@ -26,6 +26,7 @@ class Especie < ActiveRecord::Base
   scope :caso_nombre_bibliografia, -> { joins(:nombres_regiones_bibliografias => [:bibliografia]) }
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
+  #scope :caso_nivel_categoria_taxonomica, ->() {}
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
       joins('LEFT JOIN categoria_taxonomica')}
 

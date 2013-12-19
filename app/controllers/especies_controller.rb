@@ -156,7 +156,7 @@ class EspeciesController < ApplicationController
         end
 
         condiciones+='.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
-        busqueda+=joins+condiciones
+        busqueda+=joins.split('.').uniq.join('.')+condiciones
         @taxones=eval(busqueda).order('nombre_cientifico ASC')
         #@taxones=Especie.none
         @resultado2=busqueda
@@ -435,23 +435,15 @@ class EspeciesController < ApplicationController
   def tipoDeAtributo(tipo)
     case tipo
       when 'nombre_comun'
-        if @conNombreComun
-          relacion=''
-          @conNombreComun=true
-        else
           relacion='caso_nombre_comun'
-        end
-
       when 'nombre_region'
-        @conRegion ? @relacion='' : @relacion='caso_region'
-        @conRegion=true
+          relacion='caso_region'
       when 'tipos_distribuciones'
-        @relacion='caso_tipo_distribucion'
+        relacion='caso_tipo_distribucion'
       when 'catalogos.descripcion'
-        @conEstadoConservacion ? @relacion='' : @relacion='caso_especies_catalogos'
-        @conEstadoConservacion=true
+          relacion='caso_especies_catalogos'
       else
-        @relacion=''
+        relacion=''
     end
     return relacion
   end
