@@ -168,7 +168,7 @@
       <%= checkboxTipoDistribucion.html_safe  %>
       <br><br>con la categoria taxonómica<br>
       <%= select_tag 'comparador', busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => 'comparador', :class => 'busqueda_atributo' %>
-      <%= select_tag 'id_1', options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => 'id_1', :class => 'busqueda_atributo' %>
+      <%= select_tag 'categoria_taxonomica', options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => 'categoria_taxonomica', :class => 'busqueda_atributo' %>
       <br><%= submit_tag 'buscar' %>
       <br><%= link_to '[Búsqueda básica]', '', :id => 'busqueda_basica' %>
   <% end %>

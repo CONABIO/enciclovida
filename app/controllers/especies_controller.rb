@@ -130,7 +130,7 @@ class EspeciesController < ApplicationController
       when 'basica_cientifico'
         @taxones=eval("Especie.#{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}").order('nombre ASC')
       when 'avanzada'
-        busqueda="Especie.select('distinct(especies.*)')"
+        busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||=''
         condiciones ||=''
         tipoDistribuciones ||=''
@@ -155,7 +155,14 @@ class EspeciesController < ApplicationController
           end
         end
 
-        condiciones+='.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
+        if params[:categoria_taxonomica].present?
+          params[:comparador] == '=' ? operador='AND' : operador='OR'
+          categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
+          condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{operador}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
+        end
+
+        joins+='.caso_categoria_taxonomica'
+        condiciones+='.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
         busqueda+=joins.split('.').uniq.join('.')+condiciones
         @taxones=eval(busqueda).order('nombre_cientifico ASC')
         #@taxones=Especie.none
@@ -435,13 +442,13 @@ class EspeciesController < ApplicationController
   def tipoDeAtributo(tipo)
     case tipo
       when 'nombre_comun'
-          relacion='caso_nombre_comun'
+        relacion='caso_nombre_comun'
       when 'nombre_region'
-          relacion='caso_region'
+        relacion='caso_region'
       when 'tipos_distribuciones'
         relacion='caso_tipo_distribucion'
       when 'catalogos.descripcion'
-          relacion='caso_especies_catalogos'
+        relacion='caso_especies_catalogos'
       else
         relacion=''
     end

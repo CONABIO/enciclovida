@@ -26,7 +26,9 @@ class Especie < ActiveRecord::Base
   scope :caso_nombre_bibliografia, -> { joins(:nombres_regiones_bibliografias => [:bibliografia]) }
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  #scope :caso_nivel_categoria_taxonomica, ->() {}
+  scope :caso_categoria_taxonomica, -> { joins(:categoria_taxonomica) }
+  scope :caso_nivel_categoria_taxonomica, ->(comparador, operador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador} #{nivel1} #{operador}
+nivel2 #{comparador} #{nivel2} #{operador} nivel3 #{comparador} #{nivel3} #{operador} nivel4 #{comparador} #{nivel4}") }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
       joins('LEFT JOIN categoria_taxonomica')}
 
@@ -56,11 +58,19 @@ class Especie < ActiveRecord::Base
   }
 
   BUSQUEDAS_COMPARADOR = {
-      '<' => 'menor a',
-      '<=' => 'menor o igual a',
+      '>' => 'menor a',
+      '>=' => 'menor o igual a',
       '=' => 'igual a',
-      '>=' => 'mayor o igual a',
-      '>' => 'mayor a'
+      '<=' => 'mayor o igual a',
+      '<' => 'mayor a'
+  }
+
+  CAMPOS_A_MOSTRAR = {
+      '>' => 'menor a',
+      '>=' => 'menor o igual a',
+      '=' => 'igual a',
+      '<=' => 'mayor o igual a',
+      '<' => 'mayor a'
   }
 
   CATEGORIAS_DIVISION = {
