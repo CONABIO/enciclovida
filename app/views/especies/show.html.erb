@@ -41,6 +41,15 @@
     <%= @titulo="#{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe %>
 <% end %>
 
+<div class="menu">
+<ul id="menu">
+  <li><%= link_to 'Información general', '', :id => :infoTab %></li>
+  <li><%= link_to :Ficha, '', :id => :fichaTab %></li>
+  <li><%= link_to :Fotos, '', :id => :fotosTab %></li>
+  <li><%= link_to :Mapas, '', :id => :mapasTab %></li>
+</ul>
+</div>
+
 <table width="1000" id="tabla_form"><tr>
   <td width="40%" valign="top">
     <fieldset>

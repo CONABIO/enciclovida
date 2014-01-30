@@ -53,7 +53,7 @@ nested-fields
   margin-right: auto;
 }
 
-.titulo, .pie {
+.titulo, .pie, #acciones, .menu {
   text-align: center;
 }
 
@@ -65,9 +65,13 @@ nested-fields
   text-align: left;
 }
 
-#vista_arbol {
+#vista_arbol, #busqueda {
   margin-left: auto;
   margin-right: auto;
+}
+
+#busqueda {
+  width: 1000px;
 }
 
 #tabla_editar {
@@ -86,9 +90,27 @@ nested-fields
 .sub_link_taxon:hover {background-color: #ffffff; text-decoration: none; }
 
 .link_azul:link {color: #0000ff; text-decoration:none; }
-.link_azuln:active {color-background: #0000ff; text-decoration: none; }
+.link_azul:active {color-background: #0000ff; text-decoration: none; }
 .link_azul:visited {color: #0000ff; text-decoration: none; }
 .link_azul:hover {background-color: #ffffff; text-decoration: none; }
 
+#menu
+{
+  list-style-type:none;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+}
 
+#menu li
+{
+  float:left;
+}
+
+#menu li a
+{
+  display:block;
+  width:150px;
+  background-color:#dddddd;
+}
 

@@ -27,8 +27,8 @@ class Especie < ActiveRecord::Base
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
   scope :caso_categoria_taxonomica, -> { joins(:categoria_taxonomica) }
-  scope :caso_nivel_categoria_taxonomica, ->(comparador, operador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador} #{nivel1} #{operador}
-nivel2 #{comparador} #{nivel2} #{operador} nivel3 #{comparador} #{nivel3} #{operador} nivel4 #{comparador} #{nivel4}") }
+  scope :caso_nivel_categoria_taxonomica, ->(comparador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador} #{nivel1} AND
+nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
       joins('LEFT JOIN categoria_taxonomica')}
 

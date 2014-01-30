@@ -32,8 +32,8 @@ Buscador::Application.routes.draw do
       get :buscaDescendientes
       get :muestraTaxonomia
       get :autocomplete_especie_nombre
-      post :resultados
       get :resultados
+      get :error
     end
   end
 

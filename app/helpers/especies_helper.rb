@@ -65,10 +65,9 @@ module EspeciesHelper
   end
 
   def checkboxTipoDistribucion
-    #checkBoxes="#{check_box_tag('tipo_distribucion_0', '0', false, :id => 'tipo_distribucion_0', :class => 'busqueda_atributo_checkbox')}todos&nbsp;&nbsp;"
     checkBoxes ||=''
     TipoDistribucion.all.order('descripcion ASC').each do |tipoDist|
-      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :id => "tipo_distribucion_#{tipoDist.id}", :class => 'busqueda_atributo_checkbox')}#{tipoDist.descripcion}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :id => "tipo_distribucion_#{tipoDist.id}", :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
     end
     checkBoxes
   end

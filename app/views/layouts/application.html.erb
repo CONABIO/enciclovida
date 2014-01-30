@@ -30,21 +30,29 @@
   <%- end %>
 </ul>
 
-<%= render :template => 'especies/busqueda'
-%>
-
+<table id="busqueda">
+  <tr>
+    <td width="100%" valign="top">
+      <%= render :template => 'especies/busqueda' %>
+    </td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top">
+      <%= 'algo' %>
+    </td>
+  </tr>
+</table>
 <br>
 
 <%= yield %>
 
-
 <% if session[:usuario].present? %>
-<br><br>
+    <br><br>
     <table width="1000" class="tabla_formato"><tr>
       <td>
         <fieldset>
           <legend class="leyenda">Bitácora</legend>
-        <%= bitacora.html_safe %>
+          <%= bitacora.html_safe %>
         </fieldset>
       </td>
     </tr></table>

@@ -53,9 +53,8 @@
                 checkboxSeleccionadas+=$(this).val()+','
             }
         });
-
         busqueda.tipo_distribucion=checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
-        document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda) + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
+        document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda).replace(/"/g, "%22") + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
     }
 
     cargaBusquedas = function(atributos)
@@ -137,40 +136,40 @@
     });
 </script>
 
-<%= form_tag '/especies/resultados' do %>
-    <%= hidden_field_tag 'busqueda_oculto', 'basica_comun' %>
+<%= form_tag resultados_especies_path, :method => :get do %>
+    <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
     Nombre común<br>
-    <%= select_tag 'condicion_nombre_comun', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'condicion_nombre_comun', :class => 'busqueda_atributo' %>
-    <%= text_field_tag 'nombre_comun', nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => 'nombre_comun', :class => 'busqueda_atributo' %>
-    <%= submit_tag 'buscar' %>
+    <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
+    <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
+    <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
 <% end %>
 
-<%= form_tag '/especies/resultados' do %>
-    <%= hidden_field_tag 'busqueda_oculto', 'basica_cientifico' %>
+<%= form_tag resultados_especies_path, :method => :get do %>
+    <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
     Nombre científico<br>
-    <%= select_tag 'condicion_nombre_cientifico', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'condicion_nombre_cientifico', :class => 'busqueda_atributo' %>
-    <%= text_field_tag 'nombre_cientifico', nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => 'nombre_cientifico', :class => 'busqueda_atributo' %>
-    <%= submit_tag 'buscar' %>
-    <br><%= link_to '[Búsqueda avanzada]', '', :id => 'busqueda_avanzada' %>
+    <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
+    <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
+    <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+    <br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return false;' %> &#8595;
 <% end %>
 
-<div id="busqueda_avanzada">
-  <%= form_tag '/especies/resultados' do %>
-      <%= hidden_field_tag 'busqueda_oculto', 'avanzada' %>
+<div id="busqueda_avanzada" style="display: none">
+  <%= form_tag resultados_especies_path, :method => :get do %>
+      <%= hidden_field_tag :busqueda_oculto, :avanzada %>
       Buscar por<br>
       <div id="atributos_extra">
-        <%= select_tag 'bAtributo_1', busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :id => 'bAtributo_1', :class => 'busqueda_atributo' %>
-        <%= select_tag 'cAtributo_1', busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => 'cAtributo_1', :class => 'busqueda_atributo' %>
-        <%= text_field_tag 'vAtributo_1', nil, :maxlength => 255, :size => 45, :id => 'vAtributo_1', :class => 'busqueda_atributo' %>
+        <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :id => :bAtributo_1, :class => :busqueda_atributo %>
+        <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :cAtributo_1, :class => :busqueda_atributo %>
+        <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 45, :id => :vAtributo_1, :class => :busqueda_atributo %>
       </div>
-      <%= link_to '[Añade más filtros]', '', :id => 'enalce_mas_filtros', :onClick => 'return masFiltros();' %>
+      <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
       <br><br>con tipo de distribución<br>
       <%= checkboxTipoDistribucion.html_safe  %>
       <br><br>con la categoria taxonómica<br>
-      <%= select_tag 'comparador', busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => 'comparador', :class => 'busqueda_atributo' %>
-      <%= select_tag 'categoria_taxonomica', options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => 'categoria_taxonomica', :class => 'busqueda_atributo' %>
-      <br><%= submit_tag 'buscar' %>
-      <br><%= link_to '[Búsqueda básica]', '', :id => 'busqueda_basica' %>
+      <%= select_tag :comparador, busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => :comparador, :class => :busqueda_atributo %>
+      <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => :categoria_taxonomica, :class => :busqueda_atributo %>
+      <br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+      <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return false;' %> &#8593;
   <% end %>
 </div>
 

@@ -2,7 +2,7 @@ class EspeciesController < ApplicationController
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30#, :scopes => [:caso_insensitivo]
-  before_filter :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
 
   # GET /especies
   # GET /especies.json
@@ -156,9 +156,8 @@ class EspeciesController < ApplicationController
         end
 
         if params[:categoria_taxonomica].present?
-          params[:comparador] == '=' ? operador='AND' : operador='OR'
           categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
-          condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{operador}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
+          condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
         end
 
         joins+='.caso_categoria_taxonomica'
@@ -167,6 +166,12 @@ class EspeciesController < ApplicationController
         @taxones=eval(busqueda).order('nombre_cientifico ASC')
         #@taxones=Especie.none
         @resultado2=busqueda
+
+      else
+        respond_to do |format|
+          format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
+          format.json { head :no_content }
+        end
     end
   end
 
@@ -272,8 +277,12 @@ class EspeciesController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_especie
-    @especie = Especie.find(params[:id])
-    @accion=params[:controller]
+    begin
+      @especie = Especie.find(params[:id])
+      @accion=params[:controller]
+    rescue
+      render :_error
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

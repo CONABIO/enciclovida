@@ -102,7 +102,7 @@
 <br>
 
 <div class="pie">
-  <%= button_tag 'Limpiar busqueda', :id => 'limpiar', :type => :button %>
+  <%= button_tag 'Limpiar busqueda', :id => :limpiar, :type => :button %>
   <%= submit_tag 'Añade los seleccionados a la lista' , data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
   <%= submit_tag 'Destruye los seleccionados' , data: { confirm: '¿Estás seguro de eliminar los selecoinados?' } %>
   <%= #link_to 'Nuevo taxón', new_especy_path
@@ -112,29 +112,31 @@
 </div>
 
 <br><br>
-<table width="1000" id="tabla_form"><tr>
-  <td width="60%" valign="top">
-    <fieldset>
-      <legend class="leyenda">Árbol taxonómico</legend>
-      <div id="vista_arbol">
-        <%= arbolTaxonomico.html_safe %>
-      </div>
-    </fieldset>
-  </td>
-  <td>
+<table width="1000" id="tabla_form">
+  <tr>
+    <td width="60%" valign="top">
+      <fieldset>
+        <legend class="leyenda">Árbol taxonómico</legend>
+        <div id="vista_arbol">
+          <%= arbolTaxonomico.html_safe %>
+        </div>
+      </fieldset>
+    </td>
+    <td>
 
-    <fieldset>
-      <legend class="leyenda">Listas</legend>
-      <div width="40%" id="listas" valign="top">
-        <% if @listas.nil? %>
-            Debes iniciar sesión para poder ver tus listas.
-        <% elsif @listas == 0 %>
-            Aún no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
-        <% else %>
-            Puedes añadir taxones a más de una lista. (tecla SHIFT)
-            <%= select_tag 'listas', opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
-        <% end %>
-      </div>
-    </fieldset>
-  </td>
-</tr></table>
+      <fieldset>
+        <legend class="leyenda">Listas</legend>
+        <div width="40%" id="listas" valign="top">
+          <% if @listas.nil? %>
+              Debes iniciar sesión para poder ver tus listas.
+          <% elsif @listas == 0 %>
+              Aún no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
+          <% else %>
+              Puedes añadir taxones a más de una lista. (tecla SHIFT)
+              <%= select_tag 'listas', opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
+          <% end %>
+        </div>
+      </fieldset>
+    </td>
+  </tr>
+</table>
