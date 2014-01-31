@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0.rc1'
 
-#gem 'rake', '0.8.7' # ubuntu seems to freak with the most recent version
-
 # Use postgresql as the database for Active Record
 gem 'pg'
 
@@ -61,3 +59,4 @@ gem 'composite_primary_keys', github: 'calonso-conabio/composite_primary_keys', 
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'
 gem 'thinking-sphinx'
 gem 'mysql2', '0.3.13'
+gem 'savon'

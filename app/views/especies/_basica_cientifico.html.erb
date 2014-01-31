@@ -5,8 +5,9 @@
       <%= '</tr>'.html_safe if columnas != 0 && columnas % 3 == 0 %>
       <%= '<tr>'.html_safe if columnas % 3 == 0 %>
       <td>
-        <%= taxon.nombre_cientifico %>
+        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} [#{taxon.nombre_categoria_taxonomica}] #{link_to(taxon.nombre_cientifico, taxon)}".html_safe %>
       </td>
       <% columnas+=1 %>
   <% end %>
-  <%= columnas % 3 != 0 ? "#{'<td></td>'*(3-(columnas % 3))}</tr></table>".html_safe : '</table>'.html_safe %></table>
+  <%= columnas % 3 != 0 ? "#{'<td></td>'*(3-(columnas % 3))}</tr></table>".html_safe : '</table>'.html_safe %>
+</table>

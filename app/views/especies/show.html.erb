@@ -28,6 +28,26 @@
         return false;
     };
 
+    info = function() {
+        $('#ficha-div').slideUp();
+        $('#info-div').slideDown();
+        return false;
+    };
+
+    ficha = function() {
+        $('#info-div').slideUp();
+        $('#ficha-div').slideDown();
+        return false;
+    };
+
+    fotos = function() {
+        return false;
+    };
+
+    mapas = function() {
+        return false;
+    };
+
     <% if !@especie.is_root? %>
     muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
     <% end %>
@@ -42,120 +62,134 @@
 <% end %>
 
 <div class="menu">
-<ul id="menu">
-  <li><%= link_to 'Información general', '', :id => :infoTab %></li>
-  <li><%= link_to :Ficha, '', :id => :fichaTab %></li>
-  <li><%= link_to :Fotos, '', :id => :fotosTab %></li>
-  <li><%= link_to :Mapas, '', :id => :mapasTab %></li>
-</ul>
+  <ul id="menu">
+    <li><%= link_to 'Información del taxón', '', :id => :infoTab, :onClick => 'return info();' %></li>
+    <li><%= link_to :Ficha, '', :id => :fichaTab, :onClick => 'return ficha();' %></li>
+    <li><%= link_to :Fotos, '', :id => :fotosTab, :onClick => 'return fotos();' %></li>
+    <li><%= link_to :Mapas, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
+  </ul>
 </div>
 
-<table width="1000" id="tabla_form"><tr>
-  <td width="40%" valign="top">
-    <fieldset>
-      <legend class="leyenda"><%= @titulo %></legend>
-      <p>
-        <strong>Identificador único:</strong>
-        <%= @especie.id %>
-      </p>
+<div id="info-div">
+  <table width="1000" id="tabla_form">
+    <tr>
+      <td width="40%" valign="top">
+        <fieldset>
+          <legend class="leyenda"><%= @titulo %></legend>
+          <p>
+            <strong>Identificador único:</strong>
+            <%= @especie.id %>
+          </p>
 
-      <p>
-        <strong>Ascendente directo:</strong>
-        <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
-      </p>
+          <p>
+            <strong>Ascendente directo:</strong>
+            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
+          </p>
 
-      <p>
-        <strong>Ascendente obligatorio:</strong>
-        <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
-      </p>
+          <p>
+            <strong>Ascendente obligatorio:</strong>
+            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
+          </p>
 
-      <p>
-        <strong>Estatus:</strong>
-        <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
-      </p>
+          <p>
+            <strong>Estatus:</strong>
+            <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
+          </p>
 
-      <p>
-        <strong>Situación de los nombres cientificos:</strong>
-        <%= Especie.dameEspecieEstatuses(@especie).html_safe %>
-      </p>
+          <p>
+            <strong>Situación de los nombres cientificos:</strong>
+            <%= Especie.dameEspecieEstatuses(@especie).html_safe %>
+          </p>
 
-      <p>
-        <strong>Estado de conservación:</strong>
-        <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
-      </p>
+          <p>
+            <strong>Estado de conservación:</strong>
+            <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
+          </p>
 
-      <p>
-        <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
-        <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
-      </p>
+          <p>
+            <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
+            <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
+          </p>
 
-      <p>
-        <strong>Fuente:</strong>
-        <%= @especie.fuente %>
-      </p>
+          <p>
+            <strong>Fuente:</strong>
+            <%= @especie.fuente %>
+          </p>
 
-      <p>
-        <strong>Nombre autoridad:</strong>
-        <%= @especie.nombre_autoridad %>
-      </p>
+          <p>
+            <strong>Nombre autoridad:</strong>
+            <%= @especie.nombre_autoridad %>
+          </p>
 
-      <p>
-        <strong>Número filogenético:</strong>
-        <%= @especie.numero_filogenetico %>
-      </p>
+          <p>
+            <strong>Número filogenético:</strong>
+            <%= @especie.numero_filogenetico %>
+          </p>
 
-      <p>
-        <strong>Cita nomenclatural:</strong>
-        <%= @especie.cita_nomenclatural %>
-      </p>
+          <p>
+            <strong>Cita nomenclatural:</strong>
+            <%= @especie.cita_nomenclatural %>
+          </p>
 
-      <p>
-        <strong>Sistema de clasificación del catalogo:</strong>
-        <%= @especie.sis_clas_cat_dicc %>
-      </p>
+          <p>
+            <strong>Sistema de clasificación del catalogo:</strong>
+            <%= @especie.sis_clas_cat_dicc %>
+          </p>
 
-      <p>
-        <strong>Anotación:</strong>
-        <%= @especie.anotacion %>
-      </p>
+          <p>
+            <strong>Anotación:</strong>
+            <%= @especie.anotacion %>
+          </p>
 
-      <p>
-        <strong>Fecha de Captura:</strong>
-        <%= @especie.created_at %>
-      </p>
+          <p>
+            <strong>Fecha de Captura:</strong>
+            <%= @especie.created_at %>
+          </p>
 
-      <p>
-        <strong>Fecha de modificación:</strong>
-        <%= @especie.updated_at %>
-      </p>
-    </fieldset>
-  </td>
+          <p>
+            <strong>Fecha de modificación:</strong>
+            <%= @especie.updated_at %>
+          </p>
+        </fieldset>
+      </td>
 
 
-  <td width="60%" valign="top">
-    <fieldset>
-      <legend class="leyenda">Descendientes directos</legend>
-      <div id='hijos'>
-        <%= Especie.dameDescendientesDirectos(@especie).html_safe %>
-      </div>
-    </fieldset>
+      <td width="60%" valign="top">
+        <fieldset>
+          <legend class="leyenda">Descendientes directos</legend>
+          <div id='hijos'>
+            <%= Especie.dameDescendientesDirectos(@especie).html_safe %>
+          </div>
+        </fieldset>
 
-    <fieldset>
-      <legend class="leyenda">Árbol taxonómico</legend>
-      <div id='vista_arbol'>
-        <% if @especie.is_root? %>
-            <%= arbolTaxonomico.html_safe %>
-        <% end %>
-      </div>
-    </fieldset>
-  </td>
-</tr></table>
+        <fieldset>
+          <legend class="leyenda">Árbol taxonómico</legend>
+          <div id='vista_arbol'>
+            <% if @especie.is_root? %>
+                <%= arbolTaxonomico.html_safe %>
+            <% end %>
+          </div>
+        </fieldset>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div id="ficha-div" style="display: none">
+<table id="ficha">
+  <tr>
+    <td>
+        <%= @ficha.html_safe %>
+    </td>
+  </tr>
+</table>
+</div>
 
 <br>
 <div class="enlaces_acciones">
   <%= accionesEnlaces(@especie, @accion).html_safe %><br>
-<%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
-            new_especy_path(:parent_id => @especie)).html_safe %>
+  <%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
+              new_especy_path(:parent_id => @especie)).html_safe %>
 </div>
 <%= #link_to 'Nueva especie o grupo raíz', new_especy_path
 %>

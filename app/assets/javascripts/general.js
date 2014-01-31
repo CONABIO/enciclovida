@@ -7,13 +7,7 @@
  */
 
 $(document).ready(function(){
-    $('#busqueda_avanzada_link').click(function(){
-        $('#busqueda_avanzada').slideToggle();
-    });
 
-    $('#busqueda_basica_link').click(function(){
-        $('#busqueda_avanzada').slideToggle();
-    });
 });
 
 

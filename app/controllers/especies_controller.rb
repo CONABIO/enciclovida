@@ -23,6 +23,8 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
+    @desc=TaxonDescribers::Conabio.describe(@especie)
+    @desc.present? ? @ficha=@desc : @ficha='No existe ninguna ficha asociada con este taxón'
   end
 
   # GET /especies/new
@@ -126,9 +128,11 @@ class EspeciesController < ApplicationController
 
     case params[:busqueda_oculto]
       when 'basica_comun'
-        @taxones=eval("Especie.select(:nombre_comun).caso_nombre_comun.#{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC')
+        @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
+          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC')
       when 'basica_cientifico'
-        @taxones=eval("Especie.#{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}").order('nombre ASC')
+        @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}").order('nombre ASC')
       when 'avanzada'
         busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||=''

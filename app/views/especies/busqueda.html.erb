@@ -119,6 +119,20 @@
         return false;
     }
 
+    busqueda_avanzada = function(id)
+    {
+        $('#busqueda_basica').slideUp();
+        $('#busqueda_avanzada').slideDown();
+        return false;
+    }
+
+    busqueda_basica = function(id)
+    {
+        $('#busqueda_avanzada').slideUp();
+        $('#busqueda_basica').slideDown();
+        return false;
+    }
+
     $(document).ready(function()
     {
         var cookie=getCookie('busqueda_taxones')
@@ -136,22 +150,24 @@
     });
 </script>
 
-<%= form_tag resultados_especies_path, :method => :get do %>
-    <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
-    Nombre común<br>
-    <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
-    <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
-    <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-<% end %>
+<div id="busqueda_basica">
+  <%= form_tag resultados_especies_path, :method => :get do %>
+      <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
+      Nombre común<br>
+      <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
+      <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
+      <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+  <% end %>
 
-<%= form_tag resultados_especies_path, :method => :get do %>
-    <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
-    Nombre científico<br>
-    <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
-    <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
-    <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-    <br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return false;' %> &#8595;
-<% end %>
+  <%= form_tag resultados_especies_path, :method => :get do %>
+      <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
+      Nombre científico<br>
+      <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
+      <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
+      <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+      <br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return busqueda_avanzada();' %> &#8595;
+  <% end %>
+</div>
 
 <div id="busqueda_avanzada" style="display: none">
   <%= form_tag resultados_especies_path, :method => :get do %>
@@ -169,7 +185,7 @@
       <%= select_tag :comparador, busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => :comparador, :class => :busqueda_atributo %>
       <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => :categoria_taxonomica, :class => :busqueda_atributo %>
       <br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-      <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return false;' %> &#8593;
+      <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
   <% end %>
 </div>
 
