@@ -30,17 +30,36 @@
 
     info = function() {
         $('#ficha-div').slideUp();
+        $('#fotos-div').slideUp();
         $('#info-div').slideDown();
         return false;
     };
 
     ficha = function() {
         $('#info-div').slideUp();
+        $('#fotos-div').slideUp();
         $('#ficha-div').slideDown();
         return false;
     };
 
     fotos = function() {
+        $('#info-div').slideUp();
+        $('#ficha-div').slideUp();
+
+        if ($('#fotos-td').is(':empty'))
+        {
+            $.ajax({
+                type: 'GET',
+                url: '/conabio/photo_fields',
+                data: {
+                    'q': $.parseHTML("<%= @especie.nombre_cientifico if @especie.nombre_cientifico.present? %>")[0].textContent
+                },
+                success: function(html){
+                    $('#fotos-td').append(html);
+                }
+            });
+        }
+        $('#fotos-div').slideDown();
         return false;
     };
 
@@ -66,7 +85,7 @@
     <li><%= link_to 'Información del taxón', '', :id => :infoTab, :onClick => 'return info();' %></li>
     <li><%= link_to :Ficha, '', :id => :fichaTab, :onClick => 'return ficha();' %></li>
     <li><%= link_to :Fotos, '', :id => :fotosTab, :onClick => 'return fotos();' %></li>
-    <li><%= link_to :Mapas, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
+    <li><%= link_to 'Mapas de distribuci&oacute;n'.html_safe, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
   </ul>
 </div>
 
@@ -185,11 +204,19 @@
 </table>
 </div>
 
+<div id="fotos-div" style="display: none">
+  <table id="fotos">
+    <tr>
+      <td>
+        <div id="fotos-td"></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
 <br>
 <div class="enlaces_acciones">
   <%= accionesEnlaces(@especie, @accion).html_safe %><br>
   <%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div>
-<%= #link_to 'Nueva especie o grupo raíz', new_especy_path
-%>

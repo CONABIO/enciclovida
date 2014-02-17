@@ -72,6 +72,8 @@ Buscador::Application.routes.draw do
     end
   end
 
+  get '/conabio/photo_fields' => 'conabio#photo_fields'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
