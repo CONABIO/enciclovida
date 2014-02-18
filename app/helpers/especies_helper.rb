@@ -1,5 +1,9 @@
 module EspeciesHelper
 
+  def tituloNombreCientifico(taxon, params = {})
+    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[@especie.estatus]} #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe
+  end
+
   def enlacesDeTaxonomia(taxa, nuevo=false)
     enlaces ||="<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>#{link_to('Todas las categorias', especies_path)} (administrador) > "
 

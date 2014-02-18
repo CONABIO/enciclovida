@@ -36,9 +36,14 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
 
   CON_REGION = [19, 50]
   ESTATUSES = [
-      [2, 'válido/correcto'],
-      [1, 'sinónimo']
+      [2, 'válido/correcto (✔)'],
+      [1, 'sinónimo (✘)']
   ]
+
+  ESTATUSES_SIMBOLO = {
+      2 => '✔',
+      1 =>'✘'
+  }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
 

@@ -77,12 +77,16 @@
 <p><%= enlacesDeTaxonomia(@especie) %></p>
 
 <% content_for(:title) do %>
-    <%= @titulo="#{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe %>
+    <%= @titulo = tituloNombreCientifico(@especie) %>
 <% end %>
+
+<div class="titulo">
+<h1><%= @titulo %></h1>
+</div>
 
 <div class="menu">
   <ul id="menu">
-    <li><%= link_to 'Información del taxón', '', :id => :infoTab, :onClick => 'return info();' %></li>
+    <li><%= link_to 'Cat&aacute;logo'.html_safe, '', :id => :infoTab, :onClick => 'return info();' %></li>
     <li><%= link_to :Ficha, '', :id => :fichaTab, :onClick => 'return ficha();' %></li>
     <li><%= link_to :Fotos, '', :id => :fotosTab, :onClick => 'return fotos();' %></li>
     <li><%= link_to 'Mapas de distribuci&oacute;n'.html_safe, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
@@ -94,9 +98,9 @@
     <tr>
       <td width="40%" valign="top">
         <fieldset>
-          <legend class="leyenda"><%= @titulo %></legend>
+          <legend class="leyenda"><%= 'Informaci&oacute;n del cat&aacute;logo'.html_safe %></legend>
           <p>
-            <strong>Identificador único:</strong>
+            <strong>Identificador &uacute;nico:</strong>
             <%= @especie.id %>
           </p>
 
@@ -116,12 +120,12 @@
           </p>
 
           <p>
-            <strong>Situación de los nombres cientificos:</strong>
+            <strong>Situaci&oacute;n de los nombres cient&iacute;ficos:</strong>
             <%= Especie.dameEspecieEstatuses(@especie).html_safe %>
           </p>
 
           <p>
-            <strong>Estado de conservación:</strong>
+            <strong>Caracter&iacute;stica del tax&oacute;n:</strong>
             <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
           </p>
 
@@ -141,22 +145,17 @@
           </p>
 
           <p>
-            <strong>Número filogenético:</strong>
-            <%= @especie.numero_filogenetico %>
-          </p>
-
-          <p>
             <strong>Cita nomenclatural:</strong>
             <%= @especie.cita_nomenclatural %>
           </p>
 
           <p>
-            <strong>Sistema de clasificación del catalogo:</strong>
+            <strong>Sistema de clasificaci&oacute;n, catalogo o diccionario:</strong>
             <%= @especie.sis_clas_cat_dicc %>
           </p>
 
           <p>
-            <strong>Anotación:</strong>
+            <strong>Anotaci&oacute;n:</strong>
             <%= @especie.anotacion %>
           </p>
 
@@ -166,7 +165,7 @@
           </p>
 
           <p>
-            <strong>Fecha de modificación:</strong>
+            <strong>Fecha de modificaci&oacute;n:</strong>
             <%= @especie.updated_at %>
           </p>
         </fieldset>
@@ -182,7 +181,7 @@
         </fieldset>
 
         <fieldset>
-          <legend class="leyenda">Árbol taxonómico</legend>
+          <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
           <div id='vista_arbol'>
             <% if @especie.is_root? %>
                 <%= arbolTaxonomico.html_safe %>
@@ -217,6 +216,6 @@
 <br>
 <div class="enlaces_acciones">
   <%= accionesEnlaces(@especie, @accion).html_safe %><br>
-  <%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
+  <%= link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div>

@@ -5,7 +5,7 @@
       <%= '</tr>'.html_safe if columnas != 0 && columnas % 3 == 0 %>
       <%= '<tr>'.html_safe if columnas % 3 == 0 %>
       <td>
-        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} [#{taxon.nombre_categoria_taxonomica}] #{link_to(taxon.nombre_cientifico, taxon)}".html_safe %>
+        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} #{taxon.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, taxon)}".html_safe %>
       </td>
       <% columnas+=1 %>
   <% end %>

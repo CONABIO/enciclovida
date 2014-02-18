@@ -1,5 +1,5 @@
 <% content_for(:title) do %>
-    <%= @titulo="Editando :<br><br>#{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe %>
+    <%= @titulo="Editando :<br><br>#{tituloNombreCientifico(@especie)}".html_safe %>
 <% end %>
 
 <p id="notice"><%= notice %></p>
