@@ -23,7 +23,8 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @desc=TaxonDescribers::Conabio.describe(@especie)
+    #@desc=TaxonDescribers::Conabio.describe(@especie)
+    @desc=nil
     @desc.present? ? @ficha=@desc : @ficha='No existe ninguna ficha asociada con este taxón'
   end
 

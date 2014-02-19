@@ -222,8 +222,6 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
         else
           region+="<b>Distribución:</b> #{e.tipo_distribucion.descripcion}</td>"
         end
-
-
       end
 
     elsif CON_REGION.include?(especie.categoria_taxonomica_id)
@@ -243,7 +241,6 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
     especie.especies_catalogos.each do |c|
       conservacion+="<li>#{c.catalogo.descripcion}</li>"
     end
-
     conservacion+='</ul>'
   end
 
@@ -309,15 +306,6 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
     end
 
     identificadores[0..-3]
-  end
-
-  def self.dameEspecieEstatuses(taxon)
-    estatuses='<ul>'
-    taxon.especies_estatuses.each do |estatus|
-      subTaxon=Especie.find(estatus.especie_id2)
-      subTaxon.nil? ? '' : estatuses+="<li><a href=\"/especies/#{subTaxon.id}\">#{subTaxon.nombre}</a> (#{estatus.estatus.descripcion}) <br> <b>Observaciones: </b> #{estatus.observaciones}</li>"
-    end
-    estatuses+='</ul>'
   end
 
   def self.dameDescendientesDirectos(taxon)

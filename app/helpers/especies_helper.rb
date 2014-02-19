@@ -1,7 +1,7 @@
 module EspeciesHelper
 
-  def tituloNombreCientifico(taxon, params = {})
-    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[@especie.estatus]} #{@especie.nombre_cientifico} #{@especie.nombre_autoridad}".html_safe
+  def tituloNombreCientifico(taxon)
+    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)
@@ -48,10 +48,10 @@ module EspeciesHelper
         #{link_to(image_tag('app/32x32/trash.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
       when 'listas'
         index ?
-        "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
-        #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
-        #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
-        #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}" :
+            "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
+            #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
+            #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
+            #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}" :
             "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
             #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
             #{link_to(image_tag('app/32x32/add_page.png'), new_lista_url)}
@@ -74,5 +74,39 @@ module EspeciesHelper
       checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :id => "tipo_distribucion_#{tipoDist.id}", :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
     end
     checkBoxes
+  end
+
+  def dameRegionesNombresBibliografia(especie, detalles=nil)
+    if especie.especies_regiones.count > 0
+      regiones ||= ''
+      nombresComunes ||= ''
+      distribucion ||= ''
+      especie.especies_regiones.each do |e|
+        regiones+= "<li>#{e.region.nombre_region}</li>" if !e.region.is_root?
+
+        e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
+          nombresComunes+= "<li>#{nombre.nombre_comun.nombre_comun} (#{nombre.nombre_comun.lengua.downcase})</li>"
+
+          #nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id).where(:nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
+          #detalles ? region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor}</p>" : region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor.truncate(25)}</p>"
+          #end
+        end
+
+        distribucion+= "<li>#{e.tipo_distribucion.descripcion}</li>" if e.tipo_distribucion_id.present?
+      end
+    end
+    {:regiones => regiones, :nombresComunes => nombresComunes, :distribucion => distribucion}
+  end
+
+  def dameEspecieEstatuses(taxon)
+    estatuses='<ul>'
+    taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
+      taxSinonimo=Especie.find(estatus.especie_id2)
+      next if taxSinonimo.nil?
+
+      estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
+      estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+    end
+    estatuses+='</ul>'
   end
 end
