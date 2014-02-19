@@ -26,6 +26,10 @@
         var busqueda={};
         var numerosFiltros='';
         var checkboxSeleccionadas='';
+        var checkboxSeleccionadasEstatusBasicaComun='';
+        var checkboxSeleccionadasEstatusBasicaCientifico='';
+        var checkboxSeleccionadasEstatusAvanzada='';
+
         $(".busqueda_atributo").each(function()
         {
             var id=$(this).attr('id');
@@ -53,6 +57,42 @@
                 checkboxSeleccionadas+=$(this).val()+','
             }
         });
+
+        $("[id^='estatus_*_']").each(function()
+        {
+            if ($(this).is(':checked'))
+            {
+                switch ($(this).attr('id'))
+                {
+                    case 'estatus_basica_comun_1':
+                    case 'estatus_basica_comun_2':
+                        checkboxSeleccionadasEstatusBasicaComun+=$(this).val()+','
+                        break;
+                    case 'estatus_basica_cientifico_1':
+                    case 'estatus_basica_cientifico_2':
+                        checkboxSeleccionadasEstatusBasicaCientifico+=$(this).val()+','
+                        break;
+                    case 'estatus_avanzada_1':
+                    case 'estatus_avanzada_2':
+                        checkboxSeleccionadasEstatusAvanzada+=$(this).val()+','
+                        break;
+                }
+            }
+        });
+
+        if (checkboxSeleccionadasEstatusBasicaComun != "")
+        {
+            busqueda.estatusBasicaComun=checkboxSeleccionadasEstatusBasicaComun.substring(0, checkboxSeleccionadasEstatusBasicaComun.length-1);
+        }
+        if (checkboxSeleccionadasEstatusBasicaCientifico != "")
+        {
+            busqueda.estatusBasicaCientifico=checkboxSeleccionadasEstatusBasicaCientifico.substring(0, checkboxSeleccionadasEstatusBasicaCientifico.length-1);
+        }
+        if (checkboxSeleccionadasEstatusAvanzada != "")
+        {
+            busqueda.estatusBasicaAvanzada=checkboxSeleccionadasEstatusAvanzada.substring(0, checkboxSeleccionadasEstatusAvanzada.length-1);
+        }
+
         busqueda.tipo_distribucion=checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
         document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda).replace(/"/g, "%22") + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
     }
@@ -76,7 +116,27 @@
         {
             $.each(atributos.tipo_distribucion.split(','), function(k, v){
                 $('#tipo_distribucion_'+v).attr('checked', true);
+            });
+        }
 
+        if (atributos.estatusBasicaComun !== "")
+        {
+            $.each(atributos.estatusBasicaComun.split(','), function(k, v){
+                $('#tipo_distribucion_'+v).attr('checked', true);
+            });
+        }
+
+        if (atributos.estatus !== "")
+        {
+            $.each(atributos.tipo_distribucion.split(','), function(k, v){
+                $('#tipo_distribucion_'+v).attr('checked', true);
+            });
+        }
+
+        if (atributos.estatus !== "")
+        {
+            $.each(atributos.tipo_distribucion.split(','), function(k, v){
+                $('#tipo_distribucion_'+v).attr('checked', true);
             });
         }
     }
@@ -157,15 +217,19 @@
       <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
       <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
       <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+      <br>Mostrar solo nombres:<br>
+      <%= checkboxValidoSinonimo('basica_comun') %>
   <% end %>
-
+  <br>
   <%= form_tag resultados_especies_path, :method => :get do %>
       <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
       Nombre científico<br>
       <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
       <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
       <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-      <br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return busqueda_avanzada();' %> &#8595;
+      <br>Mostrar solo nombres:<br>
+      <%= checkboxValidoSinonimo('basica_cientifico') %>
+      <br><br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return busqueda_avanzada();' %> &#8595;
   <% end %>
 </div>
 
@@ -180,11 +244,13 @@
       </div>
       <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
       <br><br>con tipo de distribución<br>
-      <%= checkboxTipoDistribucion.html_safe  %>
+      <%= checkboxTipoDistribucion %>
       <br><br>con la categoria taxonómica<br>
       <%= select_tag :comparador, busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => :comparador, :class => :busqueda_atributo %>
       <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => :categoria_taxonomica, :class => :busqueda_atributo %>
-      <br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+      <br><br>Mostrar solo nombres:<br>
+      <%= checkboxValidoSinonimo('avanzada') %>
+      <br><br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
       <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
   <% end %>
 </div>

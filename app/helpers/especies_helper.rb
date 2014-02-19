@@ -1,7 +1,7 @@
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon)
-    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{estandarizaAutoridad(taxon.nombre_autoridad)}".html_safe
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)
@@ -71,16 +71,26 @@ module EspeciesHelper
   def checkboxTipoDistribucion
     checkBoxes ||=''
     TipoDistribucion.all.order('descripcion ASC').each do |tipoDist|
-      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :id => "tipo_distribucion_#{tipoDist.id}", :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
     end
-    checkBoxes
+    checkBoxes.html_safe
   end
 
-  def dameRegionesNombresBibliografia(especie, detalles=nil)
+  def checkboxValidoSinonimo(tipoBusqueda)
+    checkBoxes ||=''
+    Especie::ESTATUSES.each do |e|
+      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}&nbsp;&nbsp;"
+    end
+    checkBoxes.html_safe
+  end
+
+  def dameRegionesNombresBibliografia(especie)
+    regiones ||= ''
+    nombresComunes ||= ''
+    distribuciones ||= ''
+
     if especie.especies_regiones.count > 0
-      regiones ||= ''
-      nombresComunes ||= ''
-      distribucion ||= ''
+      distribArray ||= []
       especie.especies_regiones.each do |e|
         regiones+= "<li>#{e.region.nombre_region}</li>" if !e.region.is_root?
 
@@ -91,11 +101,16 @@ module EspeciesHelper
           #detalles ? region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor}</p>" : region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor.truncate(25)}</p>"
           #end
         end
-
-        distribucion+= "<li>#{e.tipo_distribucion.descripcion}</li>" if e.tipo_distribucion_id.present?
+        distribArray.push(e.tipo_distribucion.descripcion) if e.tipo_distribucion_id.present?
+      end
+      if distribArray.present?
+        distribArray.uniq.each do |d|
+          Rails.logger.info "---#{d}---"
+          distribuciones+= "<li>#{d}</li>"
+        end
       end
     end
-    {:regiones => regiones, :nombresComunes => nombresComunes, :distribucion => distribucion}
+    {:regiones => regiones, :nombresComunes => nombresComunes, :distribuciones => distribuciones}
   end
 
   def dameEspecieEstatuses(taxon)

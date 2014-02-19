@@ -72,6 +72,7 @@
     <% end %>
 </script>
 
+<% regNomBib=dameRegionesNombresBibliografia(@especie) %>
 <p id="notice"><%= notice %></p>
 
 <p><%= enlacesDeTaxonomia(@especie) %></p>
@@ -81,7 +82,7 @@
 <% end %>
 
 <div class="titulo">
-<h1><%= @titulo %></h1>
+  <h1><%= @titulo %></h1>
 </div>
 
 <div class="menu">
@@ -99,20 +100,6 @@
       <td width="40%" valign="top">
         <fieldset>
           <legend class="leyenda"><%= 'Informaci&oacute;n del cat&aacute;logo'.html_safe %></legend>
-          <p>
-            <strong>Identificador &uacute;nico:</strong>
-            <%= @especie.id %>
-          </p>
-
-          <p>
-            <strong>Ascendente directo:</strong>
-            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
-          </p>
-
-          <p>
-            <strong>Ascendente obligatorio:</strong>
-            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
-          </p>
 
           <p>
             <strong>Estatus:</strong>
@@ -129,10 +116,8 @@
             <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
           </p>
 
-          <p>
-            <strong>Nombres comunes, regiones, distribuciones y bibliografias:</strong>
-            <%= Especie.dameRegionesNombresBibliografia(@especie,true).html_safe %>
-          </p>
+          <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
+          <%= "<p><strong>Distribuciones:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
 
           <p>
             <strong>Fuente:</strong>
@@ -140,8 +125,13 @@
           </p>
 
           <p>
-            <strong>Nombre autoridad:</strong>
-            <%= @especie.nombre_autoridad %>
+            <strong>Ascendente directo:</strong>
+            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
+          </p>
+
+          <p>
+            <strong>Ascendente obligatorio:</strong>
+            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
           </p>
 
           <p>
@@ -157,6 +147,11 @@
           <p>
             <strong>Anotaci&oacute;n:</strong>
             <%= @especie.anotacion %>
+          </p>
+
+          <p>
+            <strong>Identificador &uacute;nico:</strong>
+            <%= @especie.id %>
           </p>
 
           <p>
@@ -188,19 +183,21 @@
             <% end %>
           </div>
         </fieldset>
+
+        <%= "<fieldset><legend class='leyenda'>Regiones:</legend><ul>#{regNomBib[:regiones]}</ul></fieldset>".html_safe if regNomBib[:regiones].present? %>
       </td>
     </tr>
   </table>
 </div>
 
 <div id="ficha-div" style="display: none">
-<table id="ficha">
-  <tr>
-    <td>
+  <table id="ficha">
+    <tr>
+      <td>
         <%= @ficha.html_safe %>
-    </td>
-  </tr>
-</table>
+      </td>
+    </tr>
+  </table>
 </div>
 
 <div id="fotos-div" style="display: none">

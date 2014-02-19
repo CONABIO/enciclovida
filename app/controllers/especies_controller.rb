@@ -23,8 +23,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    #@desc=TaxonDescribers::Conabio.describe(@especie)
-    @desc=nil
+    @desc=TaxonDescribers::Conabio.describe(@especie)
     @desc.present? ? @ficha=@desc : @ficha='No existe ninguna ficha asociada con este taxón'
   end
 
@@ -124,16 +123,22 @@ class EspeciesController < ApplicationController
 
   def resultados
     @resultado=params
-    @resultado2=''
     @vista=params[:busqueda_oculto]
+    estatus ||= ''
 
     case params[:busqueda_oculto]
       when 'basica_comun'
+        estatus+= "#{params[:estatus_basica_comun_1]}," if params[:estatus_basica_comun_1].present?
+        estatus+= "#{params[:estatus_basica_comun_2]}," if params[:estatus_basica_comun_2].present?
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
-          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC')
+          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_comun ASC')
       when 'basica_cientifico'
+        estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
+        estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}").order('nombre ASC')
+          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC')
       when 'avanzada'
         busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||=''
@@ -158,24 +163,29 @@ class EspeciesController < ApplicationController
             joins+='.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
             conTipoDistribucion=true
           end
+
+          estatus+= "#{value}," if key == 'estatus_avanzada_1'
+          estatus+= "#{value}," if key == 'estatus_avanzada_2'
         end
+
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
 
         if params[:categoria_taxonomica].present?
           categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
           condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
         end
 
-        joins+='.caso_categoria_taxonomica'
-        condiciones+='.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
-        busqueda+=joins.split('.').uniq.join('.')+condiciones
-        @taxones=eval(busqueda).order('nombre_cientifico ASC')
+        joins+= '.caso_categoria_taxonomica'
+        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
+        condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
+        busqueda+= joins.split('.').uniq.join('.') + condiciones
+        @taxones = eval(busqueda).order('nombre_cientifico ASC')
         #@taxones=Especie.none
         @resultado2=busqueda
 
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
-          format.json { head :no_content }
         end
     end
   end

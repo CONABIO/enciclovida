@@ -10,4 +10,8 @@ module ApplicationHelper
       ''
     end
   end
+
+  def estandarizaAutoridad(autoridad)
+    /\(*\)/.match(autoridad) ? autoridad : "(#{autoridad.tr('()','')})"
+  end
 end

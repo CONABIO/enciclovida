@@ -19,7 +19,8 @@ class Especie < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('%#{valor}')") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
-  scope :caso_rango_valores, ->(columna, rangos) {where("#{columna} IN (#{rangos})")}
+  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
+  scope :caso_estatus, ->(status) { where(:estatus => status.to_i) }
   scope :caso_nombre_comun, -> { joins(:nombres_regiones => [:nombre_comun]) }
   scope :caso_region, -> { joins(:especies_regiones => [:region]) }
   scope :caso_tipo_distribucion, -> { joins(:especies_regiones => [:tipo_distribucion]) }
@@ -188,52 +189,6 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
           }
       }
   }
-
-  def self.dameRegionesNombresBibliografia(especie, detalles=nil)
-    region="<div style='max-width:430px; overflow-x: scroll;'><table cellpadding='20'><tr>"
-
-    if especie.especies_regiones.count > 0
-
-      especie.especies_regiones.each do |e|
-        region+="<td style='min-width:200px;'><ul>"
-        masDeUnAncestro ||=false
-
-        e.region.ancestor_ids.push(e.region.id).each do |ancestro|
-          subregion=Region.find(ancestro)
-
-          masDeUnAncestro ? region+="<ul><li>#{subregion.nombre_region} (#{subregion.tipo_region.descripcion})</li></ul>" :
-              region+="<li>#{subregion.nombre_region} (#{subregion.tipo_region.descripcion})</li>"
-          masDeUnAncestro=true
-        end
-
-        region+='<ol>'
-
-        e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
-          region+="<li>#{nombre.nombre_comun.nombre_comun} (#{nombre.nombre_comun.lengua.downcase})</li>"
-
-          nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id).where(:nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-            detalles ? region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor}</p>" : region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor.truncate(25)}</p>"
-          end
-        end
-        region+='</ol>'
-
-        if e.tipo_distribucion_id.nil?
-          e.region.is_root? ? region+='</td>' : region+='<b>Distribución:</b> SD</td>'
-        else
-          region+="<b>Distribución:</b> #{e.tipo_distribucion.descripcion}</td>"
-        end
-      end
-
-    elsif CON_REGION.include?(especie.categoria_taxonomica_id)
-      region='<td>ND</td>'
-
-    else
-      return region=''
-    end
-
-    region + '</tr></table></div>'
-  end
-
 
   def self.dameEstadoDeConservacion(especie)
     conservacion='<ul>'
