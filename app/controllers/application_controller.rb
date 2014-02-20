@@ -64,9 +64,4 @@ class ApplicationController < ActionController::Base
     cookies.delete :SpryMedia_DataTables_especies_especies
     cookies.delete :SpryMedia_DataTables_especies_
   end
-
-  def enlacesDelArbol(taxon, conClick=nil)
-    nodos="<ul><li id=\"nodo_#{taxon.id}\">#{view_context.link_to("#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}", '', :id => "link_#{taxon.id}", :onclick => 'return despliegaOcontrae(this.id);')} #{view_context.link_to('ver', taxon, :class => 'sub_link_taxon')}</li>"
-    conClick.present? ? nodos[4..-1] : nodos
-  end
 end

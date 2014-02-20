@@ -263,15 +263,6 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
     identificadores[0..-3]
   end
 
-  def self.dameDescendientesDirectos(taxon)
-    hijos='<ul>'
-    taxon.child_ids.each do |children|
-      subTaxon=Especie.find(children)
-      hijos+="<li>#{subTaxon.categoria_taxonomica.nombre_categoria_taxonomica} ✓ <a href=\"/especies/#{subTaxon.id}\">#{subTaxon.nombre_cientifico} #{subTaxon.nombre_autoridad}</a></li>"
-    end
-    hijos+='</ul>'
-  end
-
   private
 
   def personalizaBusqueda

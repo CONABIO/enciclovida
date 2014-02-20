@@ -29,6 +29,7 @@
         var checkboxSeleccionadasEstatusBasicaComun='';
         var checkboxSeleccionadasEstatusBasicaCientifico='';
         var checkboxSeleccionadasEstatusAvanzada='';
+        var busquedaAvanzada = $('#busqueda_basica').is(':visible') ? 'busqueda_basica' : 'busqueda_avanzada';
 
         $(".busqueda_atributo").each(function()
         {
@@ -58,7 +59,7 @@
             }
         });
 
-        $("[id^='estatus_*_']").each(function()
+        $("[id^='estatus_']").each(function()
         {
             if ($(this).is(':checked'))
             {
@@ -80,25 +81,22 @@
             }
         });
 
-        if (checkboxSeleccionadasEstatusBasicaComun != "")
-        {
-            busqueda.estatusBasicaComun=checkboxSeleccionadasEstatusBasicaComun.substring(0, checkboxSeleccionadasEstatusBasicaComun.length-1);
-        }
-        if (checkboxSeleccionadasEstatusBasicaCientifico != "")
-        {
-            busqueda.estatusBasicaCientifico=checkboxSeleccionadasEstatusBasicaCientifico.substring(0, checkboxSeleccionadasEstatusBasicaCientifico.length-1);
-        }
-        if (checkboxSeleccionadasEstatusAvanzada != "")
-        {
-            busqueda.estatusBasicaAvanzada=checkboxSeleccionadasEstatusAvanzada.substring(0, checkboxSeleccionadasEstatusAvanzada.length-1);
-        }
-
-        busqueda.tipo_distribucion=checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
+        busqueda.tipoBusqueda = busquedaAvanzada;
+        busqueda.estatusBasicaComun = checkboxSeleccionadasEstatusBasicaComun.substring(0, checkboxSeleccionadasEstatusBasicaComun.length-1);
+        busqueda.estatusBasicaCientifico = checkboxSeleccionadasEstatusBasicaCientifico.substring(0, checkboxSeleccionadasEstatusBasicaCientifico.length-1);
+        busqueda.estatusAvanzada = checkboxSeleccionadasEstatusAvanzada.substring(0, checkboxSeleccionadasEstatusAvanzada.length-1);
+        busqueda.tipo_distribucion = checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
         document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda).replace(/"/g, "%22") + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
     }
 
     cargaBusquedas = function(atributos)
     {
+        if (atributos.tipoBusqueda == 'busqueda_avanzada')
+        {
+            $('#'+atributos.tipoBusqueda).show();
+            $('#busqueda_basica').hide();
+        }
+
         if (atributos.adicionales !== "")
         {
             $.each(atributos.adicionales.split(','), function(){
@@ -122,21 +120,21 @@
         if (atributos.estatusBasicaComun !== "")
         {
             $.each(atributos.estatusBasicaComun.split(','), function(k, v){
-                $('#tipo_distribucion_'+v).attr('checked', true);
+                $('#estatus_basica_comun_'+v).attr('checked', true);
             });
         }
 
-        if (atributos.estatus !== "")
+        if (atributos.estatusBasicaCientifico !== "")
         {
-            $.each(atributos.tipo_distribucion.split(','), function(k, v){
-                $('#tipo_distribucion_'+v).attr('checked', true);
+            $.each(atributos.estatusBasicaCientifico.split(','), function(k, v){
+                $('#estatus_basica_cientifico_'+v).attr('checked', true);
             });
         }
 
-        if (atributos.estatus !== "")
+        if (atributos.estatusAvanzada !== "")
         {
-            $.each(atributos.tipo_distribucion.split(','), function(k, v){
-                $('#tipo_distribucion_'+v).attr('checked', true);
+            $.each(atributos.estatusAvanzada.split(','), function(k, v){
+                $('#estatus_avanzada_'+v).attr('checked', true);
             });
         }
     }
@@ -167,7 +165,6 @@
     {
         var numeroAtributos=$("[id^='bAtributo_']").length +1;
         $('#atributos_extra').append(estructuraFiltro(numeroAtributos));
-
         guardaBusquedas();
         return false;
     }
@@ -183,6 +180,7 @@
     {
         $('#busqueda_basica').slideUp();
         $('#busqueda_avanzada').slideDown();
+        guardaBusquedas();
         return false;
     }
 
@@ -190,12 +188,13 @@
     {
         $('#busqueda_avanzada').slideUp();
         $('#busqueda_basica').slideDown();
+        guardaBusquedas();
         return false;
     }
 
     $(document).ready(function()
     {
-        var cookie=getCookie('busqueda_taxones')
+        var cookie=getCookie('busqueda_taxones');
 
         if (cookie == "")
         {
@@ -204,8 +203,10 @@
             cargaBusquedas(JSON.parse(cookie));
         }
 
-        $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox", function() {
+        $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function() {
             guardaBusquedas();
+            //var cookie2=getCookie('busqueda_taxones');
+            //alert(cookie2);
         });
     });
 </script>
@@ -217,7 +218,7 @@
       <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
       <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
       <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-      <br>Mostrar solo nombres:<br>
+      <br>mostrar solo taxones:<br>
       <%= checkboxValidoSinonimo('basica_comun') %>
   <% end %>
   <br>
@@ -227,7 +228,7 @@
       <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
       <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
       <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-      <br>Mostrar solo nombres:<br>
+      <br>mostrar solo taxones:<br>
       <%= checkboxValidoSinonimo('basica_cientifico') %>
       <br><br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return busqueda_avanzada();' %> &#8595;
   <% end %>
@@ -248,7 +249,7 @@
       <br><br>con la categoria taxonómica<br>
       <%= select_tag :comparador, busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => :comparador, :class => :busqueda_atributo %>
       <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => :categoria_taxonomica, :class => :busqueda_atributo %>
-      <br><br>Mostrar solo nombres:<br>
+      <br><br>mostrar solo taxones:<br>
       <%= checkboxValidoSinonimo('avanzada') %>
       <br><br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
       <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;

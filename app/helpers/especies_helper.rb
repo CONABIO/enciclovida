@@ -1,7 +1,16 @@
 module EspeciesHelper
 
-  def tituloNombreCientifico(taxon)
-    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{estandarizaAutoridad(taxon.nombre_autoridad)}".html_safe
+  def tituloNombreCientifico(taxon, params={})
+    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{params[:context] ? view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}") : link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{estandarizaAutoridad(taxon.nombre_autoridad)}".html_safe
+  end
+
+  def estandarizaAutoridad(autoridad)
+    /\(*\)/.match(autoridad) ? autoridad : "(#{autoridad.tr('()','')})"
+  end
+
+  def enlacesDelArbol(taxon, conClick=nil)
+    nodos="<ul><li id='nodo_#{taxon.id}' class='links_arbol'>#{view_context.link_to('±', '', :id => "link_#{taxon.id}", :class => 'sub_link_taxon', :onclick => 'return despliegaOcontrae(this.id);')} #{tituloNombreCientifico(taxon, :context => true)}</li>"
+    conClick.present? ? nodos[4..-1] : nodos
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)
@@ -123,5 +132,14 @@ module EspeciesHelper
       estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
     end
     estatuses+='</ul>'
+  end
+
+  def dameDescendientesDirectos(taxon)
+    hijos='<ul>'
+    taxon.child_ids.each do |children|
+      subTaxon=Especie.find(children)
+      hijos+="<li>#{tituloNombreCientifico(subTaxon)}</li>" if subTaxon.present?
+    end
+    hijos+='</ul>'
   end
 end

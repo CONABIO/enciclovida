@@ -80,6 +80,10 @@ nested-fields
   overflow-y: scroll;
 }
 
+.links_arbol {
+  list-style-type: none;
+}
+
 .fieldset_regiones {background-color:#E8E8E8; border-style: solid;}
 .fieldset_nombres {background-color:#F5F5F5; border-style: solid;}
 .fieldset_bibliografias {background-color:#FFFFFF; border-style: solid;}
@@ -113,4 +117,6 @@ nested-fields
   width:150px;
   background-color:#dddddd;
 }
+
+
 
