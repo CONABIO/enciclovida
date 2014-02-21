@@ -4,7 +4,7 @@ class EspeciesController < ApplicationController
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
-  before_action :dameListas, :only => [:resultados, :show, :edit]
+  layout false, :only => :dame_listas
 
   # GET /especies
   # GET /especies.json
@@ -117,7 +117,6 @@ class EspeciesController < ApplicationController
   end
 
   def resultados
-    @resultado=params
     @vista=params[:busqueda_oculto]
     estatus ||= ''
 
@@ -176,7 +175,8 @@ class EspeciesController < ApplicationController
         busqueda+= joins.split('.').uniq.join('.') + condiciones
         @taxones = eval(busqueda).order('nombre_cientifico ASC')
         #@taxones=Especie.none
-        @resultado2=busqueda
+        #@resultado2=busqueda
+        #@resultado=params
 
       else
         respond_to do |format|
@@ -284,6 +284,18 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def dame_listas
+    usuario=dameUsuario
+    if usuario.present?
+      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
+      @listas=0 if @listas.empty?
+    end
+
+    respond_to do |format|
+      format.html { render :json => dameListas(@listas) }
+    end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_especie
@@ -304,15 +316,6 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
-  end
-
-  def dameListas
-    usuario=dameUsuario
-    if usuario.present?
-      @usuario=usuario
-      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC')
-      @listas=0 if @listas.empty?
-    end
   end
 
   def guardaRelaciones(tipoRelacion)

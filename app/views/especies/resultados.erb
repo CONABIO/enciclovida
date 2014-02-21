@@ -1,4 +1,17 @@
 <%= javascript_include_tag params[:controller] %>
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    $(document).ready(function() {
+        $.ajax({
+            url: "/especies/dame_listas",
+            type: 'GET'
+        }).done(function(html) {
+            $('#widget_busqueda').html(html);
+        }).fail(function(){
+            $('#widget_busqueda').html('<p>Hubo un error al cargar los datos.');
+        });
+    });
+</script>
+
 <% content_for(:title) do %>
     <%= @titulo="Resultados (#{@taxones.length})" %>
 <% end %>
@@ -11,7 +24,7 @@
 
 <div id="acciones">
   <%= label_tag 'box_especie', 'Selecciona todos' %>
-  <%= check_box_tag 'box_especie', 'todos' %>
+  <%= check_box_tag :box_especie, :todos %>
 </div>
 
 <%= @resultado %>
@@ -20,5 +33,5 @@
 %>
 
 <p class="enlaces_acciones">
-  <%= 'Tu búsqueda no dio ningún resultado.' if @taxones.length == 0 %>
+  <%= 'Tu b&uacute;squeda no dio ningún resultado.'.html_safe if @taxones.length == 0 %>
 </p>

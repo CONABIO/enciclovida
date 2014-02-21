@@ -31,3 +31,26 @@
     text-align: right;
 }
 
+#menu
+{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+#menu li
+{
+    float:left;
+}
+
+#menu li a
+{
+    display:block;
+    width:150px;
+    background-color:#dddddd;
+}
+
+#busqueda {
+    width: 1000px;
+}

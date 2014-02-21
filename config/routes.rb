@@ -29,6 +29,7 @@ Buscador::Application.routes.draw do
   resources :especies do
     collection do
       post :destruye_seleccionados
+      get :dame_listas
       get :buscaDescendientes
       get :muestraTaxonomia
       get :autocomplete_especie_nombre

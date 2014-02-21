@@ -1,11 +1,7 @@
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
-    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{params[:context] ? view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}") : link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{estandarizaAutoridad(taxon.nombre_autoridad)}".html_safe
-  end
-
-  def estandarizaAutoridad(autoridad)
-    /\(*\)/.match(autoridad) ? autoridad : "(#{autoridad.tr('()','')})"
+    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{params[:context] ? view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}") : link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
   end
 
   def enlacesDelArbol(taxon, conClick=nil)
@@ -44,7 +40,7 @@ module EspeciesHelper
   def opcionesListas(listas)
     opciones ||=''
     listas.each do |lista|
-      opciones+="<option value=\"#{lista.id}\">#{truncate(lista.nombre_lista, :length => 40)} (#{lista.cadena_especies.present? ? lista.cadena_especies.split(',').count : 0 } taxones)</option>"
+      opciones+="<option value='#{lista.id}'>#{view_context.truncate(lista.nombre_lista, :length => 40)} (#{lista.cadena_especies.present? ? lista.cadena_especies.split(',').count : 0 } taxones)</option>"
     end
     opciones
   end
@@ -123,15 +119,24 @@ module EspeciesHelper
   end
 
   def dameEspecieEstatuses(taxon)
-    estatuses='<ul>'
+    estatuses ||= ''
+    taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
+
     taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
-      taxSinonimo=Especie.find(estatus.especie_id2)
+      taxSinonimo = Especie.find(estatus.especie_id2)
       next if taxSinonimo.nil?
 
-      estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
-      estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+      if taxon.estatus == 2
+        estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
+        estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+      elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
+        estatuses+= tituloNombreCientifico(taxSinonimo)
+        estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
+      else
+        return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
+      end
     end
-    estatuses+='</ul>'
+    taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
   end
 
   def dameDescendientesDirectos(taxon)
@@ -141,5 +146,18 @@ module EspeciesHelper
       hijos+="<li>#{tituloNombreCientifico(subTaxon)}</li>" if subTaxon.present?
     end
     hijos+='</ul>'
+  end
+
+  def dameListas(listas)
+    titulo = "<h3>Widget de #{view_context.link_to(:listas, listas_path)}</h3>"
+    html = if listas.nil?
+             "Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas."
+           elsif listas == 0
+             "A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?"
+           else
+             "<i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla SHIFT)</i><br><br>
+              #{view_context.select_tag(:listas, opcionesListas(listas).html_safe, :multiple => true, :size => 10, :style => 'width: 200px;')}"
+           end
+    titulo + html
   end
 end

@@ -70,7 +70,7 @@ nested-fields
   margin-right: auto;
 }
 
-#busqueda, #ficha, #fotos {
+#ficha, #fotos {
   width: 1000px;
 }
 
@@ -97,26 +97,5 @@ nested-fields
 .link_azul:active {color-background: #0000ff; text-decoration: none; }
 .link_azul:visited {color: #0000ff; text-decoration: none; }
 .link_azul:hover {background-color: #ffffff; text-decoration: none; }
-
-#menu
-{
-  list-style-type:none;
-  margin:0;
-  padding:0;
-  overflow:hidden;
-}
-
-#menu li
-{
-  float:left;
-}
-
-#menu li a
-{
-  display:block;
-  width:150px;
-  background-color:#dddddd;
-}
-
 
 

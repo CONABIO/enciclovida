@@ -46,10 +46,6 @@
   <%= button_tag 'Limpiar busqueda', :id => :limpiar, :type => :button %>
   <%= submit_tag 'Añade los seleccionados a la lista' , data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
   <%= submit_tag 'Destruye los seleccionados' , data: { confirm: '¿Estás seguro de eliminar los selecoinados?' } %>
-  <%= #link_to 'Nuevo taxón', new_especy_path
-  %>
-  <%= #NombreComun.search(:conditions => {:nom => "rufo"})
-  %>
 </div>
 
 <br><br>
@@ -57,7 +53,7 @@
   <tr>
     <td width="60%" valign="top">
       <fieldset>
-        <legend class="leyenda">Árbol taxonómico</legend>
+        <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
         <div id="vista_arbol">
           <%= arbolTaxonomico.html_safe %>
         </div>
@@ -71,10 +67,10 @@
           <% if @listas.nil? %>
               Debes <%= link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path %> para poder ver tus listas.
           <% elsif @listas == 0 %>
-              Aún no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
+              A&uacute;n no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
           <% else %>
-              Puedes añadir taxones a más de una lista. (tecla SHIFT)
-              <%= select_tag 'listas', opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
+              Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla SHIFT)
+              <%= select_tag :listas, opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
           <% end %>
         </div>
       </fieldset>

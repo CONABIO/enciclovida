@@ -106,10 +106,7 @@
             <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
           </p>
 
-          <p>
-            <strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>
-            <%= dameEspecieEstatuses(@especie).html_safe %>
-          </p>
+          <%= dameEspecieEstatuses(@especie).html_safe %>
 
           <p>
             <strong>Caracter&iacute;stica del tax&oacute;n:</strong>
@@ -118,11 +115,6 @@
 
           <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
           <%= "<p><strong>Distribuciones:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
-
-          <p>
-            <strong>Fuente:</strong>
-            <%= @especie.fuente %>
-          </p>
 
           <p>
             <strong>Ascendente directo:</strong>
