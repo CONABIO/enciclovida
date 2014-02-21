@@ -27,10 +27,12 @@ class ConabioService
           @response = client.call(:data_taxon, message: { scientific_name: @photo_id ? q : URI.encode(q.gsub(' ', '_')), key: @key, photos: @photos, photo_id: @photo_id })
         end
       rescue Timeout::Error, Errno::ECONNRESET
-        raise Timeout::Error, "Conabio didn't respond within #{@timeout} seconds."
+        #raise Timeout::Error, "Conabio didn't respond within #{@timeout} seconds."
+        Rails.logger.info "Conabio no respondio en #{@timeout} segundos."
+        return nil
       end
     rescue Savon::SOAPFault => e
-      puts e.message
+      Rails.logger.info "Hubo un error en la clase SOAP: #{e.message}."
     end
     @response.body[:data_taxon_response][:return].encode('iso-8859-1').force_encoding('UTF-8').gsub(/\n/,'<br>') if
         @response.body[:data_taxon_response][:return].present?

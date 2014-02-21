@@ -16,7 +16,7 @@
 
 <body>
 <ul id=menu_principal>
-  <li><%= link_to 'Inicio (Administrador)', especies_url %></li>
+  <li><%= link_to "Inicio (#{CONFIG.site_name})", especies_url %></li>
   <li><%= link_to 'Listas', listas_url %></li>
   <%- if session[:usuario].present?  %>
       <li>

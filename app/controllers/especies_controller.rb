@@ -2,19 +2,13 @@ class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
-               :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30#, :scopes => [:caso_insensitivo]
+               :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :dameListas, :only => [:resultados, :show, :edit]
 
   # GET /especies
   # GET /especies.json
   def index
-    usuario=dameUsuario
-    if usuario.present?
-      @usuario=usuario
-      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC')
-      @listas=0 if @listas  .empty?
-    end
-
     respond_to do |format|
       format.html
       format.json { render json: EspecieDatatable.new(view_context) }
@@ -310,6 +304,15 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def dameListas
+    usuario=dameUsuario
+    if usuario.present?
+      @usuario=usuario
+      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC')
+      @listas=0 if @listas.empty?
+    end
   end
 
   def guardaRelaciones(tipoRelacion)
