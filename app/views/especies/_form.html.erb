@@ -90,25 +90,16 @@
                 <%= f.label :estatus, 'Estatus del nombre científico: ' %>
                 <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
               </div>
-
-              <div class="field">
-                <%= f.label :fuente, 'Fuente bibliográfica: ' %><br>
-                <%= f.text_field :fuente, :maxlength => 255, :size => 45, :placeholder => 'Fuente bibliográfica' %>
-              </div>
               <div class="field">
                 <%= f.label :nombre_autoridad, 'Nombre de la autoridad' %><br>
                 <%= f.text_field :nombre_autoridad, :maxlength => 255, :size => 45, :placeholder => 'Nombre de la autoridad' %>
-              </div>
-              <div class="field">
-                <%= f.label :numero_filogenetico, 'Número filogenético' %><br>
-                <%= f.text_field :numero_filogenetico, :maxlength => 255, :size => 45, :placeholder => 'Número filogenético' %>
               </div>
               <div class="field">
                 <%= f.label :cita_nomenclatural, 'Cita nomenclatural' %><br>
                 <%= f.text_area :cita_nomenclatural, :rows => 6, :cols => 35, :placeholder => 'Cita nomenclatural' %>
               </div>
               <div class="field">
-                <%= f.label :sis_clas_cat_dicc, 'Sistema de clasificación' %><br>
+                <%= f.label :sis_clas_cat_dicc, 'Sistema de clasificaci&oacute;n, cat&aacute;logo o diccionario'.html_safe %><br>
                 <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
               </div>
               <div class="field">
@@ -118,7 +109,7 @@
             </fieldset>
 
             <fieldset>
-              <legend class="leyenda">Estados de conservación</legend>
+              <legend class="leyenda">Caracter&iacute;stica del tax&oacute;n</legend>
               <div class="field">
                 <%= f.fields_for :especies_catalogos do |ec| %>
                     <%= render 'especie_catalogos_fields', :f => ec %>

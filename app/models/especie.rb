@@ -28,8 +28,8 @@ class Especie < ActiveRecord::Base
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
   scope :caso_categoria_taxonomica, -> { joins(:categoria_taxonomica) }
-  scope :caso_nivel_categoria_taxonomica, ->(comparador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador} #{nivel1} AND
-nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
+  scope :caso_nivel_categoria_taxonomica, ->(comparador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador == '>' ? '>=' : comparador} #{nivel1} AND
+nivel2 = #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador == '>' ? '>=' : comparador} #{nivel4}") }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
       joins('LEFT JOIN categoria_taxonomica')}
 
@@ -270,16 +270,16 @@ nivel2 #{comparador} #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{c
   end
 
   def ponNombreCientifico
-    case self.categoria_taxonomica
-      when 19, 50
-        generoID=self.ancestry_acendente_obligatorio.split("/")[5]
-        genero=find(generoID).nombre
+    case self.categoria_taxonomica_id
+      when 19, 50 #para especies
+        generoID=self.ancestry_acendente_obligatorio.split('/').last
+        genero=Especie.find(generoID.to_i).nombre
         self.nombre_cientifico="#{genero} #{self.nombre}"
-      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55
-        generoID=self.ancestry_acendente_obligatorio.split("/")[5]
-        genero=find(generoID).nombre
-        especieID=self.ancestry_acendente_obligatorio.split("/")[6]
-        especie=find(especieID).nombre
+      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
+        generoID=self.ancestry_acendente_obligatorio.split('/')[5]
+        genero=Especie.find(generoID).nombre
+        especieID=self.ancestry_acendente_obligatorio.split('/')[6]
+        especie=Especie.find(especieID).nombre
         self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
       else
         self.nombre_cientifico=self.nombre

@@ -28,7 +28,7 @@ Buscador::Application.routes.draw do
 
   resources :especies do
     collection do
-      post :destruye_seleccionados
+      put :aniade_taxones
       get :dame_listas
       get :buscaDescendientes
       get :muestraTaxonomia

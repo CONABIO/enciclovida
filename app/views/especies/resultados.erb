@@ -9,6 +9,7 @@
         }).fail(function(){
             $('#widget_busqueda').html('<p>Hubo un error al cargar los datos.');
         });
+
     });
 </script>
 
@@ -22,15 +23,17 @@
   <h1><%= @titulo %></h1>
 </div>
 
+<%= form_tag aniade_taxones_especies_path, :method => :put %>
 <div id="acciones">
   <%= label_tag 'box_especie', 'Selecciona todos' %>
-  <%= check_box_tag :box_especie, :todos %>
+  <%= check_box_tag :box_especie, :todos %> |
+  <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
 </div>
 
 <%= @resultado %>
 <%= @resultado2 %>
-<%= render @vista, :taxones => @taxones
-%>
+
+<%= render @vista, :taxones => @taxones %>
 
 <p class="enlaces_acciones">
   <%= 'Tu b&uacute;squeda no dio ningún resultado.'.html_safe if @taxones.length == 0 %>

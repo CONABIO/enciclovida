@@ -65,10 +65,6 @@
             {
                 switch ($(this).attr('id'))
                 {
-                    case 'estatus_basica_comun_1':
-                    case 'estatus_basica_comun_2':
-                        checkboxSeleccionadasEstatusBasicaComun+=$(this).val()+','
-                        break;
                     case 'estatus_basica_cientifico_1':
                     case 'estatus_basica_cientifico_2':
                         checkboxSeleccionadasEstatusBasicaCientifico+=$(this).val()+','
@@ -82,7 +78,6 @@
         });
 
         busqueda.tipoBusqueda = busquedaAvanzada;
-        busqueda.estatusBasicaComun = checkboxSeleccionadasEstatusBasicaComun.substring(0, checkboxSeleccionadasEstatusBasicaComun.length-1);
         busqueda.estatusBasicaCientifico = checkboxSeleccionadasEstatusBasicaCientifico.substring(0, checkboxSeleccionadasEstatusBasicaCientifico.length-1);
         busqueda.estatusAvanzada = checkboxSeleccionadasEstatusAvanzada.substring(0, checkboxSeleccionadasEstatusAvanzada.length-1);
         busqueda.tipo_distribucion = checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
@@ -114,13 +109,6 @@
         {
             $.each(atributos.tipo_distribucion.split(','), function(k, v){
                 $('#tipo_distribucion_'+v).attr('checked', true);
-            });
-        }
-
-        if (atributos.estatusBasicaComun !== "")
-        {
-            $.each(atributos.estatusBasicaComun.split(','), function(k, v){
-                $('#estatus_basica_comun_'+v).attr('checked', true);
             });
         }
 
@@ -219,8 +207,6 @@
             <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
             <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
             <%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-            <br>mostrar solo taxones:<br>
-            <%= checkboxValidoSinonimo('basica_comun') %>
         <% end %>
         <br>
         <%= form_tag resultados_especies_path, :method => :get do %>

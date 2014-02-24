@@ -4,6 +4,7 @@ class EspeciesController < ApplicationController
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
 
   # GET /especies
@@ -25,15 +26,15 @@ class EspeciesController < ApplicationController
   # GET /especies/new
   def new
     begin
-      @local=params[:local]
       @especie = Especie.new(:parent_id => params[:parent_id])
 
       begin
         @parent=Especie.find(params[:parent_id])
         @cat_taxonomica=@parent.categoria_taxonomica.nombre_categoria_taxonomica
-
       rescue
-        @parent=nil
+        respond_to do |format|
+          format.html { redirect_to :root, notice: 'Lo sentimos esa p&aacute;gina no existe'.html_safe }
+        end
       end
 
     rescue
@@ -122,11 +123,8 @@ class EspeciesController < ApplicationController
 
     case params[:busqueda_oculto]
       when 'basica_comun'
-        estatus+= "#{params[:estatus_basica_comun_1]}," if params[:estatus_basica_comun_1].present?
-        estatus+= "#{params[:estatus_basica_comun_2]}," if params[:estatus_basica_comun_2].present?
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
-          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_comun ASC')
+          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC')
       when 'basica_cientifico'
         estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
@@ -174,9 +172,9 @@ class EspeciesController < ApplicationController
         condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
         busqueda+= joins.split('.').uniq.join('.') + condiciones
         @taxones = eval(busqueda).order('nombre_cientifico ASC')
-        #@taxones=Especie.none
-        #@resultado2=busqueda
-        #@resultado=params
+      #@taxones=Especie.none
+      #@resultado2=busqueda
+      #@resultado=params
 
       else
         respond_to do |format|
@@ -197,53 +195,30 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def destruye_seleccionados
-    if params[:commit] == 'Destruye los seleccionados'
-      eliminoAlgo ||=false
-      descripcion='Eliminó el taxón'
-      params.each do |key, value|
-        if key.include?('box_especie_')
-          begin
-            taxon=Especie.find(value)
-            espera=", #{taxon.nombre_cientifico} (#{taxon.id})"
-            if Especie.destroy(value)
-              eliminoAlgo=true
-              descripcion+=espera
-            end
-          rescue
-          end
-        end
-      end
-      notice=eliminoAlgo ? 'Especies eliminadas correctamente' : 'No seleccionaste ninguna especie'
-      eliminoAlgo ? Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario).save : eliminoAlgo=false
-
-    elsif params[:commit] == 'Añade los seleccionados a la lista'
-      if params[:listas].present?
-        incluyoAlgo ||=false
-        params[:listas].each do |lista|
-          listaDatos=Lista.find(lista)
-          params.each do |key, value|
-            if key.include?('box_especie_')
-              begin
-                listaDatos.cadena_especies.present? ? listaDatos.cadena_especies+=",#{value}" : listaDatos.cadena_especies=value
-                incluyoAlgo=true
-              rescue
-              end
+  def aniade_taxones
+    if params[:listas].present?
+      incluyoAlgo ||=false
+      params[:listas].each do |lista|
+        listaDatos=Lista.find(lista)
+        params.each do |key, value|
+          if key.include?('box_especie_')
+            begin
+              listaDatos.cadena_especies.present? ? listaDatos.cadena_especies+=",#{value}" : listaDatos.cadena_especies=value
+              incluyoAlgo=true
+            rescue
             end
           end
-          listaDatos.save
         end
-        notice=incluyoAlgo ? 'Taxones incluidos correctamente correctamente' : 'No seleccionaste ningún taxón'
-      else
-        notice='Debes seleccionar por lo menos una lista para poder incluir los taxones'
+        listaDatos.save
       end
+      notice=incluyoAlgo ? 'Taxones incluidos correctamente correctamente.' : 'No seleccionaste ningún taxón.'
+    else
+      notice='Debes seleccionar por lo menos una lista para poder incluir los taxones.'
     end
 
     respond_to do |format|
-      format.html { redirect_to :back, :notice => notice }
-      format.json { head :no_content }
+      format.html { redirect_to :back, :notice => "#{notice}-#{params}" }
     end
-
   end
 
   def buscaDescendientes
@@ -285,12 +260,6 @@ class EspeciesController < ApplicationController
   end
 
   def dame_listas
-    usuario=dameUsuario
-    if usuario.present?
-      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
-      @listas=0 if @listas.empty?
-    end
-
     respond_to do |format|
       format.html { render :json => dameListas(@listas) }
     end
@@ -484,5 +453,13 @@ class EspeciesController < ApplicationController
         relacion=''
     end
     return relacion
+  end
+
+  def cualesListas
+    usuario=dameUsuario
+    if usuario.present?
+      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
+      @listas=0 if @listas.empty?
+    end
   end
 end

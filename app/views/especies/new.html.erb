@@ -30,11 +30,7 @@
 </script>
 
 <% content_for(:title) do %>
-    <% if @parent %>
-        <%= @titulo="Nueva especie o grupo descendiente de :<br><br>#{@parent.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@parent.nombre_cientifico} #{@parent.nombre_autoridad}".html_safe %>
-    <% else %>
-        <%= @titulo='Nuevo grupo raíz' %>
-    <% end %>
+    <%= @titulo="Nuevo tax&oacute;n descendiente de :<br><br>#{tituloNombreCientifico(@parent)}".html_safe %>
 <% end %>
 
 <div class="titulo">
