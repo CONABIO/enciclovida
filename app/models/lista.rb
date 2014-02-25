@@ -3,6 +3,7 @@ class Lista < ActiveRecord::Base
   include ListasHelper
   self.table_name='listas'
   validates :nombre_lista, :presence => true, :uniqueness=>true
+  before_update :quitaRepetidos
   #validates :formato, :presence => true
 
   self.per_page = 10
@@ -45,6 +46,11 @@ class Lista < ActiveRecord::Base
     end
   end
 
+  private
+
+  def quitaRepetidos
+    self.cadena_especies = self.cadena_especies.split(',').compact.uniq.join(',') if self.cadena_especies.present?
+  end
 end
 
 

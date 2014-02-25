@@ -4,24 +4,24 @@
     <%= @titulo=@lista.nombre_lista %>
 <% end %>
 
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@lista, @accion).html_safe %>
+</div>
+
 <table style="max-width:1000px;" id="tabla_form"><tr>
   <td valign="top">
     <fieldset>
-      <legend class="leyenda"><%= @titulo %></legend>
+      <legend class="leyenda"><%= link_to @titulo, lista_path(@lista) %></legend>
       <p>
-        <strong>Columnas de la base:</strong>
-        <%= ListasHelper.nombreComunAtributos(@lista).html_safe %>
+        <strong>Informaci&oacute;n a exportar:</strong><br>
+        <%= despliegaLista(@lista) %>
       </p>
       <p>
-        <strong>Taxones a exportar:</strong>
-        <%= @lista.cadena_especies %>
-      </p>
-      <p>
-        <strong>Fecha de creación:</strong>
+        <strong>Fecha de creaci&oacute;n:</strong>
         <%= @lista.created_at %>
       </p>
       <p>
-        <strong>Fecha de la última actualización:</strong>
+        <strong>Fecha de la &uacute;ltima actualizaci&oacute;n:</strong>
         <%= @lista.updated_at %>
       </p>
     </fieldset>
@@ -29,6 +29,3 @@
 </tr></table>
 
 <br>
-<div class="enlaces_acciones">
-  <%= accionesEnlaces(@lista, @accion).html_safe %>
-</div>

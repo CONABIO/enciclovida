@@ -1,3 +1,4 @@
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" charset="utf-8" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     muestraArbol = function(id) {
         $.ajax({
@@ -31,6 +32,7 @@
     info = function() {
         $('#ficha-div').slideUp();
         $('#fotos-div').slideUp();
+        $('#mapas-div').slideUp();
         $('#info-div').slideDown();
         return false;
     };
@@ -38,6 +40,7 @@
     ficha = function() {
         $('#info-div').slideUp();
         $('#fotos-div').slideUp();
+        $('#mapas-div').slideUp();
         $('#ficha-div').slideDown();
         return false;
     };
@@ -45,6 +48,7 @@
     fotos = function() {
         $('#info-div').slideUp();
         $('#ficha-div').slideUp();
+        $('#mapas-div').slideUp();
 
         if ($('#fotos-td').is(':empty'))
         {
@@ -63,9 +67,32 @@
         return false;
     };
 
-    mapas = function() {
+    mapas = function()
+    {
+        var mapOptions = {
+            center: new google.maps.LatLng(38,-79.5),
+            zoom:3,
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        }
+        var map=new google.maps.Map(document.getElementById("googleMap"),mapOptions);
+        var overlay = new google.maps.KmlLayer('http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=%22Panthera%20Onca%22');
+
+        overlay.setMap(map);
+        google.maps.event.addListener(overlay,'status_changed',function(){
+            document.getElementById('status').innerHTML = overlay.getStatus();
+        });
+
+        //google.maps.event.addDomListener(window,'load', mapas);
+        $('#info-div').slideUp();
+        $('#ficha-div').slideUp();
+        $('#fotos-div').slideUp();
+        $('#mapas-div').slideDown();
+
+
         return false;
-    };
+    }
+
+    //google.maps.event.addDomListener(window, 'load', mapas);
 
     <% if !@especie.is_root? %>
     muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
@@ -92,6 +119,12 @@
     <li><%= link_to :Fotos, '', :id => :fotosTab, :onClick => 'return fotos();' %></li>
     <li><%= link_to 'Mapas de distribuci&oacute;n'.html_safe, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
   </ul>
+</div>
+
+<div class="enlaces_acciones">
+  <%= accionesEnlaces(@especie, @accion).html_safe %><br>
+  <%= link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
+              new_especy_path(:parent_id => @especie)).html_safe %>
 </div>
 
 <div id="info-div">
@@ -202,9 +235,13 @@
   </table>
 </div>
 
-<br>
-<div class="enlaces_acciones">
-  <%= accionesEnlaces(@especie, @accion).html_safe %><br>
-  <%= link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
-              new_especy_path(:parent_id => @especie)).html_safe %>
+<div id="mapas-div" style="display: none">
+  <table id="mapas">
+    <tr>
+      <td>
+        <div id="googleMap" style="height:500px;width:600px;"></div>
+        <div id="status"></div>
+      </td>
+    </tr>
+  </table>
 </div>

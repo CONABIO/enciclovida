@@ -149,14 +149,14 @@ module EspeciesHelper
   end
 
   def dameListas(listas)
-    titulo = "<h3>Widget de #{view_context.link_to(:listas, listas_path)}</h3>"
+    titulo = "<h3>Widget de #{view_context.link_to(:listas, listas_path)}</h3>Autom&aacute;ticamente borra los taxones repetidos de las listas<br>"
     html = if listas.nil?
              "Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas."
            elsif listas == 0
              "A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?"
            else
              "<i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla SHIFT)</i><br><br>
-              #{view_context.select_tag(:listas, opcionesListas(listas).html_safe, :multiple => true, :size => 10, :style => 'width: 200px;')}"
+              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => 10, :style => 'width: 200px;')}"
            end
     titulo + html
   end

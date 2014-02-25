@@ -27,4 +27,20 @@ module ListasHelper
     end
     columnas[0..-3]
   end
+
+  def despliegaLista(lista)
+    columnas = lista.columnas.split(',').compact
+    nombresComunesColumnas = ListasHelper.nombreComunAtributos(lista).gsub(',', '<b> - </b>')
+    info ||= []
+    taxones ||= ''
+
+    Especie.find(lista.cadena_especies.split(',')).each do |taxon|
+      info << taxon.attributes.values_at(*columnas)
+    end
+
+    info.each_with_index() do |i|
+      taxones+= "<li>#{i.join('<b> - </b>')}</li>"
+    end
+    "#{nombresComunesColumnas}<ol id='despliega_lista'>#{taxones}</ol>".html_safe
+  end
 end

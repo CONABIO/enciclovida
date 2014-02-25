@@ -198,7 +198,7 @@ class EspeciesController < ApplicationController
   def aniade_taxones
     if params[:listas].present?
       incluyoAlgo ||=false
-      params[:listas].each do |lista|
+      params[:listas].split(',').each do |lista|
         listaDatos=Lista.find(lista)
         params.each do |key, value|
           if key.include?('box_especie_')
@@ -206,18 +206,19 @@ class EspeciesController < ApplicationController
               listaDatos.cadena_especies.present? ? listaDatos.cadena_especies+=",#{value}" : listaDatos.cadena_especies=value
               incluyoAlgo=true
             rescue
+              Rails.logger.info "***ERROR***Lista id: [#{lista}] ya no existe mas"
             end
           end
         end
         listaDatos.save
       end
-      notice=incluyoAlgo ? 'Taxones incluidos correctamente correctamente.' : 'No seleccionaste ningún taxón.'
+      notice=incluyoAlgo ? 'Taxones incluidos correctamente.' : 'No seleccionaste ningún taxón.'
     else
       notice='Debes seleccionar por lo menos una lista para poder incluir los taxones.'
     end
 
     respond_to do |format|
-      format.html { redirect_to :back, :notice => "#{notice}-#{params}" }
+      format.html { redirect_to :back, :notice => notice }
     end
   end
 
