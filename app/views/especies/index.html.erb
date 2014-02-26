@@ -42,12 +42,6 @@
   <h1><%= @titulo %></h1>
 </div>
 
-<div class="pie">
-  <%= button_tag 'Limpiar busqueda', :id => :limpiar, :type => :button %>
-  <%= submit_tag 'Añade los seleccionados a la lista' , data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
-  <%= submit_tag 'Destruye los seleccionados' , data: { confirm: '¿Estás seguro de eliminar los selecoinados?' } %>
-</div>
-
 <br><br>
 <table width="1000" id="tabla_form">
   <tr>
