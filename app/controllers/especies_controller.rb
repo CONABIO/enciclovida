@@ -132,50 +132,53 @@ class EspeciesController < ApplicationController
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
           #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC')
       when 'avanzada'
-        busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
-        joins ||=''
-        condiciones ||=''
-        tipoDistribuciones ||=''
-        @conNombreComun=false
-        @conRegion=false
-        @conEstadoConservacion=false
-        conTipoDistribucion=false
+        if params[:autocompletar].blank?
+          busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
+          joins ||=''
+          condiciones ||=''
+          tipoDistribuciones ||=''
+          @conNombreComun=false
+          @conRegion=false
+          @conEstadoConservacion=false
+          conTipoDistribucion=false
 
-        params.each do |key, value|
-          if key.include?('bAtributo_')
-            numero=key.split('_').last
-            if params['vAtributo_'+numero].present?
-              joins+='.'+tipoDeAtributo(value) if tipoDeAtributo(value).present?
-              condiciones+='.'+tipoDeBusqueda(params['cAtributo_'+numero], value, params['vAtributo_'+numero])
+          params.each do |key, value|
+            if key.include?('bAtributo_')
+              numero=key.split('_').last
+              if params['vAtributo_'+numero].present?
+                joins+='.'+tipoDeAtributo(value) if tipoDeAtributo(value).present?
+                condiciones+='.'+tipoDeBusqueda(params['cAtributo_'+numero], value, params['vAtributo_'+numero])
+              end
             end
+
+            if key.include?('tipo_distribucion_')
+              tipoDistribuciones+="#{value},"
+              joins+='.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
+              conTipoDistribucion=true
+            end
+
+            estatus+= "#{value}," if key == 'estatus_avanzada_1'
+            estatus+= "#{value}," if key == 'estatus_avanzada_2'
           end
 
-          if key.include?('tipo_distribucion_')
-            tipoDistribuciones+="#{value},"
-            joins+='.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
-            conTipoDistribucion=true
+          estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
+
+          if params[:categoria_taxonomica].present?
+            categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
+            condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
           end
 
-          estatus+= "#{value}," if key == 'estatus_avanzada_1'
-          estatus+= "#{value}," if key == 'estatus_avanzada_2'
+          joins+= '.caso_categoria_taxonomica'
+          condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
+          condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
+          busqueda+= joins.split('.').uniq.join('.') + condiciones
+          @taxones = eval(busqueda).order('nombre_cientifico ASC')
+          #@taxones=Especie.none
+          @resultado2=busqueda
+          @resultado=params
+
+        else
         end
-
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
-
-        if params[:categoria_taxonomica].present?
-          categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
-          condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
-        end
-
-        joins+= '.caso_categoria_taxonomica'
-        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
-        condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
-        busqueda+= joins.split('.').uniq.join('.') + condiciones
-        @taxones = eval(busqueda).order('nombre_cientifico ASC')
-      #@taxones=Especie.none
-      #@resultado2=busqueda
-      #@resultado=params
-
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }

@@ -54,20 +54,6 @@
       </fieldset>
     </td>
     <td>
-
-      <fieldset>
-        <legend class="leyenda">Listas</legend>
-        <div width="40%" id="listas" valign="top">
-          <% if @listas.nil? %>
-              Debes <%= link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path %> para poder ver tus listas.
-          <% elsif @listas == 0 %>
-              A&uacute;n no has creado ninguna lista. ¿Quieres <%= link_to 'crear una', new_lista_url %>?
-          <% else %>
-              Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla SHIFT)
-              <%= select_tag :listas, opcionesListas(@listas).html_safe, :multiple => true, :size => 10 %>
-          <% end %>
-        </div>
-      </fieldset>
     </td>
   </tr>
 </table>

@@ -1,6 +1,8 @@
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
+  attr_accessor :cat_tax
+
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
