@@ -2,7 +2,7 @@ class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
-               :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 30
+               :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 10
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas

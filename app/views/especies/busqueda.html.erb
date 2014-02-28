@@ -1,3 +1,5 @@
+<script src="<%= javascript_path 'jQuery-Autocomplete2' %>" charset="utf-8" data-turbolinks-track="true"></script>
+<script src="<%= javascript_path 'jquery.mockjax2' %>" charset="utf-8" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     getCookie = function(c_name)
     {
@@ -191,6 +193,18 @@
             cargaBusquedas(JSON.parse(cookie));
         }
 
+        var countries = [
+            { value: 'Andorra', data: 'AD' },
+            { value: 'Zimbabwe', data: 'ZZ' }
+        ];
+
+        $('#nombre_cientifico2').autocomplete({
+            lookup: countries,
+            onSelect: function (suggestion) {
+                alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+            }
+        });
+
         $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function() {
             guardaBusquedas();
         });
@@ -226,9 +240,17 @@
             <%= hidden_field_tag :busqueda_oculto, :avanzada %>
             Buscar por<br>
             <div id="atributos_extra">
-              <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :id => :bAtributo_1, :class => :busqueda_atributo %>
-              <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :cAtributo_1, :class => :busqueda_atributo %>
-              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :id => :vAtributo_1, :class => :busqueda_atributo %>
+              <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
+              <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
+              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo %>
+              <%= autocomplete_field_tag :nombre_cientifico, '', autocomplete_especie_nombre_especies_path
+              %>
+              <!--div class="container">
+                <div style="position: relative; height: 60px;">
+                  <%=# text_field_tag :nombre_cientifico2, nil, :maxlength => 255, :size => 35, :style => 'position: absolute; z-index: 2; background: transparent;'
+            %>
+                </div>
+              </div-->
             </div>
             <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
             <br><br>con tipo de distribución<br>

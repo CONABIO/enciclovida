@@ -18,7 +18,6 @@
 //= require dataTables/jquery.dataTables
 //= require cocoon
 //= require general
-
 //= require autocomplete-rails
 
 

@@ -1,6 +1,6 @@
 class EspeciesRegionesController < ApplicationController
   before_action :set_especie_region, only: [:show, :edit, :update, :destroy]
-  autocomplete :region, :nombre, :column_name => 'nombre_region', :full => true, :display_value => :personalizaBusqueda,
+  autocomplete :region, :nombre, :column_name => :nombre_region, :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:nombre_region, :tipo_region_id, :ancestry], :limit => 30
 
   # GET /especies_regiones
