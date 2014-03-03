@@ -153,7 +153,7 @@ class EspeciesController < ApplicationController
 
             if key.include?('tipo_distribucion_')
               tipoDistribuciones+="#{value},"
-              joins+='.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
+              joins+= '.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
               conTipoDistribucion=true
             end
 

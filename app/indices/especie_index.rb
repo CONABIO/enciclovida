@@ -1,4 +1,3 @@
-# app/indices/article_index.rb
 ThinkingSphinx::Index.define :especie, :with => :active_record, :delta => ThinkingSphinx::Deltas::DelayedDelta do
   add_column :nombre_cientifico, :delta, :boolean, :default => true, :null => false
   add_index  :nombre_cientifico, :delta
@@ -8,5 +7,5 @@ ThinkingSphinx::Index.define :especie, :with => :active_record, :delta => Thinki
   indexes especies_regiones.nombres_regiones.nombre_comun.nombre_comun, :as => :nombre
   #where "categoria_taxonomica_id = 50"
   #indexes "LOWER(nombre_comun)", :as => :nombre_comun, :sortable => true
-  #has lengua, created_at, updated_at
+  has nombre_autoridad, id
 end

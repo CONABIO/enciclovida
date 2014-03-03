@@ -1,5 +1,4 @@
-<script src="<%= javascript_path 'jQuery-Autocomplete2' %>" charset="utf-8" data-turbolinks-track="true"></script>
-<script src="<%= javascript_path 'jquery.mockjax2' %>" charset="utf-8" data-turbolinks-track="true"></script>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     getCookie = function(c_name)
     {
@@ -104,7 +103,21 @@
         $(".busqueda_atributo").each(function()
         {
             var id=$(this).attr('id');
+            var id_num = id.split('_')[1];
             $(this).val(eval("atributos." + id));
+
+            //alert(id.match(/^bAtributo_/g));
+
+            if (id.match(/^bAtributo_/g) != null)
+            {
+                if ($(this).val() == 'nombre_cientifico')
+                {
+                    $('#vAtributo_' + id_num).attr('data-autocomplete', '/especies/autocomplete_especie_nombre').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
+                } else if ($(this).val() == 'nombre_comun')
+                {
+                    $('#vAtributo_' + id_num).attr('data-autocomplete', '/nombres_comunes/autocomplete_nombre_comun_comun').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
+                }
+            }
         });
 
         if (atributos.tipo_distribucion !== "")
@@ -131,11 +144,11 @@
 
     estructuraFiltro = function(numeroAtributos)
     {
-        var bAtributo, cAtributo, vAtributo, imagenQuitar, anteriores;
+        var bAtributo, cAtributo, vAtributo, hAtributo, imagenQuitar, anteriores;
         bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
         bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
         bAtributo+="<option value='nombre_comun'>nombre común</option>";
-        bAtributo+="<option value='nombre_region'>nombre región</option>";
+        bAtributo+="<option value='nombre_region'>región</option>";
         bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
         bAtributo+="<option value='nombre_autoridad'>autoridad</option></select> ";
 
@@ -145,10 +158,11 @@
         cAtributo+="<option value='3'>igual a</option>";
         cAtributo+="<option value='4'>termina con</option></select> ";
 
-        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='35' type='text'>";
-        imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>"
+        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='35' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
+        hAtributo="<input class='busqueda_atributo' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
+        imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>";
 
-        return bAtributo+cAtributo+vAtributo+imagenQuitar;
+        return bAtributo+cAtributo+vAtributo+hAtributo+imagenQuitar;
     }
 
     masFiltros = function()
@@ -192,20 +206,48 @@
         } else {
             cargaBusquedas(JSON.parse(cookie));
         }
+        /*
+         var countries = [
+         { value: 'Andorra', data: 'AD' },
+         { value: 'Zimbabwe', data: 'ZZ' }
+         ];
 
-        var countries = [
-            { value: 'Andorra', data: 'AD' },
-            { value: 'Zimbabwe', data: 'ZZ' }
-        ];
-
-        $('#nombre_cientifico2').autocomplete({
-            lookup: countries,
-            onSelect: function (suggestion) {
-                alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+         $('#nombre_cientifico2').autocomplete({
+         lookup: countries,
+         onSelect: function (suggestion) {
+         alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+         }
+         });
+         */
+        $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function()
+        {
+            guardaBusquedas();
+            var id=$(this).attr('id').split('_')[1];
+            if ($('#' + $(this).attr('id')).val() == 'nombre_cientifico')
+            {
+                $('#vAtributo_' + id).attr('data-autocomplete', '/especies/autocomplete_especie_nombre').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
+            } else if ($('#' + $(this).attr('id')).val() == 'nombre_comun')
+            {
+                $('#vAtributo_' + id).attr('data-autocomplete', '/nombres_comunes/autocomplete_nombre_comun_comun').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
+            } else {
+                $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
             }
         });
 
-        $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function() {
+        $(document).on('railsAutocomplete.select', "[id^='vAtributo_']", function(event, data) {
+            var id=$(this).attr('id').split('_')[1];
+
+            if ($('#bAtributo_' + id).val() == 'nombre_cientifico')
+            {
+                $(this).val(data.item.nombre_cientifico);
+                $('#hAtributo_' + id).val(data.item.id);
+            } else if ($('#bAtributo_' + id).val() == 'nombre_comun')
+            {
+                $(this).val(data.item.nombre_comun);
+                $('#hAtributo_' + id).val(data.item.id);
+            } else {
+                $(this).val('');
+            }
             guardaBusquedas();
         });
     });
@@ -243,15 +285,15 @@
               <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
               <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
               <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo %>
-              <%= autocomplete_field_tag :nombre_cientifico, '', autocomplete_especie_nombre_especies_path
-              %>
-              <!--div class="container">
+              <%= hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
+            </div>
+            <!--div class="container">
                 <div style="position: relative; height: 60px;">
                   <%=# text_field_tag :nombre_cientifico2, nil, :maxlength => 255, :size => 35, :style => 'position: absolute; z-index: 2; background: transparent;'
-            %>
+      %>
                 </div>
               </div-->
-            </div>
+
             <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
             <br><br>con tipo de distribución<br>
             <%= checkboxTipoDistribucion %>
@@ -262,6 +304,7 @@
             <%= checkboxValidoSinonimo('avanzada') %>
             <br><br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
             <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
+
         <% end %>
       </div>
 
