@@ -132,53 +132,63 @@ class EspeciesController < ApplicationController
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
           #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC')
       when 'avanzada'
-        if params[:autocompletar].blank?
-          busqueda="Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
-          joins ||=''
-          condiciones ||=''
-          tipoDistribuciones ||=''
-          @conNombreComun=false
-          @conRegion=false
-          @conEstadoConservacion=false
-          conTipoDistribucion=false
+        busqueda = "Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
+        joins ||= ''
+        condiciones ||= ''
+        tipoDistribuciones ||= ''
+        @conNombreComun = false
+        @conRegion = false
+        @conEstadoConservacion = false
+        conTipoDistribucion = false
+        conIDCientifico ||= []
+        conIDComun ||= []
 
-          params.each do |key, value|
-            if key.include?('bAtributo_')
-              numero=key.split('_').last
-              if params['vAtributo_'+numero].present?
-                joins+='.'+tipoDeAtributo(value) if tipoDeAtributo(value).present?
-                condiciones+='.'+tipoDeBusqueda(params['cAtributo_'+numero], value, params['vAtributo_'+numero])
-              end
+
+        params.each do |key, value|
+          if key.include?('bAtributo_')
+            numero=key.split('_').last
+            if params['hAtributo_' + numero].present? && params[:categoria_taxonomica].present?
+              conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
+              conIDComun << params['hAtributo_' + numero].to_i if value == 'nombre_comun'
+            else params['vAtributo_' + numero].present?
+            joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
+            condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero])
             end
-
-            if key.include?('tipo_distribucion_')
-              tipoDistribuciones+="#{value},"
-              joins+= '.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
-              conTipoDistribucion=true
-            end
-
-            estatus+= "#{value}," if key == 'estatus_avanzada_1'
-            estatus+= "#{value}," if key == 'estatus_avanzada_2'
           end
 
-          estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
-
-          if params[:categoria_taxonomica].present?
-            categoria=CategoriaTaxonomica.find(params[:categoria_taxonomica].to_i)
-            condiciones+=".caso_nivel_categoria_taxonomica('#{params[:comparador]}', '#{categoria.nivel1}', '#{categoria.nivel2}', '#{categoria.nivel3}', '#{categoria.nivel4}')"
+          if key.include?('tipo_distribucion_')
+            tipoDistribuciones+="#{value},"
+            joins+= '.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
+            conTipoDistribucion=true
           end
 
-          joins+= '.caso_categoria_taxonomica'
-          condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
-          condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
-          busqueda+= joins.split('.').uniq.join('.') + condiciones
-          @taxones = eval(busqueda).order('nombre_cientifico ASC')
-          #@taxones=Especie.none
-          @resultado2=busqueda
-          @resultado=params
-
-        else
+          estatus+= "#{value}," if key == 'estatus_avanzada_1'
+          estatus+= "#{value}," if key == 'estatus_avanzada_2'
         end
+
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
+        joins+= '.caso_categoria_taxonomica'
+        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
+        condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
+
+        if params[:categoria_taxonomica].present? && conIDCientifico.blank?
+          cat_tax = "\"'#{params[:categoria_taxonomica].join("','")}'\""
+          condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+        elsif params[:categoria_taxonomica].present? && conIDCientifico.present?
+          arbol ||= []
+          taxon = Especie.find(conIDCientifico.first)
+          arbol << taxon.ancestor_ids << taxon.descendant_ids << conIDCientifico.first.to_i
+          cat_tax = "\"'#{params[:categoria_taxonomica].join("','")}'\""
+          arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
+          condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
+          condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+        end
+
+        busqueda+= joins.split('.').uniq.join('.') + condiciones
+        @taxones = eval(busqueda).order('nombre_cientifico ASC')
+        #@taxones=Especie.none
+        @resultado2= busqueda
+        @resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
@@ -186,8 +196,8 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # DELETE /especies/1
-  # DELETE /especies/1.json
+# DELETE /especies/1
+# DELETE /especies/1.json
   def destroy
     @especie.destroy
     bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => dameUsuario)
@@ -270,7 +280,7 @@ class EspeciesController < ApplicationController
   end
 
   private
-  # Use callbacks to share common setup or constraints between actions.
+# Use callbacks to share common setup or constraints between actions.
   def set_especie
     begin
       @especie = Especie.find(params[:id])
@@ -280,7 +290,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+# Never trust parameters from the scary internet, only allow the white list through.
   def especie_params
     params.require(:especie).permit(:nombre, :estatus, :fuente, :nombre_autoridad, :numero_filogenetico,
                                     :cita_nomenclatural, :sis_clas_cat_dicc, :anotacion, :categoria_taxonomica_id, :parent_id,

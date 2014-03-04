@@ -219,6 +219,17 @@
          }
          });
          */
+
+        $(document).on('load', "[id^='vAtributo_']", function()
+        {
+            var id=$(this).attr('id').split('_')[1];
+            if ($('#bAtributo_' + id).val() != 'nombre_cientifico' && $('#bAtributo_' + id).val() != 'nombre_comun')
+            {
+                $(this).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
+                alert(1);
+            }
+        });
+
         $(document).on('change', ".busqueda_atributo, .busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function()
         {
             guardaBusquedas();
@@ -241,14 +252,19 @@
             {
                 $(this).val(data.item.nombre_cientifico);
                 $('#hAtributo_' + id).val(data.item.id);
-            } else if ($('#bAtributo_' + id).val() == 'nombre_comun')
+            } /*else if ($('#bAtributo_' + id).val() == 'nombre_comun')
             {
                 $(this).val(data.item.nombre_comun);
                 $('#hAtributo_' + id).val(data.item.id);
-            } else {
+            }*/ else {
                 $(this).val('');
             }
             guardaBusquedas();
+        });
+
+        $(document).on('keyup', "[id^='vAtributo_']", function() {
+            var id=$(this).attr('id').split('_')[1];
+            $('#hAtributo_' + id).val('');
         });
     });
 </script>
@@ -280,7 +296,7 @@
       <div id="busqueda_avanzada" style="display: none">
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :avanzada %>
-            Buscar por<br>
+            <b>Buscar por</b><br>
             <div id="atributos_extra">
               <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
               <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
@@ -295,15 +311,27 @@
               </div-->
 
             <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
-            <br><br>con tipo de distribución<br>
+            <br><br><b>con tipo de distribución</b><br>
             <%= checkboxTipoDistribucion %>
-            <br><br>con la categoria taxonómica<br>
-            <%= select_tag :comparador, busquedas(Especie::BUSQUEDAS_COMPARADOR).html_safe, :id => :comparador, :class => :busqueda_atributo %>
-            <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.all, 'id', 'nombre_categoria_taxonomica'), :prompt => '---Selecciona---', :id => :categoria_taxonomica, :class => :busqueda_atributo %>
-            <br><br>mostrar solo taxones:<br>
-            <%= checkboxValidoSinonimo('avanzada') %>
-            <br><br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
-            <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
+
+            <table>
+              <tr>
+                <td>
+                  <div style="text-align: left; display: inline-block"><b>con la categoria taxonómica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i></div>
+                  <br><br><br><br><b>mostrar solo taxones:</b><br>
+                  <%= checkboxValidoSinonimo('avanzada') %>
+                  <br><br><br><br><%= submit_tag :buscar, data: { disable_with: 'Procesando...' } %>
+                  <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
+                </td>
+                <td>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, 'nombre_categoria_taxonomica', 'nombre_categoria_taxonomica'),
+                                 :class => :busqueda_atributo, :multiple => true, :size => 15 %>
+                </td>
+
+            </table>
+
+
 
         <% end %>
       </div>
