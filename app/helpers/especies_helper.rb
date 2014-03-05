@@ -5,12 +5,12 @@ module EspeciesHelper
   end
 
   def enlacesDelArbol(taxon, conClick=nil)
-    nodos="<ul><li id='nodo_#{taxon.id}' class='links_arbol'>#{view_context.link_to('±', '', :id => "link_#{taxon.id}", :class => 'sub_link_taxon', :onclick => 'return despliegaOcontrae(this.id);')} #{tituloNombreCientifico(taxon, :context => true)}</li>"
+    nodos="<ul><li id='nodo_#{taxon.id}' class='links_arbol'>#{view_context.link_to('±', '', :id => "link_#{taxon.id}", :class => :sub_link_taxon, :onclick => 'return despliegaOcontrae(this.id);')} #{tituloNombreCientifico(taxon, :context => true)}</li>"
     conClick.present? ? nodos[4..-1] : nodos
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)
-    enlaces ||="<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>#{link_to('Todas las categorias', especies_path)} (administrador) > "
+    enlaces ||="<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
     taxa.ancestor_ids.push(taxa.id).each do |ancestro|
       if (taxa.id).equal?(ancestro)
@@ -110,7 +110,6 @@ module EspeciesHelper
       end
       if distribArray.present?
         distribArray.uniq.each do |d|
-          Rails.logger.info "---#{d}---"
           distribuciones+= "<li>#{d}</li>"
         end
       end
@@ -119,33 +118,53 @@ module EspeciesHelper
   end
 
   def dameEspecieEstatuses(taxon)
-    estatuses ||= ''
-    taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
+    if taxon.especies_estatuses.count > 0
+      estatuses ||= ''
+      taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
 
-    taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
-      taxSinonimo = Especie.find(estatus.especie_id2)
-      next if taxSinonimo.nil?
+      taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
+        taxSinonimo = Especie.find(estatus.especie_id2)
+        next if taxSinonimo.nil?
 
-      if taxon.estatus == 2
-        estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
-        estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-      elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
-        estatuses+= tituloNombreCientifico(taxSinonimo)
-        estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
-      else
-        return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
+        if taxon.estatus == 2
+          estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
+          estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+        elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
+          estatuses+= tituloNombreCientifico(taxSinonimo)
+          estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
+        else
+          return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
+        end
       end
+      taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
+    else
+      ''
     end
-    taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
+  end
+
+  def dameEstadoDeConservacion(taxon)
+    if taxon.especies_catalogos.count > 0
+      conservacion='<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>'
+      taxon.especies_catalogos.each do |c|
+        conservacion+="<li>#{c.catalogo.descripcion}</li>"
+      end
+      conservacion+='</p></ul>'
+    else
+      ''
+    end
   end
 
   def dameDescendientesDirectos(taxon)
-    hijos='<ul>'
-    taxon.child_ids.each do |children|
-      subTaxon=Especie.find(children)
-      hijos+="<li>#{tituloNombreCientifico(subTaxon)}</li>" if subTaxon.present?
+    if taxon.child_ids.count > 0
+      hijos="<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>"
+      taxon.child_ids.each do |children|
+        subTaxon=Especie.find(children)
+        hijos+="<li>#{tituloNombreCientifico(subTaxon)}</li>" if subTaxon.present?
+      end
+      hijos+='</div></fieldset></ul>'
+    else
+      ''
     end
-    hijos+='</ul>'
   end
 
   def dameListas(listas)

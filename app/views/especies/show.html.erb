@@ -1,33 +1,4 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    muestraArbol = function(id) {
-        $.ajax({
-            url: "/especies/muestraTaxonomia",
-            data: {
-                id: id
-            }
-        }).done(function(arbol) {
-                    return $("#vista_arbol").html(arbol);
-                });
-    };
-
-    despliegaOcontrae = function(id) {
-        var sufijo;
-        sufijo = id.substring(5);
-        if ($("#nodo_" + sufijo + " li").length > 0) {
-            $("#nodo_" + sufijo + " li").remove();
-        } else {
-            $.ajax({
-                url: "/especies/buscaDescendientes",
-                data: {
-                    id: sufijo
-                }
-            }).done(function(nodo) {
-                        return $("#nodo_" + sufijo).append(nodo);
-                    });
-        }
-        return false;
-    };
-
     info = function() {
         $('#ficha-div').slideUp();
         $('#fotos-div').slideUp();
@@ -94,26 +65,20 @@
     {
         if ($('#statusGoogleMap').val() != 'OK')
         {
-            googleMaps('%22Panthera%20onca%22')
+            googleMaps($.parseHTML("<%= "#{@nombre_mapa}" %>")[0].textContent)
         }
-
         $('#info-div').slideUp();
         $('#ficha-div').slideUp();
         $('#fotos-div').slideUp();
         $('#mapas-div').slideDown();
-
-
         return false;
     }
-
-    //$(document).ready(function(){
-    //    google.maps.event.addDomListener(window, 'load', googleMaps());
-    //});
-
-
-    <% if !@especie.is_root? %>
-    muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
-    <% end %>
+    $(window).ready(function()
+    {
+        <% if !@especie.is_root? %>
+        muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
+        <% end %>
+    });
 </script>
 
 <% regNomBib=dameRegionesNombresBibliografia(@especie) %>
@@ -157,29 +122,28 @@
           </p>
 
           <%= dameEspecieEstatuses(@especie).html_safe %>
-
-          <p>
-            <strong>Caracter&iacute;stica del tax&oacute;n:</strong>
-            <%= Especie.dameEstadoDeConservacion(@especie).html_safe %>
-          </p>
-
+          <%= dameEstadoDeConservacion(@especie).html_safe %>
           <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
           <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
 
-          <p>
-            <strong>Cita nomenclatural:</strong>
-            <%= @especie.cita_nomenclatural %>
-          </p>
+          <% if @especie.cita_nomenclatural.present? %>
+              <p>
+                <strong>Cita nomenclatural:</strong>
+                <%= @especie.cita_nomenclatural %>
+              </p>
+          <% end %>
 
           <p>
             <strong>Fuente de la informaci&oacute;n:</strong>
             <%= @especie.sis_clas_cat_dicc %>
           </p>
 
-          <p>
-            <strong>Anotaci&oacute;n:</strong>
-            <%= @especie.anotacion %>
-          </p>
+          <% if @especie.anotacion.present? %>
+              <p>
+                <strong>Anotaci&oacute;n:</strong>
+                <%= @especie.anotacion %>
+              </p>
+          <% end %>
 
           <p>
             <strong>Identificador &uacute;nico:</strong>
@@ -195,12 +159,7 @@
 
 
       <td width="60%" valign="top">
-        <fieldset>
-          <legend class="leyenda">Descendientes directos</legend>
-          <div id='hijos'>
-            <%= dameDescendientesDirectos(@especie).html_safe %>
-          </div>
-        </fieldset>
+        <%= dameDescendientesDirectos(@especie).html_safe %>
 
         <fieldset>
           <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
@@ -211,7 +170,7 @@
           </div>
         </fieldset>
 
-        <%= "<fieldset><legend class='leyenda'>Regiones:</legend><ul>#{regNomBib[:regiones]}</ul></fieldset>".html_safe if regNomBib[:regiones].present? %>
+        <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend><ul>#{regNomBib[:regiones]}</ul></fieldset>".html_safe if regNomBib[:regiones].present? %>
       </td>
     </tr>
   </table>

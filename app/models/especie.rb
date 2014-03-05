@@ -29,12 +29,7 @@ class Especie < ActiveRecord::Base
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
   scope :caso_categoria_taxonomica, -> { joins(:categoria_taxonomica) }
-  #scope :caso_nivel_categoria_taxonomica, ->(comparador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador == '>' ? '>=' : comparador} #{nivel1} AND
-nivel2 = #{nivel2} AND nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador == '>' ? '>=' : comparador} #{nivel4}") }
-  scope :caso_nivel_categoria_taxonomica, ->(comparador, nivel1, nivel2, nivel3, nivel4) { where("nivel1 #{comparador} #{nivel1} AND
-nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
-  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').
-      joins('LEFT JOIN categoria_taxonomica')}
+  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica')}
 
   before_save :ponNombreCientifico
 
@@ -193,16 +188,6 @@ nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
       }
   }
 
-  def self.dameEstadoDeConservacion(especie)
-    conservacion='<ul>'
-
-    especie.especies_catalogos.each do |c|
-      conservacion+="<li>#{c.catalogo.descripcion}</li>"
-    end
-    conservacion+='</ul>'
-  end
-
-
   def self.dameIdsDelNombre(nombre, tipo=nil)
     identificadores=''
 
@@ -229,7 +214,6 @@ nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
                               WHERE lower_unaccent(r.nombre_region) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
       identificadores+="#{i.ids}, "
     end
-
     identificadores[0..-3]
   end
 
@@ -240,7 +224,6 @@ nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
                                     WHERE tipo_distribucion_id=#{distribucion} ORDER BY ids;").each do |i|
       identificadores+="#{i.ids}, "
     end
-
     identificadores[0..-3]
   end
 
@@ -251,7 +234,6 @@ nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
                               WHERE lower_unaccent(c.descripcion) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
       identificadores+="#{i.ids}, "
     end
-
     identificadores[0..-3]
   end
 
@@ -262,7 +244,6 @@ nivel3 #{comparador} #{nivel3} AND nivel4 #{comparador} #{nivel4}") }
         identificadores+="#{des}, "
       end
     end
-
     identificadores[0..-3]
   end
 

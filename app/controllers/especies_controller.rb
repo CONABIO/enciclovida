@@ -19,8 +19,9 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @desc=TaxonDescribers::Conabio.describe(@especie)
-    @desc.present? ? @ficha=@desc : @ficha='No existe ninguna ficha asociada con este taxón'
+    @desc = TaxonDescribers::Conabio.describe(@especie)
+    @desc.present? ? @ficha = @desc : @ficha = 'No existe ninguna ficha asociada con este taxón'
+    @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
   end
 
   # GET /especies/new

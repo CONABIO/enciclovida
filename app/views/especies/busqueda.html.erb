@@ -166,7 +166,7 @@
 
     masFiltros = function()
     {
-        var numeroAtributos=$("[id^='bAtributo_']").length +1;
+        var numeroAtributos = parseInt($("[id^='bAtributo_']:last").attr("id").split('_')[1]) + 1;
         $('#atributos_extra').append(estructuraFiltro(numeroAtributos));
         guardaBusquedas();
         return false;
@@ -246,6 +246,7 @@
             } else {
                 $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
             }
+            $('#hAtributo_' + id).val('');
         });
 
         $(document).on('railsAutocomplete.select', "[id^='vAtributo_']", function(event, data) {
@@ -255,15 +256,26 @@
             {
                 $(this).val(data.item.nombre_cientifico);
                 $('#hAtributo_' + id).val(data.item.id);
-            } else {
-                $(this).val('');
+
+            }
+            if ($('#bAtributo_' + id).val() == 'nombre_comun')
+            {
+                $(this).val(data.item.nombre_comun);
+                $('#hAtributo_' + id).val('');
             }
             guardaBusquedas();
         });
 
-        $(document).on('keyup', "[id^='vAtributo_']", function() {
+        $(document).on('keypress', "[id^='vAtributo_']", function(k) {
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
+        });
+
+        $("#limpiar").click(function()
+        {
+            document.cookie = "busqueda_taxones=;expires=Thu, 01 Jan 1990 00:00:01 GMT; path=/";
+            location.reload;
+            return false;
         });
     });
 </script>
@@ -299,7 +311,7 @@
             <div id="atributos_extra">
               <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
               <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo %>
+              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
               <%= hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
             </div>
             <!--div class="container">
@@ -320,12 +332,13 @@
                   <br><br><br><br><b>mostrar solo taxones:</b><br>
                   <%= checkboxValidoSinonimo('avanzada') %>
                   <br><br><br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
+                  <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
                   <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
                 </td>
                 <td>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, 'nombre_categoria_taxonomica', 'nombre_categoria_taxonomica'),
-                                 :class => :busqueda_atributo, :multiple => true, :size => 15, :prompt => '---Categoria del tax&oacute;n (predeterminada)---'.html_safe %>
+                                 :class => :busqueda_atributo, :multiple => true, :size => 15, :prompt => '---Cat. del tax&oacute;n (predeterminada)---'.html_safe %>
                 </td>
 
             </table>
