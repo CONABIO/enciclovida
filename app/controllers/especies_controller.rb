@@ -147,7 +147,7 @@ class EspeciesController < ApplicationController
         params.each do |key, value|
           if key.include?('bAtributo_')
             numero=key.split('_').last
-            if params['hAtributo_' + numero].present? && params[:categoria_taxonomica].present?
+            if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
               conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
               conIDComun << params['hAtributo_' + numero].to_i if value == 'nombre_comun'
             else params['vAtributo_' + numero].present?
@@ -171,14 +171,14 @@ class EspeciesController < ApplicationController
         condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
         condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
 
-        if params[:categoria_taxonomica].present? && conIDCientifico.blank?
-          cat_tax = "\"'#{params[:categoria_taxonomica].join("','")}'\""
+        if (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.blank?
+          cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-        elsif params[:categoria_taxonomica].present? && conIDCientifico.present?
+        elsif (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.present?
           arbol ||= []
           taxon = Especie.find(conIDCientifico.first)
           arbol << taxon.ancestor_ids << taxon.descendant_ids << conIDCientifico.first.to_i
-          cat_tax = "\"'#{params[:categoria_taxonomica].join("','")}'\""
+          cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
           arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
           condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"

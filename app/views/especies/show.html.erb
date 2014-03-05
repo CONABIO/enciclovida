@@ -149,7 +149,7 @@
     <tr>
       <td width="40%" valign="top">
         <fieldset>
-          <legend class="leyenda"><%= 'Informaci&oacute;n del cat&aacute;logo'.html_safe %></legend>
+          <legend class="leyenda"><%= 'Informaci&oacute;n taxon&oacute;mica'.html_safe %></legend>
 
           <p>
             <strong>Estatus:</strong>
@@ -164,17 +164,7 @@
           </p>
 
           <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
-          <%= "<p><strong>Distribuciones:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
-
-          <p>
-            <strong>Ascendente directo:</strong>
-            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_nombre_ascendente).nombre %>
-          </p>
-
-          <p>
-            <strong>Ascendente obligatorio:</strong>
-            <%= @especie.is_root? ? 'Es raíz' : Especie.find(@especie.id_ascend_obligatorio).nombre %>
-          </p>
+          <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
 
           <p>
             <strong>Cita nomenclatural:</strong>
@@ -182,7 +172,7 @@
           </p>
 
           <p>
-            <strong>Sistema de clasificaci&oacute;n, catalogo o diccionario:</strong>
+            <strong>Fuente de la informaci&oacute;n:</strong>
             <%= @especie.sis_clas_cat_dicc %>
           </p>
 
@@ -194,11 +184,6 @@
           <p>
             <strong>Identificador &uacute;nico:</strong>
             <%= @especie.id %>
-          </p>
-
-          <p>
-            <strong>Fecha de Captura:</strong>
-            <%= @especie.created_at %>
           </p>
 
           <p>
