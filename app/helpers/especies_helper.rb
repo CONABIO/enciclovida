@@ -175,7 +175,7 @@ module EspeciesHelper
              "A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?"
            else
              "<i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br><br>
-              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => 10, :style => 'width: 200px;')}"
+              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 200px;')}"
            end
     titulo + html
   end

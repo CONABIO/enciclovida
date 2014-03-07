@@ -2,7 +2,7 @@ module ConabioHelper
   def taxon_image(photos, params = {})
     html ||=''
     if photos.blank?
-      return "No existe en el #{link_to('Banco de Im&aacute;genes'.html_safe, 'http://bdi.conabio.gob.mx', :target => :_blank)} una foto asociada con este tax&oacute;n".html_safe
+      return "<em>No existe en el #{link_to('Banco de Im&aacute;genes'.html_safe, 'http://bdi.conabio.gob.mx', :target => :_blank)} una foto asociada con este tax&oacute;n</em>".html_safe
     end
 
     photos.each do |p|

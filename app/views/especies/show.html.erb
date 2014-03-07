@@ -51,22 +51,23 @@
         google.maps.event.addListener(overlay,'status_changed',function(){
             document.getElementById('statusGoogleMap').innerHTML = overlay.getStatus();
 
-            if (overlay.getStatus() == 'OK')
+            if (overlay.getStatus() != 'OK')
             {
-                $('#statusGoogleMap').val(overlay.getStatus());
+                $('#googleMap').hide();
             } else {
-                $('#googleMap').slideUp();
-                $('#statusGoogleMap').val(overlay.getStatus());
+                $('#sinGoogleMap').hide();
             }
+            $('#statusGoogleMap').val(overlay.getStatus());
         });
     }
 
     mapas = function()
     {
-        if ($('#statusGoogleMap').val() != 'OK')
+        if ($('#statusGoogleMap').val() == '')
         {
-            googleMaps($.parseHTML("<%= "#{@nombre_mapa}" %>")[0].textContent)
+            googleMaps($.parseHTML("<%= "#{@nombre_mapa}" %>")[0].textContent);
         }
+
         $('#info-div').slideUp();
         $('#ficha-div').slideUp();
         $('#fotos-div').slideUp();
@@ -200,9 +201,9 @@
   <table id="mapas">
     <tr>
       <td>
-        <div id="sinGoogleMap" style="display: none">No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</div>
+        <div id="sinGoogleMap" style="width:1000px;"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
         <div id="googleMap" style="height:500px;width:600px;"></div>
-        <div id="statusGoogleMap"></div>
+        <div id="statusGoogleMap" style="display: none"></div>
       </td>
     </tr>
   </table>

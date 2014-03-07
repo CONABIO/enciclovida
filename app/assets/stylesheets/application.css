@@ -46,7 +46,7 @@
 
 #menu li a
 {
-    display:block;
+    display:inline-block;
     width:150px;
     background-color:#dddddd;
 }

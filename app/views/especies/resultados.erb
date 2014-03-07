@@ -5,10 +5,10 @@
             url: "/especies/dame_listas",
             type: 'GET'
         }).done(function(html) {
-            $('#widget_busqueda').html(html);
-        }).fail(function(){
-            $('#widget_busqueda').html('<p>Hubo un error al cargar los datos.');
-        });
+                    $('#widget_busqueda').html(html);
+                }).fail(function(){
+                    $('#widget_busqueda').html('<p>Hubo un error al cargar los datos.');
+                });
 
         valorListas = function() {
             alert($('#listas_hidden').val());
@@ -19,30 +19,40 @@
 </script>
 
 <% content_for(:title) do %>
-    <%= @titulo="Resultados (#{@taxones.length})" %>
+    <%= @titulo="Resultados (#{@taxones.count})" %>
 <% end %>
 
 <p id="notice"><%= notice %></p>
 
-<div class="titulo">
-  <h1><%= @titulo %></h1>
+<br><div class="titulo-busqueda">
+  <%= page_entries_info @taxones if @taxones.present? %>
 </div>
 
 <%= form_tag aniade_taxones_especies_path, :method => :put %>
-<div id="acciones">
-  <%= hidden_field_tag 'listas' %>
-  <%= label_tag 'box_especie', 'Selecciona todos' %>
-  <%= check_box_tag :box_especie, :todos %> |
-  <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
-                 data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
-</div>
+
+<% if @taxones.length > 0 %>
+    <div id="acciones">
+      <%= hidden_field_tag 'listas' %>
+      <%= label_tag 'box_especie', 'Selecciona todos' %>
+      <%= check_box_tag :box_especie, :todos %> |
+      <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
+                     data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
+    </div>
+<% end %>
 
 <%= @resultado %><br>
 <%= @resultado2 %><br>
-<%= @cat_tax %>
 
+<div class="digg_pagination">
+  <%= will_paginate @taxones %>
+</div>
 <%= render @vista, :taxones => @taxones %>
+<% if @taxones.length >= 100 %>
+    <div class="digg_pagination">
+      <%= will_paginate @taxones %>
+    </div>
+<% end %>
 
 <p class="enlaces_acciones">
-  <%= 'Tu b&uacute;squeda no dio ningún resultado.'.html_safe if @taxones.length == 0 %>
+  <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
 </p>

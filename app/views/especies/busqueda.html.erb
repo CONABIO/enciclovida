@@ -266,6 +266,20 @@
             guardaBusquedas();
         });
 
+        $('#nombre_comun, #nombre_cientifico').bind('railsAutocomplete.select', function(event, data) {
+            var id=$(this).attr('id');
+
+            if (id == 'nombre_cientifico')
+            {
+                $(this).val(data.item.nombre_cientifico);
+            }
+            if (id == 'nombre_comun')
+            {
+                $(this).val(data.item.nombre_comun);
+            }
+            guardaBusquedas();
+        });
+
         $(document).on('keypress', "[id^='vAtributo_']", function(k) {
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
@@ -277,6 +291,11 @@
             location.reload;
             return false;
         });
+
+        $('#por_pagina').change(function()
+        {
+            $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
+        });
     });
 </script>
 
@@ -286,17 +305,21 @@
       <div id="busqueda_basica">
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
+            <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
             Nombre común<br>
             <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
-            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun, :class => :busqueda_atributo %>
+            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun,
+                               :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_nombre_comun_comun_nombres_comunes_path, :autocomplete => :off %>
             <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
         <% end %>
         <br>
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
+            <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
             Nombre científico<br>
             <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
-            <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico, :class => :busqueda_atributo %>
+            <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico,
+                               :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
             <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
             <br>mostrar solo taxones:<br>
             <%= checkboxValidoSinonimo('basica_cientifico') %>
@@ -307,11 +330,13 @@
       <div id="busqueda_avanzada" style="display: none">
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :avanzada %>
+            <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
             <b>Buscar por</b><br>
             <div id="atributos_extra">
               <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
               <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
+              <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo,
+                                 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
               <%= hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
             </div>
             <!--div class="container">
@@ -329,16 +354,16 @@
               <tr>
                 <td>
                   <div style="text-align: left; display: inline-block"><b>con la categoria taxonómica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i></div>
-                  <br><br><br><br><b>mostrar solo taxones:</b><br>
+                  <br><br><b>mostrar solo taxones:</b><br>
                   <%= checkboxValidoSinonimo('avanzada') %>
-                  <br><br><br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
+                  <br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
                   <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
                   <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
                 </td>
                 <td>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, 'nombre_categoria_taxonomica', 'nombre_categoria_taxonomica'),
-                                 :class => :busqueda_atributo, :multiple => true, :size => 15, :prompt => '---Cat. del tax&oacute;n (predeterminada)---'.html_safe %>
+                                 :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---Cat. del tax&oacute;n (predeterminada)---'.html_safe %>
                 </td>
 
             </table>
@@ -347,6 +372,11 @@
 
     </td>
     <td id="widget_busqueda" width="40%" valign="top">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :id => :por_pagina %> resultados por p&aacute;gina
     </td>
   </tr>
 </table>

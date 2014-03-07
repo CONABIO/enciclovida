@@ -33,6 +33,10 @@ class Especie < ActiveRecord::Base
 
   before_save :ponNombreCientifico
 
+  WillPaginate.per_page = 50
+  self.per_page = WillPaginate.per_page
+
+  POR_PAGINA = [50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUSES = [
       [2, 'válido/correcto (✔)'],

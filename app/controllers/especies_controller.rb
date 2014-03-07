@@ -20,7 +20,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     @desc = TaxonDescribers::Conabio.describe(@especie)
-    @desc.present? ? @ficha = @desc : @ficha = 'No existe ninguna ficha asociada con este taxón'
+    @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
     @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
   end
 
@@ -125,13 +125,13 @@ class EspeciesController < ApplicationController
     case params[:busqueda_oculto]
       when 'basica_comun'
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
-          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC')
+          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
       when 'basica_cientifico'
         estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC')
+          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
       when 'avanzada'
         busqueda = "Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||= ''
@@ -186,10 +186,10 @@ class EspeciesController < ApplicationController
         end
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones
-        @taxones = eval(busqueda).order('nombre_cientifico ASC')
+        @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
         #@taxones=Especie.none
-        @resultado2= busqueda
-        @resultado=params
+        #@resultado2= busqueda
+        #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }

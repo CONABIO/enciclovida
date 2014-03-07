@@ -197,3 +197,18 @@ es:
   activerecord:
     errors:
       <<: *errors
+  will_paginate:
+    previous_label: "&#8592; Anterior"
+    next_label: "Siguiente &#8594;"
+    page_gap: "&hellip;"
+    page_entries_info:
+      single_page:
+        zero:  "No se %{encontraron} resultados"
+        one:   "Mostrando el <b>&uacute;nico</b> resultado"
+        other: "Mostrando los <b>%{count}</b> resultados"
+      single_page_html:
+        zero:  "No se %{encontraron} resultados"
+        one:   "Mostrando el <b>&uacute;nico</b> resultado"
+        other: "Mostrando los <b>%{count}</b> resultados"
+      multi_page: "Mostrando resultados %{from} - %{to} de %{count} totales"
+      multi_page_html: "Mostrando resultados <b>%{from}&nbsp;-&nbsp;%{to}</b> de <b>%{count}</b> totales"
