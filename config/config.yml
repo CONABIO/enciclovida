@@ -9,10 +9,10 @@ base: &base
     site_url: http://172.16.229.128:3000/
 
     # name of the site, used extensively within the app
-    site_name: Administrador de taxones
+    site_name: Administrador de información sobre las especies
 
     # shortened version of the name
-    site_name_short: Buscador
+    site_name_short: AISE
 
     # Email addresses
     admin_email: calonso@conabio.gob.mx

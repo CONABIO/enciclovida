@@ -131,9 +131,9 @@ class EspeciesController < ApplicationController
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
       when 'avanzada'
-        busqueda = "Especie.select('distinct(especies.*), categorias_taxonomicas.nombre_categoria_taxonomica')"
+        busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||= ''
         condiciones ||= ''
         tipoDistribuciones ||= ''
@@ -186,7 +186,7 @@ class EspeciesController < ApplicationController
         end
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones
-        @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
         #@taxones=Especie.none
         #@resultado2= busqueda
         #@resultado=params
