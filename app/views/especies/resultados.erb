@@ -1,6 +1,6 @@
-<%= javascript_include_tag params[:controller] %>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    $(document).ready(function() {
+    $(document).ready(function()
+    {
         $.ajax({
             url: "/especies/dame_listas",
             type: 'GET'
@@ -8,12 +8,11 @@
                     $('#widget_busqueda').html(html);
                 }).fail(function(){
                     $('#widget_busqueda').html('<p>Hubo un error al cargar los datos.');
-                });
+        });
 
-        valorListas = function() {
-            alert($('#listas_hidden').val());
+        valorListas = function()
+        {
             $('#listas').val($('#listas_hidden').val());
-
         };
     });
 </script>
@@ -32,8 +31,8 @@
 
 <% if @taxones.length > 0 %>
     <div id="acciones">
-      <%= hidden_field_tag 'listas' %>
-      <%= label_tag 'box_especie', 'Selecciona todos' %>
+      <%= hidden_field_tag :listas %>
+      <%= label_tag :box_especie, 'Selecciona todos' %>
       <%= check_box_tag :box_especie, :todos %> |
       <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
                      data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' }  if !@listas.nil? && @listas != 0 %>
