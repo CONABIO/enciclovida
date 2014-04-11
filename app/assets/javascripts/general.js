@@ -24,18 +24,19 @@ $(document).ready(function()
     {
         $.ajax(
             {
-            url: "/especies/muestraTaxonomia",
-            data: {
-                id: id
-            },
-            type: 'post'
-        }).done(function(arbol)
+                url: "/especies/muestraTaxonomia",
+                data: {
+                    id: id
+                },
+                type: 'post'
+            }).done(function(arbol)
             {
                 return $("#vista_arbol").html(arbol);
             });
     };
 
-    despliegaOcontrae = function(id) {
+    despliegaOcontrae = function(id)
+    {
         var sufijo;
         sufijo = id.substring(5);
         if ($("#nodo_" + sufijo + " li").length > 0)
@@ -44,11 +45,11 @@ $(document).ready(function()
         } else {
             $.ajax(
                 {
-                url: "/especies/buscaDescendientes",
-                data: {
-                    id: sufijo
-                }
-            }).done(function(nodo)
+                    url: "/especies/buscaDescendientes",
+                    data: {
+                        id: sufijo
+                    }
+                }).done(function(nodo)
                 {
                     return $("#nodo_" + sufijo).append(nodo);
                 });

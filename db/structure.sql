@@ -236,6 +236,45 @@ ALTER SEQUENCE categorias_taxonomicas_id_seq OWNED BY categorias_taxonomicas.id;
 
 
 --
+-- Name: delayed_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE delayed_jobs (
+    id integer NOT NULL,
+    priority integer DEFAULT 0 NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    handler text NOT NULL,
+    last_error text,
+    run_at timestamp without time zone,
+    locked_at timestamp without time zone,
+    failed_at timestamp without time zone,
+    locked_by character varying(255),
+    queue character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: delayed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE delayed_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: delayed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
+
+
+--
 -- Name: especies; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -243,7 +282,7 @@ CREATE TABLE especies (
     id integer NOT NULL,
     nombre character varying(255) NOT NULL,
     estatus smallint NOT NULL,
-    fuente character varying(255) NOT NULL,
+    fuente character varying(255),
     nombre_autoridad character varying(255) DEFAULT 'ND'::character varying NOT NULL,
     numero_filogenetico character varying(255),
     cita_nomenclatural text,
@@ -256,7 +295,8 @@ CREATE TABLE especies (
     categoria_taxonomica_id integer NOT NULL,
     ancestry_acendente_directo character varying(255),
     ancestry_acendente_obligatorio character varying(255),
-    nombre_cientifico character varying(255)
+    nombre_cientifico character varying(255),
+    delta boolean DEFAULT false
 );
 
 
@@ -1150,6 +1190,38 @@ CREATE TABLE schema_migrations (
 
 
 --
+-- Name: sessiones; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sessiones (
+    id integer NOT NULL,
+    session_id character varying(255) NOT NULL,
+    data text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: sessiones_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE sessiones_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: sessiones_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE sessiones_id_seq OWNED BY sessiones.id;
+
+
+--
 -- Name: tipos_distribuciones; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1328,6 +1400,13 @@ ALTER TABLE ONLY catalogos ALTER COLUMN id SET DEFAULT nextval('catalogos_id_seq
 --
 
 ALTER TABLE ONLY categorias_taxonomicas ALTER COLUMN id SET DEFAULT nextval('categorias_taxonomicas_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 
 
 --
@@ -1558,6 +1637,13 @@ ALTER TABLE ONLY roles ALTER COLUMN id SET DEFAULT nextval('roles_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY sessiones ALTER COLUMN id SET DEFAULT nextval('sessiones_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY tipos_distribuciones ALTER COLUMN id SET DEFAULT nextval('tipos_distribuciones_id_seq'::regclass);
 
 
@@ -1573,6 +1659,14 @@ ALTER TABLE ONLY tipos_regiones ALTER COLUMN id SET DEFAULT nextval('tipos_regio
 --
 
 ALTER TABLE ONLY usuarios ALTER COLUMN id SET DEFAULT nextval('usuarios_id_seq'::regclass);
+
+
+--
+-- Name: delayed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY delayed_jobs
+    ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
 
 
 --
@@ -1736,6 +1830,21 @@ ALTER TABLE ONLY usuarios
 
 
 --
+-- Name: sessiones_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY sessiones
+    ADD CONSTRAINT sessiones_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: delayed_jobs_priority; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at);
+
+
+--
 -- Name: index_especies_on_ancestry_acendente_directo; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1757,10 +1866,31 @@ CREATE INDEX index_especies_on_nombre_cientifico ON especies USING btree (nombre
 
 
 --
+-- Name: index_on_nombre_comun; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_on_nombre_comun ON nombres_comunes USING btree (nombre_comun);
+
+
+--
 -- Name: index_regiones_on_ancestry; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_regiones_on_ancestry ON regiones USING btree (ancestry);
+
+
+--
+-- Name: index_sessiones_on_session_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_sessiones_on_session_id ON sessiones USING btree (session_id);
+
+
+--
+-- Name: index_sessiones_on_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sessiones_on_updated_at ON sessiones USING btree (updated_at);
 
 
 --
@@ -1977,3 +2107,11 @@ INSERT INTO schema_migrations (version) VALUES ('20131021221425');
 INSERT INTO schema_migrations (version) VALUES ('20131021222103');
 
 INSERT INTO schema_migrations (version) VALUES ('20131028180853');
+
+INSERT INTO schema_migrations (version) VALUES ('20140224155302');
+
+INSERT INTO schema_migrations (version) VALUES ('20140224222120');
+
+INSERT INTO schema_migrations (version) VALUES ('20140228164310');
+
+INSERT INTO schema_migrations (version) VALUES ('20140228165610');

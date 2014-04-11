@@ -1,7 +1,15 @@
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
-    "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{params[:context] ? view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}") : link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+    if params[:title]
+      "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
+    elsif params[:context]
+      "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+    elsif params[:link]
+      "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUSES_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+    else
+      'Ocurrio un error en el t&iacute;tulo'.html_safe
+    end
   end
 
   def enlacesDelArbol(taxon, conClick=nil)
@@ -142,16 +150,13 @@ module EspeciesHelper
     end
   end
 
-  def dameEstadoDeConservacion(taxon)
-    if taxon.especies_catalogos.count > 0
-      conservacion='<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>'
-      taxon.especies_catalogos.each do |c|
-        conservacion+="<li>#{c.catalogo.descripcion}</li>"
-      end
-      conservacion+='</p></ul>'
-    else
-      ''
+  def dameCaracteristica(taxon)
+    #conservacion='<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>'
+    conservacion=''
+    taxon.especies_catalogos.each do |e|
+      conservacion+="<li>#{e.catalogo.descripcion}</li>"
     end
+    conservacion.present? ? "<p><ul>#{conservacion}</ul></p>" : conservacion
   end
 
   def dameDescendientesDirectos(taxon)
@@ -159,7 +164,7 @@ module EspeciesHelper
       hijos="<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>"
       taxon.child_ids.each do |children|
         subTaxon=Especie.find(children)
-        hijos+="<li>#{tituloNombreCientifico(subTaxon)}</li>" if subTaxon.present?
+        hijos+="<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>" if subTaxon.present?
       end
       hijos+='</div></fieldset></ul>'
     else
@@ -175,7 +180,7 @@ module EspeciesHelper
              "A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?"
            else
              "<i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br><br>
-              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 200px;')}"
+              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}"
            end
     titulo + html
   end

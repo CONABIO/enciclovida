@@ -306,7 +306,7 @@
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
             <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
-            Nombre común<br>
+            Nombre com&uacute;n<br>
             <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
             <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun,
                                :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_nombre_comun_comun_nombres_comunes_path, :autocomplete => :off %>
@@ -316,7 +316,7 @@
         <%= form_tag resultados_especies_path, :method => :get do %>
             <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
             <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
-            Nombre científico<br>
+            Nombre cient&iacute;fico<br>
             <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
             <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico,
                                :class => :busqueda_atributo, 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
@@ -353,7 +353,7 @@
             <table>
               <tr>
                 <td>
-                  <div style="text-align: left; display: inline-block"><b>con la categoria taxonómica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i></div>
+                  <div style="text-align: left; display: inline-block"><b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i></div>
                   <br><br><b>mostrar solo taxones:</b><br>
                   <%= checkboxValidoSinonimo('avanzada') %>
                   <br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
@@ -371,7 +371,7 @@
       </div>
 
     </td>
-    <td id="widget_busqueda" width="40%" valign="top">
+    <td id="widget_listas" width="40%" valign="top">
     </td>
   </tr>
   <tr>
