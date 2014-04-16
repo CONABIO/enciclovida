@@ -151,12 +151,12 @@ module EspeciesHelper
   end
 
   def dameCaracteristica(taxon)
-    #conservacion='<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>'
     conservacion=''
     taxon.especies_catalogos.each do |e|
-      conservacion+="<li>#{e.catalogo.descripcion}</li>"
+      titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
+      conservacion+="<li>#{e.catalogo.descripcion}(#{titulo})</li>"
     end
-    conservacion.present? ? "<p><ul>#{conservacion}</ul></p>" : conservacion
+    conservacion.present? ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" : conservacion
   end
 
   def dameDescendientesDirectos(taxon)
