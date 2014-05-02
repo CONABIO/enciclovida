@@ -347,9 +347,14 @@
               </div-->
 
             <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
-            <br><br><b>con tipo de distribución</b><br>
+            <br><br><b>con tipo de distribuci&oacute;n</b><br>
             <%= checkboxTipoDistribucion %>
 
+            <br>
+            buscar a nivel:
+            <br>
+            <%= select_tag :region_selecciona, options_from_collection_for_select(TipoRegion.all, :id, :descripcion) %>
+            <%=  %>
             <table>
               <tr>
                 <td>
@@ -362,7 +367,7 @@
                 </td>
                 <td>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, 'nombre_categoria_taxonomica', 'nombre_categoria_taxonomica'),
+                  <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
                                  :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---Cat. del tax&oacute;n (predeterminada)---'.html_safe %>
                 </td>
 

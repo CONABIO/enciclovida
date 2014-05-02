@@ -8,8 +8,10 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
+
   has_ancestry :ancestry_column => :ancestry_acendente_directo
-  fuzzily_searchable :nombre_cientifico, :class_name => 'Trigram'
+
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :nombres_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -274,4 +276,5 @@ class Especie < ActiveRecord::Base
         self.nombre_cientifico=self.nombre
     end
   end
+
 end

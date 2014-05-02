@@ -1,3 +1,12 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<style type="text/css">
+    .biblio {
+        font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+        font-size: 90%;
+    }
+</style>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     info = function() {
         $('#ficha-div').slideUp();
@@ -28,7 +37,8 @@
                 data: {
                     'q': $.parseHTML("<%= @especie.nombre_cientifico if @especie.nombre_cientifico.present? %>")[0].textContent
                 },
-                success: function(html){
+                success: function(html)
+                {
                     $('#fotos-td').append(html);
                 }
             });
@@ -74,6 +84,16 @@
         $('#mapas-div').slideDown();
         return false;
     }
+
+    muestraBibliografiaNombres = function(ident)
+    {
+        var id=ident.split('_')[2];
+        $("#biblio_"+id).dialog();
+        //alert(id);
+        //alert(ident);
+        return false;
+    }
+
     $(window).ready(function()
     {
         <% if !@especie.is_root? %>
@@ -92,7 +112,7 @@
 <% end %>
 
 <div class="titulo">
-  <h1><%= @titulo %></h1>
+  <h1><%= "#{@titulo} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
 </div>
 
 <div class="menu">
@@ -104,11 +124,11 @@
   </ul>
 </div>
 
-<div class="enlaces_acciones">
+<!--div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
   <%# link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
-</div>
+</div-->
 
 <div id="info-div">
   <table width="1000" id="tabla_form">
@@ -125,7 +145,7 @@
           <%= dameEspecieEstatuses(@especie).html_safe %>
           <%= dameCaracteristica(@especie).html_safe %>
           <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
-          <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:distribuciones]}</ul></p>".html_safe if regNomBib[:distribuciones].present? %>
+          <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
 
           <% if @especie.cita_nomenclatural.present? %>
               <p>
@@ -147,6 +167,10 @@
           <% end %>
 
           <p>
+            <%= dameEspecieBibliografia(@especie).html_safe %>
+          </p>
+
+          <p>
             <strong>Identificador &uacute;nico:</strong>
             <%= @especie.id %>
           </p>
@@ -157,7 +181,6 @@
           </p>
         </fieldset>
       </td>
-
 
       <td width="60%" valign="top">
         <%= dameDescendientesDirectos(@especie).html_safe %>
@@ -171,14 +194,14 @@
           </div>
         </fieldset>
 
-        <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend><ul>#{regNomBib[:regiones]}</ul></fieldset>".html_safe if regNomBib[:regiones].present? %>
+        <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
       </td>
     </tr>
   </table>
 </div>
 
 <div id="ficha-div" style="display: none">
-  <table id="ficha">
+  <table class="tabla_formato">
     <tr>
       <td>
         <%= @ficha.html_safe %>
@@ -188,7 +211,7 @@
 </div>
 
 <div id="fotos-div" style="display: none">
-  <table id="fotos">
+  <table class="tabla_formato">
     <tr>
       <td>
         <div id="fotos-td"></div>
@@ -198,7 +221,7 @@
 </div>
 
 <div id="mapas-div" style="display: none">
-  <table id="mapas">
+  <table class="tabla_formato">
     <tr>
       <td>
         <div id="sinGoogleMap" style="width:1000px;"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>

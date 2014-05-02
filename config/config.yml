@@ -13,6 +13,7 @@ base: &base
 
     # shortened version of the name
     site_name_short: AISE
+    limit_fuzzy : 5
 
     # Email addresses
     admin_email: calonso@conabio.gob.mx

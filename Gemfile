@@ -49,10 +49,10 @@ end
 
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 gem 'ancestry'
+gem 'blurrily'
 gem 'cocoon', '=1.2.0'
 gem 'composite_primary_keys', github: 'calonso-conabio/composite_primary_keys', branch: 'ar_4.0.x'
 gem 'delayed_job_active_record'
-gem 'fuzzily'
 gem 'haml'
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-ui-rails'

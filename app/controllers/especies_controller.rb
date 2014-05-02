@@ -126,12 +126,26 @@ class EspeciesController < ApplicationController
       when 'basica_comun'
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
           #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        if @taxones.empty?
+          ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
+          if @taxones=ids.count > 0
+            @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
+          end
+        end
       when 'basica_cientifico'
         estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        if @taxones.empty?
+          ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+          if @taxones=ids.count > 0
+            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
+          end
+        end
       when 'avanzada'
         busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins ||= ''
@@ -187,9 +201,9 @@ class EspeciesController < ApplicationController
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-        #@taxones=Especie.none
-        #@resultado2= busqueda
-        #@resultado=params
+      #@taxones=Especie.none
+      #@resultado2= busqueda
+      #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }

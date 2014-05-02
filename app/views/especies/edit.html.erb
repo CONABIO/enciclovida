@@ -1,18 +1,18 @@
 <% content_for(:title) do %>
-    <%= @titulo="Editando :<br><br>#{tituloNombreCientifico(@especie)}".html_safe %>
+    <%= "Editando :#{tituloNombreCientifico(@especie, :title=>true)}".html_safe %>
 <% end %>
 
 <p id="notice"><%= notice %></p>
 
 <div class="titulo">
   <p><%= enlacesDeTaxonomia(@especie) %></p>
-  <h1><%= @titulo %></h1>
+  <h1><%= "Editando :<br><br>#{tituloNombreCientifico(@especie, :link=>true)}".html_safe %></h1>
 </div>
 
 <%= render 'form' %>
 
 <div class="enlaces_acciones">
-  <%= accionesEnlaces(@especie, @accion).html_safe %><br>
-  <%= link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
+  <%# accionesEnlaces(@especie, @accion).html_safe %><br>
+  <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div>

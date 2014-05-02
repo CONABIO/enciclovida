@@ -35,3 +35,4 @@ config/development.sphinx.conf
 db/sphinx/
 Gemfile.lock
 log/development.sphinx.pid
+db/blurrily/

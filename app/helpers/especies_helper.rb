@@ -74,7 +74,7 @@ module EspeciesHelper
   end
 
   def busquedas(iterador)
-    opciones ||=''
+    opciones=''
     iterador.each do |valor, nombre|
       opciones+="<option value=\"#{valor}\">#{nombre}</option>"
     end
@@ -82,7 +82,7 @@ module EspeciesHelper
   end
 
   def checkboxTipoDistribucion
-    checkBoxes ||=''
+    checkBoxes=''
     TipoDistribucion.all.order('descripcion ASC').each do |tipoDist|
       checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
     end
@@ -90,7 +90,7 @@ module EspeciesHelper
   end
 
   def checkboxValidoSinonimo(tipoBusqueda)
-    checkBoxes ||=''
+    checkBoxes=''
     Especie::ESTATUSES.each do |e|
       checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}&nbsp;&nbsp;"
     end
@@ -98,36 +98,79 @@ module EspeciesHelper
   end
 
   def dameRegionesNombresBibliografia(especie)
-    regiones ||= ''
-    nombresComunes ||= ''
-    distribuciones ||= ''
+    distribuciones=nombresComunes=tipoDistribuciones=''
+    distribucion={}
+    tipoDist=[]
+    biblioCont=1
 
-    if especie.especies_regiones.count > 0
-      distribArray ||= []
-      especie.especies_regiones.each do |e|
-        regiones+= "<li>#{e.region.nombre_region}</li>" if !e.region.is_root?
+    especie.especies_regiones.each do |e|
+      tipoDist << e.tipo_distribucion.descripcion if e.tipo_distribucion_id.present?
 
-        e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
-          nombresComunes+= "<li>#{nombre.nombre_comun.nombre_comun} (#{nombre.nombre_comun.lengua.downcase})</li>"
+      if e.tipo_distribucion_id.present?
+        tipo_reg=e.region.tipo_region
+        niveles="#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
+        distribucion[niveles]=[] if distribucion[niveles].nil?
 
-          #nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id).where(:nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-          #detalles ? region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor}</p>" : region+="<p><b>Bibliografía:</b> #{biblio.bibliografia.autor.truncate(25)}</p>"
-          #end
+        case niveles
+          when '100'
+            distribucion[niveles].push('<b>En todo el territorio nacional</b>')
+          when '110'
+            distribucion[niveles].push('<b>Estatal</b>') if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '111'
+            distribucion[niveles].push('<b>Municipal</b>') if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '200'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '300'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '400'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '500'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '510'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
+          when '511'
+            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
+            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
         end
-        distribArray.push(e.tipo_distribucion.descripcion) if e.tipo_distribucion_id.present?
       end
-      if distribArray.present?
-        distribArray.uniq.each do |d|
-          distribuciones+= "<li>#{d}</li>"
+
+      e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
+        nomBib="#{nombre.nombre_comun.nombre_comun} (#{nombre.nombre_comun.lengua.downcase})"
+        nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
+          nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
+<div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"
+          biblioCont+=1
         end
+        nombresComunes+="<li>#{nomBib}</li>"
       end
     end
-    {:regiones => regiones, :nombresComunes => nombresComunes, :distribuciones => distribuciones}
+
+    distribucion.each do |k, v|
+      titulo=true
+      v.each do |reg|
+        titulo ? distribuciones+="#{reg}<ul>" : distribuciones+=reg
+        titulo=false
+      end
+      distribuciones+='</ul>'
+    end
+
+    tipoDist.uniq.each do |d|
+      tipoDistribuciones+= "<li>#{d}</li>"
+    end
+
+    {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
   end
 
   def dameEspecieEstatuses(taxon)
-    if taxon.especies_estatuses.count > 0
-      estatuses ||= ''
+    #if taxon.especies_estatuses.count > 0
+      estatuses=''
       taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
 
       taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
@@ -145,31 +188,35 @@ module EspeciesHelper
         end
       end
       taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
-    else
-      ''
-    end
+    #else
+    #  ''
+    #end
   end
 
   def dameCaracteristica(taxon)
     conservacion=''
     taxon.especies_catalogos.each do |e|
       titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
-      conservacion+="<li>#{e.catalogo.descripcion}(#{titulo})</li>"
+      conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span></li>"
     end
     conservacion.present? ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" : conservacion
   end
 
-  def dameDescendientesDirectos(taxon)
-    if taxon.child_ids.count > 0
-      hijos="<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>"
-      taxon.child_ids.each do |children|
-        subTaxon=Especie.find(children)
-        hijos+="<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>" if subTaxon.present?
-      end
-      hijos+='</div></fieldset></ul>'
-    else
-      ''
+  def dameEspecieBibliografia(taxon)
+    biblio=''
+    taxon.especies_bibliografias.each do |bib|
+      biblio+="<p>#{bib}</p><br>"
     end
+    biblio.present? ? '<b>Bibliografía</b>' : biblio
+  end
+
+  def dameDescendientesDirectos(taxon)
+    hijos=''
+    taxon.child_ids.each do |children|
+      subTaxon=Especie.find(children)
+      hijos+="<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>" if subTaxon.present?
+    end
+    hijos.present? ? "<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
   end
 
   def dameListas(listas)

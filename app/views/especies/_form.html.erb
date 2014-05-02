@@ -11,7 +11,7 @@
 <%= form_for(@especie) do |f| %>
     <% if @especie.errors.any? %>
         <div id="error_explanation">
-          <h2><%= pluralize(@especie.errors.count, "error") %> La especie no pudo ser guardada o modificada:</h2>
+          <h2><%= pluralize(@especie.errors.count, 'error') %> La especie no pudo ser guardada o actualizada:</h2>
 
           <ul>
             <% @especie.errors.full_messages.each do |msg| %>
@@ -60,7 +60,7 @@
                 <% end %>
               </div>
               <div class="field">
-                <%= f.label :estatus, 'Estatus del nombre científico: ' %>
+                <%= f.label :estatus, 'Estatus del nombre cient&iacute;fico: '.html_safe %>
                 <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
               </div>
               <div class="field">
@@ -76,7 +76,7 @@
                 <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
               </div>
               <div class="field">
-                <%= f.label :anotacion, 'Anotaci&oacute;n' %><br>
+                <%= f.label :anotacion, 'Anotaci&oacute;n'.html_safe %><br>
                 <%= f.text_field :anotacion, :maxlength => 255, :size => 45, :placeholder => 'Anotación' %>
               </div>
             </fieldset>
@@ -94,7 +94,7 @@
             </fieldset>
 
             <fieldset>
-              <legend class="leyenda">Árbol taxonómico</legend>
+              <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
               <div id='vista_arbol'>
                 <% if @especie.is_root? %>
                     <%= arbolTaxonomico.html_safe %>
@@ -109,14 +109,14 @@
         <table id="tabla_editar"><tr>
           <td valign="top">
             <fieldset class="fieldset_regiones">
-              <legend class="leyenda">Regiones y distribuciones</legend>
+              <legend class="leyenda">Distribuciones</legend>
               <div class="field">
                 <%= f.fields_for :especies_regiones do |er| %>
                     <% @region=er.text_field(:region_id).to_param.split(' ')[4].split('=').last.delete('"') %>
                     <%= render 'especie_region_fields', :f => er %>
 
                     <fieldset class="fieldset_nombres">
-                      <legend class="leyenda">Nombres comunes en la región</legend>
+                      <legend class="leyenda">Nombres comunes en la regi&oacute;n</legend>
                       <div class="field">
 
                         <%= f.fields_for :nombres_regiones do |nr| %>

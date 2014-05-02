@@ -18,11 +18,16 @@
 *= require dataTables/src/demo_table_jui
 */
 
-#notice, .enlaces_acciones, #bitacora {
+#notice, .enlaces_acciones, #bitacora, .notice {
     text-align: center;
 }
 
+.notice {
+    color: green;
+}
+
 .tabla_formato {
+    width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -55,10 +60,14 @@
     width: 1000px;
 }
 
-
 .container { width: 800px; margin: 0 auto; }
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 #nombre_cientifico2 { font-size: 14px; padding: 3px; border: 1px solid #CCC; display: block; margin: 20px 0; }
+
+.link_azul:link {color: #0000ff; text-decoration:none; }
+.link_azul:active {color-background: #0000ff; text-decoration: none; }
+.link_azul:visited {color: #0000ff; text-decoration: none; }
+.link_azul:hover {background-color: #ffffff; text-decoration: none; }
