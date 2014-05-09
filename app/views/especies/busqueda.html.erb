@@ -26,7 +26,6 @@
         var busqueda={};
         var numerosFiltros='';
         var checkboxSeleccionadas='';
-        var checkboxSeleccionadasEstatusBasicaComun='';
         var checkboxSeleccionadasEstatusBasicaCientifico='';
         var checkboxSeleccionadasEstatusAvanzada='';
         var busquedaAvanzada = $('#busqueda_basica').is(':visible') ? 'busqueda_basica' : 'busqueda_avanzada';
@@ -249,6 +248,48 @@
             $('#hAtributo_' + id).val('');
         });
 
+        $(document).on('change', "[id^='distribucion_nivel_']", function()
+        {
+            var nivel=parseInt($(this).attr('name').substring(19))
+            if ($(this).val() != '')
+            {
+                jQuery.ajax({
+                    success: function(html){
+                        $('#distribucion_nivel_'+(nivel)).nextAll("[id^='distribucion_nivel_']").remove();
+
+                        switch (nivel)
+                        {
+                            case 1:
+                                $('#distribucion_nivel').empty().html(html);
+                                break;
+                            case 2:
+                                $('#distribucion_nivel').append(html);
+                                break;
+                        }
+                    },
+                    fail: function(){
+                        $('#notice').html('Hubo un error al eliminar los contactos, por favor intentalo de nuevo.');
+                    },
+                    type:'POST',
+                    url:'/regiones/regiones',
+                    cache:true,
+                    data: {region: $(this).val(), region_nivel: nivel}
+                });
+            }
+
+            if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
+            {
+                $('#distribucion_nivel_1').nextAll().each(function (index){
+                    //if($(index).attr('name') == 'distribucion_nivel_2')
+                    //{
+                        console.log(index)
+                    //}
+                });
+                //console.log($('#distribucion_nivel_1').nextAll('</div>'));
+                //$('#distribucion_nivel').empty();
+            }
+        });
+
         $(document).on('railsAutocomplete.select', "[id^='vAtributo_']", function(event, data) {
             var id=$(this).attr('id').split('_')[1];
 
@@ -256,7 +297,6 @@
             {
                 $(this).val(data.item.nombre_cientifico);
                 $('#hAtributo_' + id).val(data.item.id);
-
             }
             if ($('#bAtributo_' + id).val() == 'nombre_comun')
             {
@@ -350,11 +390,14 @@
             <br><br><b>con tipo de distribuci&oacute;n</b><br>
             <%= checkboxTipoDistribucion %>
 
+            <br><br>
+            <b>con distribuci&oacute;n en:</b>
+            <br>(predeterminada, a nivel nacional)
             <br>
-            buscar a nivel:
-            <br>
-            <%= select_tag :region_selecciona, options_from_collection_for_select(TipoRegion.all, :id, :descripcion) %>
-            <%=  %>
+            <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.find(2, 4, 5, 6, 7, 8), :id, :descripcion), :prompt => :NACIONAL %>
+            <div id="distribucion_nivel">
+
+            </div>
             <table>
               <tr>
                 <td>
@@ -368,7 +411,7 @@
                 <td>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                                 :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---Cat. del tax&oacute;n (predeterminada)---'.html_safe %>
+                                 :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---CUALQUIERA---'.html_safe %>
                 </td>
 
             </table>

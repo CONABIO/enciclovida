@@ -44,7 +44,11 @@ Buscador::Application.routes.draw do
 
   resources :tipos_regiones
 
-  resources :regiones
+  resources :regiones do
+    collection do
+      post :regiones
+    end
+  end
 
   resources :especies_regiones do
     collection do

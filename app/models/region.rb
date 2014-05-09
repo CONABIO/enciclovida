@@ -5,6 +5,12 @@ class Region < ActiveRecord::Base
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'region_id'
   has_ancestry
 
+  scope :regiones_principales, ->(id) { where(:tipo_region_id => id).where("nombre_region != 'ND'").order(:nombre_region) }
+  scope :regiones_especificas, lambda {|id|
+    region=find(id)
+    region.children.where("nombre_region != 'ND'").order(:nombre_region)
+  }
+
   def personalizaBusqueda
     if self.ancestry.present?
       parientes ||=''
