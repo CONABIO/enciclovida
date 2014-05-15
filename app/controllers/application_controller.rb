@@ -64,4 +64,8 @@ class ApplicationController < ActionController::Base
     cookies.delete :SpryMedia_DataTables_especies_especies
     cookies.delete :SpryMedia_DataTables_especies_
   end
+
+  def to_boolean(str)
+    str == 'true'
+  end
 end

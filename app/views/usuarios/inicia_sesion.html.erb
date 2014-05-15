@@ -9,13 +9,11 @@
 <%= form_tag(:action => 'intento_sesion') do %>
     <table width="1000" id="tabla_form"><tr>
       <td valign="top">
-        <p>Usuario/correo</br> <%= text_field_tag :login %></p>
-        <p>Contraseña</br> <%= password_field_tag :contrasenia %></p>
+        <p>usuario/correo</br> <%= text_field_tag :login %></p>
+        <p>Contrase&ntilde;a</br> <%= password_field_tag :contrasenia %></p>
         <%= submit_tag 'Entrar' %>
         <br>
-        <% if session[:usuario].blank? %>
-            <p>¿Aún no tienes cuenta? <%= link_to 'Crea una', new_usuario_url, :class => 'link_azul' %></p>
-        <% end %>
+        <p>¿A&uacute;n no tienes cuenta? <%= link_to 'Crea una', new_usuario_url, :class => 'link_azul' %></p>
       </td>
     </tr></table>
 <% end %>

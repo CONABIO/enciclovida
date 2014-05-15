@@ -1,10 +1,11 @@
 class UsuariosController < ApplicationController
+  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  before_filter :entroAlSistema?, :only => [:show]
-  before_filter :tienePermiso?, :only => [:index]
-  before_filter :only => [:edit, :update, :destroy] do |c|
+  before_action :only => [:index, :edit, :update, :destroy] do |c|
     c.tienePermiso? @usuario.id
   end
+
+  layout :false, :only => [:filtros]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -78,7 +79,7 @@ class UsuariosController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'El usuario/correo o contraseña son incorrectos' }
+        format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'El usuario/correo o contraseña son incorrectos.' }
       end
     end
   end
@@ -87,6 +88,13 @@ class UsuariosController < ApplicationController
     cierraSesion
     respond_to do |format|
       format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'La sesión se cerró correctamente.' }
+    end
+  end
+
+  def filtros
+    filtro=Filtro.sesion_o_usuario(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil, params[:html], to_boolean(params[:lectura]) ? true : false)
+    if filtro[:existia].present?
+      @html=filtro[:html] if filtro[:existia]
     end
   end
 
