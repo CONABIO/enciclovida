@@ -83,8 +83,11 @@ module EspeciesHelper
 
   def checkboxTipoDistribucion
     checkBoxes=''
+    contador=0
     TipoDistribucion.all.order('descripcion ASC').each do |tipoDist|
+      checkBoxes+='<br>' if contador == 3    #para darle un mejor espacio
       checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
+      contador+=1
     end
     checkBoxes.html_safe
   end
@@ -220,14 +223,14 @@ module EspeciesHelper
   end
 
   def dameListas(listas)
-    titulo = "<h3>Widget de #{view_context.link_to(:listas, listas_path)}</h3>Autom&aacute;ticamente borra los taxones repetidos de las listas<br>"
+    titulo = "<b>#{view_context.link_to(:Listas, listas_path)} de taxones</b>"
     html = if listas.nil?
-             "Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas."
+             "<br><i>Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas.</i>"
            elsif listas == 0
-             "A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?"
+             "<br><i>A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?</i>"
            else
-             "<i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br><br>
-              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}"
+             "<br><i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br>
+              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}<br><br>"
            end
     titulo + html
   end

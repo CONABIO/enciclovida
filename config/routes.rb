@@ -16,6 +16,7 @@ Buscador::Application.routes.draw do
       post :intento_sesion
       put :cierra_sesion
       post :filtros
+      post :limpiar
     end
   end
 

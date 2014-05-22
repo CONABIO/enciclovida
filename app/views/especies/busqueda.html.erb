@@ -1,4 +1,3 @@
-<%= request.session_options[:id] %>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     /*getCookie = function(c_name)
      {
@@ -170,7 +169,6 @@
         bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
         bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
         bAtributo+="<option value='nombre_comun'>nombre común</option>";
-        bAtributo+="<option value='nombre_region'>región</option>";
         bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
         bAtributo+="<option value='nombre_autoridad'>autoridad</option></select> ";
 
@@ -180,7 +178,7 @@
         cAtributo+="<option value='3'>igual a</option>";
         cAtributo+="<option value='4'>termina con</option></select> ";
 
-        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='35' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
+        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
         hAtributo="<input class='busqueda_atributo' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
         imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>";
 
@@ -261,28 +259,37 @@
          });
          */
 
-        $(document).on('change', ".busqueda_atributo", function()
+        $(document).on('change', "[id^='bAtributo_']", function()
         {
-            //if ($(this).is('select'))
-            //{
-                //alert(1);
-                //var valor=$(this).val();
-                //$('#'+$(this).attr('id') + ' option').removeAttr('selected');
-                //$('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-            //}
+            var valor=$(this).val();
+            $('#'+$(this).attr('id') + ' option').removeAttr('selected');
+            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
 
-            $(this).attr('value',$(this).val());
             var id=$(this).attr('id').split('_')[1];
-            if ($('#' + $(this).attr('id')).val() == 'nombre_cientifico')
+            if ($(this).val() == 'nombre_cientifico')
             {
                 $('#vAtributo_' + id).attr('data-autocomplete', '/especies/autocomplete_especie_nombre').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
-            } else if ($('#' + $(this).attr('id')).val() == 'nombre_comun')
+            } else if ($(this).val() == 'nombre_comun')
             {
                 $('#vAtributo_' + id).attr('data-autocomplete', '/nombres_comunes/autocomplete_nombre_comun_comun').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
             } else {
                 $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
             }
             //$('#hAtributo_' + id).val('');
+            guardaFiltros(false);
+        });
+
+        $(document).on('change', "[id^='cAtributo_']", function()
+        {
+            var valor=$(this).val();
+            $('#'+$(this).attr('id') + ' option').removeAttr('selected');
+            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+            guardaFiltros(false);
+        });
+
+        $(document).on('change', "[id^='vAtributo_']", function()
+        {
+            $(this).attr('value',$(this).val());
             guardaFiltros(false);
         });
 
@@ -302,14 +309,13 @@
             var valor=$(this).val();
             $('#'+$(this).attr('id') + ' option').removeAttr('selected');
             $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-            var nivel=parseInt($(this).attr('name').substring(19))
+            var nivel=parseInt($(this).attr('name').substring(19));
 
             if ($(this).val() != '')
             {
                 jQuery.ajax({
                     success: function(html){
                         $('#distribucion_nivel_'+(nivel)).nextAll("[id^='distribucion_nivel_']").remove();
-
                         switch (nivel)
                         {
                             case 1:
@@ -319,6 +325,7 @@
                                 $('#distribucion_nivel').append(html);
                                 break;
                         }
+                        guardaFiltros(false);
                     },
                     fail: function(){
                         $('#notice').html('Hubo un error al cargar los filtros, por favor intentalo de nuevo.');
@@ -330,17 +337,26 @@
                 });
             }
 
-            //if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
-            //{
-               // $('#distribucion_nivel_1').nextAll().each(function (index){
-                    //if($(index).attr('name') == 'distribucion_nivel_2')
-                    //{
-               //     console.log(index)
-                    //}
-               // });
-                //console.log($('#distribucion_nivel_1').nextAll('</div>'));
-                //$('#distribucion_nivel').empty();
-            //}
+            if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
+            {
+                $('#distribucion_nivel_2, #distribucion_nivel_3').remove();
+                guardaFiltros(false);
+            }
+
+            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
+            {
+                $('#distribucion_nivel_3').remove();
+                guardaFiltros(false);
+            }
+        });
+
+        $(document).on('change', "#categoria_taxonomica", function() {
+            var valor=$(this).val();
+            $('#categoria_taxonomica  option').removeAttr('selected');
+
+            $.each(valor, function(index, categoria){
+                $("#categoria_taxonomica option[value='"+categoria+"']").attr('selected',true);
+            });
             guardaFiltros(false);
         });
 
@@ -382,16 +398,35 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $("#limpiar").click(function()
+        $(document).on('click', '#limpiar', function()
         {
-            document.cookie = "busqueda_taxones=;expires=Thu, 01 Jan 1990 00:00:01 GMT; path=/";
-            location.reload;
-            return false;
+            /*document.cookie = "busqueda_taxones=;expires=Thu, 01 Jan 1990 00:00:01 GMT; path=/";
+             location.reload;
+             return false;*/
+            jQuery.ajax({
+                success: function(html){
+                    if (html!='true') {
+                        $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+                    }
+                },
+                fail: function(){
+                    $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+                },
+                type:'POST',
+                url:'/usuarios/limpiar',
+                cache:true
+            });
         });
 
-        $('#por_pagina').change(function()
+        $(document).on('change', "#per_page", function(k)
         {
+            var valor=$(this).val();
+            $('#'+$(this).attr('id') + ' option').removeAttr('selected');
+            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+
             $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
+            $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
+            guardaFiltros(false);
         });
 
         guardaFiltros(true);
@@ -399,35 +434,43 @@
 </script>
 
 <div id="busqueda">
-  <table class="tabla_formato">
-    <tr>
-      <td width="60%" valign="top">
-        <div id="busqueda_basica">
+  <div id="busqueda_basica">
+    <table class="tabla_formato" border="0">
+      <tr>
+        <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
               <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
-              Nombre com&uacute;n<br>
+              <b>Nombre com&uacute;n</b><br>
               <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre común', :id => :nombre_comun,
+              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común', :id => :nombre_comun,
                                  'data-autocomplete' => autocomplete_nombre_comun_comun_nombres_comunes_path, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
+              <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
           <% end %>
-          <br>
+        </td>
+
+        <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
               <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
-              Nombre cient&iacute;fico<br>
+              <b>Nombre cient&iacute;fico</b><br>
               <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
-              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 45, :placeholder => 'nombre científico', :id => :nombre_cientifico,
+              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico', :id => :nombre_cientifico,
                                  'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
-              <br>mostrar solo taxones:<br>
-              <%= checkboxValidoSinonimo('basica_cientifico') %>
-              <br><br><%= link_to '[Búsqueda avanzada]', '', :id => :busqueda_avanzada_link, :onClick => 'return busqueda_avanzada();' %> &#8595;
+              <br><br><b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
+              <br><%= checkboxValidoSinonimo('basica_cientifico') %>
           <% end %>
-        </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-        <div id="busqueda_avanzada" style="display: none">
+  <div id="busqueda_avanzada" style="display: none">
+    <table class="tabla_formato" border="0">
+      <tr>
+        <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
               <%= hidden_field_tag :busqueda_oculto, :avanzada %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
@@ -435,7 +478,7 @@
               <div id="atributos_extra">
                 <%= select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
                 <%= select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-                <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 35, :class => :busqueda_atributo,
+                <%= text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 30, :class => :busqueda_atributo,
                                    'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
                 <%= hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
               </div>
@@ -445,45 +488,44 @@
         %>
                 </div>
               </div-->
-              <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :onClick => 'return masFiltros();' %>
-              <br><br><b>con tipo de distribuci&oacute;n</b><br>
-              <%= checkboxTipoDistribucion %>
+              <%= link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :class => :link_azul, :onClick => 'return masFiltros();' %>
+              <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
+              <br><%= checkboxTipoDistribucion %>
 
               <br><br>
-              <b>con distribuci&oacute;n en:</b>
-              <br>(predeterminada, a nivel nacional)
+              <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
               <br>
               <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.find(2, 4, 5, 6, 7, 8), :id, :descripcion), :prompt => :NACIONAL %>
+              <div id="distribucion_nivel"></div>
 
-              <table>
-                <tr>
-                  <td>
-                    <div style="text-align: left; display: inline-block"><b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i></div>
-                    <br><br><b>mostrar solo taxones:</b><br>
-                    <%= checkboxValidoSinonimo('avanzada') %>
-                    <br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
-                    <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
-                    <br><%= link_to '[Búsqueda básica]', '', :id => :busqueda_basica_link, :onClick => 'return busqueda_basica();' %> &#8593;
-                  </td>
-                  <td>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                                   :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---CUALQUIERA---'.html_safe %>
-                  </td>
-
-              </table>
+              <br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
+              <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
+              &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
           <% end %>
-        </div>
+        </td>
+        <td valign="top">
+          <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
+          <p>
+            <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
+                           :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
+          </p>
+          <p>
+            <b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
+            <br><%= checkboxValidoSinonimo('avanzada') %>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-      </td>
-      <td id="widget_listas" width="40%" valign="top">
-      </td>
-    </tr>
+  <table class="tabla_formato" border="0">
     <tr>
       <td>
-        Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :id => :por_pagina %> resultados por p&aacute;gina
+        Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
       </td>
     </tr>
   </table>
 </div>
+
+
 

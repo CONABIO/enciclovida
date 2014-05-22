@@ -120,7 +120,7 @@ class EspeciesController < ApplicationController
 
   def resultados
     @vista=params[:busqueda_oculto]
-    estatus ||= ''
+    estatus = ''
 
     case params[:busqueda_oculto]
       when 'basica_comun'
@@ -148,33 +148,24 @@ class EspeciesController < ApplicationController
         end
       when 'avanzada'
         busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
-        joins ||= ''
-        condiciones ||= ''
-        tipoDistribuciones ||= ''
-        @conNombreComun = false
-        @conRegion = false
-        @conEstadoConservacion = false
-        conTipoDistribucion = false
-        conIDCientifico ||= []
-        conIDComun ||= []
+        joins = condiciones = tipoDistribuciones = ''
+        @conNombreComun = @conRegion = @conEstadoConservacion = false
+        conIDCientifico = arbol = []
 
-
-        params.each do |key, value|
+        params.each do |key, value|  #saca los taxones o subtaxones, depende si autocompleto
           if key.include?('bAtributo_')
             numero=key.split('_').last
             if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
               conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
-              conIDComun << params['hAtributo_' + numero].to_i if value == 'nombre_comun'
-            else params['vAtributo_' + numero].present?
+            elsif params['vAtributo_' + numero].present?
             joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
-            condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero])
+            condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
             end
           end
 
           if key.include?('tipo_distribucion_')
             tipoDistribuciones+="#{value},"
-            joins+= '.'+tipoDeAtributo('tipos_distribuciones') if !conTipoDistribucion
-            conTipoDistribucion=true
+            joins+= '.'+tipoDeAtributo('tipos_distribuciones')
           end
 
           estatus+= "#{value}," if key == 'estatus_avanzada_1'
@@ -183,14 +174,13 @@ class EspeciesController < ApplicationController
 
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         joins+= '.caso_categoria_taxonomica'
-        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if conTipoDistribucion
+        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
         condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
 
-        if (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.blank?
+        if (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.blank?  #join a la(s) categorias taxonomicas
           cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-        elsif (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.present?
-          arbol ||= []
+        elsif (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.present? #joins a las categorias con los descendientes
           taxon = Especie.find(conIDCientifico.first)
           arbol << taxon.ancestor_ids << taxon.descendant_ids << conIDCientifico.first.to_i
           cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
@@ -199,11 +189,21 @@ class EspeciesController < ApplicationController
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
         end
 
-        busqueda+= joins.split('.').uniq.join('.') + condiciones
+        #parte de la distribucion
+        if params[:distribucion_nivel_1].present?
+          joins+= '.caso_region'
+          if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
+            condiciones+= '.' + tipoDeBusqueda(3, 'regiones.id', params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
+          else
+            condiciones+= '.' + tipoDeBusqueda(3, 'tipo_region_id', params[:distribucion_nivel_1])
+          end
+        end
+
+        busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-      #@taxones=Especie.none
-      #@resultado2= busqueda
-      #@resultado=params
+                                                                      #@taxones=Especie.none
+        #@resultado2= busqueda
+        #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
@@ -472,8 +472,6 @@ class EspeciesController < ApplicationController
     case tipo
       when 'nombre_comun'
         relacion='caso_nombre_comun'
-      when 'nombre_region'
-        relacion='caso_region'
       when 'tipos_distribuciones'
         relacion='caso_tipo_distribucion'
       when 'catalogos.descripcion'

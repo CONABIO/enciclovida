@@ -18,4 +18,14 @@ class Filtro < ActiveRecord::Base
       {:existia => false} if nuevo.save
     end
   end
+
+  def self.consulta(sesion, usuario)    #consulta para ver si existe registro
+    filtro=usuario.present? ? where(:usuario_id => usuario) : where(:sesion => sesion)
+    if filtro.present?
+      filtro.first.destroy
+      filtro.first.destroyed?
+    else
+      true
+    end
+  end
 end

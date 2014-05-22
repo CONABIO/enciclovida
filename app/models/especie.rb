@@ -42,13 +42,13 @@ class Especie < ActiveRecord::Base
   POR_PAGINA = [50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUSES = [
-      [2, 'válido/correcto (✔)'],
-      [1, 'sinónimo (✘)']
+      [2, 'válido/correcto'],
+      [1, 'sinónimo']
   ]
 
   ESTATUSES_SIMBOLO = {
-      2 => '✔',
-      1 =>'✘'
+      2 => '',
+      1 =>''
   }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
@@ -63,7 +63,6 @@ class Especie < ActiveRecord::Base
   BUSQUEDAS_ATRIBUTO = {
       'nombre_cientifico' => 'nombre científico',
       'nombre_comun' => 'nombre común',
-      'nombre_region' => 'región',
       'catalogos.descripcion' => 'característica del taxón',
       'nombre_autoridad' => 'autoridad'
   }

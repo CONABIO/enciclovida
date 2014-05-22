@@ -1,11 +1,11 @@
 class UsuariosController < ApplicationController
-  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros]
+  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   before_action :only => [:index, :edit, :update, :destroy] do |c|
     c.tienePermiso? @usuario.id
   end
 
-  layout :false, :only => [:filtros]
+  layout :false, :only => [:filtros, :limpiar]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -96,6 +96,10 @@ class UsuariosController < ApplicationController
     if filtro[:existia].present?
       @html=filtro[:html] if filtro[:existia]
     end
+  end
+
+  def limpiar
+    @filtro=Filtro.consulta(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil)
   end
 
   private

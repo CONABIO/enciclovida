@@ -25,6 +25,12 @@
                 $(":input[id^='box_especie_']").prop("checked", false);
             }
         });
+
+        $("#muestra_listas").click(function ()
+        {
+            $('#widget_listas').slideToggle();
+            return false;
+        });
     });
 </script>
 
@@ -34,28 +40,38 @@
 
 <p id="notice"><%= notice %></p>
 
-<br><div class="titulo-busqueda">
-  <%= page_entries_info @taxones if @taxones.present? %>
-</div>
-
 <%= form_tag aniade_taxones_especies_path, :method => :put %>
 
-<% if @taxones.length > 0 %>
-    <div id="acciones">
-      <%= hidden_field_tag :listas %>
-      <%= label_tag :box_especie, 'Selecciona todos' %>
-      <%= check_box_tag :box_especie, :todos %> |
-      <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
-                     data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' } if !@listas.nil? && @listas != 0 %>
-    </div>
-<% end %>
-
 <p class="notice">
-  <%= @coincidencias if @coincidencias.present? %>
+  <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
 </p>
 
-<%= @resultado %><br>
-<%= @resultado2 %><br>
+<table class="tabla_formato" border="0">
+  <tr>
+    <td valign="top">
+      <br>
+      <div class="titulo-busqueda">
+        <%= page_entries_info @taxones if @taxones.present? %>
+      </div>
+      <% if @taxones.length > 0 %>
+          <%= hidden_field_tag :listas %>
+          <%= label_tag :box_especie, 'Selecciona todos' %>
+          <%= check_box_tag :box_especie, :todos %> |
+          <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
+                         data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' } if !@listas.nil? && @listas != 0 %>
+          <%= ' |' if !@listas.nil? && @listas != 0 %>
+          <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas %>
+          <br><br>
+      <% end %>
+    </td>
+    <td width="50%" valign="top">
+      <div id="widget_listas" style="display: none"></div>
+    </td>
+  </tr>
+</table>
+
+<%= @resultado %>
+<%= @resultado2 %>
 
 <div class="digg_pagination">
   <%= will_paginate @taxones %>
