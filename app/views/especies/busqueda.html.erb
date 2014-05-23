@@ -498,7 +498,7 @@
               <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.find(2, 4, 5, 6, 7, 8), :id, :descripcion), :prompt => :NACIONAL %>
               <div id="distribucion_nivel"></div>
 
-              <br><br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
+              <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
               &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
           <% end %>
@@ -507,7 +507,7 @@
           <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
           <p>
             <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                           :class => :busqueda_atributo, :multiple => true, :size => 12, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
+                           :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
           </p>
           <p>
             <b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>

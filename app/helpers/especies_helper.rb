@@ -39,6 +39,7 @@ module EspeciesHelper
   def arbolTaxonomico
     arbolCompleto ||="<ul class=\"nodo_mayor\">"
     reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+
     Especie.where(:categoria_taxonomica_id => reino).each do |t|
       arbolCompleto+=enlacesDelArbol(t)
     end
@@ -172,28 +173,29 @@ module EspeciesHelper
   end
 
   def dameEspecieEstatuses(taxon)
-    #if taxon.especies_estatuses.count > 0
-      estatuses=''
-      taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
+    estatuses=''
 
-      taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
-        taxSinonimo = Especie.find(estatus.especie_id2)
-        next if taxSinonimo.nil?
+    taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
+      taxSinonimo = Especie.find(estatus.especie_id2)
+      next if taxSinonimo.nil?
 
-        if taxon.estatus == 2
-          estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo)}"
-          estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-        elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
-          estatuses+= tituloNombreCientifico(taxSinonimo)
-          estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
-        else
-          return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
-        end
+      if taxon.estatus == 2
+        estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :link => true)}"
+        estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+      elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
+        estatuses+= tituloNombreCientifico(taxSinonimo, :link => true)
+        estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
+      else
+        return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
       end
+    end
+
+    if estatuses.present?
+      taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
       taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
-    #else
-    #  ''
-    #end
+    else
+      estatuses
+    end
   end
 
   def dameCaracteristica(taxon)
