@@ -2179,28 +2179,4 @@ ALTER TABLE ONLY listas
 
 SET search_path TO "$user",public;
 
-INSERT INTO schema_migrations (version) VALUES ('20130730181035');
 
-INSERT INTO schema_migrations (version) VALUES ('20130730181247');
-
-INSERT INTO schema_migrations (version) VALUES ('20130730181959');
-
-INSERT INTO schema_migrations (version) VALUES ('20130731015842');
-
-INSERT INTO schema_migrations (version) VALUES ('20130731020042');
-
-INSERT INTO schema_migrations (version) VALUES ('20131018142400');
-
-INSERT INTO schema_migrations (version) VALUES ('20131021221425');
-
-INSERT INTO schema_migrations (version) VALUES ('20131021222103');
-
-INSERT INTO schema_migrations (version) VALUES ('20131028180853');
-
-INSERT INTO schema_migrations (version) VALUES ('20140224155302');
-
-INSERT INTO schema_migrations (version) VALUES ('20140224222120');
-
-INSERT INTO schema_migrations (version) VALUES ('20140228164310');
-
-INSERT INTO schema_migrations (version) VALUES ('20140228165610');
