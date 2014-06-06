@@ -778,6 +778,65 @@ ALTER SEQUENCE estatuses_id_seq OWNED BY estatuses.id;
 
 
 --
+-- Name: filtros; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE filtros (
+    id integer NOT NULL,
+    html text NOT NULL,
+    sesion character(32) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    usuario_id integer
+);
+
+
+--
+-- Name: TABLE filtros; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE filtros IS 'Filtros de las busquedas por sesion o usuario';
+
+
+--
+-- Name: filtros_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE filtros_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: filtros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE filtros_id_seq OWNED BY filtros.id;
+
+
+--
+-- Name: filtros_usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE filtros_usuario_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: filtros_usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE filtros_usuario_id_seq OWNED BY filtros.usuario_id;
+
+
+--
 -- Name: listas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1539,6 +1598,13 @@ ALTER TABLE ONLY estatuses ALTER COLUMN id SET DEFAULT nextval('estatuses_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY filtros ALTER COLUMN id SET DEFAULT nextval('filtros_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY listas ALTER COLUMN id SET DEFAULT nextval('listas_id_seq'::regclass);
 
 
@@ -1758,6 +1824,14 @@ ALTER TABLE ONLY estatuses
 
 
 --
+-- Name: id_filtros; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY filtros
+    ADD CONSTRAINT id_filtros PRIMARY KEY (id);
+
+
+--
 -- Name: id_listas; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1863,6 +1937,13 @@ CREATE INDEX index_especies_on_ancestry_acendente_obligatorio ON especies USING 
 --
 
 CREATE INDEX index_especies_on_nombre_cientifico ON especies USING btree (nombre_cientifico);
+
+
+--
+-- Name: index_filtros_on_sesion; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_filtros_on_sesion ON filtros USING btree (sesion);
 
 
 --
@@ -2074,6 +2155,14 @@ ALTER TABLE ONLY especies_estatuses
 
 ALTER TABLE ONLY bitacoras
     ADD CONSTRAINT usuarios_bitacoras_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(id);
+
+
+--
+-- Name: usuarios_filtros_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY filtros
+    ADD CONSTRAINT usuarios_filtros_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(id);
 
 
 --
