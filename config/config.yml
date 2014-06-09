@@ -92,7 +92,7 @@ base: &base
     # species descriptions from these sources in this order, trying the next
     # if one fails. You can see all the available describers in
     # lib/taxon_describers/lib/taxon_describers
-    # taxon_describers: [conabio, wikipediaes, wikipedia, eol]
+    taxon_describers: [conabio, wikipediaes, wikipedia, eol]
 
     # If you'd prefer the default taxon ranges to come from a particular Source, set the source ID here
     # taxon_range_source_id: 7538
