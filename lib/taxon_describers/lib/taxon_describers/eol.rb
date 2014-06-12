@@ -1,7 +1,7 @@
 module TaxonDescribers
   class Eol < Base
     def describe(taxon)
-      pages = eol_service.search(taxon.name, :exact => true)
+      pages = eol_service.search(taxon.nombre_cientifico, :exact => true)
       id = pages.at('entry/id').try(:content)
       return unless id
       page = eol_service.page(id, :text => 50, :subjects => "all", :details => true)
@@ -15,7 +15,7 @@ module TaxonDescribers
     end
 
     def page_url(taxon)
-      "http://eol.org/#{taxon.name}"
+      "http://eol.org/#{taxon.nombre_cientifico}"
     end
 
     def self.describer_name

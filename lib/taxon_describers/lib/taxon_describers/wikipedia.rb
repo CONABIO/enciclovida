@@ -2,8 +2,8 @@ module TaxonDescribers
   
   class Wikipedia < Base
     def describe(taxon)
-      title = taxon.wikipedia_title
-      title = taxon.name if title.blank?
+      #title = taxon.wikipedia_title
+      title = taxon.nombre_cientifico# if title.blank?
       decoded = ""
       begin
         parsed = wikipedia.parse(:page => title, :redirects => true).at('text').try(:inner_text).to_s

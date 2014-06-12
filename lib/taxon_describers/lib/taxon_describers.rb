@@ -8,6 +8,7 @@ module TaxonDescribers
       when "amphibiaweb" then TaxonDescribers::AmphibiaWeb.describe(taxon)
       when "eol" then TaxonDescribers::Eol.describe(taxon)
       when "conabio" then TaxonDescribers::Conabio.describe(taxon)
+      when "wikipedia" then TaxonDescribers::Wikipedia.describe(taxon)
       end
       return txt
     end

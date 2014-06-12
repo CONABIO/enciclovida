@@ -49,18 +49,21 @@ end
 
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 gem 'ancestry'
-gem 'blurrily'
+gem 'blurrily'     #fuzzy match
 gem 'cocoon', '=1.2.0'
 gem 'composite_primary_keys', github: 'calonso-conabio/composite_primary_keys', branch: 'ar_4.0.x'
 gem 'delayed_job_active_record'
 gem 'haml'
+gem 'htmlentities'
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-ui-rails'
 #gem 'rcore-ext'
 #gem 'ya2yaml'
 gem 'mysql2', '0.3.13'
+gem 'nokogiri', '1.5.11'  #hacer un prse con xml
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'
-gem 'savon'
+gem 'rinku', :require => 'rails_rinku'    #extiende el metodo auto_link
+gem 'savon'       #para consumir webservices con SOAP y WSDL
 gem 'seed_dump'
 gem 'thinking-sphinx'
 gem 'trollop'

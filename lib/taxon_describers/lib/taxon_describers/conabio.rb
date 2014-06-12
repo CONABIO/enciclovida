@@ -6,7 +6,7 @@ module TaxonDescribers
     end
 
     def self.describe(taxon)
-      page = conabio_service.search(taxon.name)
+      page = conabio_service.search(taxon.nombre_cientifico)
       page.blank? ? nil : page
     end
 
