@@ -1115,6 +1115,56 @@ ALTER SEQUENCE nombres_regiones_region_id_seq OWNED BY nombres_regiones.region_i
 
 
 --
+-- Name: photos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE photos (
+    id integer NOT NULL,
+    usuario_id integer,
+    native_photo_id character varying(255),
+    square_url character varying(255),
+    thumb_url character varying(255),
+    small_url character varying(255),
+    medium_url character varying(255),
+    large_url character varying(255),
+    original_url character varying(512),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    native_page_url character varying(255),
+    native_username character varying(255),
+    native_realname character varying(255),
+    license integer,
+    type character varying(255),
+    file_content_type character varying(255),
+    file_file_name character varying(255),
+    file_file_size integer,
+    file_processing boolean,
+    mobile boolean DEFAULT false,
+    file_updated_at timestamp without time zone,
+    metadata text
+);
+
+
+--
+-- Name: photos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE photos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE photos_id_seq OWNED BY photos.id;
+
+
+--
 -- Name: regiones; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1278,6 +1328,39 @@ CREATE SEQUENCE sessiones_id_seq
 --
 
 ALTER SEQUENCE sessiones_id_seq OWNED BY sessiones.id;
+
+
+--
+-- Name: taxon_photos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE taxon_photos (
+    id integer NOT NULL,
+    especie_id integer NOT NULL,
+    photo_id integer NOT NULL,
+    "position" integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: taxon_photos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE taxon_photos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: taxon_photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE taxon_photos_id_seq OWNED BY taxon_photos.id;
 
 
 --
@@ -1675,6 +1758,13 @@ ALTER TABLE ONLY nombres_regiones_bibliografias ALTER COLUMN bibliografia_id SET
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY photos ALTER COLUMN id SET DEFAULT nextval('photos_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY regiones ALTER COLUMN id SET DEFAULT nextval('regiones_id_seq'::regclass);
 
 
@@ -1704,6 +1794,13 @@ ALTER TABLE ONLY roles ALTER COLUMN id SET DEFAULT nextval('roles_id_seq'::regcl
 --
 
 ALTER TABLE ONLY sessiones ALTER COLUMN id SET DEFAULT nextval('sessiones_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY taxon_photos ALTER COLUMN id SET DEFAULT nextval('taxon_photos_id_seq'::regclass);
 
 
 --
@@ -1904,11 +2001,27 @@ ALTER TABLE ONLY usuarios
 
 
 --
+-- Name: photos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY photos
+    ADD CONSTRAINT photos_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: sessiones_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY sessiones
     ADD CONSTRAINT sessiones_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taxon_photos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY taxon_photos
+    ADD CONSTRAINT taxon_photos_pkey PRIMARY KEY (id);
 
 
 --
@@ -1947,10 +2060,24 @@ CREATE INDEX index_filtros_on_sesion ON filtros USING btree (sesion);
 
 
 --
+-- Name: index_flickr_photos_on_flickr_native_photo_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_flickr_photos_on_flickr_native_photo_id ON photos USING btree (native_photo_id);
+
+
+--
 -- Name: index_on_nombre_comun; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_on_nombre_comun ON nombres_comunes USING btree (nombre_comun);
+
+
+--
+-- Name: index_photos_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_photos_on_user_id ON photos USING btree (usuario_id);
 
 
 --
@@ -1972,6 +2099,20 @@ CREATE UNIQUE INDEX index_sessiones_on_session_id ON sessiones USING btree (sess
 --
 
 CREATE INDEX index_sessiones_on_updated_at ON sessiones USING btree (updated_at);
+
+
+--
+-- Name: index_taxon_photos_on_photo_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_taxon_photos_on_photo_id ON taxon_photos USING btree (photo_id);
+
+
+--
+-- Name: index_taxon_photos_on_taxon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_taxon_photos_on_taxon_id ON taxon_photos USING btree (especie_id);
 
 
 --
@@ -2086,6 +2227,14 @@ ALTER TABLE ONLY nombres_regiones
 
 
 --
+-- Name: photo_users_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY photos
+    ADD CONSTRAINT photo_users_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(id);
+
+
+--
 -- Name: region_region_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2123,6 +2272,14 @@ ALTER TABLE ONLY nombres_regiones_bibliografias
 
 ALTER TABLE ONLY usuarios
     ADD CONSTRAINT roles_usuarios_fk FOREIGN KEY (rol_id) REFERENCES roles(id);
+
+
+--
+-- Name: taxon_photos_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY taxon_photos
+    ADD CONSTRAINT taxon_photos_fk FOREIGN KEY (especie_id) REFERENCES especies(id);
 
 
 --

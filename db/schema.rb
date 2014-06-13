@@ -199,6 +199,34 @@ ActiveRecord::Schema.define(version: 0) do
     t.datetime "updated_at",                                                                                          null: false
   end
 
+  create_table "photos", force: true do |t|
+    t.integer  "usuario_id"
+    t.string   "native_photo_id"
+    t.string   "square_url"
+    t.string   "thumb_url"
+    t.string   "small_url"
+    t.string   "medium_url"
+    t.string   "large_url"
+    t.string   "original_url",      limit: 512
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "native_page_url"
+    t.string   "native_username"
+    t.string   "native_realname"
+    t.integer  "license"
+    t.string   "type"
+    t.string   "file_content_type"
+    t.string   "file_file_name"
+    t.integer  "file_file_size"
+    t.boolean  "file_processing"
+    t.boolean  "mobile",                        default: false
+    t.datetime "file_updated_at"
+    t.text     "metadata"
+  end
+
+  add_index "photos", ["native_photo_id"], name: "index_flickr_photos_on_flickr_native_photo_id", using: :btree
+  add_index "photos", ["usuario_id"], name: "index_photos_on_user_id", using: :btree
+
   create_table "regiones", force: true do |t|
     t.string   "nombre_region",                                                               null: false
     t.string   "clave_region",                                                                null: false
@@ -233,6 +261,17 @@ ActiveRecord::Schema.define(version: 0) do
 
   add_index "sessiones", ["session_id"], name: "index_sessiones_on_session_id", unique: true, using: :btree
   add_index "sessiones", ["updated_at"], name: "index_sessiones_on_updated_at", using: :btree
+
+  create_table "taxon_photos", force: true do |t|
+    t.integer  "especie_id", null: false
+    t.integer  "photo_id",   null: false
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "taxon_photos", ["especie_id"], name: "index_taxon_photos_on_taxon_id", using: :btree
+  add_index "taxon_photos", ["photo_id"], name: "index_taxon_photos_on_photo_id", using: :btree
 
   create_table "tipos_distribuciones", force: true do |t|
     t.string   "descripcion", null: false
