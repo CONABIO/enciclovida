@@ -74,7 +74,7 @@ GIT
       sass-rails
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     activerecord-deprecated_finders (1.0.3)
     akami (1.2.2)

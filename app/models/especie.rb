@@ -9,6 +9,8 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
+  has_many :taxon_photos, :dependent => :destroy, :order => 'position ASC NULLS LAST, id ASC'
+  has_many :photos, :through => :taxon_photos
 
   has_ancestry :ancestry_column => :ancestry_acendente_directo
 
@@ -251,6 +253,14 @@ class Especie < ActiveRecord::Base
       end
     end
     identificadores[0..-3]
+  end
+
+  def photos_cache_key
+    "taxon_photos_#{id}"
+  end
+
+  def photos_with_external_cache_key
+    "taxon_photos_external_#{id}"
   end
 
   private
