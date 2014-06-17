@@ -1,4 +1,5 @@
 class TaxonPhoto < ActiveRecord::Base
+  self.table_name = :taxon_photos
   belongs_to :especie
   belongs_to :photo
   

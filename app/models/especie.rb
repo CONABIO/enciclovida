@@ -9,7 +9,7 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
-  has_many :taxon_photos, :dependent => :destroy, :order => 'position ASC NULLS LAST, id ASC'
+  has_many :taxon_photos, :class_name =>'TaxonPhoto', :foreign_key => :especie_id, :dependent => :destroy, :order => 'position ASC NULLS LAST, id ASC'
   has_many :photos, :through => :taxon_photos
 
   has_ancestry :ancestry_column => :ancestry_acendente_directo
@@ -84,6 +84,8 @@ class Especie < ActiveRecord::Base
       '<=' => 'mayor o igual a',
       '<' => 'mayor a'
   }
+
+  SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
 
   CATEGORIAS_DIVISION = {
       1 => {
@@ -196,6 +198,10 @@ class Especie < ActiveRecord::Base
       }
   }
 
+  def species_or_lower?
+    SPECIES_OR_LOWER.include? categoria_taxonomica.nombre_categoria_taxonomica
+  end
+
   def self.dameIdsDelNombre(nombre, tipo=nil)
     identificadores=''
 
@@ -253,6 +259,54 @@ class Especie < ActiveRecord::Base
       end
     end
     identificadores[0..-3]
+  end
+
+  #
+  # Fetches associated user-selected FlickrPhotos if they exist, otherwise
+  # gets the the first :limit Create Commons-licensed photos tagged with the
+  # taxon's scientific name from Flickr.  So this will return a heterogeneous
+  # array: part FlickrPhotos, part api responses
+  #
+  def photos_with_backfill(options = {})
+    options[:limit] ||= 9
+    chosen_photos = taxon_photos.all(:limit => options[:limit],
+                                     :include => :photo, :order => "taxon_photos.position ASC NULLS LAST, taxon_photos.id ASC").map{|tp| tp.photo}
+    if chosen_photos.size < options[:limit]
+      new_photos = Photo.includes({:taxon_photos => :especie}).
+          order("taxon_photos.id ASC").
+          limit(options[:limit] - chosen_photos.size).
+          where("especies.ancestry_acendente_directo LIKE '#{ancestry_acendente_directo}/#{id}%'")#.includes()
+      if new_photos.size > 0
+        new_photos = new_photos.where("photos.id NOT IN (?)", chosen_photos)
+      end
+      chosen_photos += new_photos.to_a
+    end
+    flickr_chosen_photos = []
+    if !options[:skip_external] && chosen_photos.size < options[:limit] && self.auto_photos
+      begin
+        r = flickr.photos.search(
+            :tags => name.gsub(' ', '').strip,
+            :per_page => options[:limit] - chosen_photos.size,
+            :license => '1,2,3,4,5,6', # CC licenses
+            :extras => 'date_upload,owner_name,url_s,url_t,url_s,url_m,url_l,url_o,owner_name,license',
+            :sort => 'relevance'
+        )
+        r = [] if r.blank?
+        flickr_chosen_photos = if r.respond_to?(:map)
+                                 r.map{|fp| fp.respond_to?(:url_s) && fp.url_s ? FlickrPhoto.new_from_api_response(fp) : nil}.compact
+                               else
+                                 []
+                               end
+      rescue FlickRaw::FailedResponse, EOFError => e
+        Rails.logger.error "EXCEPTION RESCUE: #{e}"
+        Rails.logger.error e.backtrace.join("\n\t")
+      end
+    end
+    flickr_ids = chosen_photos.map{|p| p.native_photo_id}
+    chosen_photos += flickr_chosen_photos.reject do |fp|
+      flickr_ids.include?(fp.id)
+    end
+    chosen_photos
   end
 
   def photos_cache_key

@@ -19,6 +19,10 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
+    @photos = Rails.cache.fetch(@especie.photos_cache_key) do
+      @especie.photos_with_backfill(:skip_external => true, :limit => 24)
+    end
+
     #@desc = TaxonDescribers::Conabio.describe(@especie)
     @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
     @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")

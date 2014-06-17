@@ -79,7 +79,19 @@ Buscador::Application.routes.draw do
     end
   end
 
-  get '/conabio/photo_fields' => 'conabio#photo_fields'
+  #match '/conabio/photo_fields' => 'conabio#photo_fields', :via => [:get, :post]
+  match "/eol/photo_fields" => "eol#photo_fields", :via => [:get, :post]
+  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => [:get, :post]
+  #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
+  match '/photos/:id/repair' => "photos#repair", :as => :photo_repair, :via => :put
+  match 'flickr/photos.:format' => 'flickr#photos', :via => :get
+
+  resources :photos, :only => [:show, :update, :destroy] do
+    member do
+      put :rotate
+    end
+  end
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

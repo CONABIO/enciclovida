@@ -7,6 +7,7 @@ gem 'cocoon', '=1.2.0'    #anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.0.0'
 gem 'composite_primary_keys', github: 'calonso-conabio/composite_primary_keys', branch: 'ar_4.0.x'  #multiples llaves primarias
 gem 'delayed_job_active_record'    #pone commits para correrlos en un determinado tiempo, puede ser desde consola
+gem 'flickraw', "~> 0.9.8", :git => 'git://github.com/kueda/flickraw.git', :branch => 'ssl-cert'
 gem 'haml'
 gem 'htmlentities'
 gem 'jbuilder', '~> 1.0.1'

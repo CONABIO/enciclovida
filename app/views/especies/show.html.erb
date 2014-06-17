@@ -115,6 +115,24 @@
   <h1><%= "#{@titulo} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
 </div>
 
+<div id="photoscol" class="column span-13">
+  <% if @especie.species_or_lower? && @photos.empty? %>
+      <div class="notice">
+        Este tax&oacute;n no tiene una foto predeterminada
+        <%= link_to_function('A&ntilde;ade una'.html_safe, "$('#edit_photos_dialog').dialog('open')", :class => 'readmore') %>
+      </div>
+  <% end %>
+  <div id="photos">
+    <%= render :partial => 'photos', :locals => { :photos => @photos } %>
+    <div id="photos_loading_status" class="loading status" style="display:none">Cragando m&aacute;s fotos...</div>
+  </div>
+
+  <%# if logged_in? %>
+      <%= link_to_function('Edita las fotos', "$('#edit_photos_dialog').dialog('open')", :class => 'readmore') %>
+      <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+  <%# end %>
+</div>
+
 <div class="menu">
   <ul id="menu">
     <li><%= link_to 'Cat&aacute;logo'.html_safe, '', :id => :infoTab, :onClick => 'return info();' %></li>
