@@ -1,0 +1,18 @@
+buscador -> biotica
+
+bibliografias -> Bibliografia
+catalogos -> CatalogoNombre
+categorias_taxonomicas -> CategoriaTaxonomica
+especies -> Nombre
+especies_bibliografias -> RelNombreBiblio
+especies_catalogos -> RelNombreCatalogo
+especies_estatuses -> Nombre_Relacion
+especies_estatuses_bibliografias -> RelacionBibliografia
+especies_regiones -> RelNombreRegion
+estatuses -> Tipo_Relacion
+nombres_comunes -> Nomcomun
+nombres_regiones -> RelNomNomComunRegion
+nombres_regiones_bibliografias -> RelNomNomcomunRegionBiblio
+regiones -> Region
+tipos_distribuciones -> TipoDistribucion
+tipos_regiones -> TipoRegion
