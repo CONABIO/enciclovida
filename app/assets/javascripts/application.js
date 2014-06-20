@@ -16,9 +16,9 @@
 //= stub especies.js.coffee
 //= require_tree .
 //= require dataTables/jquery.dataTables
+//= require jquery-ui-1.10.4.custom.min
 //= require cocoon
 //= require general
 //= require autocomplete-rails
-
 
 

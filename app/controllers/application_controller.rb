@@ -59,6 +59,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def get_flickraw
+    current_user ? FlickrPhoto.flickraw_for_user(current_user) : flickr
+  end
+
   def cierraSesion
     session[:usuario]=nil
     cookies.delete :SpryMedia_DataTables_especies_especies

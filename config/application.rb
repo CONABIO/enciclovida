@@ -12,6 +12,10 @@ CONFIG = BuscadorConfig.new(File.expand_path('../config.yml', __FILE__))
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
+# flickr api keys - these need to be set before Flickraw gets included
+FLICKR_API_KEY = CONFIG.flickr.key
+FLICKR_SHARED_SECRET = CONFIG.flickr.shared_secret
+
 module Buscador
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -20,13 +24,13 @@ module Buscador
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
+    config.time_zone = 'Mexico City'
 
     config.autoload_paths += %W(#{config.root}/lib)
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    config.i18n.default_locale = :es
+    config.i18n.default_locale = CONFIG.default_locale
     #config.sass.preferred_syntax=:sass
   end
 end

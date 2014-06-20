@@ -10,6 +10,7 @@ base: &base
 
     # name of the site, used extensively within the app
     site_name: Administrador de información sobre las especies
+    default_locale: es
 
     # shortened version of the name
     site_name_short: AISE
@@ -163,8 +164,8 @@ base: &base
 
     flickr:
         # http://www.flickr.com/services/api/keys/apply/
-        key: 09af09af09af09af09af09af09af09af
-        shared_secret: 09af09af09af09af
+        key: f046e9d167edbdec4fda77801e688db6
+        shared_secret: d848c5c06e8f9bdd
 
     soundcloud:
         # http://soundcloud.com/you/apps/new

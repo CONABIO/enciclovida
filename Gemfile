@@ -10,6 +10,7 @@ gem 'delayed_job_active_record'    #pone commits para correrlos en un determinad
 gem 'flickraw', "~> 0.9.8", :git => 'git://github.com/kueda/flickraw.git', :branch => 'ssl-cert'
 gem 'haml'
 gem 'htmlentities'
+gem 'i18n-js'
 gem 'jbuilder', '~> 1.0.1'
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-ui-rails'

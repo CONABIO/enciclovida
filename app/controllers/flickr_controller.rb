@@ -1,5 +1,5 @@
 class FlickrController < ApplicationController
-  before_filter :authenticate_user! , :except => [:invite]
+  #before_filter :authenticate_user! , :except => [:invite]
   before_filter :ensure_has_no_flickr_identity, :only => ['link']
   before_filter :return_here, :only => [:index, :show, :by_login, :options]
   
@@ -43,7 +43,8 @@ class FlickrController < ApplicationController
   #   index:    index to use if these inputs are part of a form subcomponent
   #             (makes names like flickr_photos[:index][])
   def photo_fields
-    @flickr = get_flickraw
+    Rails.logger.info '---fuera de busqueda---'
+    @flickr = flickr#get_flickraw
     if params[:licenses].blank?
       @license_numbers = [1,2,3,4,5,6].join(',')
     elsif params[:licenses] == 'any'
@@ -54,6 +55,7 @@ class FlickrController < ApplicationController
       @license_numbers = @licenses.map {|code| Photo.license_number_for_code(code)}.join(',')
     end
     context = (params[:context] || 'public')
+=begin
     flickr_pa = current_user.has_provider_auth('flickr')
     if params[:require_write] && flickr_pa.try(:scope) != 'write' # we need write permissions for flickr commenting
       @reauthorization_needed = true if flickr_pa
@@ -65,8 +67,9 @@ class FlickrController < ApplicationController
       session[:return_to] = uri.to_s 
       render(:partial => "photos/auth") and return
     end
-
+=end
     # Try to look up a photo id
+
     if params[:q].to_i != 0 && params[:q].to_i > 10000
       if fp = @flickr.photos.getInfo(:photo_id => params[:q])
         @photos = [FlickrPhoto.new_from_api_response(fp)]

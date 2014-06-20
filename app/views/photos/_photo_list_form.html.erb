@@ -4,10 +4,9 @@
   synclink_base ||= nil
   photo_identity ||= nil
   local_photos ||= false
-  local_photos = false unless logged_in?
+  #local_photos = false unless logged_in?
   organized_by_album ||= false
 -%>
-
 <% if organized_by_album %>
   <a href='#' class="back_to_albums" <%= "data-friend_id='#{@friend_id}'".html_safe if @friend_id %>>&laquo; Back to <%= (@friend_name ? "#{@friend_name}'s" : "your") %> albums</a>
 <% elsif @friend_id %>

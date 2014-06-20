@@ -32,7 +32,7 @@ class FlickrPhoto < Photo
   
   def self.get_api_response(native_photo_id, options = {})
     f = options[:user] ? flickraw_for_user(options[:user]) : flickr
-    user_id = options[:user].id if options[:user] && options[:user].is_a?(User)
+    user_id = options[:user].id if options[:user] && options[:user].is_a?(Usuario)
     r = Rails.cache.fetch("flickr_photos_getInfo_#{native_photo_id}_#{user_id}", :expires_in => 5.minutes) do
       f.photos.getInfo(:photo_id => native_photo_id)
     end

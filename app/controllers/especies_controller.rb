@@ -1,6 +1,6 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 10
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
@@ -296,6 +296,11 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       format.html { render :json => dameListas(@listas) }
     end
+  end
+
+  def edit_photos
+    @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
+    render :layout => false
   end
 
   private

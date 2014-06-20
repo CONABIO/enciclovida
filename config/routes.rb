@@ -30,6 +30,7 @@ Buscador::Application.routes.draw do
 
   resources :especies do
     collection do
+      post :update_photos, :as => :update_photos_for
       put :aniade_taxones
       get :dame_listas
       get :buscaDescendientes
@@ -79,6 +80,7 @@ Buscador::Application.routes.draw do
     end
   end
 
+  match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   #match '/conabio/photo_fields' => 'conabio#photo_fields', :via => [:get, :post]
   match "/eol/photo_fields" => "eol#photo_fields", :via => [:get, :post]
   match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => [:get, :post]
@@ -100,7 +102,7 @@ Buscador::Application.routes.draw do
   root 'especies#index'
 
   # Example of regular route:
-  post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => "new"
+  post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => 'new'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
