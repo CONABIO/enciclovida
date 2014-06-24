@@ -34,7 +34,7 @@
 (function($){
   $.fn.photoSelector = function(options) {
     var options = $.extend(true, {}, $.fn.photoSelector.defaults, options);
-    console.log(options);
+
     // Setup each wrapper
     $(this).each(function() {
       setup(this, options);

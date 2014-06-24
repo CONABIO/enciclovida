@@ -16,6 +16,7 @@
 //= require jquery-1.11.1.min
 //= require jquery-ui-1.10.4.custom.min
 //= require jquery_ujs
+//= require show
 //= require turbolinks
 //= stub especies.js.coffee
 //= require_tree .
