@@ -60,7 +60,10 @@ class ApplicationController < ActionController::Base
   end
 
   def get_flickraw
-    current_user ? FlickrPhoto.flickraw_for_user(current_user) : flickr
+    #current_user ? FlickrPhoto.flickraw_for_user(current_user) : flickr
+    FlickRaw.api_key = FLICKR_API_KEY
+    FlickRaw.shared_secret = FLICKR_SHARED_SECRET
+    flickr
   end
 
   def cierraSesion

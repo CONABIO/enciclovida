@@ -164,8 +164,8 @@ base: &base
 
     flickr:
         # http://www.flickr.com/services/api/keys/apply/
-        key: f046e9d167edbdec4fda77801e688db6
-        shared_secret: d848c5c06e8f9bdd
+        key: 1a5b22e045c13511d38a62c114fb340d
+        shared_secret: acc76f6f457b6b64
 
     soundcloud:
         # http://soundcloud.com/you/apps/new

@@ -21,15 +21,15 @@
   </p>
 <% elsif @timeout %>
   <p class="error ui">
-    Request to the photo provider timed out.  Please try again later.
+    Al hacer la consulta al proveedor de imagenes fall&oacute;. Consulta m&aacute;s tarde.
   </p>
 <% elsif photos.blank? && !local_photos %>
   <div class="description" style="clear: both">
     <br />
-    <%= t(:we_didnt_find_any_photos) %>
+    No encontramos ninguna foto
   </div>
 <% else %>
-  <h4><%= t :select_one_or_more_photos %></h4>
+  <h4>Selecciona una o m&aacute;s fotos</h4>
   <% photos.each do |photo| %>
     <%- 
       native_photo_id = photo.is_a?(Photo) ? photo.native_photo_id : photo.id

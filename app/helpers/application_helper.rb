@@ -59,4 +59,9 @@ module ApplicationHelper
     # Ensure all tags are closed
     Nokogiri::HTML::DocumentFragment.parse(text).to_s.html_safe
   end
+
+  def serial_id
+    @__serial_id = @__serial_id.to_i + 1
+    @__serial_id
+  end
 end

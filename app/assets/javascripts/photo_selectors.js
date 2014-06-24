@@ -34,7 +34,7 @@
 (function($){
   $.fn.photoSelector = function(options) {
     var options = $.extend(true, {}, $.fn.photoSelector.defaults, options);
-
+    console.log(options);
     // Setup each wrapper
     $(this).each(function() {
       setup(this, options);
@@ -90,29 +90,29 @@
       var controls = $('<div class="photoSelectorControls"></div>').css(
         $.fn.photoSelector.defaults.controlsCSS
       )
-      var $searchInput = $('<input type="text" placeholder="'+I18n.t('search')+'" />').css(
+      var $searchInput = $('<input type="text" placeholder="Buscar" />').css(
         $.fn.photoSelector.defaults.formInputCSS
       )
-      var $searchButton = $('<a href="#" class="btn findbutton">'+I18n.t('find_photos')+'</a>').css(
+      var $searchButton = $('<a href="#" class="btn findbutton">Encuentra fotos</a>').css(
         $.fn.photoSelector.defaults.formInputCSS
       )
       var $searchWrapper = $("<div class='photoSelectorSearch input-append pull-left'></div>")
       $searchWrapper.append($searchInput).append($searchButton)
-      var $sourceWrapper = $('<span class="urlselect inter"><strong>'+I18n.t('source')+':</strong> </span>')
+      var $sourceWrapper = $('<span class="urlselect inter"><strong>Fuente:</strong> </span>')
     } else {
       // Insert a search field and button.  No forms, please
       var controls = $('<div class="buttonrow photoSelectorControls"></div>').css(
         $.fn.photoSelector.defaults.controlsCSS
       )
-      var $searchInput = $('<input type="text" class="text" placeholder="'+I18n.t('search')+'" />').css(
+      var $searchInput = $('<input type="text" class="text" placeholder="Buscar" />').css(
         $.fn.photoSelector.defaults.formInputCSS
       )
-      var $searchButton = $('<a href="#" class="button findbutton">'+I18n.t('find_photos')+'</a>').css(
+      var $searchButton = $('<a href="#" class="button findbutton">Encuentra fotos</a>').css(
         $.fn.photoSelector.defaults.formInputCSS
       )
       var $searchWrapper = $("<span class='photoSelectorSearch'></span>")
       $searchWrapper.append($searchInput).append($searchButton)
-      var $sourceWrapper = $('<span class="urlselect inter"><strong>'+I18n.t('source')+':</strong> </span>')
+      var $sourceWrapper = $('<span class="urlselect inter"><strong>Fuente:</strong> </span>')
     }
 
     $searchInput.attr('name', 'photoSelectorSearchField')
@@ -131,7 +131,7 @@
       var urls = options.urls || [];
       if (!options.skipLocal) {
         urls.push({
-          title:  I18n.t('your_hard_drive'),
+          title:  'de tu maquina',
           url: '/photos/local_photo_fields'
         })
       }
@@ -251,7 +251,7 @@
 
     }
 
-    $(".picasaAlbums .album", wrapper).live('click', function() {
+    /*$(".picasaAlbums .album", wrapper).live('click', function() {
       var aid = $(this).attr('data-aid'); // $(this).data('aid') doesn't work because of ridiculous type conversion
       try {
         updateSource({
@@ -341,17 +341,17 @@
           $(this).attr('data-friend_id'));
       }
       return false;
-    });
+    });*/
 
     
     // Append next & prev links
     var page = $('<input class="photoSelectorPage" type="hidden" value="1"/>')
     if (options.bootstrap) {
-      var prev = $('<button type="button" class="prevlink btn">&laquo; '+I18n.t('prev')+'</button>')
-      var next = $('<button type="button" class="nextlink btn">'+I18n.t('next')+' &raquo;</button>')
+      var prev = $('<button type="button" class="prevlink btn">&laquo; Anterior</button>')
+      var next = $('<button type="button" class="nextlink btn">Siguiente &raquo;</button>')
     } else {
-      var prev = $('<a href="#" class="prevlink button">&laquo; '+I18n.t('prev')+'</a>')
-      var next = $('<a href="#" class="nextlink button">'+I18n.t('next')+' &raquo;</a>')
+      var prev = $('<a href="#" class="prevlink button">&laquo; Anterior</a>')
+      var next = $('<a href="#" class="nextlink button">Siguiente &raquo;</a>')
     }
     prev.click(function(e) {
       var pagenum = parseInt($(wrapper).find('.photoSelectorPage').val());
@@ -380,13 +380,13 @@
     })
 
     if (options.bootstrap) {
-      var allNoneLabel = $('<label>'+I18n.t('select')+'</label>')
-      var selectAll = $('<button type="button" class="btn">'+I18n.t('all')+'</button>')
-      var selectNone = $('<button type="button" class="btn">'+I18n.t('none')+'</button>')
+      var allNoneLabel = $('<label>Selecciona</label>')
+      var selectAll = $('<button type="button" class="btn">todas</button>')
+      var selectNone = $('<button type="button" class="btn">ninguna</button>')
     } else {
-      var allNoneLabel = $('<label class="inter">'+I18n.t('select')+'</label>')
-      var selectAll = $('<a href="#" class="inter">'+I18n.t('all')+'</a>')
-      var selectNone = $('<a href="#" class="inter">'+I18n.t('none')+'</a>')
+      var allNoneLabel = $('<label class="inter">Selecciona</label>')
+      var selectAll = $('<a href="#" class="inter">todas</a>')
+      var selectNone = $('<a href="#" class="inter">ninguna</a>')
     }
     selectAll.click(function() {
       $('.photoSelectorPhotos input:checkbox', wrapper).not('.photoSelectorSelected input').attr('checked', true)
@@ -491,7 +491,7 @@
     }
     $photoSelectorPhotos.scrollTo(0,0)
     $photoSelectorPhotos.css('overflow','hidden')
-    $photoSelectorPhotos.loadingShades(I18n.t('loading'), {
+    $photoSelectorPhotos.loadingShades('Cargando...', {
       cssClass: 'smallLoading centered',
       top: '20px'
     })
@@ -517,7 +517,7 @@
         if (existing && existing.length > 0) {
           $photoSelectorPhotos.children().wrapAll('<div class="photoSelectorResults"></div>')
           var selectedPhotosWrapper = $('<div class="photoSelectorSelected"></div>'),
-              header = "<h4>"+I18n.t('selected_photos')+"</h4>"
+              header = "<h4>Selecciona las fotos</h4>"
           if (options.bootstrap) {
             var row = $('<div class="row-fluid"></div>')
             row.append(existing)

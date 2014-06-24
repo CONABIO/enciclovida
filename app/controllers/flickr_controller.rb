@@ -44,7 +44,7 @@ class FlickrController < ApplicationController
   #             (makes names like flickr_photos[:index][])
   def photo_fields
     Rails.logger.info '---fuera de busqueda---'
-    @flickr = flickr#get_flickraw
+    @flickr = get_flickraw
     if params[:licenses].blank?
       @license_numbers = [1,2,3,4,5,6].join(',')
     elsif params[:licenses] == 'any'
@@ -94,7 +94,7 @@ class FlickrController < ApplicationController
           params[:q] = "nature"
         end
       end
-      search_params['auth_token'] = current_user.flickr_identity.token if current_user.flickr_identity
+      search_params['auth_token'] = nil#current_user.flickr_identity.token if current_user.flickr_identity
       search_params['per_page'] = params[:limit] ||= 10
       search_params['text'] = params[:q]
       search_params['page'] = params[:page] ||= 1
