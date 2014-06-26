@@ -84,9 +84,9 @@ Buscador::Application.routes.draw do
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get
 
   match 'flickr/photo_fields' => 'flickr#photo_fields', :via => :get
-  #match '/conabio/photo_fields' => 'conabio#photo_fields', :via => [:get, :post]
-  match "/eol/photo_fields" => "eol#photo_fields", :via => [:get, :post]
-  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => [:get, :post]
+  match '/conabio/photo_fields' => 'conabio#photo_fields', :via => :get
+  match '/eol/photo_fields' => 'eol#photo_fields', :via => :get
+  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => :get
   #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
   match '/photos/:id/repair' => "photos#repair", :as => :photo_repair, :via => :put
   match 'flickr/photos.:format' => 'flickr#photos', :via => :get

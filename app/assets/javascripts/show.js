@@ -120,16 +120,34 @@ $(document).ready(function(){
               $('.taxon_photos', ui.newPanel).photoSelector(
                 $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/wikimedia_commons/photo_fields'})
               )
+            } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                $('.taxon_photos', ui.newPanel).photoSelector(
+                    $.extend(true, {}, photoSelectorOptions, {baseURL: '/conabio/photo_fields'})
+                )
             }
 
-            $(ui.newPanel).addClass('loaded')
-            $('#edit_photos_dialog').centerDialog()
+              $(ui.newPanel).addClass('loaded')
+              $('#edit_photos_dialog').centerDialog()
           },
           create: function( event, ui) {
-              if (ui.panel.selector == '#flickr_taxon_photos') {
-                  $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions)
-              }
-              $(ui.newPanel).addClass('loaded')
+              /*switch (ui.panel.selector) {
+                  case '#flickr_taxon_photos': */
+                      $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
+                  /*case '#eol_taxon_photos':
+                      $('.taxon_photos', ui.newPanel).photoSelector(
+                          $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
+                      );
+                  case '#wikimedia_taxon_photos':
+                      $('.taxon_photos', ui.newPanel).photoSelector(
+                          $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/wikimedia_commons/photo_fields'})
+                      );
+                  case '#conabio_taxon_photos':
+                      $('.taxon_photos', ui.newPanel).photoSelector(
+                          $.extend(true, {}, photoSelectorOptions, {baseURL: '/conabio/photo_fields'})
+                      );
+              }*/
+
+              $(ui.panel).addClass('loaded')
               $('#edit_photos_dialog').centerDialog()
           }
         })

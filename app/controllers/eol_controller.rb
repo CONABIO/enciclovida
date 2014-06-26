@@ -11,8 +11,8 @@ class EolController < ApplicationController
     @q = if !params[:q].blank?
       params[:q]
     elsif taxon_id = params[:taxon_id]
-      @taxon = Taxon.find_by_id(taxon_id)
-      @taxon.name
+      @taxon = Especie.find_by_id(taxon_id)
+      @taxon.nombre_cientifico
     end
     
     per_page = params[:limit].to_i

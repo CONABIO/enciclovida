@@ -43,7 +43,6 @@ class FlickrController < ApplicationController
   #   index:    index to use if these inputs are part of a form subcomponent
   #             (makes names like flickr_photos[:index][])
   def photo_fields
-    Rails.logger.info '---fuera de busqueda---'
     @flickr = get_flickraw
     if params[:licenses].blank?
       @license_numbers = [1,2,3,4,5,6].join(',')
