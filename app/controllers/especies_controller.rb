@@ -6,6 +6,7 @@ class EspeciesController < ApplicationController
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
+  #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
 
   # GET /especies
   # GET /especies.json
@@ -303,6 +304,34 @@ class EspeciesController < ApplicationController
     render :layout => false
   end
 
+  def update_photos
+    Rails.logger.info "---#{@especie.nombre_cientifico}---"
+    photos = retrieve_photos
+    errors = photos.map do |p|
+      p.valid? ? nil : p.errors.full_messages
+    end.flatten.compact
+    @especie.photos = photos
+    @especie.save
+    unless photos.count == 0
+      Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@taxon.id, photos.first.id)
+    end
+    if errors.blank?
+      flash[:notice] = t(:taxon_photos_updated)
+    else
+      flash[:error] = t(:some_of_those_photos_couldnt_be_saved, :error => errors.to_sentence.downcase)
+    end
+    redirect_to especy_path(@especie)
+  rescue Errno::ETIMEDOUT
+    flash[:error] = t(:request_timed_out)
+    redirect_back_or_default(taxon_path(@taxon))
+=begin
+  rescue Koala::Facebook::APIError => e
+    raise e unless e.message =~ /OAuthException/
+    flash[:error] = t(:facebook_needs_the_owner_of_that_photo_to, :site_name_short => CONFIG.site_name_short)
+    redirect_back_or_default(taxon_path(@taxon))
+=end
+  end
+
   private
 # Use callbacks to share common setup or constraints between actions.
   def set_especie
@@ -323,6 +352,40 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def retrieve_photos
+    #[retrieve_remote_photos, retrieve_local_photos].flatten.compact
+    [retrieve_remote_photos].flatten.compact
+  end
+
+  def retrieve_remote_photos
+    photo_classes = Photo.descendent_classes# - [LocalPhoto]
+    photos = []
+    photo_classes.each do |photo_class|
+      param = photo_class.to_s.underscore.pluralize
+      next if params[param].blank?
+      params[param].reject {|i| i.blank?}.uniq.each do |photo_id|
+        if fp = photo_class.find_by_native_photo_id(photo_id)
+          photos << fp
+        else
+          pp = photo_class.get_api_response(photo_id)
+          photos << photo_class.new_from_api_response(pp) if pp
+        end
+      end
+    end
+    photos
+  end
+
+  def retrieve_local_photos
+    return [] if params[:local_photos].blank?
+    photos = []
+    params[:local_photos].reject {|i| i.blank?}.uniq.each do |photo_id|
+      if fp = LocalPhoto.find_by_native_photo_id(photo_id)
+        photos << fp
+      end
+    end
+    photos
   end
 
   def guardaRelaciones(tipoRelacion)

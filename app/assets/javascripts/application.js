@@ -11,15 +11,13 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 
-//= require jquery-1.8.3.min
-//= require jquery-ui-1.9.1.min
-//= require jquery-1.11.1.min
-//= require jquery-ui-1.10.4.custom.min
+//= require jquery-1.11.1.min.js
+//= require jquery
 //= require jquery_ujs
-//= require show
 //= require turbolinks
 //= stub especies.js.coffee
 //= require_tree .
+//= require dataTables/jquery.dataTables
 //= require cocoon
 //= require general
 //= require autocomplete-rails

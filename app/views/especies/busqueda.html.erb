@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     /*getCookie = function(c_name)
      {
@@ -393,7 +394,13 @@
             guardaFiltros(false);
         });
 
-        $(document).on('keypress', "[id^='vAtributo_']", function(k) {
+        $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
+            var id=$(this).attr('id');
+            $(this).attr('value',$(this).val());
+            guardaFiltros(false);
+        });
+
+        $(document).on('change', "[id^='vAtributo_']", function(k) {
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
         });

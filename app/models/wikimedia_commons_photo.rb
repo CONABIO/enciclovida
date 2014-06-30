@@ -28,7 +28,7 @@ class WikimediaCommonsPhoto < Photo
     end
     return unless query_results
     images = query_results.search('ii').select {|ii| ii['descriptionurl'][/File:.+/,0] =~ /\.(jpg|jpeg|png|gif)/i}
-    if images.blank? && (taxon = Especie.find_by_name(taxon_name))
+    if images.blank? && (taxon = Especie.find_by_nombre_cientifico(taxon_name))
       title = taxon.try(:wikipedia_title) || taxon_name
       if filename = wikipedia_image_filename_for_title(taxon_name)
         [new_from_api_response(get_api_response(filename))]

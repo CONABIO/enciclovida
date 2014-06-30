@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <style type="text/css">
     .biblio {
         font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
@@ -6,6 +5,8 @@
     }
 </style>
 
+<script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
+<script data-turbolinks-track="true" src="/assets/show.js"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     var TAXON = <%=raw @especie.to_json %>
 
@@ -90,12 +91,10 @@
     {
         var id=ident.split('_')[2];
         $("#biblio_"+id).dialog();
-        //alert(id);
-        //alert(ident);
         return false;
     }
 
-    $(window).ready(function()
+    $(document).ready(function()
     {
         <% if !@especie.is_root? %>
         muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
