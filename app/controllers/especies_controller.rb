@@ -1,6 +1,6 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 10
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
@@ -305,7 +305,6 @@ class EspeciesController < ApplicationController
   end
 
   def update_photos
-    Rails.logger.info "---#{@especie.nombre_cientifico}---"
     photos = retrieve_photos
     errors = photos.map do |p|
       p.valid? ? nil : p.errors.full_messages
@@ -361,6 +360,7 @@ class EspeciesController < ApplicationController
 
   def retrieve_remote_photos
     photo_classes = Photo.descendent_classes# - [LocalPhoto]
+    Rails.logger.info "---#{photo_classes}---"
     photos = []
     photo_classes.each do |photo_class|
       param = photo_class.to_s.underscore.pluralize
