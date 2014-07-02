@@ -22,7 +22,7 @@
               <div class="buttonrow">
                 <%= hidden_field_tag 'id', resource.id %>
                 <%= submit_tag 'Guarda las fotos', :class => 'default button', 'data-loading-click' => 'Cargando...' %>
-                <%= link_to 'Cancelar', nil, :onClick => '$(this).parents(".dialog").dialog("close")', :class => 'button close' %>
+                <%= link_to 'Cancelar', nil, :onClick => '$(this).parents(".dialog").dialog("close");return false;', :class => 'button close' %>
               </div>
           <% end %>
         </div>

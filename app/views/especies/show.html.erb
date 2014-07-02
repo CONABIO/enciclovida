@@ -10,13 +10,13 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     var TAXON = <%=raw @especie.to_json %>
 
-    info = function() {
-        $('#ficha-div').slideUp();
-        $('#fotos-div').slideUp();
-        $('#mapas-div').slideUp();
-        $('#info-div').slideDown();
-        return false;
-    };
+            info = function() {
+                $('#ficha-div').slideUp();
+                $('#fotos-div').slideUp();
+                $('#mapas-div').slideUp();
+                $('#info-div').slideDown();
+                return false;
+            };
 
     ficha = function() {
         $('#info-div').slideUp();
@@ -102,8 +102,8 @@
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
-            $('#modal_image_box').jqmAddTrigger('#photos a.modal_image_link')
-        });*/
+     $('#modal_image_box').jqmAddTrigger('#photos a.modal_image_link')
+     });*/
         <%# end %>
     });
 </script>
@@ -134,9 +134,22 @@
   </div>
 
   <%# if logged_in? %>
-      <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');", :class => 'readmore') %>
-      <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+  <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');", :class => 'readmore') %>
+  <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
   <%# end %>
+</div>
+
+<div class="last column span-20">
+  <div id="tabs">
+    <ul>
+      <li><a href="#description"><span>Descripci&oacute;n</span></a></li>
+      <li><a href="#taxon_range"><span>Mapa</span></a></li>
+    </ul>
+
+    <div id="description" class="last column span-20">
+      <%= render :partial => 'especies/description' %>
+    </div>
+  </div>
 </div>
 
 <div class="menu">

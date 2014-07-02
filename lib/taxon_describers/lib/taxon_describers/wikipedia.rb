@@ -34,8 +34,8 @@ module TaxonDescribers
     end
 
     def page_url(taxon)
-      wname = taxon.wikipedia_title
-      wname = taxon.name.to_s.gsub(/\s+/, '_') if wname.blank?
+      #wname = taxon.wikipedia_title
+      wname = taxon.nombre_cientifico.to_s.gsub(/\s+/, '_') if wname.blank?
       URI.encode("http://en.wikipedia.org/wiki/#{wname}")
     end
   end

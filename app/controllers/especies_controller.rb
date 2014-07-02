@@ -1,11 +1,15 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
   autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
                :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 10
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
+
+  caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
+    #c.session.blank? || c.session['warden.user.user.key'].blank?
+  #}
   #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
 
   # GET /especies
@@ -309,15 +313,19 @@ class EspeciesController < ApplicationController
     errors = photos.map do |p|
       p.valid? ? nil : p.errors.full_messages
     end.flatten.compact
+    Rails.logger.info "---#{photos}---"
+    Rails.logger.info "---#{params}---"
+    Rails.logger.info "---#{@especie.photos}---"
+
     @especie.photos = photos
     @especie.save
     unless photos.count == 0
-      Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@taxon.id, photos.first.id)
+      Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)
     end
     if errors.blank?
-      flash[:notice] = t(:taxon_photos_updated)
+      flash[:notice] = 'Las fotos fueron actualizadas satisfactoriamente'
     else
-      flash[:error] = t(:some_of_those_photos_couldnt_be_saved, :error => errors.to_sentence.downcase)
+      flash[:error] = "Algunas fotos no pudieron ser guardadas, debido a: #{errors.to_sentence.downcase}"
     end
     redirect_to especy_path(@especie)
   rescue Errno::ETIMEDOUT
@@ -329,6 +337,38 @@ class EspeciesController < ApplicationController
     flash[:error] = t(:facebook_needs_the_owner_of_that_photo_to, :site_name_short => CONFIG.site_name_short)
     redirect_back_or_default(taxon_path(@taxon))
 =end
+  end
+
+  def describe
+    @describers = if CONFIG.taxon_describers
+                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
+                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
+                  else
+                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
+                  end
+    if @describer = TaxonDescribers.get_describer(params[:from])
+      @description = @describer.describe(@especie)
+    else
+      @describers.each do |d|
+        @describer = d
+        @description = begin
+          d.describe(@especie)
+        rescue OpenURI::HTTPError, Timeout::Error => e
+          nil
+        end
+        break unless @description.blank?
+      end
+    end
+=begin
+    if @describers.include?(TaxonDescribers::Wikipedia) && @especie.wikipedia_summary.blank?
+      @taxon.wikipedia_summary(:refresh_if_blank => true)
+    end
+=end
+    @describer_url = @describer.page_url(@especie)
+    respond_to do |format|
+      format.html { render :partial => 'description' }
+    end
   end
 
   private
@@ -359,8 +399,7 @@ class EspeciesController < ApplicationController
   end
 
   def retrieve_remote_photos
-    photo_classes = Photo.descendent_classes# - [LocalPhoto]
-    Rails.logger.info "---#{photo_classes}---"
+    photo_classes = Photo.descendent_classes - [LocalPhoto]
     photos = []
     photo_classes.each do |photo_class|
       param = photo_class.to_s.underscore.pluralize

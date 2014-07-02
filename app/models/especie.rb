@@ -9,7 +9,7 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
-  has_many :taxon_photos, :class_name =>'TaxonPhoto', :foreign_key => :especie_id, :dependent => :destroy, :order => 'position ASC NULLS LAST, id ASC'
+  has_many :taxon_photos, ->{ order('position ASC NULLS LAST, id ASC') }, :dependent => :destroy
   has_many :photos, :through => :taxon_photos
 
   has_ancestry :ancestry_column => :ancestry_acendente_directo

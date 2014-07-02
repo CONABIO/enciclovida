@@ -5,7 +5,7 @@ class FlickrPhoto < Photo
   Photo.descendent_classes << self
   
   validates_presence_of :native_photo_id
-  validate :user_owns_photo
+  #validate :user_owns_photo
   validate :licensed_if_no_user
 
   def user_owns_photo
@@ -96,6 +96,17 @@ class FlickrPhoto < Photo
       options[:large_url]    ||= sizes['Large'].source rescue nil
       options[:original_url] ||= sizes['Original'].source rescue nil
     end
+
+=begin
+    options[:usuario_id] = 8
+    options[:id] = 22
+    options[:file_content_type]='algo'
+    options[:file_file_name]='algo2'
+    options[:file_file_size]=450
+    options[:file_processing]=false
+    options[:mobile]=true
+    options[:file_updated_at]=Time.now
+=end
     
     flickr_photo = new(options)
     flickr_photo.api_response = fp

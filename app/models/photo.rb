@@ -1,7 +1,7 @@
 #encoding: utf-8
 class Photo < ActiveRecord::Base
   belongs_to :usuario
-  has_many :taxon_photos, :dependent => :destroy
+  has_many :taxon_photos, :class_name =>'TaxonPhoto', :foreign_key => :photo_id, :dependent => :destroy
   has_many :especies, :through => :taxon_photos
 
   attr_accessor :api_response
@@ -60,7 +60,7 @@ class Photo < ActiveRecord::Base
   LARGE = 1024
 
   def to_s
-    "<#{self.class} id: #{id}, user_id: #{user_id}>"
+    "<#{self.class} id: #{id}, usuario_id: #{usuario_id}>"
   end
 
   def licensed_if_no_user

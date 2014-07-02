@@ -90,6 +90,7 @@ Buscador::Application.routes.draw do
   #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
   match '/photos/:id/repair' => "photos#repair", :as => :photo_repair, :via => :put
   match 'flickr/photos.:format' => 'flickr#photos', :via => :get
+  match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
 
   resources :photos, :only => [:show, :update, :destroy] do
     member do

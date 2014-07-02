@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  //$('#tabs').tabs();
+  $('#tabs').tabs();
 
   /*$('.observationcontrols').observationControls({
     div: $('#taxon_observations .observations')
@@ -76,9 +76,9 @@ $(document).ready(function(){
       $(this).show()
     })*/
 
-  /*if (TAXON.auto_description) {
-    getDescription('/taxa/'+TAXON.id+'/description')
-  }*/
+  //if (TAXON.auto_description) {
+    getDescription('/especies/'+TAXON.id+'/describe')
+  //}
 
   // Set up photo modal dialog
   $('#edit_photos_dialog').dialog({
@@ -166,7 +166,7 @@ function getDescription(url) {
     success: function(data, status) {
       $('.taxon_description').replaceWith(data);
       $('.taxon_description select').change(function() {
-        getDescription('/taxa/'+TAXON.id+'/description?from='+$(this).val())
+        getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())
       })
     },
     error: function(request, status, error) {
