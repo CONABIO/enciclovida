@@ -1,12 +1,12 @@
 module TaxonDescribers
   class Eol < Base
-    def describe(taxon)
+    def describe(taxon, options={})
       pages = eol_service.search(taxon.nombre_cientifico, :exact => true)
       id = pages.at('entry/id').try(:content)
       return unless id
       page = eol_service.page(id, :text => 50, :subjects => "all", :details => true)
       page.remove_namespaces!
-      data_objects = data_objects_from_page(page).to_a.uniq do |data_object|
+      data_objects = data_objects_from_page(page, options).to_a.uniq do |data_object|
         data_object.at('subject').content
       end
       fake_view.render("eol", :data_objects => data_objects)
@@ -30,7 +30,7 @@ module TaxonDescribers
         ]
       XPATH
       page.xpath(xpath).reject do |data_object|
-        wrong_lang = data_object.at('language') && I18n.locale.to_s !~ /^#{data_object.at('language').content}/
+        wrong_lang = data_object.at('language') && (options[:language] ||='en') !~ /^#{data_object.at('language').content}/
         wrong_source = data_object.at_xpath("agent[@role='provider' and text()='Wikipedia']")
         wrong_lang || wrong_source
       end

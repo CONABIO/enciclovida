@@ -347,8 +347,9 @@ class EspeciesController < ApplicationController
                   else
                     [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
                   end
+    Rails.logger.info "---#{@describers}---"
     if @describer = TaxonDescribers.get_describer(params[:from])
-      @description = @describer.describe(@especie)
+      @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
     else
       @describers.each do |d|
         @describer = d

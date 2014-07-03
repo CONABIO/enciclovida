@@ -16,6 +16,8 @@
 //= require jquery_ujs
 //= require turbolinks
 //= stub especies.js.coffee
+//= stub photo_selectors
+//= stub show
 //= require_tree .
 //= require dataTables/jquery.dataTables
 //= require cocoon

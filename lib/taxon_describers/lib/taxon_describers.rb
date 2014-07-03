@@ -5,11 +5,12 @@ module TaxonDescribers
   def self.describe(taxon, options = {})
     if options[:describer]
       txt = case options[:describer].to_s.downcase
-      when "amphibiaweb" then TaxonDescribers::AmphibiaWeb.describe(taxon)
-      when "eol" then TaxonDescribers::Eol.describe(taxon)
-      when "conabio" then TaxonDescribers::Conabio.describe(taxon)
-      when "wikipedia" then TaxonDescribers::Wikipedia.describe(taxon)
-      end
+              when "amphibiaweb" then TaxonDescribers::AmphibiaWeb.describe(taxon)
+              when "eol" then TaxonDescribers::Eol.describe(taxon)
+              when "eoles" then TaxonDescribers::EolEs.describe(taxon, :language => 'es')
+              when "conabio" then TaxonDescribers::Conabio.describe(taxon)
+              when "wikipedia" then TaxonDescribers::Wikipedia.describe(taxon)
+            end
       return txt
     end
     describers = options[:describers]
