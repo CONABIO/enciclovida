@@ -135,6 +135,7 @@ class EspeciesController < ApplicationController
       when 'basica_comun'
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
           #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        Rails.logger.info "---#{@taxones.any?}---"
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
           if @taxones=ids.count > 0
@@ -313,15 +314,19 @@ class EspeciesController < ApplicationController
     errors = photos.map do |p|
       p.valid? ? nil : p.errors.full_messages
     end.flatten.compact
-    Rails.logger.info "---#{photos}---"
-    Rails.logger.info "---#{params}---"
-    Rails.logger.info "---#{@especie.photos}---"
 
-    @especie.photos = photos
-    @especie.save
-    unless photos.count == 0
-      Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)
+    #@especie.photos = photos
+    #@especie.save
+
+    photos.each do |photo|        #Se tiene que hacer de esta forma porque existen problemas con la gema composite_primary_keys
+      photo.save
+      taxonphoto = TaxonPhoto.new(:especie_id => @especie.id, :photo_id => photo.id)
+      taxonphoto.save
     end
+
+    #unless photos.count == 0
+    #  Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)
+    #end
     if errors.blank?
       flash[:notice] = 'Las fotos fueron actualizadas satisfactoriamente'
     else
@@ -347,7 +352,6 @@ class EspeciesController < ApplicationController
                   else
                     [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
                   end
-    Rails.logger.info "---#{@describers}---"
     if @describer = TaxonDescribers.get_describer(params[:from])
       @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
     else

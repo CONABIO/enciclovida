@@ -19,7 +19,7 @@ module TaxonDescribers
     end
 
     def self.describer_name
-      "EOL"
+      "EOL (EN)"
     end
 
     def data_objects_from_page(page, options = {})

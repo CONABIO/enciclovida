@@ -1,4 +1,18 @@
 es:
+  copyright:
+    some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
+    all_rights_reserved: (c) %{name}, todos los derechos reservados
+    no_known_copyright_restrictions: "%{name}, sin restricciones conocidas de derechos (%{license_name})"
+    anonymous: anónimo
+    public_domain: dominio publico
+    copyright: derechos reservados
+    attribution_noncommercial_sharealike_license: Atribución - No Comercial Compartir bajo la Misma Licencia
+    attribution_noncommercial_license: Atribución - No Comercial
+    attribution_noncommercial_noderivs_license: Atribución - No Comercial Sin obras derivadas
+    attribution_license: Atribución
+    attribution_sharealike_license: Atribución - Compartir bajo la misma licencia
+    attribution_noderivs_license: Atribución - Sin obras derivadas
+    gnu_free_documentation_license: Licencia gratuita de documentación GNU
   date:
     abbr_day_names:
     - dom

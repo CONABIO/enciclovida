@@ -38,6 +38,10 @@ module TaxonDescribers
       wname = taxon.nombre_cientifico.to_s.gsub(/\s+/, '_') if wname.blank?
       URI.encode("http://en.wikipedia.org/wiki/#{wname}")
     end
+
+    def self.describer_name
+      "Wikipedia (EN)"
+    end
   end
 
 end

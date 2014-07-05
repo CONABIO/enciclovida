@@ -1,8 +1,9 @@
 #encoding: utf-8
 class Photo < ActiveRecord::Base
+
   belongs_to :usuario
-  has_many :taxon_photos, :class_name =>'TaxonPhoto', :foreign_key => :photo_id, :dependent => :destroy
-  has_many :especies, :through => :taxon_photos
+  has_many :taxon_photos, :dependent => :destroy
+  has_many :especies, :class_name => 'Especie', :through => :taxon_photos
 
   attr_accessor :api_response
   serialize :metadata

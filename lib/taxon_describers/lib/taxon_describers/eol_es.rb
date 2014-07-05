@@ -3,7 +3,7 @@ module TaxonDescribers
   
   class EolEs < Eol
     def self.describer_name
-      "EOL (ES)"
+      "EOL"
     end
 
     def describe(taxon, options={})

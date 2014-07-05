@@ -64,4 +64,32 @@ module ApplicationHelper
     @__serial_id = @__serial_id.to_i + 1
     @__serial_id
   end
+
+  def modal_image(photo, options = {})
+    size = options[:size]
+    img_url ||= photo.best_url(size)
+    link_options = options.merge("data-photo-path" => photo_path(photo, :partial => 'photo'))
+    link_options[:class] = "#{link_options[:class]} modal_image_link #{size}".strip
+    link_to(
+        image_tag(img_url,
+                  :title => photo.attribution,
+                  :id => "photo_#{photo.id}",
+                  :class => "image #{size}") +
+            image_tag('silk/magnifier.png', :class => 'zoom_icon'),
+        photo.native_page_url,
+        link_options
+    )
+  end
+
+  def native_url_for_photo(photo)
+    return photo.native_page_url unless photo.native_page_url.blank?
+    case photo.class.name
+      when "FlickrPhoto"
+        "http://flickr.com/photos/#{photo.native_username}/#{photo.native_photo_id}"
+      when "LocalPhoto"
+        url_for(photo.observations.first)
+      else
+        nil
+    end
+  end
 end

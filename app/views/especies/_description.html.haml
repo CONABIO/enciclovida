@@ -8,7 +8,7 @@
   %h3
     =t :description_from
     - if @describer
-      = select_tag :from, options_for_select(@describers.sort_by(&:name).map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last)
+      = select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last)
       - if page_url = @describer.page_url(@especie)
         = link_to "#{t(:view_on)} #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui"
     - else
