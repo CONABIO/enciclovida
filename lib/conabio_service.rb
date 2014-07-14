@@ -8,7 +8,7 @@ class ConabioService
   def initialize(options = {})
     @server = options[:server] || 'conabioweb.conabio.gob.mx'
     @service_name = 'CONABIO'
-    @wsdl = "http://#{@server}/webservice/conabio.wsdl"
+    @wsdl = "http://#{@server}/webservice/conabio_varias_fichas.wsdl"
     @key = 'La completa armonia de una obra imaginativa con frecuencia es la causa que los irreflexivos la supervaloren.'
     @timeout = options[:timeout] || 5
     @debug = options[:debug] || false

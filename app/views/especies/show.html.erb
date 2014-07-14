@@ -134,7 +134,7 @@
   </div>
 
   <%# if logged_in? %>
-  <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');", :class => 'readmore') %>
+  <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
   <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
   <%# end %>
 </div>

@@ -34,7 +34,7 @@
       <div class="description"><%= t(:creative_commons_flickr_tagged) %> "<%= taxon.nombre_cientifico %>."</div>
       <div>
         <%= link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-        <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags">
+        <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
           <%= t(:view_all_photos_tagged_taxon_html, :taxon => h(taxon.nombre_cientifico) ) %>
         </a>
       </div>
@@ -46,10 +46,10 @@
       <%=t :no_creative_commons_flickr_photos_tagged_x, :x => taxon.nombre_cientifico %>
     </h3>
     <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-    <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags">
+    <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
       <%= t(:view_all_photos_tagged_taxon_html, :taxon => taxon.nombre_cientifico).html_safe %>
     </a><br/>
-    (<%=t :not_just_creative_commons_licensed %>)
+    (No solo las que tienen Creative Commons Licensed)
   </div>
 <% end %>
 
@@ -70,8 +70,8 @@
       <% end %>
     </div>
     <div class="description">
-      <%= link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-      <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags">
+      <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
+      <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
         <%= t(:view_all_photos_tagged_taxon_html, :taxon => h(taxon.nombre_cientifico) ) %>
       </a>
     </div>
