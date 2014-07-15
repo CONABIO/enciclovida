@@ -20,6 +20,7 @@ gem 'jquery-rails'
 gem 'mysql2', '0.3.13'
 gem 'nokogiri', '1.5.11'  #hacer un parse con xml
 gem 'pg'
+gem 'rack-contrib'
 gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'   #autocompleta las busquedas
 #gem 'rcore-ext'
@@ -28,6 +29,7 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'savon'       #para consumir webservices con SOAP y WSDL
 gem 'seed_dump'   #extrae las tuplas de un modelo o de toda la base
 #gem 'simple_datatables'   #simple datatables para hacer el buscador
+gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
 gem 'thinking-sphinx'     #busca parlabras completas en milisegundos, solo para mysql y postgres
 gem 'turbolinks'    #hace mas rapidos los links

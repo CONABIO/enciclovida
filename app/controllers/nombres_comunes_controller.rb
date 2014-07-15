@@ -6,7 +6,7 @@ class NombresComunesController < ApplicationController
   # GET /nombres_comunes
   # GET /nombres_comunes.json
   def index
-    @nombres_comunes = NombreComun.all
+    @nombres_comunes = NombreComun.limit(20)
   end
 
   # GET /nombres_comunes/1
@@ -85,6 +85,8 @@ class NombresComunesController < ApplicationController
       end
     end
   end
+
+
 
   private
   # Use callbacks to share common setup or constraints between actions.

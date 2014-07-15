@@ -5,6 +5,8 @@
 
 base: &base
 
+    ip: 172.16.229.129
+    port: 4000
     # url of the site
     site_url: http://172.16.229.128:3000/
 

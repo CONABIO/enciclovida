@@ -18,7 +18,7 @@ class Especie < ActiveRecord::Base
   accepts_nested_attributes_for :nombres_regiones, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :nombres_regiones_bibliografias, :reject_if => :all_blank, :allow_destroy => true
 
-  scope :caso_insensitivo, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('%#{valor}%')") }
+  scope :caso_insensitivo, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('#{valor}%')") }
   scope :caso_empieza_con, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('#{valor}%')") }
   scope :caso_sensitivo, ->(columna, valor) { where("#{columna}='#{valor}'") }
   scope :caso_termina_con, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('%#{valor}')") }

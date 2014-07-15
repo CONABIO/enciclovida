@@ -379,7 +379,7 @@
             guardaFiltros(false);
         });
 
-        $(document).on('railsAutocomplete.select', "#nombre_comun, #nombre_cientifico", function(event, data) {
+        $(document).on('railsAutocomplete.select', "#nombre_cientifico", function(event, data) {
             var id=$(this).attr('id');
 
             if (id == 'nombre_cientifico')
@@ -397,6 +397,7 @@
         $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
+            $('#soulmate').remove();    //quita las sugerencias del input
             guardaFiltros(false);
         });
 
@@ -436,6 +437,22 @@
             guardaFiltros(false);
         });
 
+        // Define the rendering and selecting behaviour for suggestions.
+        var render = function(term, data, type){ return term; }
+        var select = function(term, data, type){ console.log("Selected " + term); }
+
+        // Make the input field autosuggest.
+        $(document).on('keydown', '#nombre_comun', function() {
+            $('#nombre_comun').soulmate({
+                url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
+                types:          ['venue'],
+                renderCallback: render,
+                selectCallback: select,
+                minQueryLength: 2,
+                maxResults:     5
+            });
+        });
+
         guardaFiltros(true);
     });
 </script>
@@ -449,9 +466,10 @@
               <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
               <b>Nombre com&uacute;n</b><br>
-              <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_comun, :class => :busqueda_atributo %>
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común', :id => :nombre_comun,
+              <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
+              <%# text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común',
                                  'data-autocomplete' => autocomplete_nombre_comun_comun_nombres_comunes_path, :autocomplete => :off %>
+              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común', :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
           <% end %>
@@ -462,8 +480,8 @@
               <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
-              <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :id => :condicion_nombre_cientifico, :class => :busqueda_atributo %>
-              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico', :id => :nombre_cientifico,
+              <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
+              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico',
                                  'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
@@ -533,6 +551,4 @@
     </tr>
   </table>
 </div>
-
-
 
