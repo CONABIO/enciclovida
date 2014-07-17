@@ -1,25 +1,2 @@
-<h1>Listing nombres_comunes</h1>
+<%= @redis_nombres_comunes %>
 
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @nombres_comunes.each do |nombr_comune| %>
-      <tr>
-        <td><%= link_to 'Show', nombr_comune %></td>
-        <td><%= link_to 'Edit', edit_nombr_comune_path(nombr_comune) %></td>
-        <td><%= link_to 'Destroy', nombr_comune, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Nombre comun', new_nombr_comune_path %>

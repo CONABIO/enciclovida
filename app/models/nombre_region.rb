@@ -7,5 +7,6 @@ class NombreRegion < ActiveRecord::Base
   belongs_to :especie
   belongs_to :nombre_comun
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :foreign_key => 'especie_id'
+  has_many :especies, :class_name => 'Especie', :foreign_key => 'id'    #para los asociados de las especies a traves del nombre_comun
 
 end
