@@ -6,6 +6,9 @@ OPTS = Trollop::options do
 Exporta todas los nombres comunes a redis:
 Se almacenara el .json en db/redis/nombres_comunes.json
 
+*** Este script podria correrse con un contrab a cierta hora todos los dias,
+a menos que los cambios sean dinamicos en el codigo.
+
 Usage:
 
   rails r tools/nombres_comunes_redis.rb

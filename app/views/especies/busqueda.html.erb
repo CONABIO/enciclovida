@@ -233,55 +233,30 @@
         });
     }
 
-    handlerFunction = function()
+    soulmate_asigna = function(event)
     {
-        alert(5);
+        var campo = document.getElementById(event.target.name);
+        var render = function(term, data, type){ return term; }
+        var select = function(term, data, type)
+        {
+            $('#'+event.target.name).val(term);
+            $('#'+event.target.name).attr('value', term);
+            $("#soulmate").empty();    //elimina las sugerencias del input
+            $('#soulmate').css('display', 'none');    //lo esconde para que no sea vea la linea de estilos
+            guardaFiltros(false);
+        }
+
+        if ($._data(campo, "events") == undefined) {
+            $(campo).soulmate({
+                url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
+                types:          ['nom comunes'],
+                renderCallback: render,
+                selectCallback: select,
+                minQueryLength: 2,
+                maxResults:     5
+            });
+        }
     }
-
-    function removeEventHandler(elem,eventType,handler) {
-        if (elem.removeEventListener)
-            elem.removeEventListener (eventType,handler,false);
-        if (elem.detachEvent)
-            elem.detachEvent ('on'+eventType,handler);
-    }
-
-    soulmate_asigna = function()
-     {
-         var b1 = document.getElementById("nombre_comun");
-         console.log($._data(b1, "events")[1]);
-
-         //alert(redButton.hasOwnProperty('click'));
-         //redButton.removeEventListener("soulmate");
-         //redButton.detachEvent("focus");
-       // $('#nombre_comun').detachEvent("focus");
-
-// Here is an example of calling removeEventHandler()
-// to unregister event handlers for 'button1' and 'button2':
-        removeEventHandler(b1,'click',handlerFunction);
-
-
-         var render = function(term, data, type){ return term; }
-         var select = function(term, data, type){ console.log("Selected " + term); }
-
-         if ($._data(b1, "events") == undefined || $._data(b1, "events") != undefined) {
-
-
-             $(b1).soulmate({
-                 url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
-                 types:          ['nombres_comunes'],
-                 renderCallback: render,
-                 selectCallback: select,
-                 minQueryLength: 2,
-                 maxResults:     5
-             });
-         }
-
-
-     /*if ($(redButton).hasOwnProperty('soulmate')) {
-         alert(1);
-     }*/
-
-     }
 
     $(document).ready(function()
     {
@@ -447,7 +422,8 @@
         $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
-            $('#soulmate').remove();    //quita las sugerencias del input
+            //$("#soulmate").empty();    //elimina las sugerencias del input
+            $('#soulmate').css('display', 'none');    //lo esconde para que no sea vea la linea de estilos
             guardaFiltros(false);
         });
 
@@ -487,36 +463,15 @@
             guardaFiltros(false);
         });
 
-        // Define the rendering and selecting behaviour for suggestions.
-        //var render = function(term, data, type){ return term; }
-        //var select = function(term, data, type){ console.log("Selected " + term); }
+        $(document).on("mouseover", "[id$='-soulmate-suggestion']", function(event)
+        {
+            //$('#')
+            console.log(event);//.offsetParent);
+            //console.log(event.currentTarget.innerText);
+            //alert($(this).val());
+        });
 
-        //var options = {};
-        /*var options={
-            url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
-            types:          ['nombres_comunes'],
-            renderCallback: render,
-            selectCallback: select,
-            minQueryLength: 2,
-            maxResults:     5
-        }*/
-        // Make the input field autosuggest.
-        //$(document).on('keydown', '#nombre_comun', function() {
-        //$('#nombre_comun').soulmate({
-        $(document).on('click', '#nombre_comun', soulmate_asigna);
-
-        //});
-
-        /*var redButton = document.getElementById ("nombre_comun");
-        $(redButton).soulmate({
-            url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
-            types:          ['nombres_comunes'],
-            renderCallback: render,
-            selectCallback: select,
-            minQueryLength: 2,
-            maxResults:     5
-        });*/
-
+        $(document).on('focus', '#nombre_comun', soulmate_asigna);
         guardaFiltros(true);
     });
 </script>
