@@ -465,10 +465,8 @@
 
         $(document).on("mouseover", "[id$='-soulmate-suggestion']", function(event)
         {
-            //$('#')
-            console.log(event);//.offsetParent);
-            //console.log(event.currentTarget.innerText);
-            //alert($(this).val());
+            $('#nombre_comun').val(event.currentTarget.innerText);
+            $('#nombre_comun').attr('value', event.currentTarget.innerText);
         });
 
         $(document).on('focus', '#nombre_comun', soulmate_asigna);
