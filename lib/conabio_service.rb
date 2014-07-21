@@ -10,7 +10,7 @@ class ConabioService
     @service_name = 'CONABIO'
     @wsdl = "http://#{@server}/webservice/conabio_varias_fichas.wsdl"
     @key = 'La completa armonia de una obra imaginativa con frecuencia es la causa que los irreflexivos la supervaloren.'
-    @timeout = options[:timeout] || 5
+    @timeout = options[:timeout] || 8
     @debug = options[:debug] || false
     @photos = options[:photos] || false
     @photo_id = options[:photo_id] || false

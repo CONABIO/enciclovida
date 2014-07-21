@@ -20,13 +20,13 @@ where [options] are:
 end
 
 def system_call(cmd)
-  puts "Ejecutando ... #{cmd}" if OPTS[:debug]
+  puts "Ejecutando: #{cmd}" if OPTS[:debug]
   system cmd
 end
 
 def batches
+  puts 'Procesando los nombres comunes...' if OPTS[:debug]
   NombreComun.find_each do |nombre_comun|
-    puts "nom_com: #{nombre_comun.nombre_comun}" if OPTS[:debug]
     data=''
     muchos_nombres = false
     data+= "{\"id\":#{nombre_comun.id},"
@@ -42,7 +42,7 @@ def batches
 
     data+= "]}\n"
     nombre_comun.especies.each do |especie|    #no queria repetir el loop pero es necesario
-      File.open("db/redis/nom_com_#{I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica)}.json",'a') do |f|
+      File.open("#{@path}/nom_com_#{I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica)}.json",'a') do |f|
         f.puts data
       end
     end
@@ -52,21 +52,29 @@ end
 def load_file
   puts 'Cargando los datos a redis...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica)}.uniq.each do |cat|
-    f="db/redis/nom_com_#{cat}.json"
-    system_call("soulmate load #{cat} --redis=redis://localhost:6379/0 < #{f}") if File.exists?(f)
+    f="#{@path}/nom_com_#{cat}.json"
+    system_call("soulmate load com_#{cat} --redis=redis://localhost:6379/0 < #{f}") if File.exists?(f)
   end
 end
 
 def delete_files
   puts 'Eliminando archivos anteriores...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica)}.uniq.each do |cat|
-    f="db/redis/nom_com_#{cat}.json"
+    f="#{@path}/nom_com_#{cat}.json"
     File.delete(f) if File.exists?(f)
   end
 end
 
+def creando_carpeta
+  puts "Creando carpeta \"#{@path}\" si es que no existe..." if OPTS[:debug]
+  Dir.mkdir(@path, 0755) if !File.exists?(@path)
+end
+
 start_time = Time.now
+@path='db/redis'     #cambiar si se desea otra ruta
+creando_carpeta
 delete_files
 puts 'Iniciando la creacion de los archivos json...' if OPTS[:debug]
 batches
+load_file
 puts "Termino la exportación de archivos json en #{Time.now - start_time} seg" if OPTS[:debug]

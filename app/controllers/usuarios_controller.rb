@@ -92,7 +92,7 @@ class UsuariosController < ApplicationController
   end
 
   def filtros
-    filtro=Filtro.sesion_o_usuario(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil, params[:html], to_boolean(params[:lectura]) ? true : false)
+    filtro=Filtro.sesion_o_usuario(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil, params[:html], to_boolean(params[:lectura]))
     if filtro[:existia].present?
       @html=filtro[:html] if filtro[:existia]
     end

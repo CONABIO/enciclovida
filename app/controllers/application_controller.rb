@@ -73,6 +73,6 @@ class ApplicationController < ActionController::Base
   end
 
   def to_boolean(str)
-    str == 'true'
+    str == 'true' ? true : false
   end
 end

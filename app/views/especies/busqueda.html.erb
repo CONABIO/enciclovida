@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script data-turbolinks-track="true" src="/assets/jquery.soulmate.js"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     /*getCookie = function(c_name)
      {
@@ -148,9 +149,7 @@
                 if (lectura)
                 {
                     if (html != '')
-                    {
                         $('#busqueda').empty().html(html);
-                    }
                 }
             },
             fail: function(){
@@ -236,24 +235,24 @@
     soulmate_asigna = function(event)
     {
         var campo = document.getElementById(event.target.name);
-        var render = function(term, data, type){ return term; }
+        var render = function(term, data, type){ return term + ' <i>(' + data[0].nombre_cientifico + ')</i>'; }
         var select = function(term, data, type)
         {
             $('#'+event.target.name).val(term);
             $('#'+event.target.name).attr('value', term);
-            $("#soulmate").empty();    //elimina las sugerencias del input
-            $('#soulmate').css('display', 'none');    //lo esconde para que no sea vea la linea de estilos
+            $('ul#soulmate').hide();    //esconde el autocomplete
             guardaFiltros(false);
         }
 
         if ($._data(campo, "events") == undefined) {
             $(campo).soulmate({
                 url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
-                types:          ['nom comunes'],
+                types:          ['com_orden', 'com_familia', 'com_especie'],
                 renderCallback: render,
                 selectCallback: select,
                 minQueryLength: 2,
-                maxResults:     5
+                maxResults:     10,
+                num: 1
             });
         }
     }
@@ -404,7 +403,7 @@
             guardaFiltros(false);
         });
 
-        $(document).on('railsAutocomplete.select', "#nombre_cientifico", function(event, data) {
+        /*$(document).on('railsAutocomplete.select', "#nombre_cientifico", function(event, data) {
             var id=$(this).attr('id');
 
             if (id == 'nombre_cientifico')
@@ -417,13 +416,14 @@
             }
             $(this).attr('value',$(this).val());
             guardaFiltros(false);
-        });
+        });*/
 
         $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
-            //$("#soulmate").empty();    //elimina las sugerencias del input
-            $('#soulmate').css('display', 'none');    //lo esconde para que no sea vea la linea de estilos
+            //$('ul#soulmate').hide();    //esconde el autocomplete
+            //document.getElementById('soulmate').style.display = 'none';
+            //$('#soulmate').empty();
             guardaFiltros(false);
         });
 
@@ -463,13 +463,8 @@
             guardaFiltros(false);
         });
 
-        $(document).on("mouseover", "[id$='-soulmate-suggestion']", function(event)
-        {
-            $('#nombre_comun').val(event.currentTarget.innerText);
-            $('#nombre_comun').attr('value', event.currentTarget.innerText);
-        });
-
         $(document).on('focus', '#nombre_comun', soulmate_asigna);
+        //$(document).on('focus', '#nombre_cientifico', soulmate_asigna);
         guardaFiltros(true);
     });
 </script>
@@ -498,8 +493,9 @@
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
               <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico',
+              <%# text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico',
                                  'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
+              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común', :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
               <br><%= checkboxValidoSinonimo('basica_cientifico') %>

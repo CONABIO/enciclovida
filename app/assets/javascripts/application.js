@@ -18,6 +18,7 @@
 //= stub especies.js.coffee
 //= stub photo_selectors
 //= stub show
+//= stub jquery.soulmate.js
 //= require_tree .
 //= require dataTables/jquery.dataTables
 //= require cocoon
