@@ -1,3 +1,6 @@
+/*
+* Se modifico para que pudiese haber mas de un autocomplete en la misma busqueda, y que actue sobre nuevos elementos.
+*/
 (function() {
   var $, Query, Soulmate, Suggestion, SuggestionCollection,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -54,11 +57,11 @@
 
   Suggestion = (function() {
 
-    function Suggestion(index, term, data, type) {
+    function Suggestion(index, term, data, type, num) {
       this.term = term;
       this.data = data;
       this.type = type;
-      this.id = "" + index + "-soulmate-suggestion";
+      this.id = "" + index + "-soulmate-suggestion-" + num;
       this.index = index;
     }
 
@@ -87,12 +90,12 @@
   })();
 
   SuggestionCollection = (function() {
-
-    function SuggestionCollection(renderCallback, selectCallback) {
+    function SuggestionCollection(renderCallback, selectCallback, num) {
       this.renderCallback = renderCallback;
       this.selectCallback = selectCallback;
       this.focusedIndex = -1;
       this.suggestions = [];
+      this.num = num;
     }
 
     SuggestionCollection.prototype.update = function(results) {
@@ -107,7 +110,7 @@
           _results2 = [];
           for (_i = 0, _len = typeResults.length; _i < _len; _i++) {
             result = typeResults[_i];
-            this.suggestions.push(new Suggestion(i, result.term, result.data, type));
+            this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num));
             _results2.push(i += 1);
           }
           return _results2;
@@ -193,7 +196,11 @@
     };
 
     SuggestionCollection.prototype._renderTypeEnd = function(type) {
-      return "  </ul>\n  <div class=\"soulmate-type\">" + type.replace('com_', '') + "</div>\n</li>";
+      if (this.num == "1")
+        type_sub = type.replace('com_', '')
+      if (this.num == "2")
+        type_sub = type.replace('cien_', '')
+      return "  </ul>\n  <div class=\"soulmate-type\">" + type_sub + "</div>\n</li>";
     };
 
     SuggestionCollection.prototype._renderSuggestion = function(suggestion) {
@@ -218,6 +225,7 @@
     function Soulmate(input, options) {
       var maxResults, minQueryLength, renderCallback, selectCallback, that, timeout, types, url, num;
       num = options.num;
+      this.num = num;
       this.input = input;
       this.handleKeyup = __bind(this.handleKeyup, this);
       this.handleKeydown = __bind(this.handleKeydown, this);
@@ -228,7 +236,7 @@
       this.maxResults = maxResults;
       this.timeout = timeout || 500;
       this.xhr = null;
-      this.suggestions = new SuggestionCollection(renderCallback, selectCallback);
+      this.suggestions = new SuggestionCollection(renderCallback, selectCallback, num);
       this.query = new Query(minQueryLength);
       if ($('ul#soulmate_' + num).length > 0) {
         this.container = $('ul#soulmate_' + num);
@@ -264,6 +272,7 @@
           break;
         case 'enter':
           this.suggestions.selectFocused();
+          //return this.input.focus();       //cuanto presiona enter hace directa la busqueda
           if (this.suggestions.allBlured()) killEvent = false;
           break;
         case 'up':
@@ -296,13 +305,13 @@
     Soulmate.prototype.hideContainer = function() {
       this.suggestions.blurAll();
       this.container.hide();
-      return $(document).unbind('click.soulmate');
+      return $(document).unbind('click.soulmate_' + this.num);
     };
 
     Soulmate.prototype.showContainer = function() {
       var _this = this;
       this.container.show();
-      return $(document).bind('click.soulmate', function(event) {
+      return $(document).bind('click.soulmate_' + this.num, function(event) {
         if (!_this.container.has($(event.target)).length) {
           return _this.hideContainer();
         }

@@ -14,8 +14,8 @@ tar xvzf redis-stable.tar.gz
 cd redis-stable
 make
 
-soulmate load nombres_comunes --redis=redis://localhost:6379/0 < nombres_comunes.json
-soulmate load nombres_cientificos --redis=redis://localhost:6379/0 < nombres_cientificos.json
+rails r tools/nombres_comunes_redis.rb -d
+rails r tools/nombres_cientificos_redis.rb -d
 
 redis-server
 soulmate-web --foreground --no-launch --redis=redis://localhost:6379/0

@@ -235,24 +235,49 @@
     soulmate_asigna = function(event)
     {
         var campo = document.getElementById(event.target.name);
-        var render = function(term, data, type){ return term + ' <i>(' + data[0].nombre_cientifico + ')</i>'; }
-        var select = function(term, data, type)
+
+        if (event.data.num == "1")
         {
-            $('#'+event.target.name).val(term);
-            $('#'+event.target.name).attr('value', term);
-            $('ul#soulmate').hide();    //esconde el autocomplete
-            guardaFiltros(false);
+            var types = ['com_orden', 'com_familia', 'com_especie'];
+            var render = function(term, data, type){ return term + ' <i>(' + data.nombre_cientifico + ')</i>'; }
+            var select = function(term, data, type)
+            {
+                $('#'+event.target.name).val(term);
+                $('#'+event.target.name).attr('value', term);
+                $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
+                guardaFiltros(false);
+            }
+        }
+        if (event.data.num == "2")
+        {
+            var types = ['cien_Reino', 'cien_phylum', 'cien_subphylum', 'cien_clase', 'cien_orden',
+                'cien_familia', 'cien_subespecie', 'cien_especie', 'cien_genero'];
+            var render = function(term, data, type)
+            {
+                var i;
+                var nombres='';
+                for(i=0; i<data.length; i++)
+                    nombres+= '<li>' + data[i].nombre_comun + '</li>';
+                return '<i><b>' + term + '</b></i>' + '<br><ul>' + nombres + '</ul>';
+            }
+            var select = function(term, data, type)
+            {
+                $('#'+event.target.name).val(term);
+                $('#'+event.target.name).attr('value', term);
+                $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
+                guardaFiltros(false);
+            }
         }
 
         if ($._data(campo, "events") == undefined) {
             $(campo).soulmate({
                 url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
-                types:          ['com_orden', 'com_familia', 'com_especie'],
+                types:          types,
                 renderCallback: render,
                 selectCallback: select,
                 minQueryLength: 2,
                 maxResults:     10,
-                num: 1
+                num: event.data.num
             });
         }
     }
@@ -421,9 +446,6 @@
         $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
-            //$('ul#soulmate').hide();    //esconde el autocomplete
-            //document.getElementById('soulmate').style.display = 'none';
-            //$('#soulmate').empty();
             guardaFiltros(false);
         });
 
@@ -463,8 +485,8 @@
             guardaFiltros(false);
         });
 
-        $(document).on('focus', '#nombre_comun', soulmate_asigna);
-        //$(document).on('focus', '#nombre_cientifico', soulmate_asigna);
+        $(document).on('focus', '#nombre_comun', {num: "1"}, soulmate_asigna);
+        $(document).on('focus', '#nombre_cientifico', {num: "2"}, soulmate_asigna);
         guardaFiltros(true);
     });
 </script>
