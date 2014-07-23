@@ -1,5 +1,5 @@
 /*
-* Se modifico para que pudiese haber mas de un autocomplete en la misma busqueda, y que actue sobre nuevos elementos.
+* Se modifico para que pudiese haber mas de un autocomplete en la misma busqueda, que actue sobre nuevos elementos.
 */
 (function() {
   var $, Query, Soulmate, Suggestion, SuggestionCollection,
