@@ -8,7 +8,7 @@ require 'blurrily/server.rb'
 server=Blurrily::Server.new(:host => '127.0.0.1', :directory=> './db/blurrily')    //directory es donde quedaran alojados los datos
 server.start
 
---para usar Redis con soulmate como back-end del autocomplete
+--- Para usar Redis con soulmate como back-end del autocomplete
 wget http://download.redis.io/redis-stable.tar.gz
 tar xvzf redis-stable.tar.gz
 cd redis-stable
@@ -19,5 +19,8 @@ rails r tools/nombres_cientificos_redis.rb -d
 
 redis-server
 soulmate-web --foreground --no-launch --redis=redis://localhost:6379/0
+
+--- Para iniciar el administrador de trabajos pendientes (solo production)
+./bin/delayed_job run
 
 

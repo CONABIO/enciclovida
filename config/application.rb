@@ -8,6 +8,14 @@ require 'blurrily/client.rb'  #para el fuzzy match
 
 CONFIG = BuscadorConfig.new(File.expand_path('../config.yml', __FILE__))
 
+# DelayedJob priorities
+USER_PRIORITY = 0               # response to user action, should happen ASAP w/o bogging down a web proc
+NOTIFICATION_PRIORITY = 1       # notifies user of something, not ASAP, but soon
+USER_INTEGRITY_PRIORITY = 2     # maintains data integrity for stuff user's care about
+INTEGRITY_PRIORITY = 3          # maintains data integrity for everything else, needs to happen, eventually
+OPTIONAL_PRIORITY = 4           # inconsequential stuff like updating wikipedia summaries
+
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)

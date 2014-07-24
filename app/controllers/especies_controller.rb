@@ -8,12 +8,12 @@ class EspeciesController < ApplicationController
   layout false, :only => :dame_listas
 
   caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
-    #c.session.blank? || c.session['warden.user.user.key'].blank?
-  #}
-  #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
+                                                                                        #c.session.blank? || c.session['warden.user.user.key'].blank?
+                                                                                        #}
+                                                                                        #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
 
-  # GET /especies
-  # GET /especies.json
+                                                                                        # GET /especies
+                                                                                        # GET /especies.json
   def index
     respond_to do |format|
       format.html
@@ -28,7 +28,6 @@ class EspeciesController < ApplicationController
       @especie.photos_with_backfill(:skip_external => true, :limit => 24)
     end
 
-    #@desc = TaxonDescribers::Conabio.describe(@especie)
     @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
     @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
   end
@@ -135,7 +134,6 @@ class EspeciesController < ApplicationController
       when 'basica_comun'
         @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
           #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-        Rails.logger.info "---#{@taxones.any?}---"
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
           if @taxones=ids.count > 0
@@ -168,8 +166,8 @@ class EspeciesController < ApplicationController
             if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
               conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
             elsif params['vAtributo_' + numero].present?
-            joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
-            condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
+              joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
+              condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
             end
           end
 
@@ -211,9 +209,9 @@ class EspeciesController < ApplicationController
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-                                                                      #@taxones=Especie.none
-        #@resultado2= busqueda
-        #@resultado=params
+      #@taxones=Especie.none
+      #@resultado2= busqueda
+      #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
@@ -315,14 +313,8 @@ class EspeciesController < ApplicationController
       p.valid? ? nil : p.errors.full_messages
     end.flatten.compact
 
-    #@especie.photos = photos
-    #@especie.save
-
-    photos.each do |photo|        #Se tiene que hacer de esta forma porque existen problemas con la gema composite_primary_keys
-      photo.save
-      taxonphoto = TaxonPhoto.new(:especie_id => @especie.id, :photo_id => photo.id)
-      taxonphoto.save
-    end
+    @especie.photos = photos
+    @especie.save
 
     #unless photos.count == 0
     #  Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)

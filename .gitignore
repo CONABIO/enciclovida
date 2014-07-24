@@ -36,3 +36,8 @@ db/sphinx/
 Gemfile.lock
 log/development.sphinx.pid
 db/blurrily/
+db/redis/
+pruebas_generales/
+db/buscador.dump.out
+app/assets/javascripts/i18n/
+db/seeds.rb

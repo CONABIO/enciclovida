@@ -105,6 +105,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    daemons (1.1.9)
     delayed_job (4.0.1)
       activesupport (>= 3.0, < 4.2)
     delayed_job_active_record (4.0.1)
@@ -247,6 +248,7 @@ DEPENDENCIES
   cocoon (= 1.2.0)
   coffee-rails (~> 4.0.0)
   composite_primary_keys!
+  daemons
   delayed_job
   delayed_job_active_record
   flickraw (~> 0.9.8)!
