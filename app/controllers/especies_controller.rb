@@ -327,7 +327,7 @@ class EspeciesController < ApplicationController
     redirect_to especy_path(@especie)
   rescue Errno::ETIMEDOUT
     flash[:error] = t(:request_timed_out)
-    redirect_back_or_default(taxon_path(@taxon))
+    redirect_to especy_path(@especie)
 =begin
   rescue Koala::Facebook::APIError => e
     raise e unless e.message =~ /OAuthException/

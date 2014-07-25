@@ -14,7 +14,6 @@ class TaxonPhoto < ActiveRecord::Base
   
   def destroy_orphan_photo
     Photo.delay(:priority => INTEGRITY_PRIORITY).destroy_orphans(photo_id)
-    #Photo.destroy_orphans(photo_id)
     true
   end
   
