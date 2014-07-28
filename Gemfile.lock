@@ -159,6 +159,8 @@ GEM
       json (~> 1.4)
     redis (3.1.0)
     ref (1.0.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     riddle (1.5.11)
     rinku (1.7.3)
     rubyntlm (0.3.4)
@@ -264,6 +266,7 @@ DEPENDENCIES
   rack-contrib
   rails!
   rails3-jquery-autocomplete!
+  rest-client
   rinku
   sass-rails (~> 4.0.0)
   savon (= 2.4.0)
