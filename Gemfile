@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'actionpack-action_caching'
+gem 'actionpack-action_caching'  #fue removido del core en 4.0
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'    #pasa los request con POST a traves de la base (para request muy largos)
 gem 'activerecord-sqlserver-adapter', '~>4.0.0'#,github: 'rails-sqlserver/activerecord-sqlserver-adapter', branch: '4-0-stable'
 gem 'ancestry'     #lee los ancestros en modo de arbol

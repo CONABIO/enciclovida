@@ -7,7 +7,7 @@ class EspeciesController < ApplicationController
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
 
-  caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
+  #caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
                                                                                         #c.session.blank? || c.session['warden.user.user.key'].blank?
                                                                                         #}
                                                                                         #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
