@@ -14,6 +14,12 @@
   <%= yield :extrahead %>
   <%= yield :extracss %>
   <%= yield :extrajs %>
+
+  <script type="text/javascript">
+      I18n.defaultLocale = 'es'
+      I18n.locale = "<%= I18n.locale %>"
+      I18n.fallbacks = true
+  </script>
 </head>
 
 <body>

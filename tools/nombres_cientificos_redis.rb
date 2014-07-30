@@ -29,15 +29,20 @@ def batches
 
   Especie.find_each do |taxon|
     muchos_nombres=false
+    fotos=taxon.photos
+    foto = fotos.present? ? "<img src='#{fotos.first.thumb_url}' alt='#{taxon.nombre_cientifico}' width='50px' \>" :
+        "<img src='http://conabio.inaturalist.org/images/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' \>"
+
     data=''
     data+= "{\"id\":#{taxon.id},"
     data+= "\"term\":\"#{taxon.nombre_cientifico}\","
     data+= "\"score\":85,"
+    data+= "\"foto\":\"#{foto}\","
     data+= "\"data\":["
 
     taxon.nombres_regiones.each do |nombre_taxon|
       data+= ',' if muchos_nombres
-      data+= "{\"nombre_comun\":\"#{nombre_taxon.nombre_comun.nombre_comun}\", \"id\":\"#{nombre_taxon.nombre_comun.id}\"}"
+      data+= "{\"nombre_comun\":\"#{nombre_taxon.nombre_comun.nombre_comun}\", \"id\":\"#{nombre_taxon.nombre_comun.id}\", \"foto\":\"#{foto}\"}"
       muchos_nombres=true
     end
     data+= "]}\n"

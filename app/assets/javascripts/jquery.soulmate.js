@@ -1,5 +1,6 @@
 /*
-* Se modifico para que pudiese haber mas de un autocomplete en la misma busqueda, que actue sobre nuevos elementos.
+* Se modifico para que pudiese haber mas de un autocomplete en la misma busqueda, que actue sobre nuevos elementos,
+* que pueda ponerse un atributo fuera del data
 */
 (function() {
   var $, Query, Soulmate, Suggestion, SuggestionCollection,
@@ -57,12 +58,13 @@
 
   Suggestion = (function() {
 
-    function Suggestion(index, term, data, type, num) {
+    function Suggestion(index, term, data, type, num, foto) {
       this.term = term;
       this.data = data;
       this.type = type;
       this.id = "" + index + "-soulmate-suggestion-" + num;
       this.index = index;
+      this.foto = foto;
     }
 
     Suggestion.prototype.select = function(callback) {
@@ -78,7 +80,7 @@
     };
 
     Suggestion.prototype.render = function(callback) {
-      return "<li id=\"" + this.id + "\" class=\"soulmate-suggestion\">\n  " + (callback(this.term, this.data, this.type, this.index, this.id)) + "\n</li>";
+      return "<li id=\"" + this.id + "\" class=\"soulmate-suggestion\">\n  " + (callback(this.term, this.data, this.type, this.index, this.id, this.foto)) + "\n</li>";
     };
 
     Suggestion.prototype.element = function() {
@@ -110,7 +112,7 @@
           _results2 = [];
           for (_i = 0, _len = typeResults.length; _i < _len; _i++) {
             result = typeResults[_i];
-            this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num));
+            this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num, result.foto));
             _results2.push(i += 1);
           }
           return _results2;
