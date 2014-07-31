@@ -145,6 +145,7 @@ es:
       create: Crear %{model}
       submit: Guardar %{model}
       update: Actualizar %{model}
+  nombre_comun: Nombre
   number:
     currency:
       format:
@@ -192,6 +193,8 @@ es:
     precision:
       format:
         delimiter: ''
+  sinonimo: inactivos
+  solo_taxones: solo especies o grupos
   support:
     array:
       last_word_connector: ! ', y '
@@ -204,6 +207,7 @@ es:
       long: ! '%d de %B de %Y %H:%M'
       short: ! '%d de %b %H:%M'
     pm: pm
+  valido_correcto: activos
   view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>Flickr &raquo;</nobr>
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository

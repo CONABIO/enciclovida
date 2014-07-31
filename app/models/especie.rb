@@ -19,22 +19,24 @@ class Especie < ActiveRecord::Base
   accepts_nested_attributes_for :nombres_regiones, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :nombres_regiones_bibliografias, :reject_if => :all_blank, :allow_destroy => true
 
-  scope :caso_insensitivo, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('#{valor}%')") }
-  scope :caso_empieza_con, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('#{valor}%')") }
+  scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('%#{valor}%')") }
+  scope :caso_empieza_con, ->(columna, valor) { where("#{columna} LIKE '#{valor}%'") }
   scope :caso_sensitivo, ->(columna, valor) { where("#{columna}='#{valor}'") }
-  scope :caso_termina_con, ->(columna, valor) { where("lower_unaccent(#{columna}) LIKE lower_unaccent('%#{valor}')") }
+  scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_estatus, ->(status) { where(:estatus => status.to_i) }
-  scope :caso_nombre_comun, -> { joins(:nombres_regiones => [:nombre_comun]) }
+  scope :nombres_regiones_cientifico, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
+      joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
   scope :caso_region, -> { joins(:especies_regiones => [:region]) }
   scope :caso_tipo_distribucion, -> { joins(:especies_regiones => [:tipo_distribucion]) }
   scope :caso_nombre_bibliografia, -> { joins(:nombres_regiones_bibliografias => [:bibliografia]) }
   scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  scope :caso_categoria_taxonomica, -> { joins(:categoria_taxonomica) }
-  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica')}
+  scope :caso_categoria_taxonomica, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
+  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
+  scope :nom_cien, -> { nombres_regiones_cientifico.caso_categoria_taxonomica }
 
   before_save :ponNombreCientifico
 
@@ -43,12 +45,12 @@ class Especie < ActiveRecord::Base
 
   POR_PAGINA = [50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
-  ESTATUSES = [
+  ESTATUS = [
       [2, 'válido/correcto'],
       [1, 'sinónimo']
   ]
 
-  ESTATUSES_SIMBOLO = {
+  ESTATUS_SIMBOLO = {
       2 => '',
       1 =>''
   }

@@ -76,7 +76,7 @@
 <div class="digg_pagination">
   <%= will_paginate @taxones %>
 </div>
-<%= render @vista, :taxones => @taxones %>
+<%= render 'resultados', :taxones => @taxones, :busqueda => @busqueda %>
 <% if @taxones.length >= 100 %>
     <div class="digg_pagination">
       <%= will_paginate @taxones %>

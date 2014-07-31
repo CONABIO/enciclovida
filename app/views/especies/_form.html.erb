@@ -61,7 +61,7 @@
               </div>
               <div class="field">
                 <%= f.label :estatus, 'Estatus del nombre cient&iacute;fico: '.html_safe %>
-                <%= f.select :estatus, Especie::ESTATUSES.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
+                <%= f.select :estatus, Especie::ESTATUS.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
               </div>
               <div class="field">
                 <%= f.label :nombre_autoridad, 'Nombre de la autoridad' %><br>

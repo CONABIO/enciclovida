@@ -1,6 +1,7 @@
 <% columnas=0 %>
 
-<table width="1000" class="tabla_formato" CELLPADDING="10">
+<table width="1000" class="tabla_formato" CELLPADDING="10" border="1">
+
   <% taxones.each do |taxon| %>
       <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
       <%= '<tr>'.html_safe if columnas % 2 == 0 %>
@@ -9,5 +10,6 @@
       </td>
       <% columnas+=1 %>
   <% end %>
-  <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr></table>".html_safe : '</table>'.html_safe %>
+  <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr>".html_safe : '</tr>'.html_safe %>
+
 </table>

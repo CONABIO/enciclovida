@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   helper_method :enlacesDelArbol
+  before_filter :set_locale
 
   def ponSesion(usuario)
     session[:usuario] = usuario.id
@@ -11,6 +12,14 @@ class ApplicationController < ActionController::Base
   def dameUsuario
     if verificaSesion
       session[:usuario]
+    else
+      nil
+    end
+  end
+
+  def dameObjUsuario
+    if verificaSesion
+      Usuario.find(session[:usuario])
     else
       nil
     end
@@ -74,5 +83,11 @@ class ApplicationController < ActionController::Base
 
   def to_boolean(str)
     str == 'true' ? true : false
+  end
+
+  def set_locale
+    I18n.locale = params[:locale] || dameObjUsuario.try(:locale) || I18n.default_locale
+    I18n.locale = dameObjUsuario.try(:locale) if I18n.locale.blank?
+    I18n.locale = I18n.default_locale if I18n.locale.blank?
   end
 end

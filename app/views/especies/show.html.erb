@@ -176,7 +176,7 @@
 
           <p>
             <strong>Estatus:</strong>
-            <%= Especie::ESTATUSES.select{ |k, v| k === @especie.estatus }.first.last %>
+            <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
           </p>
 
           <%= dameEspecieEstatuses(@especie).html_safe %>

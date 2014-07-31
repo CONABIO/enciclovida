@@ -499,11 +499,9 @@
           <%= form_tag resultados_especies_path, :method => :get do %>
               <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
-              <b>Nombre com&uacute;n</b><br>
-              <%= select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-              <%# text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común',
-                                 'data-autocomplete' => autocomplete_nombre_comun_comun_nombres_comunes_path, :autocomplete => :off %>
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre común', :autocomplete => :off %>
+              <b><%= t :nombre_comun %></b><br>
+              <%# select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
+              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
           <% end %>
@@ -514,12 +512,10 @@
               <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
-              <%= select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-              <%# text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre científico',
-                                 'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
+              <%# select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
               <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
-              <br><br><b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
+              <br><br><b><%= t :solo_taxones %>:</b>
               <br><%= checkboxValidoSinonimo('basica_cientifico') %>
           <% end %>
         </td>
@@ -565,7 +561,7 @@
                            :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
           </p>
           <p>
-            <b>mostrar solo taxones:</b> <i>(predeterminado; todos)</i>
+            <b><%= t :solo_taxones %>:</b>
             <br><%= checkboxValidoSinonimo('avanzada') %>
           </p>
         </td>
@@ -581,5 +577,3 @@
     </tr>
   </table>
 </div>
-<%= I18n.locale.to_s %>
-

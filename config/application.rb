@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'uri'
 require 'open-uri'
 require 'csv'
 require File.expand_path('../config', __FILE__)
@@ -35,10 +36,6 @@ module Buscador
     config.time_zone = 'Mexico City'
 
     config.autoload_paths += %W(#{config.root}/lib)
-
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    #config.i18n.default_locale = CONFIG.default_locale
     #config.sass.preferred_syntax=:sass
   end
 end

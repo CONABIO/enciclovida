@@ -8,12 +8,12 @@ class EspeciesController < ApplicationController
   layout false, :only => :dame_listas
 
   #caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
-                                                                                        #c.session.blank? || c.session['warden.user.user.key'].blank?
-                                                                                        #}
-                                                                                        #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
+  #c.session.blank? || c.session['warden.user.user.key'].blank?
+  #}
+  #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
 
-                                                                                        # GET /especies
-                                                                                        # GET /especies.json
+  # GET /especies
+  # GET /especies.json
   def index
     respond_to do |format|
       format.html
@@ -127,30 +127,45 @@ class EspeciesController < ApplicationController
   end
 
   def resultados
-    @vista=params[:busqueda_oculto]
+    @busqueda=params[:busqueda_oculto]
     estatus = ''
 
     case params[:busqueda_oculto]
       when 'basica_comun'
-        @taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
-          #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        #@taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
+        #  #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+        @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
+            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun]).
+            order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
-          if @taxones=ids.count > 0
-            @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+          if ids.count > 0
+            #@taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+            @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
+                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.
+                paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end
       when 'basica_cientifico'
         estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
-        @taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-          #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos estatus
+                                                                            #@taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+                                                                            #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+        @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').nom_cien.
+            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).order('nombre_cientifico ASC').
+            uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)#{".caso_estatus(#{estatus})" if estatus.present?}")
         if @taxones.empty?
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
           if @taxones=ids.count > 0
-            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+            @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').nom_cien.
+                where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').uniq.
+                paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end

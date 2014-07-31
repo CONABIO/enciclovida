@@ -5,11 +5,14 @@ I18N_SUPPORTED_LOCALES = Dir[Rails.root.join('config', 'locales', '*.{rb,yml}')]
 
 # set default locale to something other than :en
 #I18n.default_locale = CONFIG.default_locale.to_sym if CONFIG.default_locale
+I18n.enforce_available_locales = false
 I18n.default_locale = 'es'
+I18n.available_locales = [:es, 'es-cientifico'.to_sym, :en]
+
 # set up fallbacks
 require 'i18n/backend/fallbacks'
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 
 # from and to locales for the translate gem (translation ui)
-Rails.application.config.from_locales = [:en, :es]
-Rails.application.config.to_locales = [:es, :es_cientifico]
+Rails.application.config.from_locales = [:en, :es, 'es-cientifico'.to_sym]
+Rails.application.config.to_locales = [:es, 'es-cientifico'.to_sym]
