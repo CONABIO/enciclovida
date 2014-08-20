@@ -6,7 +6,7 @@ Buscador y administrador de especies de la CONABIO
 Talves se necesiten los sig. paquetes: libxslt-dev libxml2-dev build-essential openssl libmysqlclient-dev libpq-dev
 Una vez caragada la base ...
 
---- Para usar Redis con soulmate como back-end del autocomplete (Instalar)\n
+--- Para usar Redis con soulmate como back-end del autocomplete (Instalar)
 wget http://download.redis.io/redis-stable.tar.gz
 tar xvzf redis-stable.tar.gz
 cd redis-stable
