@@ -3,23 +3,15 @@ buscador
 
 Buscador y administrador de especies de la CONABIO
 
+Talves se necesiten los sig. paquetes: libxslt-dev libxml2-dev build-essential openssl libmysqlclient-dev libpq-dev
 Una vez caragada la base ...
 
---- Para usar Redis con soulmate como back-end del autocomplete (Instalar)
+--- Para usar Redis con soulmate como back-end del autocomplete (Instalar)\n
 wget http://download.redis.io/redis-stable.tar.gz
 tar xvzf redis-stable.tar.gz
 cd redis-stable
 make
-sudo make all
-
---- Para extraer los metadatos de las imagenes (Instalar)
-http://www.imagemagick.org/download/ImageMagick.tar.gz
-tar xvzf ImageMagick.tar.gz
-cd ImageMagick-6.8.9
-./configure
-make
-make all
-sudo ldconfig /usr/local/lib
+sudo make install
 
 
 --- Para iniciar el fuzzymatch
