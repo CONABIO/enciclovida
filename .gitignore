@@ -41,3 +41,5 @@ pruebas_generales/
 db/buscador.dump.out
 app/assets/javascripts/i18n/
 db/seeds.rb
+db/respaldos/*
+app/assets/javascripts/i18n/translations.js
