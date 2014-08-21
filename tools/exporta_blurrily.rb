@@ -7,7 +7,7 @@ Exporta todas las tuplas de la base al servidor blurrilly:
 
 Usage:
 
-  rails r tools/exporta_blurrily.rb
+  rails r tools/exporta_blurrily.rb -d
 
 where [options] are:
   EOS

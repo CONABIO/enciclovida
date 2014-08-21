@@ -153,8 +153,8 @@ class EspeciesController < ApplicationController
         estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos estatus
-                                                                            #@taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
-                                                                            #{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+        #@taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.#{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').nom_cien.
             caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).order('nombre_cientifico ASC').

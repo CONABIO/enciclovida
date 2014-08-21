@@ -20,6 +20,8 @@ server=Blurrily::Server.new(:host => '127.0.0.1', :directory=> './db/blurrily')
 
 server.start
 
+rails r tools/exporta_blurrily.rb
+
 
 --- Para usar Redis con soulmate como back-end del autocomplete (Instalar)
 
