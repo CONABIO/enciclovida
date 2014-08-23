@@ -1,7 +1,7 @@
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
-    if I18n.locale.to_s != 'es'
+    if I18n.locale.to_s == 'es-cientifico'
       if params[:title]
         "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
       elsif params[:context]
@@ -13,11 +13,14 @@ module EspeciesHelper
       end
     else
       if params[:title]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe
+        taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_comun_principal} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
+            "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe
       elsif params[:context]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
+        taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
+            "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
       elsif params[:link]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
+        taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
+            "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
       else
         'Ocurrio un error en el t&iacute;tulo'.html_safe
       end

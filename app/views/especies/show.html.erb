@@ -124,7 +124,7 @@
 <div id="photoscol" class="column span-13">
   <% if @especie.species_or_lower? && @photos.empty? %>
       <div class="notice">
-        Este tax&oacute;n no tiene una foto predeterminada
+        <%= t :este_taxon_no_tiene %>
         <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
       </div>
   <% end %>

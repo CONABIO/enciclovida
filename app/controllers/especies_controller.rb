@@ -132,39 +132,34 @@ class EspeciesController < ApplicationController
 
     case params[:busqueda_oculto]
       when 'basica_comun'
-        #@taxones=eval("Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.
-        #  #{tipoDeBusqueda(params[:condicion_nombre_comun], 'nombre_comun', params[:nombre_comun])}").order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-
         @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
             nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun]).
-            order('nombre_comun ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
           if ids.count > 0
-            #@taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').caso_categoria_taxonomica.caso_nombre_comun.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-
             @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
-                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').uniq.
+                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end
       when 'basica_cientifico'
-        estatus+= "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
+        estatus = "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos estatus
+        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
 
-        #@taxones=eval("Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.#{tipoDeBusqueda(params[:condicion_nombre_cientifico], 'nombre_cientifico', params[:nombre_cientifico])}#{".caso_estatus(#{estatus})" if estatus.present?}").order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
+            paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
-        @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').nom_cien.
-            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).order('nombre_cientifico ASC').
-            uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)#{".caso_estatus(#{estatus})" if estatus.present?}")
         if @taxones.empty?
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
           if @taxones=ids.count > 0
 
-            @taxones=Especie.select('especies.*, nombre_comun, nombre_categoria_taxonomica').nom_cien.
-                where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').uniq.
+            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+                where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
@@ -198,7 +193,7 @@ class EspeciesController < ApplicationController
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         joins+= '.caso_categoria_taxonomica'
         condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
-        condiciones+= ".caso_estatus(#{estatus})" if estatus.present?
+        condiciones+= ".caso_status(#{estatus})" if estatus.present?
 
         if (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.blank?  #join a la(s) categorias taxonomicas
           cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""

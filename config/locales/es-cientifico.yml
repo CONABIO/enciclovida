@@ -138,6 +138,7 @@ es-cientifico:
       header:
         one: No se pudo guardar este/a %{model} porque se encontró 1 error
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
+  este_taxon_no_tiene: Este tax&oacute;n no tiene una foto predeterminada
   helpers:
     select:
       prompt: Por favor seleccione
