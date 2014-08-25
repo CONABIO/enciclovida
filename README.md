@@ -3,7 +3,7 @@ buscador
 
 Buscador y administrador de especies de la CONABIO
 
-Talves se necesiten los sig. paquetes: libxslt-dev libxml2-dev build-essential openssl libmysqlclient-dev libpq-dev
+Talves se necesiten los sig. paquetes: libxslt-dev libxml2-dev build-essential openssl libmysqlclient-dev libpq-dev freetds-dev
 
 
 
@@ -11,8 +11,6 @@ Una vez caragada la base ...
 
 
 --- Para iniciar el fuzzymatch
-
-mkdir blurrily
 
 require 'blurrily/server.rb'
 

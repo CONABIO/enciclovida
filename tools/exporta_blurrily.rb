@@ -34,7 +34,14 @@ def exporta_a_blurrilly
   end
 end
 
+def creando_carpeta
+  puts "Creando carpeta \"#{@path}\" si es que no existe..." if OPTS[:debug]
+  Dir.mkdir(@path, 0755) if !File.exists?(@path)
+end
+
+@path = 'db/blurrily'
 puts 'Iniciando ... ' if OPTS[:debug]
+creando_carpeta
 start_time = Time.now
 exporta_a_blurrilly
 puts "Exporto #{@file_path} en #{Time.now - start_time} seg" if OPTS[:debug]

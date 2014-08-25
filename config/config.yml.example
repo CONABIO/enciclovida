@@ -5,14 +5,18 @@
 
 base: &base
 
+    ip: localhost
+    port: 3000
     # url of the site
-    site_url: http://www.yoursite.com
+    site_url: http://localhost:3000/
 
     # name of the site, used extensively within the app
-    site_name: YourSite
+    site_name: Administrador de información sobre las especies
+    default_locale: es
 
     # shortened version of the name
-    site_name_short: YS
+    site_name_short: AISE
+    limit_fuzzy : 5
 
     # Email addresses
     admin_email: admin@yoursite.com
@@ -91,7 +95,8 @@ base: &base
     # species descriptions from these sources in this order, trying the next
     # if one fails. You can see all the available describers in
     # lib/taxon_describers/lib/taxon_describers
-    # taxon_describers: [conabio, wikipediaes, wikipedia, eol]
+    taxon_describers: [conabio, eoles, wikipediaes, eol, wikipedia]
+    photo_providers: [flickr, eol, wikimedia]
 
     # If you'd prefer the default taxon ranges to come from a particular Source, set the source ID here
     # taxon_range_source_id: 7538
@@ -162,8 +167,8 @@ base: &base
 
     flickr:
         # http://www.flickr.com/services/api/keys/apply/
-        key: 09af09af09af09af09af09af09af09af
-        shared_secret: 09af09af09af09af
+        key: 1a5b22e045c13511d38a62c114fb340d
+        shared_secret: acc76f6f457b6b64
 
     soundcloud:
         # http://soundcloud.com/you/apps/new
