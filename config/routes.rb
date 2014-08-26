@@ -31,12 +31,14 @@ Buscador::Application.routes.draw do
   resources :especies do
     collection do
       post :update_photos, :as => :update_photos_for
+      get :busca_por_lote
       put :aniade_taxones
       get :dame_listas
       get :buscaDescendientes
       post :muestraTaxonomia
       get :autocomplete_especie_nombre
       get :resultados
+      post :resultados_por_lote
       get :error
     end
   end

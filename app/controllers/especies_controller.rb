@@ -229,6 +229,22 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def busca_por_lote
+  end
+
+  def resultados_por_lote
+    return 'Por lo menos debe haber un taxon o un archivo' unless params[:lote].present?
+
+    @match_taxa = Hash.new
+    params[:lote].split("\r\n").each do |linea|
+      if e= Especie.where(:nombre_cientifico => linea).first
+        @match_taxa[linea] = 'Existe taxon'
+      else
+        @match_taxa[linea] = 'Sin coincidencia'
+      end
+    end
+  end
+
 # DELETE /especies/1
 # DELETE /especies/1.json
   def destroy

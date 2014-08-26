@@ -27,7 +27,8 @@
 <div class="menu">
   <ul id="menu">
     <li><%= link_to "Inicio (#{CONFIG.site_name_short})", especies_url %></li>
-    <li><%= link_to 'Listas', listas_url %></li>
+    <li><%= link_to :Listas, listas_url %></li>
+    <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
     <% if session[:usuario].present?  %>
         <li>
           <%= link_to 'Propiedades de tu cuenta', usuario_path(session[:usuario]) %>

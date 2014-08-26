@@ -236,10 +236,14 @@
     {
         var campo = document.getElementById(event.target.name);
 
-        if (event.data.num == '1')
+        if (event.data.num == '1')         //nombre comun
         {
             var types = ['com_orden', 'com_familia', 'com_especie'];
-            var render = function(term, data, type){ return term + ' <i>(' + data.nombre_cientifico + ')</i>'; }
+            var render = function(term, data, type, index, id, foto)
+            {
+                var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' : term + ' <i>(' + data.nombre_cientifico + ')</i>';
+                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table";
+            }
             var select = function(term, data, type)
             {
                 $('#'+event.target.name).val(term);
@@ -248,17 +252,17 @@
                 guardaFiltros(false);
             }
         }
-        if (event.data.num == '2')
+        if (event.data.num == '2')          //nombre cientifico
         {
             var types = ['cien_Reino', 'cien_phylum', 'cien_subphylum', 'cien_clase', 'cien_orden',
                 'cien_familia', 'cien_subespecie', 'cien_especie', 'cien_genero'];
             var render = function(term, data, type, index, id, foto)
             {
-                var i;
-                var nombres='';
-                for(i=0; i<data.length; i++)
-                    nombres+= data[i].nombre_comun + ', ';
-                return "<table><tr><td>" + foto + "</td><td><i><b>" + term + "</b></i>" + "<br>" + nombres.substring(0, nombres.length - 2) + "</td></tr></table";
+                if (I18n.locale == 'es-cientifico')
+                    var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
+                else
+                    var nombres = data.nombre_comun.length == 0 ? '<i>' + term + '</i>' : data.nombre_comun + ' <i>(' + term + ')</i>';
+                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table";
             }
             var select = function(term, data, type)
             {

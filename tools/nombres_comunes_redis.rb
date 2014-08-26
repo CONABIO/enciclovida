@@ -34,12 +34,16 @@ def batches
     cont=1
 
     nombre_comun.especies.order('nombre_cientifico ASC').each do |especie|
+      fotos=especie.photos
+      foto = fotos.present? ? "<img src='#{fotos.first.thumb_url}' alt='#{especie.nombre_cientifico}' width='50px' \>" :
+          "<img src='http://conabio.inaturalist.org/images/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
+
       data=''
-      data+= "{\"id\":#{cont > 1 ? "#{nombre_comun.id}#{cont}" : nombre_comun.id},"
+      data+= "{\"id\":#{cont > 1 ? "#{nombre_comun.id}#{cont}" : nombre_comun.id},"   #el ID de nombres_comunes no es unico (uno a muchos)
       data+= "\"term\":\"#{nombre_comun.nombre_comun}\","
       data+= "\"score\":85,"
-      data+= "\"data\":"
-      data+= "{\"nombre_cientifico\":\"#{especie.nombre_cientifico}\", \"id\":\"#{especie.id}\"}}\n"
+      data+= "\"data\":{\"nombre_cientifico\":\"#{especie.nombre_cientifico}\", \"foto\":\"#{foto}\", \"autoridad\":\"#{especie.nombre_autoridad}\", \"id\":#{nombre_comun.id}}"
+      data+= "}\n"
 
       File.open("#{@path}/nom_com_#{I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica)}.json",'a') do |f|
         f.puts data
