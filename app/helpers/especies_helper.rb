@@ -7,7 +7,7 @@ module EspeciesHelper
       elsif params[:context]
         "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       elsif params[:link]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
       else
         'Ocurrio un error en el t&iacute;tulo'.html_safe
       end

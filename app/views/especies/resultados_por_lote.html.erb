@@ -1,4 +1,35 @@
+<ol>
+  <% if @match_taxa.is_a? String %>
 
-<% @match_taxa.each do |key, val| %>
-    <%= "#{key} ---> #{val}<br>".html_safe %>
-<% end %>
+      <%= @match_taxa.html_safe %>
+
+  <%-
+      else
+        @match_taxa.each do |linea, taxones|
+  -%>
+          <li>
+            <%= "#{linea} ---> ".html_safe %>
+            <%-
+                if !taxones.is_a? String
+                  if taxones.length == 1
+            -%>
+                    <%= tituloNombreCientifico taxones.first, :link => true %><br>
+                <% else %>
+                    Sin coincidencias. <b>Quiz&aacute;s quisiste decir:</b><br>
+                    <% taxones.each do |taxon| %>
+
+                        <%= tituloNombreCientifico taxon, :link => true %><br>
+                    <%-
+                        end
+                        end
+                        else
+                    -%>
+                <%= "&#09;&#09;#{taxones}<br>".html_safe %>
+            <% end %>
+          </li>
+      <% end %>
+  <% end %>
+</ol>
+
+<%= params[:batch].to_json %>
+

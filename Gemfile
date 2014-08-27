@@ -5,6 +5,7 @@ gem 'activerecord-session_store', github: 'rails/activerecord-session_store'    
 gem 'activerecord-sqlserver-adapter', '~>4.0.0'#,github: 'rails-sqlserver/activerecord-sqlserver-adapter', branch: '4-0-stable'
 gem 'ancestry'     #lee los ancestros en modo de arbol
 gem 'blurrily'     #fuzzy match
+gem 'carrierwave'   #form file upload
 gem 'cocoon', '=1.2.0'    #anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.0.0'
 gem 'composite_primary_keys'#, github: 'calonso-conabio/composite_primary_keys', branch: 'ar_4.0.x'  #multiples llaves primarias

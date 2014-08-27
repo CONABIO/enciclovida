@@ -233,15 +233,24 @@ class EspeciesController < ApplicationController
   end
 
   def resultados_por_lote
-    return 'Por lo menos debe haber un taxon o un archivo' unless params[:lote].present?
+    return @match_taxa= 'Por lo menos debe haber un taxon o un archivo' unless params[:lote].present? || params[:batch].present?
 
-    @match_taxa = Hash.new
-    params[:lote].split("\r\n").each do |linea|
-      if e= Especie.where(:nombre_cientifico => linea).first
-        @match_taxa[linea] = 'Existe taxon'
-      else
-        @match_taxa[linea] = 'Sin coincidencia'
+    if params[:lote].present?
+      @match_taxa = Hash.new
+      params[:lote].split("\r\n").each do |linea|
+        e= Especie.where(:nombre_cientifico => linea)
+        if e.first
+          @match_taxa[linea] = e
+        else
+          ids = FUZZY_NOM_CIEN.find(linea, 3)
+          coincidencias=Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC')
+          @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
+        end
       end
+    else
+
+      #batch = params[:batch]
+      @match_taxa = validaBatch(params[:batch]) ? 'El archivo fue cargado satisfactoriamente.' : 'Hubo un error al cargar el archivo'
     end
   end
 
@@ -622,5 +631,26 @@ class EspeciesController < ApplicationController
       @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
       @listas=0 if @listas.empty?
     end
+  end
+
+  def validaBatch(batch)
+    formatos_permitidos = %w(text/csv text/plain)
+    path = Rails.root.join('tmp', 'batchs')
+    file = path.join(Time.now.strftime("%Y_%m_%d_%H-%M-%S") + '_' + batch.original_filename
+    Dir.mkdir(path, 0700) if !File.exists?(path)
+
+    return false unless formatos_permitidos.include? batch.content_type
+
+    File.open(file, 'rwb') do |file|
+      file.write(batch.read)
+      Rails.logger.info file
+      #file.
+      #return false unless a.readlines.size <= 1000
+      #true
+
+    end
+
+
+    f
   end
 end

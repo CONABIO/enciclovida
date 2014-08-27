@@ -1,5 +1,6 @@
 <p>Una l&iacute;nea por cada nombre cient&iacute;fico o sube un archivo .csv con los mismos requisitos</p>
-<%= form_tag resultados_por_lote_especies_url, :method => :post do %>
+<%= form_tag resultados_por_lote_especies_url, :multipart => true, :method => :post do %>
     <%= text_area_tag :lote, nil, :size => '50x10' %>
+    <%= file_field_tag 'batch' %>
     <%= submit_tag :Envia %>
 <% end %>
