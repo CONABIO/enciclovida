@@ -118,7 +118,7 @@
 <% end %>
 
 <div class="titulo">
-  <h1><%= "#{@titulo} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
+  <h1><%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
 </div>
 
 <div id="photoscol" class="column span-13">

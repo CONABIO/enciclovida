@@ -1,147 +1,6 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    /*getCookie = function(c_name)
-     {
-     var c_end, c_start;
-     c_end = void 0;
-     c_start = void 0;
-     if (document.cookie.length > 0)
-     {
-     c_start = document.cookie.indexOf(c_name + "=");
-     if (c_start !== -1)
-     {
-     c_start = c_start + c_name.length + 1;
-     c_end = document.cookie.indexOf(";", c_start);
-     if (c_end === -1)
-     {
-     c_end = document.cookie.length;
-     }
-     return unescape(document.cookie.substring(c_start, c_end));
-     }
-     }
-     return "";
-     };
-
-     guardaBusquedas = function()
-     {
-     var busqueda={};
-     var numerosFiltros='';
-     var checkboxSeleccionadas='';
-     var checkboxSeleccionadasEstatusBasicaCientifico='';
-     var checkboxSeleccionadasEstatusAvanzada='';
-     var busquedaAvanzada = $('#busqueda_basica').is(':visible') ? 'busqueda_basica' : 'busqueda_avanzada';
-
-     $(".busqueda_atributo").each(function()
-     {
-     var id=$(this).attr('id');
-     var valor=$(this).val();
-     eval("busqueda."+id+"=\""+valor+"\"");
-     });
-
-     if ($("[id^='bAtributo_']").length > 0)
-     {
-     $("[id^='bAtributo_']").each(function()
-     {
-     if ($(this).attr('id') != 'bAtributo_1')
-     {
-     var valor=$(this).attr('id').substring(10);
-     numerosFiltros+=valor+',';
-     }
-     });
-     busqueda.adicionales=numerosFiltros.substring(0, numerosFiltros.length-1);
-     }
-
-     $(".busqueda_atributo_checkbox").each(function()
-     {
-     if ($(this).is(':checked'))
-     {
-     checkboxSeleccionadas+=$(this).val()+','
-     }
-     });
-
-     $("[id^='estatus_']").each(function()
-     {
-     if ($(this).is(':checked'))
-     {
-     switch ($(this).attr('id'))
-     {
-     case 'estatus_basica_cientifico_1':
-     case 'estatus_basica_cientifico_2':
-     checkboxSeleccionadasEstatusBasicaCientifico+=$(this).val()+','
-     break;
-     case 'estatus_avanzada_1':
-     case 'estatus_avanzada_2':
-     checkboxSeleccionadasEstatusAvanzada+=$(this).val()+','
-     break;
-     }
-     }
-     });
-
-     busqueda.tipoBusqueda = busquedaAvanzada;
-     busqueda.estatusBasicaCientifico = checkboxSeleccionadasEstatusBasicaCientifico.substring(0, checkboxSeleccionadasEstatusBasicaCientifico.length-1);
-     busqueda.estatusAvanzada = checkboxSeleccionadasEstatusAvanzada.substring(0, checkboxSeleccionadasEstatusAvanzada.length-1);
-     busqueda.tipo_distribucion = checkboxSeleccionadas.substring(0, checkboxSeleccionadas.length-1);
-     document.cookie = "busqueda_taxones=" + JSON.stringify(busqueda).replace(/"/g, "%22") + "; expires=Thu, 01 Jan 2050 00:00:01 GMT; path=/";
-     }
-
-     cargaBusquedas = function(atributos)
-     {
-     if (atributos.tipoBusqueda == 'busqueda_avanzada')
-     {
-     $('#'+atributos.tipoBusqueda).show();
-     $('#busqueda_basica').hide();
-     }
-
-     if (atributos.adicionales !== "")
-     {
-     $.each(atributos.adicionales.split(','), function(){
-     $('#atributos_extra').append(estructuraFiltro(this));
-     });
-     }
-
-     $(".busqueda_atributo").each(function()
-     {
-     var id=$(this).attr('id');
-     var id_num = id.split('_')[1];
-     $(this).val(eval("atributos." + id));
-
-     //alert(id.match(/^bAtributo_/g));
-
-     if (id.match(/^bAtributo_/g) != null)
-     {
-     if ($(this).val() == 'nombre_cientifico')
-     {
-     $('#vAtributo_' + id_num).attr('data-autocomplete', '/especies/autocomplete_especie_nombre').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
-     } else if ($(this).val() == 'nombre_comun')
-     {
-     $('#vAtributo_' + id_num).attr('data-autocomplete', '/nombres_comunes/autocomplete_nombre_comun_comun').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
-     }
-     }
-     });
-
-     if (atributos.tipo_distribucion !== "")
-     {
-     $.each(atributos.tipo_distribucion.split(','), function(k, v){
-     $('#tipo_distribucion_'+v).attr('checked', true);
-     });
-     }
-
-     if (atributos.estatusBasicaCientifico !== "")
-     {
-     $.each(atributos.estatusBasicaCientifico.split(','), function(k, v){
-     $('#estatus_basica_cientifico_'+v).attr('checked', true);
-     });
-     }
-
-     if (atributos.estatusAvanzada !== "")
-     {
-     $.each(atributos.estatusAvanzada.split(','), function(k, v){
-     $('#estatus_avanzada_'+v).attr('checked', true);
-     });
-     }
-     }*/
-
     guardaFiltros = function (lectura)
     {
         jQuery.ajax({
@@ -288,31 +147,6 @@
 
     $(document).ready(function()
     {
-        /*
-         var cookie=getCookie('busqueda_taxones');
-
-         if (cookie == "")
-         {
-         guardaBusquedas();
-         } else {
-         cargaBusquedas(JSON.parse(cookie));
-         } */
-
-        //quitaAutocompletar();
-        /*
-         var countries = [
-         { value: 'Andorra', data: 'AD' },
-         { value: 'Zimbabwe', data: 'ZZ' }
-         ];
-
-         $('#nombre_cientifico2').autocomplete({
-         lookup: countries,
-         onSelect: function (suggestion) {
-         alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-         }
-         });
-         */
-
         $(document).on('change', "[id^='bAtributo_']", function()
         {
             var valor=$(this).val();
@@ -432,21 +266,6 @@
             guardaFiltros(false);
         });
 
-        /*$(document).on('railsAutocomplete.select', "#nombre_cientifico", function(event, data) {
-            var id=$(this).attr('id');
-
-            if (id == 'nombre_cientifico')
-            {
-                $(this).val(data.item.nombre_cientifico);
-            }
-            if (id == 'nombre_comun')
-            {
-                $(this).val(data.item.nombre_comun);
-            }
-            $(this).attr('value',$(this).val());
-            guardaFiltros(false);
-        });*/
-
         $(document).on('change', "#nombre_comun, #nombre_cientifico", function() {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
@@ -460,9 +279,6 @@
 
         $(document).on('click', '#limpiar', function()
         {
-            /*document.cookie = "busqueda_taxones=;expires=Thu, 01 Jan 1990 00:00:01 GMT; path=/";
-             location.reload;
-             return false;*/
             jQuery.ajax({
                 success: function(html){
                     if (html!='true') {
@@ -504,7 +320,6 @@
               <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
               <b><%= t :nombre_comun %></b><br>
-              <%# select_tag :condicion_nombre_comun, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
               <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
@@ -516,7 +331,6 @@
               <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
-              <%# select_tag :condicion_nombre_cientifico, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
               <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' } %>
               <br><br><b><%= t :solo_taxones %>:</b>
