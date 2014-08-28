@@ -233,38 +233,25 @@ class EspeciesController < ApplicationController
   end
 
   def resultados_por_lote
-    return @match_taxa= 'Por lo menos debe haber un taxon o un archivo' unless params[:lote].present? || params[:batch].present?
+    return @match_taxa= 'Por lo menos debe haber un taxón o un archivo' unless params[:lote].present? || params[:batch].present?
 
     if params[:lote].present?
       @match_taxa = Hash.new
       params[:lote].split("\r\n").each do |linea|
-        e= Especie.where(:nombre_cientifico => linea)
+        e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
         if e.first
           @match_taxa[linea] = e
         else
           ids = FUZZY_NOM_CIEN.find(linea, 3)
-          coincidencias=Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC')
+          coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
           @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
         end
       end
     elsif params[:batch].present?
-      validaciones = validaBatch(params[:batch])
-      if validaciones[:errores].present?
-        @match_taxa = validaciones[:errores].join(' ')
-      else
-        validaciones[:file].each_line do |linea|
-          e= Especie.where(:nombre_cientifico => linea)
-          if e.first
-            @match_taxa[linea] = e
-          else
-            ids = FUZZY_NOM_CIEN.find(linea, 3)
-            coincidencias=Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC')
-            @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
-          end
-        end
-      end
+      validaBatch(params[:batch])
+
     end
-    @match_taxa = errores.present? ? errores.join(' ') : 'Los datos fueron procesados correctamente'
+    #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
 # DELETE /especies/1
@@ -655,20 +642,34 @@ class EspeciesController < ApplicationController
 
     if !formatos_permitidos.include? batch.content_type
       errores << 'Lo sentimos, el formato ' + batch.content_type + ' no esta permitido'
-      Rails.logger.info 'despues del formato'
-      return {:errores => errores}
+      return @match_taxa = errores.join(' ')
     end
 
     File.open(file, 'wb') do |file|
       file.write(batch.read)
     end
 
-    file = File.open(file, 'r')
-    if file.readlines.size > 1000        #no mas de 1000 taxones por consulta para no forzar la base
-      File.delete file
-      errores << 'Lo sentimos, el número máximo de consultas por archivo es 1000'
+    File.open(file, 'r') do |f|
+      if !(1..1000).cover? f.readlines.size         #no mas de 1000 taxones por consulta para no forzar la base
+        errores << "Lo sentimos, no se permiten #{f.readlines.size} lineas."
+        File.delete file
+        return @match_taxa = errores.join(' ')
+      end
     end
 
-    {:errores => errores, :file => file}
+    @match_taxa = Hash.new
+    lineas=File.open(file).read
+
+    lineas.each_line do |linea|
+      l = linea.strip
+      e = Especie.where(:nombre_cientifico => l)
+      if e.first
+        @match_taxa[l] = e
+      else
+        ids = FUZZY_NOM_CIEN.find(l, 3)
+        coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
+        @match_taxa[l] = coincidencias.present? ? coincidencias : 'Sin coincidencia'
+      end
+    end
   end
 end
