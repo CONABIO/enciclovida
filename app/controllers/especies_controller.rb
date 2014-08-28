@@ -247,11 +247,24 @@ class EspeciesController < ApplicationController
           @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
         end
       end
-    else
-
-      #batch = params[:batch]
-      @match_taxa = validaBatch(params[:batch]) ? 'El archivo fue cargado satisfactoriamente.' : 'Hubo un error al cargar el archivo'
+    elsif params[:batch].present?
+      validaciones = validaBatch(params[:batch])
+      if validaciones[:errores].present?
+        @match_taxa = validaciones[:errores].join(' ')
+      else
+        validaciones[:file].each_line do |linea|
+          e= Especie.where(:nombre_cientifico => linea)
+          if e.first
+            @match_taxa[linea] = e
+          else
+            ids = FUZZY_NOM_CIEN.find(linea, 3)
+            coincidencias=Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC')
+            @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
+          end
+        end
+      end
     end
+    @match_taxa = errores.present? ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
 # DELETE /especies/1
@@ -634,23 +647,28 @@ class EspeciesController < ApplicationController
   end
 
   def validaBatch(batch)
+    errores = []
     formatos_permitidos = %w(text/csv text/plain)
     path = Rails.root.join('tmp', 'batchs')
-    file = path.join(Time.now.strftime("%Y_%m_%d_%H-%M-%S") + '_' + batch.original_filename
+    file = path.join(Time.now.strftime("%Y_%m_%d_%H-%M-%S") + '_' + batch.original_filename)
     Dir.mkdir(path, 0700) if !File.exists?(path)
 
-    return false unless formatos_permitidos.include? batch.content_type
-
-    File.open(file, 'rwb') do |file|
-      file.write(batch.read)
-      Rails.logger.info file
-      #file.
-      #return false unless a.readlines.size <= 1000
-      #true
-
+    if !formatos_permitidos.include? batch.content_type
+      errores << 'Lo sentimos, el formato ' + batch.content_type + ' no esta permitido'
+      Rails.logger.info 'despues del formato'
+      return {:errores => errores}
     end
 
+    File.open(file, 'wb') do |file|
+      file.write(batch.read)
+    end
 
-    f
+    file = File.open(file, 'r')
+    if file.readlines.size > 1000        #no mas de 1000 taxones por consulta para no forzar la base
+      File.delete file
+      errores << 'Lo sentimos, el número máximo de consultas por archivo es 1000'
+    end
+
+    {:errores => errores, :file => file}
   end
 end
