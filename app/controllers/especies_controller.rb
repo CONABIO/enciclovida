@@ -127,11 +127,11 @@ class EspeciesController < ApplicationController
   end
 
   def resultados
-    @busqueda=params[:busqueda_oculto]
+    @busqueda=params[:busqueda]
     estatus = ''
 
-    case params[:busqueda_oculto]
-      when 'basica_comun'
+    case params[:busqueda]
+      when 'nombre_comun'
         @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
             nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun]).
             order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
@@ -145,7 +145,7 @@ class EspeciesController < ApplicationController
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end
-      when 'basica_cientifico'
+      when 'nombre_cientifico'
         estatus = "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
@@ -172,7 +172,7 @@ class EspeciesController < ApplicationController
 
         params.each do |key, value|  #saca los taxones o subtaxones, depende si autocompleto
           if key.include?('bAtributo_')
-            numero=key.split('_').last
+            numero=key.split('_').last  #el numero de atributo a consultar
             if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
               conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
             elsif params['vAtributo_' + numero].present?

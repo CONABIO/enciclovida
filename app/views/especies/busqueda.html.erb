@@ -8,16 +8,16 @@
                 if (lectura)
                 {
                     if (html != '')
-                        $('#busqueda').empty().html(html);
+                        $('#busquedas').empty().html(html);
                 }
             },
             fail: function(){
                 $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
             },
-            type:'POST',
-            url:'/usuarios/filtros',
-            cache:true,
-            data: {lectura: lectura , html: $('#busqueda').html().replace(/\n/g, '')}
+            type: 'POST',
+            url: '/usuarios/filtros',
+            cache: true,
+            data: { lectura: lectura , html: $('#busquedas').html().replace(/\n/g, '') }
         });
         return false;
     }
@@ -311,13 +311,13 @@
     });
 </script>
 
-<div id="busqueda">
+<div id="busquedas">
   <div id="busqueda_basica">
     <table class="tabla_formato" border="0">
       <tr>
         <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :busqueda_oculto, :basica_comun %>
+              <%= hidden_field_tag :busqueda, :nombre_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
               <b><%= t :nombre_comun %></b><br>
               <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
@@ -328,7 +328,7 @@
 
         <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :busqueda_oculto, :basica_cientifico %>
+              <%= hidden_field_tag :busqueda, :nombre_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
               <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
