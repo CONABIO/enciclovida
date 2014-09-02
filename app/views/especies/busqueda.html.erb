@@ -56,7 +56,6 @@
     quitaFiltros = function(id)
     {
         $('#capa_'+id.substring(14)).html("");
-        guardaFiltros(false);
         return false;
     }
 
@@ -66,7 +65,6 @@
         $('#busqueda_avanzada').hide();
         $('#busqueda_basica').removeAttr('style').css('display','none');
         $('#busqueda_avanzada').removeAttr('style').css('display','block');
-        guardaFiltros(false);
         return false;
     }
 
@@ -76,7 +74,6 @@
         $('#busqueda_basica').hide();
         $('#busqueda_basica').removeAttr('style').css('display','block');
         $('#busqueda_avanzada').removeAttr('style').css('display','none');
-        guardaFiltros(false);
         return false;
     }
 
@@ -86,9 +83,7 @@
         {
             var id=$(this).attr('id').split('_')[1];
             if ($('#bAtributo_' + id).val() != 'nombre_cientifico' && $('#bAtributo_' + id).val() != 'nombre_comun')
-            {
                 $(this).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
-            }
         });
     }
 
@@ -96,7 +91,7 @@
     {
         var campo = document.getElementById(event.target.id);
 
-        if (event.data.num == '1' || event.data.num == '4')         //nombre comun
+        if (event.data.num == '1' || event.data.num == '3')         //nombre comun
         {
             var types = ['com_orden', 'com_familia', 'com_especie'];
             var render = function(term, data, type, index, id, foto)
@@ -106,13 +101,12 @@
             }
             var select = function(term, data, type)
             {
-                $('#'+event.target.name).val(term);
-                $('#'+event.target.name).attr('value', term);
+                $('#'+event.target.id).val(term);
+                $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
-                //guardaFiltros(false);
             }
         }
-        if (event.data.num == '2' || event.data.num == '3')          //nombre cientifico
+        if (event.data.num == '2' || event.data.num == '4')          //nombre cientifico
         {
             var types = ['cien_Reino', 'cien_phylum', 'cien_subphylum', 'cien_clase', 'cien_orden',
                 'cien_familia', 'cien_subespecie', 'cien_especie', 'cien_genero'];
@@ -126,14 +120,14 @@
             }
             var select = function(term, data, type)
             {
-                $('#'+event.target.name).val(term);
-                $('#'+event.target.name).attr('value', term);
+                $('#'+event.target.id).val(term);
+                $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
-                //guardaFiltros(false);
             }
         }
 
-        if ($._data(campo, "events") == undefined) {        //para que no se repita n-veces la busqueda
+        if ($._data(campo, "events") == undefined)
+        {        //para que no se repita n-veces la busqueda
             $(campo).soulmate({
                 url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
                 types:          types,
@@ -148,7 +142,8 @@
 
     $(document).ready(function()
     {
-        $(document).on('click', '.busquedas', function(){
+        $(document).on('click', '.busquedas', function()
+        {
             guardaFiltros(false);
         });
 
@@ -169,7 +164,6 @@
                 $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
             }
             //$('#hAtributo_' + id).val('');
-            //guardaFiltros(false);
         });
 
         $(document).on('change', "[id^='cAtributo_']", function()
@@ -177,7 +171,6 @@
             var valor=$(this).val();
             $('#'+$(this).attr('id') + ' option').removeAttr('selected');
             $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-            //guardaFiltros(false);
         });
 
         $(document).on('change', "[id^='vAtributo_']", function()
@@ -185,7 +178,6 @@
             $(this).attr('value',$(this).val());
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
-            //guardaFiltros(false);
         });
 
         $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function()
@@ -194,7 +186,6 @@
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
-            //guardaFiltros(false);
         });
 
         $(document).on('change', "[id^='distribucion_nivel_']", function()
@@ -218,7 +209,6 @@
                                 $('#distribucion_nivel').append(html);
                                 break;
                         }
-                        guardaFiltros(false);
                     },
                     fail: function(){
                         $('#notice').html('Hubo un error al cargar los filtros, por favor intentalo de nuevo.');
@@ -231,63 +221,37 @@
             }
 
             if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
-            {
                 $('#distribucion_nivel_2, #distribucion_nivel_3').remove();
-                guardaFiltros(false);
-            }
 
             if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
-            {
                 $('#distribucion_nivel_3').remove();
-                //guardaFiltros(false);
-            }
         });
 
-        $(document).on('change', "#categoria_taxonomica", function() {
+        $(document).on('change', "#categoria_taxonomica", function()
+        {
             var valor=$(this).val();
             $('#categoria_taxonomica  option').removeAttr('selected');
 
-            $.each(valor, function(index, categoria){
+            $.each(valor, function(index, categoria)
+            {
                 $("#categoria_taxonomica option[value='"+categoria+"']").attr('selected',true);
             });
-            //guardaFiltros(false);
         });
 
-        $(document).on('railsAutocomplete.select', "[id^='vAtributo_']", function(event, data) {
-            var id=$(this).attr('id').split('_')[1];
-
-            if ($('#bAtributo_' + id).val() == 'nombre_cientifico')
-            {
-                $(this).val(data.item.nombre_cientifico);
-                $('#hAtributo_' + id).val(data.item.id);
-                $('#hAtributo_' + id).attr('value',data.item.id);
-            }
-            if ($('#bAtributo_' + id).val() == 'nombre_comun')
-            {
-                $(this).val(data.item.nombre_comun);
-                $('#hAtributo_' + id).val('');
-                $('#hAtributo_' + id).attr('value',data.item.id);
-            }
-            //guardaFiltros(false);
-        });
-
-        $(document).on('change', "#nombre_comun, #nombre_cientifico", function()
+        $(document).on('change', "#nombre_comun, #nombre_cientifico, #nombre_comun_1, #nombre_cientifico_1", function()
         {
-            alert(1);
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
-            guardaFiltros(false);
         });
 
         $(document).on('click', '#limpiar', function()
         {
             jQuery.ajax({
                 success: function(html){
-                    if (html!='true') {
+                    if (html!='true')
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-                    }
                 },
-                fail: function(){
+                fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
                 },
                 type:'POST',
@@ -304,7 +268,6 @@
 
             $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
             $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
-            //guardaFiltros(false);
         });
 
         $(document).on('focus', '#nombre_comun', {num: "1"}, soulmate_asigna);
@@ -312,7 +275,7 @@
         //autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-        //guardaFiltros(true);
+        guardaFiltros(true);
     });
 </script>
 
@@ -355,8 +318,8 @@
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
 
               <p><b>Nombre cient&iacute;fico: </b>
-              <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
-                                 :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
+                <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
+                                   :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
               <b><%= t :nombre_comun %>: </b>
               <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
                                  :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
