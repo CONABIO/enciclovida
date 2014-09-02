@@ -150,7 +150,7 @@ class EspeciesController < ApplicationController
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
 
-        @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+        @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
             paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
@@ -158,7 +158,7 @@ class EspeciesController < ApplicationController
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
           if @taxones=ids.count > 0
 
-            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').caso_categoria_taxonomica.
+            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
                 where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
@@ -167,12 +167,14 @@ class EspeciesController < ApplicationController
       when 'avanzada'
         busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
         joins = condiciones = tipoDistribuciones = ''
-        @conNombreComun = @conRegion = @conEstadoConservacion = false
         conIDCientifico = arbol = []
 
-        params.each do |key, value|  #saca los taxones o subtaxones, depende si autocompleto
+
+        params.each do |key, value|  #itera sobre todos los campos
+=begin
           if key.include?('bAtributo_')
             numero=key.split('_').last  #el numero de atributo a consultar
+            # Para ver si quiere ver todos los taxones descendentes de cierto taxon
             if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
               conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
             elsif params['vAtributo_' + numero].present?
@@ -180,18 +182,25 @@ class EspeciesController < ApplicationController
               condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
             end
           end
+=end
 
-          if key.include?('tipo_distribucion_')
+          condiciones+= ".caso_insensitivo('nombre_cientifico', '#{value}')" if key == 'nombre_cientifico'
+
+          if key == 'nombre_comun'
+            joins+= '.nombres_comunes_join'
+            condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', '#{value}')"
+          end
+
+          if key.include? 'tipo_distribucion_'
             tipoDistribuciones+="#{value},"
             joins+= '.'+tipoDeAtributo('tipos_distribuciones')
           end
 
-          estatus+= "#{value}," if key == 'estatus_avanzada_1'
-          estatus+= "#{value}," if key == 'estatus_avanzada_2'
+          estatus+= "#{value}," if key.include? 'estatus_avanzada_'
         end
 
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
-        joins+= '.caso_categoria_taxonomica'
+        joins+= '.categoria_taxonomica_join'
         condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
         condiciones+= ".caso_status(#{estatus})" if estatus.present?
 
@@ -209,7 +218,7 @@ class EspeciesController < ApplicationController
 
         #parte de la distribucion
         if params[:distribucion_nivel_1].present?
-          joins+= '.caso_region'
+          joins+= '.especies_regiones_join.region_join'
           if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
             condiciones+= '.' + tipoDeBusqueda(3, 'regiones.id', params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
           else
@@ -224,7 +233,7 @@ class EspeciesController < ApplicationController
       #@resultado=params
       else
         respond_to do |format|
-          format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
+          format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
         end
     end
   end
@@ -614,11 +623,11 @@ class EspeciesController < ApplicationController
   def tipoDeAtributo(tipo)
     case tipo
       when 'nombre_comun'
-        relacion='caso_nombre_comun'
+        relacion='nombres_comunes_join'
       when 'tipos_distribuciones'
-        relacion='caso_tipo_distribucion'
+        relacion='especies_regiones_join.tipo_distribucion_join'   #fue necesario separar ese join para ver si ya estaba repetido
       when 'catalogos.descripcion'
-        relacion='caso_especies_catalogos'
+        relacion='catalogos_join'
       else
         relacion=''
     end

@@ -61,7 +61,7 @@ html {
 #logo {
 }
 
-#nombre_comun, #nombre_cientifico{
+#nombre_comun, #nombre_cientifico,#nombre_comun_1, #nombre_cientifico_1 {
   border: 1px solid #999;
   color: #545C5F;
   font-family: $helvetica;
@@ -80,7 +80,7 @@ html {
   }
 }
 
-#soulmate_1, #soulmate_2 {
+#soulmate_1, #soulmate_2, #soulmate_3, #soulmate_4 {
   background-color: #fafafa;
   border: 1px solid #bbb;
   display: none;

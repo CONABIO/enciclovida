@@ -28,14 +28,19 @@ class Especie < ActiveRecord::Base
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
-  scope :nombres_regiones_cientifico, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
-      joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
-  scope :caso_region, -> { joins(:especies_regiones => [:region]) }
-  scope :caso_tipo_distribucion, -> { joins(:especies_regiones => [:tipo_distribucion]) }
-  scope :caso_nombre_bibliografia, -> { joins(:nombres_regiones_bibliografias => [:bibliografia]) }
-  scope :caso_especies_catalogos, -> { joins(:especies_catalogos => [:catalogo]) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  scope :caso_categoria_taxonomica, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
+
+  #Los joins explicitos fueron necesarios ya que por default la sentencia es un RIGHT JOIN
+  scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
+  scope :nombres_comunes_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
+      joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
+  scope :region_join, -> { joins('LEFT JOIN regiones ON regiones.id=especies_regiones.region_id') }
+  scope :tipo_distribucion_join, -> { joins('LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id') }
+  scope :caso_nombre_bibliografia, -> { joins('LEFT JOIN nombres_regiones_bibliografias ON nombres_regiones_bibliografias.especie_id=especie.id').
+      joins('LEFT JOIN bibliografias ON bibliografias.id=nombres_regiones_bibliografias.bibliografia_id') }
+  scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
+      joins('LEFT JOIN catalogos ON catalogos.id=esepcies_catalogos.catalogo_id') }
+  scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
   before_save :ponNombreCientifico
