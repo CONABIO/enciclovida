@@ -27,9 +27,7 @@ def foto_principal
   #Especie.limit(100).each do |taxon|
   Especie.find_each do |taxon|
     next unless taxon.foto_principal.blank?
-    next unless photo = taxon.photos.first
-
-    taxon.foto_principal = photo.thumb_url
+    taxon.foto_principal = taxon.photos.first ? taxon.photos.first.thumb_url : '/assets/app/iconic_taxa/mammalia-75px.png'
     taxon.save if taxon.changed?
   end
 end

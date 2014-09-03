@@ -8,10 +8,12 @@ module EspeciesHelper
         "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       elsif params[:link]
         "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
+      elsif params[:show]
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       else
         'Ocurrio un error en el t&iacute;tulo'.html_safe
       end
-    else
+    else   #vistas menos cientificas
       if params[:title]
         taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_comun_principal} (#{taxon.nombre_cientifico})".html_safe :
             "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe
@@ -19,8 +21,12 @@ module EspeciesHelper
         taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
             "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
       elsif params[:link]
-        taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
-            "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
+        if taxon.instance_of? NombreComun
+          "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
+        else
+          taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
+              "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
+        end
       elsif params[:show]
         taxon.nombre_comun_principal.present? ? "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_comun_principal} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
             "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe

@@ -46,6 +46,17 @@ rails r tools/nombres_cientificos_redis.rb -d
 
 
 
+-- Para poner el nombre comuun principal
+
+rails r tools/nombre_comun_principal.rb -d
+
+
+
+-- Para poner la foto principal
+
+rails r tools/foto_principal.rb -d
+
+
 
 --- Para iniciar el administrador de trabajos pendientes (solo production)
 

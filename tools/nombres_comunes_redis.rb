@@ -36,7 +36,7 @@ def batches
     nombre_comun.especies.order('nombre_cientifico ASC').each do |especie|
       fotos=especie.photos
       foto = fotos.present? ? "<img src='#{fotos.first.thumb_url}' alt='#{especie.nombre_cientifico}' width='50px' \>" :
-          "<img src='http://conabio.inaturalist.org/images/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
+          "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
 
       data=''
       data+= "{\"id\":#{cont > 1 ? "#{nombre_comun.id}#{cont}" : nombre_comun.id},"   #el ID de nombres_comunes no es unico (uno a muchos)

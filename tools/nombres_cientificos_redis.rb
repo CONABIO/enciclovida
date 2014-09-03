@@ -30,7 +30,7 @@ def batches
   Especie.find_each do |taxon|
     fotos=taxon.photos
     foto = fotos.present? ? "<img src='#{fotos.first.thumb_url}' alt='#{taxon.nombre_cientifico}' width='50px' \>" :
-        "<img src='http://conabio.inaturalist.org/images/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' \>"
+        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' \>"
 
     data=''
     data+= "{\"id\":#{taxon.id},"

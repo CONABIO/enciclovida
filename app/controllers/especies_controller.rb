@@ -196,7 +196,7 @@ class EspeciesController < ApplicationController
           conID = value.to_i if key == 'id_nom_cientifico' && value.present?
 
           if key == 'nombre_cientifico' && value.present?
-            nombre_cientifico+= ".caso_insensitivo('nombre_cientifico', '#{value}')"
+            nombre_cientifico+= value
           end
 
           if key == 'nombre_comun' && value.present?
@@ -214,23 +214,28 @@ class EspeciesController < ApplicationController
 
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         joins+= '.categoria_taxonomica_join'
-        condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
-        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
         condiciones+= ".caso_status(#{estatus})" if estatus.present?
+        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
 
-        if (params[:categoria].present? ? params[:categoria].join('').present? : false) && conID.blank?  #join a la(s) categorias taxonomicas (params)
-          cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-          condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-        elsif (params[:categoria].present? ? params[:categoria].join('').present? : false) && conID.present? #joins a las categorias con los descendientes
-          taxon = Especie.find(conID)
-          arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
-          cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-          arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
-          condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
-          condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+        if params[:categoria].present? ? params[:categoria].join('').present? : false
+          if conID.blank?                 #join a la(s) categorias taxonomicas (params)
+            cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
+            condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+            condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
+          else            #joins a las categorias con los descendientes
+            taxon = Especie.find(conID)
+            arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
+            cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
+            arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
+            condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
+            condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+          end
+        else       # busquedas directas
+          condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
+              ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
         end
 
-        #parte de la distribucion
+        #parte de la distribucion (lugares)
         if params[:distribucion_nivel_1].present?
           joins+= '.especies_regiones_join.region_join'
           if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
@@ -242,9 +247,9 @@ class EspeciesController < ApplicationController
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-      #@taxones=Especie.none
-      #@resultado2= busqueda
-      #@resultado=params
+        #@taxones=Especie.none
+        #@resultado2= busqueda
+        #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
