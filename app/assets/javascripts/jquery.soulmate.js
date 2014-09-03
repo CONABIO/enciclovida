@@ -198,9 +198,9 @@
     };
 
     SuggestionCollection.prototype._renderTypeEnd = function(type) {     //estas lineas son necesarios para el num de buscadores en la misma pagina
-      if (this.num == "1" || this.num == "4")
+      if (this.num == "1" || this.num == "3")
         type_sub = type.replace('com_', '')
-      if (this.num == "2" || this.num == "3")
+      if (this.num == "2" || this.num == "4")
         type_sub = type.replace('cien_', '')
       return "  </ul>\n  <div class=\"soulmate-type\">" + type_sub + "</div>\n</li>";
     };

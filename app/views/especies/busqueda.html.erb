@@ -49,7 +49,6 @@
     {
         var numeroAtributos = parseInt($("[id^='bAtributo_']:last").attr("id").split('_')[1]) + 1;
         $('#atributos_extra').append(estructuraFiltro(numeroAtributos));
-        guardaFiltros(false);
         return false;
     }
 
@@ -96,7 +95,10 @@
             var types = ['com_orden', 'com_familia', 'com_especie'];
             var render = function(term, data, type, index, id, foto)
             {
-                var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' : term + ' <i>(' + data.nombre_cientifico + ')</i>';
+                event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
+
+                var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
+                        term + ' <i>(' + data.nombre_cientifico + ')</i>';
                 return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table";
             }
             var select = function(term, data, type)
@@ -104,6 +106,8 @@
                 $('#'+event.target.id).val(term);
                 $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
+                //pone el ID para mandar a la busqueda directa
+                event.data.num == '1' ? $('#id_basica_comun').attr('value', data.id) : $('#id_avanzada_comun').attr('value', data.id)
             }
         }
         if (event.data.num == '2' || event.data.num == '4')          //nombre cientifico
@@ -112,6 +116,8 @@
                 'cien_familia', 'cien_subespecie', 'cien_especie', 'cien_genero'];
             var render = function(term, data, type, index, id, foto)
             {
+                event.data.num == '2' ? $('#id_basica_cientifico').attr('value', '') : $('#id_avanzada_cientifico').attr('value', '');
+
                 if (I18n.locale == 'es-cientifico')
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
@@ -123,6 +129,8 @@
                 $('#'+event.target.id).val(term);
                 $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
+                //pone el ID para mandar a la busqueda directa
+                event.data.num == '2' ? $('#id_basica_cientifico').attr('value', data.id) : $('#id_avanzada_cientifico').attr('value', data.id)
             }
         }
 
@@ -163,7 +171,7 @@
             } else {
                 $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
             }
-            //$('#hAtributo_' + id).val('');
+            $('#hAtributo_' + id).val('');
         });
 
         $(document).on('change', "[id^='cAtributo_']", function()
@@ -227,14 +235,14 @@
                 $('#distribucion_nivel_3').remove();
         });
 
-        $(document).on('change', "#categoria_taxonomica", function()
+        $(document).on('change', "#categoria", function()
         {
             var valor=$(this).val();
-            $('#categoria_taxonomica  option').removeAttr('selected');
+            $('#categoria  option').removeAttr('selected');
 
             $.each(valor, function(index, categoria)
             {
-                $("#categoria_taxonomica option[value='"+categoria+"']").attr('selected',true);
+                $("#categoria option[value='"+categoria+"']").attr('selected',true);
             });
         });
 
@@ -270,9 +278,10 @@
             $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
         });
 
+        // autocomplete para la busqueda basica
         $(document).on('focus', '#nombre_comun', {num: "1"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico', {num: "2"}, soulmate_asigna);
-        //autocomplete para la busqueda avanzada
+        // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
         guardaFiltros(true);
@@ -285,6 +294,7 @@
       <tr>
         <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
+              <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
               <%= hidden_field_tag :busqueda, :nombre_comun %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
               <b><%= t :nombre_comun %></b><br>
@@ -296,6 +306,7 @@
 
         <td valign="top">
           <%= form_tag resultados_especies_path, :method => :get do %>
+              <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
               <%= hidden_field_tag :busqueda, :nombre_cientifico %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
@@ -310,10 +321,12 @@
   </div>
 
   <div id="busqueda_avanzada" style="display: none">
-    <table class="tabla_formato" border="0">
-      <tr>
-        <td valign="top">
-          <%= form_tag resultados_especies_path, :method => :get do %>
+    <%= form_tag resultados_especies_path, :method => :get do %>
+        <table class="tabla_formato" border="0">
+          <tr>
+            <td valign="top">
+              <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
+              <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
               <%= hidden_field_tag :busqueda, :avanzada %>
               <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
 
@@ -345,21 +358,21 @@
               <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
               <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
               &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
-          <% end %>
-        </td>
-        <td valign="top">
-          <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
-          <p>
-            <%= select_tag :categoria_taxonomica, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                           :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-          </p>
-          <p>
-            <b><%= t :solo_taxones %>:</b>
-            <br><%= checkboxValidoSinonimo('avanzada') %>
-          </p>
-        </td>
-      </tr>
-    </table>
+            </td>
+            <td valign="top">
+              <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
+              <p>
+                <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
+                               :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
+              </p>
+              <p>
+                <b><%= t :solo_taxones %>:</b>
+                <br><%= checkboxValidoSinonimo('avanzada') %>
+              </p>
+            </td>
+          </tr>
+        </table>
+    <% end %>
   </div>
 
   <table class="tabla_formato" border="0">

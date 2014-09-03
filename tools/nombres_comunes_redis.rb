@@ -42,7 +42,7 @@ def batches
       data+= "{\"id\":#{cont > 1 ? "#{nombre_comun.id}#{cont}" : nombre_comun.id},"   #el ID de nombres_comunes no es unico (uno a muchos)
       data+= "\"term\":\"#{nombre_comun.nombre_comun}\","
       data+= "\"score\":85,"
-      data+= "\"data\":{\"nombre_cientifico\":\"#{especie.nombre_cientifico}\", \"foto\":\"#{foto}\", \"autoridad\":\"#{especie.nombre_autoridad}\", \"id\":#{nombre_comun.id}}"
+      data+= "\"data\":{\"nombre_cientifico\":\"#{especie.nombre_cientifico}\", \"foto\":\"#{foto}\", \"autoridad\":\"#{especie.nombre_autoridad}\", \"id\":#{especie.id}}"
       data+= "}\n"
 
       File.open("#{@path}/nom_com_#{I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica)}.json",'a') do |f|

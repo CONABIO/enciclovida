@@ -130,7 +130,16 @@ class EspeciesController < ApplicationController
     @busqueda=params[:busqueda]
     estatus = ''
 
+    # Despliega directo el taxon
+    if params[:busqueda] == 'basica' || params[:id].present?
+      set_especie
+      respond_to do |format|
+        format.html { redirect_to @especie }
+      end
+    end
+
     case params[:busqueda]
+
       when 'nombre_comun'
         @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
             nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun]).
@@ -145,6 +154,7 @@ class EspeciesController < ApplicationController
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end
+
       when 'nombre_cientifico'
         estatus = "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
@@ -156,7 +166,7 @@ class EspeciesController < ApplicationController
 
         if @taxones.empty?
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-          if @taxones=ids.count > 0
+          if ids.count > 0
 
             @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
                 where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').
@@ -164,11 +174,11 @@ class EspeciesController < ApplicationController
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
         end
+
       when 'avanzada'
         busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
-        joins = condiciones = tipoDistribuciones = ''
-        conIDCientifico = arbol = []
-
+        joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
+        arbol = []
 
         params.each do |key, value|  #itera sobre todos los campos
 =begin
@@ -183,34 +193,38 @@ class EspeciesController < ApplicationController
             end
           end
 =end
+          conID = value.to_i if key == 'id_nom_cientifico' && value.present?
 
-          condiciones+= ".caso_insensitivo('nombre_cientifico', '#{value}')" if key == 'nombre_cientifico'
+          if key == 'nombre_cientifico' && value.present?
+            nombre_cientifico+= ".caso_insensitivo('nombre_cientifico', '#{value}')"
+          end
 
-          if key == 'nombre_comun'
+          if key == 'nombre_comun' && value.present?
             joins+= '.nombres_comunes_join'
             condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', '#{value}')"
           end
 
-          if key.include? 'tipo_distribucion_'
+          if key.include?('tipo_distribucion_') && value.present?
             tipoDistribuciones+="#{value},"
             joins+= '.'+tipoDeAtributo('tipos_distribuciones')
           end
 
-          estatus+= "#{value}," if key.include? 'estatus_avanzada_'
+          estatus+= "#{value}," if key.include?('estatus_avanzada_') && value.present?
         end
 
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
         joins+= '.categoria_taxonomica_join'
+        condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
         condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.id', tipoDistribuciones[0..-2]) if tipoDistribuciones.present?
         condiciones+= ".caso_status(#{estatus})" if estatus.present?
 
-        if (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.blank?  #join a la(s) categorias taxonomicas
-          cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
+        if (params[:categoria].present? ? params[:categoria].join('').present? : false) && conID.blank?  #join a la(s) categorias taxonomicas (params)
+          cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-        elsif (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false) && conIDCientifico.present? #joins a las categorias con los descendientes
-          taxon = Especie.find(conIDCientifico.first)
-          arbol << taxon.ancestor_ids << taxon.descendant_ids << conIDCientifico.first.to_i
-          cat_tax = "\"'#{params[:categoria_taxonomica].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
+        elsif (params[:categoria].present? ? params[:categoria].join('').present? : false) && conID.present? #joins a las categorias con los descendientes
+          taxon = Especie.find(conID)
+          arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
+          cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
           arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
           condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
           condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"

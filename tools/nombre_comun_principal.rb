@@ -24,7 +24,7 @@ end
 def nom_com_principal
   puts 'Procesando los taxones...' if OPTS[:debug]
 
-  #Especie.limit(100) do |taxon|
+  #Especie.limit(100).each do |taxon|
   Especie.find_each do |taxon|
     next unless taxon.nombre_comun_principal.blank?
 

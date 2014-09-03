@@ -1,11 +1,12 @@
 <% columnas=0 %>
 
-<table width="1000" class="tabla_formato" CELLPADDING="10" border="1">
+<table width="1000" class="tabla_formato" CELLPADDING="10" border="0">
 
   <% taxones.each do |taxon| %>
       <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
       <%= '<tr>'.html_safe if columnas % 2 == 0 %>
       <td>
+        <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico %>
         <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} #{tituloNombreCientifico(taxon, :link => true)}".html_safe %>
       </td>
       <% columnas+=1 %>
