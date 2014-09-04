@@ -45,3 +45,5 @@ db/respaldos/*
 app/assets/javascripts/i18n/translations.js
 tools/bitacoras/
 config/config.yml
+config/database.yml_postgres
+config/database.yml_sql-server
