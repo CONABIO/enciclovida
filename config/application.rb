@@ -37,6 +37,9 @@ module Buscador
 
     config.autoload_paths += %W(#{config.root}/lib)
     #config.sass.preferred_syntax=:sass
+
+    #cambia en nombre de la tabla por default
+    ActiveRecord::SessionStore::Session.table_name = 'sessions'
   end
 end
 
