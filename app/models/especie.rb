@@ -1,6 +1,8 @@
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
+  self.primary_key='id'
+
   has_one :proveedor
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
