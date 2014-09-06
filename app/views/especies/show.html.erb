@@ -12,40 +12,13 @@
 
             info = function() {
                 $('#ficha-div').slideUp();
-                $('#fotos-div').slideUp();
-                $('#mapas-div').slideUp();
                 $('#info-div').slideDown();
                 return false;
             };
 
     ficha = function() {
         $('#info-div').slideUp();
-        $('#fotos-div').slideUp();
-        $('#mapas-div').slideUp();
         $('#ficha-div').slideDown();
-        return false;
-    };
-
-    fotos = function() {
-        $('#info-div').slideUp();
-        $('#ficha-div').slideUp();
-        $('#mapas-div').slideUp();
-
-        if ($('#fotos-td').is(':empty'))
-        {
-            $.ajax({
-                type: 'GET',
-                url: '/conabio/photo_fields',
-                data: {
-                    'q': $.parseHTML("<%= @especie.nombre_cientifico if @especie.nombre_cientifico.present? %>")[0].textContent
-                },
-                success: function(html)
-                {
-                    $('#fotos-td').append(html);
-                }
-            });
-        }
-        $('#fotos-div').slideDown();
         return false;
     };
 
@@ -71,20 +44,6 @@
             }
             $('#statusGoogleMap').val(overlay.getStatus());
         });
-    }
-
-    mapas = function()
-    {
-        if ($('#statusGoogleMap').val() == '')
-        {
-            googleMaps($.parseHTML("<%= "#{@nombre_mapa}" %>")[0].textContent);
-        }
-
-        $('#info-div').slideUp();
-        $('#ficha-div').slideUp();
-        $('#fotos-div').slideUp();
-        $('#mapas-div').slideDown();
-        return false;
     }
 
     muestraBibliografiaNombres = function(ident)
@@ -121,141 +80,120 @@
   <h1><%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
 </div>
 
-<div id="photoscol" class="column span-13">
-  <% if @especie.species_or_lower? && @photos.empty? %>
-      <div class="notice">
-        <%= t :este_taxon_no_tiene %>
-        <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+<table class="tabla_formato">
+  <tr>
+    <td>
+      <div id="photoscol" class="column span-13">
+        <% if @especie.species_or_lower? && @photos.empty? %>
+            <div class="notice">
+              <%= t :este_taxon_no_tiene %>
+              <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+            </div>
+        <% end %>
+        <div id="photos">
+          <%= render :partial => 'photos', :locals => { :photos => @photos } %>
+          <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
+        </div>
+
+        <%# if logged_in? %>
+        <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+        <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+        <%# end %>
       </div>
-  <% end %>
-  <div id="photos">
-    <%= render :partial => 'photos', :locals => { :photos => @photos } %>
-    <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
-  </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="last column span-20">
+        <div id="tabs">
+          <ul>
+            <li><a href="#conabio_info"><span>Info</span></a></li>
+            <li><a href="#description"><span>Fichas</span></a></li>
+          </ul>
 
-  <%# if logged_in? %>
-  <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-  <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-  <%# end %>
-</div>
+          <div id="description" class="last column span-20">
+            <%= render :partial => 'especies/description' %>
+          </div>
 
-<div class="last column span-20">
-  <div id="tabs">
-    <ul>
-      <li><a href="#description"><span>Descripci&oacute;n</span></a></li>
-      <li><a href="#taxon_range"><span>Mapa</span></a></li>
-    </ul>
+          <div id="conabio_info">
+            <table>
+              <tr>
+                <td width="40%" valign="top">
+                  <fieldset>
+                    <legend class="leyenda"><%= 'Informaci&oacute;n taxon&oacute;mica'.html_safe %></legend>
 
-    <div id="description" class="last column span-20">
-      <%= render :partial => 'especies/description' %>
-    </div>
-  </div>
-</div>
+                    <p>
+                      <strong>Estatus:</strong>
+                      <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
+                    </p>
 
-<div class="menu">
-  <ul id="menu">
-    <li><%= link_to 'Cat&aacute;logo'.html_safe, '', :id => :infoTab, :onClick => 'return info();' %></li>
-    <li><%= link_to :Ficha, '', :id => :fichaTab, :onClick => 'return ficha();' %></li>
-    <li><%= link_to :Fotos, '', :id => :fotosTab, :onClick => 'return fotos();' %></li>
-    <li><%= link_to 'Mapas de distribuci&oacute;n'.html_safe, '', :id => :mapasTab, :onClick => 'return mapas();' %></li>
-  </ul>
-</div>
+                    <%= dameEspecieEstatuses(@especie).html_safe %>
+                    <%= dameCaracteristica(@especie).html_safe %>
+                    <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
+                    <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
 
+                    <% if @especie.cita_nomenclatural.present? %>
+                        <p>
+                          <strong>Cita nomenclatural:</strong>
+                          <%= @especie.cita_nomenclatural %>
+                        </p>
+                    <% end %>
+
+                    <p>
+                      <strong>Fuente de la informaci&oacute;n:</strong>
+                      <%= @especie.sis_clas_cat_dicc %>
+                    </p>
+
+                    <% if @especie.anotacion.present? %>
+                        <p>
+                          <strong>Anotaci&oacute;n:</strong>
+                          <%= @especie.anotacion %>
+                        </p>
+                    <% end %>
+
+                    <p>
+                      <%= dameEspecieBibliografia(@especie).html_safe %>
+                    </p>
+
+                    <p>
+                      <strong>Identificador &uacute;nico:</strong>
+                      <%= @especie.id %>
+                    </p>
+
+                    <p>
+                      <strong>Fecha de modificaci&oacute;n:</strong>
+                      <%= @especie.updated_at %>
+                    </p>
+                  </fieldset>
+                </td>
+
+                <td width="60%" valign="top">
+                  <%= dameDescendientesDirectos(@especie).html_safe %>
+
+                  <fieldset>
+                    <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
+                    <div id='vista_arbol'>
+                      <% if @especie.is_root? %>
+                          <%= arbolTaxonomico.html_safe %>
+                      <% end %>
+                    </div>
+                  </fieldset>
+
+                  <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
 <!--div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
   <%# link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div-->
-
-<div id="info-div">
-  <table width="1000" id="tabla_form">
-    <tr>
-      <td width="40%" valign="top">
-        <fieldset>
-          <legend class="leyenda"><%= 'Informaci&oacute;n taxon&oacute;mica'.html_safe %></legend>
-
-          <p>
-            <strong>Estatus:</strong>
-            <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
-          </p>
-
-          <%= dameEspecieEstatuses(@especie).html_safe %>
-          <%= dameCaracteristica(@especie).html_safe %>
-          <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
-          <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
-
-          <% if @especie.cita_nomenclatural.present? %>
-              <p>
-                <strong>Cita nomenclatural:</strong>
-                <%= @especie.cita_nomenclatural %>
-              </p>
-          <% end %>
-
-          <p>
-            <strong>Fuente de la informaci&oacute;n:</strong>
-            <%= @especie.sis_clas_cat_dicc %>
-          </p>
-
-          <% if @especie.anotacion.present? %>
-              <p>
-                <strong>Anotaci&oacute;n:</strong>
-                <%= @especie.anotacion %>
-              </p>
-          <% end %>
-
-          <p>
-            <%= dameEspecieBibliografia(@especie).html_safe %>
-          </p>
-
-          <p>
-            <strong>Identificador &uacute;nico:</strong>
-            <%= @especie.id %>
-          </p>
-
-          <p>
-            <strong>Fecha de modificaci&oacute;n:</strong>
-            <%= @especie.updated_at %>
-          </p>
-        </fieldset>
-      </td>
-
-      <td width="60%" valign="top">
-        <%= dameDescendientesDirectos(@especie).html_safe %>
-
-        <fieldset>
-          <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
-          <div id='vista_arbol'>
-            <% if @especie.is_root? %>
-                <%= arbolTaxonomico.html_safe %>
-            <% end %>
-          </div>
-        </fieldset>
-
-        <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div id="ficha-div" style="display: none">
-  <table class="tabla_formato">
-    <tr>
-      <td>
-        <%= @ficha.html_safe %>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div id="fotos-div" style="display: none">
-  <table class="tabla_formato">
-    <tr>
-      <td>
-        <div id="fotos-td"></div>
-      </td>
-    </tr>
-  </table>
-</div>
 
 <div id="mapas-div" style="display: none">
   <table class="tabla_formato">

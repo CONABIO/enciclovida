@@ -25,4 +25,3 @@
 //= require general
 //= require autocomplete-rails
 
-
