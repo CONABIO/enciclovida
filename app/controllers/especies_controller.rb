@@ -1,13 +1,13 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
-  autocomplete :especie, :nombre, :column_name => 'nombre_cientifico', :full => true, :display_value => :personalizaBusqueda,
-               :extra_data => [:id, :nombre_cientifico, :categoria_taxonomica_id], :limit => 10
   before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
 
-  #caches_action :describe, :expires_in => 1.day, :cache_path => {:locale => I18n.locale}#, :if => Proc.new {|c|
+  caches_action :describe, :expires_in => 5.seconds, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
+
+  #, :cache_path => Proc.new { |c| "index/#{c.params[:page]}/#{c.request.format}" } #{:locale => I18n.locale}#, :if => Proc.new {|c|
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
   #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]

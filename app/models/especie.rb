@@ -338,10 +338,6 @@ class Especie < ActiveRecord::Base
 
   private
 
-  def personalizaBusqueda
-    "#{self.nombre_cientifico.html_safe} (#{CategoriaTaxonomica.find(self.categoria_taxonomica_id).nombre_categoria_taxonomica})"
-  end
-
   def ponNombreCientifico
     case self.categoria_taxonomica_id
       when 19, 50 #para especies
