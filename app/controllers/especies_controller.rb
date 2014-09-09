@@ -5,7 +5,7 @@ class EspeciesController < ApplicationController
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => :dame_listas
 
-  caches_action :describe, :expires_in => 5.seconds, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
+  caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
   #, :cache_path => Proc.new { |c| "index/#{c.params[:page]}/#{c.request.format}" } #{:locale => I18n.locale}#, :if => Proc.new {|c|
   #c.session.blank? || c.session['warden.user.user.key'].blank?
