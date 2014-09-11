@@ -85,11 +85,11 @@ h3 .description {
   background: url('/images/silk/flag_yellow.png') 0 50% no-repeat;;
 }
 
-/* Wikipedia Styles */
+/* All Styles */
 
-.wikipedia_description {
+.wikipedia_description, .eol_es_description, .eol_description, .conabio_description {
   overflow: hidden;
-  width: 100%;
+  width: 1000px;
 }
 
 .infobox, 

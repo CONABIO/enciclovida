@@ -290,7 +290,7 @@ class Especie < ActiveRecord::Base
   def photos_with_backfill(options = {})
     options[:limit] ||= 9
     chosen_photos = taxon_photos.includes(:photo).order('taxon_photos.position ASC NULLS LAST, taxon_photos.id ASC').limit(options[:limit]).map{|tp| tp.photo}
-        if chosen_photos.size < options[:limit]
+    if chosen_photos.size < options[:limit]
       new_photos = Photo.includes({:taxon_photos => :especie}).
           order("taxon_photos.id ASC").
           limit(options[:limit] - chosen_photos.size).

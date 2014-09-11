@@ -33,7 +33,7 @@ $(document).ready(function()
             {
                 return $("#vista_arbol").html(arbol);
             });
-    };
+    }
 
     despliegaOcontrae = function(id)
     {
@@ -55,7 +55,7 @@ $(document).ready(function()
                 });
         }
         return false;
-    };
+    }
 
     $.fn.loadingShades = function(e, options) {
         options = options || {}

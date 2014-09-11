@@ -146,6 +146,7 @@ es-cientifico:
       create: Crear %{model}
       submit: Guardar %{model}
       update: Actualizar %{model}
+  no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nombre_comun: Nombre común
   number:
     currency:

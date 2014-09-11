@@ -6,18 +6,18 @@
   - css_class += " wikipedia_description" if @describer.ancestors.include?(TaxonDescribers::Wikipedia)
 #taxon_description{:class => css_class}
   %h3
-    =t :description_from
+    Descripci&oacute;n de
     - if @describer
       = select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last)
       - if page_url = @describer.page_url(@especie)
-        = link_to "#{t(:view_on)} #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui"
+        = link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui"
     - else
       %a{:href => "http://en.wikipedia.org/wiki/#{@especie.nombre_cientifico}"} Wikipedia
   - if @description.blank?
     %p.nocontent.meta
       - if @describer == TaxonDescribers::Wikipedia || @describer.blank?
-        =t :there_isnt_a_wikipedia_article_titled_x_html, :x => @especie.nombre_cientifico
+        =t :no_matching_article_from_x_to_y, :x => 'Wikipedia (EN)', :y => @especie.nombre_cientifico
       - elsif @describer
-        =t :no_matching_article_from_x, :x => @describer.describer_name
+        =t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico
   - else
     =raw @description

@@ -1,13 +1,12 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
-  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => :dame_listas
+  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia]
 
-  caches_action :describe, :expires_in => 5.seconds, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
+  caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
-  #, :cache_path => Proc.new { |c| "index/#{c.params[:page]}/#{c.request.format}" } #{:locale => I18n.locale}#, :if => Proc.new {|c|
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
   #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
@@ -30,6 +29,11 @@ class EspeciesController < ApplicationController
 
     @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
     @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @especie.to_json }
+    end
   end
 
   # GET /especies/new
@@ -142,7 +146,7 @@ class EspeciesController < ApplicationController
 
       when 'nombre_comun'
         @taxones=NombreComun.select('especies.*, nombre_comun, nombre_categoria_taxonomica').
-            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun]).
+            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).
             order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         if @taxones.empty?
@@ -161,7 +165,7 @@ class EspeciesController < ApplicationController
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
 
         @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico]).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
+            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico].gsub("'", "''")).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
             paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         if @taxones.empty?
@@ -196,12 +200,12 @@ class EspeciesController < ApplicationController
           conID = value.to_i if key == 'id_nom_cientifico' && value.present?
 
           if key == 'nombre_cientifico' && value.present?
-            nombre_cientifico+= value
+            nombre_cientifico+= value.gsub("'", "''")
           end
 
           if key == 'nombre_comun' && value.present?
             joins+= '.nombres_comunes_join'
-            condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', '#{value}')"
+            condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
           end
 
           if key.include?('tipo_distribucion_') && value.present?
@@ -247,9 +251,9 @@ class EspeciesController < ApplicationController
 
         busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-        #@taxones=Especie.none
-        #@resultado2= busqueda
-        #@resultado=params
+      #@taxones=Especie.none
+      #@resultado2= busqueda
+      #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
@@ -337,23 +341,22 @@ class EspeciesController < ApplicationController
   end
 
   def muestraTaxonomia
-    if params[:id].present?
-      taxon=params[:id]
-      arbolCompleto ||="<ul class=\"nodo_mayor\">"
-      if @especie.ancestry_acendente_obligatorio.present?
-        contadorNodos ||=0;
-        @especie.ancestry_acendente_obligatorio.split('/').each do |a|
-          ancestro=Especie.find(a)
-          if !ancestro.nil?
-            arbolCompleto+=enlacesDelArbol(ancestro)
-            contadorNodos+=1
-          end
+    return unless @especie
+
+    arbolCompleto ||="<ul class=\"nodo_mayor\">"
+    if @especie.ancestry_acendente_obligatorio.present?
+      contadorNodos ||=0;
+      @especie.ancestry_acendente_obligatorio.split('/').each do |a|
+
+        if ancestro=Especie.find(a)
+          arbolCompleto+=enlacesDelArbol(ancestro)
+          contadorNodos+=1
         end
-        arbolCompleto+=enlacesDelArbol(@especie)
-        respond_to do |format|
-          format.html do
-            render :json => arbolCompleto+='</li></ul>'*(contadorNodos+1)+'</ul>'
-          end
+      end
+      arbolCompleto+=enlacesDelArbol(@especie)
+      respond_to do |format|
+        format.html do
+          render :json => arbolCompleto+='</li></ul>'*(contadorNodos+1)+'</ul>'
         end
       end
     end
@@ -407,13 +410,14 @@ class EspeciesController < ApplicationController
                   else
                     [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
                   end
+
     if @describer = TaxonDescribers.get_describer(params[:from])
       @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
     else
       @describers.each do |d|
         @describer = d
         @description = begin
-          d.describe(@especie)
+          d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
         rescue OpenURI::HTTPError, Timeout::Error => e
           nil
         end
