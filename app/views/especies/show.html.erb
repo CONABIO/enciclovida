@@ -8,19 +8,21 @@
 <script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
 <script data-turbolinks-track="true" src="/assets/show.js"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    var TAXON = <%=raw @especie.to_json %>
+    var TAXON = <%=raw @especie.to_json %>;
 
-            info = function() {
-                $('#ficha-div').slideUp();
-                $('#info-div').slideDown();
-                return false;
-            };
+    info = function()
+    {
+        $('#ficha-div').slideUp();
+        $('#info-div').slideDown();
+        return false;
+    }
 
-    ficha = function() {
+    ficha = function()
+    {
         $('#info-div').slideUp();
         $('#ficha-div').slideDown();
         return false;
-    };
+    }
 
     googleMaps = function(taxon)
     {
@@ -56,7 +58,7 @@
     $(document).ready(function()
     {
         <% if !@especie.is_root? %>
-        muestraArbol($.parseHTML("<%= "#{@especie.id}" %>")[0].textContent);
+        muestraArbol(TAXON.id);
         <% end %>
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
@@ -173,9 +175,7 @@
                   <fieldset>
                     <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
                     <div id='vista_arbol'>
-                      <% if @especie.is_root? %>
-                          <%= arbolTaxonomico.html_safe %>
-                      <% end %>
+                      <%= arbolTaxonomico.html_safe if @especie.is_root? %>
                     </div>
                   </fieldset>
 
