@@ -43,7 +43,7 @@
 <% else %>
   <div class="description">
     <h3 class="description">
-      <%=t :no_creative_commons_flickr_photos_tagged_x, :x => taxon.nombre_cientifico %>
+      <%#t :no_creative_commons_flickr_photos_tagged_x, :x => taxon.nombre_cientifico %>
     </h3>
     <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
     <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">

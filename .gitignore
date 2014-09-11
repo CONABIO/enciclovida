@@ -47,3 +47,4 @@ tools/bitacoras/
 config/config.yml
 config/database.yml_postgres
 config/database.yml_sql-server
+dump.rdb

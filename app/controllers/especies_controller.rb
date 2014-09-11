@@ -1,9 +1,9 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
-  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => :dame_listas
+  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia]
 
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
