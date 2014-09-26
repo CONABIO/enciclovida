@@ -11,7 +11,7 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
-  has_many :taxon_photos, :order => 'position ASC NULLS LAST, id ASC', :dependent => :destroy
+  has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
@@ -289,7 +289,7 @@ class Especie < ActiveRecord::Base
   #
   def photos_with_backfill(options = {})
     options[:limit] ||= 9
-    chosen_photos = taxon_photos.includes(:photo).order('taxon_photos.position ASC NULLS LAST, taxon_photos.id ASC').limit(options[:limit]).map{|tp| tp.photo}
+    chosen_photos = taxon_photos.includes(:photo).limit(options[:limit]).map{|tp| tp.photo}
     if chosen_photos.size < options[:limit]
       new_photos = Photo.includes({:taxon_photos => :especie}).
           order("taxon_photos.id ASC").
