@@ -19,21 +19,21 @@ where [options] are:
 end
 
 def completa
-  Nombre.order('Nombre ASC').find_each do |e|
-    puts e.Nombre if OPTS[:debug]
-    if e.IdNombreAscendente != e.IdNombre
-      e.ancestry_ascendente_directo="#{e.IdNombreAscendente}"
+  EspecieBio.order('Nombre ASC').find_each do |e|
+    puts e.nombre if OPTS[:debug]
+    if e.id_nombre_ascendente != e.id
+      e.ancestry_ascendente_directo="#{e.id_nombre_ascendente}"
       valor=true
-      id=e.IdNombreAscendente
+      id=e.id_nombre_ascendente
 
       while valor do
-        subEsp=Nombre.find(id)
+        subEsp=EspecieBio.find(id)
 
-        if subEsp.IdNombreAscendente == subEsp.IdNombre
+        if subEsp.id_nombre_ascendente == subEsp.id
           valor=false
         else
-          e.ancestry_ascendente_directo="#{subEsp.IdNombreAscendente}/#{e.ancestry_ascendente_directo}"
-          id=subEsp.IdNombreAscendente
+          e.ancestry_ascendente_directo="#{subEsp.id_nombre_ascendente}/#{e.ancestry_ascendente_directo}"
+          id=subEsp.id_nombre_ascendente
         end
       end
 

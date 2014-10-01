@@ -1,16 +1,19 @@
-class Nombre < ActiveRecord::Base
-#Tabla correspondiente a especies
+class EspecieBio < ActiveRecord::Base
 
   self.table_name='Nombre'
   self.primary_key='IdNombre'
 
+  alias_attribute :id, :IdNombre
   alias_attribute :categoria_taxonomica_id, :IdCategoriaTaxonomica
+  alias_attribute :nombre, :Nombre
+  alias_attribute :id_nombre_ascendente, :IdNombreAscendente
+  alias_attribute :id_nombre_ascendente, :IdAscendObligatorio
 
   has_one :proveedor
-  belongs_to :categoria_taxonomica
+  belongs_to :categoria_taxonomica, :class_name => 'CategoriaTaxonomicaBio', :foreign_key => 'IdCategoriaTaxonomica'
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
-  has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
+  has_many :nombres_regiones, :class_name => 'NombreRegionBio', :foreign_key => 'IdNombre', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
@@ -18,7 +21,7 @@ class Nombre < ActiveRecord::Base
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
-  #has_ancestry :ancestry_column => :ancestry_ascendente_directo
+  has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -48,7 +51,7 @@ class Nombre < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  #before_save :ponNombreCientifico
+  before_save :ponNombreCientifico
 
   WillPaginate.per_page = 10
   self.per_page = WillPaginate.per_page
@@ -61,8 +64,8 @@ class Nombre < ActiveRecord::Base
   ]
 
   ESTATUS_SIMBOLO = {
-      2 => '',
-      1 =>''
+      2 => '2',
+      1 =>'1'
   }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
@@ -297,7 +300,7 @@ class Nombre < ActiveRecord::Base
       new_photos = Photo.includes({:taxon_photos => :especie}).
           order("taxon_photos.id ASC").
           limit(options[:limit] - chosen_photos.size).
-          where("especies.ancestry_acendente_directo LIKE '#{ancestry_acendente_directo}/#{id}%'")#.includes()
+          where("especies.ancestry_ascendente_directo LIKE '#{ancestry_ascendente_directo}/#{id}%'")#.includes()
       if new_photos.size > 0
         new_photos = new_photos.where("photos.id NOT IN (?)", chosen_photos)
       end
@@ -342,6 +345,22 @@ class Nombre < ActiveRecord::Base
   private
 
   def ponNombreCientifico
+    if nombre_changed?
+      if depth == 7
+        generoID=ancestry_ascendente_obligatorio.split("/")[5]
+        genero=find(generoID).nombre
+        nombre_cientifico="#{genero} #{nombre}"
+      elsif depth == 8
+        generoID=ancestry_ascendente_obligatorio.split("/")[5]
+        genero=find(generoID).nombre
+        especieID=ancestry_ascendente_obligatorio.split("/")[6]
+        especie=find(especieID).nombre
+        nombre_cientifico="#{genero} #{especie} #{nombre}"
+      else
+        nombre_cientifico="#{nombre}"
+      end
+   end
+=begin
     case categoria_taxonomica_id
       when 19, 50 #para especies
         generoID=ancestry_ascendente_obligatorio.split('/').last
@@ -356,6 +375,6 @@ class Nombre < ActiveRecord::Base
       else
         nombre_cientifico=nombre
     end
+=end
   end
-
 end
