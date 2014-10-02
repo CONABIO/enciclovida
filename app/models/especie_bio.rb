@@ -51,7 +51,7 @@ class EspecieBio < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  before_save :ponNombreCientifico
+  before_save :verifica_nombre_cientifico
 
   WillPaginate.per_page = 10
   self.per_page = WillPaginate.per_page
@@ -342,39 +342,29 @@ class EspecieBio < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
-  private
+  def verifica_nombre_cientifico
+    ponNombreCientifico if nombre_changed?
+  end
+
+  def encuentra_genero(cat)
+    ancestor_ids.reverse.each do |a|
+      tax = EspecieBio.find(a)
+      return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
+    end
+  end
 
   def ponNombreCientifico
-    if nombre_changed?
-      if depth == 7
-        generoID=ancestry_ascendente_obligatorio.split("/")[5]
-        genero=find(generoID).nombre
-        nombre_cientifico="#{genero} #{nombre}"
-      elsif depth == 8
-        generoID=ancestry_ascendente_obligatorio.split("/")[5]
-        genero=find(generoID).nombre
-        especieID=ancestry_ascendente_obligatorio.split("/")[6]
-        especie=find(especieID).nombre
-        nombre_cientifico="#{genero} #{especie} #{nombre}"
+    case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
+      when 'especie'
+        nombre_cientifico = "#{encuentra_genero('genero')} #{nombre}"
+      when 'subespecie', 'variedad', 'forma'
+        nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{nombre}"
+      when 'subvariedad'
+        nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{encuentra_genero('variedad')} #{nombre}"
+      when 'subforma'
+        nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{encuentra_genero('forma')} #{nombre}"
       else
-        nombre_cientifico="#{nombre}"
-      end
-   end
-=begin
-    case categoria_taxonomica_id
-      when 19, 50 #para especies
-        generoID=ancestry_ascendente_obligatorio.split('/').last
-        genero=find(generoID.to_i).nombre
-        nombre_cientifico="#{genero} #{nombre}"
-      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=ancestry_ascendente_obligatorio.split('/')[5]
-        genero=find(generoID).nombre
-        especieID=ancestry_ascendente_obligatorio.split('/')[6]
-        especie=find(especieID).nombre
-        nombre_cientifico="#{genero} #{especie} #{nombre}"
-      else
-        nombre_cientifico=nombre
+        nombre_cientifico = nombre
     end
-=end
   end
 end

@@ -21,27 +21,10 @@ end
 def completa
   EspecieBio.find_each do |taxon|
     puts taxon.nombre if OPTS[:debug]
-    case I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).downcase
-      when 'especie'
-        taxon.nombre_cientifico = "#{encuentra_genero(taxon, 'genero')} #{taxon.nombre}"
-      when 'subespecie', 'variedad', 'forma'
-        taxon.nombre_cientifico = "#{encuentra_genero(taxon, 'genero')} #{encuentra_genero(taxon, 'especie')} #{taxon.nombre}"
-      when 'subvariedad'
-        taxon.nombre_cientifico = "#{encuentra_genero(taxon, 'genero')} #{encuentra_genero(taxon, 'especie')} #{encuentra_genero(taxon, 'variedad')} #{taxon.nombre}"
-      when 'subforma'
-        taxon.nombre_cientifico = "#{encuentra_genero(taxon, 'genero')} #{encuentra_genero(taxon, 'especie')} #{encuentra_genero(taxon, 'forma')} #{taxon.nombre}"
-      else
-        taxon.nombre_cientifico = taxon.nombre
-    end
-    taxon.save
+    next if taxon.nombre_cientifico.present?
+    taxon.ponNombreCientifico
+    taxon.save if taxon.nombre_cientifico_changed?
     puts "  #{taxon.nombre_cientifico}" if OPTS[:debug]
-  end
-end
-
-def encuentra_genero(taxon, cat)
-  taxon.ancestor_ids.reverse.each do |a|
-    tax = EspecieBio.find(a)
-    return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
   end
 end
 
