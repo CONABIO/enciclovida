@@ -71,7 +71,7 @@ class EspeciesController < ApplicationController
     argumentosRelaciones.delete(:nombres_regiones_bibliografias_attributes)
     @especie = Especie.new(argumentosRelaciones)
     ascendete=Especie.find(argumentosRelaciones[:parent_id])
-    @especie.ancestry_acendente_obligatorio="#{ascendete.ancestry_acendente_obligatorio}/#{ascendete.id}"
+    @especie.ancestry_ascendente_obligatorio="#{ascendete.ancestry_ascendente_obligatorio}/#{ascendete.id}"
 
     respond_to do |format|
       if @especie.save && params[:commit].eql?('Crear')
@@ -344,9 +344,9 @@ class EspeciesController < ApplicationController
     return unless @especie
 
     arbolCompleto ||="<ul class=\"nodo_mayor\">"
-    if @especie.ancestry_acendente_obligatorio.present?
+    if @especie.ancestry_ascendente_obligatorio.present?
       contadorNodos ||=0;
-      @especie.ancestry_acendente_obligatorio.split('/').each do |a|
+      @especie.ancestry_ascendente_obligatorio.split('/').each do |a|
 
         if ancestro=Especie.find(a)
           arbolCompleto+=enlacesDelArbol(ancestro)

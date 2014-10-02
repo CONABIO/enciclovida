@@ -13,7 +13,7 @@ class Especie < ActiveRecord::Base
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
-  has_ancestry :ancestry_column => :ancestry_acendente_directo
+  has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -292,7 +292,7 @@ class Especie < ActiveRecord::Base
       new_photos = Photo.includes({:taxon_photos => :especie}).
           order("taxon_photos.id ASC").
           limit(options[:limit] - chosen_photos.size).
-          where("especies.ancestry_acendente_directo LIKE '#{ancestry_acendente_directo}/#{id}%'")#.includes()
+          where("especies.ancestry_ascendente_directo LIKE '#{ancestry_ascendente_directo}/#{id}%'")#.includes()
       if new_photos.size > 0
         new_photos = new_photos.where("photos.id NOT IN (?)", chosen_photos)
       end
@@ -339,13 +339,13 @@ class Especie < ActiveRecord::Base
   def ponNombreCientifico
     case self.categoria_taxonomica_id
       when 19, 50 #para especies
-        generoID=self.ancestry_acendente_obligatorio.split('/').last
+        generoID=self.ancestry_ascendente_obligatorio.split('/').last
         genero=Especie.find(generoID.to_i).nombre
         self.nombre_cientifico="#{genero} #{self.nombre}"
       when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=self.ancestry_acendente_obligatorio.split('/')[5]
+        generoID=self.ancestry_ascendente_obligatorio.split('/')[5]
         genero=Especie.find(generoID).nombre
-        especieID=self.ancestry_acendente_obligatorio.split('/')[6]
+        especieID=self.ancestry_ascendente_obligatorio.split('/')[6]
         especie=Especie.find(especieID).nombre
         self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
       else
