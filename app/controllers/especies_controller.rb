@@ -145,14 +145,14 @@ class EspeciesController < ApplicationController
     case params[:busqueda]
 
       when 'nombre_comun'
-        @taxones=NombreComun.select('nombres_comunes.*, nombre_categoria_taxonomica, nombre_cientifico, estatus, especies.id AS id_especie').
+        @taxones=NombreComun.select('nombres_comunes.*, nombre_categoria_taxonomica, nombre_cientifico, estatus, nombre_comun_pricipal, foto_principal, especies.id AS id_especie').
             nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).
             order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
           if ids.count > 0
-            @taxones=NombreComun.select('nombres_comunes.*, nombre_categoria_taxonomica, nombre_cientifico, estatus, especies.id AS id_especie').
+            @taxones=NombreComun.select('nombres_comunes.*, nombre_categoria_taxonomica, nombre_cientifico, estatus, nombre_comun_pricipal, foto_principal, especies.id AS id_especie').
                 nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
