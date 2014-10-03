@@ -145,15 +145,15 @@ class EspeciesController < ApplicationController
     case params[:busqueda]
 
       when 'nombre_comun'
-        @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_cientifico').
-            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).
+        @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
+            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).where('especies.id IS NOT NULL').
             order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
           if ids.count > 0
-            @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_cientifico').
-                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").order('nombre_comun ASC').
+            @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
+                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").where('especies.id IS NOT NULL').order('nombre_comun ASC').
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
             @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
           end
