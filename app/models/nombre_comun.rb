@@ -1,6 +1,9 @@
 class NombreComun < ActiveRecord::Base
 
   self.table_name='nombres_comunes'
+  self.primary_key = 'id'
+
+
   has_many :nombres_regiones, :class_name => 'NombreRegion'
   has_many :especies, :through => :nombres_regiones, :class_name => 'Especie'
 

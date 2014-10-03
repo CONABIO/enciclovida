@@ -22,9 +22,9 @@ def completa
   EspecieBio.find_each do |taxon|
     puts taxon.nombre if OPTS[:debug]
     next if taxon.nombre_cientifico.present?
-    taxon.ponNombreCientifico
-    taxon.save if taxon.nombre_cientifico_changed?
-    puts "  #{taxon.nombre_cientifico}" if OPTS[:debug]
+    if taxon.save
+      puts "--->  #{taxon.nombre_cientifico}" if OPTS[:debug]
+    end
   end
 end
 

@@ -153,7 +153,7 @@ def camTab
                       "FechaModificacion as updated_at"
       ],
       'nombres_comunes' => ["#{@id}+IdNomcomun as id",
-                            "NomComun as nomre_comun",
+                            "NomComun as nombre_comun",
                             "Observaciones as observaciones",
                             "Lengua as lengua",
                             "FechaCaptura as created_at",
