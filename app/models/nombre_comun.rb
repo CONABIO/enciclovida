@@ -14,6 +14,11 @@ class NombreComun < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :nom_com, -> { especies_join.categoria_taxonomica_join }
 
+  SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
+
+  def species_or_lower?
+    SPECIES_OR_LOWER.include? nombre_categoria_taxonomica
+  end
 
   def personalizaBusqueda
     "#{self.nombre_comun} (#{self.lengua})".html_safe

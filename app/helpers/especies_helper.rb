@@ -3,35 +3,57 @@ module EspeciesHelper
   def tituloNombreCientifico(taxon, params={})
     if I18n.locale.to_s == 'es-cientifico'
       if params[:title]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
       elsif params[:context]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       elsif params[:link]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
       elsif params[:show]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       else
         'Ocurrio un error en el t&iacute;tulo'.html_safe
       end
     else   #vistas menos cientificas
-      if params[:title]
-        taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_comun_principal} (#{taxon.nombre_cientifico})".html_safe :
-            "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe
-      elsif params[:context]
-        taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
-            "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
-      elsif params[:link]
-        if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-          "#{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
+      if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
+        if params[:title]
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.nombre_cientifico})".html_safe :
+              taxon.nombre_cientifico
+        elsif params[:context]
+          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
+              view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")
+        elsif params[:link]
+          if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
+            "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
+          else
+            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
+                link_to(taxon.nombre_cientifico, especy_path(taxon))
+          end
+        elsif params[:show]
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
+              taxon.nombre_cientifico
         else
-          taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
-              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
+          'Ocurrio un error en el t&iacute;tulo'.html_safe
         end
-      elsif params[:show]
-        taxon.nombre_comun_principal.present? ? "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_comun_principal} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
-            "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{Especie::ESTATUS_SIMBOLO[taxon.estatus]} #{taxon.nombre_cientifico}".html_safe
       else
-        'Ocurrio un error en el t&iacute;tulo'.html_safe
+        if params[:title]
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
+        elsif params[:context]
+          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}</i>)".html_safe :
+              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
+        elsif params[:link]
+          if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
+            "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe
+          else
+            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
+                "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
+          end
+        elsif params[:show]
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
+              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
+        else
+          'Ocurrio un error en el t&iacute;tulo'.html_safe
+        end
       end
     end
   end
@@ -198,29 +220,29 @@ module EspeciesHelper
     {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
   end
 
-  def dameEspecieEstatuses(taxon)
-    estatuses=''
+  def dameStatus(taxon)
+    status=''
 
-    taxon.especies_estatuses.order('estatus_id ASC').each do |estatus|
+    taxon.especies_status.order('estatus_id ASC').each do |estatus|     #checa si existe alguna sinonimia
       taxSinonimo = Especie.find(estatus.especie_id2)
       next if taxSinonimo.nil?
 
       if taxon.estatus == 2
-        estatuses+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :link => true)}"
-        estatuses+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-      elsif taxon.estatus == 1 && taxon.especies_estatuses.count == 1
-        estatuses+= tituloNombreCientifico(taxSinonimo, :link => true)
-        estatuses+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
+        status+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :link => true)}"
+        status+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+      elsif taxon.estatus == 1 && taxon.especies_status.count == 1
+        status+= tituloNombreCientifico(taxSinonimo, :link => true)
+        status+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
       else
         return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
       end
     end
 
-    if estatuses.present?
-      taxon.estatus == 2 ? titulo='<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : titulo='<strong>Aceptado como:</strong>'
-      taxon.estatus == 2 ? titulo + "<p><ul>#{estatuses}</ul></p>" : titulo + "<p>#{estatuses}</p>"
+    if status.present?
+      titulo = taxon.estatus == 2 ? '<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : '<strong>Aceptado como:</strong>'
+      taxon.estatus == 2 ? titulo + "<p><ul>#{status}</ul></p>" : titulo + "<p>#{status}</p>"
     else
-      estatuses
+      status
     end
   end
 
