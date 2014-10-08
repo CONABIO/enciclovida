@@ -100,8 +100,8 @@ def camTab
                      "#{@id}+IdNombreAscendente as id_nombre_ascendente",
                      "#{@id}+IdAscendObligatorio as id_ascend_obligatorio",
                      "#{@id}+IdCategoriaTaxonomica as categoria_taxonomica_id",
-                     "ancestry_ascendente_directo",
-                     "ancestry_ascendente_obligatorio",
+                     "dbo.fnSplitString2(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_directo",
+                     "dbo.fnSplitString2(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_obligatorio",
                      "nombre_cientifico",
                      "'' as delta",
                      "nombre_comun_principal",
@@ -225,6 +225,9 @@ puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: 
 
 res.each do |bd|
   @id = bd['ID'].to_i*1000000
+  @base = "[#{CONFIG.bases[bd['ID'].to_i + 1]}].dbo.Nombre"
+
+
   camTab.each {|tabla, campos|
     if ARGV.any? { |e| e.downcase.include?('drop') }
       queriesVistas[tabla] = bd['ID']=='01' ? "DROP VIEW #{tabla}" : " \n" + queriesVistas[tabla]+"\n"

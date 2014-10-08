@@ -357,6 +357,7 @@ class EspecieBio < ActiveRecord::Base
       else
         self.nombre_cientifico = nombre
     end
+    self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
   def encuentra_genero(cat)
