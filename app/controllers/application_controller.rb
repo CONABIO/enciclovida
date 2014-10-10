@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
 
   def dameLocaleFiltro
     filtro = Filtro.where(:sesion => request.session_options[:id])
-    filtro ? filtro.first.locale : nil
+    filtro.first ? filtro.first.locale : nil
   end
 
   def set_locale
