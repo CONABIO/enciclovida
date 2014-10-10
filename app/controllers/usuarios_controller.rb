@@ -102,6 +102,16 @@ class UsuariosController < ApplicationController
     @filtro=Filtro.consulta(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil)
   end
 
+  def cambia_locale
+    if session[:usuario].present?
+      usuario = Usuario.find(session[:usuario])
+      usuario.guarda_locale
+    else
+
+    end
+    filtro=Filtro.sesion_o_usuario(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil, params[:html], to_boolean(params[:lectura]))
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_usuario

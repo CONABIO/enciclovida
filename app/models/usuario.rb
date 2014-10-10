@@ -54,4 +54,8 @@ class Usuario < ActiveRecord::Base
     errors.add(:confirma_contrasenia, "debe ser la misma que la confrimación") if self.contrasenia != self.confirma_contrasenia
   end
 
+  def guarda_locale
+    self.
+  end
+
 end

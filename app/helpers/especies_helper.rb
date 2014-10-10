@@ -149,6 +149,23 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
+  def dameNomComunes(taxon)
+    nombres_comunes = ''
+    taxon.nombres_comunes.where("nombre_comun != '#{taxon.nombre_comun_principal}'").each do |nom|
+      nombres_comunes+= "#{nom.nombre_comun} <span style='font-size:9px;'>(#{nom.lengua})</span>, "
+    end
+    nombres_comunes.present? ? "<p>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
+  end
+
+  def dameDistribucion(taxon)
+    dist = []
+    taxon.especies_regiones.each do |reg|
+      dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
+    end
+
+    dist.any? ? dist.uniq.join(', ') : ''
+  end
+
   def dameRegionesNombresBibliografia(especie)
     distribuciones=nombresComunes=tipoDistribuciones=''
     distribucion={}
@@ -239,8 +256,8 @@ module EspeciesHelper
     end
 
     if status.present?
-      titulo = taxon.estatus == 2 ? '<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : '<strong>Aceptado como:</strong>'
-      taxon.estatus == 2 ? titulo + "<p><ul>#{status}</ul></p>" : titulo + "<p>#{status}</p>"
+      titulo = taxon.estatus == 2 ? '<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : '<strong>Aceptado como: </strong>'
+      taxon.estatus == 2 ? titulo + "<p><ul>#{status}</ul></p>" : "<p>#{titulo}#{status}</p>"
     else
       status
     end
@@ -248,11 +265,19 @@ module EspeciesHelper
 
   def dameCaracteristica(taxon)
     conservacion=''
-    taxon.especies_catalogos.each do |e|
-      titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
-      conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span></li>"
+    if I18n.locale.to_s == 'es-cientifico'
+      taxon.especies_catalogos.each do |e|
+        titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
+        conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span></li>"
+      end
+      conservacion.present? ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" : conservacion
+    else       #Las viasta comunes no llevaran las informacion mas importante en la tab de "Info"
+      taxon.especies_catalogos.each do |e|
+        titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
+        conservacion+="#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span>, "
+      end
+      conservacion.present? ? conservacion[0..-3] : conservacion
     end
-    conservacion.present? ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" : conservacion
   end
 
   def dameEspecieBibliografia(taxon)

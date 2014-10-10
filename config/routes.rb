@@ -17,6 +17,7 @@ Buscador::Application.routes.draw do
       put :cierra_sesion
       post :filtros
       post :limpiar
+      post :cambia_locale
     end
   end
 

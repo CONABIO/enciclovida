@@ -57,7 +57,8 @@ $(document).ready(function()
         return false;
     }
 
-    $.fn.loadingShades = function(e, options) {
+    $.fn.loadingShades = function(e, options)
+    {
         options = options || {}
         if (e && e == 'close') {
             $(this).shades(e, options)
@@ -81,7 +82,8 @@ $(document).ready(function()
         }
     }
 
-    $.fn.shades = function(e, options) {
+    $.fn.shades = function(e, options)
+    {
         options = options || {}
         elt = this[0]
         switch (e) {
@@ -108,7 +110,8 @@ $(document).ready(function()
         }
     }
 
-    $.fn.centerDialog = function() {
+    $.fn.centerDialog = function()
+    {
         if ($(this).children().length == 1) {
             var newHeight = $(':first', this).height() + 100
         } else {
@@ -118,6 +121,22 @@ $(document).ready(function()
         if (newHeight > maxHeight) { newHeight = maxHeight };
         $(this).dialog('option', 'height', newHeight)
         $(this).dialog('option', 'position', {my: 'center', at: 'center', of: $(window)})
+    }
+
+    cambia_locale = function(locale)
+    {
+        $.ajax(
+            {
+                url: "/usuarios/cambia_vista",
+                type: 'POST',
+                data: {
+                    locale: locale
+                }
+            }).done(function(nodo)
+            {
+                return $("#nodo_" + sufijo).append(nodo);
+            });
+        return false;
     }
 });
 

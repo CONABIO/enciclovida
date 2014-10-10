@@ -72,7 +72,18 @@
 <% end %>
 
 <div class="titulo">
-  <h1><%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
+  <h1>
+    <%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %>
+  </h1>
+  <% if @especie.estatus == 1 %>
+      <%= dameStatus(@especie).html_safe %>
+  <% elsif @especie.estatus == 2 && I18n.locale.to_s != 'es-cientifico' %>
+      <% if  @especie.species_or_lower? %>
+          <%= dameDistribucion(@especie) %> -
+          <%= dameCaracteristica(@especie).html_safe %>
+      <% end %>
+      <%= dameNomComunes(@especie).html_safe %>
+  <% end %>
 </div>
 
 <table class="tabla_formato">
@@ -81,7 +92,7 @@
       <div id="photoscol" class="column span-13">
         <% if @especie.species_or_lower? && @photos.empty? %>
             <div class="notice">
-              <%= t :este_taxon_no_tiene %>
+              <%= t(:este_taxon_no_tiene).html_safe %>
               <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
             </div>
         <% end %>
