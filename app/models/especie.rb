@@ -9,7 +9,7 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_status, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
@@ -220,65 +220,6 @@ class Especie < ActiveRecord::Base
 
   def species_or_lower?
     SPECIES_OR_LOWER.include? categoria_taxonomica.nombre_categoria_taxonomica
-  end
-
-  def self.dameIdsDelNombre(nombre, tipo=nil)
-    identificadores=''
-
-    sentencia="SELECT nr.especie_id AS ids FROM nombres_regiones nr
-    LEFT JOIN nombres_comunes nc ON nc.id=nr.nombre_comun_id
-    WHERE lower_unaccent(nc.nombre_comun) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')"
-
-    sentencia+="UNION SELECT e.id from especies e WHERE lower_unaccent(e.nombre) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')" if tipo.nil?
-
-    sentencia=Especie.find_by_sql(sentencia)
-
-    sentencia.each do |i|
-      identificadores+="#{i.ids}, "
-    end
-
-    identificadores[0..-3]
-  end
-
-
-  def self.dameIdsDeLaRegion(nombre)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
-                              LEFT JOIN regiones r ON er.region_id=r.id
-                              WHERE lower_unaccent(r.nombre_region) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-
-  def self.dameIdsDeLaDistribucion(distribucion)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
-                                    WHERE tipo_distribucion_id=#{distribucion} ORDER BY ids;").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-  def self.dameIdsDeConservacion(nombre)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT ec.especie_id AS ids FROM especies_catalogos ec
-                              LEFT JOIN catalogos c ON ec.catalogo_id=c.id
-                              WHERE lower_unaccent(c.descripcion) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-  def self.dameIdsCategoria(categoria, id)
-    identificadores=''
-    Especie.find(id).descendant_ids.each do |des|
-      if Especie.find(des).categoria_taxonomica_id == categoria.to_i
-        identificadores+="#{des}, "
-      end
-    end
-    identificadores[0..-3]
   end
 
   #

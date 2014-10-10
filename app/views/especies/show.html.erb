@@ -67,14 +67,23 @@
 
 <p id="notice"><%= notice %></p>
 
-<p><%= enlacesDeTaxonomia(@especie) %></p>
-
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
 <div class="titulo">
-  <h1><%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %></h1>
+  <h1>
+    <%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %>
+  </h1>
+  <% if @especie.estatus == 1 %>
+      <%= dameStatus(@especie).html_safe %>
+  <% elsif @especie.estatus == 2 && I18n.locale.to_s != 'es-cientifico' %>
+      <% if  @especie.species_or_lower? %>
+          <%= dameDistribucion(@especie) %> -
+          <%= dameCaracteristica(@especie).html_safe %>
+      <% end %>
+      <%= dameNomComunes(@especie).html_safe %>
+  <% end %>
 </div>
 
 <table class="tabla_formato">
@@ -83,7 +92,7 @@
       <div id="photoscol" class="column span-13">
         <% if @especie.species_or_lower? && @photos.empty? %>
             <div class="notice">
-              <%= t :este_taxon_no_tiene %>
+              <%= t(:este_taxon_no_tiene).html_safe %>
               <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
             </div>
         <% end %>
@@ -101,40 +110,44 @@
   </tr>
   <tr>
     <td>
-        <div id="tabs">
-          <% if I18n.locale.to_s == 'es-cientifico' %>
-              <ul>
-                <li><a href="#conabio_info"><span>Info</span></a></li>
-                <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
-                <li><a href="#description"><span>Fichas</span></a></li>
-              </ul>
+      <div id="tabs">
+        <% if I18n.locale.to_s == 'es-cientifico' %>
+            <ul>
+              <li><a href="#conabio_info"><span>Info</span></a></li>
+              <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
+              <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+            </ul>
 
-              <div id="conabio_info" class="last column span-20">
-                <%= render :partial => 'info' %>
-              </div>
+            <div id="conabio_info" class="last column span-20">
+              <%= render :partial => 'info' %>
+            </div>
 
-              <div id="arbol_taxonomico" class="last column span-20">
-                <%= render :partial => 'arbol' %>
-              </div>
+            <div id="arbol_taxonomico" class="last column span-20">
+              <%= render :partial => 'arbol' %>
+            </div>
 
-              <div id="description" class="last column span-20">
-                <%= render :partial => 'description' %>
-              </div>
-          <% else %>
-              <ul>
-                <li><a href="#description"><span>Fichas</span></a></li>
-                <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
-              </ul>
+            <% if @especie.species_or_lower? %>
+                <div id="description" class="last column span-20">
+                  <%= render :partial => 'description' %>
+                </div>
+            <% end %>
+        <% else %>
+            <ul>
+              <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+              <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
+            </ul>
 
-              <div id="description" class="last column span-20">
-                <%= render :partial => 'description' %>
-              </div>
+            <% if @especie.species_or_lower? %>
+                <div id="description" class="last column span-20">
+                  <%= render :partial => 'description' %>
+                </div>
+            <% end %>
 
-              <div id="arbol_taxonomico" class="last column span-20">
-                <%= render :partial => 'arbol' %>
-              </div>
-          <% end %>
-        </div>
+            <div id="arbol_taxonomico" class="last column span-20">
+              <%= render :partial => 'arbol' %>
+            </div>
+        <% end %>
+      </div>
     </td>
   </tr>
 </table>
