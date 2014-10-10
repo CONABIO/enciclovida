@@ -127,14 +127,15 @@ $(document).ready(function()
     {
         $.ajax(
             {
-                url: "/usuarios/cambia_vista",
+                url: "/usuarios/cambia_locale",
                 type: 'POST',
                 data: {
                     locale: locale
                 }
-            }).done(function(nodo)
+            }).done(function()
             {
-                return $("#nodo_" + sufijo).append(nodo);
+                location.reload(true);
+                return false;
             });
         return false;
     }
