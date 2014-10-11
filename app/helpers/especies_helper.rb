@@ -265,18 +265,19 @@ module EspeciesHelper
 
   def dameCaracteristica(taxon)
     conservacion=''
-    if I18n.locale.to_s == 'es-cientifico'
-      taxon.especies_catalogos.each do |e|
-        titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
-        conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span></li>"
+    taxon.especies_catalogos.each do |e|
+      edo_conserv = e.catalogo.nom_cites_iucn
+      if edo_conserv.present?
+        I18n.locale.to_s == 'es-cientifico' ?  conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>" :
+            conservacion+="#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span>, "
       end
-      conservacion.present? ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" : conservacion
-    else       #Las viasta comunes no llevaran las informacion mas importante en la tab de "Info"
-      taxon.especies_catalogos.each do |e|
-        titulo=Catalogo.where(:nivel1 => e.catalogo.nivel1, :nivel2 => 1).first.descripcion
-        conservacion+="#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{titulo})</span>, "
-      end
-      conservacion.present? ? conservacion[0..-3] : conservacion
+    end
+
+    if conservacion.present?
+      I18n.locale.to_s == 'es-cientifico' ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" :
+          conservacion[0..-3]
+    else
+      conservacion
     end
   end
 
