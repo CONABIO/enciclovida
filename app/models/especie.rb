@@ -28,11 +28,11 @@ class Especie < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
-  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
+  scope :rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
-  #Los joins explicitos fueron necesarios ya que por default la sentencia es un RIGHT JOIN
+  #Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
   scope :nombres_comunes_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }

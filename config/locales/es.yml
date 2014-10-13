@@ -109,6 +109,17 @@ es:
       month: Mes
       second: Segundos
       year: Año
+  distribucion:
+    actual: Actual
+    cuasiendemica: Cuasiendémica
+    endemica: Endémica
+    introducida: Introducida
+    invasora: Invasora
+    localidad_tipo: Localidad tipo
+    nativa: Nativa
+    no_endemica: No endémica
+    original: Original
+    semiendemica: Semiendémica
   errors: &errors
     format: ! '%{attribute} %{message}'
     messages:

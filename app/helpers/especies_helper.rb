@@ -133,9 +133,9 @@ module EspeciesHelper
   def checkboxTipoDistribucion
     checkBoxes=''
     contador=0
-    TipoDistribucion.all.order('descripcion ASC').each do |tipoDist|
-      checkBoxes+='<br>' if contador == 3    #para darle un mejor espacio
-      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist.id}", tipoDist.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{tipoDist.descripcion}&nbsp;&nbsp;"
+    TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
+      checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
+      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist}", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}&nbsp;&nbsp;"
       contador+=1
     end
     checkBoxes.html_safe

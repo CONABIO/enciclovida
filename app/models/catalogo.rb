@@ -11,7 +11,6 @@ class Catalogo < ActiveRecord::Base
       id_inferior = (id/1000000)*1000000 + 1
       id_superior = (id/1000000)*1000000 + 999999
       edo_conservacion = Catalogo.where(:nivel1 => nivel1, :nivel2 => nivel2, :nivel3 => 0).where(:id => id_inferior..id_superior).first   #el nombre del edo. de conservacion
-      Rails.logger.info "---#{edo_conservacion.descripcion}---"
       edo_conservacion ? edo_conservacion.descripcion : nil
     else
       nil
