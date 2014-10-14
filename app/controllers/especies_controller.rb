@@ -180,8 +180,9 @@ class EspeciesController < ApplicationController
         end
 
       when 'avanzada'
-        busqueda = "Especie.select('especies.*, categorias_taxonomicas.nombre_categoria_taxonomica')"
+        busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
         joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
+        con_group = false
         arbol = []
 
         params.each do |key, value|  #itera sobre todos los campos
@@ -230,9 +231,10 @@ class EspeciesController < ApplicationController
             taxon = Especie.find(conID)
             arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
             cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-            arbolIDS = "\"'#{arbol.compact.flatten.join("','")}'\""
+            arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
             condiciones+= ".rango_valores('especies.id', #{arbolIDS})"
             condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+            con_group = true
           end
         else       # busquedas directas
           condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
@@ -249,9 +251,13 @@ class EspeciesController < ApplicationController
           end
         end
 
-        busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
-        Rails.logger.info "---#{busqueda}---"
-        @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
+        #Rails.logger.info "---#{busqueda}---"
+
+        @taxones = con_group ? eval(busqueda).order('nombre_cientifico ASC').group('especies.id', :nombre_cientifico, :nombre_comun_principal, :foto_principal, :categoria_taxonomica_id, :nombre_categoria_taxonomica).paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page) :
+            eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+      #Rails.logger.info "---#{@taxones.to_json}---"
       #@taxones=Especie.none
       #@resultado2= busqueda
       #@resultado=params

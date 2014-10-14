@@ -218,8 +218,8 @@ class Especie < ActiveRecord::Base
     end
   end
 
-  def species_or_lower?
-    SPECIES_OR_LOWER.include? categoria_taxonomica.nombre_categoria_taxonomica
+  def species_or_lower?(cat = nil)
+    SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
   #

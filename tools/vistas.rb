@@ -5,14 +5,15 @@ require 'tiny_tds'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Crea las vistas necesarias para la consulta desde Rails.
+Crea las vistas necesarias para la consulta desde Rails y crea las tablas
+que son una copia de las vistas para una rapida consulta
 
 *** Este script puede usarse tanto para crear las vistas como para borrarlas.
 
 
 Usage:
 
-  rails r tools/vistas.rb -d     #por default crea las vistas
+  rails r tools/vistas.rb -d         #por default crea las vistas
   rails r tools/vistas.rb -d drop    #para borrar las vistas
 
 where [options] are:
@@ -20,34 +21,46 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
+equivalencia =
+    {
+        'bibliografias' => 'Bibliografia',
+        'catalogos' => 'CatalogoNombre',
+        'categorias_taxonomicas' => 'CategoriaTaxonomica',
+        'especies' => 'Nombre',
+        'especies_bibliografias' => 'RelNombreBiblio',
+        'especies_catalogos' => 'RelNombreCatalogo',
+        'especies_estatuses' => 'Nombre_Relacion',
+        'especies_estatuses_bibliografias' => 'RelacionBibliografia',
+        'especies_regiones' => 'RelNombreRegion',
+        'estatuses' => 'Tipo_Relacion',
+        'nombres_comunes' => 'Nomcomun',
+        'nombres_regiones' => 'RelNomNomComunRegion',
+        'nombres_regiones_bibliografias' => 'RelNomNomcomunRegionBiblio',
+        'regiones' => 'Region',
+        'tipos_distribuciones' => 'TipoDistribucion',
+        'tipos_regiones' => 'TipoRegion',
+    }
 
-client = TinyTds::Client.new(:username => 'VIRTUALW8\beto', :password => '123', :host => '172.16.3.224', :port => '5050')
-#client = TinyTds::Client.new(:username => 'dgcc', :password => 'dgcc2014', :host => '200.12.166.180', :database => 'dgcc')#, :port => '5050')
+queriesVistas =
+    {
+        'bibliografias' => '',
+        'catalogos' => '',
+        'categorias_taxonomicas' => '',
+        'especies' => '',
+        'especies_bibliografias' => '',
+        'especies_catalogos' => '',
+        'especies_estatuses' => '',
+        #'especies_estatuses_bibliografias' => '',
+        'especies_regiones' => '',
+        'estatuses' => '',
+        'nombres_comunes' => '',
+        'nombres_regiones' => '',
+        'nombres_regiones_bibliografias' => '',
+        'regiones' => '',
+        'tipos_distribuciones' => '',
+        'tipos_regiones' => '',
+    }
 
-puts client.dead?    # => false
-puts client.closed?  # => false
-puts client.active?  # => true
-
-queryNombreBD = "select	substring(name,1,2) as ID, name as bd from sys.databases where name like '[0-9]%' order by name"
-
-equivalencia = {
-    'bibliografias' => 'Bibliografia',
-    'catalogos' => 'CatalogoNombre',
-    'categorias_taxonomicas' => 'CategoriaTaxonomica',
-    'especies' => 'Nombre',
-    'especies_bibliografias' => 'RelNombreBiblio',
-    'especies_catalogos' => 'RelNombreCatalogo',
-    'especies_estatuses' => 'Nombre_Relacion',
-    'especies_estatuses_bibliografias' => 'RelacionBibliografia',
-    'especies_regiones' => 'RelNombreRegion',
-    'estatuses' => 'Tipo_Relacion',
-    'nombres_comunes' => 'Nomcomun',
-    'nombres_regiones' => 'RelNomNomComunRegion',
-    'nombres_regiones_bibliografias' => 'RelNomNomcomunRegionBiblio',
-    'regiones' => 'Region',
-    'tipos_distribuciones' => 'TipoDistribucion',
-    'tipos_regiones' => 'TipoRegion',
-}
 
 def camTab
   camposTablas = {
@@ -200,49 +213,35 @@ def camTab
   }
 end
 
-queriesVistas = {
-    'bibliografias' => '',
-    'catalogos' => '',
-    'categorias_taxonomicas' => '',
-    'especies' => '',
-    'especies_bibliografias' => '',
-    'especies_catalogos' => '',
-    'especies_estatuses' => '',
-    'especies_estatuses_bibliografias' => '',
-    'especies_regiones' => '',
-    'estatuses' => '',
-    'nombres_comunes' => '',
-    'nombres_regiones' => '',
-    'nombres_regiones_bibliografias' => '',
-    'regiones' => '',
-    'tipos_distribuciones' => '',
-    'tipos_regiones' => '',
-}
 
 @id = ''
-res = client.execute(queryNombreBD)
 puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: DROP' : 'Ejecutando con argumento: CREATE (default)' if OPTS[:debug]
 
-res.each do |bd|
-  @id = bd['ID'].to_i*1000000
-  @base = "[#{CONFIG.bases[bd['ID'].to_i + 1]}].dbo.Nombre"
-
+CONFIG.bases.each do |base|
+  @id = (CONFIG.bases.index(base)+1)*1000000         #obtiene el numero a aumentarse por base
 
   camTab.each {|tabla, campos|
     if ARGV.any? { |e| e.downcase.include?('drop') }
-      queriesVistas[tabla] = bd['ID']=='01' ? "DROP VIEW #{tabla}" : " \n" + queriesVistas[tabla]+"\n"
+      queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "DROP VIEW #{tabla}_0" : " \n" + queriesVistas[tabla]+"\n"
     else
-      queriesVistas[tabla] = bd['ID']=='01' ? "CREATE VIEW #{tabla}\nAS\n" : queriesVistas[tabla]+" union \n"
-      queriesVistas[tabla]+= 'SELECT ' + campos.join(', ') +" FROM [#{bd['bd']}].dbo.#{equivalencia[tabla]}"
+      queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "CREATE VIEW #{tabla}_0\nAS\n" : queriesVistas[tabla]+" union \n"
+      queriesVistas[tabla]+= 'SELECT ' + campos.join(', ') +" FROM [#{base}].dbo.#{equivalencia[tabla]}"
     end
   }
 end
 
-res.cancel
-
 queriesVistas.each do |key,value|
   puts "Query: #{value}" if OPTS[:debug]
-  res = client.execute(value)
-  res.cancel
+  ActiveRecord::Base.connection.execute(value)
+
+  query = ''
+  if ARGV.any? { |e| e.downcase.include?('drop') }
+    query+= "DROP TABLE #{key}"
+  else
+    query+= "SELECT * INTO #{key} FROM #{key}_0"
+  end
+
+  ActiveRecord::Base.connection.execute(query)
+  puts "Query: #{query}" if OPTS[:debug]
 end
-client.close
+
