@@ -5,7 +5,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Completa el campo ancestry_ascendente_directo.
 
-*** Este script tiene que correrse cada vez que se ingresa una nueva base.
+*** Este script tiene que correrse cada vez que se ingresa una nueva base
 
 
 Usage:
@@ -37,6 +37,7 @@ def completa
         end
       end
 
+      e.evita_before_save = true        # evita el metodo before_save
       e.save
     else
       puts 'Es root' if OPTS[:debug]
@@ -44,7 +45,9 @@ def completa
   end
 end
 
-#antes de correr se tiene que comentar la linea de ancestry en el model
+#*******antes de correr se tiene que comentar la linea de ancestry en el model y la de before_save**********
+
+start_time = Time.now
 
 if ARGV.any?
   ARGV.each do |base|
@@ -61,3 +64,5 @@ else
     completa
   end
 end
+
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

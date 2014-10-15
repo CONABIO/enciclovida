@@ -3,7 +3,7 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Importa los nombres comunes de los taxones a la tabla especies para un manejo facil y rapido
+Importa los nombres comunes de los taxones a la tabla Nombre de una o mas bases para un manejo facil y rapido
 
 *** Este script es para poner el nombre comun principal en la tabla de especies
 
@@ -33,12 +33,13 @@ def nom_com_principal
         taxon.nombre_comun_principal = nc.nombre_comun
       end
     end
+
+    taxon.evita_before_save = true
     taxon.save if taxon.changed?
   end
 end
 
 start_time = Time.now
-puts 'Iniciando la importacion del nombre comun principal...' if OPTS[:debug]
 
 if ARGV.any?
   ARGV.each do |base|
@@ -56,4 +57,4 @@ else
   end
 end
 
-puts "Termino la importacion del nombre comun en #{Time.now - start_time} seg" if OPTS[:debug]
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

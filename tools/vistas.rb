@@ -1,7 +1,6 @@
 #! /usr/local/bin/ruby
 require 'rubygems'
 require 'trollop'
-require 'tiny_tds'
 
 OPTS = Trollop::options do
   banner <<-EOS
@@ -132,21 +131,21 @@ def camTab
                                "FechaCaptura as created_at",
                                "FechaModificacion as updated_at"
       ],
-      'especies_estatuses' => ["#{@id}+IdNombre as especie_id1",
+      'especies_status' => ["#{@id}+IdNombre as especie_id1",
                                "#{@id}+IdNombreRel as especie_id2",
                                "#{@id}+IdTipoRelacion as estatus_id",
                                "Observaciones as observaciones",
                                "FechaCaptura as created_at",
                                "FechaModificacion as updated_at"
       ],
-      #'especies_estatuses_bibliografias' => ["#{@id}+IdNombre as especie_id1",
-      #                                       "IdNombreRel as estatus_id2",
-      #                                       "#{@id}+IdTipoRelacion",
-      #                                       "#{@id}+IdBibliografia",
-      #                                       "Observaciones as observaciones",
-      #                                       "FechaCaptura as created_at",
-      #                                       "FechaModificacion as updated_at"
-      #],
+      'especies_status_bibliografias' => ["#{@id}+IdNombre as especie_id1",
+                                             "IdNombreRel as estatus_id2",
+                                             "#{@id}+IdTipoRelacion",
+                                             "#{@id}+IdBibliografia",
+                                             "Observaciones as observaciones",
+                                             "FechaCaptura as created_at",
+                                             "FechaModificacion as updated_at"
+      ],
       'especies_regiones' => ["#{@id}+IdNombre as especie_id",
                               "#{@id}+IdRegion as region_id",
                               "#{@id}+IdTipoDistribucion as tipo_distribucion_id",
@@ -154,7 +153,7 @@ def camTab
                               "FechaCaptura as created_at",
                               "FechaModificacion as updated_at"
       ],
-      'estatuses' => ["#{@id}+IdTipoRelacion as id",
+      'status' => ["#{@id}+IdTipoRelacion as id",
                       "Descripcion as descripcion",
                       "Nivel1 as nivel1",
                       "Nivel2 as nivel2",
@@ -213,6 +212,7 @@ def camTab
   }
 end
 
+start_time = Time.now
 
 @id = ''
 puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: DROP' : 'Ejecutando con argumento: CREATE (default)' if OPTS[:debug]
@@ -241,7 +241,8 @@ queriesVistas.each do |key,value|
     query+= "SELECT * INTO #{key} FROM #{key}_0"
   end
 
-  ActiveRecord::Base.connection.execute(query)
+  ActiveRecord::Base.connection.execute(query)   #para las tablas del volcado
   puts "Query: #{query}" if OPTS[:debug]
 end
 
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

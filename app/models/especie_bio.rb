@@ -7,7 +7,10 @@ class EspecieBio < ActiveRecord::Base
   alias_attribute :categoria_taxonomica_id, :IdCategoriaTaxonomica
   alias_attribute :nombre, :Nombre
   alias_attribute :id_nombre_ascendente, :IdNombreAscendente
-  alias_attribute :id_nombre_ascendente, :IdAscendObligatorio
+  alias_attribute :id_ascend_obligatorio, :IdAscendObligatorio
+
+  #esto es cuando se corre un script desde consola
+  cattr_accessor :evita_before_save
 
   has_one :proveedor
   belongs_to :categoria_taxonomica, :class_name => 'CategoriaTaxonomicaBio', :foreign_key => 'IdCategoriaTaxonomica'
@@ -51,7 +54,7 @@ class EspecieBio < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  before_save :ponNombreCientifico
+  before_save :ponNombreCientifico, :unless => :evita_before_save
 
   WillPaginate.per_page = 10
   self.per_page = WillPaginate.per_page
@@ -347,20 +350,20 @@ class EspecieBio < ActiveRecord::Base
   def ponNombreCientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
       when 'especie'
-        self.nombre_cientifico = "#{encuentra_genero('genero')} #{nombre}"
+        self.nombre_cientifico = "#{encuentra('genero')} #{nombre}"
       when 'subespecie', 'variedad', 'forma'
-        self.nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{nombre}"
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{nombre}"
       when 'subvariedad'
-        self.nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{encuentra_genero('variedad')} #{nombre}"
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('variedad')} #{nombre}"
       when 'subforma'
-        self.nombre_cientifico = "#{encuentra_genero('genero')} #{encuentra_genero('especie')} #{encuentra_genero('forma')} #{nombre}"
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('forma')} #{nombre}"
       else
         self.nombre_cientifico = nombre
     end
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
-  def encuentra_genero(cat)
+  def encuentra(cat)
     ancestor_ids.reverse.each do |a|
       tax = EspecieBio.find(a)
       return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat

@@ -1,7 +1,6 @@
 #! /usr/local/bin/ruby
 require 'rubygems'
 require 'trollop'
-require 'tiny_tds'
 
 OPTS = Trollop::options do
   banner <<-EOS
@@ -12,33 +11,27 @@ Pone los campos que hacen falta en las tablas correspondientes, para cada base.
 
 Usage:
 
-  rails r tools/atributos_adicionales.rb -d     #por default crea los campos adicionales
-  rails r tools/atributos_adicionales.rb -d drop    #para borrar los campos adicionales
+  rails r tools/atributos_adicionales.rb -d create    #para crear los campos adicionales en todas las bases
+  rails r tools/atributos_adicionales.rb -d drop      #para borrar los campos adicionales en todas las bases
 
+  rails r tools/atributos_adicionales.rb -d create 03-Hongos-Sept14    #para crear los campos adicionales en una o mas bases en especifico
+  rails r tools/atributos_adicionales.rb -d drop 03-Hongos-Sept14      #para borrar los campos adicionales en una o mas bases en especifico
 where [options] are:
   EOS
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-client = TinyTds::Client.new(:username => 'VIRTUALW8\beto', :password => '123', :host => '172.16.3.224', :port => '5050')
-
-puts client.dead?    # => false
-puts client.closed?  # => false
-puts client.active?  # => true
-
-queryNombreBD = "select	substring(name,1,2) as ID, name as bd from sys.databases where name like '[0-9]%' order by name"
-
-equivalencia = {
+@equivalencia = {
     'bibliografias' => 'Bibliografia',
     'catalogos' => 'CatalogoNombre',
     'categorias_taxonomicas' => 'CategoriaTaxonomica',
     'especies' => 'Nombre',
     'especies_bibliografias' => 'RelNombreBiblio',
     'especies_catalogos' => 'RelNombreCatalogo',
-    'especies_estatuses' => 'Nombre_Relacion',
-    'especies_estatuses_bibliografias' => 'RelacionBibliografia',
+    'especies_status' => 'Nombre_Relacion',
+    'especies_status_bibliografias' => 'RelacionBibliografia',
     'especies_regiones' => 'RelNombreRegion',
-    'estatuses' => 'Tipo_Relacion',
+    'status' => 'Tipo_Relacion',
     'nombres_comunes' => 'NomComun',
     'nombres_regiones' => 'RelNomNomComunRegion',
     'nombres_regiones_bibliografias' => 'RelNomNomcomunRegionBiblio',
@@ -47,7 +40,7 @@ equivalencia = {
     'tipos_regiones' => 'TipoRegion',
 }
 
-adicionales = {
+@campos = {
     'especies' =>
         {
             'nombre_cientifico' =>  'varchar(255) NULL,',
@@ -55,39 +48,57 @@ adicionales = {
             'ancestry_ascendente_obligatorio' => 'varchar(255) NULL,',
             'nombre_comun_principal' => 'varchar(255) NULL,',
             'foto_principal' => 'varchar(255) NULL,',
+        },
+    'regiones' =>
+        {
+            'ancestry' => 'varchar(255) NULL,',
         }
 }
 
-res = client.execute(queryNombreBD)
-res.to_json      #con esto puedo seguir utilizando res sin cancelar la conexion, bug
+def accion_a_campos(accion)
+  @campos.each do |tabla, campos|
+    query = ''
 
-res.each do |bd|
-  puts "Con base: #{bd['bd']}" if OPTS[:debug]
-  query= ''
-
-  adicionales.each do |tabla, campos|
-    if ARGV.any? { |e| e.downcase.include?('drop') }
-      puts 'Ejecutando con argumento: DROP' if OPTS[:debug]
-      query+= "ALTER TABLE [#{bd['bd']}].dbo.#{equivalencia[tabla]} DROP COLUMN "
-
-      campos.each do |campo, valor|
-        query+= "#{campo},"
-      end
-
-    else
-      puts 'Ejecutando con argumento: ADD (default)' if OPTS[:debug]
-      query+= "ALTER TABLE [#{bd['bd']}].dbo.#{equivalencia[tabla]} ADD "
+    if accion == 'create'
+      puts 'Ejecutando con argumento: create' if OPTS[:debug]
+      query+= "ALTER TABLE #{@equivalencia[tabla]} ADD "
 
       campos.each do |campo, valor|
         query+= "#{campo} #{valor}"
       end
-    end
-  end
+    else
+      puts 'Ejecutando con argumento: drop' if OPTS[:debug]
+      query+= "ALTER TABLE #{@equivalencia[tabla]} DROP COLUMN "
 
-  puts "Query: #{query[0..-2]}" if OPTS[:debug]
-  resul = client.execute(query[0..-2])
-  resul.cancel
+      campos.each do |campo, valor|
+        query+= "#{campo},"
+      end
+    end
+
+    ActiveRecord::Base.connection.execute(query[0..-2])
+    puts "Query: #{query[0..-2]}" if OPTS[:debug]
+  end
 end
 
-res.cancel
-client.close
+start_time = Time.now
+acciones = %w(create drop)                #posibles acciones
+if ARGV.any? && acciones.include?(ARGV[0].downcase)
+  if ARGV.count > 1
+    ARGV.each_with_index do |base, index|
+      next if index == 0
+      if CONFIG.bases.include?(base)
+        ActiveRecord::Base.establish_connection base
+        puts "Con base: #{base}" if OPTS[:debug]
+        accion_a_campos(ARGV[0].downcase)
+      end
+    end
+  elsif ARGV.count == 1
+    CONFIG.bases.each do |base|
+      ActiveRecord::Base.establish_connection base
+      puts "Con base: #{base}" if OPTS[:debug]
+      accion_a_campos(ARGV[0].downcase)
+    end
+  end
+end
+
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

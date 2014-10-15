@@ -3,7 +3,7 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Exporta los ID'S dados los nombres de los taxones.
+Exporta los ID'S dados los nombres de los taxones de la base de everardo.
 
 *** Este script es para llenar la base de Everardo
 
@@ -62,7 +62,7 @@ def read_file(filename)
 end
 
 start_time = Time.now
-puts 'Iniciando la expotacion de .CSV' if OPTS[:debug]
+
 return unless ARGV.any?
 name = ARGV.first
 path = "tools/#{name}"
@@ -78,4 +78,4 @@ Dir["#{path}/*.csv"].map{ |arch| arch.split('/').last }.each do |csv|
   read_file "#{path}/#{csv}"
 end
 
-puts "Termino la exportación de archivos .csv en #{Time.now - start_time} seg" if OPTS[:debug]
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

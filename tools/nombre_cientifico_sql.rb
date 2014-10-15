@@ -5,7 +5,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Completa el campo nombre_cientifico .
 
-*** Este script completa el nombre cientifico de acuerdo a la categoria taxonomica
+*** Este script completa el nombre cientifico de acuerdo a la categoria taxonomica.
 Correr despues de tener el campo ancestry_ascendente_obligatorio listo
 
 Usage:
@@ -28,6 +28,8 @@ def completa
   end
 end
 
+start_time = Time.now
+
 if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
@@ -43,3 +45,5 @@ else
     completa
   end
 end
+
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

@@ -22,7 +22,7 @@ def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
     puts e.nombre if OPTS[:debug]
     if e.id_ascend_obligatorio != e.id
-      e.ancestry_ascendente_obligatorio="#{e.Iid_ascend_obligatorio}"
+      e.ancestry_ascendente_obligatorio="#{e.id_ascend_obligatorio}"
       valor=true
       id=e.id_ascend_obligatorio
 
@@ -37,12 +37,15 @@ def completa
         end
       end
 
+      e.evita_before_save = true        # evita el metodo before_save
       e.save
     else
       puts 'Es root' if OPTS[:debug]
     end
   end
 end
+
+start_time = Time.now
 
 if ARGV.any?
   ARGV.each do |base|
@@ -58,3 +61,5 @@ else
     completa
   end
 end
+
+puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
