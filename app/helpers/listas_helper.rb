@@ -29,13 +29,15 @@ module ListasHelper
   end
 
   def despliegaLista(lista)
+    info = []
+    taxones = ''
     columnas = lista.columnas.split(',').compact
     nombresComunesColumnas = ListasHelper.nombreComunAtributos(lista).gsub(',', '<b> - </b>')
-    info ||= []
-    taxones ||= ''
 
-    Especie.find(lista.cadena_especies.split(',')).each do |taxon|
-      info << taxon.attributes.values_at(*columnas)
+    if lista.cadena_especies.present?
+      Especie.find(lista.cadena_especies.split(',')).each do |taxon|
+        info << taxon.attributes.values_at(*columnas)
+      end
     end
 
     info.each_with_index() do |i|
