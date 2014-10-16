@@ -3,3 +3,4 @@ module Limpia
     cad.gsub(/(\r\n|\r|\n)/, '').gsub('"', "\"")                                    #quita los saltos de linea de windows y escapa las dobles comillas
   end
 end
+
