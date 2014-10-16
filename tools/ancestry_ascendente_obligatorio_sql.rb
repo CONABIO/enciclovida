@@ -22,7 +22,7 @@ def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
     puts e.nombre if OPTS[:debug]
     if e.id_ascend_obligatorio != e.id
-      e.ancestry_ascendente_obligatorio="#{e.id_ascend_obligatorio}"
+      e.ancestry_ascendente_obligatorio = e.id_ascend_obligatorio
       valor=true
       id=e.id_ascend_obligatorio
 

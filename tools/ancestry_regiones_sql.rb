@@ -3,15 +3,15 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Completa el campo ancestry_ascendente_directo.
+Completa el campo ancestry.
 
 *** Este script tiene que correrse cada vez que se ingresa una nueva base
 
 
 Usage:
 
-  rails r tools/ancestry_ascendente_directo_sql.rb -d
-  rails r tools/ancestry_ascendente_directo_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+  rails r tools/ancestry_regiones_sql.rb -d
+  rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 where [options] are:
   EOS
@@ -19,31 +19,31 @@ where [options] are:
 end
 
 def completa
-  EspecieBio.order('Nombre ASC').find_each do |e|
-    puts e.nombre if OPTS[:debug]
-    if e.id_nombre_ascendente != e.id
-      e.ancestry_ascendente_directo = e.id_nombre_ascendente
+  RegionBio.find_each do |r|
+    puts r.nombre_region if OPTS[:debug]
+    if r.id_region_asc != r.id
+      r.ancestry=r.id_region_asc
       valor=true
-      id=e.id_nombre_ascendente
+      id=r.id_region_asc
 
       while valor do
-        subEsp=EspecieBio.find(id)
+        subReg=RegionBio.find(id)
 
-        if subEsp.id_nombre_ascendente == subEsp.id
+        if subReg.id_region_asc == subReg.id
           valor=false
         else
-          e.ancestry_ascendente_directo="#{subEsp.id_nombre_ascendente}/#{e.ancestry_ascendente_directo}"
-          id=subEsp.id_nombre_ascendente
+          r.ancestry="#{subReg.id_region_asc}/#{r.ancestry}"
+          id=subReg.id_region_asc
         end
       end
 
-      e.evita_before_save = true        # evita el metodo before_save
-      e.save
+      r.save
     else
       puts 'Es root' if OPTS[:debug]
     end
   end
 end
+
 
 #*******antes de correr se tiene que comentar la linea de ancestry en el model**********
 
