@@ -7,11 +7,16 @@ class Region < ActiveRecord::Base
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'region_id'
   has_ancestry
 
-  scope :regiones_principales, ->(id) { where(:tipo_region_id => id).where("nombre_region != 'ND'").order(:nombre_region) }
-  scope :regiones_especificas, lambda {|id|
-    region=find(id)
-    region.children.where("nombre_region != 'ND'").order(:nombre_region)
-  }
+  def self.regiones_principales(id)
+    limites = Bases.limites(1000000)  #por default toma la primera
+    id_inferior = limites[:limite_inferior]
+    id_superior = limites[:limite_superior]
+    where(:tipo_region_id => id, :id => id_inferior..id_superior).where("nombre_region != 'ND'").order(:nombre_region)
+  end
+
+  def regiones_especificas
+    children.where("nombre_region != 'ND'").order(:nombre_region)
+  end
 
   def personalizaBusqueda
     if self.ancestry.present?

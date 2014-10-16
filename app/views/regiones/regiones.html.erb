@@ -1,1 +1,1 @@
-<%= select_tag("distribucion_nivel_#{@nivel}", options_from_collection_for_select(@regiones, :id, :nombre_region), :prompt => :TODOS) if @regiones.present? %>
+<%= select_tag("distribucion_nivel_#{@nivel+1}", options_from_collection_for_select(@regiones, :id, :nombre_region), :prompt => :TODOS) if @regiones.present? %>

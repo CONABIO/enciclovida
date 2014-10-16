@@ -63,25 +63,26 @@ class RegionesController < ApplicationController
   end
 
   def regiones
-    @nivel=params[:region_nivel].to_i + 1
-    case @nivel
+    @nivel=params[:region_nivel].to_i
+    @regiones = case @nivel
       when 1
-        @regiones=Region.regiones_principales(params[:region])
+        Region.regiones_principales(params[:region])
       when 2, 3
-        @regiones=Region.regiones_especificas(params[:region])
+        region = Region.find(params[:region])
+        region.regiones_especificas
       else
         nil
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_region
-      @region = Region.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_region
+    @region = Region.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def region_params
-      params[:region]
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def region_params
+    params[:region]
+  end
 end

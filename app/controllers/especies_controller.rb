@@ -180,9 +180,9 @@ class EspeciesController < ApplicationController
         end
 
       when 'avanzada'
+        #Es necesario hacer un index con estos campos para aumentar la velocidad
         busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
         joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
-        con_group = false
         arbol = []
 
         params.each do |key, value|  #itera sobre todos los campos
@@ -234,7 +234,6 @@ class EspeciesController < ApplicationController
             arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
             condiciones+= ".rango_valores('especies.id', #{arbolIDS})"
             condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-            con_group = true
           end
         else       # busquedas directas
           condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
@@ -243,19 +242,21 @@ class EspeciesController < ApplicationController
 
         #parte de la distribucion (lugares)
         if params[:distribucion_nivel_1].present?
-          joins+= '.especies_regiones_join.region_join'
           if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
-            condiciones+= '.' + tipoDeBusqueda(3, 'regiones.id', params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
+            joins+= '.especies_regiones_join.region_join'
+            region = Region.find(params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
+            condiciones+= '.' + tipoDeBusqueda(3, 'regiones.nombre_region', region.nombre_region)
           else
-            condiciones+= '.' + tipoDeBusqueda(3, 'tipo_region_id', params[:distribucion_nivel_1])
+            joins+= '.especies_regiones_join.region_join.tipo_region_join'
+            tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
+            condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
           end
         end
 
         busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
         #Rails.logger.info "---#{busqueda}---"
 
-        @taxones = con_group ? eval(busqueda).order('nombre_cientifico ASC').group('especies.id', :nombre_cientifico, :nombre_comun_principal, :foto_principal, :categoria_taxonomica_id, :nombre_categoria_taxonomica).paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page) :
-            eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
       #Rails.logger.info "---#{@taxones.to_json}---"
       #@taxones=Especie.none
