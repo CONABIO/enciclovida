@@ -4,11 +4,13 @@
 # page for the service.
 
 base: &base
-
+    #bases para la administracion
+    bases: [01-Proctoctistas, 02-Arthropoda, 03-Crustacea, 04-Diptera, 05-Hongos, 06-Echinodermata, 07-Invertebrados, 08-Moluscos, 09-Plantas, 10-Vertebrados]    #prueba
+    #bases: [01-Echinodermata-Sept14, 02-Crustacea-Sept14, 03-Hongos-Sept14, 04-Invertebrados-Sept14, 05-Moluscos-Sept14, 06-Plantas-Sept14, 07-Proctoctistas-Sept14, 08-Vertebrados-Sept14]
     ip: localhost
-    port: 3000
+    port: tu_port
     # url of the site
-    site_url: http://localhost:3000/
+    site_url: http://localhost:tu_port/
 
     # name of the site, used extensively within the app
     site_name: Administrador de información sobre las especies
@@ -95,7 +97,7 @@ base: &base
     # species descriptions from these sources in this order, trying the next
     # if one fails. You can see all the available describers in
     # lib/taxon_describers/lib/taxon_describers
-    taxon_describers: [conabio, eoles, wikipediaes, eol, wikipedia]
+    taxon_describers: [conabio, wikipediaes, eoles, eol, wikipedia]
     photo_providers: [flickr, eol, wikimedia]
 
     # If you'd prefer the default taxon ranges to come from a particular Source, set the source ID here

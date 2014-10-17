@@ -1,8 +1,11 @@
-class NombreComun < ActiveRecord::Base
+class NombreComunBio < ActiveRecord::Base
 
-  self.table_name='nombres_comunes'
-  self.primary_key = 'id'
+  self.table_name='NomComun'
+  self.primary_key='IdNomComun'
 
+  alias_attribute :id, :IdNomComun
+  alias_attribute :lengua, :Lengua
+  alias_attribute :nombre_comun, :NomComun
 
   has_many :nombres_regiones, :class_name => 'NombreRegion'
   has_many :especies, :through => :nombres_regiones, :class_name => 'Especie'
@@ -17,11 +20,6 @@ class NombreComun < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :nom_com, -> { especies_join.categoria_taxonomica_join }
 
-  SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
-
-  def species_or_lower?
-    SPECIES_OR_LOWER.include? nombre_categoria_taxonomica
-  end
 
   def personalizaBusqueda
     "#{self.nombre_comun} (#{self.lengua})".html_safe

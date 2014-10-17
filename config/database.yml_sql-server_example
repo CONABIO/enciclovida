@@ -1,0 +1,33 @@
+login: &login
+  adapter: sqlserver
+  pool: 5
+  username: tu_usuario
+  password: tu_passwd
+  host: tu_host
+  port: 5050
+
+development:
+  <<: *login
+  timeout: 200
+
+test:
+  <<: *login
+  timeout: 200
+
+production:
+  <<: *login
+  timeout: 5
+
+
+#conexiones para cada base
+<% CONFIG.bases.each do |base| %>
+<%= base %>:
+  <<: *login
+  database: <%= base %>
+  timeout: 5
+<% end %>
+
+
+
+
+

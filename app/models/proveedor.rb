@@ -1,3 +1,3 @@
 class Proveedor < ActiveRecord::Base
-  self.primary_key = :especie_id
+  self.primary_key = 'id'
 end

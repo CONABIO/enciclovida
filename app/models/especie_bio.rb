@@ -1,15 +1,24 @@
-class Especie < ActiveRecord::Base
+class EspecieBio < ActiveRecord::Base
 
-  self.table_name='especies'
-  self.primary_key='id'
+  self.table_name='Nombre'
+  self.primary_key='IdNombre'
+
+  alias_attribute :id, :IdNombre
+  alias_attribute :categoria_taxonomica_id, :IdCategoriaTaxonomica
+  alias_attribute :nombre, :Nombre
+  alias_attribute :id_nombre_ascendente, :IdNombreAscendente
+  alias_attribute :id_ascend_obligatorio, :IdAscendObligatorio
+
+  #esto es cuando se corre un script desde consola
+  cattr_accessor :evita_before_save
 
   has_one :proveedor
-  belongs_to :categoria_taxonomica
+  belongs_to :categoria_taxonomica, :class_name => 'CategoriaTaxonomicaBio', :foreign_key => 'IdCategoriaTaxonomica'
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
-  has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
+  has_many :nombres_regiones, :class_name => 'NombreRegionBio', :foreign_key => 'IdNombre', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_status, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
@@ -28,16 +37,15 @@ class Especie < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
-  scope :rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
+  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
-  #Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
+  #Los joins explicitos fueron necesarios ya que por default la sentencia es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
   scope :nombres_comunes_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
   scope :region_join, -> { joins('LEFT JOIN regiones ON regiones.id=especies_regiones.region_id') }
-  scope :tipo_region_join, -> { joins('LEFT JOIN tipos_regiones ON tipos_regiones.id=regiones.tipo_region_id') }
   scope :tipo_distribucion_join, -> { joins('LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id') }
   scope :caso_nombre_bibliografia, -> { joins('LEFT JOIN nombres_regiones_bibliografias ON nombres_regiones_bibliografias.especie_id=especie.id').
       joins('LEFT JOIN bibliografias ON bibliografias.id=nombres_regiones_bibliografias.bibliografia_id') }
@@ -46,7 +54,7 @@ class Especie < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  before_save :ponNombreCientifico
+  before_save :ponNombreCientifico, :unless => :evita_before_save
 
   WillPaginate.per_page = 10
   self.per_page = WillPaginate.per_page
@@ -59,8 +67,8 @@ class Especie < ActiveRecord::Base
   ]
 
   ESTATUS_SIMBOLO = {
-      2 => '',
-      1 =>''
+      2 => '2',
+      1 =>'1'
   }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
@@ -219,8 +227,67 @@ class Especie < ActiveRecord::Base
     end
   end
 
-  def species_or_lower?(cat = nil)
-    SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
+  def species_or_lower?
+    SPECIES_OR_LOWER.include? categoria_taxonomica.nombre_categoria_taxonomica
+  end
+
+  def self.dameIdsDelNombre(nombre, tipo=nil)
+    identificadores=''
+
+    sentencia="SELECT nr.especie_id AS ids FROM nombres_regiones nr
+    LEFT JOIN nombres_comunes nc ON nc.id=nr.nombre_comun_id
+    WHERE lower_unaccent(nc.nombre_comun) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')"
+
+    sentencia+="UNION SELECT e.id from especies e WHERE lower_unaccent(e.nombre) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')" if tipo.nil?
+
+    sentencia=Especie.find_by_sql(sentencia)
+
+    sentencia.each do |i|
+      identificadores+="#{i.ids}, "
+    end
+
+    identificadores[0..-3]
+  end
+
+
+  def self.dameIdsDeLaRegion(nombre)
+    identificadores=''
+    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
+                              LEFT JOIN regiones r ON er.region_id=r.id
+                              WHERE lower_unaccent(r.nombre_region) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
+      identificadores+="#{i.ids}, "
+    end
+    identificadores[0..-3]
+  end
+
+
+  def self.dameIdsDeLaDistribucion(distribucion)
+    identificadores=''
+    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
+                                    WHERE tipo_distribucion_id=#{distribucion} ORDER BY ids;").each do |i|
+      identificadores+="#{i.ids}, "
+    end
+    identificadores[0..-3]
+  end
+
+  def self.dameIdsDeConservacion(nombre)
+    identificadores=''
+    Especie.find_by_sql("SELECT DISTINCT ec.especie_id AS ids FROM especies_catalogos ec
+                              LEFT JOIN catalogos c ON ec.catalogo_id=c.id
+                              WHERE lower_unaccent(c.descripcion) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
+      identificadores+="#{i.ids}, "
+    end
+    identificadores[0..-3]
+  end
+
+  def self.dameIdsCategoria(categoria, id)
+    identificadores=''
+    Especie.find(id).descendant_ids.each do |des|
+      if Especie.find(des).categoria_taxonomica_id == categoria.to_i
+        identificadores+="#{des}, "
+      end
+    end
+    identificadores[0..-3]
   end
 
   #
@@ -281,20 +348,25 @@ class Especie < ActiveRecord::Base
   private
 
   def ponNombreCientifico
-    case self.categoria_taxonomica_id
-      when 19, 50 #para especies
-        generoID=self.ancestry_ascendente_obligatorio.split('/').last
-        genero=Especie.find(generoID.to_i).nombre
-        self.nombre_cientifico="#{genero} #{self.nombre}"
-      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=self.ancestry_ascendente_obligatorio.split('/')[5]
-        genero=Especie.find(generoID).nombre
-        especieID=self.ancestry_ascendente_obligatorio.split('/')[6]
-        especie=Especie.find(especieID).nombre
-        self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
+    case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
+      when 'especie'
+        self.nombre_cientifico = "#{encuentra('genero')} #{nombre}"
+      when 'subespecie', 'variedad', 'forma'
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{nombre}"
+      when 'subvariedad'
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('variedad')} #{nombre}"
+      when 'subforma'
+        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('forma')} #{nombre}"
       else
-        self.nombre_cientifico=self.nombre
+        self.nombre_cientifico = nombre
     end
+    self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
+  def encuentra(cat)
+    ancestor_ids.reverse.each do |a|
+      tax = EspecieBio.find(a)
+      return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
+    end
+  end
 end
