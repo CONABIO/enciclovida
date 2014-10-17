@@ -40,6 +40,11 @@
     <% else %>
         <li><%= link_to 'Inicia sesi&oacute;n'.html_safe, inicia_sesion_usuarios_url %></li>
     <% end %>
+    <% if I18n.locale.to_s == 'es-cientifico' %>
+        <li><%= link_to '[vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
+    <% else %>
+        <li><%= link_to '[vista de curador]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+    <% end %>
   </ul>
 </div>
 

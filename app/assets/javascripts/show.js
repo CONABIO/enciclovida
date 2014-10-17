@@ -154,7 +154,7 @@ $(document).ready(function(){
       })
     }
   });
-})
+});
 
 function getDescription(url) {
   $.ajax({
@@ -164,6 +164,7 @@ function getDescription(url) {
       $('.taxon_description').loadingShades()
     },
     success: function(data, status) {
+        console.log(data);
       $('.taxon_description').replaceWith(data);
       $('.taxon_description select').change(function() {
         getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())

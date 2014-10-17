@@ -51,7 +51,6 @@ class Usuario < ActiveRecord::Base
   end
 
   def comparaContrasenia
-    errors.add(:confirma_contrasenia, "debe ser la misma que la confrimación") if self.contrasenia != self.confirma_contrasenia
+    errors.add(:confirma_contrasenia, 'debe ser la misma que la confrimación') if self.contrasenia != self.confirma_contrasenia
   end
-
 end

@@ -85,8 +85,13 @@ class ApplicationController < ActionController::Base
     str == 'true' ? true : false
   end
 
+  def dameLocaleFiltro
+    filtro = Filtro.where(:sesion => request.session_options[:id])
+    filtro.first ? filtro.first.locale : nil
+  end
+
   def set_locale
-    I18n.locale = params[:locale] || dameObjUsuario.try(:locale) || I18n.default_locale
+    I18n.locale = params[:locale] || dameObjUsuario.try(:locale) || dameLocaleFiltro || I18n.default_locale
     I18n.locale = dameObjUsuario.try(:locale) if I18n.locale.blank?
     I18n.locale = I18n.default_locale if I18n.locale.blank?
   end

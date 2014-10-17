@@ -9,13 +9,13 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_estatuses, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_status, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC NULLS LAST, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
-  has_ancestry :ancestry_column => :ancestry_acendente_directo
+  has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -222,65 +222,6 @@ class Especie < ActiveRecord::Base
     SPECIES_OR_LOWER.include? categoria_taxonomica.nombre_categoria_taxonomica
   end
 
-  def self.dameIdsDelNombre(nombre, tipo=nil)
-    identificadores=''
-
-    sentencia="SELECT nr.especie_id AS ids FROM nombres_regiones nr
-    LEFT JOIN nombres_comunes nc ON nc.id=nr.nombre_comun_id
-    WHERE lower_unaccent(nc.nombre_comun) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')"
-
-    sentencia+="UNION SELECT e.id from especies e WHERE lower_unaccent(e.nombre) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%')" if tipo.nil?
-
-    sentencia=Especie.find_by_sql(sentencia)
-
-    sentencia.each do |i|
-      identificadores+="#{i.ids}, "
-    end
-
-    identificadores[0..-3]
-  end
-
-
-  def self.dameIdsDeLaRegion(nombre)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
-                              LEFT JOIN regiones r ON er.region_id=r.id
-                              WHERE lower_unaccent(r.nombre_region) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-
-  def self.dameIdsDeLaDistribucion(distribucion)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT er.especie_id AS ids FROM especies_regiones er
-                                    WHERE tipo_distribucion_id=#{distribucion} ORDER BY ids;").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-  def self.dameIdsDeConservacion(nombre)
-    identificadores=''
-    Especie.find_by_sql("SELECT DISTINCT ec.especie_id AS ids FROM especies_catalogos ec
-                              LEFT JOIN catalogos c ON ec.catalogo_id=c.id
-                              WHERE lower_unaccent(c.descripcion) LIKE lower_unaccent('%#{nombre.gsub("'",  "''")}%') ORDER BY ids").each do |i|
-      identificadores+="#{i.ids}, "
-    end
-    identificadores[0..-3]
-  end
-
-  def self.dameIdsCategoria(categoria, id)
-    identificadores=''
-    Especie.find(id).descendant_ids.each do |des|
-      if Especie.find(des).categoria_taxonomica_id == categoria.to_i
-        identificadores+="#{des}, "
-      end
-    end
-    identificadores[0..-3]
-  end
-
   #
   # Fetches associated user-selected FlickrPhotos if they exist, otherwise
   # gets the the first :limit Create Commons-licensed photos tagged with the
@@ -290,11 +231,11 @@ class Especie < ActiveRecord::Base
   def photos_with_backfill(options = {})
     options[:limit] ||= 9
     chosen_photos = taxon_photos.includes(:photo).order('taxon_photos.position ASC NULLS LAST, taxon_photos.id ASC').limit(options[:limit]).map{|tp| tp.photo}
-        if chosen_photos.size < options[:limit]
+    if chosen_photos.size < options[:limit]
       new_photos = Photo.includes({:taxon_photos => :especie}).
           order("taxon_photos.id ASC").
           limit(options[:limit] - chosen_photos.size).
-          where("especies.ancestry_acendente_directo LIKE '#{ancestry_acendente_directo}/#{id}%'")#.includes()
+          where("especies.ancestry_ascendente_directo LIKE '#{ancestry_ascendente_directo}/#{id}%'")#.includes()
       if new_photos.size > 0
         new_photos = new_photos.where("photos.id NOT IN (?)", chosen_photos)
       end
@@ -341,13 +282,13 @@ class Especie < ActiveRecord::Base
   def ponNombreCientifico
     case self.categoria_taxonomica_id
       when 19, 50 #para especies
-        generoID=self.ancestry_acendente_obligatorio.split('/').last
+        generoID=self.ancestry_ascendente_obligatorio.split('/').last
         genero=Especie.find(generoID.to_i).nombre
         self.nombre_cientifico="#{genero} #{self.nombre}"
       when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=self.ancestry_acendente_obligatorio.split('/')[5]
+        generoID=self.ancestry_ascendente_obligatorio.split('/')[5]
         genero=Especie.find(generoID).nombre
-        especieID=self.ancestry_acendente_obligatorio.split('/')[6]
+        especieID=self.ancestry_ascendente_obligatorio.split('/')[6]
         especie=Especie.find(especieID).nombre
         self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
       else

@@ -1,11 +1,11 @@
 class UsuariosController < ApplicationController
-  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar]
+  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar, :cambia_locale]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   before_action :only => [:index, :edit, :update, :destroy] do |c|
     c.tienePermiso? @usuario.id
   end
 
-  layout :false, :only => [:filtros, :limpiar]
+  layout :false, :only => [:filtros, :limpiar, :cambia_locale]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -100,6 +100,24 @@ class UsuariosController < ApplicationController
 
   def limpiar
     @filtro=Filtro.consulta(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil)
+  end
+
+  def cambia_locale       #decide en donde gaurdar el locale
+    return if params[:locale].blank? || !I18n.available_locales.map{ |loc| loc.to_s }.include?(params[:locale])
+    if session[:usuario].present?
+      begin
+        usuario = Usuario.find(session[:usuario])
+        usuario.locale = params[:locale]
+        @res = true if usuario.save
+      rescue
+      end
+    else
+      filtro = Filtro.where(:sesion => request.session_options[:id])
+      if filtro
+        filtro.first.locale = params[:locale]
+        filtro.first.save if filtro.first.locale_changed?
+      end
+    end
   end
 
   private
