@@ -184,6 +184,7 @@ class EspeciesController < ApplicationController
         busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
         joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
         arbol = []
+        distinct = false
 
         params.each do |key, value|  #itera sobre todos los campos
 =begin
@@ -212,6 +213,7 @@ class EspeciesController < ApplicationController
           if key.include?('tipo_distribucion_') && value.present?
             tipoDistribuciones+="'#{value}',"
             joins+= '.'+tipoDeAtributo('tipos_distribuciones')
+            distinct = true
           end
 
           estatus+= "#{value}," if key.include?('estatus_avanzada_') && value.present?
@@ -251,12 +253,17 @@ class EspeciesController < ApplicationController
             tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
             condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
           end
+          distinct = true
         end
 
         busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
         #Rails.logger.info "---#{busqueda}---"
 
-        @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        if distinct
+          @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        else
+          @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        end
 
       #Rails.logger.info "---#{@taxones.to_json}---"
       #@taxones=Especie.none

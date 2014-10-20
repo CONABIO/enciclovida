@@ -48,3 +48,5 @@ config/config.yml
 config/database.yml_postgres
 config/database.yml_sql-server
 dump.rdb
+tools/correspondencia_snib/
+tools/campos_snib.csv
