@@ -12,6 +12,7 @@ gem 'composite_primary_keys'#, github: 'calonso-conabio/composite_primary_keys',
 gem 'daemons'       #para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_active_record'    #pone commits para correrlos en un determinado tiempo, puede ser desde consola
+gem 'devise'
 gem 'exifr'
 gem 'flickraw', '~> 0.9.8', :git => 'git://github.com/kueda/flickraw.git', :branch => 'ssl-cert'
 gem 'haml'
@@ -44,6 +45,7 @@ gem 'turbolinks'    #hace mas rapidos los links
 gem 'trollop'
 gem 'ts-delayed-delta', '~> 2.0.0'    #funciona con thinking-sphinx
 gem 'uglifier', '>= 1.3.0'
+gem 'wash_out'
 gem 'will_paginate'    #hace la paginacion de una rango determinado
 #gem 'ya2yaml'
 

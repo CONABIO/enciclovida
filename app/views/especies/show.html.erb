@@ -1,7 +1,6 @@
-
-
 <script data-turbolinks-track="true" src="/assets/photo_selectors.js" data-turbolinks-track="true"></script>
 <script data-turbolinks-track="true" src="/assets/show.js" data-turbolinks-track="true"></script>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     var TAXON = <%=raw @especie.to_json %>;
 
@@ -73,7 +72,8 @@
 
 <div class="titulo">
   <h1>
-    <%= "#{tituloNombreCientifico(@especie, :show => true)} #{link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;')}".html_safe %>
+    <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
+    <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
   <% if @especie.estatus == 1 %>
       <%= dameStatus(@especie).html_safe %>
@@ -101,10 +101,10 @@
           <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
         </div>
 
-        <%# if logged_in? %>
-        <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-        <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-        <%# end %>
+        <% if usuario_signed_in? %>
+            <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+            <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+        <% end %>
       </div>
     </td>
   </tr>

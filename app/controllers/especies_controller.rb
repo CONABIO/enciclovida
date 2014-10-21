@@ -1,10 +1,11 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
-  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
+  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
   layout false, :only => [:dame_listas, :describe, :muestraTaxonomia]
 
+  # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
@@ -76,7 +77,7 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       if @especie.save && params[:commit].eql?('Crear')
         descripcion="Creó un nuevo taxón(#{@especie.id}): #{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico}"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         guardaRelaciones(EspecieCatalogo)
         guardaRelaciones(EspecieRegion)
@@ -84,7 +85,7 @@ class EspeciesController < ApplicationController
         format.json { render action: 'show', status: :created, location: @especie }
       elsif @especie.save && params[:commit].eql?('Crear y seguir editando')
         descripcion="Creó un nuevo taxón: #{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico}"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         guardaRelaciones(EspecieCatalogo)
         guardaRelaciones(EspecieRegion)
@@ -113,13 +114,13 @@ class EspeciesController < ApplicationController
 
       if @especie.update(argumentosRelaciones) && params[:commit].eql?('Guardar')
         descripcion="Actualizó el taxón #{@especie.nombre_cientifico} (#{@especie.id})"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         format.html { redirect_to @especie, notice: "El taxón #{@especie.nombre_cientifico} fue modificado exitosamente." }
         format.json { head :no_content }
       elsif @especie.update(argumentosRelaciones) && params[:commit].eql?('Guardar y seguir editando')
         descripcion="Actualizó el taxón #{@especie.nombre_cientifico} (#{@especie.id})"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         #format.html { render action: 'edit' }
         format.html { redirect_to "/especies/#{@especie.id}/edit", notice: "El taxón #{@especie.nombre_cientifico} fue modificado exitosamente." }
@@ -290,7 +291,7 @@ class EspeciesController < ApplicationController
 # DELETE /especies/1.json
   def destroy
     @especie.destroy
-    bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => dameUsuario)
+    bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => current_usuario.id)
     bitacora.save
     respond_to do |format|
       format.html { redirect_to especies_url, :notice => "El taxón #{@especie.nombre_cientifico} fue elimanado correctamente" }
@@ -522,7 +523,7 @@ class EspeciesController < ApplicationController
               descripcion+=", nombre común: #{NombreComun.find(valor).nombre_comun} (#{valor})" if atributo == :nombre_comun_id
               descripcion+=", bibliografía: #{Bibliografia.find(valor).autor.truncate(25)} (#{valor})" if atributo == :bibliografia_id
             end
-            bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+            bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
             bitacora.save
           rescue
           end
@@ -546,7 +547,7 @@ class EspeciesController < ApplicationController
                 descripcion+=", bibliografía: #{Bibliografia.find(valor).autor.truncate(25)} (#{valor})" if atributo == :bibliografia_id
                 descripcion+=", observaciones: #{valor}" if atributo == :observaciones
               end
-              bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+              bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
               bitacora.save
             end
           rescue
@@ -658,9 +659,8 @@ class EspeciesController < ApplicationController
   end
 
   def cualesListas
-    usuario=dameUsuario
-    if usuario.present?
-      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
+    if usuario_signed_in?
+      @listas=Lista.where(:usuario_id => current_usuario.id).order('nombre_lista ASC').limit(10)
       @listas=0 if @listas.empty?
     end
   end

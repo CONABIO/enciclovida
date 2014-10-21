@@ -1,13 +1,18 @@
 module ApplicationHelper
   def bitacora
-    if Rol::CON_BITACORA.include?(Usuario.find(session[:usuario]).rol_id.to_s)
-      addon='<ul>'
-      Bitacora.all.order('id DESC').limit(10).each do |bitacora|
-        addon+="<li>#{link_to(bitacora.usuario.usuario, bitacora.usuario)} #{bitacora.descripcion}</li>"
+    if usuario_signed_in?
+      if Rol::CON_BITACORA.include?(current_usuario.rol_id)
+        desc=''
+        Bitacora.order('id DESC').limit(10).each do |bitacora|
+          desc+= "<li>#{bitacora.usuario.usuario} #{bitacora.descripcion}</li>"
+        end
+
+        if desc.present?
+          bitacora = "<br><br><table class=\"tabla_formato\"><tr><td><fieldset><legend class=\"leyenda\">Bit&aacute;cora</legend>"
+          bitacora+= "<ul>#{desc}</ul>"
+          bitacora+= '</fieldset></td></tr></table>'
+        end
       end
-      addon
-    else
-      ''
     end
   end
 
