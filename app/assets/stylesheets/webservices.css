@@ -10,9 +10,9 @@
 
 /* All Styles */
 
-.wikipedia_description, .eol_es_description, .eol_description, .conabio_description {
-    overflow: hidden;
-    width: 1000px;
+.taxon_description {
+  overflow: hidden;
+  width: 1000px;
 }
 
 .infobox,
