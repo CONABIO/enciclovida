@@ -21,27 +21,10 @@ end
 def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
     puts e.nombre if OPTS[:debug]
-    if e.id_nombre_ascendente != e.id
-      e.ancestry_ascendente_directo = e.id_nombre_ascendente
-      valor=true
-      id=e.id_nombre_ascendente
-
-      while valor do
-        subEsp=EspecieBio.find(id)
-
-        if subEsp.id_nombre_ascendente == subEsp.id
-          valor=false
-        else
-          e.ancestry_ascendente_directo="#{subEsp.id_nombre_ascendente}/#{e.ancestry_ascendente_directo}"
-          id=subEsp.id_nombre_ascendente
-        end
-      end
-
-      e.evita_before_save = true        # evita el metodo before_save
-      e.save
-    else
-      puts 'Es root' if OPTS[:debug]
-    end
+    e.ancestry_directo
+    e.evita_before_save = true        # evita el metodo before_save
+    e.avoid_ancestry = true           # evita la gema ancestry
+    e.save
   end
 end
 

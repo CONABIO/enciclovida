@@ -72,6 +72,14 @@ GIT
       jquery-rails
       sass-rails
 
+GIT
+  remote: https://github.com/calonso-conabio/ancestry.git
+  revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
+  ref: bfadb2c
+  specs:
+    ancestry (2.1.0)
+      activerecord (>= 3.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -84,8 +92,6 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
-    ancestry (2.1.0)
-      activerecord (>= 3.0.0)
     arel (4.0.2)
     bcrypt (3.1.7)
     blurrily (0.2.1)
@@ -258,7 +264,7 @@ DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store!
   activerecord-sqlserver-adapter (~> 4.0.0)
-  ancestry
+  ancestry!
   blurrily
   carrierwave
   cocoon (= 1.2.0)

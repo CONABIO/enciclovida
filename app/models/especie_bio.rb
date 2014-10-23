@@ -24,6 +24,7 @@ class EspecieBio < ActiveRecord::Base
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
+  #Existe un cattr_accesor :avoid_ancestry (false default) por si el update se hace manual
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
@@ -345,7 +346,43 @@ class EspecieBio < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
-  private
+  def ancestry_directo
+    if id_nombre_ascendente != id
+      self.ancestry_ascendente_directo = id_nombre_ascendente
+      valor=true
+      id_asc=id_nombre_ascendente
+
+      while valor do
+        subEsp=EspecieBio.find(id_asc)
+
+        if subEsp.id_nombre_ascendente == subEsp.id
+          valor=false
+        else
+          self.ancestry_ascendente_directo="#{subEsp.id_nombre_ascendente}/#{ancestry_ascendente_directo}"
+          id_asc=subEsp.id_nombre_ascendente
+        end
+      end
+    end
+  end
+
+  def ancestry_obligatorio
+    if id_ascend_obligatorio != id
+      self.ancestry_ascendente_obligatorio = id_ascend_obligatorio
+      valor=true
+      id_asc=id_ascend_obligatorio
+
+      while valor do
+        subEsp=EspecieBio.find(id_asc)
+
+        if subEsp.id_ascend_obligatorio == subEsp.id
+          valor=false
+        else
+          self.ancestry_ascendente_obligatorio="#{subEsp.id_ascend_obligatorio}/#{ancestry_ascendente_obligatorio}"
+          id_asc=subEsp.id_ascend_obligatorio
+        end
+      end
+    end
+  end
 
   def ponNombreCientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
@@ -362,6 +399,9 @@ class EspecieBio < ActiveRecord::Base
     end
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
+
+
+  private
 
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|

@@ -21,27 +21,9 @@ end
 def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
     puts e.nombre if OPTS[:debug]
-    if e.id_ascend_obligatorio != e.id
-      e.ancestry_ascendente_obligatorio = e.id_ascend_obligatorio
-      valor=true
-      id=e.id_ascend_obligatorio
-
-      while valor do
-        subEsp=EspecieBio.find(id)
-
-        if subEsp.id_ascend_obligatorio == subEsp.id
-          valor=false
-        else
-          e.ancestry_ascendente_obligatorio="#{subEsp.id_ascend_obligatorio}/#{e.ancestry_ascendente_obligatorio}"
-          id=subEsp.id_ascend_obligatorio
-        end
-      end
-
-      e.evita_before_save = true        # evita el metodo before_save
-      e.save
-    else
-      puts 'Es root' if OPTS[:debug]
-    end
+    e.ancestry_obligatorio
+    e.evita_before_save = true        # evita el metodo before_save
+    e.save
   end
 end
 
