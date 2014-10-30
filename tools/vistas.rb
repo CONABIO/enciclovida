@@ -20,26 +20,6 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-equivalencia =
-    {
-        'bibliografias' => 'Bibliografia',
-        'catalogos' => 'CatalogoNombre',
-        'categorias_taxonomicas' => 'CategoriaTaxonomica',
-        'especies' => 'Nombre',
-        'especies_bibliografias' => 'RelNombreBiblio',
-        'especies_catalogos' => 'RelNombreCatalogo',
-        'especies_estatuses' => 'Nombre_Relacion',
-        #'especies_estatuses_bibliografias' => 'RelacionBibliografia',
-        'especies_regiones' => 'RelNombreRegion',
-        'estatuses' => 'Tipo_Relacion',
-        'nombres_comunes' => 'Nomcomun',
-        'nombres_regiones' => 'RelNomNomComunRegion',
-        'nombres_regiones_bibliografias' => 'RelNomNomcomunRegionBiblio',
-        'regiones' => 'Region',
-        'tipos_distribuciones' => 'TipoDistribucion',
-        'tipos_regiones' => 'TipoRegion',
-    }
-
 queriesVistas =
     {
         'bibliografias' => '',
@@ -226,14 +206,14 @@ CONFIG.bases.each do |base|
       queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "DROP VIEW #{tabla}_0" : " \n" + queriesVistas[tabla]+"\n"
     else
       queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "CREATE VIEW #{tabla}_0\nAS\n" : queriesVistas[tabla]+" union \n"
-      queriesVistas[tabla]+= 'SELECT ' + campos.join(', ') +" FROM [#{base}].dbo.#{equivalencia[tabla]}"
+      queriesVistas[tabla]+= 'SELECT ' + campos.join(', ') +" FROM [#{base}].dbo.#{Bases::EQUIVALENCIA[tabla]}"
     end
   }
 end
 
 queriesVistas.each do |key,value|
   puts "Query: #{value}" if OPTS[:debug]
-  ActiveRecord::Base.connection.execute(value)
+  Bases.ejecuta value
 
   query = ''
   if ARGV.any? { |e| e.downcase.include?('drop') }
@@ -242,7 +222,7 @@ queriesVistas.each do |key,value|
     query+= "SELECT * INTO #{key} FROM #{key}_0"
   end
 
-  ActiveRecord::Base.connection.execute(query)   #para las tablas del volcado
+  Bases.ejecuta query   #para las tablas del volcado
   puts "Query: #{query}" if OPTS[:debug]
 end
 

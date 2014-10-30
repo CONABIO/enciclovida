@@ -117,8 +117,9 @@ Buscador::Application.routes.draw do
   #wash_out :webservice
 
   # End-points para la validacion de nuevos o actualizados records (actual)
-  get 'validaciones/new' => 'validaciones#create'
-  get 'validaciones/edit' => 'validaciones#update'
+  post 'validaciones/update' => 'validaciones#update'
+  post 'validaciones/insert' => 'validaciones#insert'
+  post 'validaciones/delete' => 'validaciones#delete'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

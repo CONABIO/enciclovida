@@ -20,35 +20,47 @@ where [options] are:
 end
 
 def search
-  json = ''
-  #Especie.find_each do |taxon|
-  Especie.limit(10).each do |t|
+  Especie.find_each do |t|
+  #Especie.limit(10).each do |t|
     puts "Procesando... #{t.nombre_cientifico}" if OPTS[:debug]
-
-    next unless !t.nombre_cientifico.include?('(')  #existen unos taxones con una estructura erronea
 
     proveedor = t.proveedor
     if proveedor
-      puts "Ya se registro ese ID... #{t.nombre_cientifico}" if OPTS[:debug]
+      puts "-->Ya se registro ese ID... #{t.nombre_cientifico}" if OPTS[:debug]
       response = RestClient.get "#{@site}/taxa/#{proveedor.naturalista_id}.json"
       data = JSON.parse(response)
-      json+= "\"#{t.id}\":#{response}," if data.present?    #solo para actualizar el json
+
+      if data.present?    #solo para actualizar el json
+        proveedor.naturalista_info = "#{data}"
+        proveedor.save
+        puts '----->La informacion existe...' if OPTS[:debug]
+      else
+        puts '----->La informacion NO existe...' if OPTS[:debug]
+      end
 
     else
-      puts "Aun no existe registro de ese ID... #{t.nombre_cientifico}" if OPTS[:debug]
-      response = RestClient.get "#{@site}/taxa/search.json?q=#{t.nombre_cientifico.parameterize.gsub('-', ' ')}"
+      puts "-->Aun no existe registro de ese ID... #{t.nombre_cientifico}" if OPTS[:debug]
+      response = RestClient.get "#{@site}/taxa/search.json?q=#{URI.escape(t.nombre_cientifico)}"
       data = JSON.parse(response)
-      if data.present? && data.count == 1
-        json+= "\"#{t.id}\":#{response},"
-        proveedor.create(:naturalista_id => data.first['id'])   #crea el proveedor a traves de la asociacion
+      exact_data = comprueba_nombre(t, data)
+      if exact_data.present?
+        #crea el proveedor a traves de la asociacion
+        proveedor = Proveedor.new(:especie_id => t.id, :naturalista_id => exact_data.first['id'], :naturalista_info => "#{exact_data}")
         proveedor.save
+        puts '----->La informacion existe...' if OPTS[:debug]
       else
         @bitacora_no_encontro.puts "#{t.id},#{t.nombre_cientifico}"    #en caso que ese nombre no exista en la base de NaturaLista
+        puts '----->La informacion NO existe...' if OPTS[:debug]
       end
     end
+    sleep 2
   end
+end
 
-  @bitacora.puts "{#{json[0..-2]}}"
+def comprueba_nombre(taxon, data)
+  data.each do |d|
+    return d if d['name'] == taxon
+  end
 end
 
 def creando_carpeta(path)
@@ -58,16 +70,15 @@ end
 
 def bitacoras
   puts 'Iniciando bitacoras ...' if OPTS[:debug]
-  @bitacora = File.new("#{@path}/record_taxa_#{Time.now.strftime("%Y_%m_%d_%H-%M-%S")}.json", 'w')
   @bitacora_no_encontro = File.new("#{@path}/sin_ID_#{Time.now.strftime("%Y_%m_%d_%H-%M-%S")}_no_records.out", 'a+')
 end
 
 
 start_time = Time.now
 
-bitacoras
 @site = 'http://conabio.inaturalist.org'
 @path = 'tools/bitacoras/info_naturalista'
+bitacoras
 creando_carpeta @path
 search
 

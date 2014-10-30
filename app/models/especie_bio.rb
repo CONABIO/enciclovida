@@ -400,6 +400,37 @@ class EspecieBio < ActiveRecord::Base
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
+  #Este metodo es necesario ya que SQL Server hace un lock en el record a cambiar, se tiene que hacer despues de acabar
+  #el trigger de SQL Server y ademas para que sea valido en multi bases, asi como estatico
+  def self.completa(id, base, tabla)
+    Bases.conecta_a base
+    taxon = EspecieBio.find(id)
+    taxon.ancestry_directo
+    taxon.ancestry_obligatorio
+    taxon.avoid_ancestry = true
+    taxon.save
+
+    Bases.conecta_a Rails.env
+    Bases.insert_en_volcado(id, base, tabla)
+  end
+
+  def self.actualiza(id, base, tabla)
+    #Bases.conecta_a base
+    #taxon = EspecieBio.find(id)
+    #taxon.ancestry_directo
+    #taxon.ancestry_obligatorio
+    #taxon.avoid_ancestry = true
+    #taxon.save
+
+    #Bases.conecta_a Rails.env
+    Bases.update_en_volcado(id, base, tabla)
+  end
+
+  def comprueba_ancestry
+    if id_nombre_ascendente != parent_id       #indica que cambio la estructura de arbol
+
+    end
+  end
 
   private
 

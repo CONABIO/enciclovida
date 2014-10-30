@@ -21,24 +21,6 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-@equivalencia = {
-    'bibliografias' => 'Bibliografia',
-    'catalogos' => 'CatalogoNombre',
-    'categorias_taxonomicas' => 'CategoriaTaxonomica',
-    'especies' => 'Nombre',
-    'especies_bibliografias' => 'RelNombreBiblio',
-    'especies_catalogos' => 'RelNombreCatalogo',
-    'especies_status' => 'Nombre_Relacion',
-    'especies_status_bibliografias' => 'RelacionBibliografia',
-    'especies_regiones' => 'RelNombreRegion',
-    'status' => 'Tipo_Relacion',
-    'nombres_comunes' => 'NomComun',
-    'nombres_regiones' => 'RelNomNomComunRegion',
-    'nombres_regiones_bibliografias' => 'RelNomNomcomunRegionBiblio',
-    'regiones' => 'Region',
-    'tipos_distribuciones' => 'TipoDistribucion',
-    'tipos_regiones' => 'TipoRegion',
-}
 
 @campos = {
     'especies' =>
@@ -61,14 +43,14 @@ def accion_a_campos(accion)
 
     if accion == 'create'
       puts 'Ejecutando con argumento: create' if OPTS[:debug]
-      query+= "ALTER TABLE #{@equivalencia[tabla]} ADD "
+      query+= "ALTER TABLE #{Bases::EQUIVALENCIA[tabla]} ADD "
 
       campos.each do |campo, valor|
         query+= "#{campo} #{valor}"
       end
     else
       puts 'Ejecutando con argumento: drop' if OPTS[:debug]
-      query+= "ALTER TABLE #{@equivalencia[tabla]} DROP COLUMN "
+      query+= "ALTER TABLE #{BASES::EQUIVALENCIA[tabla]} DROP COLUMN "
 
       campos.each do |campo, valor|
         query+= "#{campo},"
