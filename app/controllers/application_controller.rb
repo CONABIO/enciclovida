@@ -82,7 +82,7 @@ class ApplicationController < ActionController::Base
   end
 
   def to_boolean(str)
-    str == 'true' ? true : false
+    str.downcase == 'true' ? true : false
   end
 
   def dameLocaleFiltro

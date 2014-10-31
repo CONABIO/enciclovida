@@ -148,6 +148,23 @@ es-cientifico:
       update: Actualizar %{model}
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nombre_comun: Nombre común
+  nombres_modelos:
+    bibliografias: Bibliografia
+    catalogos: Catalogo
+    categorias_taxonomicas: CategoriaTaxonomica
+    especies: Especie
+    especies_bibliografias: EspecieBibliografia
+    especies_catalogos: EspecieCatalogo
+    especies_estatuses: EspecieEstatus
+    especies_estatuses_bibliografias: EspecieEstatusBibliografia
+    especies_regiones: EspecieRegion
+    estatuses: Estatus
+    nombres_comunes: NombreComun
+    nombres_regiones: NombreRegion
+    nombres_regiones_bibliografias: NombreRegionBibliografia
+    regiones: Region
+    tipos_distribuciones: TipoDistribucion
+    tipos_regiones: TipoRegion
   number:
     currency:
       format:
@@ -210,7 +227,7 @@ es-cientifico:
       short: ! '%d de %b %H:%M'
     pm: pm
   valido_correcto: válido/correcto
-  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>Flickr &raquo;</nobr>
+  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>CONABIO &raquo;</nobr>
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:
