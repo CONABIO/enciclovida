@@ -1,3 +1,59 @@
+<style type="text/css" data-turbolinks-track="true">
+    #datos_principales
+    {
+        display:none;
+        position:absolute;
+        border-style: solid;
+        background-color: white;
+        padding: 5px;
+    }
+</style>
+
+<script type="text/javascript" data-turbolinks-track="true">
+    var cX = 0; var cY = 0; var rX = 0; var rY = 0;
+    function UpdateCursorPosition(e){ cX = e.pageX; cY = e.pageY;}
+    function UpdateCursorPositionDocAll(e){ cX = event.clientX; cY = event.clientY;}
+    if(document.all) { document.onmousemove = UpdateCursorPositionDocAll; }
+    else { document.onmousemove = UpdateCursorPosition; }
+    function AssignPosition(d) {
+        if(self.pageYOffset) {
+            rX = self.pageXOffset;
+            rY = self.pageYOffset;
+        }
+        else if(document.documentElement && document.documentElement.scrollTop) {
+            rX = document.documentElement.scrollLeft;
+            rY = document.documentElement.scrollTop;
+        }
+        else if(document.body) {
+            rX = document.body.scrollLeft;
+            rY = document.body.scrollTop;
+        }
+        if(document.all) {
+            cX += rX;
+            cY += rY;
+        }
+        d.style.left = (cX+10) + "px";
+        d.style.top = (cY+10) + "px";
+    }
+    function HideContent(d) {
+        if(d.length < 1) { return; }
+        document.getElementById(d).style.display = "none";
+    }
+    function ShowContent(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        dd.style.display = "block";
+    }
+    function ReverseContentDisplay(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        if(dd.style.display == "none") { dd.style.display = "block"; }
+        else { dd.style.display = "none"; }
+    }
+</script>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     $(document).ready(function()
     {
@@ -30,6 +86,17 @@
         {
             $('#widget_listas').slideToggle();
             return false;
+        });
+
+        //Para desplegar solo los datos principales en la busqueda de taxones
+        $(".datos_busqueda").mouseenter( function()
+        {
+            ShowContent('datos_principales');
+        });
+
+        $(".datos_busqueda").mouseleave( function()
+        {
+            HideContent('datos_principales');
         });
     });
 </script>
@@ -76,7 +143,25 @@
 <div class="digg_pagination">
   <%= will_paginate @taxones %>
 </div>
-<%= render 'resultados', :taxones => @taxones, :busqueda => @busqueda %>
+
+<% columnas=0 %>
+
+<table class="tabla_formato" CELLPADDING="10">
+
+  <% @taxones.each do |taxon| %>
+      <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
+      <%= '<tr>'.html_safe if columnas % 2 == 0 %>
+      <td>
+        <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico,
+                      :class => :datos_busqueda %>
+        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} <span class=\"datos_busqueda\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+      </td>
+      <% columnas+=1 %>
+  <% end %>
+  <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr>".html_safe : '</tr>'.html_safe %>
+
+</table>
+
 <% if @taxones.length >= 100 %>
     <div class="digg_pagination">
       <%= will_paginate @taxones %>
@@ -86,3 +171,5 @@
 <p class="enlaces_acciones">
   <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
 </p>
+
+<div id="datos_principales"></div>
