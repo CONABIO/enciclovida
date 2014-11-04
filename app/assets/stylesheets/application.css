@@ -80,3 +80,13 @@
 .link_azul:active {color-background: #0000ff; text-decoration: none; }
 .link_azul:visited {color: #0000ff; text-decoration: none; }
 .link_azul:hover {background-color: #ffffff; text-decoration: none; }
+
+
+input.gsc-input {
+    border-color: #666666;
+}
+
+input.gsc-search-button {
+    border-color: #666666;
+    background-color: #c0c0c0;
+}

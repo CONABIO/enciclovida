@@ -58,6 +58,28 @@ module EspeciesHelper
     end
   end
 
+  def datos_principales(taxon, en_resultados=false)
+    datos = ''
+    if en_resultados     #El preview en ajax de los resultados
+      if taxon.estatus == 1
+        datos+= dameStatus(taxon)
+      elsif taxon.estatus == 2
+        taxon.species_or_lower?
+        datos+= dameDistribucion(taxon) + ' - '
+        datos+= dameCaracteristica(taxon)
+      end
+    else
+      if taxon.estatus == 1
+        datos+= dameStatus(taxon)
+      elsif taxon.estatus == 2 && I18n.locale.to_s != 'es-cientifico'
+        taxon.species_or_lower?
+        datos+= dameDistribucion(taxon) + ' - '
+        datos+= dameCaracteristica(taxon)
+      end
+    end
+    (datos + dameNomComunes(taxon)).html_safe
+  end
+
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 

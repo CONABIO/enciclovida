@@ -3,6 +3,7 @@
 
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     var TAXON = <%=raw @especie.to_json %>;
+    var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
 
     info = function()
     {
@@ -18,7 +19,7 @@
         return false;
     }
 
-    googleMaps = function(taxon)
+    googleMaps = function()
     {
         var mapOptions = {
             //center: new google.maps.LatLng(38,-79.5),
@@ -26,7 +27,7 @@
             mapTypeId: google.maps.MapTypeId.TERRAIN
         }
         var map=new google.maps.Map(document.getElementById("googleMap"),mapOptions);
-        var overlay = new google.maps.KmlLayer('http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=' + taxon);
+        var overlay = new google.maps.KmlLayer('http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=' + NOMBRE_CIENTIFICO);
 
         overlay.setMap(map);
         google.maps.event.addListener(overlay,'status_changed',function(){
@@ -54,6 +55,9 @@
         <% if !@especie.is_root? %>
         muestraArbol(TAXON.id);
         <% end %>
+
+        if ($('#statusGoogleMap').val() == '')
+            googleMaps();
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -75,25 +79,17 @@
     <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
-  <% if @especie.estatus == 1 %>
-      <%= dameStatus(@especie).html_safe %>
-  <% elsif @especie.estatus == 2 && I18n.locale.to_s != 'es-cientifico' %>
-      <% if  @especie.species_or_lower? %>
-          <%= dameDistribucion(@especie) %> -
-          <%= dameCaracteristica(@especie).html_safe %>
-      <% end %>
-      <%= dameNomComunes(@especie).html_safe %>
-  <% end %>
+  <%= datos_principales(@especie) %>
 </div>
 
 <table class="tabla_formato">
   <tr>
-    <td>
+    <td style="min-width: 500px;">
       <div id="photoscol" class="column span-13">
         <% if @especie.species_or_lower? && @photos.empty? %>
             <div class="notice">
-              <%= t(:este_taxon_no_tiene).html_safe %>
-              <%= link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+              <%# t(:este_taxon_no_tiene).html_safe %>
+              <%# link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
             </div>
         <% end %>
         <div id="photos">
@@ -107,7 +103,15 @@
         <% end %>
       </div>
     </td>
+    <td style="max-width: 500px;">
+      <div id="sinGoogleMap" style="width:1000px;"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
+      <div id="googleMap" style="height:500px;width:600px;"></div>
+      <div id="statusGoogleMap" style="display: none"></div>
+    </td>
   </tr>
+</table>
+
+<table class="tabla_formato">
   <tr>
     <td>
       <div id="tabs">
@@ -156,15 +160,3 @@
   <%# link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div-->
-
-<div id="mapas-div" style="display: none">
-  <table class="tabla_formato">
-    <tr>
-      <td>
-        <div id="sinGoogleMap" style="width:1000px;"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
-        <div id="googleMap" style="height:500px;width:600px;"></div>
-        <div id="statusGoogleMap" style="display: none"></div>
-      </td>
-    </tr>
-  </table>
-</div>

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   helper_method :enlacesDelArbol
   before_filter :set_locale
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
   def ponSesion(usuario)
     session[:usuario] = usuario.id
@@ -82,7 +83,7 @@ class ApplicationController < ActionController::Base
   end
 
   def to_boolean(str)
-    str == 'true' ? true : false
+    str.downcase == 'true' ? true : false
   end
 
   def dameLocaleFiltro
@@ -94,5 +95,18 @@ class ApplicationController < ActionController::Base
     I18n.locale = params[:locale] || dameObjUsuario.try(:locale) || dameLocaleFiltro || I18n.default_locale
     I18n.locale = dameObjUsuario.try(:locale) if I18n.locale.blank?
     I18n.locale = I18n.default_locale if I18n.locale.blank?
+  end
+
+  protected
+
+  def configure_permitted_parameters
+    #Atributos adicionales al modelo
+    devise_parameter_sanitizer.for(:sign_up) << :usuario
+    devise_parameter_sanitizer.for(:sign_up) << :nombre
+    devise_parameter_sanitizer.for(:sign_up) << :apellido
+    devise_parameter_sanitizer.for(:sign_up) << :institucion
+    devise_parameter_sanitizer.for(:sign_up) << :grado_academico
+    #devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:usuario, :email ) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :usuario, :email, :password, :remember_me) }
   end
 end

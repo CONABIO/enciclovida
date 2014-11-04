@@ -151,6 +151,14 @@ es:
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
   este_taxon_no_tiene: Esta especie o grupo no tiene una foto predeterminada
   helpers:
+    label:
+      usuario:
+        current_password: Contraseña actual
+        email: Correo
+        login: Usuario o contraseña
+        password: Contraseña
+        password_confirmation: Confirma la contraseña
+        remember_me: Recordarme la próxima vez
     select:
       prompt: Por favor seleccione
     submit:
@@ -159,6 +167,23 @@ es:
       update: Actualizar %{model}
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nombre_comun: Nombre
+  nombres_modelos:
+    bibliografias: Bibliografia
+    catalogos: Catalogo
+    categorias_taxonomicas: CategoriaTaxonomica
+    especies: Especie
+    especies_bibliografias: EspecieBibliografia
+    especies_catalogos: EspecieCatalogo
+    especies_estatuses: EspecieEstatus
+    especies_estatuses_bibliografias: EspecieEstatusBibliografia
+    especies_regiones: EspecieRegion
+    estatuses: Estatus
+    nombres_comunes: NombreComun
+    nombres_regiones: NombreRegion
+    nombres_regiones_bibliografias: NombreRegionBibliografia
+    regiones: Region
+    tipos_distribuciones: TipoDistribucion
+    tipos_regiones: TipoRegion
   number:
     currency:
       format:
@@ -221,7 +246,7 @@ es:
       short: ! '%d de %b %H:%M'
     pm: pm
   valido_correcto: activos
-  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>Flickr &raquo;</nobr>
+  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>CONABIO &raquo;</nobr>
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:

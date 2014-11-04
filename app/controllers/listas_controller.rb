@@ -1,6 +1,6 @@
 class ListasController < ApplicationController
   before_action :set_lista, only: [:show, :edit, :update, :destroy]
-  before_filter :entroAlSistema?, :only => [:show, :index, :new, :create]
+  before_action :authenticate_usuario!
   before_filter :only => [:edit, :update, :destroy] do |c|
     c.tienePermiso? @lista.usuario_id
   end

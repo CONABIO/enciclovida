@@ -1,3 +1,3 @@
 class Proveedor < ActiveRecord::Base
-  self.primary_key = 'id'
+  belongs_to :especie
 end
