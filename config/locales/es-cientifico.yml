@@ -140,6 +140,7 @@ es-cientifico:
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
   este_taxon_no_tiene: Este tax&oacute;n no tiene una foto predeterminada
   helpers:
+    label:
       usuario:
         email: Correo
         login: Usuario o contraseña

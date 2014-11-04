@@ -142,6 +142,7 @@ es:
   helpers:
     label:
       usuario:
+        current_password: Contraseña actual
         email: Correo
         login: Usuario o contraseña
         password: Contraseña

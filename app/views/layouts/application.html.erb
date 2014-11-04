@@ -32,7 +32,7 @@
     <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
     <% if usuario_signed_in? %>
         <li>
-          <%= link_to 'Propiedades de tu cuenta', edit_usuario_registration_path %>
+          <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
         </li>
         <li>
           <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.email})".html_safe, destroy_usuario_session_path,
