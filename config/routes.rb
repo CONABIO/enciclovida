@@ -42,6 +42,7 @@ Buscador::Application.routes.draw do
       get :resultados
       post :resultados_por_lote
       get :error
+      get :datos_principales
     end
   end
 
