@@ -79,15 +79,7 @@
     <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
-  <% if @especie.estatus == 1 %>
-      <%= dameStatus(@especie).html_safe %>
-  <% elsif @especie.estatus == 2 && I18n.locale.to_s != 'es-cientifico' %>
-      <% if  @especie.species_or_lower? %>
-          <%= dameDistribucion(@especie) %> -
-          <%= dameCaracteristica(@especie).html_safe %>
-      <% end %>
-      <%= dameNomComunes(@especie).html_safe %>
-  <% end %>
+  <%= datos_principales(@especie) %>
 </div>
 
 <table class="tabla_formato">

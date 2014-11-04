@@ -1,9 +1,10 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia,
+                                     :edit_photos, :update_photos, :describe, :datos_principales]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia]
+  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia, :datos_principales]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -285,6 +286,9 @@ class EspeciesController < ApplicationController
 
     end
     #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
+  end
+
+  def datos_principales
   end
 
 # DELETE /especies/1

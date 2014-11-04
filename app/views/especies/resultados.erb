@@ -52,6 +52,27 @@
         if(dd.style.display == "none") { dd.style.display = "block"; }
         else { dd.style.display = "none"; }
     }
+
+    //Para desplegar solo los datos principales en la busqueda de taxones
+    function datos_principales_muestra(id)
+    {
+        $.ajax({
+            url: "/especies/datos_principales",
+            type: 'GET',
+            data: {id: id}
+        }).done(function(html) {
+                    //alert(html);
+                    $('#datos_principales').html(html);
+                }).fail(function(){
+                    $('#datos_principales').html('Hubo un error al cargar los datos.');
+                });
+        ShowContent('datos_principales');
+    }
+
+    function datos_principales_oculta()
+    {
+        HideContent('datos_principales');
+    }
 </script>
 
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
@@ -88,13 +109,22 @@
             return false;
         });
 
-        //Para desplegar solo los datos principales en la busqueda de taxones
-        $(".datos_busqueda").mouseenter( function()
+        $(document).on('mouseenter', "[class^='datos_busqueda-']", function()
         {
-            ShowContent('datos_principales');
+            var id = $(this).attr('class').substring(15);
+            $.ajax({
+                url: "/especies/datos_principales",
+                type: 'GET',
+                data: {id: id}
+            }).done(function(html) {
+                        $('#datos_principales').html(html);
+                        ShowContent('datos_principales');
+                    }).fail(function(){
+                        $('#datos_principales').html('Hubo un error al cargar los datos.');
+                    });
         });
 
-        $(".datos_busqueda").mouseleave( function()
+        $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
         {
             HideContent('datos_principales');
         });
@@ -152,9 +182,8 @@
       <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
       <%= '<tr>'.html_safe if columnas % 2 == 0 %>
       <td>
-        <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico,
-                      :class => :datos_busqueda %>
-        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} <span class=\"datos_busqueda\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+        <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :class => "datos_busqueda-#{taxon.id}" %>
+        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} <span>#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
       </td>
       <% columnas+=1 %>
   <% end %>
