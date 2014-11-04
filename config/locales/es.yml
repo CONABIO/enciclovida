@@ -140,6 +140,13 @@ es:
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
   este_taxon_no_tiene: Esta especie o grupo no tiene una foto predeterminada
   helpers:
+    label:
+      usuario:
+        email: Correo
+        login: Usuario o contraseña
+        password: Contraseña
+        password_confirmation: Confirma la contraseña
+        remember_me: Recordarme la próxima vez
     select:
       prompt: Por favor seleccione
     submit:
