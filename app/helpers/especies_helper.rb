@@ -163,6 +163,21 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
+  def checkboxEstadoConservacion
+    checkBoxes=''
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      checkBoxes+= "<br><b>#{k}</b>"
+      contador=0
+
+      valores.each do |edo|
+        checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
+        checkBoxes+="#{check_box_tag('edo_cons[]', edo.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{edo.descripcion}&nbsp;&nbsp;"
+        contador+=1
+      end
+    end
+    checkBoxes.html_safe
+  end
+
   def checkboxValidoSinonimo(tipoBusqueda)
     checkBoxes=''
     Especie::ESTATUS.each do |e|

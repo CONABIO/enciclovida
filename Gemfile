@@ -22,6 +22,7 @@ gem 'jbuilder', '~> 1.0.1'
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-ui-rails', '4.2.1'
 gem 'jquery-rails'
+gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'magick-metadata'    #maneja metadatos
 gem 'mime-types', '1.25.1'
 gem 'mysql2', '0.3.13'

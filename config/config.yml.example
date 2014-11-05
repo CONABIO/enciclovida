@@ -4,21 +4,33 @@
 # page for the service.
 
 base: &base
-    #bases para la administracion
-    bases: [01-Proctoctistas, 02-Arthropoda, 03-Crustacea, 04-Diptera, 05-Hongos, 06-Echinodermata, 07-Invertebrados, 08-Moluscos, 09-Plantas, 10-Vertebrados]    #prueba
-    #bases: [01-Echinodermata-Sept14, 02-Crustacea-Sept14, 03-Hongos-Sept14, 04-Invertebrados-Sept14, 05-Moluscos-Sept14, 06-Plantas-Sept14, 07-Proctoctistas-Sept14, 08-Vertebrados-Sept14]
+    # bases para la administracion
+    bases: [01-Echinodermata-Sept14, 02-Crustacea-Sept14, 03-Hongos-Sept14, 04-Invertebrados-Sept14, 05-Moluscos-Sept14, 06-Plantas-Sept14, 07-Proctoctistas-Sept14, 08-Vertebrados-Sept14, 09-Diptera-Sept14, 10-Arthropoda-Sept14]
+
     ip: localhost
-    port: tu_port
+    port: 4000
+
     # url of the site
-    site_url: http://localhost:tu_port/
+    site_url: http://localhost:4000/
+
+    #Para las coultas de afuera
+    host_ip: localhost
+    host_port: tu-puerto
+
+    # IP de la cual recibira las peticiones
+    ip_sql_server: [tus_ips]
+    secret_sql_server: Tu cadena secreta
+
+    # Parametro para saber si el request proveniente de SQL Server correra las validaciones en rails,
+    # es recomendable deshabilitar esta funcion para cuando se corren scripts
+    con_validaciones: true
 
     # name of the site, used extensively within the app
-    site_name: Administrador de información sobre las especies
+    site_name: Nombre aplicacion
     default_locale: es
 
     # shortened version of the name
-    site_name_short: AISE
-    limit_fuzzy : 5
+    site_name_short: Nombre corto de la aplicacion
 
     # Email addresses
     admin_email: admin@yoursite.com
