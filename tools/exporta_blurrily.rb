@@ -20,8 +20,8 @@ def system_call(cmd)
 end
 
 def exporta_a_blurrilly
-  client_cientifico = Blurrily::Client.new(:host => '127.0.0.1', :db_name => 'nombres_cientificos')
-  client_comun = Blurrily::Client.new(:host => '127.0.0.1', :db_name => 'nombres_comunes')
+  client_cientifico = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_cientificos')
+  client_comun = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_comunes')
 
   puts 'Exportando nombres cientificos ... ' if OPTS[:debug]
   Especie.find_each do |taxon|
@@ -39,9 +39,10 @@ def creando_carpeta
   Dir.mkdir(@path, 0755) if !File.exists?(@path)
 end
 
-@path = 'db/blurrily'
-puts 'Iniciando ... ' if OPTS[:debug]
-creando_carpeta
 start_time = Time.now
+
+@path = 'db/blurrily'
+creando_carpeta
 exporta_a_blurrilly
+
 puts "Exporto #{@file_path} en #{Time.now - start_time} seg" if OPTS[:debug]

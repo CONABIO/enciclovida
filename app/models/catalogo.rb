@@ -12,4 +12,12 @@ class Catalogo < ActiveRecord::Base
       nil
     end
   end
+
+  def self.nom_cites_iucn_todos
+    nom = where(:nivel1 => 4, :nivel2=> 1).where('nivel3 > 0')
+    iucn = where(:nivel1 => 4, :nivel2=> 2).where('nivel3 > 0')
+    #cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0')
+    #{:nom => nom, :iucn => iucn, :cites => cites}
+    {:nom => nom, :iucn => iucn}
+  end
 end
