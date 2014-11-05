@@ -29,7 +29,7 @@ def batches
   NombreComun.find_each do |nombre_comun|
 
     nombre_comun.especies.order('nombre_cientifico ASC').each do |especie|
-      foto = especie.foto_principal.present? ? "<img src='#{especie.foto_principal}' alt='#{especie.nombre_cientifico}' width='50px' \>" :
+      foto = especie.foto_principal.present? ? "<img src='#{especie.foto_principal}' alt='#{especie.nombre_cientifico}' width='30px' \>" :
           "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
 
       data = "{\"id\":\"#{nombre_comun.id}#{0}\","   #el ID de nombres_comunes no es unico (uno a muchos)

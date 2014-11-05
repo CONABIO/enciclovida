@@ -28,7 +28,7 @@ def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
   Especie.find_each do |taxon|
-    foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' width='50px' \>" :
+    foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' width='30px' \>" :
         "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' \>"
 
     data=''

@@ -6,7 +6,7 @@ OPTS = Trollop::options do
 Exporta los ID'S dados los nombres de los taxones de la base de everardo.
 
 *** Se corre cada determinado timpo por si los taxones cambiaron
-*** Crear la carpeta tools/correspondencia_snib/ y dentro poner la carpeta con los .csv a correr
+*** Crear la carpeta tools/correspondencia_snib/ y dentro poner la carpeta con unicamente los .csv a correr
 
 Usage:
 
@@ -17,22 +17,31 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-def system_call(cmd)
-  puts "Ejecutando: #{cmd}" if OPTS[:debug]
-  system cmd
-end
-
 def write_file(line)
-  return if line == 'genero,especie'    #quito la cabecera
+  return if line.include? 'genero,especie'    #quito la cabecera
   l = line.split(',')
-  genero = l.first
-  especie = l.last
-  puts "Busqueda: #{genero} #{especie}$" if OPTS[:debug]
+  genero = l[0]
+  especie = l[1]
+  spid = l[2]
+
+  puts "Busqueda: ^#{genero} #{especie}$" if OPTS[:debug]
                                         #hace la comparacion por si es vacio especie
-  taxon = Especie.where(:nombre_cientifico => especie == "\"\"" ? genero: "#{genero} #{especie}")
+  taxon = Especie.where(:nombre_cientifico => especie == '\"\"' ? genero: "#{genero} #{especie}")
   if taxon.first && taxon.count == 1
-    @bitacora.puts "#{genero},#{especie},#{taxon.first.id}"
+    puts "\tEncontro" if OPTS[:debug]
+    id = taxon.first.id
+    proveedor = Proveedor.where(:especie_id => id).first
+
+    if proveedor
+      proveedor.snib_id = spid
+      proveedor.snib_reino = @filename[0..-5].humanize
+    else
+      proveedor = Proveedor.new(:especie_id => id, :snib_id => spid, :snib_reino => @filename[0..-5].humanize)
+    end
+    proveedor.save
+    @bitacora.puts "#{genero},#{especie},#{spid},#{id}"
   else
+    puts "\tNO encontro" if OPTS[:debug]
     @bitacora_no_encontro.puts "#{genero},#{especie},#{@csv}"
   end
 end
@@ -46,15 +55,16 @@ def bitacoras(file, no_encontro)
   puts 'Iniciando bitacoras ...' if OPTS[:debug]
   if !File.exists?(file)
     @bitacora = File.new(file, 'w')
-    @bitacora.puts 'genero,especie,ID'
+    @bitacora.puts 'genero,especie,spid,rid'
   end
   if !File.exists?(no_encontro)
     @bitacora_no_encontro = File.new(no_encontro, 'w')
-    @bitacora_no_encontro.puts 'genero,especie,archivo'
+    @bitacora_no_encontro.puts 'genero,especie,spid,archivo'
   end
 end
 
 def read_file(filename)
+  @filename = filename
   f = File.open(filename, 'r').read
   f.each_line do |line|
     write_file(Limpia.cadena(line))

@@ -23,6 +23,7 @@ def search
   Especie.find_each do |t|
   #Especie.limit(10).each do |t|
     puts "Procesando... #{t.nombre_cientifico}" if OPTS[:debug]
+    #next if t.id <= 10033447
 
     proveedor = t.proveedor
     if proveedor
@@ -31,6 +32,7 @@ def search
       data = JSON.parse(response)
 
       if data.present?    #solo para actualizar el json
+        proveedor.naturalista_id = data.first['id']
         proveedor.naturalista_info = "#{data}"
         proveedor.save
         puts '----->La informacion existe...' if OPTS[:debug]
