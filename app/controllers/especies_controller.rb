@@ -1,5 +1,7 @@
 class EspeciesController < ApplicationController
   include EspeciesHelper
+
+  skip_before_filter :set_locale, only: [:datos_principales]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia,
                                      :edit_photos, :update_photos, :describe, :datos_principales]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
@@ -153,11 +155,33 @@ class EspeciesController < ApplicationController
 
         if @taxones.empty?
           ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
-          if ids.count > 0
+          encontro_con_distancia = false
+
+          ids.each do |id|
             @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").where('especies.id IS NOT NULL').order('nombre_comun ASC').
+                nom_com.where("nombres_comunes.id=#{id}").
                 paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
+
+            if @taxones.first
+              # Si la distancia entre palabras es 1 que muestre la sugerencia
+              distancia = Levenshtein.distance(params[:nombre_comun].downcase, @taxones.first.nombre_comun.downcase)
+              @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
+
+              if distancia != 1
+                next
+              else
+                encontro_con_distancia = true
+                break
+              end
+
+            else
+              # Si no hubo coincidencias con el fuzzy match
+              next
+            end
+          end
+
+          if !encontro_con_distancia
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
         end
 
@@ -172,12 +196,32 @@ class EspeciesController < ApplicationController
 
         if @taxones.empty?
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-          if ids.count > 0
+          encontro_con_distancia = false
 
-            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-                where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').
-                paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
+          ids.each do |id|
+            @taxones = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+                where(:id => id).paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+
+            if @taxones.first
+              # Si la distancia entre palabras es 1 que muestre la sugerencia
+              distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, @taxones.first.nombre_cientifico.downcase)
+              @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
+
+              if distancia != 1
+                next
+              else
+                encontro_con_distancia = true
+                break
+              end
+
+            else
+              # Si no hubo coincidencias con el fuzzy match
+              next
+            end
+          end
+
+          if !encontro_con_distancia
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
         end
 
@@ -199,13 +243,18 @@ class EspeciesController < ApplicationController
             end
           end
 =end
-          conID = value.to_i if key == 'id_nom_cientifico' && value.present?
+          #conID = value.to_i if key == 'id_nom_cientifico' && value.present?
+          if key == 'id_nom_cientifico' && value.present?
+            conID = value.to_i
+          elsif conID.blank? && key == 'id_nom_comun' && value.present?
+            conID = value.to_i
+          end
 
-          if key == 'nombre_cientifico' && value.present?
+          if key == 'nombre_cientifico' && value.present? && conID.blank?
             nombre_cientifico+= value.gsub("'", "''")
           end
 
-          if key == 'nombre_comun' && value.present?
+          if key == 'nombre_comun' && value.present? && conID.blank?
             joins+= '.nombres_comunes_join'
             condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
           end
@@ -251,7 +300,14 @@ class EspeciesController < ApplicationController
           end
         end
 
+        #Parte del edo. de conservacion
+        if params[:edo_cons].present?
+          joins+= '.catalogos_join'
+          condiciones+= ".caso_rango_valores('catalogos.id', '#{params[:edo_cons].join(',')}')"
+        end
+
         busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
+        Rails.logger.info "---#{busqueda}---"
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
       #@taxones=Especie.none
       #@resultado2= busqueda
