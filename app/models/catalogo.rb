@@ -16,6 +16,7 @@ class Catalogo < ActiveRecord::Base
   def self.nom_cites_iucn_todos
     nom = where(:nivel1 => 4, :nivel2=> 1).where('nivel3 > 0')
     iucn = where(:nivel1 => 4, :nivel2=> 2).where('nivel3 > 0')
+    #De momento CITES no se encuentra como fuente
     #cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0')
     #{:nom => nom, :iucn => iucn, :cites => cites}
     {:nom => nom, :iucn => iucn}

@@ -1,4 +1,5 @@
 es:
+  cites: CITES
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados
@@ -154,7 +155,9 @@ es:
       create: Crear %{model}
       submit: Guardar %{model}
       update: Actualizar %{model}
+  iucn: IUCN
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
+  nom: NOM
   nombre_comun: Nombre
   nombres_modelos:
     bibliografias: Bibliografia
