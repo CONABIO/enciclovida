@@ -31,13 +31,11 @@ gem 'pg'
 gem 'rack-contrib'
 gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'   #autocompleta las busquedas
-#gem 'rcore-ext'
 gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'    #extiende el metodo auto_link
 gem 'sass-rails', '~> 4.0.0'
 gem 'savon', '2.4.0'       #para consumir webservices con SOAP y WSDL
 gem 'seed_dump'   #extrae las tuplas de un modelo o de toda la base
-#gem 'simple_datatables'   #simple datatables para hacer el buscador
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
 gem 'thinking-sphinx'     #busca parlabras completas en milisegundos, solo para mysql y postgres
@@ -48,7 +46,6 @@ gem 'ts-delayed-delta', '~> 2.0.0'    #funciona con thinking-sphinx
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
 gem 'will_paginate'    #hace la paginacion de una rango determinado
-#gem 'ya2yaml'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
