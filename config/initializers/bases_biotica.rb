@@ -21,10 +21,12 @@ module Bases
           'tipos_regiones' => 'TipoRegion',
       }
 
-  def self.cual?(id)
-    id_biotica = id/1000000 - 1                                         #para sacar el numero de base
-    conecta_a CONFIG.bases[id_biotica]                                  #se conecta a la base original
-    id%1000000                                                          #regresa el id original
+  def self.id_en_vista_a_id_original(id)
+    id%1000000
+  end
+
+  def self.id_original_a_numero_base(id)
+    id/1000000 - 1
   end
 
   #para buscar en un rango de una base

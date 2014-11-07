@@ -33,7 +33,8 @@ def argumento_a_trigger(arg, base)
       trigger+= "AFTER INSERT, UPDATE, DELETE\n"
       trigger+= "AS\n"
 
-      #Evita un loop en SQL Server
+      #Evita un loop en SQL Server cuando se modifica de la maquina directa de Rails
+      #Agregar posibles IP de desarrollo
       trigger+= "DECLARE @ip NVARCHAR(255);\n"
       trigger+= "DECLARE @sql VARCHAR(255);\n"
       trigger+= "SELECT @ip=master.dbo.GetCurrentIP();\n"

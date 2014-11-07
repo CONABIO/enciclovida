@@ -275,4 +275,18 @@ class Especie < ActiveRecord::Base
   def photos_with_external_cache_key
     "taxon_photos_external_#{id}"
   end
+
+  def pon_foto_principal
+    # Antes de cambiar de base ya que photos esta en Rails.env
+    foto_principal = photos.any? ? photos.first.thumb_url : '/assets/app/iconic_taxa/mammalia-75px.png'
+    id_bio = Bases.id_en_vista_a_id_original id
+    numero_base = Bases.id_original_a_numero_base id
+    Bases.conecta_a CONFIG.bases[numero_base]
+
+    taxon_bio = EspecieBio.find(id_bio)
+    taxon_bio.foto_principal = foto_principal
+    taxon_bio.evita_before_save = true
+    taxon_bio.save if taxon_bio.changed?
+    Bases.conecta_a Rails.env
+  end
 end

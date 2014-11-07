@@ -6,7 +6,7 @@ class ValidacionesController < ApplicationController
 
   #Quita estos metodos para que pueda cargar correctamente la peticion
   skip_before_filter  :verify_authenticity_token, :set_locale
-  before_filter :authenticate_request!
+  before_action :authenticate_request!
   layout false
 
   def update
@@ -36,8 +36,7 @@ class ValidacionesController < ApplicationController
   private
 
   def authenticate_request!
-    return nil unless to_boolean(CONFIG.con_validaciones.to_s)   # Para saber si se validara o no
-    return nil unless CONFIG.ip_sql_server.to_s.include?(request.remote_ip)
+    return nil unless CONFIG.ip_sql_server.include?(request.remote_ip)
     return nil unless params[:secret] == CONFIG.secret_sql_server.to_s.parameterize
     return nil if params[:id].blank? || params[:base].blank? || params[:tabla].blank?
     return nil unless CONFIG.bases.include?(params[:base])
