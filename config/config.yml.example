@@ -21,6 +21,10 @@ base: &base
     ip_sql_server: [tus_ips]
     secret_sql_server: Tu cadena secreta
 
+    # IP(s) de donde toman los cambios de BDI
+    fotos_ip: [172.16.1.158]
+    secret_fotos: Tu palabra secreta
+
     # name of the site, used extensively within the app
     site_name: Nombre aplicacion
     default_locale: es

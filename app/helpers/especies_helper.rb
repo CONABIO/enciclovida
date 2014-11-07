@@ -166,7 +166,7 @@ module EspeciesHelper
   def checkboxEstadoConservacion
     checkBoxes=''
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes+= "<br><b>#{k}</b>"
+      checkBoxes+= "<br><b>#{t(k)}</b>"
       contador=0
 
       valores.each do |edo|

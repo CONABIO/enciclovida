@@ -64,12 +64,12 @@ class Proveedor < ActiveRecord::Base
 
   def taxon_photos(datos, usuario)
     photos = []
-    datos['taxon_photos'].each do |pho|     #Guarda todas las fotos asociadas del taxon
+    datos['taxon_photos'].each do |pho| #Guarda todas las fotos asociadas del taxon
       next unless pho['photo']['native_photo_id'].present?
       next unless pho['photo']['thumb_url'].present?
 
-      local_photo =  Photo.where(:native_photo_id => pho['photo']['native_photo_id'], :type => photo_type(pho['photo']['thumb_url']))
-      photo = local_photo.count == 1 ? local_photo.first : Photo.new     #Crea o actualiza la foto
+      local_photo = Photo.where(:native_photo_id => pho['photo']['native_photo_id'], :type => photo_type(pho['photo']['thumb_url']))
+      photo = local_photo.count == 1 ? local_photo.first : Photo.new #Crea o actualiza la foto
 
       photo.usuario_id = usuario
       photo.native_photo_id = pho['photo']['native_photo_id']
@@ -78,7 +78,7 @@ class Proveedor < ActiveRecord::Base
       photo.small_url = pho['photo']['small_url']
       photo.medium_url = pho['photo']['medium_url']
       photo.large_url = pho['photo']['large_url']
-                                                                         #photo.original_url = pho['photo']['original_url']
+                                                                     #photo.original_url = pho['photo']['original_url']
       photo.created_at = pho['photo']['created_at']
       photo.updated_at = pho['photo']['updated_at']
       photo.native_page_url = pho['photo']['native_page_url']

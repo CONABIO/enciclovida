@@ -21,7 +21,11 @@ def datos
   puts 'Procesando los taxones...' if OPTS[:debug]
 
   Especie.find_each do |taxon|
+<<<<<<< HEAD
   #Especie.limit(100).each do |taxon|
+=======
+    #Especie.limit(100).each do |taxon|
+>>>>>>> upstream/master
     puts "#{taxon.id}\t#{taxon.nombre}" if OPTS[:debug]
     proveedor = taxon.proveedor
 

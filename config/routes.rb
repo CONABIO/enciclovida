@@ -1,5 +1,7 @@
 Buscador::Application.routes.draw do
 
+  resources :metadatos
+
   devise_for :usuarios
   resources :bitacoras
 
