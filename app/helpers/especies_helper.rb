@@ -171,7 +171,7 @@ module EspeciesHelper
 
       valores.each do |edo|
         checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
-        checkBoxes+="#{check_box_tag('edo_cons[]', edo.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{edo.descripcion}&nbsp;&nbsp;"
+        checkBoxes+="#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}&nbsp;&nbsp;"
         contador+=1
       end
     end

@@ -28,7 +28,7 @@ class Especie < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
-  scope :rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
+  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
@@ -45,8 +45,6 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
-
-  before_save :ponNombreCientifico
 
   WillPaginate.per_page = 10
   self.per_page = WillPaginate.per_page
@@ -277,24 +275,4 @@ class Especie < ActiveRecord::Base
   def photos_with_external_cache_key
     "taxon_photos_external_#{id}"
   end
-
-  private
-
-  def ponNombreCientifico
-    case self.categoria_taxonomica_id
-      when 19, 50 #para especies
-        generoID=self.ancestry_ascendente_obligatorio.split('/').last
-        genero=Especie.find(generoID.to_i).nombre
-        self.nombre_cientifico="#{genero} #{self.nombre}"
-      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=self.ancestry_ascendente_obligatorio.split('/')[5]
-        genero=Especie.find(generoID).nombre
-        especieID=self.ancestry_ascendente_obligatorio.split('/')[6]
-        especie=Especie.find(especieID).nombre
-        self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
-      else
-        self.nombre_cientifico=self.nombre
-    end
-  end
-
 end

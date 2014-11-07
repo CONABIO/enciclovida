@@ -143,11 +143,8 @@ GEM
     i18n (0.6.11)
     i18n-js (2.1.2)
       i18n
-    innertube (1.1.0)
     jbuilder (1.0.2)
       activesupport (>= 3.0.0)
-    joiner (0.2.0)
-      activerecord (>= 3.1.0, < 4.1.0)
     jquery-rails (3.1.1)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
@@ -160,7 +157,6 @@ GEM
     magick-metadata (0.0.3)
     mail (2.6.1)
       mime-types (>= 1.16, < 3)
-    middleware (0.1.0)
     mime-types (1.25.1)
     minitest (4.7.5)
     multi_json (1.10.1)
@@ -183,7 +179,6 @@ GEM
     ref (1.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    riddle (1.5.11)
     rinku (1.7.3)
     rubyntlm (0.3.4)
     sass (3.2.19)
@@ -227,21 +222,11 @@ GEM
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
       ref
-    thinking-sphinx (3.1.1)
-      activerecord (>= 3.1.0)
-      builder (>= 2.1.2)
-      innertube (>= 1.0.2)
-      joiner (>= 0.2.0)
-      middleware (>= 0.1.0)
-      riddle (>= 1.5.11)
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
     tiny_tds (0.6.2)
     trollop (2.0)
-    ts-delayed-delta (2.0.2)
-      delayed_job
-      thinking-sphinx (>= 1.5.0)
     turbolinks (2.2.2)
       coffee-rails
     tzinfo (0.3.40)
@@ -303,10 +288,8 @@ DEPENDENCIES
   seed_dump
   soulmate
   therubyracer
-  thinking-sphinx
   tiny_tds
   trollop
-  ts-delayed-delta (~> 2.0.0)
   turbolinks
   uglifier (>= 1.3.0)
   wash_out

@@ -98,6 +98,7 @@ def camTab
                      "'' as delta",
                      "nombre_comun_principal",
                      "foto_principal",
+                     "IdCAT as catalogo_id"
       ],
       'especies_bibliografias' => ["#{@id}+IdNombre as especie_id",
                                    "#{@id}+IdBibliografia as bibliografia_id",

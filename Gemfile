@@ -37,14 +37,11 @@ gem 'rinku', :require => 'rails_rinku'    #extiende el metodo auto_link
 gem 'sass-rails', '~> 4.0.0'
 gem 'savon', '2.4.0'       #para consumir webservices con SOAP y WSDL
 gem 'seed_dump'   #extrae las tuplas de un modelo o de toda la base
-#gem 'simple_datatables'   #simple datatables para hacer el buscador
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
-gem 'thinking-sphinx'     #busca parlabras completas en milisegundos, solo para mysql y postgres
 gem 'tiny_tds'#, github: 'rails-sqlserver/tiny_tds'
 gem 'turbolinks'    #hace mas rapidos los links
 gem 'trollop'
-gem 'ts-delayed-delta', '~> 2.0.0'    #funciona con thinking-sphinx
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
 gem 'will_paginate'    #hace la paginacion de una rango determinado

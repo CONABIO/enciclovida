@@ -27,9 +27,10 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @photos = Rails.cache.fetch(@especie.photos_cache_key) do
-      @especie.photos_with_backfill(:skip_external => true, :limit => 24)
-    end
+    @photos = @especie.photos
+    #@photos = Rails.cache.fetch(@especie.photos_cache_key) do
+    #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
+    #end
 
     @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
     @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
@@ -278,15 +279,15 @@ class EspeciesController < ApplicationController
         if params[:categoria].present? ? params[:categoria].join('').present? : false
           if conID.blank?                 #join a la(s) categorias taxonomicas (params)
             cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-            condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+            condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
             condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
           else            #joins a las categorias con los descendientes
             taxon = Especie.find(conID)
             arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
             cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
             arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
-            condiciones+= ".rango_valores('especies.id', #{arbolIDS})"
-            condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+            condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
+            condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
           end
         else       # busquedas directas
           condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
@@ -310,7 +311,8 @@ class EspeciesController < ApplicationController
         #Parte del edo. de conservacion
         if params[:edo_cons].present?
           joins+= '.catalogos_join'
-          condiciones+= ".caso_rango_valores('catalogos.id', '#{params[:edo_cons].join(',')}')"
+          condiciones+= ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+          #distinct = true
         end
 
         busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
@@ -712,7 +714,7 @@ class EspeciesController < ApplicationController
       when 4
         "caso_termina_con('#{columna}', '#{valor}')"
       when 5
-        "rango_valores('#{columna}', \"#{valor}\")"
+        "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
 

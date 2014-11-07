@@ -34,9 +34,9 @@ def write_file(line)
 
     if proveedor
       proveedor.snib_id = spid
-      proveedor.snib_reino = @filename[0..-5].humanize
+      proveedor.snib_reino = @filename[0..-5].downcase
     else
-      proveedor = Proveedor.new(:especie_id => id, :snib_id => spid, :snib_reino => @filename[0..-5].humanize)
+      proveedor = Proveedor.new(:especie_id => id, :snib_id => spid, :snib_reino => @filename[0..-5].downcase)
     end
     proveedor.save
     @bitacora.puts "#{genero},#{especie},#{spid},#{id}"
@@ -64,7 +64,7 @@ def bitacoras(file, no_encontro)
 end
 
 def read_file(filename)
-  @filename = filename
+  @filename = filename.split('/')[3]
   f = File.open(filename, 'r').read
   f.each_line do |line|
     write_file(Limpia.cadena(line))
