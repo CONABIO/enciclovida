@@ -1,9 +1,9 @@
 class MetadatosController < ApplicationController
 
-  skip_before_filter :verify_authenticity_token, :set_locale, :only => :new
-  before_action :authenticate_request!, :only => :new
+  skip_before_filter :verify_authenticity_token, :set_locale, :only => :create
+  before_action :authenticate_request!, :only => :create
   before_action :set_metadato, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_usuario!, :except => :new
+  before_action :authenticate_usuario!, :except => :create
   layout false
 
   # GET /metadatos
@@ -74,7 +74,6 @@ class MetadatosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def metadato_params
-    params[:metadato]
     params.require(:metadato).permit(:object_name, :artist, :copyright, :country_name, :province_state,
                                      :transmission_reference, :category, :supp_category, :keywords,
                                      :custom_field12, :custom_field6, :custom_field7, :custom_field13)
