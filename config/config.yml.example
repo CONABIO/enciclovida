@@ -15,6 +15,10 @@ base: &base
   host_ip: localhost
   host_port: 3000
 
+  # IP(s) de donde toman los cambios de BDI
+  fotos_ip: [172.16.1.158]
+  secret_fotos: Tu palabra secreta
+
   # name of the site, used extensively within the app
   site_name: Nombre del sitio
   default_locale: es
