@@ -4,8 +4,6 @@ module EspeciesHelper
     if I18n.locale.to_s == 'es-cientifico'
       if params[:title]
         "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
-      elsif params[:context]
-        "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       elsif params[:link]
         "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
       elsif params[:show]
@@ -18,9 +16,6 @@ module EspeciesHelper
         if params[:title]
           taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.nombre_cientifico})".html_safe :
               taxon.nombre_cientifico
-        elsif params[:context]
-          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
-              view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
             "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
@@ -38,9 +33,6 @@ module EspeciesHelper
         if params[:title]
           taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
-        elsif params[:context]
-          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}</i>)".html_safe :
-              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
             "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe
@@ -100,20 +92,45 @@ module EspeciesHelper
   end
 
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
-    nodos="<ul><li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos+="#{view_context.link_to(view_context.image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :width => '40px'), '', :id => "link_#{taxon.id}", :class => :sub_link_taxon, :onclick => 'return despliegaOcontrae(this.id);')}"
-    nodos+=" #{tituloNombreCientifico(taxon, :context => true)}</li>"
-    conClick.present? ? nodos[4..-1] : nodos
+    nodos="<li id='nodo_#{taxon.id}' class='links_arbol'>"
+    nodos+="#{link_to(image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :width => '40px'), '', :id => "link_#{taxon.id}", :class => :sub_link_taxon, :onclick => 'return despliegaOcontrae(this.id);')}"
+    nodos+=" #{tituloNombreCientifico(taxon, :link => true)}"
+    #Deja los nodos abiertos para que esten anidados (si conClick es falso)
+    conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
   end
 
-  def arbolTaxonomico        #cuando carga la pagina y es root
-    arbolCompleto = "<ul class=\"nodo_mayor\">"
-    reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+  def arbolTaxonomico(taxon, accion=false)
+    # Si es para desplegar o contraer
+    if accion
+      nodo = ''
+      @especie.child_ids.each do |childrenID|
+        children = Especie.find(childrenID)
+        nodo+= enlacesDelArbol(children, true)
+      end
+      nodo
 
-    Especie.where(:categoria_taxonomica_id => reino).each do |t|
-      arbolCompleto+=enlacesDelArbol(t)
+    else
+      arbolCompleto = "<ul class=\"nodo_mayor\">"
+      tags = ''
+      contadorNodos = 0
+
+      if taxon.try(:is_root?) || taxon.nil?  # Si es root o es el arbol del index
+        reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+        Especie.where(:categoria_taxonomica_id => reino).each do |t|
+          arbolCompleto+= enlacesDelArbol(t)
+          contadorNodos=+ 1;
+        end
+      else
+        (taxon.ancestor_ids + [taxon.id]).each do |a|
+          ancestro = Especie.find(a)
+          arbolCompleto+= enlacesDelArbol(ancestro)
+          contadorNodos+= 1
+        end
+      end
+
+      contadorNodos.times {tags+= '</li></ul>'}
+      arbolCompleto + tags + '</ul>'
     end
-    arbolCompleto+='</ul>'
   end
 
   def opcionesListas(listas)

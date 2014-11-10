@@ -52,10 +52,6 @@
 
     $(document).ready(function()
     {
-        <% if !@especie.is_root? %>
-        muestraArbol(TAXON.id);
-        <% end %>
-
         if ($('#statusGoogleMap').val() == '')
             googleMaps();
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
