@@ -74,13 +74,12 @@ class MetadatosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def metadato_params
-    params.require(:metadato).permit(:object_name, :artist, :copyright, :country_name, :province_state,
+    params.require(:metadatos).permit(:object_name, :artist, :copyright, :country_name, :province_state,
                                      :transmission_reference, :category, :supp_category, :keywords,
                                      :custom_field12, :custom_field6, :custom_field7, :custom_field13)
   end
 
   def authenticate_request!
     return nil unless CONFIG.fotos_ip.include?(request.remote_ip)
-    return nil unless params[:secret] == CONFIG.secret_fotos
   end
 end
