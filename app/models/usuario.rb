@@ -5,10 +5,10 @@ class Usuario < ActiveRecord::Base
   self.table_name='usuarios'
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # :confirmable, :lockable, :timeoutable, :omniauthable, :confirmable, :lockable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :authentication_keys => [:login]#:confirmable, :lockable
+         :authentication_keys => [:login]
   # Para registrarse con el email o usuario
   attr_accessor :login
 
