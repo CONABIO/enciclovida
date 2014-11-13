@@ -58,8 +58,8 @@
             lat: 19.29478848,
             lng: -99.65630269,
             mapTypeId:google.maps.MapTypeId.HYBRID,
-            height: "400px",
-            width:	"400px"
+            height: "450px",
+            width:	"450px"
         });
 
         for (var i = 0; i < MAPAS.length;i++)
@@ -152,7 +152,7 @@
     </td>
 
     <% if @especie.species_or_lower? %>
-        <td style="max-width: 600px;min-width: 400px;">
+        <td style="max-width: 600px;min-width: 400px;" valign="top">
           <div id="map"></div>
         </td>
     <% end %>
