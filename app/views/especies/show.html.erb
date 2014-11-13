@@ -43,30 +43,6 @@
         return false;
     }
 
-    googleMaps = function()
-    {
-        var mapOptions = {
-            //center: new google.maps.LatLng(38,-79.5),
-            zoom:3,
-            mapTypeId: google.maps.MapTypeId.TERRAIN
-        }
-        var map=new google.maps.Map(document.getElementById("googleMap"),mapOptions);
-        var overlay = new google.maps.KmlLayer('http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=' + NOMBRE_CIENTIFICO);
-
-        overlay.setMap(map);
-        google.maps.event.addListener(overlay,'status_changed',function(){
-            document.getElementById('statusGoogleMap').innerHTML = overlay.getStatus();
-
-            if (overlay.getStatus() != 'OK')
-            {
-                $('#googleMap').hide();
-            } else {
-                $('#sinGoogleMap').hide();
-            }
-            $('#statusGoogleMap').val(overlay.getStatus());
-        });
-    }
-
     muestraBibliografiaNombres = function(ident)
     {
         var id=ident.split('_')[2];
@@ -82,12 +58,9 @@
             lat: 19.29478848,
             lng: -99.65630269,
             mapTypeId:google.maps.MapTypeId.HYBRID,
-            height: "500px",
-            width:	"500px"
+            height: "400px",
+            width:	"400px"
         });
-
-         alert('entro')
-        //console.log('Ya cree el Mapa donde se dibujaran las capas KML(Z)');
 
         for (var i = 0; i < MAPAS.length;i++)
         {
@@ -128,8 +101,7 @@
 
         anadeControlFullScreen();
         anadeControlCapas();
-        //if ($('#statusGoogleMap').val() == '')
-        //googleMaps();
+
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -181,10 +153,7 @@
 
     <% if @especie.species_or_lower? %>
         <td style="max-width: 600px;min-width: 400px;">
-          <div id="sinGoogleMap"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
-          <!--div id="googleMap" style="height:500px;width:600px;"></div-->
           <div id="map"></div>
-          <div id="statusGoogleMap" style="display: none"></div>
         </td>
     <% end %>
   </tr>
