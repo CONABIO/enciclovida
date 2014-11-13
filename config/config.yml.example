@@ -30,6 +30,10 @@ base: &base
 
     # shortened version of the name
     site_name_short: Nombre corto de la aplicacion
+    imit_fuzzy : 10
+
+    # URL SNIB
+    snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
 
     # Email addresses
     admin_email: admin@yoursite.com
@@ -124,11 +128,13 @@ base: &base
         session_key: _yoursite_session
         secret: 09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af
 
-    google_analytics:
-        # http://www.google.com/analytics/sign_up.html
-        tracker_id: UA-090909-9
-        domain_name: yoursite.org
-
+    google:
+        client_id: tu-cliente
+        client_secret: tu-secret
+        google_analytics:
+            # http://www.google.com/analytics/sign_up.html
+            tracker_id: UA-090909-9
+            domain_name: yoursite.org
     ubio:
         # http://www.ubio.org/index.php?pagename=form
         key: 09af09af09af09af09af09af09af09af09af09af
@@ -157,29 +163,6 @@ base: &base
     s3_bucket: 'yourbucketname'
 
     memcached: 'localhost'
-
-    rails:
-      # Issue {rake secret} to get a new one
-      session_key: _yoursite_session
-      secret: 09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af
-
-    google:
-      client_id: tu-cliente
-      client_secret: tu-secret
-      google_analytics:
-        # http://www.google.com/analytics/sign_up.html
-        tracker_id: UA-090909-9
-        domain_name: yoursite.org
-
-    ubio:
-      # http://www.ubio.org/index.php?pagename=form
-      key: 09af09af09af09af09af09af09af09af09af09af
-
-    yahoo_dev_network:
-      # first need Yahoo account: https://edit.yahoo.com/registration
-      # then need to sign up for Yahoo Developers Network app interface:
-      # https://developer.apps.yahoo.com/wsregapp/
-      app_id: 09azAZ09azAZ09azAZ09azAZ09azAZ09azAZ09az09azAZ09azAZ09azAZ09
 
     # twitter:
     #     key: 09af09af09af09af09af09af09af09af09af09af
