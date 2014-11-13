@@ -26,6 +26,9 @@ base: &base
   site_name_short: Nombre corto
   limit_fuzzy : 10
 
+  # URL SNIB
+  snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
+
   # Email addresses
   admin_email: admin@yoursite.com
   noreply_email: no-reply@yoursite.com
