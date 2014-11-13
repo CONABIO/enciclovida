@@ -1,5 +1,6 @@
 class UsuariosController < ApplicationController
-  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar, :cambia_locale]
+  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar,
+                                              :cambia_locale]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   before_action :only => [:index, :edit, :update, :destroy] do |c|
     c.tienePermiso? @usuario.id

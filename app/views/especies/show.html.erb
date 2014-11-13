@@ -1,5 +1,29 @@
-<script data-turbolinks-track="true" src="/assets/photo_selectors.js" data-turbolinks-track="true"></script>
-<script data-turbolinks-track="true" src="/assets/show.js" data-turbolinks-track="true"></script>
+<script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
+<script data-turbolinks-track="true" src="/assets/show.js"></script>
+<script data-turbolinks-track="true" src="/assets/gmaps.js"></script>
+
+<style>
+    #map {
+        margin: 0px auto;
+        padding: 0px;
+    }
+    #map.fullscreen {
+        top: 0px;
+        left: 0px;
+        z-index: 10000;
+    }
+    #content{
+    }
+
+    #balloon{
+        color: rgb(3, 7, 48);
+        margin: 0px;
+        padding: 0px;
+        font-size: x-small;
+        text-transform: capitalize;
+        line-height: 1.6em;
+    }
+</style>
 
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     var TAXON = <%=raw @especie.to_json %>;
@@ -50,14 +74,13 @@
         return false;
     }
 
+
+
+
     $(document).ready(function()
     {
-        <% if !@especie.is_root? %>
-        muestraArbol(TAXON.id);
-        <% end %>
-
-        if ($('#statusGoogleMap').val() == '')
-            googleMaps();
+        //if ($('#statusGoogleMap').val() == '')
+            //googleMaps();
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -66,6 +89,7 @@
         <%# end %>
     });
 </script>
+<script data-turbolinks-track="true" src="/assets/mapas_dinamicos.js"></script>
 
 
 <p id="notice"><%= notice %></p>
@@ -104,8 +128,9 @@
       </div>
     </td>
     <td style="max-width: 500px;">
-      <div id="sinGoogleMap" style="width:1000px;"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
-      <div id="googleMap" style="height:500px;width:600px;"></div>
+      <div id="sinGoogleMap"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
+      <!--div id="googleMap" style="height:500px;width:600px;"></div-->
+      <div id="map"></div>
       <div id="statusGoogleMap" style="display: none"></div>
     </td>
   </tr>

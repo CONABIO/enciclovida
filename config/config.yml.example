@@ -23,7 +23,6 @@ base: &base
 
     # IP(s) de donde toman los cambios de BDI
     fotos_ip: [172.16.1.158]
-    secret_fotos: Tu palabra secreta
 
     # name of the site, used extensively within the app
     site_name: Nombre aplicacion
@@ -159,12 +158,28 @@ base: &base
 
     memcached: 'localhost'
 
-    # facebook:
-    #     app_id: 00000000000
-    #     app_secret: 09af09af09af09af09af09af09af09af09af09af
-    #     # facebook user IDs of people who can admin pages on the site
-    #     admin_ids: [1,2]
-    #     namespace: appname # your facebook app's namespace, used for open graph tags
+    rails:
+      # Issue {rake secret} to get a new one
+      session_key: _yoursite_session
+      secret: 09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af09af
+
+    google:
+      client_id: tu-cliente
+      client_secret: tu-secret
+      google_analytics:
+        # http://www.google.com/analytics/sign_up.html
+        tracker_id: UA-090909-9
+        domain_name: yoursite.org
+
+    ubio:
+      # http://www.ubio.org/index.php?pagename=form
+      key: 09af09af09af09af09af09af09af09af09af09af
+
+    yahoo_dev_network:
+      # first need Yahoo account: https://edit.yahoo.com/registration
+      # then need to sign up for Yahoo Developers Network app interface:
+      # https://developer.apps.yahoo.com/wsregapp/
+      app_id: 09azAZ09azAZ09azAZ09azAZ09azAZ09azAZ09az09azAZ09azAZ09azAZ09
 
     # twitter:
     #     key: 09af09af09af09af09af09af09af09af09af09af

@@ -38,9 +38,7 @@ Buscador::Application.routes.draw do
       get :busca_por_lote
       put :aniade_taxones
       get :dame_listas
-      get :buscaDescendientes
-      post :muestraTaxonomia
-      get :autocomplete_especie_nombre
+      get :arbol
       get :resultados
       post :resultados_por_lote
       get :error

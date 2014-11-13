@@ -1,12 +1,11 @@
 class EspeciesController < ApplicationController
-  include EspeciesHelper
 
-  skip_before_filter :set_locale, only: [:datos_principales]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia,
+  skip_before_filter :set_locale, only: [:datos_principales, :arbol]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
                                      :edit_photos, :update_photos, :describe, :datos_principales]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia, :datos_principales]
+  layout false, :only => [:dame_listas, :describe, :arbol, :datos_principales]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -400,41 +399,9 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def buscaDescendientes
-    if taxon=params[:id]
-      nodo ||='<ul>'
-      @especie.child_ids.each do |childrenID|
-        children=Especie.find(childrenID)
-        nodo+=enlacesDelArbol(children, true)
-      end
-      respond_to do |format|
-        format.html do
-          render :json => nodo+='</ul>'
-        end
-      end
-    end
-  end
-
-  def muestraTaxonomia
-    return unless @especie
-
-    arbolCompleto ||="<ul class=\"nodo_mayor\">"
-    if @especie.ancestry_ascendente_obligatorio.present?
-      contadorNodos ||=0;
-      @especie.ancestry_ascendente_obligatorio.split('/').each do |a|
-
-        if ancestro=Especie.find(a)
-          arbolCompleto+=enlacesDelArbol(ancestro)
-          contadorNodos+=1
-        end
-      end
-      arbolCompleto+=enlacesDelArbol(@especie)
-      respond_to do |format|
-        format.html do
-          render :json => arbolCompleto+='</li></ul>'*(contadorNodos+1)+'</ul>'
-        end
-      end
-    end
+  #Despliega o contrae o muestra el arbol de un inicio
+  def arbol
+    @accion = to_boolean(params[:accion]) if params[:accion].present?
   end
 
   def dame_listas
