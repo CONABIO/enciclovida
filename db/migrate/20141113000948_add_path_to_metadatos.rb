@@ -4,7 +4,5 @@ class AddPathToMetadatos < ActiveRecord::Migration
       ## Campo adicional para el SNIB
       t.text :path
     end
-
-    add_index :metadatos, :path, :unique => true
   end
 end
