@@ -1,21 +1,20 @@
 <script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
 <script data-turbolinks-track="true" src="/assets/show.js"></script>
-<script data-turbolinks-track="true" src="/assets/gmaps.js"></script>
 
 <style>
-    #map {
+    #map
+    {
         margin: 0px auto;
         padding: 0px;
     }
-    #map.fullscreen {
+    #map.fullscreen
+    {
         top: 0px;
         left: 0px;
         z-index: 10000;
     }
-    #content{
-    }
-
-    #balloon{
+    #balloon
+    {
         color: rgb(3, 7, 48);
         margin: 0px;
         padding: 0px;
@@ -25,9 +24,10 @@
     }
 </style>
 
-<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+<script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
+    var MAPAS = new Array (	["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución']);
 
     info = function()
     {
@@ -74,13 +74,62 @@
         return false;
     }
 
-
-
-
     $(document).ready(function()
     {
+        map = new GMaps({
+            div: '#map',
+            zoom: 4,
+            lat: 19.29478848,
+            lng: -99.65630269,
+            mapTypeId:google.maps.MapTypeId.HYBRID,
+            height: "500px",
+            width:	"500px"
+        });
+
+         alert('entro')
+        //console.log('Ya cree el Mapa donde se dibujaran las capas KML(Z)');
+
+        for (var i = 0; i < MAPAS.length;i++)
+        {
+            infoWindow =	new google.maps.InfoWindow({});
+            MAPAS[i][2]	=	function(direccion){
+                return	map.loadFromKML({
+                    url: direccion,
+                    preserveViewport: true,
+                    suppressInfoWindows: true,
+                    events:{
+                        click: function(point){
+                            anchoInfo = function()
+                            {
+                                return parseInt($("#map").width()/5)*4;
+                            };
+                            altoInfo = function()
+                            {
+                                return parseInt($("#map").height()/10)*9;
+                            };
+                            if(point.featureData.infoWindowHtml.indexOf('$[description]')>-1)
+                            {
+                                infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.name+"</div>");
+                                infoWindow.maxWidth = 2;
+                            }else{
+                                infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.infoWindowHtml+"</div>");
+                            };
+                            infoWindow.setPosition(point.latLng);
+                            infoWindow.open(map.map);
+                            $(function()
+                            {
+                                $("#balloon div").removeAttr("style");
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        anadeControlFullScreen();
+        anadeControlCapas();
         //if ($('#statusGoogleMap').val() == '')
-            //googleMaps();
+        //googleMaps();
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -89,8 +138,6 @@
         <%# end %>
     });
 </script>
-<script data-turbolinks-track="true" src="/assets/mapas_dinamicos.js"></script>
-
 
 <p id="notice"><%= notice %></p>
 
@@ -108,31 +155,38 @@
 
 <table class="tabla_formato">
   <tr>
-    <td style="min-width: 500px;">
-      <div id="photoscol" class="column span-13">
-        <% if @especie.species_or_lower? && @photos.empty? %>
-            <div class="notice">
-              <%# t(:este_taxon_no_tiene).html_safe %>
-              <%# link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-            </div>
-        <% end %>
-        <div id="photos">
-          <%= render :partial => 'photos', :locals => { :photos => @photos } %>
-          <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
-        </div>
-
-        <% if usuario_signed_in? %>
-            <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-            <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-        <% end %>
+    <% if @especie.species_or_lower? %>
+        <td style="min-width: 400px;max-width: 400px;">
+    <% else %>
+        <td>
+    <% end %>
+    <div id="photoscol" class="column span-13">
+      <% if @especie.species_or_lower? && @photos.empty? %>
+          <div class="notice">
+            <%# t(:este_taxon_no_tiene).html_safe %>
+            <%# link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+          </div>
+      <% end %>
+      <div id="photos">
+        <%= render :partial => 'photos', :locals => { :photos => @photos } %>
+        <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
       </div>
+
+      <% if usuario_signed_in? %>
+          <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+          <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+      <% end %>
+    </div>
     </td>
-    <td style="max-width: 500px;">
-      <div id="sinGoogleMap"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
-      <!--div id="googleMap" style="height:500px;width:600px;"></div-->
-      <div id="map"></div>
-      <div id="statusGoogleMap" style="display: none"></div>
-    </td>
+
+    <% if @especie.species_or_lower? %>
+        <td style="max-width: 600px;min-width: 400px;">
+          <div id="sinGoogleMap"><em>No existe un mapa de distribuci&oacute;n asociado a este tax&oacute;n</em></div>
+          <!--div id="googleMap" style="height:500px;width:600px;"></div-->
+          <div id="map"></div>
+          <div id="statusGoogleMap" style="display: none"></div>
+        </td>
+    <% end %>
   </tr>
 </table>
 

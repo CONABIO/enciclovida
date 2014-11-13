@@ -43,6 +43,7 @@ Buscador::Application.routes.draw do
       post :resultados_por_lote
       get :error
       get :datos_principales
+      get :kml
     end
   end
 

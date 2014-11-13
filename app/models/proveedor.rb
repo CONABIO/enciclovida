@@ -53,7 +53,79 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
+  #Guarda el kml asociado al taxon
+  def kml
+    return [] unless snib_id.present?
+    response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}"
+    return [] unless response.present?
+    data = JSON.parse(response)
+    colectas = data['colectas']
+    return [] unless colectas.count > 0
+    cadenas = []
+
+    colectas.each do |col|
+      datos = col['properties']
+      next unless datos['proceso_val'] == 'MX_validoE'
+      cadena = Hash.new
+
+      #Los numere para poder armar los datos en el orden deseado
+      cadena['1_nombre_cientifico'] = especie.nombre_cientifico
+      cadena['2_nombre_comun'] = especie.nombre_comun_principal
+      cadena['4_nombre_coleccion'] = datos['nombrecoleccion']
+      cadena['5_nombre_institucion'] = datos['nombreinstitucion']
+      cadena['6_pais_coleccion'] = datos['paiscoleccion']
+      cadena['7_longitude'] = datos['x_7']
+      cadena['8_latitude'] = datos['y_7']
+
+      #Pone la fecha correcta si tiene el formato indicado
+      if datos['aniocolecta'] != 9999 && datos['mescolecta'] != 99 && datos['diacolecta'] != 99
+        cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta']}-#{datos['diacolecta']} 00:00:00"
+      end
+
+      cadenas << cadena
+    end
+    self.snib_kml = to_kml(cadenas)
+  end
+
   private
+
+  def to_kml(cadenas)
+    kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    kml+= "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml+= "<Document>\n"
+
+    cadenas.each do |cad|
+      kml+= "<Placemark>\n"
+      kml+= "<ExtendedData>\n"
+
+      cad.keys.sort.each do |k|
+        next unless cad[k].present?
+
+        case k
+          when '1_nombre_cientifico'
+            valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
+            kml+= "<Data name=\"#{}\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+          when '3_datetime'
+            kml+= "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '4_nombre_coleccion'
+            kml+= "<Data name=\"Colección\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '5_nombre_institucion'
+            kml+= "<Data name=\"Institución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '6_pais_coleccion'
+            kml+= "<Data name=\"País de procedencia\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          else
+            next
+        end
+      end
+
+      kml+= "</ExtendedData>\n"
+      kml+= "<Point>\n<coordinates>\n#{cad['7_longitude']},#{cad['8_latitude']}\n</coordinates>\n</Point>\n"
+      kml+= "</Placemark>\n"
+    end
+
+    kml+= "</Document>\n"
+    kml+= '</kml>'
+  end
 
   def photo_type(url)
     return 'FlickrPhoto' if url.include?("staticflickr\.com") || url.include?("static\.flickr\.com")

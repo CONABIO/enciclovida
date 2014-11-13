@@ -25,4 +25,3 @@
 //= require cocoon
 //= require general
 //= require autocomplete-rails
-

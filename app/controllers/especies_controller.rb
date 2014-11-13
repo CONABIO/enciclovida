@@ -1,11 +1,11 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :arbol]
+  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
-                                     :edit_photos, :update_photos, :describe, :datos_principales]
+                                     :edit_photos, :update_photos, :describe, :datos_principales, :kml]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
   before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => [:dame_listas, :describe, :arbol, :datos_principales]
+  layout false, :only => [:dame_listas, :describe, :arbol, :datos_principales, :kml]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -477,8 +477,21 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def kml
+    proveedor = @especie.proveedor
+    if proveedor
+      if proveedor.snib_kml.present?
+        send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+      else
+        render :text => 'No existe KML para este tax&oacute;n'.html_safe
+      end
+    else
+      render :text => 'No existe KML para este tax&oacute;n'.html_safe
+    end
+  end
+
   private
-# Use callbacks to share common setup or constraints between actions.
+  # Use callbacks to share common setup or constraints between actions.
   def set_especie
     begin
       @especie = Especie.find(params[:id])
