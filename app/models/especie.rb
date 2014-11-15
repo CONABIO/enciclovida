@@ -289,4 +289,9 @@ class Especie < ActiveRecord::Base
     taxon_bio.save if taxon_bio.changed?
     Bases.conecta_a Rails.env
   end
+
+  # Guarda en cache el path del KMZ
+  def snib_cache_key
+    "snib_#{id}"
+  end
 end

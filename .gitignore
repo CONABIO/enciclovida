@@ -50,3 +50,4 @@ config/database.yml_sql-server
 dump.rdb
 tools/campos_snib.csv
 tools/correspondencia_snib/
+app/assets/taxones/*
