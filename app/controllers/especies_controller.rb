@@ -464,15 +464,39 @@ class EspeciesController < ApplicationController
   end
 
   def kml
-    proveedor = @especie.proveedor
-    if proveedor
-      if proveedor.snib_kml.present?
-        send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+    if params[:kml].present? && to_boolean(params[:kml])
+      proveedor = @especie.proveedor
+      if proveedor
+        if proveedor.snib_kml.present?
+          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+        end
       else
         render :text => 'No existe KML para este tax&oacute;n'.html_safe
       end
     else
-      render :text => 'No existe KML para este tax&oacute;n'.html_safe
+# Cache del KMZ
+      if Rails.cache.exist?("snib_#{@especie.id}")
+        redirect_to "/assets/#{@especie.id}/registros.kmz"
+      else
+        Rails.cache.fetch(@especie.snib_cache_key, expires_in: 5.minutes) do
+          proveedor = @especie.proveedor
+          if proveedor
+            proveedor.kml
+            if proveedor.snib_kml.present?
+              proveedor.save
+              if proveedor.kmz
+                redirect_to "/assets/#{@especie.id}/registros.kmz"
+              else
+                render :text => 'No existe KML para este tax&oacute;n'.html_safe
+              end
+            else
+              render :text => 'No existe KML para este tax&oacute;n'.html_safe
+            end
+          else
+            render :text => 'No existe KML para este tax&oacute;n'.html_safe
+          end
+        end
+      end
     end
   end
 

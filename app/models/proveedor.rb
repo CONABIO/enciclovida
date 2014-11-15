@@ -87,6 +87,18 @@ class Proveedor < ActiveRecord::Base
     self.snib_kml = to_kml(cadenas)
   end
 
+  def kmz
+    ruta = Rails.root.join('app', 'assets', 'taxones', especie.id.to_s)
+    FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+    ruta_kml = ruta.join('registros.kml')
+    File.open(ruta_kml, 'w+') { |file| file.write(snib_kml) }
+    system "zip #{ruta.join('registros')} #{ruta_kml}"
+    ruta_zip = ruta.join('registros.zip')
+    File.delete(ruta_kml) if File.exists?(ruta_kml)
+    rename = File.rename(ruta_zip, ruta.join('registros.kmz'))
+    rename == 0
+  end
+
   private
 
   def to_kml(cadenas)

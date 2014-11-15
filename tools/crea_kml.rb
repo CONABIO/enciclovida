@@ -5,6 +5,8 @@ OPTS = Trollop::options do
   banner <<-EOS
 Guarda en la base el kml para una facil consulta y generacion del mismo
 
+*** Este script solo se corre una vez para llenar los kmz
+
 Usage:
 
 rails r tools/crea_kml.rb -d
@@ -15,9 +17,9 @@ where [options] are:
 end
 
 def kml
-#Especie.find_each do |taxon|
-  Especie.limit(400).each do |taxon|
-    puts "#{taxon.id}\t#{taxon.nombre}" if OPTS[:debug]
+  Especie.find_each do |taxon|
+  #Especie.limit(400).each do |taxon|
+    puts "#{taxon.id}\t#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.species_or_lower?
     proveedor = taxon.proveedor
 

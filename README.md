@@ -14,7 +14,7 @@ Una vez caragada la base ...
 
 require 'blurrily/server.rb'
 
-server=Blurrily::Server.new(:host => '127.0.0.1', :directory=> './db/blurrily')
+server=Blurrily::Server.new(:host => CONFIG.ip, :directory=> './db/blurrily')
 
 server.start
 

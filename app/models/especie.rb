@@ -275,6 +275,11 @@ class Especie < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
+  # Guarda en cache el path del KMZ
+  def snib_cache_key
+    "snib_#{id}"
+  end
+
   private
 
   def ponNombreCientifico
