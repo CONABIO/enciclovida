@@ -20,7 +20,11 @@
                 if (lectura)
                 {
                     if (html != '')
+                    {
                         $('#busquedas').empty().html(html);
+                        // Elimina las bsuquedas que se quedan en los filtros
+                        $('#soulmate_1, #soulmate_2').remove();
+                    }
                 }
             },
             fail: function()
