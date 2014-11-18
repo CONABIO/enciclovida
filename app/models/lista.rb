@@ -1,6 +1,6 @@
 class Lista < ActiveRecord::Base
 
-  include ListasHelper
+  #include ListasHelper
   self.table_name='listas'
   validates :nombre_lista, :presence => true, :uniqueness=>true
   before_update :quitaRepetidos
@@ -34,6 +34,9 @@ class Lista < ActiveRecord::Base
       ['updated_at', 'fecha de actualización']
   ]
 
+  COLUMNAS = %w(id nombre_cientifico nombre_autoridad categoria_taxonomica_id estatus fuente cita_nomenclatural
+      sis_clas_cat_dicc anotacion created_at updated_at)
+
   def self.to_csv(lista, options = {})
     CSV.generate(options) do |csv|
       columnas=lista.columnas.split(',')
@@ -49,7 +52,7 @@ class Lista < ActiveRecord::Base
   private
 
   def quitaRepetidos
-    self.cadena_especies = self.cadena_especies.split(',').compact.uniq.join(',') if self.cadena_especies.present?
+    self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
   end
 end
 

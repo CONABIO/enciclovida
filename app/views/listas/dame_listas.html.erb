@@ -1,0 +1,7 @@
+<%# hidden_field_tag :listas %>
+<%= label_tag :box_especie, 'Selecciona todos' %>
+<%= check_box_tag :box_especie, :todos %>
+<%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
+               data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' } if @listas.length > 0 %>
+<br><b><%= link_to(:Listas, listas_path) %> de taxones</b>
+<%= dameListas(@listas).html_safe %>

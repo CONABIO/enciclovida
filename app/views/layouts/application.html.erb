@@ -38,7 +38,7 @@
           <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
         </li>
         <li>
-          <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.email})".html_safe, destroy_usuario_session_path,
+          <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path,
                       :method => :delete, data: { confirm: '¿Est&aacute;s seguro que deseas cerrar la sesi&oacute;n?'.html_safe } %>
         </li>
     <% else %>

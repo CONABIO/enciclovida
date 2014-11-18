@@ -167,6 +167,18 @@ es-cientifico:
       update: Actualizar %{model}
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   iucn: IUCN
+  listas_columnas:
+    anotacion: Anotación
+    categoria_taxonomica_id: Categoria taxonómica
+    cita_nomenclatural: Cita nomenclatural
+    created_at: Fecha de creación
+    estatus: Estatus del nombre científico
+    fuente: Fuente
+    id: Identificador único
+    nombre_autoridad: Nombre autoridad
+    nombre_cientifico: Nombre científico
+    sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
+    updated_at: Fecha de última modificación
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nom: NOM
   nombre_comun: Nombre común

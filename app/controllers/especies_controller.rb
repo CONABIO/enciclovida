@@ -1,11 +1,10 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml]
+  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml, :create, :update]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
                                      :edit_photos, :update_photos, :describe, :datos_principales, :kml]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
-  before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => [:dame_listas, :describe, :arbol, :datos_principales, :kml]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kml]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -372,33 +371,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def aniade_taxones
-    if params[:listas].present?
-      incluyoAlgo ||=false
-      params[:listas].split(',').each do |lista|
-        listaDatos=Lista.find(lista)
-        params.each do |key, value|
-          if key.include?('box_especie_')
-            begin
-              listaDatos.cadena_especies.present? ? listaDatos.cadena_especies+=",#{value}" : listaDatos.cadena_especies=value
-              incluyoAlgo=true
-            rescue
-              Rails.logger.info "***ERROR***Lista id: [#{lista}] ya no existe mas"
-            end
-          end
-        end
-        listaDatos.save
-      end
-      notice=incluyoAlgo ? 'Taxones incluidos correctamente.' : 'No seleccionaste ningún taxón.'
-    else
-      notice='Debes seleccionar por lo menos una lista para poder incluir los taxones.'
-    end
-
-    respond_to do |format|
-      format.html { redirect_to :back, :notice => notice }
-    end
-  end
-
   #Despliega o contrae o muestra el arbol de un inicio
   def arbol
     @accion = to_boolean(params[:accion]) if params[:accion].present?
@@ -734,13 +706,6 @@ class EspeciesController < ApplicationController
         relacion=''
     end
     return relacion
-  end
-
-  def cualesListas
-    if usuario_signed_in?
-      @listas=Lista.where(:usuario_id => current_usuario.id).order('nombre_lista ASC').limit(10)
-      @listas=0 if @listas.empty?
-    end
   end
 
   def validaBatch(batch)
