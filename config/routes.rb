@@ -5,7 +5,12 @@ Buscador::Application.routes.draw do
   devise_for :usuarios
   resources :bitacoras
 
-  resources :listas
+  resources :listas do
+    collection do
+      post :dame_listas
+      post :aniade_taxones
+    end
+  end
 
   resources :roles
 
@@ -36,8 +41,6 @@ Buscador::Application.routes.draw do
     collection do
       post :update_photos, :as => :update_photos_for
       get :busca_por_lote
-      put :aniade_taxones
-      get :dame_listas
       get :arbol
       get :resultados
       post :resultados_por_lote

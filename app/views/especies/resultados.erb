@@ -58,27 +58,22 @@
     $(document).ready(function()
     {
         $.ajax({
-            url: "/especies/dame_listas",
-            type: 'GET'
+            url: "/listas/dame_listas",
+            type: 'POST'
         }).done(function(html) {
                     $('#widget_listas').html(html);
                 }).fail(function(){
                     $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
                 });
 
-        valorListas = function()
-        {
-            $('#listas').val($('#listas_hidden').val());
-        };
-
-        $("#box_especie").click(function ()
+        $(document).on('click', "#box_especie", function()
         {
             checaCaja = $(this).is(":checked") ? true : false
             if (checaCaja)
             {
-                $(":input[id^='box_especie_']").prop("checked", true);
+                $(":input[class='especies']").prop("checked", true);
             } else {
-                $(":input[id^='box_especie_']").prop("checked", false);
+                $(":input[class='especies']").prop("checked", false);
             }
         });
 
@@ -116,68 +111,65 @@
 
 <p id="notice"><%= notice %></p>
 
-<%= form_tag aniade_taxones_especies_path, :method => :put %>
+<%= form_tag aniade_taxones_listas_path, :method => :post do %>
 
-<p class="notice">
-  <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
-</p>
+    <p class="notice">
+      <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
+    </p>
 
-<table class="tabla_formato" border="0">
-  <tr>
-    <td valign="top">
-      <br>
-      <div class="titulo-busqueda">
-        <%= page_entries_info @taxones if @taxones.present? %>
-      </div>
-      <% if @taxones.length > 0 %>
-          <%= hidden_field_tag :listas %>
-          <%= label_tag :box_especie, 'Selecciona todos' %>
-          <%= check_box_tag :box_especie, :todos %> |
-          <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
-                         data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' } if !@listas.nil? && @listas != 0 %>
-          <%= ' |' if !@listas.nil? && @listas != 0 %>
-          <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas %>
-          <br><br>
-      <% end %>
-    </td>
-    <td width="50%" valign="top">
-      <div id="widget_listas" style="display: none"></div>
-    </td>
-  </tr>
-</table>
+    <table class="tabla_formato" border="0">
+      <tr>
+        <td valign="top">
+          <br>
+          <div class="titulo-busqueda">
+            <%= page_entries_info @taxones if @taxones.present? %>
+          </div>
+          <% if @taxones.length > 0 %>
 
-<%= @resultado %>
-<%= @resultado2 %>
+              <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas %>
+              <br><br>
+          <% end %>
+        </td>
+        <td width="50%" valign="top">
+          <div id="widget_listas" style="display: none"></div>
+        </td>
+      </tr>
+    </table>
 
-<div class="digg_pagination">
-  <%= will_paginate @taxones %>
-</div>
+    <%= @resultado %>
+    <%= @resultado2 %>
 
-<% columnas=0 %>
-
-<table class="tabla_formato" CELLPADDING="10">
-
-  <% @taxones.each do |taxon| %>
-      <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
-      <%= '<tr>'.html_safe if columnas % 2 == 0 %>
-      <td>
-        <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico %>
-        <%= "#{check_box_tag("box_especie_#{taxon.id}", taxon.id)} <span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
-      </td>
-      <% columnas+=1 %>
-  <% end %>
-  <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr>".html_safe : '</tr>'.html_safe %>
-
-</table>
-
-<% if @taxones.length >= 100 %>
     <div class="digg_pagination">
       <%= will_paginate @taxones %>
     </div>
+
+    <% columnas=0 %>
+
+    <table class="tabla_formato" CELLPADDING="10">
+
+      <% @taxones.each do |taxon| %>
+          <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
+          <%= '<tr>'.html_safe if columnas % 2 == 0 %>
+          <td>
+            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico %>
+            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
+            <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+          </td>
+          <% columnas+=1 %>
+      <% end %>
+      <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr>".html_safe : '</tr>'.html_safe %>
+
+    </table>
+
+    <% if @taxones.length >= 100 %>
+        <div class="digg_pagination">
+          <%= will_paginate @taxones %>
+        </div>
+    <% end %>
+
+    <p class="enlaces_acciones">
+      <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+    </p>
+
+    <div id="datos_principales"></div>
 <% end %>
-
-<p class="enlaces_acciones">
-  <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-</p>
-
-<div id="datos_principales"></div>

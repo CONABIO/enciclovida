@@ -133,14 +133,6 @@ module EspeciesHelper
     end
   end
 
-  def opcionesListas(listas)
-    opciones ||=''
-    listas.each do |lista|
-      opciones+="<option value='#{lista.id}'>#{view_context.truncate(lista.nombre_lista, :length => 40)} (#{lista.cadena_especies.present? ? lista.cadena_especies.split(',').count : 0 } taxones)</option>"
-    end
-    opciones
-  end
-
   def accionesEnlaces(modelo, accion, index=false)
     case accion
       when 'especies'
@@ -350,19 +342,6 @@ module EspeciesHelper
       hijos+="<li>#{link_to(image_tag(subTaxon.foto_principal, :alt => subTaxon.nombre_cientifico, :title => subTaxon.nombre_cientifico, :width => '40px'), subTaxon)} #{tituloNombreCientifico(subTaxon, :link => true)}</li>" if subTaxon.present?
     end
     hijos.present? ? "<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
-  end
-
-  def dameListas(listas)
-    titulo = "<b>#{view_context.link_to(:Listas, listas_path)} de taxones</b>"
-    html = if listas.nil?
-             "<br><i>Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas.</i>"
-           elsif listas == 0
-             "<br><i>A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?</i>"
-           else
-             "<br><i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br>
-              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}<br><br>"
-           end
-    titulo + html
   end
 
   def photo_providers(licensed=false, photo_providers=nil)

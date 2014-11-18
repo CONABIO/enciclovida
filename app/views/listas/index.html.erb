@@ -27,13 +27,13 @@
           <%= accionesEnlaces(lista, 'listas', true).html_safe %>
         </td>
         <td width="20%"><%= truncate(lista.nombre_lista, :length => 50) %></td>
-        <td width="20%"><%= truncate ListasHelper.nombreComunAtributos(lista), :length => 100 %></td>
+        <td width="20%"><%= truncate columnas(lista.columnas.split(',')), :length => 100 %></td>
         <% begin %>
             <% Especie.find(lista.cadena_especies.split(',')).first(6).each do |taxon| %>
-                <% @taxones+="#{taxon.nombre_cientifico}, " %>
+                <% @taxones+= "#{taxon.nombre_cientifico}, " %>
             <% end %>
         <% rescue %>
-            <%= @taxones='' %>
+            <%= @taxones = '' %>
         <% end %>
         <td width="40%"><%= truncate @taxones[0..-3], :length => 150  %></td>
         <td width="10%"><%= lista.created_at %></td>
