@@ -307,9 +307,6 @@ class EspeciesController < ApplicationController
         busqueda+= joins.split('.').uniq.join('.') + condiciones      #pone los joins unicos
         Rails.logger.info "---#{busqueda}---"
         @taxones = eval(busqueda).order('nombre_cientifico ASC').uniq.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-      #@taxones=Especie.none
-      #@resultado2= busqueda
-      #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
