@@ -1,27 +1,10 @@
 module ListasHelper
-  def atributoColumnas(lista)
-    select="<select id=\"lista_columnas\" multiple=\"multiple\" name=\"lista[columnas][]\" size=\"#{Lista::ATRIBUTOS_TABLAS.size}\">"
-    columnas=lista.columnas.split(',')
-    Lista::ATRIBUTOS_TABLAS.each do |atributo, nombre|
-      if columnas.present?
-        if columnas.include?(atributo)
-          select+="<option value=\"#{atributo}\" selected>#{nombre}</option>"
-        else
-          select+="<option value=\"#{atributo}\">#{nombre}</option>"
-        end
-      else
-        select+="<option value=\"#{atributo}\">#{nombre}</option>"
-      end
-    end
-    select+='</select>'
-  end
-
   def columnas(columnas)
-    cabecera = ''
+    cabecera = []
     columnas.each do |col|
-      cabecera+= "#{t("listas_columnas.#{col}")}, "
+      cabecera << t("listas_columnas.#{col}")
     end
-    cabecera[0..-3]
+    cabecera.join(',')
   end
 
   def despliegaLista(lista)
@@ -29,14 +12,11 @@ module ListasHelper
     columnas = lista.columnas.split(',')
     nombresComunesColumnas = columnas(columnas)
 
-    if lista.cadena_especies.present?
-      begin
-        Especie.find(lista.cadena_especies.split(',')).each do |taxon|
-          info = taxon.attributes.values_at(*columnas)
-          taxones+= "<li>#{info.join(' <b>,</b> ')}</li>"
-        end
-      rescue
-      end
+    datos = lista.selecciona_columnas
+    nombresComunesColumnas unless datos.present?
+
+    datos.each do |taxon|
+      taxones+= "<li>#{taxon.join(' <b>,</b> ')}</li>"
     end
     "#{nombresComunesColumnas}<ol id='despliega_lista'>#{taxones}</ol>".html_safe
   end

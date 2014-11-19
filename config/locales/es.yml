@@ -158,15 +158,19 @@ es:
   iucn: IUCN
   listas_columnas:
     anotacion: Anotación
-    categoria_taxonomica_id: Categoria taxonómica
+    categoria_taxonomica: Categoria taxonómica
     cita_nomenclatural: Cita nomenclatural
     created_at: Fecha de creación
+    estado_conservacion: Estado de conservación
     estatus: Estatus del nombre científico
+    foto_principal: Foto principal
     fuente: Fuente
     id: Identificador único
     nombre_autoridad: Nombre autoridad
     nombre_cientifico: Nombre científico
+    nombre_comun: Nombres comúnes
     sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
+    tipo_distribucion: Tipo distribución
     updated_at: Fecha de última modificación
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nom: NOM
