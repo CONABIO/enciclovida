@@ -321,9 +321,6 @@ class EspeciesController < ApplicationController
           @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
         end
 
-      #@taxones=Especie.none
-      #@resultado2= busqueda
-      #@resultado=params
       else
         respond_to do |format|
           format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }

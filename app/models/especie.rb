@@ -14,6 +14,8 @@ class Especie < ActiveRecord::Base
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
+  has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
+  has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
@@ -59,6 +61,11 @@ class Especie < ActiveRecord::Base
   ESTATUS_SIMBOLO = {
       2 => '',
       1 =>''
+  }
+
+  ESTATUS_SIGNIFICADO = {
+      2 => 'válido/correcto',
+      1 =>'sinónimo'
   }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)

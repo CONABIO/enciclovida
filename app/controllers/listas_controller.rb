@@ -19,7 +19,7 @@ class ListasController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.csv { send_data Lista.to_csv(@lista), :filename => "#{@lista.nombre_lista}.csv" }
+      format.csv { send_data @lista.to_csv, :filename => "#{@lista.nombre_lista}.csv" }
       #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end
   end
