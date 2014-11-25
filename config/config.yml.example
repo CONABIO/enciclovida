@@ -35,6 +35,13 @@ base: &base
     # URL SNIB
     snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
 
+    # Configure taxon description callbacks. taxa/show will try to show
+    # species descriptions from these sources in this order, trying the next
+    # if one fails. You can see all the available describers in
+    # lib/taxon_describers/lib/taxon_describers
+    taxon_describers: [conabio, wikipediaes, eoles, eol, wikipedia]
+    photo_providers: [conabio flickr, eol, wikimedia]
+
     # Email addresses
     admin_email: admin@yoursite.com
     noreply_email: no-reply@yoursite.com

@@ -49,5 +49,4 @@ class ConabioPhoto < Photo
   def self.conabio(options = {})
     @conabio ||= ConabioService.new(options)
   end
-
 end
