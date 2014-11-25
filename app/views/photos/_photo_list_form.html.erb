@@ -5,15 +5,7 @@
   photo_identity ||= nil
   local_photos ||= false
   #local_photos = false unless logged_in?
-  organized_by_album ||= false
 -%>
-<% if organized_by_album %>
-  <a href='#' class="back_to_albums" <%= "data-friend_id='#{@friend_id}'".html_safe if @friend_id %>>&laquo; Back to <%= (@friend_name ? "#{@friend_name}'s" : "your") %> albums</a>
-<% elsif @friend_id %>
-  <a href='#' class="back_to_friends" data-friend_id="<%= @friend_id %>">&laquo; Back to friends</a>
-<% elsif @group_id %>
-  <a href='#' class="back_to_groups" data-group_id="<%= @group_id %>">&laquo; Back to groups</a>
-<% end %>
 <% if @reauthorization_needed -%>
   <p class="notice ui">
     <%= t(:flickr_needs_to_confirm, :site_name => SITE_NAME_SHORT) %>

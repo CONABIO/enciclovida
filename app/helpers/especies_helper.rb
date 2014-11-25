@@ -345,7 +345,7 @@ module EspeciesHelper
   end
 
   def photo_providers(licensed=false, photo_providers=nil)
-    providers=CONFIG.photo_providers ||= photo_providers || %W(flickr eol wikimedia)
+    providers=CONFIG.photo_providers ||= photo_providers || %W(conabio flickr eol wikimedia)
     html='<ul>'
     providers.each do |prov|
       prov=prov.to_s.downcase
