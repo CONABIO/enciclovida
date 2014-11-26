@@ -118,11 +118,11 @@ $(document).ready(function(){
               )
             } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
               $('.taxon_photos', ui.newPanel).photoSelector(
-                $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/wikimedia_commons/photo_fields'})
+                $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
               )
             } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
                 $('.taxon_photos', ui.newPanel).photoSelector(
-                    $.extend(true, {}, photoSelectorOptions, {baseURL: '/conabio/photo_fields'})
+                    $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
                 )
             }
 
