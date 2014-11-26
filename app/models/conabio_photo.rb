@@ -14,11 +14,10 @@ class ConabioPhoto < Photo
     save
   end
 
-  def self.search_conabio(query, options = {})
-    search_json = conabio(:server => 'bdi.conabio.gob.mx:9090', :timeout => 5, :photos => true).search(query)
-    return [] if search_json.blank?
+  def self.search_conabio(taxon)
+    return [] unless metadatos = taxon.metadatos
 
-    JSON.parse(search_json).map do |resp|
+    metadatos.map do |resp|
       new_from_api_response(resp)
     end.compact
   end
@@ -30,18 +29,19 @@ class ConabioPhoto < Photo
   end
 
   def self.new_from_api_response(api_response, options = {})
+    copyright = api_response.artist.present? ? "#{api_response.artist} / Banco de Imágenes CONABIO" : 'Banco de Imágenes CONABIO'
       new(options.merge(
-              :large_url => api_response['thumb_url'],
-              :medium_url => api_response['thumb_url'],
-              :small_url => api_response['thumb_url'],
-              :thumb_url => api_response['thumb_url'],
-              :native_photo_id => api_response['native_photo_id'],
-              :square_url => api_response['thumb_url'],
-              :original_url => api_response['thumb_url'],
-              :native_page_url => api_response['native_page_url'],
-              :native_username => api_response['native_username'],
-              :native_realname => api_response['native_username'],
-              :license => api_response['license_number'].to_i
+              :large_url => api_response.path,
+              :medium_url => api_response.path,
+              :small_url => api_response.path,
+              :thumb_url => api_response.path,
+              :native_photo_id => api_response.id,
+              :square_url => api_response.path,
+              :original_url => api_response.path,
+              :native_page_url => "http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=#{api_response.transmission_reference}",
+              :native_username => copyright,
+              :native_realname => copyright,
+              :license => 3
           ))
   end
 

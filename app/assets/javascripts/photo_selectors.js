@@ -71,14 +71,14 @@
           var defaultSourceData = options.sources[options.defaultSource];
           $.fn.photoSelector.changeBaseUrl(wrapper, defaultSourceData.url, options.defaultContext);
           if (typeof(options.defaultQuery) == 'string') {
-            $.fn.photoSelector.queryPhotos(options.defaultQuery, wrapper)
+            $.fn.photoSelector.queryPhotos(options.defaultQuery, wrapper, options)
           }
         } catch(e) {
           var q = '';
           if (typeof(options.defaultQuery) == 'string') {
             q = options.defaultQuery;
           };
-          $.fn.photoSelector.queryPhotos(q, wrapper);
+          $.fn.photoSelector.queryPhotos(q, wrapper, options);
         }
       });
     };
@@ -475,6 +475,7 @@
     var baseURL = options.baseURL
 
     params.licensed = options.licensed
+    params.taxon_id = options.taxon_id
     
     // Pull out parents of existing checked inputs
     if (!$(wrapper).data('photoSelectorExisting')) {
