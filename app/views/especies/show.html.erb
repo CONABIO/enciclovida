@@ -1,5 +1,4 @@
 <script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
-<script data-turbolinks-track="true" src="/assets/show.js"></script>
 
 <style>
     #map
@@ -27,6 +26,7 @@
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
+    var species_or_lower = <%=raw @especie.species_or_lower? %>;
     var MAPAS = new Array
     (
             ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución']
@@ -53,58 +53,159 @@
         return false;
     }
 
+    getDescription = function(url)
+    {
+        $.ajax({
+            url: url,
+            method: 'get',
+            beforeSend: function() {
+                $('.taxon_description').loadingShades()
+            },
+            success: function(data, status) {
+                $('.taxon_description').replaceWith(data);
+                $('.taxon_description select').change(function() {
+                    getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())
+                })
+            },
+            error: function(request, status, error) {
+                $('.taxon_description').loadingShades('close')
+            }
+        })
+    }
+
     $(document).ready(function()
     {
-        map = new GMaps({
-            div: '#map',
-            zoom: 4,
-            lat: 19.29478848,
-            lng: -99.65630269,
-            mapTypeId:google.maps.MapTypeId.HYBRID,
-            height: "450px",
-            width:	"450px"
+        $('#tabs').tabs(); // Inicia los tabs
+        getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
+
+        // Inicia los proveedores de fotos
+        $('#edit_photos_dialog').dialog({
+            modal: true,
+            title: 'Escoge las fotos para este grupo o especie',
+            autoOpen: false,
+            width: 700,
+            open: function( event, ui ) {
+                $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'})
+                $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function() {
+                    var photoSelectorOptions = {
+                        defaultQuery: TAXON.nombre_cientifico,
+                        skipLocal: true,
+                        baseURL: '/flickr/photo_fields',
+                        urlParams: {
+                            authenticity_token: $('meta[name=csrf-token]').attr('content'),
+                            limit: 14
+                        },
+                        afterQueryPhotos: function(q, wrapper, options) {
+                            $(wrapper).imagesLoaded(function() {
+                                $('#edit_photos_dialog').centerDialog()
+                            })
+                        }
+                    };
+
+                    $('.tabs', this).tabs({
+                        beforeActivate: function( event, ui ) {
+                            if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
+                            } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
+                                )
+                            }
+
+                            $(ui.newPanel).addClass('loaded')
+                            $('#edit_photos_dialog').centerDialog()
+                        },
+                        create: function( event, ui) {
+                            /*switch (ui.panel.selector) {
+                             case '#flickr_taxon_photos': */
+                            $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
+                            /*case '#eol_taxon_photos':
+                             $('.taxon_photos', ui.newPanel).photoSelector(
+                             $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
+                             );
+                             case '#wikimedia_taxon_photos':
+                             $('.taxon_photos', ui.newPanel).photoSelector(
+                             $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/wikimedia_commons/photo_fields'})
+                             );
+                             case '#conabio_taxon_photos':
+                             $('.taxon_photos', ui.newPanel).photoSelector(
+                             $.extend(true, {}, photoSelectorOptions, {baseURL: '/conabio/photo_fields'})
+                             );
+                             }*/
+
+                            $(ui.panel).addClass('loaded')
+                            $('#edit_photos_dialog').centerDialog()
+                        }
+                    })
+                })
+            }
         });
 
-        for (var i = 0; i < MAPAS.length;i++)
+        if (species_or_lower == "true")
         {
-            infoWindow =	new google.maps.InfoWindow({});
-            MAPAS[i][2]	=	function(direccion){
-                return	map.loadFromKML({
-                    url: direccion,
-                    preserveViewport: true,
-                    suppressInfoWindows: true,
-                    events:{
-                        click: function(point){
-                            anchoInfo = function()
-                            {
-                                return parseInt($("#map").width()/5)*4;
-                            };
-                            altoInfo = function()
-                            {
-                                return parseInt($("#map").height()/10)*9;
-                            };
-                            if(point.featureData.infoWindowHtml.indexOf('$[description]')>-1)
-                            {
-                                infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.name+"</div>");
-                                infoWindow.maxWidth = 2;
-                            }else{
-                                infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.infoWindowHtml+"</div>");
-                            };
-                            infoWindow.setPosition(point.latLng);
-                            infoWindow.open(map.map);
-                            $(function()
-                            {
-                                $("#balloon div").removeAttr("style");
-                            });
+            // Inicia los mapas de distribucion
+            map = new GMaps({
+                div: '#map',
+                zoom: 4,
+                lat: 19.29478848,
+                lng: -99.65630269,
+                mapTypeId:google.maps.MapTypeId.HYBRID,
+                height: "450px",
+                width:	"450px"
+            });
+
+            for (var i = 0; i < MAPAS.length;i++)
+            {
+                infoWindow =	new google.maps.InfoWindow({});
+                MAPAS[i][2]	=	function(direccion){
+                    return	map.loadFromKML({
+                        url: direccion,
+                        preserveViewport: true,
+                        suppressInfoWindows: true,
+                        events:{
+                            click: function(point){
+                                anchoInfo = function()
+                                {
+                                    return parseInt($("#map").width()/5)*4;
+                                };
+                                altoInfo = function()
+                                {
+                                    return parseInt($("#map").height()/10)*9;
+                                };
+                                if(point.featureData.infoWindowHtml.indexOf('$[description]')>-1)
+                                {
+                                    infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.name+"</div>");
+                                    infoWindow.maxWidth = 2;
+                                }else{
+                                    infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.infoWindowHtml+"</div>");
+                                };
+                                infoWindow.setPosition(point.latLng);
+                                infoWindow.open(map.map);
+                                $(function()
+                                {
+                                    $("#balloon div").removeAttr("style");
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
+
+            anadeControlFullScreen();
+            anadeControlCapas();
         }
-
-        anadeControlFullScreen();
-        anadeControlCapas();
-
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {

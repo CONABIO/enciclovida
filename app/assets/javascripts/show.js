@@ -1,5 +1,5 @@
-$(document).ready(function(){
-  $('#tabs').tabs();
+//$(document).ready(function(){
+  //$('#tabs').tabs();
 
   /*$('.observationcontrols').observationControls({
     div: $('#taxon_observations .observations')
@@ -77,100 +77,10 @@ $(document).ready(function(){
     })*/
 
   //if (TAXON.auto_description) {
-    getDescription('/especies/'+TAXON.id+'/describe')
+    //getDescription('/especies/'+TAXON.id+'/describe');
   //}
 
-  // Set up photo modal dialog
-  $('#edit_photos_dialog').dialog({
-    modal: true, 
-    title: 'Escoge las fotos para este grupo o especie',
-    autoOpen: false,
-    width: 700,
-    open: function( event, ui ) {
-      $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'})
-      $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function() {
-        var photoSelectorOptions = {
-          defaultQuery: TAXON.nombre_cientifico,
-          skipLocal: true,
-          baseURL: '/flickr/photo_fields',
-          urlParams: {
-            authenticity_token: $('meta[name=csrf-token]').attr('content'),
-            limit: 14
-          },
-          afterQueryPhotos: function(q, wrapper, options) {
-            $(wrapper).imagesLoaded(function() {
-              $('#edit_photos_dialog').centerDialog()
-            })
-          }
-        };
 
-        $('.tabs', this).tabs({
-          beforeActivate: function( event, ui ) {
-            if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-              $('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
-            } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-              $('.taxon_photos', ui.newPanel).photoSelector(
-                $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
-              )
-            } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-              $('.taxon_photos', ui.newPanel).photoSelector(
-                $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
-              )
-            } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-              $('.taxon_photos', ui.newPanel).photoSelector(
-                $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
-              )
-            } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                $('.taxon_photos', ui.newPanel).photoSelector(
-                    $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
-                )
-            }
+//});
 
-              $(ui.newPanel).addClass('loaded')
-              $('#edit_photos_dialog').centerDialog()
-          },
-          create: function( event, ui) {
-              /*switch (ui.panel.selector) {
-                  case '#flickr_taxon_photos': */
-                      $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
-                  /*case '#eol_taxon_photos':
-                      $('.taxon_photos', ui.newPanel).photoSelector(
-                          $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
-                      );
-                  case '#wikimedia_taxon_photos':
-                      $('.taxon_photos', ui.newPanel).photoSelector(
-                          $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/wikimedia_commons/photo_fields'})
-                      );
-                  case '#conabio_taxon_photos':
-                      $('.taxon_photos', ui.newPanel).photoSelector(
-                          $.extend(true, {}, photoSelectorOptions, {baseURL: '/conabio/photo_fields'})
-                      );
-              }*/
 
-              $(ui.panel).addClass('loaded')
-              $('#edit_photos_dialog').centerDialog()
-          }
-        })
-      })
-    }
-  });
-});
-
-function getDescription(url) {
-  $.ajax({
-    url: url,
-    method: 'get',
-    beforeSend: function() {
-      $('.taxon_description').loadingShades()
-    },
-    success: function(data, status) {
-      $('.taxon_description').replaceWith(data);
-      $('.taxon_description select').change(function() {
-        getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())
-      })
-    },
-    error: function(request, status, error) {
-      $('.taxon_description').loadingShades('close')
-    }
-  })
-}
