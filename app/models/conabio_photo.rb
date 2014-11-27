@@ -30,14 +30,15 @@ class ConabioPhoto < Photo
 
   def self.new_from_api_response(api_response, options = {})
     copyright = api_response.artist.present? ? "#{api_response.artist} / Banco de Imágenes CONABIO" : 'Banco de Imágenes CONABIO'
+    imagen = "http://bdi.conabio.gob.mx:5050/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}"
       new(options.merge(
-              :large_url => api_response.path,
-              :medium_url => api_response.path,
-              :small_url => api_response.path,
-              :thumb_url => api_response.path,
+              :large_url => imagen,
+              :medium_url => imagen,
+              :small_url => imagen,
+              :thumb_url => imagen,
               :native_photo_id => api_response.id,
-              :square_url => api_response.path,
-              :original_url => "http://bdi.conabio.gob.mx:5050/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}",
+              :square_url => imagen,
+              :original_url => imagen,
               :native_page_url => "http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=#{api_response.transmission_reference}",
               :native_username => copyright,
               :native_realname => copyright,
