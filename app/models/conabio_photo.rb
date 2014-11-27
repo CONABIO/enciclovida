@@ -37,7 +37,7 @@ class ConabioPhoto < Photo
               :thumb_url => api_response.path,
               :native_photo_id => api_response.id,
               :square_url => api_response.path,
-              :original_url => api_response.path,
+              :original_url => "http://bdi.conabio.gob.mx:5050/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}",
               :native_page_url => "http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=#{api_response.transmission_reference}",
               :native_username => copyright,
               :native_realname => copyright,
