@@ -130,26 +130,26 @@
         <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
       </div>
 
-        <% columnas=0 %>
-        <% @taxones.each do |taxon| %>
-            <div style="width: 50%; float:left;">
-              <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico %>
-              <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
-              <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
-            </div>
-            <% columnas+=1 %>
-        <% end %>
+      <% columnas=0 %>
+      <% @taxones.each do |taxon| %>
+          <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
+            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :height => '75px' %>
+            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
+            <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+          </div>
+          <% columnas+=1 %>
+      <% end %>
 
-        <% if @taxones.length >= 100 %>
-            <div class="digg_pagination">
-              <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
-            </div>
-        <% end %>
+      <% if @taxones.length >= 100 %>
+          <div class="digg_pagination">
+            <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
+          </div>
+      <% end %>
 
-        <p class="enlaces_acciones">
-          <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-        </p>
+      <p class="enlaces_acciones">
+        <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
 
-        <div id="datos_principales"></div>
+      <div id="datos_principales"></div>
     </div>
 <% end %>
