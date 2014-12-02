@@ -306,7 +306,6 @@
 
 <div id="busquedas">
   <div id="busqueda_basica">
-
     <%= form_tag resultados_especies_path, :method => :get do %>
         <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
         <%= hidden_field_tag :busqueda, :nombre_comun %>
@@ -365,11 +364,10 @@
           <b><%= t :solo_taxones %>:</b>
           <br><%= checkboxValidoSinonimo('avanzada') %>
         </p>
+        <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
+        <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
+        &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
     <% end %>
-
-    <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-    <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
-    &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
   </div>
   Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
 </div>
