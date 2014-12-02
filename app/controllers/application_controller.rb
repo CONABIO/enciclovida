@@ -108,4 +108,32 @@ class ApplicationController < ActionController::Base
     #devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:usuario, :email ) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :usuario, :email, :password, :remember_me) }
   end
+
+  def paginacion(totales, pagina=1, por_pagina=Especie.per_page)
+    paginas = totales/por_pagina
+    rangos = []
+    rangos << '← Anterior' if pagina == 1
+    if paginas <= 12
+      rangos << (1..paginas).to_a
+    elsif paginas > 12
+      if pagina.between?(1,8)
+        rangos << (1..10).to_a
+        rangos << '...'
+        rangos << (paginas-1..paginas).to_a
+      elsif pagina.between?(9,paginas-10)
+        rangos << (1..2).to_a
+        rangos << '...'
+        rangos << (pagina-4..pagina+4).to_a
+        rangos << '...'
+        rangos << (paginas-1..paginas).to_a
+      elsif pagina.between?(paginas-9, paginas)
+        rangos << (1..2).to_a
+        rangos << '...'
+        rangos << (paginas-10..paginas).to_a
+      end
+    end
+    rangos << 'Siguiente →' if pagina == paginas
+    { :rangos => rangos, :pagina => pagina, :rango_resultados => "#{(pagina-1)*por_pagina+1} - #{pagina*por_pagina} de #{totales}",
+      :request => request.fullpath, :por_pagina => por_pagina }
+  end
 end

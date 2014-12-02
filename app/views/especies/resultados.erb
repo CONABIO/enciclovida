@@ -117,12 +117,14 @@
       <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
     </p>
 
+
+
     <table class="tabla_formato" border="0">
       <tr>
         <td valign="top">
           <br>
           <div class="titulo-busqueda">
-            <%= page_entries_info @taxones if @taxones.present? %>
+            <%# page_entries_info @taxones if @taxones.present? %>
           </div>
           <% if @taxones.length > 0 %>
 
@@ -137,7 +139,7 @@
     </table>
 
     <div class="digg_pagination">
-      <%= will_paginate @taxones %>
+      <%= paginacion(@paginacion).html_safe %>
     </div>
 
     <% columnas=0 %>
@@ -160,7 +162,7 @@
 
     <% if @taxones.length >= 100 %>
         <div class="digg_pagination">
-          <%= will_paginate @taxones %>
+          <%# will_paginate @taxones %>
         </div>
     <% end %>
 

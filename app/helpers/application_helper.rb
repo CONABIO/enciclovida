@@ -97,4 +97,33 @@ module ApplicationHelper
         nil
     end
   end
+
+  def paginacion(datos)
+    sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
+    html = "<div class=\"pagination\">"
+
+    # Contiene la secuencias del paginado
+    datos[:rangos].each do |d|
+      if d.instance_of? String
+        case d
+          when '← Anterior', 'Siguiente →'
+            html << "<span class=\"previous_page disabled\">#{d}</span>"
+          when '...'
+            html << "<span class=\"gap\">#{d}</span>"
+        end
+      elsif d.instance_of? Array
+        d.each do |pagina|  # Itera el arreglo para poner el link con el numero o solo el numero
+          peticion = sin_page_per_page.compact.join('&')
+
+          if pagina == datos[:pagina]
+            html << "<em class=\"current\">#{pagina}</em>"
+          else
+            html << link_to(pagina, peticion << "&por_pagina=#{datos[:por_pagina]}&pagina=#{pagina}")
+          end
+        end
+      end
+    end
+
+    html << '<div>'
+  end
 end

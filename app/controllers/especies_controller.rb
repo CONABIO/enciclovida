@@ -148,8 +148,8 @@ class EspeciesController < ApplicationController
     case params[:busqueda]
 
       when 'nombre_comun'
-        @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).where('especies.id IS NOT NULL').
+        @taxones=NombreComun.select("especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}").
+            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).where('especies.id IS NOT NULL').uniq.
             order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
 
         if @taxones.empty?
@@ -189,9 +189,18 @@ class EspeciesController < ApplicationController
         estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
         estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
 
-        @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico].gsub("'", "''")).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
-            paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
+            order('nombre_cientifico ASC')"
+        Rails.logger.info sql
+        longitud = eval("#{sql}.count")
+        Rails.logger.info longitud
+        @paginacion = paginacion(longitud, params[:pagina].to_i, params[:por_pagina].to_i)
+
+        if longitud > 0
+          @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina]} ROWS ONLY"
+          @taxones = Especie.find_by_sql(@taxones)
+        end
 
         if @taxones.empty?
           ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
@@ -315,6 +324,7 @@ class EspeciesController < ApplicationController
 
         busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
 
+        Rails.logger.info "---#{busqueda}"
         if distinct
           @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
         else
