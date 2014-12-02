@@ -51,25 +51,25 @@ module EspeciesHelper
   end
 
   def datos_principales(taxon, en_resultados=false)
-    datos = ''
+    datos = dameNomComunes(taxon)
     if en_resultados     #El preview en ajax de los resultados
       if taxon.estatus == 1
-        datos+= dameStatus(taxon)
+        datos << dameStatus(taxon)
       elsif taxon.estatus == 2
         taxon.species_or_lower?
-        datos+= dameDistribucion(taxon) + ' - '
-        datos+= dameCaracteristica(taxon)
+        datos << dameDistribucion(taxon) + ' - '
+        datos << dameCaracteristica(taxon)
       end
     else
       if taxon.estatus == 1
-        datos+= dameStatus(taxon)
+        datos << dameStatus(taxon)
       elsif taxon.estatus == 2 && I18n.locale.to_s != 'es-cientifico'
         taxon.species_or_lower?
-        datos+= dameDistribucion(taxon) + ' - '
-        datos+= dameCaracteristica(taxon)
+        datos << dameDistribucion(taxon) + ' - '
+        datos << dameCaracteristica(taxon)
       end
     end
-    (datos + dameNomComunes(taxon)).html_safe
+    datos.html_safe
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
@@ -190,7 +190,7 @@ module EspeciesHelper
   def checkboxValidoSinonimo(tipoBusqueda)
     checkBoxes=''
     Especie::ESTATUS.each do |e|
-      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{t(I18n.transliterate(e.last).gsub('/', '_'))}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}&nbsp;&nbsp;"
     end
     checkBoxes.html_safe
   end

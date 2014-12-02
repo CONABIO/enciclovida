@@ -12,7 +12,7 @@ class ConabioController < ApplicationController
     if params[:taxon_id].present?
       @taxon = Especie.find(params[:taxon_id])
       if @taxon.nombre_cientifico != params[:q]
-        @taxon = Especie.where(:nombre_ceintifico => params[:q]).first
+        @taxon = Especie.where(:nombre_cientifico => params[:q]).first
       end
     end
 
