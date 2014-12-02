@@ -47,7 +47,7 @@
     <% if I18n.locale.to_s == 'es-cientifico' %>
         <li><%= link_to '[vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
     <% else %>
-        <li><%= link_to '[vista de curador]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+        <li><%= link_to '[vista de nombres científicios]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
     <% end %>
     <li><div id="cse-search-form" style="width: 275px;">Cargando...</div></li>
   </ul>
