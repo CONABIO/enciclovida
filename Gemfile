@@ -43,7 +43,6 @@ gem 'turbolinks'    #hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
-gem 'will_paginate'    #hace la paginacion de una rango determinado
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

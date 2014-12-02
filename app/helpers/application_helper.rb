@@ -124,6 +124,6 @@ module ApplicationHelper
       end
     end
 
-    html << '<div>'
+    html << '</div>'
   end
 end

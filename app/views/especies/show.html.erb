@@ -213,11 +213,7 @@
   <%= datos_principales(@especie).html_safe %>
 </div>
 
-<% if @especie.species_or_lower? %>
-    <div style="width: 40%; float:left;">
-<% else %>
-    <div style="width: 100%; float:left;">
-<% end %>
+<%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">" : "<div style=\"width: 100%; float:left;\">" %>
 
 <div id="photoscol" class="column span-13">
   <% if @especie.species_or_lower? && @photos.empty? %>

@@ -50,8 +50,7 @@ class Especie < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  WillPaginate.per_page = 10
-  self.per_page = WillPaginate.per_page
+  POR_PAGINA_PREDETERMINADO = 10
 
   POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]

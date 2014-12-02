@@ -123,13 +123,13 @@
       </div>
       <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
       <div id="widget_listas" style="display: none"></div>
-
     </div>
 
     <div style="width: 100%; float:left;">
       <div class="digg_pagination">
         <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
       </div>
+
         <% columnas=0 %>
         <% @taxones.each do |taxon| %>
             <div style="width: 50%; float:left;">
