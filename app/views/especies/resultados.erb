@@ -117,56 +117,39 @@
       <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
     </p>
 
-    <table class="tabla_formato" border="0">
-      <tr>
-        <td valign="top">
-          <br>
-          <div class="titulo-busqueda">
-            <%= page_entries_info @taxones if @taxones.present? %>
-          </div>
-          <% if @taxones.length > 0 %>
-
-              <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas %>
-              <br><br>
-          <% end %>
-        </td>
-        <td width="50%" valign="top">
-          <div id="widget_listas" style="display: none"></div>
-        </td>
-      </tr>
-    </table>
-
-    <div class="digg_pagination">
-      <%= will_paginate @taxones %>
+    <div style="width: 100%; float:left;">
+      <div class="titulo-busqueda">
+        <%= page_entries_info @taxones if @taxones.present? %>
+      </div>
+      <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
+      <div id="widget_listas" style="display: none"></div>
     </div>
 
-    <% columnas=0 %>
+    <div style="width: 100%; float:left;">
+      <div class="digg_pagination">
+        <%= will_paginate @taxones %>
+      </div>
 
-    <table class="tabla_formato" CELLPADDING="10">
-
+      <% columnas=0 %>
       <% @taxones.each do |taxon| %>
-          <%= '</tr>'.html_safe if columnas != 0 && columnas % 2 == 0 %>
-          <%= '<tr>'.html_safe if columnas % 2 == 0 %>
-          <td>
+          <div style="width: 50%; float:left;">
             <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico %>
             <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
             <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
-          </td>
+          </div>
           <% columnas+=1 %>
       <% end %>
-      <%= columnas % 2 != 0 ? "#{'<td></td>'*(2-(columnas % 2))}</tr>".html_safe : '</tr>'.html_safe %>
 
-    </table>
+      <% if @taxones.length >= 100 %>
+          <div class="digg_pagination">
+            <%= will_paginate @taxones %>
+          </div>
+      <% end %>
 
-    <% if @taxones.length >= 100 %>
-        <div class="digg_pagination">
-          <%= will_paginate @taxones %>
-        </div>
-    <% end %>
+      <p class="enlaces_acciones">
+        <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
 
-    <p class="enlaces_acciones">
-      <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-    </p>
-
-    <div id="datos_principales"></div>
+      <div id="datos_principales"></div>
+    </div>
 <% end %>

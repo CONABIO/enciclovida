@@ -300,106 +300,76 @@
         // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-        guardaFiltros(true);
+        //guardaFiltros(true);
     });
 </script>
 
 <div id="busquedas">
   <div id="busqueda_basica">
-    <table class="tabla_formato" border="0">
-      <tr>
-        <td valign="top">
-          <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
-              <%= hidden_field_tag :busqueda, :nombre_comun %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
-              <b><%= t :nombre_comun %></b><br>
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-              <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-              <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
-          <% end %>
-        </td>
 
-        <td valign="top">
-          <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-              <%= hidden_field_tag :busqueda, :nombre_cientifico %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
-              <b>Nombre cient&iacute;fico</b><br>
-              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
-              <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas  %>
-              <br><br><b><%= t :solo_taxones %>:</b>
-              <br><%= checkboxValidoSinonimo('basica_cientifico') %>
-          <% end %>
-        </td>
-      </tr>
-    </table>
+    <%= form_tag resultados_especies_path, :method => :get do %>
+        <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
+        <%= hidden_field_tag :busqueda, :nombre_comun %>
+        <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
+        <b><%= t :nombre_comun %></b><br>
+        <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
+        <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
+    <% end %>
+    <br>
+    <%= form_tag resultados_especies_path, :method => :get do %>
+        <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
+        <%= hidden_field_tag :busqueda, :nombre_cientifico %>
+        <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
+        <b>Nombre cient&iacute;fico</b><br>
+        <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
+        <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas  %>
+        <br><br><b><%= t :solo_taxones %>:</b>
+        <br><%= checkboxValidoSinonimo('basica_cientifico') %>
+    <% end %>
+    <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
   </div>
 
   <div id="busqueda_avanzada" style="display: none">
     <%= form_tag resultados_especies_path, :method => :get do %>
-        <table class="tabla_formato" border="0">
-          <tr>
-            <td valign="top">
-              <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
-              <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
-              <%= hidden_field_tag :busqueda, :avanzada %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
+        <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
+        <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
+        <%= hidden_field_tag :busqueda, :avanzada %>
+        <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
 
-              <p><b>Nombre cient&iacute;fico: </b>
-                <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
-                                   :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
-              <b><%= t :nombre_comun %>: </b>
-              <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
-                                 :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
+        <p><b>Nombre cient&iacute;fico: </b>
+          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
+                             :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
+        <b><%= t :nombre_comun %>: </b>
+        <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
+                           :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
 
-              <!--div id="atributos_extra">
-                <%# select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
-                <%# select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-                <%# text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 30, :class => :busqueda_atributo,
-                                   'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
-                <%# hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
-              </div-->
+        <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
+        <br><%= checkboxTipoDistribucion %>
 
-              <%# link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :class => :link_azul, :onClick => 'return masFiltros();' %>
-              <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
-              <br><%= checkboxTipoDistribucion %>
-
-              <br><br>
-              <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
-              <br>
-              <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.find(2, 4, 5, 6, 7, 8), :id, :descripcion), :prompt => :NACIONAL %>
-              <div id="distribucion_nivel"></div>
-
-              <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-              <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
-              &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
-            </td>
-            <td valign="top">
-              <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
-              <p>
-                <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                               :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-              </p>
-              <p>
-                <b>con estado de conservaci&oacute;n:</b>
-                <%= checkboxEstadoConservacion %>
-              </p>
-              <p>
-                <b><%= t :solo_taxones %>:</b>
-                <br><%= checkboxValidoSinonimo('avanzada') %>
-              </p>
-            </td>
-          </tr>
-        </table>
+        <br><br>
+        <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
+        <br>
+        <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.find(2, 4, 5, 6, 7, 8), :id, :descripcion), :prompt => :NACIONAL %>
+        <div id="distribucion_nivel"></div>
+        <br>
+        <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
+        <p>
+          <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
+                         :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
+        </p>
+        <p>
+          <b>con estado de conservaci&oacute;n:</b>
+          <%= checkboxEstadoConservacion %>
+        </p>
+        <p>
+          <b><%= t :solo_taxones %>:</b>
+          <br><%= checkboxValidoSinonimo('avanzada') %>
+        </p>
     <% end %>
-  </div>
 
-  <table class="tabla_formato" border="0">
-    <tr>
-      <td>
-        Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
-      </td>
-    </tr>
-  </table>
+    <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
+    <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
+    &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
+  </div>
+  Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
 </div>

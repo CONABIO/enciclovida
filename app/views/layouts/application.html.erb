@@ -53,9 +53,13 @@
   </ul>
 </div>
 
-<%= render :template => 'especies/busqueda' %>
 
-<%= yield %>
+<div style="width: 30%; float:left;">
+  <%= render :template => 'especies/busqueda' %>
+</div>
+<div style="width: 70%; float:right;">
+  <%= yield %>
+</div>
 
 <%= bitacora.html_safe if bitacora.present? %>
 
