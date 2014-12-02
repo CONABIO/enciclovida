@@ -139,7 +139,7 @@
     </table>
 
     <div class="digg_pagination">
-      <%= paginacion(@paginacion).html_safe %>
+      <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
     </div>
 
     <% columnas=0 %>

@@ -192,10 +192,8 @@ class EspeciesController < ApplicationController
         sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
             order('nombre_cientifico ASC')"
-        Rails.logger.info sql
         longitud = eval("#{sql}.count")
-        Rails.logger.info longitud
-        @paginacion = paginacion(longitud, params[:pagina].to_i, params[:por_pagina].to_i)
+        @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie.per_page)
 
         if longitud > 0
           @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina]} ROWS ONLY"

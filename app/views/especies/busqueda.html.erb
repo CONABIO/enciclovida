@@ -324,7 +324,7 @@
           <%= form_tag resultados_especies_path, :method => :get do %>
               <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
               <%= hidden_field_tag :busqueda, :nombre_cientifico %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
+              <%= hidden_field_tag :por_pagina, Especie.per_page, :id => :per_page_basica_cientifico %>
               <b>Nombre cient&iacute;fico</b><br>
               <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
               <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas  %>

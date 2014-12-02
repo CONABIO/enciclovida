@@ -109,7 +109,9 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :usuario, :email, :password, :remember_me) }
   end
 
-  def paginacion(totales, pagina=1, por_pagina=Especie.per_page)
+  def paginacion(totales, pag=1, p_pag=Especie.per_page)
+    pagina = pag.to_i
+    por_pagina = p_pag.to_i
     paginas = totales/por_pagina
     rangos = []
     rangos << '← Anterior' if pagina == 1
