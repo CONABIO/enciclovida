@@ -271,9 +271,11 @@
         $(document).on('click', '#limpiar', function()
         {
             jQuery.ajax({
-                success: function(html){
+                success: function(html)
+                {
                     if (html!='true')
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+                    location.reload();
                 },
                 fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
@@ -300,7 +302,7 @@
         // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-        //guardaFiltros(true);
+        guardaFiltros(true);
     });
 </script>
 
@@ -365,9 +367,9 @@
           <br><%= checkboxValidoSinonimo('avanzada') %>
         </p>
         <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-        <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
         &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
     <% end %>
   </div>
   Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
+  <br><%= button_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
 </div>

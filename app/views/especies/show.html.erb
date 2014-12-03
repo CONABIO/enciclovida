@@ -76,7 +76,6 @@
     $(document).ready(function()
     {
         $('#tabs').tabs(); // Inicia los tabs
-        getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
 
         // Inicia los proveedores de fotos
         $('#edit_photos_dialog').dialog({
@@ -137,8 +136,10 @@
             }
         });
 
-        if (species_or_lower == "true")
+        if (species_or_lower)
         {
+            getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
+
             // Inicia los mapas de distribucion
             map = new GMaps({
                 div: '#map',
