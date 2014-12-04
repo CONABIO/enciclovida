@@ -1,10 +1,10 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml, :create, :update, :edit_photos]
+  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml, :create, :update, :edit_photos, :filtros]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
                                      :edit_photos, :update_photos, :describe, :datos_principales, :kml]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
-  layout false, :only => [:describe, :arbol, :datos_principales, :kml, :edit_photos]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kml, :edit_photos, :filtros]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -496,6 +496,16 @@ class EspeciesController < ApplicationController
           end
         end
       end
+    end
+  end
+
+  # Decide cual filtro cargar y regresa el html y si es nuevo o no
+  def filtros
+    filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
+    if filtro.present? && filtro.html.present?
+      render :text => filtro.html.html_safe
+    else
+      # Por default hace render de filtros
     end
   end
 

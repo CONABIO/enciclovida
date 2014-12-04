@@ -17,10 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale = params[:locale]
-    I18n.locale = usuario_signed_in? ? current_usuario.locale : nil unless I18n.locale
-    I18n.locale = dameLocaleFiltro unless I18n.locale
-    I18n.locale = I18n.default_locale unless I18n.locale
+    I18n.locale = params[:locale] || usuario_signed_in? ? current_usuario.locale : nil || dameLocaleFiltro || I18n.default_locale
   end
 
 

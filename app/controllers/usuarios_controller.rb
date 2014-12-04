@@ -1,8 +1,8 @@
 class UsuariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:create, :update, :destroy, :filtros, :limpiar, :cambia_locale]
-  before_action :authenticate_usuario!, :except => [:new, :create, :filtros, :limpiar, :cambia_locale]
+  skip_before_filter :set_locale, only: [:create, :update, :destroy, :guarda_filtro, :limpiar, :cambia_locale]
+  before_action :authenticate_usuario!, :except => [:new, :create, :guarda_filtro, :limpiar, :cambia_locale]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  layout :false, :only => [:filtros, :cambia_locale]
+  layout :false, :only => [:guarda_filtro, :cambia_locale]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -64,14 +64,9 @@ class UsuariosController < ApplicationController
     end
   end
 
-  def filtros
-    filtro = Filtro.sesion_o_usuario(request.session_options[:id], usuario_signed_in? ? current_usuario : nil,
-                                     params[:html], to_boolean(params[:carga]))
-    if filtro[:existia] && filtro[:html]
-      render :text => filtro[:html].html_safe
-    else
-      render :text => ''
-    end
+  def guarda_filtro
+    Filtro.guarda(request.session_options[:id], usuario_signed_in? ? current_usuario : nil, params[:html])
+    render :text => 'ok'   #Para no dejar la salida con error
   end
 
   def limpiar
@@ -81,14 +76,27 @@ class UsuariosController < ApplicationController
 
   def cambia_locale       #decide en donde gaurdar el locale
     return if params[:locale].blank? || !I18n.available_locales.map{ |loc| loc.to_s }.include?(params[:locale])
+
     if usuario_signed_in?
       current_usuario.locale = params[:locale]
-      current_usuario.save if current_usuario.locale_changed?
+      current_usuario.save if current_usuario.changed?
     else
-      return unless filtro = Filtro.where(:sesion => request.session_options[:id]).first
+      filtro = Filtro.where(:sesion => request.session_options[:id]).first
+      filtro = Filtro.new unless filtro
+
+      filtro.sesion = request.session_options[:id]
       filtro.locale = params[:locale]
-      filtro.save if filtro.locale_changed?
+      filtro.html = '' unless filtro.html.present?
+
+      if filtro.new_record?
+        filtro.save
+      else
+        filtro.save if filtro.changed?
+      end
     end
+
+    # Para que no levante un raise la salida
+    render :text => 'ok'
   end
 
   private

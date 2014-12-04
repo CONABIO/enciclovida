@@ -15,7 +15,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= stub especies.js.coffee
 //= stub photo_selectors
 //= stub show
 //= stub jquery.soulmate.js

@@ -13,25 +13,16 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    guardaFiltros = function (carga)
+    guardaFiltros = function ()
     {
         jQuery.ajax({
-            success: function(html)
-            {
-                if (html != "" && carga)
-                {
-                    $('#busquedas').empty().html(html);
-                    // Elimina las bsuquedas que se quedan en los filtros
-                    $('#soulmate_1, #soulmate_2,#soulmate_3, #soulmate_4').remove();
-                }
-            },
             fail: function()
             {
                 $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
             },
             type: 'POST',
-            url: '/usuarios/filtros',
-            data: { html: $('#busquedas').html().replace(/\n/g, ''), carga: carga }
+            url: '/usuarios/guarda_filtro',
+            data: { html: $('#busquedas').html().replace(/\n/g, '') }
         });
         return false;
     }
@@ -302,75 +293,26 @@
         // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-        guardaFiltros(true);
+
+        // Carga el filtro predeterminado o el de la base
+        jQuery.ajax
+        ({
+            success: function(html)
+            {
+                $('#busquedas').html(html);
+                //guardaFiltros(false);
+            },
+            fail: function()
+            {
+                $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
+            },
+            type: 'GET',
+            url: '/especies/filtros'
+        });
+        //$("#busquedas").load("/especies/filtros");
+        //guardaFiltros(false);
+
     });
 </script>
 
-<div id="busquedas">
-  <div id="busqueda_basica">
-    <%= form_tag resultados_especies_path, :method => :get do %>
-        <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
-        <%= hidden_field_tag :busqueda, :nombre_comun %>
-        <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
-        <b><%= t :nombre_comun %></b><br>
-        <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-        <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-    <% end %>
-    <br>
-    <%= form_tag resultados_especies_path, :method => :get do %>
-        <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-        <%= hidden_field_tag :busqueda, :nombre_cientifico %>
-        <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
-        <b>Nombre cient&iacute;fico</b><br>
-        <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
-        <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas  %>
-        <br><br><b><%= t :solo_taxones %>:</b>
-        <br><%= checkboxValidoSinonimo('basica_cientifico') %>
-    <% end %>
-    <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
-  </div>
-
-  <div id="busqueda_avanzada" style="display: none">
-    <%= form_tag resultados_especies_path, :method => :get do %>
-        <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
-        <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
-        <%= hidden_field_tag :busqueda, :avanzada %>
-        <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
-
-        <p><b>Nombre cient&iacute;fico: </b>
-          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
-                             :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
-        <b><%= t :nombre_comun %>: </b>
-        <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
-                           :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-
-        <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
-        <br><%= checkboxTipoDistribucion %>
-
-        <br><br>
-        <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
-        <br>
-        <%= select_tag :distribucion_nivel_1,
-                       options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL %>
-        <div id="distribucion_nivel"></div>
-        <br>
-        <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
-        <p>
-          <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                         :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-        </p>
-        <p>
-          <b>con estado de conservaci&oacute;n:</b>
-          <%= checkboxEstadoConservacion %>
-        </p>
-        <p>
-          <b><%= t :solo_taxones %>:</b>
-          <br><%= checkboxValidoSinonimo('avanzada') %>
-        </p>
-        <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-        &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
-    <% end %>
-  </div>
-  Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
-  <br><%= button_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
-</div>
+<div id="busquedas"></div>
