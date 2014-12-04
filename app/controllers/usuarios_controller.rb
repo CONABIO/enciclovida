@@ -1,12 +1,8 @@
 class UsuariosController < ApplicationController
-  before_action :entroAlSistema?, :except => [:inicia_sesion, :intento_sesion, :new, :create, :filtros, :limpiar,
-                                              :cambia_locale]
+  skip_before_filter :set_locale, only: [:create, :update, :destroy, :filtros, :limpiar, :cambia_locale]
+  before_action :authenticate_usuario!, :except => [:new, :create, :filtros, :limpiar, :cambia_locale]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  before_action :only => [:index, :edit, :update, :destroy] do |c|
-    c.tienePermiso? @usuario.id
-  end
-
-  layout :false, :only => [:filtros, :limpiar, :cambia_locale]
+  layout :false, :only => [:filtros, :cambia_locale]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -68,56 +64,30 @@ class UsuariosController < ApplicationController
     end
   end
 
-  def inicia_sesion
-  end
-
-  def intento_sesion
-    usuario=Usuario.autentica(params[:login], params[:contrasenia])
-    if usuario.present?
-      ponSesion(usuario)
-      respond_to do |format|
-        format.html { redirect_to root_url, :notice => "Bienvenido #{usuario.nombre} #{usuario.apellido}" }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'El usuario/correo o contraseña son incorrectos.' }
-      end
-    end
-  end
-
-  def cierra_sesion
-    cierraSesion
-    respond_to do |format|
-      format.html { redirect_to '/usuarios/inicia_sesion', :notice => 'La sesión se cerró correctamente.' }
-    end
-  end
-
   def filtros
-    filtro=Filtro.sesion_o_usuario(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil, params[:html], to_boolean(params[:lectura]))
-    if filtro[:existia].present?
-      @html=filtro[:html] if filtro[:existia]
+    filtro = Filtro.sesion_o_usuario(request.session_options[:id], usuario_signed_in? ? current_usuario : nil,
+                                     params[:html], to_boolean(params[:carga]))
+    if filtro[:existia] && filtro[:html]
+      render :text => filtro[:html].html_safe
+    else
+      render :text => ''
     end
   end
 
   def limpiar
-    @filtro=Filtro.consulta(request.session_options[:id], session[:usuario].present? ? session[:usuario] : nil)
+    Filtro.destruye(request.session_options[:id], usuario_signed_in? ? current_usuario : nil)
+    render :text => true
   end
 
   def cambia_locale       #decide en donde gaurdar el locale
     return if params[:locale].blank? || !I18n.available_locales.map{ |loc| loc.to_s }.include?(params[:locale])
-    if session[:usuario].present?
-      begin
-        usuario = Usuario.find(session[:usuario])
-        usuario.locale = params[:locale]
-        @res = true if usuario.save
-      rescue
-      end
+    if usuario_signed_in?
+      current_usuario.locale = params[:locale]
+      current_usuario.save if current_usuario.locale_changed?
     else
-      filtro = Filtro.where(:sesion => request.session_options[:id])
-      if filtro
-        filtro.first.locale = params[:locale]
-        filtro.first.save if filtro.first.locale_changed?
-      end
+      return unless filtro = Filtro.where(:sesion => request.session_options[:id]).first
+      filtro.locale = params[:locale]
+      filtro.save if filtro.locale_changed?
     end
   end
 

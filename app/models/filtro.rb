@@ -1,31 +1,29 @@
 class Filtro < ActiveRecord::Base
 
-  def self.sesion_o_usuario(sesion, usuario, html, lectura)    #guarda los filtros, o da lectura de ellos
-    filtro=usuario.present? ? where(:usuario_id => usuario) : where(:sesion => sesion)
-    if filtro.present?
-      f=filtro.first
-      f.html=html if !lectura
-      f.usuario_id=usuario if usuario.present?
-      f.sesion=sesion
+  def self.sesion_o_usuario(sesion, usuario, html, carga)    #guarda los filtros, o da lectura de ellos
+    filtro = usuario.instance_of?(Usuario) ? usuario.filtro : where(:sesion => sesion).first
 
-      if f.changed?
-        {:existia => true, :html => lectura ? f.html: nil} if f.save
-      else
-        {:existia => true, :html => lectura ? f.html: nil}
-      end
+    if filtro
+      html_cambio = filtro.html != html            # Para saber si reemplazar o no el html
+      filtro.html = html if html_cambio && !carga  # Si es carga de pagina, no escribe los filtros
+      filtro.usuario_id = usuario.id if usuario
+      filtro.sesion = sesion
+      filtro.save if filtro.changed?
+      # Si el html cambio nos lo enviamos
+      { :existia => true, :html => html_cambio && carga ? filtro.html : nil }
     else
-      nuevo = new(:html => html, :sesion => sesion, :usuario_id => usuario.present? ? usuario : nil)
-      {:existia => false} if nuevo.save
+      nuevo = new(:html => html, :sesion => sesion, :usuario_id => usuario ? usuario.id : usuario)
+      { :existia => false } if nuevo.save
     end
   end
 
-  def self.consulta(sesion, usuario)    #consulta para ver si existe registro
-    filtro=usuario.present? ? where(:usuario_id => usuario) : where(:sesion => sesion)
-    if filtro.present?
-      filtro.first.destroy
-      filtro.first.destroyed?
+  def self.destruye(sesion, usuario)    #consulta para ver si existe registro
+    if usuario.instance_of?(Usuario)
+      usuario.filtro.destroy
     else
-      true
+      filtro = where(:sesion => sesion).first
+      return unless filtro
+      filtro.destroy
     end
   end
 end

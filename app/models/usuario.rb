@@ -3,6 +3,7 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
+  has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :omniauthable, :confirmable, :lockable
