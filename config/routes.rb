@@ -20,7 +20,7 @@ Buscador::Application.routes.draw do
 
   resources :usuarios do
     collection do
-      post :filtros
+      post :guarda_filtro
       post :limpiar
       post :cambia_locale
     end
@@ -44,6 +44,7 @@ Buscador::Application.routes.draw do
       get :error
       get :datos_principales
       get :kml
+      get :filtros
     end
   end
 
