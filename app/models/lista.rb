@@ -5,9 +5,6 @@ class Lista < ActiveRecord::Base
   before_update :quitaRepetidos
   #validates :formato, :presence => true
 
-  self.per_page = 10
-  WillPaginate.per_page = 10
-
   ESTATUS_LISTA = [
       [0, 'No'],
       [1, 'Sí']

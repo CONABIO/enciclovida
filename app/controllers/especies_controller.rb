@@ -149,9 +149,17 @@ class EspeciesController < ApplicationController
       case params[:busqueda]
 
         when 'nombre_comun'
-          @taxones=NombreComun.select("especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}").
-              nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).where('especies.id IS NOT NULL').uniq.
-              order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+          sql="NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').uniq.
+              order('nombre_cientifico ASC')"
+
+          longitud = eval("#{sql}.count")
+          @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+          if longitud > 0
+            @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = NombreComun.find_by_sql(@taxones)
+          end
 
           if @taxones.empty?
             ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
@@ -159,8 +167,7 @@ class EspeciesController < ApplicationController
 
             ids.each do |id|
               @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-                  nom_com.where("nombres_comunes.id=#{id}").
-                  paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+                  nom_com.where("nombres_comunes.id=#{id}")
 
               if @taxones.first
                 # Si la distancia entre palabras es 1 que muestre la sugerencia
@@ -193,11 +200,12 @@ class EspeciesController < ApplicationController
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
             order('nombre_cientifico ASC')"
+
           longitud = eval("#{sql}.count")
-          @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina])
+          @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
           if longitud > 0
-            @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina]} ROWS ONLY"
+            @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
           end
 
@@ -324,9 +332,9 @@ class EspeciesController < ApplicationController
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
 
           if distinct
-            @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct#.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
           else
-            @taxones = eval(busqueda).order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            @taxones = eval(busqueda).order('nombre_cientifico ASC')#.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
           end
 
         else
