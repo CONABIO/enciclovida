@@ -216,12 +216,6 @@
 <%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
 
 <div id="photoscol" class="column span-13">
-  <% if @especie.species_or_lower? && @photos.empty? %>
-      <div class="notice">
-        <%# t(:este_taxon_no_tiene).html_safe %>
-        <%# link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-      </div>
-  <% end %>
   <div id="photos">
     <%= render :partial => 'photos', :locals => { :photos => @photos } %>
     <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
