@@ -20,9 +20,6 @@ Buscador::Application.routes.draw do
 
   resources :usuarios do
     collection do
-      get :inicia_sesion
-      post :intento_sesion
-      put :cierra_sesion
       post :filtros
       post :limpiar
       post :cambia_locale

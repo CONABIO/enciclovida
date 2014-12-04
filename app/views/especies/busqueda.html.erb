@@ -13,18 +13,16 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    guardaFiltros = function (lectura)
+    guardaFiltros = function (carga)
     {
         jQuery.ajax({
-            success: function(html){
-                if (lectura)
+            success: function(html)
+            {
+                if (html != "" && carga)
                 {
-                    if (html != '')
-                    {
-                        $('#busquedas').empty().html(html);
-                        // Elimina las bsuquedas que se quedan en los filtros
-                        $('#soulmate_1, #soulmate_2,#soulmate_3, #soulmate_4').remove();
-                    }
+                    $('#busquedas').empty().html(html);
+                    // Elimina las bsuquedas que se quedan en los filtros
+                    $('#soulmate_1, #soulmate_2,#soulmate_3, #soulmate_4').remove();
                 }
             },
             fail: function()
@@ -33,8 +31,7 @@
             },
             type: 'POST',
             url: '/usuarios/filtros',
-            cache: true,
-            data: { lectura: lectura , html: $('#busquedas').html().replace(/\n/g, '') }
+            data: { html: $('#busquedas').html().replace(/\n/g, ''), carga: carga }
         });
         return false;
     }
@@ -274,8 +271,11 @@
                 success: function(html)
                 {
                     if (html!='true')
+                    {
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-                    location.reload();
+                        return false
+                    }
+                    location.reload(true);
                 },
                 fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
