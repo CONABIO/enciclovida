@@ -362,8 +362,6 @@ module EspeciesHelper
           title=licensed ? "#{t(:from_licensed_site_observations, :site_name => SITE_NAME_SHORT)}" :
               "#{t(:from_your_site_observations, :site_name => SITE_NAME_SHORT)}"
           html+="<li>#{link_to("<span>#{title}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        else
-          Rails.logger.info "Bad photo provider: #{prov}"
       end
     end
     "#{html}</ul>".html_safe

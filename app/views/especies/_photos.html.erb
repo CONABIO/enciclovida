@@ -4,7 +4,7 @@
 -%>
 <% unless photos.size == 0 %>
   <% if taxon.species_or_lower? %>
-    <% Rails.logger.info "---#{photos[0].class}-#{photos.to_json}" %>
+    <% Rails.logger.info "#{photos[0].class}-#{photos.to_json}" %>
     <% if [Photo, Photo.descendent_classes].flatten.include?(photos[0].class) %>
       <%= photos.first.id ? modal_image(photos.first, :size => :medium) : link_to(image_tag(photos.first.medium_url || photos.first.small_url), photos.first.native_page_url) %>
       <div class="clear description" style="clear: both">

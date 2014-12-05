@@ -90,6 +90,7 @@
                         defaultQuery: TAXON.nombre_cientifico,
                         skipLocal: true,
                         baseURL: '/conabio/photo_fields',
+                        taxon_id: TAXON.id,
                         urlParams: {
                             authenticity_token: $('meta[name=csrf-token]').attr('content'),
                             limit: 14
