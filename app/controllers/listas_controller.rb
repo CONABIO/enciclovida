@@ -78,7 +78,6 @@ class ListasController < ApplicationController
   end
 
   def dame_listas
-    Rails.logger.info "---#{Lista.where(:usuario_id => current_usuario.id).length}"
     @listas = Lista.where(:usuario_id => current_usuario.id)
   end
 
