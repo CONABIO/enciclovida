@@ -29,6 +29,10 @@ base: &base
   # URL SNIB
   snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
 
+  # URL y puerto de BDI
+  bdi_imagenes: http://bdi.conabio.gob.mx:5050
+  bdi_fotoweb: http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=
+
   # Configure taxon description callbacks. taxa/show will try to show
   # species descriptions from these sources in this order, trying the next
   # if one fails. You can see all the available describers in

@@ -26,7 +26,7 @@
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
-    var species_or_lower = <%=raw @especie.species_or_lower? %>;
+    var SPECIES_OR_LOWER = <%=raw @especie.species_or_lower? %>;
     var MAPAS = new Array
     (
             ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución']
@@ -89,7 +89,7 @@
                     var photoSelectorOptions = {
                         defaultQuery: TAXON.nombre_cientifico,
                         skipLocal: true,
-                        baseURL: '/flickr/photo_fields',
+                        baseURL: '/conabio/photo_fields',
                         urlParams: {
                             authenticity_token: $('meta[name=csrf-token]').attr('content'),
                             limit: 14
@@ -104,7 +104,10 @@
                     $('.tabs', this).tabs({
                         beforeActivate: function( event, ui ) {
                             if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                $('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
+                                //$('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/flickr/photo_fields'})
+                                )
                             } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
                                 $('.taxon_photos', ui.newPanel).photoSelector(
                                         $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
@@ -136,7 +139,7 @@
             }
         });
 
-        if (species_or_lower)
+        if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
             // Inicia los mapas de distribucion
