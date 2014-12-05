@@ -1,5 +1,5 @@
 class ConabioPhoto < Photo
-  
+
   Photo.descendent_classes ||= []
   Photo.descendent_classes << self
 
@@ -21,33 +21,30 @@ class ConabioPhoto < Photo
       new_from_api_response(resp)
     end.compact
   end
-        
+
   def self.get_api_response(photo_id)
-    json = ConabioService.new(:server => 'bdi.conabio.gob.mx:9090', :timeout => 5, :photos => true, :photo_id => true).search(photo_id)
-    return nil if json.blank?
-    JSON.parse(json).first
+    begin
+      Metadato.find(photo_id)
+    rescue
+      nil
+    end
   end
 
   def self.new_from_api_response(api_response, options = {})
     copyright = api_response.artist.present? ? "#{api_response.artist} / Banco de Imágenes CONABIO" : 'Banco de Imágenes CONABIO'
     imagen = "http://bdi.conabio.gob.mx:5050/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}"
-      new(options.merge(
-              :large_url => imagen,
-              :medium_url => imagen,
-              :small_url => imagen,
-              :thumb_url => imagen,
-              :native_photo_id => api_response.id,
-              :square_url => imagen,
-              :original_url => imagen,
-              :native_page_url => "http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=#{api_response.transmission_reference}",
-              :native_username => copyright,
-              :native_realname => copyright,
-              :license => 3
-          ))
-  end
-
-  private
-  def self.conabio(options = {})
-    @conabio ||= ConabioService.new(options)
+    new(options.merge(
+            :large_url => imagen,
+            :medium_url => imagen,
+            :small_url => imagen,
+            :thumb_url => imagen,
+            :native_photo_id => api_response.id,
+            :square_url => imagen,
+            :original_url => imagen,
+            :native_page_url => "http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=#{api_response.transmission_reference}",
+            :native_username => copyright,
+            :native_realname => copyright,
+            :license => 3
+        ))
   end
 end
