@@ -139,13 +139,12 @@
         if (species_or_lower)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
-
             // Inicia los mapas de distribucion
             map = new GMaps({
                 div: '#map',
-                zoom: 4,
-                lat: 19.29478848,
-                lng: -99.65630269,
+                zoom: 5,
+                lat: 23.79162789,
+                lng: -102.04376221,
                 mapTypeId:google.maps.MapTypeId.HYBRID,
                 height: "450px",
                 width:	"450px"
@@ -217,12 +216,6 @@
 <%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
 
 <div id="photoscol" class="column span-13">
-  <% if @especie.species_or_lower? && @photos.empty? %>
-      <div class="notice">
-        <%# t(:este_taxon_no_tiene).html_safe %>
-        <%# link_to('A&ntilde;ade una'.html_safe, nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-      </div>
-  <% end %>
   <div id="photos">
     <%= render :partial => 'photos', :locals => { :photos => @photos } %>
     <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>

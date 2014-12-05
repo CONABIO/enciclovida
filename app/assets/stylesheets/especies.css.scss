@@ -2,6 +2,9 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+//Para que la foto no se salga del tamanio
+#photos img{max-width: 500px}
+
 #vista_arbol ul{
   padding-left: 25px;
 }
