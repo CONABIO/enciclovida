@@ -1,8 +1,8 @@
 class UsuariosController < ApplicationController
   skip_before_filter :set_locale, only: [:create, :update, :destroy, :guarda_filtro, :limpiar, :cambia_locale]
-  before_action :authenticate_usuario!, :except => [:new, :create, :guarda_filtro, :limpiar, :cambia_locale]
+  before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  layout :false, :only => [:guarda_filtro, :cambia_locale]
+  layout :false, :only => [:guarda_filtro, :cambia_locale, :limpiar]
 
   # GET /usuarios
   # GET /usuarios.json
@@ -95,7 +95,6 @@ class UsuariosController < ApplicationController
       end
     end
 
-    # Para que no levante un raise la salida
     render :text => 'ok'
   end
 

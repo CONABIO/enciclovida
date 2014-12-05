@@ -300,7 +300,6 @@
             success: function(html)
             {
                 $('#busquedas').html(html);
-                //guardaFiltros(false);
             },
             fail: function()
             {
@@ -309,9 +308,6 @@
             type: 'GET',
             url: '/especies/filtros'
         });
-        //$("#busquedas").load("/especies/filtros");
-        //guardaFiltros(false);
-
     });
 </script>
 

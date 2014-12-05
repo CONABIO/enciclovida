@@ -31,10 +31,9 @@ class Filtro < ActiveRecord::Base
 
   def self.destruye(sesion, usuario)    # Destruye el filtro asociado
     if usuario.instance_of?(Usuario)
-      usuario.filtro.destroy
+      usuario.filtro.destroy if usuario.filtro.present?
     else
-      filtro = where(:sesion => sesion).first
-      return unless filtro
+      return unless filtro = where(:sesion => sesion).first
       filtro.destroy
     end
   end
