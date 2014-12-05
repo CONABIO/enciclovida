@@ -134,8 +134,8 @@ class EspeciesController < ApplicationController
   end
 
   def resultados
-    @busqueda=params[:busqueda]
-    estatus = ''
+    # Por si no coincidio nada
+    @taxones = Especie.none
 
     # Despliega directo el taxon
     if params[:busqueda] == 'basica' || params[:id].present?
@@ -157,7 +157,7 @@ class EspeciesController < ApplicationController
           @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
           if longitud > 0
-            @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = eval(sql).to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
           end
 
@@ -248,18 +248,6 @@ class EspeciesController < ApplicationController
           distinct = false
 
           params.each do |key, value|  #itera sobre todos los campos
-=begin
-          if key.include?('bAtributo_')
-            numero=key.split('_').last  #el numero de atributo a consultar
-            # Para ver si quiere ver todos los taxones descendentes de cierto taxon
-            if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
-              conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
-            elsif params['vAtributo_' + numero].present?
-              joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
-              condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
-            end
-          end
-=end
 
             if key == 'id_nom_cientifico' && value.present?
               conID = value.to_i
@@ -326,17 +314,28 @@ class EspeciesController < ApplicationController
           if params[:edo_cons].present?
             joins+= '.catalogos_join'
             condiciones+= ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
-            #distinct = true
+            distinct = true
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
 
           if distinct
-            @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct#.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-          else
-            @taxones = eval(busqueda).order('nombre_cientifico ASC')#.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-          end
+            longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.count
+            @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
+            if longitud > 0
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = Especie.find_by_sql(@taxones)
+            end
+          else
+            longitud = eval(busqueda).order('nombre_cientifico ASC').count
+            @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+            if longitud > 0
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = Especie.find_by_sql(@taxones)
+            end
+          end
         else
           respond_to do |format|
             format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
