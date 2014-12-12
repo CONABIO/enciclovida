@@ -60,6 +60,6 @@ rails r tools/foto_principal.rb -d
 
 --- Para iniciar el administrador de trabajos pendientes (solo production)
 
-./bin/delayed_job run
+rake jobs:work
 
 
