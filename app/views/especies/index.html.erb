@@ -1,4 +1,4 @@
-<%= javascript_include_tag params[:controller] %>
+ <%= javascript_include_tag params[:controller] %>
 
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
@@ -8,7 +8,7 @@
 <p id="notice"><%= notice %></p>
 
 <div class="titulo">
-  <h1><%= @titulo %></h1>
+  <h1 class="sub-header"><%= @titulo %></h1>
 </div>
 
 <br><br>

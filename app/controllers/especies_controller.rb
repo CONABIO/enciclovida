@@ -500,12 +500,12 @@ class EspeciesController < ApplicationController
 
   # Decide cual filtro cargar y regresa el html y si es nuevo o no
   def filtros
-    filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
-    if filtro.present? && filtro.html.present?
-      render :text => filtro.html.html_safe
-    else
-      # Por default hace render de filtros
-    end
+    # filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
+    #   if filtro.present? && filtro.html.present?
+    #    render :text => filtro.html.html_safe
+    #  else
+    #    # Por default hace render de filtros
+    #  end
   end
 
   private

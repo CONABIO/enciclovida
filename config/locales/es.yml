@@ -251,7 +251,7 @@ es:
       format:
         delimiter: ''
   sinonimo: inactivos
-  solo_taxones: solo especies o grupos
+  solo_taxones: Solo Especies ó Grupos
   support:
     array:
       last_word_connector: ! ', y '
