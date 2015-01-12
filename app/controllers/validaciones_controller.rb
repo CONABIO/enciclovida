@@ -1,6 +1,5 @@
 class ValidacionesController < ApplicationController
-  # Estas validaciones son los records que provienen desde SQL Server directamente, ya sea
-  # por Access o modificando la base directamente
+  # Estas validaciones son los records que provienen desde SQL Server directamente (MS Access)
 
   # El request sigue siendo inseguro, hasta no poder hacer la conexion con un webservice con WSDL
   # desde SQL Server
