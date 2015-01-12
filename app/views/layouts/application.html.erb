@@ -28,38 +28,61 @@
 </head>
 
 <body>
-<div class="menu">
-  <ul id="menu">
-    <li><%= link_to "Inicio (#{CONFIG.site_name_short})", especies_url %></li>
-    <li><%= link_to :Listas, listas_url %></li>
-    <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
-    <% if usuario_signed_in? %>
-        <li>
-          <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
-        </li>
-        <li>
-          <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path,
-                      :method => :delete, data: { confirm: '¿Est&aacute;s seguro que deseas cerrar la sesi&oacute;n?'.html_safe } %>
-        </li>
-    <% else %>
-        <li><%= link_to 'Inicia sesi&oacute;n'.html_safe, new_usuario_session_path %></li>
-    <% end %>
-     <% if I18n.locale.to_s == 'es-cientifico' %>
-        <li><%= link_to '[vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
-    <% else %>
-        <li><%= link_to '[vista de nombres científicios]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
-    <% end %>
-    <li><div id="cse-search-form" style="width: 275px;">Cargando...</div></li>
-  </ul>
-</div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to "Inicio (#{CONFIG.site_name_short})", especies_url, class: "navbar-brand" %>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <div id="cse-search-form" class="form-control navbar-form navbar-right" style="width: 20%; padding-top:.45%; ">Cargando...</div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to :Listas, listas_url %></li>
+        <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
+        <% if usuario_signed_in? %>
+            <li>
+              <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
+            </li>
+            <li>
+              <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path,
+                          :method => :delete, data: { confirm: '¿Est&aacute;s seguro que deseas cerrar la sesi&oacute;n?'.html_safe } %>
+            </li>
+        <% else %>
+            <li><%= link_to 'Inicia sesi&oacute;n'.html_safe, new_usuario_session_path %></li>
+        <% end %>
+        <% if I18n.locale.to_s == 'es-cientifico' %>
+            <li><%= link_to '[vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
+        <% else %>
+            <li><%= link_to '[vista de nombres científicios]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+        <% end %>
+       </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+<div class="row">
+  <div class="col-sm-4 col-md-3 sidebar">
+    <%= render :template => 'especies/busqueda' %>
+  </div>
+
+  <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
+    <div class="table-responsive">
+      <%= yield %>
+    </div>
+  </div>
 
 
-<div style="width: 25%; float:left;">
-  <%= render :template => 'especies/busqueda' %>
+
 </div>
-<div style="width: 75%; float:right;">
-  <%= yield %>
 </div>
+
 
 <%= bitacora.html_safe if bitacora.present? %>
 

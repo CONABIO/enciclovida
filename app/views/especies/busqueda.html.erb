@@ -30,20 +30,20 @@
     estructuraFiltro = function(numeroAtributos)
     {
         var bAtributo, cAtributo, vAtributo, hAtributo, imagenQuitar, anteriores;
-        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
+        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo form-control' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
         bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
         bAtributo+="<option value='nombre_comun'>nombre común</option>";
         bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
         bAtributo+="<option value='nombre_autoridad'>autoridad</option></select> ";
 
-        cAtributo="<select class='busqueda_atributo' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
+        cAtributo="<select class='busqueda_atributo form-control' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
         cAtributo+="<option value='1'>contiene</option>";
         cAtributo+="<option value='2'>empieza con</option>";
         cAtributo+="<option value='3'>igual a</option>";
         cAtributo+="<option value='4'>termina con</option></select> ";
 
-        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
-        hAtributo="<input class='busqueda_atributo' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
+        vAtributo="<input class='busqueda_atributo form-control' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
+        hAtributo="<input class='busqueda_atributo form-control' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
         imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>";
 
         return bAtributo+cAtributo+vAtributo+hAtributo+imagenQuitar;
