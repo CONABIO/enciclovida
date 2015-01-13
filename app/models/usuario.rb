@@ -3,12 +3,15 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
+  has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # :confirmable, :lockable, :timeoutable, :omniauthable, :confirmable, :lockable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
-         #:confirmable, :lockable
+         :recoverable, :rememberable, :trackable, :validatable,
+         :authentication_keys => [:login]
+  # Para registrarse con el email o usuario
+  attr_accessor :login
 
   belongs_to :rol
   #attr_accessor :confirma_contrasenia
@@ -50,6 +53,15 @@ class Usuario < ActiveRecord::Base
 
   def self.contraseniaEncryptada(contrasenia, salt)
     Digest::SHA2.hexdigest(contrasenia + salt)
+  end
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["LOWER(usuario) = :value OR LOWER(email) = :value", { :value => login.downcase }]).first
+    else
+      where(conditions).first
+    end
   end
 
   private

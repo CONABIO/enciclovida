@@ -1,28 +1,79 @@
+<style type="text/css" data-turbolinks-track="true">
+    #datos_principales
+    {
+        display:none;
+        position:absolute;
+        border-style: solid;
+        background-color: white;
+        padding: 5px;
+    }
+</style>
+
+<script type="text/javascript" data-turbolinks-track="true">
+    var cX = 0; var cY = 0; var rX = 0; var rY = 0;
+    function UpdateCursorPosition(e){ cX = e.pageX; cY = e.pageY;}
+    function UpdateCursorPositionDocAll(e){ cX = event.clientX; cY = event.clientY;}
+    if(document.all) { document.onmousemove = UpdateCursorPositionDocAll; }
+    else { document.onmousemove = UpdateCursorPosition; }
+    function AssignPosition(d) {
+        if(self.pageYOffset) {
+            rX = self.pageXOffset;
+            rY = self.pageYOffset;
+        }
+        else if(document.documentElement && document.documentElement.scrollTop) {
+            rX = document.documentElement.scrollLeft;
+            rY = document.documentElement.scrollTop;
+        }
+        else if(document.body) {
+            rX = document.body.scrollLeft;
+            rY = document.body.scrollTop;
+        }
+        if(document.all) {
+            cX += rX;
+            cY += rY;
+        }
+        d.style.left = (cX+10) + "px";
+        d.style.top = (cY+10) + "px";
+    }
+    function HideContent(d) {
+        if(d.length < 1) { return; }
+        document.getElementById(d).style.display = "none";
+    }
+    function ShowContent(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        dd.style.display = "block";
+    }
+    function ReverseContentDisplay(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        if(dd.style.display == "none") { dd.style.display = "block"; }
+        else { dd.style.display = "none"; }
+    }
+</script>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     $(document).ready(function()
     {
         $.ajax({
-            url: "/especies/dame_listas",
-            type: 'GET'
+            url: "/listas/dame_listas",
+            type: 'POST'
         }).done(function(html) {
                     $('#widget_listas').html(html);
                 }).fail(function(){
                     $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
                 });
 
-        valorListas = function()
-        {
-            $('#listas').val($('#listas_hidden').val());
-        };
-
-        $("#box_especie").click(function ()
+        $(document).on('click', "#box_especie", function()
         {
             checaCaja = $(this).is(":checked") ? true : false
             if (checaCaja)
             {
-                $(":input[id^='box_especie_']").prop("checked", true);
+                $(":input[class='especies']").prop("checked", true);
             } else {
-                $(":input[id^='box_especie_']").prop("checked", false);
+                $(":input[class='especies']").prop("checked", false);
             }
         });
 
@@ -30,6 +81,26 @@
         {
             $('#widget_listas').slideToggle();
             return false;
+        });
+
+        $(document).on('mouseenter', "[class^='datos_busqueda-']", function()
+        {
+            var id = $(this).attr('class').substring(15);
+            $.ajax({
+                url: "/especies/datos_principales",
+                type: 'GET',
+                data: {id: id}
+            }).done(function(html) {
+                        $('#datos_principales').html(html);
+                        ShowContent('datos_principales');
+                    }).fail(function(){
+                        $('#datos_principales').html('Hubo un error al cargar los datos.');
+                    });
+        });
+
+        $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
+        {
+            HideContent('datos_principales');
         });
     });
 </script>
@@ -40,49 +111,45 @@
 
 <p id="notice"><%= notice %></p>
 
-<%= form_tag aniade_taxones_especies_path, :method => :put %>
+<%= form_tag aniade_taxones_listas_path, :method => :post do %>
 
-<p class="notice">
-  <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
-</p>
+    <p class="notice">
+      <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
+    </p>
 
-<table class="tabla_formato" border="0">
-  <tr>
-    <td valign="top">
-      <br>
+    <div style="width: 100%; float:left;">
       <div class="titulo-busqueda">
         <%= page_entries_info @taxones if @taxones.present? %>
       </div>
-      <% if @taxones.length > 0 %>
-          <%= hidden_field_tag :listas %>
-          <%= label_tag :box_especie, 'Selecciona todos' %>
-          <%= check_box_tag :box_especie, :todos %> |
-          <%= submit_tag 'A&ntilde;ade los seleccionados a la lista'.html_safe , :onClick =>'return valorListas();',
-                         data: { confirm: '¿Estás seguro de querer añadir los contactos seleccionados a la lista?' } if !@listas.nil? && @listas != 0 %>
-          <%= ' |' if !@listas.nil? && @listas != 0 %>
-          <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas %>
-          <br><br>
-      <% end %>
-    </td>
-    <td width="50%" valign="top">
+      <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
       <div id="widget_listas" style="display: none"></div>
-    </td>
-  </tr>
-</table>
+    </div>
 
-<%= @resultado %>
-<%= @resultado2 %>
+    <div style="width: 100%; float:left;">
+      <div class="digg_pagination">
+        <%= will_paginate @taxones %>
+      </div>
 
-<div class="digg_pagination">
-  <%= will_paginate @taxones %>
-</div>
-<%= render 'resultados', :taxones => @taxones, :busqueda => @busqueda %>
-<% if @taxones.length >= 100 %>
-    <div class="digg_pagination">
-      <%= will_paginate @taxones %>
+      <% columnas=0 %>
+      <% @taxones.each do |taxon| %>
+          <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
+            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :height => '75px' %>
+            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
+            <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+          </div>
+          <% columnas+=1 %>
+      <% end %>
+
+      <% if @taxones.length >= 100 %>
+          <div class="digg_pagination">
+            <%= will_paginate @taxones %>
+          </div>
+      <% end %>
+
+      <p class="enlaces_acciones">
+        <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
+
+      <div id="datos_principales"></div>
     </div>
 <% end %>
-
-<p class="enlaces_acciones">
-  <%= '<em>Tu b&uacute;squeda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-</p>

@@ -12,17 +12,11 @@
 </div>
 
 <br><br>
-<table width="1000" id="tabla_form">
-  <tr>
-    <td valign="top">
-      <fieldset>
-        <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
-        <div id="vista_arbol">
-          <%= arbolTaxonomico.html_safe %>
-        </div>
-      </fieldset>
-    </td>
-  </tr>
-</table>
-<%= #Especie.find_by_fuzzy_nombre_cientifico('Ara macao', :limit => 10)
-%>
+
+<fieldset>
+  <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
+  <%= render :partial => 'arbol' %>
+</fieldset>
+
+
+

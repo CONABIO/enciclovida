@@ -72,6 +72,14 @@ GIT
       jquery-rails
       sass-rails
 
+GIT
+  remote: https://github.com/calonso-conabio/ancestry.git
+  revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
+  ref: bfadb2c
+  specs:
+    ancestry (2.1.0)
+      activerecord (>= 3.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -84,8 +92,6 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
-    ancestry (2.1.0)
-      activerecord (>= 3.0.0)
     arel (4.0.2)
     bcrypt (3.1.7)
     blurrily (0.2.1)
@@ -124,6 +130,7 @@ GEM
     eventmachine (1.0.3)
     execjs (2.2.1)
     exifr (1.1.3)
+    ffi (1.9.6)
     gyoku (1.1.1)
       builder (>= 2.1.2)
     haml (4.0.5)
@@ -147,6 +154,8 @@ GEM
     jquery-ui-rails (4.2.1)
       railties (>= 3.2.16)
     json (1.8.1)
+    levenshtein-ffi (1.1.0)
+      ffi (~> 1.9)
     libv8 (3.16.14.3)
     magick-metadata (0.0.3)
     mail (2.6.1)
@@ -258,7 +267,7 @@ DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store!
   activerecord-sqlserver-adapter (~> 4.0.0)
-  ancestry
+  ancestry!
   blurrily
   carrierwave
   cocoon (= 1.2.0)
@@ -277,6 +286,7 @@ DEPENDENCIES
   jquery-datatables-rails!
   jquery-rails
   jquery-ui-rails (= 4.2.1)
+  levenshtein-ffi
   magick-metadata
   mime-types (= 1.25.1)
   mysql2 (= 0.3.13)

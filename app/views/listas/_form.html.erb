@@ -11,20 +11,13 @@
 
           <% if @lista.new_record? %>
               <div class="field">
-                <%= f.label :columnas, 'Columnas de la base (tecla SHIFT para más de una columna)' %><br>
-                <%= f.select :columnas, Lista::ATRIBUTOS_TABLAS.map{|k,v| [v, k]}, {}, {:multiple => true, :size => Lista::ATRIBUTOS_TABLAS.size} %>
+                <b><%= f.label :columnas, 'Columnas de la abse a exportar' %></b><br>
+                <%= checkboxColumnas %>
               </div>
           <% else %>
               <div class="field">
-                <%= f.label :columnas, 'Columnas de la base (tecla SHIFT para más de una columna)' %><br>
-                <%= atributoColumnas(@lista).html_safe %>
-              </div>
-          <% end %>
-
-          <% if !@lista.new_record? %>
-              <div class="field">
-                <%= f.label :cadena_especies, 'Taxones a exportar' %><br>
-                <%= f.text_field :cadena_especies, :maxlength => 255, :size => 45, :placeholder => 'cadena especies' %>
+                <%= f.label :columnas, 'Columnas de la base a exportar' %><br>
+                <%= checkboxColumnas(@lista.columnas.split(',')).html_safe %>
               </div>
           <% end %>
         </fieldset>
@@ -48,9 +41,9 @@
     <div class="pie">
       <div class="actions">
         <% if @lista.new_record? %>
-            <%= f.submit('Crear lista', :disable_with => 'Creando ...') %>
+            <%= f.submit('Crear lista', data: {:disable_with => 'Creando ...'}) %>
         <% else %>
-            <%= f.submit('Guardar', :disable_with => 'Guardando ...') %>
+            <%= f.submit('Guardar', data: {:disable_with => 'Guardando ...'}) %>
         <% end %>
       </div>
     </div>

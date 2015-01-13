@@ -1,9 +1,16 @@
 Buscador::Application.routes.draw do
 
+  resources :metadatos
+
   devise_for :usuarios
   resources :bitacoras
 
-  resources :listas
+  resources :listas do
+    collection do
+      post :dame_listas
+      post :aniade_taxones
+    end
+  end
 
   resources :roles
 
@@ -13,10 +20,7 @@ Buscador::Application.routes.draw do
 
   resources :usuarios do
     collection do
-      get :inicia_sesion
-      post :intento_sesion
-      put :cierra_sesion
-      post :filtros
+      post :guarda_filtro
       post :limpiar
       post :cambia_locale
     end
@@ -34,14 +38,13 @@ Buscador::Application.routes.draw do
     collection do
       post :update_photos, :as => :update_photos_for
       get :busca_por_lote
-      put :aniade_taxones
-      get :dame_listas
-      get :buscaDescendientes
-      post :muestraTaxonomia
-      get :autocomplete_especie_nombre
+      get :arbol
       get :resultados
       post :resultados_por_lote
       get :error
+      get :datos_principales
+      get :kml
+      get :filtros
     end
   end
 

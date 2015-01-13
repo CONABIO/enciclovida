@@ -1,4 +1,5 @@
 es:
+  cites: CITES
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados
@@ -140,14 +141,57 @@ es:
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
   este_taxon_no_tiene: Esta especie o grupo no tiene una foto predeterminada
   helpers:
+    label:
+      usuario:
+        current_password: Contraseña actual
+        email: Correo
+        login: Usuario o contraseña
+        password: Contraseña
+        password_confirmation: Confirma la contraseña
+        remember_me: Recordarme la próxima vez
     select:
       prompt: Por favor seleccione
     submit:
       create: Crear %{model}
       submit: Guardar %{model}
       update: Actualizar %{model}
+  iucn: IUCN
+  listas_columnas:
+    anotacion: Anotación
+    categoria_taxonomica: Categoria taxonómica
+    cita_nomenclatural: Cita nomenclatural
+    created_at: Fecha de creación
+    estado_conservacion: Estado de conservación
+    estatus: Estatus del nombre científico
+    foto_principal: Foto principal
+    fuente: Fuente
+    id: Identificador único
+    nombre_autoridad: Nombre autoridad
+    nombre_cientifico: Nombre científico
+    nombre_comun: Nombres comúnes
+    sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
+    tipo_distribucion: Tipo distribución
+    updated_at: Fecha de última modificación
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
+  nom: NOM
   nombre_comun: Nombre
+  nombres_modelos:
+    bibliografias: Bibliografia
+    catalogos: Catalogo
+    categorias_taxonomicas: CategoriaTaxonomica
+    especies: Especie
+    especies_bibliografias: EspecieBibliografia
+    especies_catalogos: EspecieCatalogo
+    especies_estatuses: EspecieEstatus
+    especies_estatuses_bibliografias: EspecieEstatusBibliografia
+    especies_regiones: EspecieRegion
+    estatuses: Estatus
+    nombres_comunes: NombreComun
+    nombres_regiones: NombreRegion
+    nombres_regiones_bibliografias: NombreRegionBibliografia
+    regiones: Region
+    tipos_distribuciones: TipoDistribucion
+    tipos_regiones: TipoRegion
   number:
     currency:
       format:
@@ -210,7 +254,7 @@ es:
       short: ! '%d de %b %H:%M'
     pm: pm
   valido_correcto: activos
-  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>Flickr &raquo;</nobr>
+  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>CONABIO &raquo;</nobr>
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:

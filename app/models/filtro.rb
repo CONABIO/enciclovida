@@ -1,31 +1,41 @@
 class Filtro < ActiveRecord::Base
 
-  def self.sesion_o_usuario(sesion, usuario, html, lectura)    #guarda los filtros, o da lectura de ellos
-    filtro=usuario.present? ? where(:usuario_id => usuario) : where(:sesion => sesion)
-    if filtro.present?
-      f=filtro.first
-      f.html=html if !lectura
-      f.usuario_id=usuario if usuario.present?
-      f.sesion=sesion
-
-      if f.changed?
-        {:existia => true, :html => lectura ? f.html: nil} if f.save
+  def self.consulta(usuario, sesion)
+    if usuario.instance_of?(Usuario)
+      if usuario.filtro.present?
+        usuario.filtro
       else
-        {:existia => true, :html => lectura ? f.html: nil}
+        return unless f = where(:sesion => sesion).first
+        f.usuario_id = usuario.id
+        f if f.save
       end
     else
-      nuevo = new(:html => html, :sesion => sesion, :usuario_id => usuario.present? ? usuario : nil)
-      {:existia => false} if nuevo.save
+      where(:sesion => sesion).first
     end
   end
 
-  def self.consulta(sesion, usuario)    #consulta para ver si existe registro
-    filtro=usuario.present? ? where(:usuario_id => usuario) : where(:sesion => sesion)
-    if filtro.present?
-      filtro.first.destroy
-      filtro.first.destroyed?
+  def self.guarda(sesion, usuario, html)    #guarda los filtros, o da lectura de ellos
+    filtro = consulta(usuario, sesion)
+    filtro = Filtro.new unless filtro.present?
+
+    filtro.html = html
+    filtro.usuario_id = usuario.id if usuario
+    filtro.sesion = sesion
+
+    if filtro.new_record?
+      filtro.save
     else
-      true
+      filtro.save if filtro.changed?
+    end
+  end
+
+  def self.destruye(sesion, usuario)    # Destruye el filtro asociado
+    if usuario.instance_of?(Usuario)
+      usuario.filtro.destroy
+    else
+      filtro = where(:sesion => sesion).first
+      return unless filtro
+      filtro.destroy
     end
   end
 end

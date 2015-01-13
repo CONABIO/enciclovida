@@ -3,24 +3,19 @@ module EspeciesHelper
   def tituloNombreCientifico(taxon, params={})
     if I18n.locale.to_s == 'es-cientifico'
       if params[:title]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
-      elsif params[:context]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
       elsif params[:link]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
+        "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} <i>#{taxon.nombre_autoridad}</i>".html_safe
       elsif params[:show]
-        "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
+        "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       else
         'Ocurrio un error en el t&iacute;tulo'.html_safe
       end
     else   #vistas menos cientificas
-      if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
+      if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica))   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.nombre_cientifico})".html_safe :
               taxon.nombre_cientifico
-        elsif params[:context]
-          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.nombre_cientifico}</i>)".html_safe :
-              view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
             "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
@@ -36,26 +31,45 @@ module EspeciesHelper
         end
       else
         if params[:title]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
-              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
-        elsif params[:context]
-          taxon.nombre_comun_principal.present? ? "#{view_context.link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}</i>)".html_safe :
-              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{view_context.link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")}".html_safe
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe
+            "#{link_to(taxon.nombre_comun, especy_path(taxon))} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
-                "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
+            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal, especy_path(taxon))} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
+                "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especy_path(taxon))}".html_safe
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} <i>(#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
-              "#{taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
+              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         else
           'Ocurrio un error en el t&iacute;tulo'.html_safe
         end
       end
     end
+  end
+
+  def datos_principales(taxon, en_resultados=false)
+    datos = dameNomComunes(taxon)
+    if en_resultados     #El preview en ajax de los resultados
+      if taxon.estatus == 1
+        datos << dameStatus(taxon)
+      elsif taxon.estatus == 2
+        taxon.species_or_lower?
+        datos << dameDistribucion(taxon) + ' - '
+        datos << dameCaracteristica(taxon)
+      end
+    else
+      if taxon.estatus == 1
+        datos << dameStatus(taxon)
+      elsif taxon.estatus == 2 && I18n.locale.to_s != 'es-cientifico'
+        taxon.species_or_lower?
+        datos << dameDistribucion(taxon) + ' - '
+        datos << dameCaracteristica(taxon)
+      end
+    end
+    datos.html_safe
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
@@ -78,28 +92,45 @@ module EspeciesHelper
   end
 
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
-    nodos="<ul><li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos+="#{view_context.link_to(view_context.image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :width => '40px'), '', :id => "link_#{taxon.id}", :class => :sub_link_taxon, :onclick => 'return despliegaOcontrae(this.id);')}"
-    nodos+=" #{tituloNombreCientifico(taxon, :context => true)}</li>"
-    conClick.present? ? nodos[4..-1] : nodos
+    nodos="<li id='nodo_#{taxon.id}' class='links_arbol'>"
+    nodos+="#{link_to(image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :width => '40px'), '', :id => "link_#{taxon.id}", :class => :sub_link_taxon, :onclick => 'return despliegaOcontrae(this.id);')}"
+    nodos+=" #{tituloNombreCientifico(taxon, :link => true)}"
+    #Deja los nodos abiertos para que esten anidados (si conClick es falso)
+    conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
   end
 
-  def arbolTaxonomico        #cuando carga la pagina y es root
-    arbolCompleto = "<ul class=\"nodo_mayor\">"
-    reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+  def arbolTaxonomico(taxon, accion=false)
+    # Si es para desplegar o contraer
+    if accion
+      nodo = ''
+      @especie.child_ids.each do |childrenID|
+        children = Especie.find(childrenID)
+        nodo+= enlacesDelArbol(children, true)
+      end
+      nodo
 
-    Especie.where(:categoria_taxonomica_id => reino).each do |t|
-      arbolCompleto+=enlacesDelArbol(t)
-    end
-    arbolCompleto+='</ul>'
-  end
+    else
+      arbolCompleto = "<ul class=\"nodo_mayor\">"
+      tags = ''
+      contadorNodos = 0
 
-  def opcionesListas(listas)
-    opciones ||=''
-    listas.each do |lista|
-      opciones+="<option value='#{lista.id}'>#{view_context.truncate(lista.nombre_lista, :length => 40)} (#{lista.cadena_especies.present? ? lista.cadena_especies.split(',').count : 0 } taxones)</option>"
+      if taxon.try(:is_root?) || taxon.nil?  # Si es root o es el arbol del index
+        reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+        Especie.where(:categoria_taxonomica_id => reino).each do |t|
+          arbolCompleto+= enlacesDelArbol(t)
+          contadorNodos=+ 1;
+        end
+      else
+        (taxon.ancestor_ids + [taxon.id]).each do |a|
+          ancestro = Especie.find(a)
+          arbolCompleto+= enlacesDelArbol(ancestro)
+          contadorNodos+= 1
+        end
+      end
+
+      contadorNodos.times {tags+= '</li></ul>'}
+      arbolCompleto + tags + '</ul>'
     end
-    opciones
   end
 
   def accionesEnlaces(modelo, accion, index=false)
@@ -141,10 +172,25 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
+  def checkboxEstadoConservacion
+    checkBoxes=''
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      checkBoxes+= "<br><b>#{t(k)}</b>"
+      contador=0
+
+      valores.each do |edo|
+        checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
+        checkBoxes+="#{check_box_tag('edo_cons[]', edo.id.to_s, false, :class => :busqueda_atributo_checkbox)} #{edo.descripcion}&nbsp;&nbsp;"
+        contador+=1
+      end
+    end
+    checkBoxes.html_safe
+  end
+
   def checkboxValidoSinonimo(tipoBusqueda)
     checkBoxes=''
     Especie::ESTATUS.each do |e|
-      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{t(I18n.transliterate(e.last).gsub('/', '_'))}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}&nbsp;&nbsp;"
     end
     checkBoxes.html_safe
   end
@@ -298,21 +344,8 @@ module EspeciesHelper
     hijos.present? ? "<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
   end
 
-  def dameListas(listas)
-    titulo = "<b>#{view_context.link_to(:Listas, listas_path)} de taxones</b>"
-    html = if listas.nil?
-             "<br><i>Debes #{view_context.link_to 'iniciar sesi&oacute;n'.html_safe, inicia_sesion_usuarios_path} para poder ver tus listas.</i>"
-           elsif listas == 0
-             "<br><i>A&uacute;n no has creado ninguna lista. ¿Quieres #{view_context.link_to 'crear una', new_lista_url}?</i>"
-           else
-             "<br><i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br>
-              #{view_context.select_tag('listas_hidden', opcionesListas(listas).html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}<br><br>"
-           end
-    titulo + html
-  end
-
   def photo_providers(licensed=false, photo_providers=nil)
-    providers=CONFIG.photo_providers ||= photo_providers || %W(flickr eol wikimedia)
+    providers=CONFIG.photo_providers ||= photo_providers || %W(conabio flickr eol wikimedia)
     html='<ul>'
     providers.each do |prov|
       prov=prov.to_s.downcase
@@ -328,8 +361,6 @@ module EspeciesHelper
           title=licensed ? "#{t(:from_licensed_site_observations, :site_name => SITE_NAME_SHORT)}" :
               "#{t(:from_your_site_observations, :site_name => SITE_NAME_SHORT)}"
           html+="<li>#{link_to("<span>#{title}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        else
-          Rails.logger.info "Bad photo provider: #{prov}"
       end
     end
     "#{html}</ul>".html_safe

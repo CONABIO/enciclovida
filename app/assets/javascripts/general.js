@@ -20,34 +20,20 @@ $(document).ready(function()
         $results.css("top", newTop + "px");
     }
 
-    muestraArbol = function(id)
-    {
-        $.ajax(
-            {
-                url: "/especies/muestraTaxonomia",
-                data: {
-                    id: id
-                },
-                type: 'post'
-            }).done(function(arbol)
-            {
-                return $("#vista_arbol").html(arbol);
-            });
-    }
-
     despliegaOcontrae = function(id)
     {
-        var sufijo;
-        sufijo = id.substring(5);
+        var sufijo = id.substring(5);
+        //Verifica que el nodo que se le dio clic este vacio
         if ($("#nodo_" + sufijo + " li").length > 0)
         {
             $("#nodo_" + sufijo + " li").remove();
         } else {
             $.ajax(
                 {
-                    url: "/especies/buscaDescendientes",
+                    url: "/especies/arbol",
                     data: {
-                        id: sufijo
+                        id: sufijo,
+                        accion: true
                     }
                 }).done(function(nodo)
                 {

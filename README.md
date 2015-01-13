@@ -14,7 +14,7 @@ Una vez caragada la base ...
 
 require 'blurrily/server.rb'
 
-server=Blurrily::Server.new(:host => '127.0.0.1', :directory=> './db/blurrily')
+server=Blurrily::Server.new(:host => CONFIG.ip, :directory=> './db/blurrily')
 
 server.start
 
@@ -61,4 +61,3 @@ rails r tools/foto_principal.rb -d
 --- Para iniciar el administrador de trabajos pendientes (solo production)
 
 rake jobs:work
-
