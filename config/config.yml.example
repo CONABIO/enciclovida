@@ -53,8 +53,8 @@ base: &base
   info_email: info@yoursite.com
 
   #Credenaciles generales por http
-    username: tu-usuario
-    password: tu-passwd
+  username: tu-usuario
+  password: tu-passwd
 
   # site contact, mainly just used for GBIF archive generation
   # contact:

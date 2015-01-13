@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   # Limita la aplicacion a un usuario y contrasenia general
   def authenticate
     authenticate_or_request_with_http_basic do |username, password|
-      username == CONFIG.username && password == CONFIG.password
+      username == CONFIG.username.to_s && password == CONFIG.password.to_s
     end
   end
 
