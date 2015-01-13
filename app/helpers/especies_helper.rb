@@ -118,7 +118,7 @@ module EspeciesHelper
         reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
         Especie.where(:categoria_taxonomica_id => reino).each do |t|
           arbolCompleto+= enlacesDelArbol(t)
-          contadorNodos=+ 1;
+          contadorNodos+= 1;
         end
       else
         (taxon.ancestor_ids + [taxon.id]).each do |a|
