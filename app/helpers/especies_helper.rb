@@ -107,7 +107,7 @@ module EspeciesHelper
         #Me aseguro que sean reinos
         categorias_reinos = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).map(&:id).join(',')
         reinos = Especie.caso_rango_valores('categoria_taxonomica_id', categorias_reinos).where(:nombre => taxon.nombre)
-        Rails.logger.info "---#{reinos.inspect}---"
+
         reinos.each do |reino|
           reino.child_ids.each do |childrenID|
             children = Especie.find(childrenID)

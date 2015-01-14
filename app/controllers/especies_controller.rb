@@ -1,10 +1,10 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :arbol, :kml, :create, :update, :edit_photos, :filtros]
+  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :create, :update, :edit_photos, :filtros]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
-                                     :edit_photos, :update_photos, :describe, :datos_principales, :kml]
+                                     :edit_photos, :update_photos, :describe, :datos_principales, :kmz]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
-  layout false, :only => [:describe, :arbol, :datos_principales, :kml, :edit_photos, :filtros]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :edit_photos, :filtros]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -461,7 +461,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def kml
+  def kmz
     if params[:kml].present? && to_boolean(params[:kml])
       proveedor = @especie.proveedor
       if proveedor
