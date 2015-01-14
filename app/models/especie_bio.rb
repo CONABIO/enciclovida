@@ -414,14 +414,14 @@ class EspecieBio < ActiveRecord::Base
   end
 
   def self.actualiza(id, base, tabla)
-    Bases.conecta_a base
-    taxon = EspecieBio.find(id)
-    taxon.ancestry_directo
-    taxon.ancestry_obligatorio
-    taxon.avoid_ancestry = true
-    taxon.save
-    Rails.logger.info "---#{taxon.inspect}"
-    Bases.conecta_a Rails.env
+    #Bases.conecta_a base
+    #taxon = EspecieBio.find(id)
+    #taxon.ancestry_directo
+    #taxon.ancestry_obligatorio
+    #taxon.avoid_ancestry = true
+    #taxon.save
+
+    #Bases.conecta_a Rails.env
     Bases.update_en_volcado(id, base, tabla)
   end
 
