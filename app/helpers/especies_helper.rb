@@ -103,33 +103,48 @@ module EspeciesHelper
     # Si es para desplegar o contraer
     if accion
       nodo = ''
-      @especie.child_ids.each do |childrenID|
-        children = Especie.find(childrenID)
-        nodo+= enlacesDelArbol(children, true)
+      if taxon.is_root? && taxon.categoria_taxonomica.nombre_categoria_taxonomica.downcase == 'reino'
+        #Me aseguro que sean reinos
+        categorias_reinos = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).map(&:id).join(',')
+        reinos = Especie.caso_rango_valores('categoria_taxonomica_id', categorias_reinos).where(:nombre => taxon.nombre)
+
+        reinos.each do |reino|
+          reino.child_ids.each do |childrenID|
+            children = Especie.find(childrenID)
+            nodo+= enlacesDelArbol(children, true)
+          end
+        end
+      else
+        taxon.child_ids.each do |childrenID|
+          children = Especie.find(childrenID)
+          nodo+= enlacesDelArbol(children, true)
+        end
       end
       nodo
 
     else
-      arbolCompleto = "<ul class=\"nodo_mayor\">"
-      tags = ''
-      contadorNodos = 0
-
       if taxon.try(:is_root?) || taxon.nil?  # Si es root o es el arbol del index
-        reino=CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
+        arbolCompleto = ''
+        reino = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
         Especie.where(:categoria_taxonomica_id => reino).each do |t|
-          arbolCompleto+= enlacesDelArbol(t)
-          contadorNodos=+ 1;
+          arbolCompleto+= "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
+        # Pone los reinos en una lista separada cada uno
+        arbolCompleto
+
       else
+        arbolCompleto = "<ul class=\"nodo_mayor\">"
+        contadorNodos = 0
+        tags = ''
         (taxon.ancestor_ids + [taxon.id]).each do |a|
           ancestro = Especie.find(a)
           arbolCompleto+= enlacesDelArbol(ancestro)
           contadorNodos+= 1
         end
-      end
 
-      contadorNodos.times {tags+= '</li></ul>'}
-      arbolCompleto + tags + '</ul>'
+        contadorNodos.times {tags+= '</li></ul>'}
+        arbolCompleto + tags + '</ul>'
+      end
     end
   end
 
@@ -162,9 +177,12 @@ module EspeciesHelper
   end
 
   def checkboxTipoDistribucion
-    checkBoxes=''
-    contador=0
+    checkBoxes = ''
+    contador = 0
+    quitar_distribuciones = %w(actual original)
+
     TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
+      next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
       checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
       checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist}", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}&nbsp;&nbsp;"
       contador+=1
