@@ -353,7 +353,8 @@ class EspeciesController < ApplicationController
     if params[:lote].present?
       @match_taxa = Hash.new
       params[:lote].split("\r\n").each do |linea|
-        e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
+        #e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
+        e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
         if e.first
           @match_taxa[linea] = e
         else
