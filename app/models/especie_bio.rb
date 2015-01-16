@@ -420,7 +420,7 @@ class EspecieBio < ActiveRecord::Base
     taxon.ancestry_obligatorio
     taxon.avoid_ancestry = true
     taxon.save
-    Rails.logger.info "---#{taxon.inspect}"
+
     Bases.conecta_a Rails.env
     Bases.update_en_volcado(id, base, tabla)
   end
