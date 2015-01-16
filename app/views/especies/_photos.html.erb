@@ -32,7 +32,6 @@
       <% end %>
     </div>
     <% unless photos.empty? %>
-      <div class="description"><%= t(:creative_commons_flickr_tagged) %> "<%= taxon.nombre_cientifico %>."</div>
       <div>
         <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
         <a href="http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=<%= URI.escape(taxon.nombre_cientifico) %>" target="_blank">
