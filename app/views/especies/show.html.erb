@@ -29,7 +29,8 @@
     var SPECIES_OR_LOWER = <%=raw @especie.species_or_lower? %>;
     var MAPAS = new Array
     (
-            ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución']
+            ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución'],
+            ["<%=raw "http://#{CONFIG.host_ip.to_s}:#{CONFIG.host_port.to_s}/especies/kmz?id=#{@especie.id}" %>","Registros GBIF"]
     );
 
     info = function()
