@@ -184,7 +184,7 @@ module EspeciesHelper
     TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
       next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
       checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
-      checkBoxes+="#{check_box_tag("tipo_distribucion_#{tipoDist}", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}&nbsp;&nbsp;"
       contador+=1
     end
     checkBoxes.html_safe

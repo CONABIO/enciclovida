@@ -145,15 +145,14 @@ class EspeciesController < ApplicationController
       end
     else
 
-      # Hace el query de l tipo de busqueda
+      # Hace el query del tipo de busqueda
       case params[:busqueda]
 
         when 'nombre_comun'
           sql = "NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').order('nombre_cientifico ASC')"
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').uniq.order('nombre_cientifico ASC')"
 
-          #totales = eval(sql).length
-          totales = eval("#{sql}.count")
+          totales = eval("#{sql}").length
           @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
           if totales > 0
@@ -264,19 +263,12 @@ class EspeciesController < ApplicationController
               condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
             end
 
-            if key.include?('tipo_distribucion_') && value.present?
-              tipoDistribuciones+="'#{value}',"
-              joins+= '.'+tipoDeAtributo('tipos_distribuciones')
-              distinct = true
-            end
-
             estatus+= "#{value}," if key.include?('estatus_avanzada_') && value.present?
           end
 
           estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
           joins+= '.categoria_taxonomica_join'
           condiciones+= ".caso_status(#{estatus})" if estatus.present?
-          condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.descripcion', "#{tipoDistribuciones[0..-2]}") if tipoDistribuciones.present?
 
           if params[:categoria].present? ? params[:categoria].join('').present? : false
             if conID.blank?                 #join a la(s) categorias taxonomicas (params)
@@ -307,6 +299,13 @@ class EspeciesController < ApplicationController
               tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
               condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
             end
+            distinct = true
+          end
+
+          #Parte del tipo de ditribucion
+          if params[:dist].present?
+            joins+= '.tipo_distribucion_join'
+            condiciones+= ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
             distinct = true
           end
 
@@ -715,20 +714,6 @@ class EspeciesController < ApplicationController
       when 5
         "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
-  end
-
-  def tipoDeAtributo(tipo)
-    case tipo
-      when 'nombre_comun'
-        relacion='nombres_comunes_join'
-      when 'tipos_distribuciones'
-        relacion='especies_regiones_join.tipo_distribucion_join'   #fue necesario separar ese join para ver si ya estaba repetido
-      when 'catalogos.descripcion'
-        relacion='catalogos_join'
-      else
-        relacion=''
-    end
-    return relacion
   end
 
   def validaBatch(batch)
