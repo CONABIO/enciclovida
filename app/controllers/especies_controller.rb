@@ -270,18 +270,16 @@ class EspeciesController < ApplicationController
           joins+= '.categoria_taxonomica_join'
           condiciones+= ".caso_status(#{estatus})" if estatus.present?
 
-          if params[:categoria].present? ? params[:categoria].join('').present? : false
+          if params[:cat].present?# ? params[:categoria].join('').present? : false
             if conID.blank?                 #join a la(s) categorias taxonomicas (params)
-              cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
+              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
+              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
             else            #joins a las categorias con los descendientes
               taxon = Especie.find(conID)
               arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
-              cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
               arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
               condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
-              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
             end
           else       # busquedas directas
             condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :

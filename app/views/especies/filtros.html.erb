@@ -64,8 +64,9 @@
       <br>
       <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
       <p>
-        <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
+        <%# select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
                        :class => "busqueda_atributo form-control", :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
+        <%= checkboxCategoriaTaxonomica %>
       </p>
       <p>
         <b>con estado de conservaci&oacute;n:</b>
