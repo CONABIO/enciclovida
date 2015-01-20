@@ -149,15 +149,15 @@ class EspeciesController < ApplicationController
       case params[:busqueda]
 
         when 'nombre_comun'
-          sql="NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').uniq.
-              order('nombre_cientifico ASC')"
+          sql = "NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').order('nombre_cientifico ASC')"
 
-          longitud = eval("#{sql}.count")
-          @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+          #totales = eval(sql).length
+          totales = eval("#{sql}.count")
+          @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
-          if longitud > 0
-            @taxones = eval(sql).to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+          if totales > 0
+            @taxones = eval(sql).to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
           end
 
@@ -202,10 +202,10 @@ class EspeciesController < ApplicationController
             order('nombre_cientifico ASC')"
 
           longitud = eval("#{sql}.count")
-          @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+          @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
           if longitud > 0
-            @taxones = eval("#{sql}.to_sql") << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = eval("#{sql}.to_sql") << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
           end
 
@@ -320,25 +320,25 @@ class EspeciesController < ApplicationController
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
 
           if distinct
-            longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.count
-            @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
+            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
             if longitud > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               @taxones = Especie.find_by_sql(@taxones)
             end
           else
             longitud = eval(busqueda).order('nombre_cientifico ASC').count
-            @paginacion = paginacion(longitud, params[:pagina] ||=1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
             if longitud > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{params[:pagina].to_i*(params[:por_pagina].to_i-1)} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               @taxones = Especie.find_by_sql(@taxones)
             end
           end
         else
           respond_to do |format|
-            format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
+            format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
           end
       end
     end

@@ -51,9 +51,9 @@ class ApplicationController < ActionController::Base
   def paginacion(totales, pag = 1, p_pag = Especie::POR_PAGINA_PREDETERMINADO)
     pagina = pag.to_i
     por_pagina = p_pag.to_i
-    paginas = totales/por_pagina
+    paginas = totales/por_pagina + 1    # + 1 porque puede que totales%por_pagina no sea cero
     rangos = []
-    rangos << '← Anterior' if pagina == 1
+
     if paginas <= 12
       rangos << (1..paginas).to_a
     elsif paginas > 12
@@ -73,8 +73,8 @@ class ApplicationController < ActionController::Base
         rangos << (paginas-10..paginas).to_a
       end
     end
-    rangos << 'Siguiente →' if pagina == paginas
-    { :rangos => rangos, :pagina => pagina, :rango_resultados => "#{(pagina-1)*por_pagina+1} - #{pagina*por_pagina} de #{totales}",
+
+    { :rangos => rangos, :pagina => pagina, :rango_resultados => "Mostrando #{(pagina-1)*por_pagina+1} - #{pagina*por_pagina <= totales ? pagina*por_pagina : (pagina-1)*por_pagina + totales%por_pagina} de #{totales}",
       :request => request.fullpath, :por_pagina => por_pagina, :totales => totales }
   end
 end
