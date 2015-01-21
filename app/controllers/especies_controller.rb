@@ -137,7 +137,7 @@ class EspeciesController < ApplicationController
     # Por si no coincidio nada
     @taxones = Especie.none
 
-    # Despliega directo el taxon
+    # Despliega directo el taxon, si paso id
     if params[:busqueda] == 'basica' || params[:id].present?
       set_especie
       respond_to do |format|

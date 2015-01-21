@@ -21,8 +21,7 @@ class Catalogo < ActiveRecord::Base
   def self.nom_cites_iucn_todos
     nom = where(:nivel1 => 4, :nivel2=> 1).where('nivel3 > 0').map(&:descripcion).uniq
     iucn = where(:nivel1 => 4, :nivel2=> 2).where('nivel3 > 0').map(&:descripcion).uniq
-    #cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0').map(&:descripcion).uniq
-    #{:nom => nom, :iucn => iucn, :cites => cites}
-    {:nom => nom, :iucn => iucn}
+    cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0').map(&:descripcion).uniq
+    {:nom => nom, :iucn => iucn, :cites => cites}
   end
 end
