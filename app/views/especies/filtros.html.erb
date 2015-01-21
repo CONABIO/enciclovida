@@ -30,7 +30,7 @@
     </div>
 
       <br><br><b><%= t(:solo_taxones).html_safe %>:</b>
-      <br><%= checkboxValidoSinonimo('basica_cientifico') %>
+      <br><%= checkboxValidoSinonimo %>
   <% end %>
   <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
 
@@ -53,7 +53,7 @@
                          :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
 
       <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
-      <br><%= checkboxTipoDistribucion %>
+      <%= checkboxTipoDistribucion %>
 
       <br><br>
       <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
@@ -62,19 +62,16 @@
                      options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
       <div id="distribucion_nivel"></div>
       <br>
-      <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
-      <p>
-        <%# select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                       :class => "busqueda_atributo form-control", :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-        <%= checkboxCategoriaTaxonomica %>
-      </p>
+      <b>con la categoria taxon&oacute;mica igual a: </b>
+      <%= checkboxCategoriaTaxonomica %>
+      <br><br>
       <p>
         <b>con estado de conservaci&oacute;n:</b>
         <%= checkboxEstadoConservacion %>
       </p>
       <p>
         <b><%= t :solo_taxones %>:</b>
-        <br><%= checkboxValidoSinonimo('avanzada') %>
+        <br><%= checkboxValidoSinonimo %>
       </p>
       <br>
       <%= submit_tag :Buscar, :class => "busquedas form-control", data: { disable_with: 'Procesando...' } %>

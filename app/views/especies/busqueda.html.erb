@@ -192,7 +192,7 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function()
+        $(document).on('change', ".busqueda_atributo_checkbox", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
@@ -237,17 +237,6 @@
 
             if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
                 $('#distribucion_nivel_3').remove();
-        });
-
-        $(document).on('change', "#categoria", function()
-        {
-            var valor=$(this).val();
-            $('#categoria  option').removeAttr('selected');
-
-            $.each(valor, function(index, categoria)
-            {
-                $("#categoria option[value='"+categoria+"']").attr('selected',true);
-            });
         });
 
         $(document).on('change', "#nombre_comun, #nombre_cientifico, #nombre_comun_1, #nombre_cientifico_1", function()
