@@ -225,6 +225,14 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
+  def checkboxValidoSinonimo2(tipoBusqueda)
+    checkBoxes=''
+    Especie::ESTATUS.each do |e|
+      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}</label>"
+    end
+    checkBoxes.html_safe
+  end
+
   def dameNomComunes(taxon)
     nombres_comunes = ''
     taxon.nombres_comunes.where("nombre_comun != '#{taxon.nombre_comun_principal}'").each do |nom|

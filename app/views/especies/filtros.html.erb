@@ -4,11 +4,11 @@
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
       <div class="form-group form-group-sm">
-        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "col-sm-3 control-label" %>
+        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "col-sm-2 control-label" %>
         <div class="col-sm-6">
-            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun).camelize, :autocomplete => :off, :class => 'form-control' %>
+            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
           <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' },:class => "busquedas form-control btn btn-info btn-sm" %>
         </div>
       </div>
@@ -20,17 +20,19 @@
     <%= hidden_field_tag :busqueda, :nombre_cientifico %>
     <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
     <div class="form-group form-group-sm">
-      <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "col-sm-3 control-label " %>
+      <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "col-sm-2 control-label " %>
       <div class="col-sm-6">
-        <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => 'nombre científico'.split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-4">
         <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => "busquedas form-control btn btn-info btn-sm" %>
       </div>
     </div>
+    <div class="checkbox">
+      <h4><%= t(:solo_taxones).html_safe %></h4>
+      <%= checkboxValidoSinonimo2('basica_cientifico') %>
+    </div>
 
-      <br><br><b><%= t(:solo_taxones).html_safe %>:</b>
-      <br><%= checkboxValidoSinonimo('basica_cientifico') %>
   <% end %>
   <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
 
@@ -43,26 +45,30 @@
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+      <div class="form-group form-group-sm">
+        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "col-sm-5 control-label " %>
+        <div class="col-sm-7">
+          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        </div>
+      </div>
+      <div class="form-group form-group-sm">
+        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "col-sm-5 control-label" %>
+        <div class="col-sm-7">
+          <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        </div>
+      </div>
 
-      <p><b>Nombre cient&iacute;fico: </b>
-
-        <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
-                           :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
-      <b><%= t :nombre_comun %>: </b>
-      <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
-                         :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-
-      <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
+      <h4>Con tipo de distribución:</h4> <i>(predeterminada; cualquiera)</i>
       <br><%= checkboxTipoDistribucion %>
 
       <br><br>
-      <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
+      <h4>Con distribución en:</h4>  <i>(predeterminada, a nivel nacional)</i>
       <br>
       <%= select_tag :distribucion_nivel_1,
                      options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
       <div id="distribucion_nivel"></div>
       <br>
-      <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
+      <h4>Con la categoria taxonómica igual a: </h4>
       <p>
         <%# select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
                        :class => "busqueda_atributo form-control", :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
@@ -74,7 +80,7 @@
       </p>
       <p>
         <b><%= t :solo_taxones %>:</b>
-        <br><%= checkboxValidoSinonimo('avanzada') %>
+        <br><%= checkboxValidoSinonimo2('avanzada') %>
       </p>
       <br>
       <%= submit_tag :Buscar, :class => "busquedas form-control", data: { disable_with: 'Procesando...' } %>
