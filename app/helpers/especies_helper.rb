@@ -190,6 +190,20 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
+  def checkboxTipoDistribucion2
+    checkBoxes = ''
+    #contador = 0
+    quitar_distribuciones = %w(actual original)
+
+    TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
+      next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
+      #checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
+      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+      #contador+=1
+    end
+    checkBoxes.html_safe
+  end
+
   def checkboxEstadoConservacion
     checkBoxes=''
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
