@@ -30,14 +30,9 @@
     </div>
     <div class="checkbox">
       <h4><%= t(:solo_taxones).html_safe %></h4>
-      <%= checkboxValidoSinonimo2('basica_cientifico') %>
+      <%= checkboxValidoSinonimo %>
     </div>
 
-<<<<<<< HEAD
-=======
-      <br><br><b><%= t(:solo_taxones).html_safe %>:</b>
-      <br><%= checkboxValidoSinonimo %>
->>>>>>> upstream/sql-server
   <% end %>
   <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
 
