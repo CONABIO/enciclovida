@@ -30,12 +30,39 @@ class EspeciesController < ApplicationController
     #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
     #end
 
-    @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
-    @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
+    #@desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
+    #@nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
 
     respond_to do |format|
       format.html
       format.json { render json: @especie.to_json }
+      format.pdf do
+
+        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
+        @describers = if CONFIG.taxon_describers
+                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
+                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
+                      else
+                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
+                      end
+
+
+        @describers.each do |d|
+          @describer = d
+          @description = begin
+            d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
+          rescue OpenURI::HTTPError, Timeout::Error => e
+            nil
+          end
+          break unless @description.blank?
+        end
+
+        render :pdf => @especie.nombre_cientifico.gsub(' ','_'),
+               :template => 'especies/show.pdf.erb',
+               :encoding => 'UTF-8',
+               :disable_external_links => true
+      end
     end
   end
 
