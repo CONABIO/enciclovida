@@ -192,9 +192,7 @@ class EspeciesController < ApplicationController
           end
 
         when 'nombre_cientifico'
-          estatus = "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
-          estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
-          estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
+          estatus = params[:estatus].join(',') if params[:estatus].present?
 
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
@@ -242,7 +240,7 @@ class EspeciesController < ApplicationController
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
           busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
-          joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
+          joins = condiciones = conID = nombre_cientifico = ''
           arbol = []
           distinct = false
 
@@ -262,13 +260,10 @@ class EspeciesController < ApplicationController
               joins+= '.nombres_comunes_join'
               condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
             end
-
-            estatus+= "#{value}," if key.include?('estatus_avanzada_') && value.present?
           end
 
-          estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
+          # Por default tiene que hacerce join con categorias_taxonomicas
           joins+= '.categoria_taxonomica_join'
-          condiciones+= ".caso_status(#{estatus})" if estatus.present?
 
           if params[:cat].present?# ? params[:categoria].join('').present? : false
             if conID.blank?                 #join a la(s) categorias taxonomicas (params)
@@ -299,6 +294,9 @@ class EspeciesController < ApplicationController
             end
             distinct = true
           end
+
+          #Parte del estatus
+          condiciones+= ".caso_rango_valores('estatus', \"'#{params[:estatus].join(',')}'\")" if params[:estatus].present?
 
           #Parte del tipo de ditribucion
           if params[:dist].present?

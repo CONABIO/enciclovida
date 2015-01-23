@@ -231,10 +231,10 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
-  def checkboxValidoSinonimo(tipoBusqueda)
+  def checkboxValidoSinonimo
     checkBoxes=''
     Especie::ESTATUS.each do |e|
-      checkBoxes+="#{check_box_tag("estatus_#{tipoBusqueda}_#{e.first}", e.first, false, :class => :busqueda_atributo_checkbox_estatus)} #{e.last}&nbsp;&nbsp;"
+      checkBoxes+="#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}&nbsp;&nbsp;"
     end
     checkBoxes.html_safe
   end

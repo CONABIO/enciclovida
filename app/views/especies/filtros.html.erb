@@ -33,6 +33,11 @@
       <%= checkboxValidoSinonimo2('basica_cientifico') %>
     </div>
 
+<<<<<<< HEAD
+=======
+      <br><br><b><%= t(:solo_taxones).html_safe %>:</b>
+      <br><%= checkboxValidoSinonimo %>
+>>>>>>> upstream/sql-server
   <% end %>
   <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
 
@@ -80,7 +85,7 @@
       </div>>
       <div class="checkbox">
         <h4><%= t :solo_taxones %>:</h4>
-        <br><%= checkboxValidoSinonimo2('avanzada') %>
+        <br><%= checkboxValidoSinonimo %>
       </div>
       <%= submit_tag :Buscar, :class => 'btn btn-info', data: { disable_with: 'Procesando...' } %>
       &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => 'btn btn-link', :onClick => 'return busqueda_basica();' %> &#8593;
