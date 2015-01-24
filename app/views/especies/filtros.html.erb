@@ -28,65 +28,105 @@
         <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => "busquedas form-control btn btn-info btn-sm" %>
       </div>
     </div>
-    <div class="checkbox">
-      <h4><%= t(:solo_taxones).html_safe %></h4>
-      <%= checkboxValidoSinonimo %>
+      <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title"><%= t(:solo_taxones).html_safe %></h4>
+      </div>
+      <div class="panel-body">
+        <div class="checkbox">
+          <%= checkboxValidoSinonimo %>
+        </div>
+      </div>
     </div>
 
   <% end %>
-  <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
-
-
 </div>
 
-<div id="busqueda_avanzada" style="display: none">
+<div id="busqueda_avanzada" style="display: none" class="dropup">
   <%= form_tag resultados_especies_path, :method => :get, :class => "form-horizontal"  do %>
       <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
       <div class="form-group form-group-sm">
-        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "col-sm-5 control-label " %>
-        <div class="col-sm-7">
-          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-        </div>
-      </div>
-      <div class="form-group form-group-sm">
-        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "col-sm-5 control-label" %>
-        <div class="col-sm-7">
+        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "col-sm-2 control-label" %>
+        <div class="col-sm-6">
           <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
         </div>
+        <div class="col-sm-4">
+          <%# button_tag :Buscar, :class => "btn btn-default btn-sm", :disabled => 'disabled'%>
+        </div>
       </div>
-
-      <div class="checkbox">
-        <h4>Con tipo de distribución:</h4> <i>(Predeterminad: Cualquiera)</i>
-        <%= checkboxTipoDistribucion2 %>
-      </div>
-
       <div class="form-group form-group-sm">
-          <h4>Con distribución en:</h4><i>(Predeterminado: Nivel nacional)</i>
-          <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
-          <div id="distribucion_nivel"></div>
+        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "col-sm-2 control-label " %>
+        <div class="col-sm-6">
+          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        </div>
+        <div class="col-sm-4">
+          <%# button_tag :Buscar, :class => "btn btn-default btn-sm", :disabled => 'disabled'%>
+        </div>
       </div>
-      <div class="checkbox">
-        <h4>Con la categoria taxonómica igual a:</h4>
-        <%# select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                       :class => "busqueda_atributo form-control", :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-        <%= checkboxCategoriaTaxonomica %>
+      <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_basica();' %>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4 class="panel-title">Con tipo de distribución: <i>(Predeterminad: Cualquiera)</i></h4>
+        </div>
+        <div class="checkbox">
+          <%= checkboxTipoDistribucion %>
+        </div>
       </div>
-      <div class="checkbox">
-        <h4>Con estado de conservación:</h4>
-        <%= checkboxEstadoConservacion %>
-      </div>>
-      <div class="checkbox">
-        <h4><%= t :solo_taxones %>:</h4>
-        <br><%= checkboxValidoSinonimo %>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4 class="panel-title">Con distribución en: <i>(Predeterminado: Nivel nacional)</i></h4>
+        </div>
+        <div class="panel-body">
+          <div class="form-group form-group-sm">
+            <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
+            <div id="distribucion_nivel"></div>
+          </div>
+        </div>
       </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4 class="panel-title">Con la categoria taxonómica igual a:</h4>
+        </div>
+        <div class="panel-body">
+          <div class="checkbox">
+            <%= checkboxCategoriaTaxonomica %>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4  class="panel-title">Con estado de conservación:</h4>
+        </div>
+        <div class="panel-body">
+          <div class="checkbox">
+            <%= checkboxEstadoConservacion %>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4 class="panel-title"><%= t(:solo_taxones).html_safe %></h4>
+        </div>
+        <div class="panel-body">
+          <div class="checkbox">
+            <%= checkboxValidoSinonimo %>
+          </div>
+        </div>
+      </div>
+
+
       <%= submit_tag :Buscar, :class => 'btn btn-info', data: { disable_with: 'Procesando...' } %>
-      &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => 'btn btn-link', :onClick => 'return busqueda_basica();' %> &#8593;
   <% end %>
 </div>
 <div>
   Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "form-control" %> resultados por p&aacute;gina
-  <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-warning btn-sm", data: { disable_with: 'Limpiando...' } %>
+  <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-danger btn-sm", data: { disable_with: 'Limpiando...' } %>
 </div>
