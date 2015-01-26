@@ -300,6 +300,7 @@
             success: function(html)
             {
                 $('#busquedas').html(html);
+                guardaFiltros(false);
             },
             fail: function()
             {
