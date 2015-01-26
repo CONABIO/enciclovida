@@ -1,4 +1,4 @@
-<%= javascript_include_tag params[:controller] %>
+ <%# javascript_include_tag params[:controller] %>
 
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
@@ -8,21 +8,15 @@
 <p id="notice"><%= notice %></p>
 
 <div class="titulo">
-  <h1><%= @titulo %></h1>
+  <h1 class="sub-header"><%= @titulo %></h1>
 </div>
 
 <br><br>
-<table width="1000" id="tabla_form">
-  <tr>
-    <td valign="top">
-      <fieldset>
-        <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
-        <div id="vista_arbol">
-          <%= arbolTaxonomico.html_safe %>
-        </div>
-      </fieldset>
-    </td>
-  </tr>
-</table>
-<%= #Especie.find_by_fuzzy_nombre_cientifico('Ara macao', :limit => 10)
-%>
+
+<fieldset>
+  <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
+  <%= render :partial => 'arbol' %>
+</fieldset>
+
+
+

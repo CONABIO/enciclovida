@@ -1,0 +1,17 @@
+<%= form_for(@metadato) do |f| %>
+  <% if @metadato.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@metadato.errors.count, "error") %> prohibited this metadato from being saved:</h2>
+
+      <ul>
+      <% @metadato.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

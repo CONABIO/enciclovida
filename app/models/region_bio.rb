@@ -10,7 +10,7 @@ class RegionBio < ActiveRecord::Base
 
   belongs_to :tipo_region, :class_name => 'TipoRegionBio', :foreign_key => 'IdTipoRegion'
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'region_id'
-  #has_ancestry
+  has_ancestry
 
   scope :regiones_principales, ->(id) { where(:tipo_region_id => id).where("nombre_region != 'ND'").order(:nombre_region) }
   scope :regiones_especificas, lambda {|id|

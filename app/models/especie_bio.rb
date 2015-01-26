@@ -24,6 +24,7 @@ class EspecieBio < ActiveRecord::Base
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
+  #Existe un cattr_accesor :avoid_ancestry (false default) por si el update se hace manual
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
@@ -56,8 +57,7 @@ class EspecieBio < ActiveRecord::Base
 
   before_save :ponNombreCientifico, :unless => :evita_before_save
 
-  WillPaginate.per_page = 10
-  self.per_page = WillPaginate.per_page
+  POR_PAGINA_PREDETERMINADO = 10
 
   POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
@@ -345,7 +345,43 @@ class EspecieBio < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
-  private
+  def ancestry_directo
+    if id_nombre_ascendente != id
+      self.ancestry_ascendente_directo = id_nombre_ascendente
+      valor=true
+      id_asc=id_nombre_ascendente
+
+      while valor do
+        subEsp=EspecieBio.find(id_asc)
+
+        if subEsp.id_nombre_ascendente == subEsp.id
+          valor=false
+        else
+          self.ancestry_ascendente_directo="#{subEsp.id_nombre_ascendente}/#{ancestry_ascendente_directo}"
+          id_asc=subEsp.id_nombre_ascendente
+        end
+      end
+    end
+  end
+
+  def ancestry_obligatorio
+    if id_ascend_obligatorio != id
+      self.ancestry_ascendente_obligatorio = id_ascend_obligatorio
+      valor=true
+      id_asc=id_ascend_obligatorio
+
+      while valor do
+        subEsp=EspecieBio.find(id_asc)
+
+        if subEsp.id_ascend_obligatorio == subEsp.id
+          valor=false
+        else
+          self.ancestry_ascendente_obligatorio="#{subEsp.id_ascend_obligatorio}/#{ancestry_ascendente_obligatorio}"
+          id_asc=subEsp.id_ascend_obligatorio
+        end
+      end
+    end
+  end
 
   def ponNombreCientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
@@ -362,6 +398,40 @@ class EspecieBio < ActiveRecord::Base
     end
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
+
+  #Este metodo es necesario ya que SQL Server hace un lock en el record a cambiar, se tiene que hacer despues de acabar
+  #el trigger de SQL Server y ademas para que sea valido en multi bases, asi como estatico
+  def self.completa(id, base, tabla)
+    Bases.conecta_a base
+    taxon = EspecieBio.find(id)
+    taxon.ancestry_directo
+    taxon.ancestry_obligatorio
+    taxon.avoid_ancestry = true
+    taxon.save
+
+    Bases.conecta_a Rails.env
+    Bases.insert_en_volcado(id, base, tabla)
+  end
+
+  def self.actualiza(id, base, tabla)
+    Bases.conecta_a base
+    taxon = EspecieBio.find(id)
+    taxon.ancestry_directo
+    taxon.ancestry_obligatorio
+    taxon.avoid_ancestry = true
+    taxon.save
+
+    Bases.conecta_a Rails.env
+    Bases.update_en_volcado(id, base, tabla)
+  end
+
+  def comprueba_ancestry
+    if id_nombre_ascendente != parent_id       #indica que cambio la estructura de arbol
+
+    end
+  end
+
+  private
 
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|

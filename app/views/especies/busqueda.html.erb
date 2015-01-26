@@ -1,24 +1,28 @@
+<script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
+<script type="text/javascript" data-turbolinks-track="true">
+    google.load('search', '1', {language : 'es'});
+    google.setOnLoadCallback(function() {
+        var customSearchControl = new google.search.CustomSearchControl('008095775353890783041:z5grsg1hkxe');
+        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+        var options = new google.search.DrawOptions();
+        options.enableSearchboxOnly("http://www.google.com/cse?cx=008095775353890783041:z5grsg1hkxe");
+        customSearchControl.draw('cse-search-form', options);
+    }, true);
+</script>
+
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    guardaFiltros = function (lectura)
+    guardaFiltros = function ()
     {
         jQuery.ajax({
-            success: function(html){
-                if (lectura)
-                {
-                    if (html != '')
-                        $('#busquedas').empty().html(html);
-                }
-            },
             fail: function()
             {
                 $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
             },
             type: 'POST',
-            url: '/usuarios/filtros',
-            cache: true,
-            data: { lectura: lectura , html: $('#busquedas').html().replace(/\n/g, '') }
+            url: '/usuarios/guarda_filtro',
+            data: { html: $('#busquedas').html().replace(/\n/g, '') }
         });
         return false;
     }
@@ -26,20 +30,20 @@
     estructuraFiltro = function(numeroAtributos)
     {
         var bAtributo, cAtributo, vAtributo, hAtributo, imagenQuitar, anteriores;
-        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
+        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo form-control' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
         bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
         bAtributo+="<option value='nombre_comun'>nombre común</option>";
         bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
         bAtributo+="<option value='nombre_autoridad'>autoridad</option></select> ";
 
-        cAtributo="<select class='busqueda_atributo' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
+        cAtributo="<select class='busqueda_atributo form-control' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
         cAtributo+="<option value='1'>contiene</option>";
         cAtributo+="<option value='2'>empieza con</option>";
         cAtributo+="<option value='3'>igual a</option>";
         cAtributo+="<option value='4'>termina con</option></select> ";
 
-        vAtributo="<input class='busqueda_atributo' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
-        hAtributo="<input class='busqueda_atributo' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
+        vAtributo="<input class='busqueda_atributo form-control' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
+        hAtributo="<input class='busqueda_atributo form-control' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
         imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>";
 
         return bAtributo+cAtributo+vAtributo+hAtributo+imagenQuitar;
@@ -137,7 +141,7 @@
         if ($._data(campo, "events") == undefined)
         {        //para que no se repita n-veces la busqueda
             $(campo).soulmate({
-                url:            "http://<%= CONFIG.ip %>:<%= CONFIG.port %>/sm/search",
+                url:            "http://<%= CONFIG.host_ip %>:<%= CONFIG.host_port %>/sm/search",
                 types:          types,
                 renderCallback: render,
                 selectCallback: select,
@@ -188,7 +192,7 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_checkbox_estatus", function()
+        $(document).on('change', ".busqueda_atributo_checkbox", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
@@ -235,17 +239,6 @@
                 $('#distribucion_nivel_3').remove();
         });
 
-        $(document).on('change', "#categoria", function()
-        {
-            var valor=$(this).val();
-            $('#categoria  option').removeAttr('selected');
-
-            $.each(valor, function(index, categoria)
-            {
-                $("#categoria option[value='"+categoria+"']").attr('selected',true);
-            });
-        });
-
         $(document).on('change', "#nombre_comun, #nombre_cientifico, #nombre_comun_1, #nombre_cientifico_1", function()
         {
             var id=$(this).attr('id');
@@ -255,9 +248,14 @@
         $(document).on('click', '#limpiar', function()
         {
             jQuery.ajax({
-                success: function(html){
+                success: function(html)
+                {
                     if (html!='true')
+                    {
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+                        return false
+                    }
+                    location.reload(true);
                 },
                 fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
@@ -284,102 +282,26 @@
         // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-        guardaFiltros(true);
+
+        // Carga el filtro predeterminado o el de la base
+        jQuery.ajax
+        ({
+            success: function(html)
+            {
+                $('#busquedas').html(html);
+                guardaFiltros(false);
+            },
+            fail: function()
+            {
+                $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
+            },
+            type: 'GET',
+            url: '/especies/filtros'
+        });
+        //$("#busquedas").load("/especies/filtros");
+        //guardaFiltros(false);
+
     });
 </script>
 
-<div id="busquedas">
-  <div id="busqueda_basica">
-    <table class="tabla_formato" border="0">
-      <tr>
-        <td valign="top">
-          <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
-              <%= hidden_field_tag :busqueda, :nombre_comun %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_comun %>
-              <b><%= t :nombre_comun %></b><br>
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 30, :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-              <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-              <br><br><%= link_to 'Búsqueda avanzada', '', :id => :busqueda_avanzada_link, :class => :link_azul, :onClick => 'return busqueda_avanzada();' %> &#8595;
-          <% end %>
-        </td>
-
-        <td valign="top">
-          <%= form_tag resultados_especies_path, :method => :get do %>
-              <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-              <%= hidden_field_tag :busqueda, :nombre_cientifico %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_basica_cientifico %>
-              <b>Nombre cient&iacute;fico</b><br>
-              <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 30, :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %>
-              <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas  %>
-              <br><br><b><%= t :solo_taxones %>:</b>
-              <br><%= checkboxValidoSinonimo('basica_cientifico') %>
-          <% end %>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <div id="busqueda_avanzada" style="display: none">
-    <%= form_tag resultados_especies_path, :method => :get do %>
-        <table class="tabla_formato" border="0">
-          <tr>
-            <td valign="top">
-              <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
-              <%= hidden_field_tag :busqueda, :avanzada %>
-              <%= hidden_field_tag :per_page, Especie.per_page, :id => :per_page_avanzada %>
-
-              <p><b>Nombre cient&iacute;fico: </b>
-                <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :size => 30,
-                                   :placeholder => 'nombre cient&iacute;fico'.html_safe, :autocomplete => :off %></p>
-              <b><%= t :nombre_comun %>: </b>
-              <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :size => 30,
-                                 :placeholder => t(:nombre_comun).downcase, :autocomplete => :off %>
-
-              <!--div id="atributos_extra">
-                <%# select_tag :bAtributo_1, busquedas(Especie::BUSQUEDAS_ATRIBUTO).html_safe, :class => :busqueda_atributo %>
-                <%# select_tag :cAtributo_1, busquedas(Especie::BUSQUEDAS_TEXTO).html_safe, :class => :busqueda_atributo %>
-                <%# text_field_tag :vAtributo_1, nil, :maxlength => 255, :size => 30, :class => :busqueda_atributo,
-                                   'data-autocomplete' => autocomplete_especie_nombre_especies_path, :autocomplete => :off %>
-                <%# hidden_field_tag :hAtributo_1, nil, :class => :busqueda_atributo %>
-              </div-->
-
-              <%# link_to '[Añade más filtros]', '', :id => :enalce_mas_filtros, :class => :link_azul, :onClick => 'return masFiltros();' %>
-              <br><br><b>con tipo de distribuci&oacute;n:</b> <i>(predeterminada; cualquiera)</i>
-              <br><%= checkboxTipoDistribucion %>
-
-              <br><br>
-              <b>con distribuci&oacute;n en:</b>  <i>(predeterminada, a nivel nacional)</i>
-              <br>
-              <%= select_tag :distribucion_nivel_1,
-                             options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL %>
-              <div id="distribucion_nivel"></div>
-
-              <br><%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => :busquedas %>
-              <%= submit_tag :Limpiar, :id => :limpiar, data: { disable_with: 'Limpiando...' } %>
-              &nbsp;&nbsp;&nbsp;<%= link_to 'Búsqueda básica', '', :id => :busqueda_basica_link, :class => :link_azul, :onClick => 'return busqueda_basica();' %> &#8593;
-            </td>
-            <td valign="top">
-              <b>con la categoria taxon&oacute;mica igual a: </b><br><i>Puedes seleccionar mas de una. (Tecla Ctrl)</i>
-              <p>
-                <%= select_tag :categoria, options_from_collection_for_select(CategoriaTaxonomica.select('nombre_categoria_taxonomica, nivel1').order('nivel1, nombre_categoria_taxonomica ASC').uniq, :nombre_categoria_taxonomica, :nombre_categoria_taxonomica),
-                               :class => :busqueda_atributo, :multiple => true, :size => 9, :prompt => '---CUALQUIER CATEGORIA---'.html_safe %>
-              </p>
-              <p>
-                <b><%= t :solo_taxones %>:</b>
-                <br><%= checkboxValidoSinonimo('avanzada') %>
-              </p>
-            </td>
-          </tr>
-        </table>
-    <% end %>
-  </div>
-
-  <table class="tabla_formato" border="0">
-    <tr>
-      <td>
-        Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}) %> resultados por p&aacute;gina
-      </td>
-    </tr>
-  </table>
-</div>
+<div id="busquedas"></div>

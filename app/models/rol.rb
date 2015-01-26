@@ -1,3 +1,4 @@
 class Rol < ActiveRecord::Base
-  CON_BITACORA = %w(2 3)
+  # Roles que pueden ver las bitacoras
+  CON_BITACORA = [2, 3]
 end

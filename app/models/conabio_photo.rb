@@ -1,5 +1,5 @@
 class ConabioPhoto < Photo
-  
+
   Photo.descendent_classes ||= []
   Photo.descendent_classes << self
 
@@ -14,40 +14,37 @@ class ConabioPhoto < Photo
     save
   end
 
-  def self.search_conabio(query, options = {})
-    search_json = conabio(:server => 'bdi.conabio.gob.mx:9090', :timeout => 5, :photos => true).search(query)
-    return [] if search_json.blank?
+  def self.search_conabio(taxon)
+    return [] unless metadatos = taxon.metadatos
 
-    JSON.parse(search_json).map do |resp|
+    metadatos.map do |resp|
       new_from_api_response(resp)
     end.compact
   end
-        
+
   def self.get_api_response(photo_id)
-    json = ConabioService.new(:server => 'bdi.conabio.gob.mx:9090', :timeout => 5, :photos => true, :photo_id => true).search(photo_id)
-    return nil if json.blank?
-    JSON.parse(json).first
+    begin
+      Metadato.find(photo_id)
+    rescue
+      nil
+    end
   end
 
   def self.new_from_api_response(api_response, options = {})
-      new(options.merge(
-              :large_url => api_response['thumb_url'],
-              :medium_url => api_response['thumb_url'],
-              :small_url => api_response['thumb_url'],
-              :thumb_url => api_response['thumb_url'],
-              :native_photo_id => api_response['native_photo_id'],
-              :square_url => api_response['thumb_url'],
-              :original_url => api_response['thumb_url'],
-              :native_page_url => api_response['native_page_url'],
-              :native_username => api_response['native_username'],
-              :native_realname => api_response['native_username'],
-              :license => api_response['license_number'].to_i
-          ))
+    copyright = api_response.artist.present? ? "#{api_response.artist} / Banco de Imágenes CONABIO" : 'Banco de Imágenes CONABIO'
+    imagen = "#{CONFIG.bdi_imagenes.to_s}/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}"
+    new(options.merge(
+            :large_url => imagen,
+            :medium_url => imagen,
+            :small_url => imagen,
+            :thumb_url => imagen,
+            :native_photo_id => api_response.id,
+            :square_url => imagen,
+            :original_url => imagen,
+            :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
+            :native_username => copyright,
+            :native_realname => copyright,
+            :license => 3
+        ))
   end
-
-  private
-  def self.conabio(options = {})
-    @conabio ||= ConabioService.new(options)
-  end
-
 end

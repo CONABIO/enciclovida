@@ -1,20 +1,31 @@
 require 'digest/sha2'
 
 class Usuario < ActiveRecord::Base
+
   self.table_name='usuarios'
+  has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
+
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :omniauthable, :confirmable, :lockable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable,
+         :authentication_keys => [:login]
+  # Para registrarse con el email o usuario
+  attr_accessor :login
+
   belongs_to :rol
-  attr_accessor :confirma_contrasenia
-  validates :usuario, :presence => true, :uniqueness=>true
-  validates :correo, :presence => true, :uniqueness=>true
-  validates :nombre, :presence => true
-  validates :apellido, :presence => true
+  #attr_accessor :confirma_contrasenia
+  #validates :usuario, :presence => true, :uniqueness=>true
+  #validates :correo, :presence => true, :uniqueness=>true
+  #validates :nombre, :presence => true
+  #validates :apellido, :presence => true
   #validates :institucion, :presence => true
   #validates :grado_academico, :presence => true
-  validates :contrasenia, :presence => true, :on => :create
-  validates :confirma_contrasenia, :presence => true, :on => :create
-  validate :comparaContrasenia, :on => :create
+  #validates :contrasenia, :presence => true, :on => :create
+  #validates :confirma_contrasenia, :presence => true, :on => :create
+  #validate :comparaContrasenia, :on => :create
 
-  before_create :generaContrasenia
+  #before_create :generaContrasenia
 
   login_regex       = /\A[A-z][\w\-_]+\z/
   bad_login_message = "use only letters, numbers, and -_ please.".freeze
@@ -24,8 +35,8 @@ class Usuario < ActiveRecord::Base
   email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
   bad_email_message = "no tiene la estructura apropiada.".freeze
 
-  validates_format_of :correo, :with => email_regex, :message => bad_email_message
-  validates_length_of :correo, :within => 6..100
+  #validates_format_of :correo, :with => email_regex, :message => bad_email_message
+  #validates_length_of :correo, :within => 6..100
 
   def self.autentica(login, contrasenia)
     usuario = where("usuario='#{login}' OR correo='#{login}'")
@@ -42,6 +53,15 @@ class Usuario < ActiveRecord::Base
 
   def self.contraseniaEncryptada(contrasenia, salt)
     Digest::SHA2.hexdigest(contrasenia + salt)
+  end
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["LOWER(usuario) = :value OR LOWER(email) = :value", { :value => login.downcase }]).first
+    else
+      where(conditions).first
+    end
   end
 
   private

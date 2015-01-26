@@ -14,6 +14,10 @@ class Especie < ActiveRecord::Base
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
+  has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
+  has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
+  has_many :metadatos_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'especie_id'
+  has_many :metadatos, :through => :metadatos_especies#, :source => :metadato
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
@@ -28,7 +32,7 @@ class Especie < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_ids, ->(columna, valor) { where(columna => valor) }
-  scope :rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
+  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
@@ -38,18 +42,15 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
   scope :region_join, -> { joins('LEFT JOIN regiones ON regiones.id=especies_regiones.region_id') }
   scope :tipo_region_join, -> { joins('LEFT JOIN tipos_regiones ON tipos_regiones.id=regiones.tipo_region_id') }
-  scope :tipo_distribucion_join, -> { joins('LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id') }
+  scope :tipo_distribucion_join, -> { especies_regiones_join.joins('LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id') }
   scope :caso_nombre_bibliografia, -> { joins('LEFT JOIN nombres_regiones_bibliografias ON nombres_regiones_bibliografias.especie_id=especie.id').
       joins('LEFT JOIN bibliografias ON bibliografias.id=nombres_regiones_bibliografias.bibliografia_id') }
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
-      joins('LEFT JOIN catalogos ON catalogos.id=esepcies_catalogos.catalogo_id') }
+      joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  before_save :ponNombreCientifico
-
-  WillPaginate.per_page = 10
-  self.per_page = WillPaginate.per_page
+  POR_PAGINA_PREDETERMINADO = 10
 
   POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
@@ -61,6 +62,11 @@ class Especie < ActiveRecord::Base
   ESTATUS_SIMBOLO = {
       2 => '',
       1 =>''
+  }
+
+  ESTATUS_SIGNIFICADO = {
+      2 => 'válido/correcto',
+      1 =>'sinónimo'
   }
 
   ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
@@ -219,7 +225,7 @@ class Especie < ActiveRecord::Base
     end
   end
 
-  def species_or_lower?(cat = nil)
+  def species_or_lower?(cat=nil)
     SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
@@ -278,23 +284,22 @@ class Especie < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
-  private
+  def pon_foto_principal
+    # Antes de cambiar de base ya que photos esta en Rails.env
+    foto_principal = photos.any? ? photos.first.thumb_url : '/assets/app/iconic_taxa/mammalia-75px.png'
+    id_bio = Bases.id_en_vista_a_id_original id
+    numero_base = Bases.id_original_a_numero_base id
+    Bases.conecta_a CONFIG.bases[numero_base]
 
-  def ponNombreCientifico
-    case self.categoria_taxonomica_id
-      when 19, 50 #para especies
-        generoID=self.ancestry_ascendente_obligatorio.split('/').last
-        genero=Especie.find(generoID.to_i).nombre
-        self.nombre_cientifico="#{genero} #{self.nombre}"
-      when 20, 21, 22, 23, 24, 51, 52, 53, 54, 55 #para subespecies
-        generoID=self.ancestry_ascendente_obligatorio.split('/')[5]
-        genero=Especie.find(generoID).nombre
-        especieID=self.ancestry_ascendente_obligatorio.split('/')[6]
-        especie=Especie.find(especieID).nombre
-        self.nombre_cientifico="#{genero} #{especie} #{self.nombre}"
-      else
-        self.nombre_cientifico=self.nombre
-    end
+    taxon_bio = EspecieBio.find(id_bio)
+    taxon_bio.foto_principal = foto_principal
+    taxon_bio.evita_before_save = true
+    taxon_bio.save if taxon_bio.changed?
+    Bases.conecta_a Rails.env
   end
 
+  # Guarda en cache el path del KMZ
+  def snib_cache_key
+    "snib_#{id}"
+  end
 end

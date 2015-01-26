@@ -15,13 +15,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= stub especies.js.coffee
 //= stub photo_selectors
 //= stub show
 //= stub jquery.soulmate.js
+//= stub gmaps
+//= stub mapas_dinamicos
 //= require_tree .
-//= require dataTables/jquery.dataTables
 //= require cocoon
 //= require general
 //= require autocomplete-rails
-

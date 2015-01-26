@@ -1,8 +1,16 @@
 Buscador::Application.routes.draw do
 
+  resources :metadatos
+
+  devise_for :usuarios
   resources :bitacoras
 
-  resources :listas
+  resources :listas do
+    collection do
+      post :dame_listas
+      post :aniade_taxones
+    end
+  end
 
   resources :roles
 
@@ -12,10 +20,7 @@ Buscador::Application.routes.draw do
 
   resources :usuarios do
     collection do
-      get :inicia_sesion
-      post :intento_sesion
-      put :cierra_sesion
-      post :filtros
+      post :guarda_filtro
       post :limpiar
       post :cambia_locale
     end
@@ -33,14 +38,13 @@ Buscador::Application.routes.draw do
     collection do
       post :update_photos, :as => :update_photos_for
       get :busca_por_lote
-      put :aniade_taxones
-      get :dame_listas
-      get :buscaDescendientes
-      post :muestraTaxonomia
-      get :autocomplete_especie_nombre
+      get :arbol
       get :resultados
       post :resultados_por_lote
       get :error
+      get :datos_principales
+      get :kmz
+      get :filtros
     end
   end
 
@@ -111,6 +115,14 @@ Buscador::Application.routes.draw do
   # Example of regular route:
   post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => 'new'
   mount Soulmate::Server, :at => '/sm'
+
+  # Webservice para la validacion de nuevos o actualizados records (pendiente)
+  #wash_out :webservice
+
+  # End-points para la validacion de nuevos o actualizados records (actual)
+  post 'validaciones/update' => 'validaciones#update'
+  post 'validaciones/insert' => 'validaciones#insert'
+  post 'validaciones/delete' => 'validaciones#delete'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

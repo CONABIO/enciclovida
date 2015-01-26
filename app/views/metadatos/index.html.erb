@@ -1,0 +1,25 @@
+<h1>Listing metadatos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @metadatos.each do |metadato| %>
+      <tr>
+        <td><%= link_to 'Show', metadato %></td>
+        <td><%= link_to 'Edit', edit_metadato_path(metadato) %></td>
+        <td><%= link_to 'Destroy', metadato, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Metadato', new_metadato_path %>

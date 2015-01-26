@@ -21,7 +21,7 @@ end
 def completa
   EspecieBio.find_each do |taxon|
     puts taxon.nombre if OPTS[:debug]
-    next if taxon.nombre_cientifico.present?
+    #next if taxon.nombre_cientifico.present?    #por si se requiere solo los nuevos
     if taxon.save
       puts "--->  #{taxon.nombre_cientifico}" if OPTS[:debug]
     end

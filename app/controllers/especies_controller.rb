@@ -1,10 +1,12 @@
 class EspeciesController < ApplicationController
-  include EspeciesHelper
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :buscaDescendientes, :muestraTaxonomia, :edit_photos, :update_photos, :describe]
-  before_action :tienePermiso?, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
-  before_action :cualesListas, :only => [:resultados, :dame_listas]
-  layout false, :only => [:dame_listas, :describe, :muestraTaxonomia]
 
+  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :create, :update, :edit_photos, :filtros]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
+                                     :edit_photos, :update_photos, :describe, :datos_principales, :kmz]
+  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :edit_photos, :filtros]
+
+  # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
@@ -23,16 +25,44 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @photos = Rails.cache.fetch(@especie.photos_cache_key) do
-      @especie.photos_with_backfill(:skip_external => true, :limit => 24)
-    end
+    @photos = @especie.photos
+    #@photos = Rails.cache.fetch(@especie.photos_cache_key) do
+    #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
+    #end
 
-    @desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
-    @nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
+    #@desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
+    #@nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
 
     respond_to do |format|
       format.html
       format.json { render json: @especie.to_json }
+      format.pdf do
+
+        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
+        @describers = if CONFIG.taxon_describers
+                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
+                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
+                      else
+                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
+                      end
+
+
+        @describers.each do |d|
+          @describer = d
+          @description = begin
+            d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
+          rescue OpenURI::HTTPError, Timeout::Error => e
+            nil
+          end
+          break unless @description.blank?
+        end
+
+        render :pdf => @especie.nombre_cientifico.gsub(' ','_'),
+               :template => 'especies/show.pdf.erb',
+               :encoding => 'UTF-8',
+               :disable_external_links => true
+      end
     end
   end
 
@@ -76,7 +106,7 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       if @especie.save && params[:commit].eql?('Crear')
         descripcion="Creó un nuevo taxón(#{@especie.id}): #{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico}"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         guardaRelaciones(EspecieCatalogo)
         guardaRelaciones(EspecieRegion)
@@ -84,7 +114,7 @@ class EspeciesController < ApplicationController
         format.json { render action: 'show', status: :created, location: @especie }
       elsif @especie.save && params[:commit].eql?('Crear y seguir editando')
         descripcion="Creó un nuevo taxón: #{@especie.categoria_taxonomica.nombre_categoria_taxonomica} ✓ #{@especie.nombre_cientifico}"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         guardaRelaciones(EspecieCatalogo)
         guardaRelaciones(EspecieRegion)
@@ -113,13 +143,13 @@ class EspeciesController < ApplicationController
 
       if @especie.update(argumentosRelaciones) && params[:commit].eql?('Guardar')
         descripcion="Actualizó el taxón #{@especie.nombre_cientifico} (#{@especie.id})"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         format.html { redirect_to @especie, notice: "El taxón #{@especie.nombre_cientifico} fue modificado exitosamente." }
         format.json { head :no_content }
       elsif @especie.update(argumentosRelaciones) && params[:commit].eql?('Guardar y seguir editando')
         descripcion="Actualizó el taxón #{@especie.nombre_cientifico} (#{@especie.id})"
-        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+        bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
         bitacora.save
         #format.html { render action: 'edit' }
         format.html { redirect_to "/especies/#{@especie.id}/edit", notice: "El taxón #{@especie.nombre_cientifico} fue modificado exitosamente." }
@@ -131,141 +161,208 @@ class EspeciesController < ApplicationController
   end
 
   def resultados
-    @busqueda=params[:busqueda]
-    estatus = ''
+    # Por si no coincidio nada
+    @taxones = Especie.none
 
-    # Despliega directo el taxon
+    # Despliega directo el taxon, si paso id
     if params[:busqueda] == 'basica' || params[:id].present?
       set_especie
       respond_to do |format|
         format.html { redirect_to @especie }
       end
-    end
+    else
 
-    case params[:busqueda]
+      # Hace el query del tipo de busqueda
+      case params[:busqueda]
 
-      when 'nombre_comun'
-        @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-            nom_com.caso_insensitivo('nombre_comun', params[:nombre_comun].gsub("'", "''")).where('especies.id IS NOT NULL').
-            order('nombre_cientifico ASC').paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+        when 'nombre_comun'
+          sql = "NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').uniq.order('nombre_cientifico ASC')"
 
-        if @taxones.empty?
-          ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
-          if ids.count > 0
-            @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-                nom_com.where("nombres_comunes.id IN (#{ids.join(',')})").where('especies.id IS NOT NULL').order('nombre_comun ASC').
-                paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
+          totales = eval("#{sql}").length
+          @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+          if totales > 0
+            @taxones = eval(sql).to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = NombreComun.find_by_sql(@taxones)
           end
-        end
 
-      when 'nombre_cientifico'
-        estatus = "#{params[:estatus_basica_cientifico_1]}," if params[:estatus_basica_cientifico_1].present?
-        estatus+= "#{params[:estatus_basica_cientifico_2]}," if params[:estatus_basica_cientifico_2].present?
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil        #por si eligio los dos status
+          if @taxones.empty?
+            ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
+            encontro_con_distancia = false
 
-        @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            caso_insensitivo('nombre_cientifico', params[:nombre_cientifico].gsub("'", "''")).where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC').
-            paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
+            ids.each do |id|
+              @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
+                  nom_com.where("nombres_comunes.id=#{id}")
 
-        if @taxones.empty?
-          ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-          if ids.count > 0
+              if @taxones.first
+                # Si la distancia entre palabras es 1 que muestre la sugerencia
+                distancia = Levenshtein.distance(params[:nombre_comun].downcase, @taxones.first.nombre_comun.downcase)
+                @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
 
-            @taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-                where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC').
-                paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-            @coincidencias='Quiz&aacute;s quiso decir algunos de los siguientes taxones:'.html_safe
-          end
-        end
+                if distancia != 1
+                  next
+                else
+                  encontro_con_distancia = true
+                  break
+                end
 
-      when 'avanzada'
-        #Es necesario hacer un index con estos campos para aumentar la velocidad
-        busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
-        joins = condiciones = tipoDistribuciones = conID = nombre_cientifico = ''
-        arbol = []
+              else
+                # Si no hubo coincidencias con el fuzzy match
+                next
+              end
+            end
 
-        params.each do |key, value|  #itera sobre todos los campos
-=begin
-          if key.include?('bAtributo_')
-            numero=key.split('_').last  #el numero de atributo a consultar
-            # Para ver si quiere ver todos los taxones descendentes de cierto taxon
-            if params['hAtributo_' + numero].present? && (params[:categoria_taxonomica].present? ? params[:categoria_taxonomica].join('').present? : false)
-              conIDCientifico << params['hAtributo_' + numero].to_i if value == 'nombre_cientifico'
-            elsif params['vAtributo_' + numero].present?
-              joins+= '.' + tipoDeAtributo(value) if tipoDeAtributo(value).present?
-              condiciones+= '.' + tipoDeBusqueda(params['cAtributo_' + numero], value, params['vAtributo_' + numero]) if params['vAtributo_' + numero].present?
+            if !encontro_con_distancia
+              redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
             end
           end
-=end
-          conID = value.to_i if key == 'id_nom_cientifico' && value.present?         #cuando autocompleta poner directo la especie
 
-          if key == 'nombre_cientifico' && value.present?
-            nombre_cientifico+= value.gsub("'", "''")
+        when 'nombre_cientifico'
+          estatus = params[:estatus].join(',') if params[:estatus].present?
+
+          sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
+            order('nombre_cientifico ASC')"
+
+          longitud = eval("#{sql}.count")
+          @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+          if longitud > 0
+            @taxones = eval("#{sql}.to_sql") << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = Especie.find_by_sql(@taxones)
           end
 
-          if key == 'nombre_comun' && value.present?
-            joins+= '.nombres_comunes_join'
-            condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
+          if @taxones.empty?
+            ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+            encontro_con_distancia = false
+
+            ids.each do |id|
+              @taxones = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+                  where(:id => id)
+
+              if @taxones.first
+                # Si la distancia entre palabras es 1 que muestre la sugerencia
+                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, @taxones.first.nombre_cientifico.downcase)
+                @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
+
+                if distancia != 1
+                  next
+                else
+                  encontro_con_distancia = true
+                  break
+                end
+
+              else
+                # Si no hubo coincidencias con el fuzzy match
+                next
+              end
+            end
+
+            if !encontro_con_distancia
+              redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
+            end
           end
 
-          if key.include?('tipo_distribucion_') && value.present?
-            tipoDistribuciones+="'#{value}',"
-            joins+= '.'+tipoDeAtributo('tipos_distribuciones')
+        when 'avanzada'
+          #Es necesario hacer un index con estos campos para aumentar la velocidad
+          busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
+          joins = condiciones = conID = nombre_cientifico = ''
+          arbol = []
+          distinct = false
+
+          params.each do |key, value|  #itera sobre todos los campos
+
+            if key == 'id_nom_cientifico' && value.present?
+              conID = value.to_i
+            elsif conID.blank? && key == 'id_nom_comun' && value.present?
+              conID = value.to_i
+            end
+
+            if key == 'nombre_cientifico' && value.present? && conID.blank?
+              nombre_cientifico+= value.gsub("'", "''")
+            end
+
+            if key == 'nombre_comun' && value.present? && conID.blank?
+              joins+= '.nombres_comunes_join'
+              condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
+            end
           end
 
-          estatus+= "#{value}," if key.include?('estatus_avanzada_') && value.present?
-        end
+          # Por default tiene que hacerce join con categorias_taxonomicas
+          joins+= '.categoria_taxonomica_join'
 
-        estatus = /^\d,$/.match(estatus) ? estatus.tr(',', '') : nil
-        joins+= '.categoria_taxonomica_join'
-        condiciones+= ".caso_status(#{estatus})" if estatus.present?
-        condiciones+= '.'+tipoDeBusqueda(5, 'tipos_distribuciones.descripcion', "#{tipoDistribuciones[0..-2]}") if tipoDistribuciones.present?
-
-        if params[:categoria].present? ? params[:categoria].join('').present? : false
-          if conID.blank?                 #join a la(s) categorias taxonomicas (params)
-            cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-            condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
-            condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if conID.blank? && nombre_cientifico.present?
-          else            #joins a las categorias con los descendientes
-            taxon = Especie.find(conID)
-            arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
-            cat_tax = "\"'#{params[:categoria].map{ |val| val.blank? ? nil : val }.compact.join("','")}'\""
-            arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
-            condiciones+= ".rango_valores('especies.id', #{arbolIDS})"
-            condiciones+= ".rango_valores('nombre_categoria_taxonomica', #{cat_tax})"
+          if params[:cat].present?# ? params[:categoria].join('').present? : false
+            if conID.blank?                 #join a la(s) categorias taxonomicas (params)
+              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
+              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
+            else            #joins a las categorias con los descendientes
+              taxon = Especie.find(conID)
+              arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
+              arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
+              condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
+              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
+            end
+          else       # busquedas directas
+            condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
+                ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
           end
-        else       # busquedas directas
-          condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
-              ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
-        end
 
-        #parte de la distribucion (lugares)
-        if params[:distribucion_nivel_1].present?
-          if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
-            joins+= '.especies_regiones_join.region_join'
-            region = Region.find(params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
-            condiciones+= '.' + tipoDeBusqueda(3, 'regiones.nombre_region', region.nombre_region)
+          #parte de la distribucion (lugares)
+          if params[:distribucion_nivel_1].present?
+            if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
+              joins+= '.especies_regiones_join.region_join'
+              region = Region.find(params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
+              condiciones+= '.' + tipoDeBusqueda(3, 'regiones.nombre_region', region.nombre_region)
+            else
+              joins+= '.especies_regiones_join.region_join.tipo_region_join'
+              tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
+              condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
+            end
+            distinct = true
+          end
+
+          #Parte del estatus
+          condiciones+= ".caso_rango_valores('estatus', \"'#{params[:estatus].join(',')}'\")" if params[:estatus].present?
+
+          #Parte del tipo de ditribucion
+          if params[:dist].present?
+            joins+= '.tipo_distribucion_join'
+            condiciones+= ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+            distinct = true
+          end
+
+          #Parte del edo. de conservacion
+          if params[:edo_cons].present?
+            joins+= '.catalogos_join'
+            condiciones+= ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+            distinct = true
+          end
+
+          busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
+
+          if distinct
+            longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
+            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+            if longitud > 0
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = Especie.find_by_sql(@taxones)
+            end
           else
-            joins+= '.especies_regiones_join.region_join.tipo_region_join'
-            tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
-            condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
+            longitud = eval(busqueda).order('nombre_cientifico ASC').count
+            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+            if longitud > 0
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @taxones = Especie.find_by_sql(@taxones)
+            end
           end
-        end
-
-        busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
-        #Rails.logger.info "---#{busqueda}---"
-
-        @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.paginate(:page => params[:page], :per_page => params[:per_page] || Especie.per_page)
-
-      #Rails.logger.info "---#{@taxones.to_json}---"
-      #@taxones=Especie.none
-      #@resultado2= busqueda
-      #@resultado=params
-      else
-        respond_to do |format|
-          format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo2.' }
-        end
+        else
+          respond_to do |format|
+            format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
+          end
+      end
     end
   end
 
@@ -278,7 +375,8 @@ class EspeciesController < ApplicationController
     if params[:lote].present?
       @match_taxa = Hash.new
       params[:lote].split("\r\n").each do |linea|
-        e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
+        #e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
+        e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
         if e.first
           @match_taxa[linea] = e
         else
@@ -294,11 +392,14 @@ class EspeciesController < ApplicationController
     #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
+  def datos_principales
+  end
+
 # DELETE /especies/1
 # DELETE /especies/1.json
   def destroy
     @especie.destroy
-    bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => dameUsuario)
+    bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => current_usuario.id)
     bitacora.save
     respond_to do |format|
       format.html { redirect_to especies_url, :notice => "El taxón #{@especie.nombre_cientifico} fue elimanado correctamente" }
@@ -306,68 +407,9 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def aniade_taxones
-    if params[:listas].present?
-      incluyoAlgo ||=false
-      params[:listas].split(',').each do |lista|
-        listaDatos=Lista.find(lista)
-        params.each do |key, value|
-          if key.include?('box_especie_')
-            begin
-              listaDatos.cadena_especies.present? ? listaDatos.cadena_especies+=",#{value}" : listaDatos.cadena_especies=value
-              incluyoAlgo=true
-            rescue
-              Rails.logger.info "***ERROR***Lista id: [#{lista}] ya no existe mas"
-            end
-          end
-        end
-        listaDatos.save
-      end
-      notice=incluyoAlgo ? 'Taxones incluidos correctamente.' : 'No seleccionaste ningún taxón.'
-    else
-      notice='Debes seleccionar por lo menos una lista para poder incluir los taxones.'
-    end
-
-    respond_to do |format|
-      format.html { redirect_to :back, :notice => notice }
-    end
-  end
-
-  def buscaDescendientes
-    if taxon=params[:id]
-      nodo ||='<ul>'
-      @especie.child_ids.each do |childrenID|
-        children=Especie.find(childrenID)
-        nodo+=enlacesDelArbol(children, true)
-      end
-      respond_to do |format|
-        format.html do
-          render :json => nodo+='</ul>'
-        end
-      end
-    end
-  end
-
-  def muestraTaxonomia
-    return unless @especie
-
-    arbolCompleto ||="<ul class=\"nodo_mayor\">"
-    if @especie.ancestry_ascendente_obligatorio.present?
-      contadorNodos ||=0;
-      @especie.ancestry_ascendente_obligatorio.split('/').each do |a|
-
-        if ancestro=Especie.find(a)
-          arbolCompleto+=enlacesDelArbol(ancestro)
-          contadorNodos+=1
-        end
-      end
-      arbolCompleto+=enlacesDelArbol(@especie)
-      respond_to do |format|
-        format.html do
-          render :json => arbolCompleto+='</li></ul>'*(contadorNodos+1)+'</ul>'
-        end
-      end
-    end
+  #Despliega o contrae o muestra el arbol de un inicio
+  def arbol
+    @accion = to_boolean(params[:accion]) if params[:accion].present?
   end
 
   def dame_listas
@@ -378,7 +420,6 @@ class EspeciesController < ApplicationController
 
   def edit_photos
     @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
-    render :layout => false
   end
 
   def update_photos
@@ -443,8 +484,55 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def kmz
+    if params[:kml].present? && to_boolean(params[:kml])
+      proveedor = @especie.proveedor
+      if proveedor
+        if proveedor.snib_kml.present?
+          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+        end
+      else
+        render :text => 'No existe KML para este tax&oacute;n'.html_safe
+      end
+    else
+# Cache del KMZ
+      if Rails.cache.exist?("snib_#{@especie.id}")
+        redirect_to "/assets/#{@especie.id}/registros.kmz"
+      else
+        Rails.cache.fetch(@especie.snib_cache_key, expires_in: 5.minutes) do
+          proveedor = @especie.proveedor
+          if proveedor
+            proveedor.kml
+            if proveedor.snib_kml.present?
+              proveedor.save
+              if proveedor.kmz
+                redirect_to "/assets/#{@especie.id}/registros.kmz"
+              else
+                render :text => 'No existe KML para este tax&oacute;n'.html_safe
+              end
+            else
+              render :text => 'No existe KML para este tax&oacute;n'.html_safe
+            end
+          else
+            render :text => 'No existe KML para este tax&oacute;n'.html_safe
+          end
+        end
+      end
+    end
+  end
+
+  # Decide cual filtro cargar y regresa el html y si es nuevo o no
+  def filtros
+    # filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
+    #   if filtro.present? && filtro.html.present?
+    #    render :text => filtro.html.html_safe
+    #  else
+    #    # Por default hace render de filtros
+    #  end
+  end
+
   private
-# Use callbacks to share common setup or constraints between actions.
+  # Use callbacks to share common setup or constraints between actions.
   def set_especie
     begin
       @especie = Especie.find(params[:id])
@@ -530,7 +618,7 @@ class EspeciesController < ApplicationController
               descripcion+=", nombre común: #{NombreComun.find(valor).nombre_comun} (#{valor})" if atributo == :nombre_comun_id
               descripcion+=", bibliografía: #{Bibliografia.find(valor).autor.truncate(25)} (#{valor})" if atributo == :bibliografia_id
             end
-            bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+            bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
             bitacora.save
           rescue
           end
@@ -554,7 +642,7 @@ class EspeciesController < ApplicationController
                 descripcion+=", bibliografía: #{Bibliografia.find(valor).autor.truncate(25)} (#{valor})" if atributo == :bibliografia_id
                 descripcion+=", observaciones: #{valor}" if atributo == :observaciones
               end
-              bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => dameUsuario)
+              bitacora=Bitacora.new(:descripcion => descripcion, :usuario_id => current_usuario.id)
               bitacora.save
             end
           rescue
@@ -647,29 +735,7 @@ class EspeciesController < ApplicationController
       when 4
         "caso_termina_con('#{columna}', '#{valor}')"
       when 5
-        "rango_valores('#{columna}', \"#{valor}\")"
-    end
-  end
-
-  def tipoDeAtributo(tipo)
-    case tipo
-      when 'nombre_comun'
-        relacion='nombres_comunes_join'
-      when 'tipos_distribuciones'
-        relacion='especies_regiones_join.tipo_distribucion_join'   #fue necesario separar ese join para ver si ya estaba repetido
-      when 'catalogos.descripcion'
-        relacion='catalogos_join'
-      else
-        relacion=''
-    end
-    return relacion
-  end
-
-  def cualesListas
-    usuario=dameUsuario
-    if usuario.present?
-      @listas=Lista.where(:usuario_id => usuario).order('nombre_lista ASC').limit(10)
-      @listas=0 if @listas.empty?
+        "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
 

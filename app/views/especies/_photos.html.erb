@@ -4,6 +4,7 @@
 -%>
 <% unless photos.size == 0 %>
   <% if taxon.species_or_lower? %>
+    <% Rails.logger.info "#{photos[0].class}-#{photos.to_json}" %>
     <% if [Photo, Photo.descendent_classes].flatten.include?(photos[0].class) %>
       <%= photos.first.id ? modal_image(photos.first, :size => :medium) : link_to(image_tag(photos.first.medium_url || photos.first.small_url), photos.first.native_page_url) %>
       <div class="clear description" style="clear: both">
@@ -31,10 +32,9 @@
       <% end %>
     </div>
     <% unless photos.empty? %>
-      <div class="description"><%= t(:creative_commons_flickr_tagged) %> "<%= taxon.nombre_cientifico %>."</div>
       <div>
         <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-        <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
+        <a href="http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=<%= URI.escape(taxon.nombre_cientifico) %>" target="_blank">
           <%= t(:view_all_photos_tagged_taxon_html, :taxon => h(taxon.nombre_cientifico) ) %>
         </a>
       </div>
@@ -46,10 +46,10 @@
       <%#t :no_creative_commons_flickr_photos_tagged_x, :x => taxon.nombre_cientifico %>
     </h3>
     <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-    <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
+    <a href="http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=<%= URI.escape(taxon.nombre_cientifico) %>" target="_blank">
       <%= t(:view_all_photos_tagged_taxon_html, :taxon => taxon.nombre_cientifico).html_safe %>
     </a><br/>
-    (No solo las que tienen Creative Commons Licensed)
+    <!--(No solo las que tienen Creative Commons Licensed)-->
   </div>
 <% end %>
 
@@ -71,7 +71,7 @@
     </div>
     <div class="description">
       <%# link_to t(:invite_photos_to_raquo_html, :site_name => SITE_NAME_SHORT), photo_inviter_path(:taxon_id => @especie, :q => @especie.nombre_cientifico), :class => "right" %>
-      <a href="http://flickr.com/search/?w=all&q=<%= taxon.nombre_cientifico.gsub(' ', '') %>&m=tags" target="_blank">
+      <a href="http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=<%= URI.escape(taxon.nombre_cientifico) %>" target="_blank">
         <%= t(:view_all_photos_tagged_taxon_html, :taxon => h(taxon.nombre_cientifico) ) %>
       </a>
     </div>

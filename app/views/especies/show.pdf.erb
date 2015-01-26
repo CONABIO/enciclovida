@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+  <title>Algo</title>
+
+  <%= javascript_include_tag "http://code.jquery.com/jquery-1.10.0.min.js" %>
+  <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" %>
+
+  <script>
+      $(document).ready(function() {
+          I18n.defaultLocale = "<%= 'es-cientifico' %>"
+          I18n.locale = "<%= 'es-cientifico' %>"
+          I18n.fallbacks = true
+      });
+  </script>
+
+</head>
+
+<body>
+
+<style>
+    #map
+    {
+        margin: 0px auto;
+        padding: 0px;
+    }
+    #map.fullscreen
+    {
+        top: 0px;
+        left: 0px;
+        z-index: 10000;
+    }
+    #balloon
+    {
+        color: rgb(3, 7, 48);
+        margin: 0px;
+        padding: 0px;
+        font-size: x-small;
+        text-transform: capitalize;
+        line-height: 1.6em;
+    }
+</style>
+
+<script>
+    var TAXON = <%=raw @especie.to_json %>;
+    var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
+    var SPECIES_OR_LOWER = <%=raw @especie.species_or_lower? %>;
+    var MAPAS = new Array
+    (
+            ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución'],
+            ["<%=raw "http://#{CONFIG.host_ip.to_s}:#{CONFIG.host_port.to_s}/especies/kmz?id=#{@especie.id}" %>","Registros GBIF"]
+    );
+
+    info = function()
+    {
+        $('#ficha-div').slideUp();
+        $('#info-div').slideDown();
+        return false;
+    }
+
+    ficha = function()
+    {
+        $('#info-div').slideUp();
+        $('#ficha-div').slideDown();
+        return false;
+    }
+
+    muestraBibliografiaNombres = function(ident)
+    {
+        var id=ident.split('_')[2];
+        $("#biblio_"+id).dialog();
+        return false;
+    }
+
+    getDescription = function(url)
+    {
+        /*$.ajax({
+            url: url,
+            method: 'get',
+            beforeSend: function() {
+                $('.taxon_description').loadingShades()
+            },
+            success: function(data, status) {
+                $('.taxon_description').replaceWith(data);
+                $('.taxon_description select').change(function() {
+                    getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())
+                })
+            },
+            error: function(request, status, error) {
+                $('.taxon_description').loadingShades('close')
+            }
+        })*/
+    }
+
+    $(document).ready(function()
+    {
+        $('.taxon_description').val('AQUII');
+        /*$('#tabs').tabs(); // Inicia los tabs
+
+         // Inicia los proveedores de fotos
+         $('#edit_photos_dialog').dialog({
+         modal: true,
+         title: 'Escoge las fotos para este grupo o especie',
+         autoOpen: false,
+         width: 700,
+         open: function( event, ui ) {
+         $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'})
+         $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function() {
+         var photoSelectorOptions = {
+         defaultQuery: TAXON.nombre_cientifico,
+         skipLocal: true,
+         baseURL: '/conabio/photo_fields',
+         taxon_id: TAXON.id,
+         urlParams: {
+         authenticity_token: $('meta[name=csrf-token]').attr('content'),
+         limit: 14
+         },
+         afterQueryPhotos: function(q, wrapper, options) {
+         $(wrapper).imagesLoaded(function() {
+         $('#edit_photos_dialog').centerDialog()
+         })
+         }
+         };
+
+         $('.tabs', this).tabs({
+         beforeActivate: function( event, ui ) {
+         if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+         //$('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
+         $('.taxon_photos', ui.newPanel).photoSelector(
+         $.extend(true, {}, photoSelectorOptions, {baseURL: '/flickr/photo_fields'})
+         )
+         } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+         $('.taxon_photos', ui.newPanel).photoSelector(
+         $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
+         )
+         } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+         $('.taxon_photos', ui.newPanel).photoSelector(
+         $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
+         )
+         } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+         $('.taxon_photos', ui.newPanel).photoSelector(
+         $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
+         )
+         } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+         $('.taxon_photos', ui.newPanel).photoSelector(
+         $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
+         )
+         }
+
+         $(ui.newPanel).addClass('loaded')
+         $('#edit_photos_dialog').centerDialog()
+         },
+         create: function( event, ui) {
+         $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
+         $(ui.panel).addClass('loaded')
+         $('#edit_photos_dialog').centerDialog()
+         }
+         })
+         })
+         }
+         });
+         */
+        if (SPECIES_OR_LOWER)
+        {
+            getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
+            // Inicia los mapas de distribucion
+            /*    map = new GMaps({
+             div: '#map',
+             zoom: 5,
+             lat: 23.79162789,
+             lng: -102.04376221,
+             mapTypeId:google.maps.MapTypeId.HYBRID,
+             height: "450px",
+             width:	"450px"
+             });
+
+             for (var i = 0; i < MAPAS.length;i++)
+             {
+             infoWindow =	new google.maps.InfoWindow({});
+             MAPAS[i][2]	=	function(direccion){
+             return	map.loadFromKML({
+             url: direccion,
+             preserveViewport: true,
+             suppressInfoWindows: true,
+             events:{
+             click: function(point){
+             anchoInfo = function()
+             {
+             return parseInt($("#map").width()/5)*4;
+             };
+             altoInfo = function()
+             {
+             return parseInt($("#map").height()/10)*9;
+             };
+             if(point.featureData.infoWindowHtml.indexOf('$[description]')>-1)
+             {
+             infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.name+"</div>");
+             infoWindow.maxWidth = 2;
+             }else{
+             infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.infoWindowHtml+"</div>");
+             };
+             infoWindow.setPosition(point.latLng);
+             infoWindow.open(map.map);
+             $(function()
+             {
+             $("#balloon div").removeAttr("style");
+             });
+             }
+             }
+             });
+             }
+             }
+
+             anadeControlFullScreen();
+             anadeControlCapas();   */
+        }
+    });
+</script>
+
+<p id="notice"><%= notice %></p>
+
+<% content_for(:title) do %>
+    <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
+<% end %>
+
+<div class="titulo">
+  <h1>
+    <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
+  </h1>
+  <%= datos_principales(@especie).html_safe %>
+</div>
+
+<%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
+
+<div id="photoscol" class="column span-13">
+  <div id="photos">
+    <%# render :partial => 'photos', :locals => { :photos => @photos } %>
+    <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
+  </div>
+</div>
+</div>
+
+<% if @especie.species_or_lower? %>
+    <div style="width: 60%; float:right;">
+      <div id="map"></div>
+    </div>
+<% end %>
+
+<div id="description" class="last column span-20">
+  <% css_class = "clear taxon_description" %>
+  <% if @describer %>
+      <% css_class += " #{@describer.name.split('::').last.underscore}_description" %>
+      <% css_class += " wikipedia_description" if @describer.ancestors.include?(TaxonDescribers::Wikipedia) %>
+  <% end %>
+  <div class="<%= css_class %>" id="taxon_description">
+    <h3>
+      Descripci&oacute;n de
+      <% if @describer %>
+          <%= @describer.name.split('::').last.upcase %>
+          <% if page_url = @describer.page_url(@especie) %>
+              <%= link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui" %>
+          <% end %>
+      <% else %>
+          <a href="http://en.wikipedia.org/wiki/<%= @especie.nombre_cientifico %>">Wikipedia</a>
+      <% end %>
+    </h3>
+    <% if @description.blank? %>
+        <p class="nocontent meta">
+          <% if @describer == TaxonDescribers::Wikipedia || @describer.blank? %>
+              <%= t :no_matching_article_from_x_to_y, :x => 'Wikipedia (EN)', :y => @especie.nombre_cientifico %>
+          <% elsif @describer %>
+              <%= t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico %>
+          <% end %>
+        </p>
+    <% else %>
+        <%= raw @description %>
+    <% end %>
+  </div>
+</div>
+</body>
+</html>
+

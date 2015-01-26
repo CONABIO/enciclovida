@@ -1,13 +1,18 @@
 module ApplicationHelper
   def bitacora
-    if Rol::CON_BITACORA.include?(Usuario.find(session[:usuario]).rol_id.to_s)
-      addon='<ul>'
-      Bitacora.all.order('id DESC').limit(10).each do |bitacora|
-        addon+="<li>#{link_to(bitacora.usuario.usuario, bitacora.usuario)} #{bitacora.descripcion}</li>"
+    if usuario_signed_in?
+      if Rol::CON_BITACORA.include?(current_usuario.rol_id)
+        desc=''
+        Bitacora.order('id DESC').limit(10).each do |bitacora|
+          desc+= "<li>#{bitacora.usuario.usuario} #{bitacora.descripcion}</li>"
+        end
+
+        if desc.present?
+          bitacora = "<br><br><table class=\"tabla_formato\"><tr><td><fieldset><legend class=\"leyenda\">Bit&aacute;cora</legend>"
+          bitacora+= "<ul>#{desc}</ul>"
+          bitacora+= '</fieldset></td></tr></table>'
+        end
       end
-      addon
-    else
-      ''
     end
   end
 
@@ -91,5 +96,34 @@ module ApplicationHelper
       else
         nil
     end
+  end
+
+  def paginacion(datos)
+    sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
+    html = "<div class=\"pagination\">"
+
+    # Contiene la secuencias del paginado
+    datos[:rangos].each do |d|
+      if d.instance_of? String
+        case d
+          when '← Anterior', 'Siguiente →'
+            html << "<span class=\"previous_page disabled\">#{d}</span>"
+          when '...'
+            html << "<span class=\"gap\">#{d}</span>"
+        end
+      elsif d.instance_of? Array
+        d.each do |pagina|  # Itera el arreglo para poner el link con el numero o solo el numero
+          peticion = sin_page_per_page.compact.join('&')
+
+          if pagina == datos[:pagina]
+            html << "<em class=\"current\">#{pagina}</em>"
+          else
+            html << link_to(pagina, peticion << "&por_pagina=#{datos[:por_pagina]}&pagina=#{pagina}")
+          end
+        end
+      end
+    end
+
+    html << '</div>'
   end
 end
