@@ -185,7 +185,8 @@ es:
     updated_at: Fecha de última modificación
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nom: NOM
-  nombre_comun: Nombre
+  nombre_comun: Nombre común
+  nombre_cientifico: Nombre científico
   nombres_modelos:
     bibliografias: Bibliografia
     catalogos: Catalogo
