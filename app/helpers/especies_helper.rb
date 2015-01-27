@@ -178,15 +178,12 @@ module EspeciesHelper
 
   def checkboxTipoDistribucion
     checkBoxes = ''
-    contador = 0
     quitar_distribuciones = %w(actual original)
 
     TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
       next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
-      checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
-      checkBoxes+="#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}&nbsp;&nbsp;"
-      contador+=1
-    end
+      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+      end
     checkBoxes.html_safe
   end
 
@@ -220,7 +217,7 @@ module EspeciesHelper
   def checkboxValidoSinonimo
     checkBoxes=''
     Especie::ESTATUS.each do |e|
-      checkBoxes+="#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}&nbsp;&nbsp;"
+      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
     end
     checkBoxes.html_safe
   end
