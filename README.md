@@ -58,6 +58,12 @@ rails r tools/foto_principal.rb -d
 
 
 
+-- Para poder exportar los PDF's con wicked_pdf
+
+http://wkhtmltopdf.org/downloads.html
+
+
+
 --- Para iniciar el administrador de trabajos pendientes (solo production)
 
 rake jobs:work
