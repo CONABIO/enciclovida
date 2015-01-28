@@ -121,6 +121,7 @@ es-cientifico:
     no_endemica: No endémica
     original: Original
     semiendemica: Semiendémica
+  el_taxon_no_tiene_kml: El tax&oacute;n no tiene KML.
   errors: &errors
     format: ! '%{attribute} %{message}'
     messages:
@@ -266,7 +267,7 @@ es-cientifico:
       short: ! '%d de %b %H:%M'
     pm: pm
   valido_correcto: válido/correcto
-  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas de %{taxon} en <nobr>CONABIO &raquo;</nobr>
+  view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas con %{taxon} en <nobr>Banco de Imag&eacute;nes &raquo;</nobr>
 
   # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:

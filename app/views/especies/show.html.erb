@@ -216,6 +216,9 @@
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
   <%= datos_principales(@especie).html_safe %>
+  Descarga:
+  ficha en <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
+  | registros del GBIF <%= link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>
 </div>
 
 <%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
