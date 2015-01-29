@@ -56,7 +56,7 @@ class EspecieBio < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  before_save :ponNombreCientifico, :unless => :evita_before_save
+  before_save :completa_datos, :unless => :evita_before_save
 
   POR_PAGINA_PREDETERMINADO = 10
 
@@ -384,6 +384,13 @@ class EspecieBio < ActiveRecord::Base
     end
   end
 
+  def completa_datos
+    ancestry_directo
+    ancestry_obligatorio
+    ponNombreCientifico
+    #completa_redis?
+  end
+
   def ponNombreCientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
       when 'especie'
@@ -400,13 +407,40 @@ class EspecieBio < ActiveRecord::Base
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
+  def completa_redis?
+    base = ActiveRecord::Base.connection_config[:database]
+    id_vista = Bases.id_original_a_id_en_vista(id, base)
+
+    if ancestry_ascendente_directo_changed? || nombre_autoridad_changed? || nombre_cientifico_changed?
+      json = ''
+      ruta = Rails.root.join('tools', 'bitacoras', 'redis', id.to_s).to_s
+      FileUtils.mkpath(ruta, :mode => 0755) if !File.exists?(ruta)
+      f = "#{ruta}/#{Time.now.strftime("%Y%m%d%H%M%S")}_nom_cien.json"
+      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+
+      foto = foto_principal.present? ? "<img src='#{foto_principal}' alt='#{nombre_cientifico}' width='30px' \>" :
+          "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{nombre_cientifico}' width='30px' \>"
+
+      json+= "{\"id\":#{id_vista},"
+      json+= "\"term\":\"#{nombre_cientifico}\","
+      json+= "\"score\":2,"
+      json+= "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(nombre_comun_principal)}\", \"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id_vista}}"
+      json+= "}\n"
+
+      File.open(f,'a') do |f|
+        f.puts json
+        system("soulmate add cien_#{categoria} --redis=redis://localhost:6379/0 < #{f}") if File.exists?(f)
+      end
+    end
+  end
+
   #Este metodo es necesario ya que SQL Server hace un lock en el record a cambiar, se tiene que hacer despues de acabar
   #el trigger de SQL Server y ademas para que sea valido en multi bases, asi como estatico
   def self.completa(id, base, tabla)
     Bases.conecta_a base
     taxon = EspecieBio.find(id)
-    taxon.ancestry_directo
-    taxon.ancestry_obligatorio
+    #taxon.ancestry_directo
+    #taxon.ancestry_obligatorio
     taxon.avoid_ancestry = true
     taxon.save
 
@@ -417,8 +451,8 @@ class EspecieBio < ActiveRecord::Base
   def self.actualiza(id, base, tabla)
     Bases.conecta_a base
     taxon = EspecieBio.find(id)
-    taxon.ancestry_directo
-    taxon.ancestry_obligatorio
+    #taxon.ancestry_directo
+    #taxon.ancestry_obligatorio
     taxon.avoid_ancestry = true
     taxon.save
 
@@ -427,13 +461,6 @@ class EspecieBio < ActiveRecord::Base
   end
 
   private
-
-  def cambio_en_redis?(taxon, base)
-    id_vista = Bases.id_original_a_id_en_vista(taxon.id, base)
-    if taxon.ancestry_directo_changed? || taxon.nombre_autoridad_changed? || taxon.nombre_cientifico_changed?
-      Redis.inserta taxon id_vista
-    end
-  end
 
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|
