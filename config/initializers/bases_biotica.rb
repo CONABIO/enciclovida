@@ -75,16 +75,16 @@ module Bases
     ids = id.split('-')
     primary_key_sql = ''
 
-    #primary key de la tabla del volcado
+    # primary key de la tabla del volcado
     modelo = I18n.t("nombres_modelos.#{tabla}")
     primary_key = modelo.constantize.primary_key
     primary_key = primary_key.split if primary_key.is_a? String
 
-    #une las condiciones
+    # une las condiciones
     primary_key.each_with_index do |pk, index|
       #aumenta tambien los ceros correespondientes
       if con_update
-        #especial para el alias t_0.attr
+        # especial para el alias t_0.attr
         primary_key_sql+= "t_0.#{pk}=#{id_original_a_id_en_vista(ids[index], base)} AND "
       else
         primary_key_sql+= "#{pk}=#{id_original_a_id_en_vista(ids[index], base)} AND "

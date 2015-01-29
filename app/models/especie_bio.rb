@@ -8,6 +8,7 @@ class EspecieBio < ActiveRecord::Base
   alias_attribute :nombre, :Nombre
   alias_attribute :id_nombre_ascendente, :IdNombreAscendente
   alias_attribute :id_ascend_obligatorio, :IdAscendObligatorio
+  alias_attribute :nombre_autoridad, :NombreAutoridad
 
   #esto es cuando se corre un script desde consola
   cattr_accessor :evita_before_save
@@ -425,13 +426,14 @@ class EspecieBio < ActiveRecord::Base
     Bases.update_en_volcado(id, base, tabla)
   end
 
-  def comprueba_ancestry
-    if id_nombre_ascendente != parent_id       #indica que cambio la estructura de arbol
+  private
 
+  def cambio_en_redis?(taxon, base)
+    id_vista = Bases.id_original_a_id_en_vista(taxon.id, base)
+    if taxon.ancestry_directo_changed? || taxon.nombre_autoridad_changed? || taxon.nombre_cientifico_changed?
+      Redis.inserta taxon id_vista
     end
   end
-
-  private
 
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|
