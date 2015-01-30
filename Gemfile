@@ -46,6 +46,7 @@ gem 'ts-delayed-delta', '~> 2.0.0'    #funciona con thinking-sphinx
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
 gem 'will_paginate'    #hace la paginacion de una rango determinado
+gem 'wicked_pdf'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
