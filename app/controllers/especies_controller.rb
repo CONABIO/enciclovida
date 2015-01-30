@@ -56,8 +56,7 @@ class EspeciesController < ApplicationController
 
         render :pdf => @especie.nombre_cientifico.gsub(' ','_'),
                :template => 'especies/show.pdf.erb',
-               :encoding => 'UTF-8',
-               :disable_external_links => true
+               :encoding => 'UTF-8'
       end
     end
   end

@@ -75,15 +75,27 @@ module ApplicationHelper
     img_url ||= photo.best_url(size)
     link_options = options.merge("data-photo-path" => photo_path(photo, :partial => 'photo'))
     link_options[:class] = "#{link_options[:class]} modal_image_link #{size}".strip
-    link_to(
-        image_tag(img_url,
-                  :title => photo.attribution,
-                  :id => "photo_#{photo.id}",
-                  :class => "image #{size}") +
-            image_tag('silk/magnifier.png', :class => 'zoom_icon'),
-        photo.native_page_url,
-        link_options
-    )
+
+    if options[:type] == :pdf
+      link_to(
+          image_tag(img_url,
+                    :title => photo.attribution,
+                    :id => "photo_#{photo.id}",
+                    :class => "image #{size}"),
+          photo.native_page_url,
+          link_options
+      )
+    else
+      link_to(
+          image_tag(img_url,
+                    :title => photo.attribution,
+                    :id => "photo_#{photo.id}",
+                    :class => "image #{size}") +
+              image_tag('silk/magnifier.png', :class => 'zoom_icon'),
+          photo.native_page_url,
+          link_options
+      )
+    end
   end
 
   def native_url_for_photo(photo)
