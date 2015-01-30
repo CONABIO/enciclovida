@@ -408,11 +408,10 @@ class EspecieBio < ActiveRecord::Base
   end
 
   def completa_redis?
-    base = ActiveRecord::Base.connection_config[:database]
-    id_vista = Bases.id_original_a_id_en_vista(id, base)
-
     if ancestry_ascendente_directo_changed? || nombre_autoridad_changed? || nombre_cientifico_changed?
       json = ''
+      base = ActiveRecord::Base.connection_config[:database]
+      id_vista = Bases.id_original_a_id_en_vista(id, base)
       ruta = Rails.root.join('tools', 'bitacoras', 'redis', id.to_s).to_s
       FileUtils.mkpath(ruta, :mode => 0755) if !File.exists?(ruta)
       f = "#{ruta}/#{Time.now.strftime("%Y%m%d%H%M%S")}_nom_cien.json"
@@ -467,5 +466,9 @@ class EspecieBio < ActiveRecord::Base
       tax = EspecieBio.find(a)
       return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
     end
+  end
+
+  def cambia_descendientes
+
   end
 end
