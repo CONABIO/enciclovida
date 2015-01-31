@@ -28,7 +28,9 @@
         <%= submit_tag :Buscar, data: { disable_with: 'Procesando...' }, :class => "busquedas form-control btn btn-info btn-sm" %>
       </div>
     </div>
-      <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_avanzada();' %>
+      <div class="">
+        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_avanzada();' %>
+      </div>
     <div class="panel panel-info">
       <div class="panel-heading">
         <h4 class="panel-title"><%= t(:solo_taxones).html_safe %></h4>
@@ -43,7 +45,7 @@
   <% end %>
 </div>
 
-<div id="busqueda_avanzada" style="display: none" class="dropup">
+<div id="busqueda_avanzada" style="display: none" >
   <%= form_tag resultados_especies_path, :method => :get, :class => "form-horizontal"  do %>
       <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
@@ -67,19 +69,32 @@
           <%# button_tag :Buscar, :class => "btn btn-default btn-sm", :disabled => 'disabled'%>
         </div>
       </div>
-      <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link", :onClick => 'return busqueda_basica();' %>
+      <div class=" dropup">
+        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
+      </div>
+
       <div class="panel panel-info">
         <div class="panel-heading">
-          <h4 class="panel-title">Con tipo de distribución: <i>(Predeterminad: Cualquiera)</i></h4>
+          <button type="button" class="btn btn-link btn-sm">
+            <h4 class="panel-title">Con tipo de distribución: <i><small>(Predeterminada: Cualquiera)</small></i>
+            <span class="caret"></span>
+            </h4>
+          </button>
         </div>
-        <div class="checkbox">
-          <%= checkboxTipoDistribucion %>
+        <div class="panel-body">
+            <div class="checkbox">
+              <%= checkboxTipoDistribucion %>
+            </div>
         </div>
       </div>
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <h4 class="panel-title">Con distribución en: <i>(Predeterminado: Nivel nacional)</i></h4>
+          <button type="button" class="btn btn-link btn-sm">
+            <h4 class="panel-title">Con distribución en: <i><small>(Predeterminado: Nivel nacional)</small></i>
+              <span class="caret"></span>
+            </h4>
+          </button>
         </div>
         <div class="panel-body">
           <div class="form-group form-group-sm">
@@ -91,7 +106,11 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <h4 class="panel-title">Con la categoria taxonómica igual a:</h4>
+          <button type="button" class="btn btn-link btn-sm">
+            <h4 class="panel-title">Con la categoria taxonómica igual a:
+              <span class="caret"></span>
+            </h4>
+          </button>
         </div>
         <div class="panel-body">
           <div class="checkbox">
@@ -102,7 +121,11 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <h4  class="panel-title">Con estado de conservación:</h4>
+          <button type="button" class="btn btn-link btn-sm">
+            <h4  class="panel-title">Con estado de conservación:
+              <span class="caret"></span>
+            </h4>
+          </button>
         </div>
         <div class="panel-body">
           <div class="checkbox">
@@ -113,7 +136,11 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <h4 class="panel-title"><%= t(:solo_taxones).html_safe %></h4>
+          <button type="button" class="btn btn-link btn-sm">
+            <h4 class="panel-title"><%= t(:solo_taxones).html_safe %>
+              <span class="caret"></span>
+            </h4>
+          </button>
         </div>
         <div class="panel-body">
           <div class="checkbox">

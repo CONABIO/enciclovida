@@ -182,7 +182,7 @@ module EspeciesHelper
 
     TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
       next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
-      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
       end
     checkBoxes.html_safe
   end
@@ -194,8 +194,8 @@ module EspeciesHelper
       contador=0
 
       valores.each do |edo|
-        checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
-        checkBoxes+="#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}&nbsp;&nbsp;"
+        #checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
+        checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}</label>"
         contador+=1
       end
     end
@@ -207,8 +207,8 @@ module EspeciesHelper
     contador=0
 
     CategoriaTaxonomica.order('nivel1, nombre_categoria_taxonomica ASC').map(&:nombre_categoria_taxonomica).uniq.each do |cat|
-      checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
-      checkBoxes+="#{check_box_tag('cat[]', cat, false, :class => :busqueda_atributo_checkbox)} #{cat}&nbsp;&nbsp;"
+      #checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
+      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('cat[]', cat, false, :class => :busqueda_atributo_checkbox)} #{cat}</label>"
       contador+=1
     end
     checkBoxes.html_safe
