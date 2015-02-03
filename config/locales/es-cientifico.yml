@@ -110,7 +110,7 @@ es-cientifico:
       month: Mes
       second: Segundos
       year: Año
-  el_taxon_no_tiene_kml: El tax&oacute;n no tiene KML.
+  el_taxon_no_tiene_kml: El taxón no tiene KML.
   errors: &errors
     format: ! '%{attribute} %{message}'
     messages:

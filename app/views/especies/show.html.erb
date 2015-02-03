@@ -216,7 +216,7 @@
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
   <%= datos_principales(@especie).html_safe %>
-  Descarga:
+  <br>Descarga:
   ficha en <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
   | registros del GBIF <%= link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>
 </div>
@@ -245,7 +245,7 @@
 <div id="tabs" style="width: 100%; float:left;">
   <% if I18n.locale.to_s == 'es-cientifico' %>
       <ul>
-        <li><a href="#conabio_info"><span>Info</span></a></li>
+        <li><a href="#conabio_info"><span>Cat&aacute;logos de CONABIO</span></a></li>
         <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
       </ul>
@@ -267,6 +267,7 @@
       <ul>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
         <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
+        <li><a href="#conabio_info"><span>Cat&aacute;logos de CONABIO</span></a></li>
       </ul>
 
       <% if @especie.species_or_lower? %>
@@ -274,6 +275,10 @@
             <%= render :partial => 'description' %>
           </div>
       <% end %>
+
+      <div id="conabio_info" class="last column span-20">
+        <%= render :partial => 'info' %>
+      </div>
 
       <div id="arbol_taxonomico" class="last column span-20">
         <%= render :partial => 'arbol' %>
