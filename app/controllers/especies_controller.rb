@@ -30,9 +30,6 @@ class EspeciesController < ApplicationController
     #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
     #end
 
-    #@desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
-    #@nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
-
     respond_to do |format|
       format.html
       format.json { render json: @especie.to_json }
