@@ -461,10 +461,12 @@ class EspeciesController < ApplicationController
       proveedor = @especie.proveedor
       if proveedor
         if proveedor.snib_kml.present?
-          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kmz"
+        else
+          redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
         end
       else
-        render :text => 'No existe KML para este tax&oacute;n'.html_safe
+        redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
       end
     else
 # Cache del KMZ
@@ -480,13 +482,13 @@ class EspeciesController < ApplicationController
               if proveedor.kmz
                 redirect_to "/assets/#{@especie.id}/registros.kmz"
               else
-                render :text => 'No existe KML para este tax&oacute;n'.html_safe
+                redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
               end
             else
-              render :text => 'No existe KML para este tax&oacute;n'.html_safe
+              redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
             end
           else
-            render :text => 'No existe KML para este tax&oacute;n'.html_safe
+            redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
           end
         end
       end
