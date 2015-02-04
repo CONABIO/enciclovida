@@ -5,7 +5,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Guarda en la base el kml para una facil consulta y generacion del mismo
 
-*** Este script solo se corre una vez para llenar los kmz
+*** Este script se corre cada semana para generar los kml y los kmz
 
 Usage:
 
@@ -28,7 +28,11 @@ def kml
 
     if proveedor.snib_kml.present? && proveedor.snib_kml_changed?
       puts "\tCon KML" if OPTS[:debug]
-      proveedor.save
+      if proveedor.save
+        if proveedor.kmz
+          puts "\t\tCon KMZ" if OPTS[:debug]
+        end
+      end
     end
   end
 end
@@ -36,7 +40,6 @@ end
 
 start_time = Time.now
 
-@path = 'tools/bitacoras/datos_para_catalogos'
 kml
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
