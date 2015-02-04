@@ -34,7 +34,7 @@ def batches
           "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
 
       data = "{\"id\":\"#{nombre_comun.id}#{0}\","   #el ID de nombres_comunes no es unico (uno a muchos)
-      data+= "\"term\":\"#{Limpia.cadena(nombre_comun.nombre_comun)}\","
+      data+= "\"term\":\"#{Limpia.cadena(nombre_comun.nombre_comun.humaniza)}\","
       data+= "\"score\":2,"
       data+= "\"data\":{\"nombre_cientifico\":\"#{Limpia.cadena(especie.nombre_cientifico)}\", \"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(especie.nombre_autoridad)}\", \"id\":#{especie.id}}"
       data+= "}\n"
