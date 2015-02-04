@@ -83,7 +83,7 @@
         </div>
         <div class="panel-body">
           <div class="form-group form-group-sm">
-            <%= select :distribucion_nivel_1, nil, TipoRegion.iniciales.collect {|tr| [tr.descripcion.humanize, tr.id] }, {include_blank: 'Nacional'}, {class: "form-control"}  %>
+            <%= select :distribucion_nivel_1, nil, TipoRegion.iniciales.collect {|tr| [tr.descripcion.humanizar, tr.id] }, {include_blank: 'Nacional'}, {class: "form-control"}  %>
             <div id="distribucion_nivel"></div>
           </div>
         </div>
