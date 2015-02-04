@@ -75,13 +75,13 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').toggleClass('hidden');">
             <h4 class="panel-title">Con tipo de distribución: <i><small>(Predeterminada: Cualquiera)</small></i>
             <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body">
+        <div class="panel-body hidden" id="panelTipoDistribucionEn">
             <div class="checkbox">
               <%= checkboxTipoDistribucion %>
             </div>
@@ -90,13 +90,13 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionCon').toggleClass('hidden');">
             <h4 class="panel-title">Con distribución en: <i><small>(Predeterminado: Nivel nacional)</small></i>
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body">
+        <div class="panel-body hidden" id="panelTipoDistribucionCon">
           <div class="form-group form-group-sm">
             <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
             <div id="distribucion_nivel"></div>
@@ -106,13 +106,13 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').toggleClass('hidden');">
             <h4 class="panel-title">Con la categoria taxonómica igual a:
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body">
+        <div class="panel-body hidden" id="panelCategoriaTaxonomica">
           <div class="checkbox">
             <%= checkboxCategoriaTaxonomica %>
           </div>
@@ -121,13 +121,13 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').toggleClass('hidden');">
             <h4  class="panel-title">Con estado de conservación:
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body">
+        <div class="panel-body hidden" id="panelEstadoConservacion">
           <div class="checkbox">
             <%= checkboxEstadoConservacion %>
           </div>
@@ -136,13 +136,13 @@
 
       <div class="panel panel-info">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelValidoSinonimo').toggleClass('hidden');">
             <h4 class="panel-title"><%= t(:solo_taxones).html_safe %>
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" id="panelValidoSinonimo">
           <div class="checkbox">
             <%= checkboxValidoSinonimo %>
           </div>
@@ -155,5 +155,5 @@
 </div>
 <div>
   Muestra <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "form-control" %> resultados por p&aacute;gina
-  <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-danger btn-sm", data: { disable_with: 'Limpiando...' } %>
+  <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
 </div>
