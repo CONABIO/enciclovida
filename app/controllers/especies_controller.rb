@@ -457,41 +457,18 @@ class EspeciesController < ApplicationController
   end
 
   def kmz
-    if params[:kml].present? && to_boolean(params[:kml])
-      proveedor = @especie.proveedor
-      if proveedor
-        if proveedor.snib_kml.present?
-          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kmz"
+    if proveedor = @especie.proveedor
+      if proveedor.snib_kml.present?
+        if params[:kml].present? && to_boolean(params[:kml])
+          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
         else
-          redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+          redirect_to "/assets/#{@especie.id}/registros.kmz"
         end
       else
         redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
       end
     else
-# Cache del KMZ
-      if Rails.cache.exist?("snib_#{@especie.id}")
-        redirect_to "/assets/#{@especie.id}/registros.kmz"
-      else
-        Rails.cache.fetch(@especie.snib_cache_key, expires_in: 5.minutes) do
-          proveedor = @especie.proveedor
-          if proveedor
-            proveedor.kml
-            if proveedor.snib_kml.present?
-              proveedor.save
-              if proveedor.kmz
-                redirect_to "/assets/#{@especie.id}/registros.kmz"
-              else
-                redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-              end
-            else
-              redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-            end
-          else
-            redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-          end
-        end
-      end
+      redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
     end
   end
 

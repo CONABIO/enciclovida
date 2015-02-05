@@ -23,7 +23,7 @@ class Proveedor < ActiveRecord::Base
       if nom_comunes.present?
         next if nom_comunes.include?(nombre)
       end
-      nombres_comunes_faltan << "#{especie.id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica}"
+      nombres_comunes_faltan << "#{especie.catalogo_id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica}"
     end
 
     nombres_comunes_faltan
@@ -88,7 +88,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   def kmz
-    ruta = Rails.root.join('app', 'assets', 'taxones', especie.id.to_s)
+    ruta = Rails.root.join('app', 'assets', 'kmz', especie.id.to_s)
     FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
     ruta_kml = ruta.join('registros.kml')
     File.open(ruta_kml, 'w+') { |file| file.write(snib_kml) }
