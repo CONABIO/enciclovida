@@ -18,7 +18,7 @@ end
 
 def kml
   Especie.find_each do |taxon|
-  #Especie.limit(400).each do |taxon|
+    #Especie.limit(400).each do |taxon|
     puts "#{taxon.id}\t#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.species_or_lower?
     proveedor = taxon.proveedor

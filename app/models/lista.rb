@@ -86,5 +86,3 @@ class Lista < ActiveRecord::Base
     self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
   end
 end
-
-
