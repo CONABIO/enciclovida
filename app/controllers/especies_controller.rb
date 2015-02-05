@@ -30,9 +30,6 @@ class EspeciesController < ApplicationController
     #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
     #end
 
-    #@desc.present? ? @ficha = @desc : @ficha = '<em>No existe ninguna ficha asociada con este tax&oacute;n</em>'
-    #@nombre_mapa = URI.encode("\"#{@especie.nombre_cientifico}\"")
-
     respond_to do |format|
       format.html
       format.json { render json: @especie.to_json }
@@ -484,53 +481,29 @@ class EspeciesController < ApplicationController
   end
 
   def kmz
-    if params[:kml].present? && to_boolean(params[:kml])
-      proveedor = @especie.proveedor
-      if proveedor
-        if proveedor.snib_kml.present?
-          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kmz"
+    if proveedor = @especie.proveedor
+      if proveedor.snib_kml.present?
+        if params[:kml].present? && to_boolean(params[:kml])
+          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
         else
-          redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+          redirect_to "/assets/#{@especie.id}/registros.kmz"
         end
       else
         redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
       end
-
     else
-# Cache del KMZ
-      if Rails.cache.exist?("snib_#{@especie.id}")
-        redirect_to "/assets/#{@especie.id}/registros.kmz"
-      else
-        Rails.cache.fetch(@especie.snib_cache_key, expires_in: 5.minutes) do
-          proveedor = @especie.proveedor
-          if proveedor
-            proveedor.kml
-            if proveedor.snib_kml.present?
-              proveedor.save
-              if proveedor.kmz
-                redirect_to "/assets/#{@especie.id}/registros.kmz"
-              else
-                redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-              end
-            else
-              redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-            end
-          else
-            redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-          end
-        end
-      end
+      redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
     end
   end
 
   # Decide cual filtro cargar y regresa el html y si es nuevo o no
   def filtros
-    # filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
-    #   if filtro.present? && filtro.html.present?
-    #    render :text => filtro.html.html_safe
-    #  else
-    #    # Por default hace render de filtros
-    #  end
+    filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
+    if filtro.present? && filtro.html.present?
+      render :text => filtro.html.html_safe
+    else
+      # Por default hace render de filtros
+    end
   end
 
   private

@@ -43,7 +43,7 @@ base: &base
   # species descriptions from these sources in this order, trying the next
   # if one fails. You can see all the available describers in
   # lib/taxon_describers/lib/taxon_describers
-  taxon_describers: [conabio, wikipediaes, eoles, eol, wikipedia]
+  taxon_describers: [conabio, eol, wikipediaes, eoles, wikipedia]
   photo_providers: [conabio, flickr, eol, wikimedia]
 
   # Email addresses

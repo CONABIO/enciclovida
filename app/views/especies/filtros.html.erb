@@ -98,7 +98,7 @@
         </div>
         <div class="panel-body hidden" id="panelTipoDistribucionCon">
           <div class="form-group form-group-sm">
-            <%= select_tag :distribucion_nivel_1, options_from_collection_for_select(TipoRegion.iniciales, :id, :descripcion), :prompt => :NACIONAL, :class => "form-control"  %>
+            <%= select :distribucion_nivel_1, nil, TipoRegion.iniciales.collect {|tr| [tr.descripcion.humanizar, tr.id] }, {include_blank: 'Nacional'}, {class: "form-control"}  %>
             <div id="distribucion_nivel"></div>
           </div>
         </div>

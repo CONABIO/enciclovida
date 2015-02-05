@@ -27,10 +27,10 @@ def nom_com_principal
     con_espaniol = false
     taxon.nombres_comunes.each do |nc|
       if !con_espaniol && nc.lengua == 'Español'
-        taxon.nombre_comun_principal = nc.nombre_comun
+        taxon.nombre_comun_principal = nc.nombre_comun.humaniza
         con_espaniol = true
       elsif !con_espaniol && nc.lengua == 'Inglés'
-        taxon.nombre_comun_principal = nc.nombre_comun
+        taxon.nombre_comun_principal = nc.nombre_comun.humaniza
       end
     end
 

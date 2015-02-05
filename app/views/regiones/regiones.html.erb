@@ -1,1 +1,1 @@
-<%= select_tag("distribucion_nivel_#{@nivel+1}", options_from_collection_for_select(@regiones, :id, :nombre_region), :prompt => :TODOS) if @regiones.present? %>
+<%= select("distribucion_nivel_#{@nivel+1}", nil, @regiones.collect {|r| [r.nombre_region.humanizar, r.id] }, {include_blank: 'Todos'}, {class: "form-control"}) if @regiones.present? %>
