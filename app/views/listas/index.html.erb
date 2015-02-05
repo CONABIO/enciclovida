@@ -29,7 +29,7 @@
         <td width="20%"><%= truncate(lista.nombre_lista, :length => 50) %></td>
         <td width="20%"><%= truncate columnas(lista.columnas.split(',')), :length => 100 %></td>
         <% begin %>
-            <% Especie.find(lista.cadena_especies.split(',')).first(6).each do |taxon| %>
+            <% Especie.find(lista.cadena_especies.split(',').first(6)).each do |taxon| %>
                 <% @taxones+= "#{taxon.nombre_cientifico}, " %>
             <% end %>
         <% rescue %>
