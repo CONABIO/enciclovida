@@ -65,7 +65,7 @@ class Proveedor < ActiveRecord::Base
 
     colectas.each do |col|
       datos = col['properties']
-      next unless datos['proceso_val'] == 'MX_validoE'
+      next unless datos['nombrepaismapa'] == 'MEXICO'
       cadena = Hash.new
 
       #Los numere para poder armar los datos en el orden deseado
@@ -73,14 +73,15 @@ class Proveedor < ActiveRecord::Base
       cadena['2_nombre_comun'] = especie.nombre_comun_principal
       cadena['4_nombre_coleccion'] = datos['nombrecoleccion']
       cadena['5_nombre_institucion'] = datos['nombreinstitucion']
-      cadena['6_pais_coleccion'] = datos['paiscoleccion']
-      cadena['7_longitude'] = datos['x_7']
-      cadena['8_latitude'] = datos['y_7']
+      cadena['6_nombre_colector'] = datos['nombrecolector']
+      cadena['7_url_proyecto_conabio'] = datos['url_proyecto_conabio']
+      cadena['8_longitude'] = datos['longitud']
+      cadena['9_latitude'] = datos['latitud']
 
       #Pone la fecha correcta si tiene el formato indicado
-      if datos['aniocolecta'] != 9999 && datos['mescolecta'] != 99 && datos['diacolecta'] != 99
+      #if datos['aniocolecta'] != 9999 && datos['mescolecta'] != 99 && datos['diacolecta'] != 99
         cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta']}-#{datos['diacolecta']} 00:00:00"
-      end
+      #end
 
       cadenas << cadena
     end
@@ -123,15 +124,17 @@ class Proveedor < ActiveRecord::Base
             kml+= "<Data name=\"Colección\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '5_nombre_institucion'
             kml+= "<Data name=\"Institución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
-          when '6_pais_coleccion'
-            kml+= "<Data name=\"País de procedencia\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '6_nombre_colector'
+            kml+= "<Data name=\"Nombre del colector\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '7_url_proyecto_conabio'
+            kml+= "<Data name=\"Enlace al proyecto\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           else
             next
         end
       end
 
       kml+= "</ExtendedData>\n"
-      kml+= "<Point>\n<coordinates>\n#{cad['7_longitude']},#{cad['8_latitude']}\n</coordinates>\n</Point>\n"
+      kml+= "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
       kml+= "</Placemark>\n"
     end
 
