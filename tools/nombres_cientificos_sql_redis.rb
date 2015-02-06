@@ -30,7 +30,7 @@ def batches
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' width='30px' \>" :
-        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' \>"
+        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' class='img-thumbnail'\>"
 
     data=''
     data+= "{\"id\":#{taxon.id},"

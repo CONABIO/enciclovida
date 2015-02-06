@@ -9,16 +9,17 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
- *= //require bootstrap.css
- *= //require bootstrap-theme.css
+ *= //require_tree .
+ *= require bootstrap.min
+ *= require bootstrap-theme.min
+ *= require dashboard
  *= //require bootstrap.css.map
  *= //require bootstrap-theme.css.map
- *= //require especies
- *= //require flickr_photos
- *= //require listas
- *= //require soulmate
- *= //require webservices
+ *= require especies
+ *= require flickr_photos
+ *= require listas
+ *= require soulmate
+ *= require webservices
  */
 
 /*

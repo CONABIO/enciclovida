@@ -62,17 +62,17 @@ html {
 }
 
 #nombre_comun, #nombre_cientifico,#nombre_comun_1, #nombre_cientifico_1 {
-  border: 1px solid #999;
+  //border: 1px solid #999;
   color: #545C5F;
   font-family: $helvetica;
   //font-size: 20px;
-  font-size: 14px;
-  letter-spacing: 0.5px;
+  //font-size: 14px;
+  //letter-spacing: 0.5px;
   margin: 0;
   //padding: 12px 12px 10px;
-  padding: 2px 2px 1px;
+  //padding: 2px 2px 1px;
   //width: $inputWidth;
-  width: 200px;
+  //width: 200px;
   @include border-radius(4px);
   
   &:focus{ 
@@ -93,7 +93,7 @@ html {
   text-shadow: 0 0 0 white;
   //top: 306px;
   width: $soulmateWidth;
-  z-index: 1000;
+  z-index: 9999;
   @include border-radius(4px);
   @include box-shadow(0, 4px, 10px, rgba(0,0,0,.2));
     

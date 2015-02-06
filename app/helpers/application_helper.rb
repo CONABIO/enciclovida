@@ -90,8 +90,9 @@ module ApplicationHelper
           image_tag(img_url,
                     :title => photo.attribution,
                     :id => "photo_#{photo.id}",
-                    :class => "image #{size}") +
-              image_tag('silk/magnifier.png', :class => 'zoom_icon'),
+                    :class => "image #{size} img-thumbnail"),
+              #image_tag('silk/magnifier.png', :class => 'zoom_icon'),
+              #"<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe,
           photo.native_page_url,
           link_options
       )
