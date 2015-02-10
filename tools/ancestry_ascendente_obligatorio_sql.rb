@@ -21,7 +21,7 @@ end
 def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
     puts e.nombre if OPTS[:debug]
-    e.ancestry_obligatorio
+    e.ancestry_obligatorio            # no es necesario evitar el ancestry ya que este campo no lo tiene
     e.evita_before_save = true        # evita el metodo before_save
     e.save
   end
@@ -32,14 +32,14 @@ start_time = Time.now
 if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
-      ActiveRecord::Base.establish_connection base
+      Bases.conecta_a base
       puts "Conectando a: #{base}" if OPTS[:debug]
       completa
     end
   end
 else
   CONFIG.bases.each do |base|
-    ActiveRecord::Base.establish_connection base
+    Bases.conecta_a base
     completa
   end
 end

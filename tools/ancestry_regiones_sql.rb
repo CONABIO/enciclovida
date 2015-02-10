@@ -52,14 +52,14 @@ start_time = Time.now
 if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
-      ActiveRecord::Base.establish_connection base
+      Bases.conecta_a base
       puts "Conectando a: #{base}" if OPTS[:debug]
       completa
     end
   end
 else
   CONFIG.bases.each do |base|
-    ActiveRecord::Base.establish_connection base
+    Bases.conecta_a base
     puts "Conectando a: #{base}" if OPTS[:debug]
     completa
   end
