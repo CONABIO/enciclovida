@@ -93,7 +93,7 @@ module EspeciesHelper
 
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
     nodos="<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos+="#{link_to('<span class="glyphicon glyphicon-sort" aria-hidden="true"></span>'.html_safe, '', :id => "link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
+    nodos+="#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
 
     nodos+="#{image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle', :style => 'width: 50px; height: 50px;')}"
 
