@@ -73,6 +73,16 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/calonso-conabio/activerecord-sqlserver-adapter.git
+  revision: 47b6d7b5eb6175cf7ae6929678fbe157f53c9f77
+  ref: 47b6d7b
+  branch: 4-0-stable
+  specs:
+    activerecord-sqlserver-adapter (4.0.0)
+      activerecord (~> 4.0.0)
+      arel (~> 4.0.1)
+
+GIT
   remote: https://github.com/calonso-conabio/ancestry.git
   revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
   ref: bfadb2c
@@ -86,9 +96,6 @@ GEM
     actionpack-action_caching (1.1.1)
       actionpack (>= 4.0.0, < 5.0)
     activerecord-deprecated_finders (1.0.3)
-    activerecord-sqlserver-adapter (4.0.0)
-      activerecord (~> 4.0.0)
-      arel (~> 4.0.1)
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
@@ -252,7 +259,7 @@ PLATFORMS
 DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store!
-  activerecord-sqlserver-adapter (~> 4.0.0)
+  activerecord-sqlserver-adapter!
   ancestry!
   blurrily
   carrierwave

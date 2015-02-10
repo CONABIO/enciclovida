@@ -14,13 +14,12 @@ Usage:
   rails r tools/atributos_adicionales.rb -d create    #para crear los campos adicionales en todas las bases
   rails r tools/atributos_adicionales.rb -d drop      #para borrar los campos adicionales en todas las bases
 
-  rails r tools/atributos_adicionales.rb -d create 03-Hongos-Sept14    #para crear los campos adicionales en una o mas bases en especifico
-  rails r tools/atributos_adicionales.rb -d drop 03-Hongos-Sept14      #para borrar los campos adicionales en una o mas bases en especifico
+  rails r tools/atributos_adicionales.rb -d create 03-Hongos-Sept14    #para crear los campos adicionales en un conjunto de bases
+  rails r tools/atributos_adicionales.rb -d drop 03-Hongos-Sept14      #para borrar los campos adicionales en un conjunto de bases
 where [options] are:
   EOS
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
-
 
 @campos = {
     'especies' =>
@@ -50,33 +49,34 @@ def accion_a_campos(accion)
       end
     else
       puts 'Ejecutando con argumento: drop' if OPTS[:debug]
-      query+= "ALTER TABLE #{BASES::EQUIVALENCIA[tabla]} DROP COLUMN "
+      query+= "ALTER TABLE #{Bases::EQUIVALENCIA[tabla]} DROP COLUMN "
 
       campos.each do |campo, valor|
         query+= "#{campo},"
       end
     end
 
-    ActiveRecord::Base.connection.execute(query[0..-2])
+    Bases.ejecuta query[0..-2]
     puts "Query: #{query[0..-2]}" if OPTS[:debug]
   end
 end
 
 start_time = Time.now
+
 acciones = %w(create drop)                #posibles acciones
 if ARGV.any? && acciones.include?(ARGV[0].downcase)
   if ARGV.count > 1
     ARGV.each_with_index do |base, index|
       next if index == 0
       if CONFIG.bases.include?(base)
-        ActiveRecord::Base.establish_connection base
+        Bases.conecta_a base
         puts "Con base: #{base}" if OPTS[:debug]
         accion_a_campos(ARGV[0].downcase)
       end
     end
   elsif ARGV.count == 1
     CONFIG.bases.each do |base|
-      ActiveRecord::Base.establish_connection base
+      Bases.conecta_a base
       puts "Con base: #{base}" if OPTS[:debug]
       accion_a_campos(ARGV[0].downcase)
     end
