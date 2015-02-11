@@ -21,37 +21,27 @@ def nom_com_principal
   puts 'Procesando los taxones...' if OPTS[:debug]
 
   EspecieBio.find_each do |taxon|
-    puts taxon.nombre if OPTS[:debug]
-    next unless taxon.nombre_comun_principal.blank?
-
-    con_espaniol = false
-    taxon.nombres_comunes.each do |nc|
-      if !con_espaniol && nc.lengua == 'Español'
-        taxon.nombre_comun_principal = nc.nombre_comun.humaniza
-        con_espaniol = true
-      elsif !con_espaniol && nc.lengua == 'Inglés'
-        taxon.nombre_comun_principal = nc.nombre_comun.humaniza
-      end
-    end
-
+    puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
     taxon.evita_before_save = true
-    taxon.save if taxon.changed?
+    taxon.pon_nombre_comun_principal
+    taxon.save if taxon.nombre_comun_principal_changed?
   end
 end
+
 
 start_time = Time.now
 
 if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
-      ActiveRecord::Base.establish_connection base
+      Bases.conecta_a base
       puts "Conectando a: #{base}" if OPTS[:debug]
       nom_com_principal
     end
   end
 else
   CONFIG.bases.each do |base|
-    ActiveRecord::Base.establish_connection base
+    Bases.conecta_a base
     puts "Conectando a: #{base}" if OPTS[:debug]
     nom_com_principal
   end
