@@ -20,32 +20,13 @@ end
 
 def completa
   RegionBio.find_each do |r|
-    puts r.nombre_region if OPTS[:debug]
-    if r.id_region_asc != r.id
-      r.ancestry=r.id_region_asc
-      valor=true
-      id=r.id_region_asc
-
-      while valor do
-        subReg=RegionBio.find(id)
-
-        if subReg.id_region_asc == subReg.id
-          valor=false
-        else
-          r.ancestry="#{subReg.id_region_asc}/#{r.ancestry}"
-          id=subReg.id_region_asc
-        end
-      end
-
-      r.save
-    else
-      puts 'Es root' if OPTS[:debug]
-    end
+    puts "#{r.id}-#{r.nombre_region}" if OPTS[:debug]
+    r.completa_ancestry
+    r.avoid_ancestry = true           # evita la gema ancestry
+    r.save
   end
 end
 
-
-#*******antes de correr se tiene que comentar la linea de ancestry en el model**********
 
 start_time = Time.now
 

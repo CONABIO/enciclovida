@@ -26,4 +26,6 @@
         7.1.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d                  #para completarlo en todas las bases
         7.2.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
-8.-
+8.- Corre el script para completar el campo ancestry de la tabla Region: (149.004173221 seg)
+        8.1.- rails r tools/ancestry_regiones_sql.rb -d
+        8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
