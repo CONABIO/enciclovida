@@ -3,12 +3,12 @@
 1.- Poner en solo lectura la aplicacion, para que nuevos cambios no tengan lugar mientras se corren los scripts.
 
 2.- Crear los nuevos nombres para las bases de datos en SQL server (SQL2012), mandando mesa de ayuda.
-        1.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server (172.16.3.222;maquina virtual).
+        2.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server (172.16.3.222;maquina virtual).
 
 3.- Migrar todas las bases con Microsoft SQL Server Migration Assistant for Access 6.0 (172.16.3.222;maquina virtual),
     dejar las ligas al archivo de Access.
 
-4.- En una instancia local del buscador (colibri) en config.config.yml cambiar la variable "bases" por
+4.- En una instancia local del buscador (colibri) en config/config.yml cambiar la variable "bases" por
     la lista de bases que se desea actualizar.
         4.1.- Cerciorate que en config/database.yml consulte la instancia de pruebas del servidor.
 
