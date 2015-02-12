@@ -18,5 +18,28 @@
   <%= render :partial => 'arbol' %>
 </fieldset>
 
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">Búsquedas comunes</h3>
+  </div>
+  <div class="panel-body">
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+      <%= link_to "Cuasiendémica","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Cuasiendémica".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Endémica","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Endémica".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Introducida","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Introducida".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Invasora","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Invasora".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Nativa","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Localidad+tipo".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "No Endémica","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Nativa".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Semiendémica","especie/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=No+endémicas".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Localidad Tipo","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&dist%5B%5D=Semiendémica".html_safe, :class => "btn btn-default btn-sm" %>
+      </div>
+        <br />
+      <div class="btn-group btn-group-justified" role="group" aria-label="...">
+      <%= link_to "Estado de Conservación = NOM", "especies/resultados?utf8=%E2%9C%93&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&edo_cons%5B%5D=P+en+peligro+de+extinci%C3%B3n&edo_cons%5B%5D=A+amenazada&edo_cons%5B%5D=E+probablemente+extinta+en+el+medio+silvestre&edo_cons%5B%5D=Pr+sujeta+a+protecci%C3%B3n+especial".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Estado de Conservación = IUCN","especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&edo_cons%5B%5D=Ex+Extinta&edo_cons%5B%5D=EW+Extinta+en+el+medio+silvestre&edo_cons%5B%5D=CR+En+peligro+crítico&edo_cons%5B%5D=EN+En+peligro&edo_cons%5B%5D=VU+Vulnerable&edo_cons%5B%5D=LR%2Fcd+Riesgo+bajo%3A+Dependiente+de+conservación&edo_cons%5B%5D=DD+Datos+insuficientes&edo_cons%5B%5D=NE+No+evaluado&edo_cons%5B%5D=LR%2Fnt+o+NT+Casi+amenazada&edo_cons%5B%5D=LR%2Flc+o+LC+Baja+prioridad".html_safe, :class => "btn btn-default btn-sm" %>
+      <%= link_to "Estado de Conservación = CITES", "especies/resultados?utf8=✓&id_nom_cientifico=&id_nom_comun=&busqueda=avanzada&por_pagina=10&nombre_comun=&nombre_cientifico=&edo_cons%5B%5D=Apéndice+I&edo_cons%5B%5D=Apéndice+II&edo_cons%5B%5D=Apéndice+III".html_safe, :class => "btn btn-default btn-sm" %>
+    </div>
+  </div>
 
+</div>
 
