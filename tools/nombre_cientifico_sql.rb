@@ -22,7 +22,7 @@ def completa
   EspecieBio.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
     taxon.evita_before_save = true
-    taxon.ponNombreCientifico
+    taxon.pon_nombre_cientifico
 
     if taxon.save
       puts "--->  #{taxon.nombre_cientifico}" if OPTS[:debug]

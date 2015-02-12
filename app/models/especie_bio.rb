@@ -387,11 +387,11 @@ class EspecieBio < ActiveRecord::Base
   def completa_datos
     ancestry_directo
     ancestry_obligatorio
-    ponNombreCientifico
+    pon_nombre_cientifico
     #completa_redis?
   end
 
-  def ponNombreCientifico
+  def pon_nombre_cientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
       when 'especie'
         self.nombre_cientifico = "#{encuentra('genero')} #{nombre}"
@@ -479,6 +479,7 @@ class EspecieBio < ActiveRecord::Base
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|
       tax = EspecieBio.find(a)
+      puts tax.nombre
       return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
     end
   end

@@ -92,4 +92,8 @@ module Bases
     end
     primary_key_sql[0..-6]
   end
+
+  def self.base_del_ambiente
+    ActiveRecord::Base.configurations[Rails.env]['database']
+  end
 end

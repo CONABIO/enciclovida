@@ -92,8 +92,8 @@ def camTab
                      "#{@id}+IdNombreAscendente as id_nombre_ascendente",
                      "#{@id}+IdAscendObligatorio as id_ascend_obligatorio",
                      "#{@id}+IdCategoriaTaxonomica as categoria_taxonomica_id",
-                     "dbo.fnSplitString2(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_directo",
-                     "dbo.fnSplitString2(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_obligatorio",
+                     "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_directo",
+                     "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_obligatorio",
                      "nombre_cientifico",
                      "'' as delta",
                      "nombre_comun_principal",
@@ -172,7 +172,7 @@ def camTab
                      "#{@id}+IdTipoRegion as tipo_region_id",
                      "ClaveRegion as clave_region",
                      "IdRegionAsc as id_region_asc",
-                     "dbo.fnSplitString2(ancestry, '/', #{@id}) AS ancestry",
+                     "dbo.fnSplitString(ancestry, '/', #{@id}) AS ancestry",
                      "FechaCaptura as created_at",
                      "FechaModificacion as updated_at"
       ],
@@ -193,6 +193,7 @@ def camTab
       ],
   }
 end
+
 
 start_time = Time.now
 

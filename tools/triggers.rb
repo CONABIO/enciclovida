@@ -10,8 +10,8 @@ Usage:
   rails r tools/triggers.rb -d create    #para crear los triggers en todas las bases
   rails r tools/triggers.rb -d drop      #para borrar los triggers en todas las bases
 
-  rails r tools/triggers.rb -d create 03-Hongos-Sept14    #para crear los triggers en una o mas bases en especifico
-  rails r tools/triggers.rb -d drop 03-Hongos-Sept14      #para borrar los triggers en una o mas bases en especifico
+  rails r tools/triggers.rb -d create 03-Hongos-Sept14    #para correr solo un conjunto de bases
+  rails r tools/triggers.rb -d drop 03-Hongos-Sept14      #para correr solo un conjunto de bases
 where [options] are:
   EOS
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
@@ -37,9 +37,9 @@ def argumento_a_trigger(arg, base)
       #Agregar posibles IP de desarrollo
       trigger+= "DECLARE @ip NVARCHAR(255);\n"
       trigger+= "DECLARE @sql VARCHAR(255);\n"
-      trigger+= "SELECT @ip=master.dbo.GetCurrentIP();\n"
-      trigger+= "SET @sql = 'INSERT INTO master.dbo.ips (ip) VALUES ('''+@ip+''')';\n"
-      trigger+= "EXEC (@sql);\n"
+      trigger+= "SELECT @ip=[#{Bases.base_del_ambiente}].dbo.GetCurrentIP();\n"
+      trigger+= "--SET @sql = 'INSERT INTO [#{Bases.base_del_ambiente}].dbo.ips (ip) VALUES ('''+@ip+''')';\n"
+      trigger+= "--EXEC (@sql);\n"
       trigger+= "IF (@ip = '#{CONFIG.ip}') RETURN;\n"
 
       #Checa cual accion es
@@ -67,7 +67,7 @@ def argumento_a_trigger(arg, base)
       trigger+= "FETCH NEXT FROM end_point_cursor INTO @ids\n"
       trigger+= "WHILE @@FETCH_STATUS = 0\n"
       trigger+= "BEGIN\n"
-      trigger+= "EXEC master.dbo.webservice 'a-las-plantas-las-endereza-el-cultivo-a-los-hombres-la-educacion-rosseau', @ids, '#{base}', @accion, '#{tabla}';\n"
+      trigger+= "EXEC [#{Bases.base_del_ambiente}].dbo.webservice 'a-las-plantas-las-endereza-el-cultivo-a-los-hombres-la-educacion-rosseau', @ids, '#{base}', @accion, '#{tabla}';\n"
       trigger+= "FETCH NEXT FROM end_point_cursor INTO @ids\n"
       trigger+= "END\n"
 
@@ -85,7 +85,7 @@ def argumento_a_trigger(arg, base)
       trigger+= "FETCH NEXT FROM end_point_cursor INTO @ids\n"
       trigger+= "WHILE @@FETCH_STATUS = 0\n"
       trigger+= "BEGIN\n"
-      trigger+= "EXEC master.dbo.webservice 'a-las-plantas-las-endereza-el-cultivo-a-los-hombres-la-educacion-rosseau', @ids, '#{base}', @accion, '#{tabla}';\n"
+      trigger+= "EXEC [#{Bases.base_del_ambiente}].dbo.webservice 'a-las-plantas-las-endereza-el-cultivo-a-los-hombres-la-educacion-rosseau', @ids, '#{base}', @accion, '#{tabla}';\n"
       trigger+= "FETCH NEXT FROM end_point_cursor INTO @ids\n"
       trigger+= "END\n"
 
