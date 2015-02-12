@@ -3,12 +3,12 @@
 1.- Poner en solo lectura la aplicacion, para que nuevos cambios no tengan lugar mientras se corren los scripts.
 
 2.- Crear los nuevos nombres para las bases de datos en SQL server (SQL2012), mandando mesa de ayuda.
-        1.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server (172.16.3.222;maquina virtual).
+        2.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server (172.16.3.222;maquina virtual).
 
 3.- Migrar todas las bases con Microsoft SQL Server Migration Assistant for Access 6.0 (172.16.3.222;maquina virtual),
     dejar las ligas al archivo de Access.
 
-4.- En una instancia local del buscador (colibri) en config.config.yml cambiar la variable "bases" por
+4.- En una instancia de prueba del buscador (colibri) en config.config.yml cambiar la variable "bases" por
     la lista de bases que se desea actualizar.
         4.1.- Cerciorate que en config/database.yml consulte la instancia de pruebas del servidor.
 
@@ -18,14 +18,44 @@
         5.3.- rails r tools/atributos_adicionales.rb -d create 03-Hongos-Sept14    #para crear los campos adicionales en un conjunto de bases
         5.4.- rails r tools/atributos_adicionales.rb -d drop 03-Hongos-Sept14      #para borrar los campos adicionales en un conjunto de bases
 
-6.- Corre el script para completar el campo ancestry_ascendente_directo:
+6.- Corre el script para completar el campo ancestry_ascendente_directo de la tabla Nombre:
         6.1.- rails r tools/ancestry_ascendente_directo_sql.rb -d                  #para completarlo en todas las bases
         6.2.- rails r tools/ancestry_ascendente_directo_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
-7.- Corre el script para completar el campo ancestry_ascendente_obligatorio:
+7.- Corre el script para completar el campo ancestry_ascendente_obligatorio de la tabla Nombre:
         7.1.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d                  #para completarlo en todas las bases
         7.2.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 8.- Corre el script para completar el campo ancestry de la tabla Region: (149.004173221 seg)
         8.1.- rails r tools/ancestry_regiones_sql.rb -d
-        8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+        8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
+
+9.- Corre el script para completar el nombre cientifico de la tabla Nombre
+        9.1.- rails r tools/nombre_cientifico_sql.rb -d
+        9.2.- rails r tools/nombre_cientifico_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
+
+10.- Corre el script para completar el nombre comun principal de la tabla Nombre (918.00047121 seg):
+        10.1.- rails r tools/nombre_comun_principal_sql.rb -d
+        10.2.- rails r tools/nombre_comun_principal_sql.rb -d 02-Arthropoda        #para correr solo un conjunto de bases
+
+11.- Corre el script para generar la vistas de cada tabla (51.618275429 seg):
+        11.1.- rails r tools/vistas.rb -d                                          #por default crea las vistas
+        11.2.- rails r tools/vistas.rb -d drop                                     #para borrar las vistas
+
+12.- OJO: Solo si estas migrando la informaciona a un nuevo servidor de SQL Server:
+        12.1.- Genera las 3 bases, buscador, buscador_development, buscador_test
+        12.2.- Genera la funcion escalar,  fnSplitString
+        12.3.- Genera la funcion escalar, GetCurrentIP
+        12.6.- Genera las tablas necesarias para el funcionamiento en web, rake db:migrate
+
+13.- Genera las vistas y la tabla que sera un volcado de las vistas
+        rails r tools/vistas.rb -d                                                 #por default crea las vistas
+        rails r tools/vistas.rb -d drop                                            #para borrar las vistas
+
+14.- Genera los triggers que mandaran a llamar al webservice para completar los campos que vengan de
+    cualquier parte excepto de web, y que actualiza el volcado igual que la vista:
+        14.1.- rails r tools/triggers.rb -d create                                 #para crear los triggers en todas las bases
+        14.2.- rails r tools/triggers.rb -d drop                                   #para borrar los triggers en todas las bases
+        14.1.- rails r tools/triggers.rb -d create 03-Hongos-Sept14                #para correr solo un conjunto de bases
+        14.2.- rails r tools/triggers.rb -d drop 03-Hongos-Sept14                  #para correr solo un conjunto de bases
+
