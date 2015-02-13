@@ -6,24 +6,24 @@
 base: &base
 
   ip: localhost
-  port: 3000
+  port: 4000
 
   # url of the site
-  site_url: http://localhost:3000/
+  site_url: http://localhost:4000/
 
   #Para las coultas de afuera
   host_ip: localhost
-  host_port: 3000
+  host_port: 4000
 
   # IP(s) de donde toman los cambios de BDI
   fotos_ip: [172.16.1.158]
 
   # name of the site, used extensively within the app
-  site_name: Nombre del sitio
+  site_name: Bios
   default_locale: es
 
   # shortened version of the name
-  site_name_short: Nombre corto
+  site_name_short: Bios
   limit_fuzzy : 10
 
   # URL SNIB
@@ -37,7 +37,7 @@ base: &base
   # species descriptions from these sources in this order, trying the next
   # if one fails. You can see all the available describers in
   # lib/taxon_describers/lib/taxon_describers
-  taxon_describers: [conabio, eol, wikipediaes, wikipedia]
+  taxon_describers: [conabio, eol, eoles, wikipediaes, wikipedia]
   photo_providers: [conabio, eol, wikimedia,flickr]
 
   # Email addresses
