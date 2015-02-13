@@ -80,7 +80,7 @@ class Proveedor < ActiveRecord::Base
 
       #Pone la fecha correcta si tiene el formato indicado
       #if datos['aniocolecta'] != 9999 && datos['mescolecta'] != 99 && datos['diacolecta'] != 99
-        cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta']}-#{datos['diacolecta']} 00:00:00"
+      cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta']}-#{datos['diacolecta']} 00:00:00"
       #end
 
       cadenas << cadena
@@ -98,6 +98,60 @@ class Proveedor < ActiveRecord::Base
     File.delete(ruta_kml) if File.exists?(ruta_kml)
     rename = File.rename(ruta_zip, ruta.join('registros.kmz'))
     rename == 0
+  end
+
+  def info_naturalista
+    if naturalista_id.present?
+      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+      data = JSON.parse(response)
+    else
+      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(especie.nombre_cientifico))}"
+      data_todos = JSON.parse(response)
+      data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+    end
+
+    return nil unless data.present?
+    self.naturalista_id = data['id']
+    self.naturalista_info = "#{data}"     #solo para actualizar el json
+    obs_naturalista
+  end
+
+  def obs_naturalista
+    data = []
+    url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}"
+    url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}&has[]=geo"
+
+    # Loop de maximo 20000 registros para NaturaLista
+    for i in 1..100 do
+      url << "&page=#{i}&per_page=200"
+      rest_client = RestClient.get url
+      response_obs = JSON.parse(rest_client)
+      break unless response_obs.present?
+      i == 1 ? data << response_obs : data + response_obs
+      break unless data.count < 200
+    end
+    self.naturalista_obs = "#{data}" if data.present?
+  end
+
+  def self.crea_info_naturalista(taxon)
+    response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
+    data = JSON.parse(response)
+    exact_data = Proveedor.comprueba_nombre(taxon.nombre_cientifico, data)
+
+    return nil unless exact_data.present?
+    proveedor = Proveedor.new(:especie_id => taxon.id, :naturalista_id => exact_data['id'], :naturalista_info => "#{exact_data}")
+    proveedor.obs_naturalista
+    proveedor
+  end
+
+  def self.comprueba_nombre(taxon, data)
+    return nil if data.count == 0
+    data.each do |d|
+      if d['name'] == taxon
+        return d
+      end
+    end
+    nil
   end
 
   private
@@ -165,7 +219,7 @@ class Proveedor < ActiveRecord::Base
       photo.small_url = pho['photo']['small_url']
       photo.medium_url = pho['photo']['medium_url']
       photo.large_url = pho['photo']['large_url']
-                                                                     #photo.original_url = pho['photo']['original_url']
+      #photo.original_url = pho['photo']['original_url']
       photo.created_at = pho['photo']['created_at']
       photo.updated_at = pho['photo']['updated_at']
       photo.native_page_url = pho['photo']['native_page_url']
