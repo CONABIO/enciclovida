@@ -59,3 +59,6 @@
         14.1.- rails r tools/triggers.rb -d create 03-Hongos-Sept14                #para correr solo un conjunto de bases
         14.2.- rails r tools/triggers.rb -d drop 03-Hongos-Sept14                  #para correr solo un conjunto de bases
 
+15.- Para generar los taxones asociados con el snib (9401.664680629 seg):
+        15.1.- rails r tools/correspondencia_snib.rb -d carpeta                    #para recibir la capeta de archivos .csv
+
