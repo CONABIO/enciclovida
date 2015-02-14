@@ -14,6 +14,20 @@
             </div>
 
       </div>
+      <div class="panel panel-info" id="panelValidoSinonimoBasicaPt">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggleClass('hidden');$('#panelValidoSinonimoBasicaPt').toggleClass('dropup');">
+            <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
+              <span class="caret"></span>
+            </h3>
+          </button>
+        </div>
+        <div class="panel-body" id="panelValidoSinonimoBasica">
+
+          <%= checkboxValidoSinonimo %>
+
+        </div>
+      </div>
   <% end %>
 
 

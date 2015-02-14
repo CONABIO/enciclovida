@@ -60,7 +60,7 @@
                 <% end %>
               </div>
               <div class="field">
-                <%= f.label :estatus, 'Estatus del nombre cient&iacute;fico: '.html_safe %>
+                <%= f.label :estatus, 'Estatus del nombre científico: '.html_safe %>
                 <%= f.select :estatus, Especie::ESTATUS.map{|k,v| [v, k]}, :include_blank => '---Selecciona---' %>
               </div>
               <div class="field">
@@ -72,17 +72,17 @@
                 <%= f.text_area :cita_nomenclatural, :rows => 6, :cols => 35, :placeholder => 'Cita nomenclatural' %>
               </div>
               <div class="field">
-                <%= f.label :sis_clas_cat_dicc, 'Fuente de la informaci&oacute;n'.html_safe %><br>
+                <%= f.label :sis_clas_cat_dicc, 'Fuente de la información'.html_safe %><br>
                 <%= f.text_field :sis_clas_cat_dicc, :maxlength => 255, :size => 45, :placeholder => 'Sistema de Clasificación del catalogo' %>
               </div>
               <div class="field">
-                <%= f.label :anotacion, 'Anotaci&oacute;n'.html_safe %><br>
+                <%= f.label :anotacion, 'Anotación'.html_safe %><br>
                 <%= f.text_field :anotacion, :maxlength => 255, :size => 45, :placeholder => 'Anotación' %>
               </div>
             </fieldset>
 
             <fieldset>
-              <legend class="leyenda">Caracter&iacute;stica del tax&oacute;n</legend>
+              <legend class="leyenda">Característica del taxón</legend>
               <div class="field">
                 <%= f.fields_for :especies_catalogos do |ec| %>
                     <%= render 'especie_catalogos_fields', :f => ec %>
@@ -94,7 +94,7 @@
             </fieldset>
 
             <fieldset>
-              <legend class="leyenda">&Aacute;rbol taxon&oacute;mico</legend>
+              <legend class="leyenda">&Aacute;rbol taxonómico</legend>
               <div id='vista_arbol'>
                 <% if @especie.is_root? %>
                     <%= arbolTaxonomico.html_safe %>
@@ -116,7 +116,7 @@
                     <%= render 'especie_region_fields', :f => er %>
 
                     <fieldset class="fieldset_nombres">
-                      <legend class="leyenda">Nombres comunes en la regi&oacute;n</legend>
+                      <legend class="leyenda">Nombres comunes en la región</legend>
                       <div class="field">
 
                         <%= f.fields_for :nombres_regiones do |nr| %>
