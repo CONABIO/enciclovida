@@ -49,10 +49,10 @@ module ListasHelper
         opciones+= "(#{lista.cadena_especies.present? ? lista.cadena_especies.split(',').count : 0 } taxones)</option>"
       end
 
-      "<br><i>Puedes a&ntilde;adir taxones a m&aacute;s de una lista. (tecla Ctrl)</i><br>
+      "<br><i>Puedes a&ntilde;adir taxones a más de una lista. (tecla Ctrl)</i><br>
               #{select_tag('listas[]', opciones.html_safe, :multiple => true, :size => (listas.length if listas.length <= 5 || 5), :style => 'width: 380px;')}<br><br>"
     else
-      "<br><i>A&uacute;n no has creado ninguna lista. ¿Quieres #{link_to 'crear una', new_lista_url}?</i>"
+      "<br><i>Aún no has creado ninguna lista. ¿Quieres #{link_to 'crear una', new_lista_url}?</i>"
     end
   end
 end
