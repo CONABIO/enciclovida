@@ -3,23 +3,27 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Guarda en la base el kml para una facil consulta y generacion del mismo
+Guarda en la base el kml y crea el kmz para una facil consulta y generacion del mismo
 
 *** Este script se corre cada semana para generar los kml y los kmz
 
 Usage:
 
-rails r tools/crea_kml.rb -d
+rails r tools/crea_kmz_snib.rb -d
 
 where [options] are:
   EOS
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-def kml
+def kmz
   Especie.find_each do |taxon|
     #Especie.limit(400).each do |taxon|
-    puts "#{taxon.id}\t#{taxon.nombre_cientifico}" if OPTS[:debug]
+    # Quitamos estos taxones ya que estan muy pesados
+    muchos_registros = [6040409, 6053190, 6057583, 8000596]
+    next if muchos_registros.include?(taxon.id)
+
+    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.species_or_lower?
     proveedor = taxon.proveedor
 
@@ -40,6 +44,6 @@ end
 
 start_time = Time.now
 
-kml
+kmz
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

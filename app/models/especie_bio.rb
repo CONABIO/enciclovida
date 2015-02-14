@@ -387,11 +387,11 @@ class EspecieBio < ActiveRecord::Base
   def completa_datos
     ancestry_directo
     ancestry_obligatorio
-    ponNombreCientifico
+    pon_nombre_cientifico
     #completa_redis?
   end
 
-  def ponNombreCientifico
+  def pon_nombre_cientifico
     case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
       when 'especie'
         self.nombre_cientifico = "#{encuentra('genero')} #{nombre}"
@@ -405,6 +405,21 @@ class EspecieBio < ActiveRecord::Base
         self.nombre_cientifico = nombre
     end
     self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
+  end
+
+  def pon_nombre_comun_principal
+    con_espaniol = false
+
+    nombres_comunes.each do |nc|
+      if !con_espaniol && nc.lengua == 'Español'
+        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        con_espaniol = true
+      elsif !con_espaniol && nc.lengua == 'Inglés'
+        self.nombre_comun_principal = nc.nombre_comun.humanizar
+      elsif !con_espaniol
+        self.nombre_comun_principal = nc.nombre_comun.humanizar
+      end
+    end
   end
 
   def completa_redis?
@@ -464,6 +479,7 @@ class EspecieBio < ActiveRecord::Base
   def encuentra(cat)
     ancestor_ids.reverse.each do |a|
       tax = EspecieBio.find(a)
+      puts tax.nombre
       return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
     end
   end

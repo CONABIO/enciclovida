@@ -20,7 +20,7 @@ end
 
 def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
-    puts e.nombre if OPTS[:debug]
+    puts "#{e.id}-#{e.nombre}" if OPTS[:debug]
     e.ancestry_obligatorio            # no es necesario evitar el ancestry ya que este campo no lo tiene
     e.evita_before_save = true        # evita el metodo before_save
     e.save

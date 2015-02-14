@@ -33,11 +33,20 @@ base: &base
   imit_fuzzy : 10
 
   # URL SNIB
-  snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
+  snib_url: http://geoportal.conabio.gob.mx/snib?qtype=getDataSnib
 
   # URL y puerto de BDI
   bdi_imagenes: http://bdi.conabio.gob.mx:5050
   bdi_fotoweb: http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=
+
+  # URL de NaturaLista
+  naturalista_url: http://conabio.inaturalist.org
+
+  # Coordenadas del rectangulo de la republica, para las obs. de NaturaLista
+  swlat: 13.9234
+  swlng: -118.4765
+  nelat: 32.2499
+  nelng: -85.6933
 
   # Configure taxon description callbacks. taxa/show will try to show
   # species descriptions from these sources in this order, trying the next

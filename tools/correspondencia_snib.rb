@@ -23,23 +23,25 @@ def write_file(line)
   genero = l[0]
   especie = l[1]
   spid = l[2]
+  reino = @filename[0..-5].downcase
 
   puts "Busqueda: ^#{genero} #{especie}$" if OPTS[:debug]
-                                        #hace la comparacion por si es vacio especie
+  #hace la comparacion por si es vacio especie
   taxon = Especie.where(:nombre_cientifico => especie == '\"\"' ? genero: "#{genero} #{especie}")
+
   if taxon.first && taxon.count == 1
     puts "\tEncontro" if OPTS[:debug]
-    id = taxon.first.id
-    proveedor = Proveedor.where(:especie_id => id).first
-
-    if proveedor
+    if proveedor = taxon.first.proveedor
       proveedor.snib_id = spid
-      proveedor.snib_reino = @filename[0..-5].downcase
+      proveedor.snib_reino = reino
     else
-      proveedor = Proveedor.new(:especie_id => id, :snib_id => spid, :snib_reino => @filename[0..-5].downcase)
+      proveedor = Proveedor.new(:especie_id => taxon.first.id, :snib_id => spid, :snib_reino => reino)
     end
-    proveedor.save
-    @bitacora.puts "#{genero},#{especie},#{spid},#{id}"
+
+    if proveedor.changed?
+      puts 'entre'
+      @bitacora.puts "#{genero},#{especie},#{spid},#{taxon.first.id}" if proveedor.save
+    end
   else
     puts "\tNO encontro" if OPTS[:debug]
     @bitacora_no_encontro.puts "#{genero},#{especie},#{@csv}"
@@ -48,7 +50,7 @@ end
 
 def creando_carpeta(path)
   puts "Creando carpeta \"#{path}\" si es que no existe..." if OPTS[:debug]
-  Dir.mkdir(path, 0755) if !File.exists?(path)
+  FileUtils.mkpath(path, :mode => 0755) unless File.exists?(path)
 end
 
 def bitacoras(file, no_encontro)
@@ -73,13 +75,14 @@ def read_file(filename)
   @bitacora = nil
 end
 
+
 start_time = Time.now
 
 return unless ARGV.any?
 name = ARGV.first
 path = "tools/correspondencia_snib/#{name}"
 log_path = "tools/bitacoras/correspondencia_snib/#{Time.now.strftime("%Y%m%d%H%M%S")}-#{name}/"
-@no_encontro = "#{log_path}no_encontro.csv"
+no_encontro = "#{log_path}no_encontro.csv"
 
 Dir["#{path}/*.csv"].map{ |arch| arch.split('/').last }.each do |csv|
   @csv = csv
@@ -87,7 +90,7 @@ Dir["#{path}/*.csv"].map{ |arch| arch.split('/').last }.each do |csv|
   puts "Ruta archivo: #{path}/#{csv}" if OPTS[:debug]
   puts "Ruta bitacora: #{@file}" if OPTS[:debug]
   creando_carpeta log_path
-  bitacoras @file, @no_encontro
+  bitacoras @file, no_encontro
   read_file "#{path}/#{csv}"
 end
 
