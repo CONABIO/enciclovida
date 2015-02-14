@@ -33,7 +33,7 @@ base: &base
   imit_fuzzy : 10
 
   # URL SNIB
-  snib_url: http://geoportal.conabio.gob.mx/snib?q=type=getDataSnib
+  snib_url: http://geoportal.conabio.gob.mx/snib?qtype=getDataSnib
 
   # URL y puerto de BDI
   bdi_imagenes: http://bdi.conabio.gob.mx:5050

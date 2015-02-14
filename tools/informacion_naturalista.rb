@@ -22,8 +22,8 @@ end
 def search
   Especie.find_each do |t|
     #Especie.limit(10).each do |t|
+    next unless t.id > 6027463
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
-    #next unless t.id > 1001106
     next unless t.species_or_lower?
 
     if proveedor = t.proveedor

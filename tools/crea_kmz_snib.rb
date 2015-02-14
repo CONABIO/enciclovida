@@ -9,7 +9,7 @@ Guarda en la base el kml y crea el kmz para una facil consulta y generacion del 
 
 Usage:
 
-rails r tools/crea_kml.rb -d
+rails r tools/crea_kmz_snib.rb -d
 
 where [options] are:
   EOS

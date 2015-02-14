@@ -416,7 +416,7 @@ class EspecieBio < ActiveRecord::Base
         con_espaniol = true
       elsif !con_espaniol && nc.lengua == 'Inglés'
         self.nombre_comun_principal = nc.nombre_comun.humanizar
-      else
+      elsif !con_espaniol
         self.nombre_comun_principal = nc.nombre_comun.humanizar
       end
     end
