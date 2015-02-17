@@ -4,7 +4,7 @@
   <tr>
     <td width="40%" valign="top">
       <fieldset>
-        <legend class="leyenda"><%= 'Informaci&oacute;n taxon&oacute;mica'.html_safe %></legend>
+        <legend class="leyenda"><%= 'Información taxonómica'.html_safe %></legend>
 
         <p>
           <strong>Estatus00000:</strong>
@@ -14,7 +14,7 @@
         <%= dameStatus(@especie).html_safe %>
         <%= dameCaracteristica(@especie).html_safe %>
         <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
-        <%= "<p><strong>Tipo de distribuci&oacute;n:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
+        <%= "<p><strong>Tipo de distribución:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
 
         <% if @especie.cita_nomenclatural.present? %>
             <p>
@@ -24,13 +24,13 @@
         <% end %>
 
         <p>
-          <strong>Fuente de la informaci&oacute;n:</strong>
+          <strong>Fuente de la información:</strong>
           <%= @especie.sis_clas_cat_dicc %>
         </p>
 
         <% if @especie.anotacion.present? %>
             <p>
-              <strong>Anotaci&oacute;n:</strong>
+              <strong>Anotación:</strong>
               <%= @especie.anotacion %>
             </p>
         <% end %>
@@ -40,12 +40,12 @@
         </p>
 
         <p>
-          <strong>Identificador &uacute;nico:</strong>
+          <strong>Identificador único:</strong>
           <%= @especie.catalogo_id %>
         </p>
 
         <p>
-          <strong>Fecha de modificaci&oacute;n:</strong>
+          <strong>Fecha de modificación:</strong>
           <%= @especie.updated_at %>
         </p>
       </fieldset>
@@ -53,7 +53,7 @@
 
     <td width="60%" valign="top">
       <%= dameDescendientesDirectos(@especie).html_safe %>
-      <%= "<fieldset><legend class='leyenda'>Distribuci&oacute;n:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
+      <%= "<fieldset><legend class='leyenda'>Distribución:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
     </td>
   </tr>
 </table>

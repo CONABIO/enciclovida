@@ -8,7 +8,7 @@ module ApplicationHelper
         end
 
         if desc.present?
-          bitacora = "<br><br><table class=\"tabla_formato\"><tr><td><fieldset><legend class=\"leyenda\">Bit&aacute;cora</legend>"
+          bitacora = "<br><br><table class=\"tabla_formato\"><tr><td><fieldset><legend class=\"leyenda\">Bitácora</legend>"
           bitacora+= "<ul>#{desc}</ul>"
           bitacora+= '</fieldset></td></tr></table>'
         end

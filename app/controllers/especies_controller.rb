@@ -72,7 +72,7 @@ class EspeciesController < ApplicationController
         @cat_taxonomica=@parent.categoria_taxonomica.nombre_categoria_taxonomica
       rescue
         respond_to do |format|
-          format.html { redirect_to :root, notice: 'Lo sentimos esa p&aacute;gina no existe'.html_safe }
+          format.html { redirect_to :root, notice: 'Lo sentimos esa página no existe'.html_safe }
         end
       end
 
@@ -172,8 +172,9 @@ class EspeciesController < ApplicationController
       case params[:busqueda]
 
         when 'nombre_comun'
-          sql = "NombreComun.select(\"especies.id, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').uniq.order('nombre_cientifico ASC')"
+          estatus = params[:estatus].join(',') if params[:estatus].present?
+          sql = "NombreComun.select(\"especies.id, estatus, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_cientifico ASC')"
 
           totales = eval("#{sql}").length
           @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
@@ -194,7 +195,7 @@ class EspeciesController < ApplicationController
               if @taxones.first
                 # Si la distancia entre palabras es 1 que muestre la sugerencia
                 distancia = Levenshtein.distance(params[:nombre_comun].downcase, @taxones.first.nombre_comun.downcase)
-                @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
+                @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                 if distancia != 1
                   next
@@ -216,6 +217,9 @@ class EspeciesController < ApplicationController
 
         when 'nombre_cientifico'
           estatus = params[:estatus].join(',') if params[:estatus].present?
+          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
+          puts estatus.inspect
+          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
 
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
@@ -240,7 +244,7 @@ class EspeciesController < ApplicationController
               if @taxones.first
                 # Si la distancia entre palabras es 1 que muestre la sugerencia
                 distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, @taxones.first.nombre_cientifico.downcase)
-                @coincidencias='¿Quiz&aacute;s quiso decir algunos de los siguientes taxones?'.html_safe
+                @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                 if distancia != 1
                   next

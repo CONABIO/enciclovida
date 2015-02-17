@@ -50,11 +50,11 @@
               <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
             </li>
             <li>
-              <%= link_to "Cerrar sesi&oacute;n (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path,
-                          :method => :delete, data: { confirm: '¿Est&aacute;s seguro que deseas cerrar la sesi&oacute;n?'.html_safe } %>
+              <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path,
+                          :method => :delete, data: { confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe } %>
             </li>
         <% else %>
-            <li><%= link_to 'Inicia sesi&oacute;n'.html_safe, new_usuario_session_path %></li>
+            <li><%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path %></li>
         <% end %>
         <% if I18n.locale.to_s == 'es-cientifico' %>
             <li><%= link_to '[vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>

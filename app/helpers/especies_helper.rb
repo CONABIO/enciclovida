@@ -9,7 +9,7 @@ module EspeciesHelper
       elsif params[:show]
         "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, "/especies/#{taxon.id}")} #{taxon.nombre_autoridad}".html_safe
       else
-        'Ocurrio un error en el t&iacute;tulo'.html_safe
+        'Ocurrio un error en el título'.html_safe
       end
     else   #vistas menos cientificas
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica))   # Las especies llevan otro tipo de formato en nombre
@@ -18,16 +18,15 @@ module EspeciesHelper
               taxon.nombre_cientifico
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe
+            "#{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} <i>(#{esSinonimo(taxon)})</i>".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
-                link_to(taxon.nombre_cientifico, especy_path(taxon))
+            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} <i>(#{esSinonimo(taxon)})</i>".html_safe :
+                link_to(esSinonimo(taxon), especy_path(taxon))
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} <i>(#{taxon.nombre_cientifico})</i>".html_safe :
-              taxon.nombre_cientifico
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} <i>(#{esSinonimo(taxon)})</i>".html_safe : esSinonimo(taxon)
         else
-          'Ocurrio un error en el t&iacute;tulo'.html_safe
+          'Ocurrio un error en el título'.html_safe
         end
       else
         if params[:title]
@@ -44,7 +43,7 @@ module EspeciesHelper
           taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} <i>(#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})</i>".html_safe :
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         else
-          'Ocurrio un error en el t&iacute;tulo'.html_safe
+          'Ocurrio un error en el título'.html_safe
         end
       end
     end
@@ -217,11 +216,17 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
-  def checkboxValidoSinonimo
+  def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes=''
     Especie::ESTATUS.each do |e|
-      checkBoxes+="<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
+
+      checkBoxes += case busqueda
+                      when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
+                     else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
+                   end
     end
+
+
     checkBoxes.html_safe
   end
 
@@ -330,12 +335,12 @@ module EspeciesHelper
         status+= tituloNombreCientifico(taxSinonimo, :link => true)
         status+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
       else
-        return '<p><strong>Existe un problema con el estatus del nombre cient&iacute;fico de este tax&oacute;n</strong></p>'
+        return '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
       end
     end
 
     if status.present?
-      titulo = taxon.estatus == 2 ? '<strong>Bas&oacute;nimos, sin&oacute;nimos:</strong>' : '<strong>Aceptado como: </strong>'
+      titulo = taxon.estatus == 2 ? '<strong>Basónimos, sinónimos:</strong>' : '<strong>Aceptado como: </strong>'
       taxon.estatus == 2 ? titulo + "<p><ul>#{status}</ul></p>" : "<p>#{titulo}#{status}</p>"
     else
       status
@@ -353,7 +358,7 @@ module EspeciesHelper
     end
 
     if conservacion.present?
-      I18n.locale.to_s == 'es-cientifico' ? "<p><strong>Caracter&iacute;stica del tax&oacute;n:</strong><ul>#{conservacion}</ul></p>" :
+      I18n.locale.to_s == 'es-cientifico' ? "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>" :
           conservacion[0..-3]
     else
       conservacion
@@ -398,5 +403,12 @@ module EspeciesHelper
       end
     end
     "#{html}</ul>".html_safe
+  end
+
+  def esSinonimo (taxon)
+    e = (taxon.instance_of? NombreComun) ? Especie.find(taxon.id).estatus : taxon.estatus #Debido a que se reemplaza
+    # el id de NombreComun
+    n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
+    n.html_safe
   end
 end

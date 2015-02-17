@@ -13,15 +13,15 @@
     <fieldset>
       <legend class="leyenda"><%= link_to @titulo, lista_path(@lista) %></legend>
       <p>
-        <strong>Informaci&oacute;n a exportar:</strong><br>
+        <strong>Información a exportar:</strong><br>
         <%= despliegaLista(@lista) %>
       </p>
       <p>
-        <strong>Fecha de creaci&oacute;n:</strong>
+        <strong>Fecha de creación:</strong>
         <%= @lista.created_at %>
       </p>
       <p>
-        <strong>Fecha de la &uacute;ltima actualizaci&oacute;n:</strong>
+        <strong>Fecha de la última actualización:</strong>
         <%= @lista.updated_at %>
       </p>
     </fieldset>

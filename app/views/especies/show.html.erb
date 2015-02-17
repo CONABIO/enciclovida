@@ -225,7 +225,7 @@
 <div id="photoscol" class="column span-13">
   <div id="photos">
     <%= render :partial => 'photos', :locals => { :photos => @photos } %>
-    <div id="photos_loading_status" class="loading status" style="display:none">Cargando m&aacute;s fotos...</div>
+    <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
   </div>
 
   <% if usuario_signed_in? %>
@@ -244,8 +244,8 @@
 <div id="tabs" style="width: 100%; float:left;">
   <% if I18n.locale.to_s == 'es-cientifico' %>
       <ul>
-        <li><a href="#conabio_info"><span>Cat&aacute;logos de CONABIO</span></a></li>
-        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
+        <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxonómico</span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
       </ul>
 
@@ -265,8 +265,8 @@
   <% else %>
       <ul>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
-        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxon&oacute;mico</span></a></li>
-        <li><a href="#conabio_info"><span>Cat&aacute;logos de CONABIO</span></a></li>
+        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxonómico</span></a></li>
+        <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
       </ul>
 
       <% if @especie.species_or_lower? %>
@@ -286,6 +286,6 @@
 </div>
 <!--div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
-  <%# link_to("Nuevo tax&oacute;n descendiente de #{@especie.nombre_cientifico}".html_safe,
+  <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
               new_especy_path(:parent_id => @especie)).html_safe %>
 </div-->

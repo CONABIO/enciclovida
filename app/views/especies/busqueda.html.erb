@@ -1,14 +1,5 @@
 <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
-<script type="text/javascript" data-turbolinks-track="true">
-    google.load('search', '1', {language : 'es'});
-    google.setOnLoadCallback(function() {
-        var customSearchControl = new google.search.CustomSearchControl('008095775353890783041:z5grsg1hkxe');
-        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-        var options = new google.search.DrawOptions();
-        options.enableSearchboxOnly("http://www.google.com/cse?cx=008095775353890783041:z5grsg1hkxe");
-        customSearchControl.draw('cse-search-form', options);
-    }, true);
-</script>
+
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
@@ -303,3 +294,13 @@
 </script>
 
 <div id="busquedas"></div>
+<script type="text/javascript" data-turbolinks-track="true">
+    google.load('search', '1', {language : 'es'});
+    google.setOnLoadCallback(function() {
+        var customSearchControl = new google.search.CustomSearchControl('008095775353890783041:z5grsg1hkxe');
+        customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+        var options = new google.search.DrawOptions();
+        options.enableSearchboxOnly("http://www.google.com/cse?cx=008095775353890783041:z5grsg1hkxe");
+        customSearchControl.draw('cse-search-form', options);
+    }, true);
+</script>
