@@ -40,6 +40,7 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     #Atributos adicionales al modelo
     devise_parameter_sanitizer.for(:sign_up) << :usuario
+    devise_parameter_sanitizer.for(:sign_up) << :email
     devise_parameter_sanitizer.for(:sign_up) << :nombre
     devise_parameter_sanitizer.for(:sign_up) << :apellido
     devise_parameter_sanitizer.for(:sign_up) << :institucion

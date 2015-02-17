@@ -38,23 +38,36 @@
         10.1.- rails r tools/nombre_comun_principal_sql.rb -d
         10.2.- rails r tools/nombre_comun_principal_sql.rb -d 02-Arthropoda        #para correr solo un conjunto de bases
 
-12.- OJO: Solo si estas migrando la informaciona a un nuevo servidor de SQL Server:
+11.- OJO: Solo si estas migrando la informaciona a un nuevo servidor de SQL Server:
         12.1.- Genera las 3 bases, buscador, buscador_development, buscador_test
         12.2.- Genera la funcion escalar,  fnSplitString
         12.3.- Genera la funcion escalar, GetCurrentIP
         12.6.- Genera las tablas necesarias para el funcionamiento en web, rake db:migrate
 
-13.- Genera las vistas y la tabla que sera un volcado de las vistas
+12.- Genera las vistas y la tabla que sera un volcado de las vistas
         rails r tools/vistas.rb -d                                                 #por default crea las vistas
         rails r tools/vistas.rb -d drop                                            #para borrar las vistas
 
-16.- Corre el script para guardar la informacion de NaturaLista como la taxonomia y las observaciones:
+13.- Corre el script para guardar la informacion de NaturaLista como la taxonomia y las observaciones (es el script mas tardado):
         16.1.- rails r tools/informacion_naturalista.rb -d
 
-15.- Para generar los taxones asociados con el snib (13580.090638988 seg):
+14.- Para generar los taxones asociados con el snib (13580.090638988 seg):
         15.1.- rails r tools/correspondencia_snib.rb -d carpeta                    #para recibir la capeta de archivos .csv
 
-14.- Genera los triggers que mandaran a llamar al webservice para completar los campos que vengan de
+15.- Para guardar las fotos que coincidieron de NaturaLista
+        16.1.- rails r tools/fotos_naturalista.rb -d                               #Llena photos y taxon_photos respectivamente
+        16.2.- rails r tools/fotos_naturalista.rb -d truncate                      #Hace un TRUCATE a  photos y taxon_photos (OJO en real)
+
+16.- Para generar los registros para el fuzzy match (4893.937891411 seg):
+        16.1- rails r tools/exporta_blurrily.rb -d
+
+16.- Para guardar la foto principal en la tabla Nombre
+        16.1.- rails r tools/foto_principal_sql.rb -d
+
+17.- Completa la base de nombres cientificos en redis
+        17.1.- rails r tools/nombres_cientificos_sql_redis.rb -d
+
+1.- Genera los triggers que mandaran a llamar al webservice para completar los campos que vengan de
     cualquier parte excepto de web, y que actualiza el volcado igual que la vista:
         14.1.- rails r tools/triggers.rb -d create                                 #para crear los triggers en todas las bases
         14.2.- rails r tools/triggers.rb -d drop                                   #para borrar los triggers en todas las bases
