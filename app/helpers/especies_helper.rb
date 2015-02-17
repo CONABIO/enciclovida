@@ -227,8 +227,11 @@ module EspeciesHelper
 
   def dameNomComunes(taxon)
     nombres_comunes = ''
-    taxon.nombres_comunes.where("nombre_comun != '#{taxon.nombre_comun_principal}'").each do |nom|
-      nombres_comunes+= "#{nom.nombre_comun.humanizar} <span style='font-size:9px;'>(#{nom.lengua})</span>, "
+    nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nombre_comun_principal}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+    agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
+    keys = agrupa_nombres.keys.sort
+    keys.each do |k|
+      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <span style='font-size:9px;'>(#{k})</span> / "
     end
     nombres_comunes.present? ? "<p>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
