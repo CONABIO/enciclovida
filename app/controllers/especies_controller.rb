@@ -486,7 +486,7 @@ class EspeciesController < ApplicationController
         if params[:kml].present? && to_boolean(params[:kml])
           send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
         else
-          redirect_to "/assets/#{@especie.id}/registros.kmz"
+          redirect_to "/kmz/#{@especie.id}/registros.kmz"
         end
       else
         redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
