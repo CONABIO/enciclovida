@@ -20,7 +20,7 @@ def foto_principal
   Especie.find_each do |taxon|
   #Especie.limit(30).each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    next unless taxon.foto_principal.blank?
+    next unless taxon.foto_principal.blank?  # Para evitar que la fotografia cambie cuando hacemos una migracion de bases
 
     taxon.pon_foto_principal
   end
@@ -28,5 +28,7 @@ end
 
 
 start_time = Time.now
+
 foto_principal
+
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

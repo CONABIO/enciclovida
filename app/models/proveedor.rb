@@ -35,7 +35,7 @@ class Proveedor < ActiveRecord::Base
     return [] unless datos['taxon_photos'].present?
     return [] if usuario.blank?
 
-    fotos_naturalista= taxon_photos(datos, usuario)
+    fotos_naturalista = taxon_photos(datos, usuario)
     return [] if fotos_naturalista.length == 0
     taxon = especie
     fotos_buscador = taxon.photos
@@ -89,7 +89,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   def kmz
-    ruta = Rails.root.join('app', 'assets', 'kmz', especie.id.to_s)
+    ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
     FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
     ruta_kml = ruta.join('registros.kml')
     File.open(ruta_kml, 'w+') { |file| file.write(snib_kml) }
@@ -113,6 +113,7 @@ class Proveedor < ActiveRecord::Base
     return nil unless data.present?
     self.naturalista_id = data['id']
     self.naturalista_info = "#{data}"     #solo para actualizar el json
+    return unless especie.species_or_lower?
     obs_naturalista
   end
 
@@ -140,6 +141,7 @@ class Proveedor < ActiveRecord::Base
 
     return nil unless exact_data.present?
     proveedor = Proveedor.new(:especie_id => taxon.id, :naturalista_id => exact_data['id'], :naturalista_info => "#{exact_data}")
+    return proveedor unless taxon.species_or_lower?
     proveedor.obs_naturalista
     proveedor
   end

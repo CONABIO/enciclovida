@@ -21,6 +21,10 @@ class NombreComun < ActiveRecord::Base
     Especie::SPECIES_OR_LOWER.include? cat
   end
 
+  def completa_blurrily
+    FUZZY_NOM_CIEN.put(nombre_comun, id)
+  end
+
   def personalizaBusqueda
     "#{self.nombre_comun} (#{self.lengua})".html_safe
   end

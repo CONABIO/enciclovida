@@ -52,7 +52,6 @@ if ARGV.length == 1 && ARGV.first.present? && ARGV.first.downcase == 'truncate'
 elsif ARGV.blank?
   puts "Con comando default para crear: #{ARGV.first}" if OPTS[:debug]
   exit(0) unless @usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first
-  #system_call('rake tmp:cache:clear')
   busca_fotos
 else
   exit(0)

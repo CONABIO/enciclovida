@@ -29,15 +29,7 @@ def batches
 
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' width='30px' \>" :
-        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' width='30px' class='img-thumbnail'\>"
-
-    data=''
-    data+= "{\"id\":#{taxon.id},"
-    data+= "\"term\":\"#{taxon.nombre_cientifico}\","
-    data+= "\"score\":2,"
-    data+= "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(taxon.nombre_comun_principal)}\", \"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(taxon.nombre_autoridad)}\", \"id\":#{taxon.id}}"
-    data+= "}\n"
+    data = taxon.exporta_redis
 
     File.open("#{@path}/nom_cien_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
       f.puts data
@@ -49,7 +41,7 @@ def load_file
   puts 'Cargando los datos a redis...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f="#{@path}/nom_cien_#{cat}.json"
-    system_call("soulmate load cien_#{cat} --redis=redis://localhost:6379/0 < #{f}") if File.exists?(f)
+    system_call("soulmate load cien_#{cat} --redis=redis://#{CONFIG.ip}:6379/0 < #{f}") if File.exists?(f)
   end
 end
 
@@ -72,7 +64,6 @@ start_time = Time.now
 @path='db/redis'     #cambiar si se desea otra ruta
 creando_carpeta
 delete_files
-puts 'Iniciando la creacion de los archivos json...' if OPTS[:debug]
 batches
 load_file
 

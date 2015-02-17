@@ -19,8 +19,9 @@ end
 def kmz
   Especie.find_each do |taxon|
     #Especie.limit(400).each do |taxon|
+    #next unless taxon.id > 6040301
     # Quitamos estos taxones ya que estan muy pesados
-    muchos_registros = [6040409, 6053190, 6057583, 8000596]
+    muchos_registros = [6040302, 6040409, 6053190, 6057583, 8000596]
     next if muchos_registros.include?(taxon.id)
 
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]

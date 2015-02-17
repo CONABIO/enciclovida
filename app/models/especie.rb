@@ -284,6 +284,10 @@ class Especie < ActiveRecord::Base
     "taxon_photos_external_#{id}"
   end
 
+  def info_tab_cache_key
+    "views/info_tab_#{id}"
+  end
+
   def pon_foto_principal
     # Antes de cambiar de base ya que photos esta en Rails.env
     foto_principal = photos.any? ? photos.first.thumb_url : '/assets/app/iconic_taxa/mammalia-75px.png'
@@ -301,5 +305,22 @@ class Especie < ActiveRecord::Base
   # Guarda en cache el path del KMZ
   def snib_cache_key
     "snib_#{id}"
+  end
+
+  def completa_blurrily
+    FUZZY_NOM_COM.put(nombre_cientifico, id)
+  end
+
+  def exporta_redis
+    foto = taxon.foto_principal.present? ? "<img src='#{foto_principal}' alt='#{nombre_cientifico}' width='30px' \>" :
+        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{nombre_cientifico}' width='30px' class='img-thumbnail'\>"
+
+    data = ''
+    data << "{\"id\":#{id},"
+    data << "\"term\":\"#{nombre_cientifico}\","
+    data <<  "\"score\":2,"
+    data << "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(nombre_comun_principal)}\", "
+    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id}, \"estatus\":#{taxon.estatus}}"
+    data << "}\n"
   end
 end

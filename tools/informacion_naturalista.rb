@@ -22,9 +22,8 @@ end
 def search
   Especie.find_each do |t|
     #Especie.limit(10).each do |t|
-    next unless t.id > 6027463
+    next unless t.id > 10016523
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
-    next unless t.species_or_lower?
 
     if proveedor = t.proveedor
       puts "\tYa se registro ese ID" if OPTS[:debug]
@@ -47,7 +46,7 @@ def search
     else
       puts "\t\tNo existe informacion en NaturaLista" if OPTS[:debug]
     end
-    sleep 1
+    #sleep 1
   end
 end
 
