@@ -61,9 +61,12 @@ base: &base
   help_email: help@yoursite.com
   info_email: info@yoursite.com
 
-  #Credenaciles generales por http
+  # Credenaciles generales por http
   username: tu-usuario
   password: tu-passwd
+
+  # Usuario general para correr script de fotos
+  usuario : calonso
 
   # site contact, mainly just used for GBIF archive generation
   # contact:
