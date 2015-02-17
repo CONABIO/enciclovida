@@ -89,7 +89,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   def kmz
-    ruta = Rails.root.join('app', 'assets', 'kmz', especie.id.to_s)
+    ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
     FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
     ruta_kml = ruta.join('registros.kml')
     File.open(ruta_kml, 'w+') { |file| file.write(snib_kml) }
