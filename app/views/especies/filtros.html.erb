@@ -3,6 +3,9 @@
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
+      <%= hidden_field_tag :valido_sinonimo_basico, 3 %>
+      <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
+      </div>
       <div class="form-group form-group-sm">
         <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
 
@@ -14,20 +17,6 @@
             </div>
 
       </div>
-      <div class="panel panel-info" id="panelValidoSinonimoBasicaPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggleClass('hidden');$('#panelValidoSinonimoBasicaPt').toggleClass('dropup');">
-            <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
-              <span class="caret"></span>
-            </h3>
-          </button>
-        </div>
-        <div class="panel-body" id="panelValidoSinonimoBasica">
-
-          <%= checkboxValidoSinonimo %>
-
-        </div>
-      </div>
   <% end %>
 
 
@@ -35,7 +24,8 @@
     <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
     <%= hidden_field_tag :busqueda, :nombre_cientifico %>
     <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
-
+    <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
+    </div>
     <div class="form-group form-group-sm">
       <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
       <div class="input-group">
@@ -45,27 +35,25 @@
         </span>
       </div>
     </div>
-
-    <div class="">
-      <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_avanzada();' %>
-    </div>
-
-    <div class="panel panel-info" id="panelValidoSinonimoBasicaPt">
-      <div class="panel-heading">
-        <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggleClass('hidden');$('#panelValidoSinonimoBasicaPt').toggleClass('dropup');">
-            <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
-              <span class="caret"></span>
-            </h3>
-        </button>
-      </div>
-      <div class="panel-body" id="panelValidoSinonimoBasica">
-
-          <%= checkboxValidoSinonimo %>
-
-      </div>
-    </div>
-
   <% end %>
+
+  <div class="">
+    <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_avanzada();' %>
+  </div>
+
+  <div class="panel panel-info dropup" id="panelValidoSinonimoBasicaPt">
+    <div class="panel-heading">
+      <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggleClass('hidden');$('#panelValidoSinonimoBasicaPt').toggleClass('dropup');">
+        <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
+          <span class="caret"></span>
+        </h3>
+      </button>
+    </div>
+    <div class="panel-body" id="panelValidoSinonimoBasica">
+      <%= checkboxValidoSinonimo ("BBShow") %>
+    </div>
+  </div>
+
 </div>
 
 <div id="busqueda_avanzada" style="display: none" >
@@ -91,7 +79,7 @@
         <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
       </div>
 
-      <div class="panel panel-info" id="panelValidoSinonimoAvanzadaPt">
+      <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggleClass('hidden');$('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup');">
             <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
@@ -100,9 +88,7 @@
           </button>
         </div>
         <div class="panel-body" id="panelValidoSinonimoAvanzada">
-
             <%= checkboxValidoSinonimo %>
-
         </div>
       </div>
 
@@ -172,13 +158,13 @@
         </div>
       </div>
 
-
-
-
       <%= submit_tag :Buscar, :class => 'btn btn-primary form-control', data: { disable_with: 'Procesando...' } %>
+
   <% end %>
 </div>
+
 <div>
-  Mostrar <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %> Resultados por Página
+  <%= label_tag :per_page, "Mostrar", :class => "control-label" %>
+  <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %> Resultados por Página
   <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
 </div>

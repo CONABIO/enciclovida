@@ -217,6 +217,9 @@ class EspeciesController < ApplicationController
 
         when 'nombre_cientifico'
           estatus = params[:estatus].join(',') if params[:estatus].present?
+          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
+          puts estatus.inspect
+          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
 
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
