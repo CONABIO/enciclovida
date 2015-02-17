@@ -44,6 +44,7 @@ Buscador::Application.routes.draw do
       get :error
       get :datos_principales
       get :kmz
+      get :kmz_naturalista
       get :filtros
     end
   end

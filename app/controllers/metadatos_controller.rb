@@ -80,6 +80,6 @@ class MetadatosController < ApplicationController
   end
 
   def authenticate_request!
-    return nil unless CONFIG.fotos_ip.include?(request.remote_ip)
+    #return nil unless CONFIG.fotos_ip.include?(request.remote_ip)
   end
 end

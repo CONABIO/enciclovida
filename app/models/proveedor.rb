@@ -88,6 +88,36 @@ class Proveedor < ActiveRecord::Base
     self.snib_kml = to_kml(cadenas)
   end
 
+  #Guarda el kml de naturalista asociado al taxon
+  def kml_naturalista
+    return [] unless naturalista_obs.present?
+    obs = eval(naturalista_obs).first
+    return [] unless obs.count > 0
+    cadenas = []
+
+    obs.each do |ob|
+      next if ob['captive']
+      cadena = Hash.new
+
+      #Los numere para poder armar los datos en el orden deseado
+      cadena['1_nombre_cientifico'] = especie.nombre_cientifico
+      cadena['2_nombre_comun'] = especie.nombre_comun_principal
+      cadena['5_observed_on'] = "#{ob['observed_on']} 00:00:00"
+      cadena['6_quality_grade'] = ob['quality_grade']
+      cadena['7_uri'] = ob['uri']
+      cadena['8_longitude'] = ob['longitud']
+      cadena['9_latitude'] = ob['latitud']
+
+      ob['photos'].each do |photo|
+        cadena['3_thumb_url'] = photo['thumb_url']
+        cadena['4_attribution'] = photo['attribution']
+        break
+      end
+      cadenas << cadena
+    end
+    self.naturalista_kml = to_kml_naturalista(cadenas)
+  end
+
   def kmz
     ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
     FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
@@ -97,6 +127,18 @@ class Proveedor < ActiveRecord::Base
     ruta_zip = ruta.join('registros.zip')
     File.delete(ruta_kml) if File.exists?(ruta_kml)
     rename = File.rename(ruta_zip, ruta.join('registros.kmz'))
+    rename == 0
+  end
+
+  def kmz_naturalista
+    ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
+    FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+    ruta_kml = ruta.join('observaciones.kml')
+    File.open(ruta_kml, 'w+') { |file| file.write(naturalista_kml) }
+    system "zip #{ruta.join('observaciones')} #{ruta_kml}"
+    ruta_zip = ruta.join('observaciones.zip')
+    File.delete(ruta_kml) if File.exists?(ruta_kml)
+    rename = File.rename(ruta_zip, ruta.join('observaciones.kmz'))
     rename == 0
   end
 
@@ -184,6 +226,46 @@ class Proveedor < ActiveRecord::Base
             kml+= "<Data name=\"Nombre del colector\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '7_url_proyecto_conabio'
             kml+= "<Data name=\"Enlace al proyecto\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          else
+            next
+        end
+      end
+
+      kml+= "</ExtendedData>\n"
+      kml+= "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
+      kml+= "</Placemark>\n"
+    end
+
+    kml+= "</Document>\n"
+    kml+= '</kml>'
+  end
+
+  def to_kml_naturalista(cadenas)
+    kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    kml+= "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml+= "<Document>\n"
+
+    cadenas.each do |cad|
+      kml+= "<Placemark>\n"
+      kml+= "<ExtendedData>\n"
+
+      cad.keys.sort.each do |k|
+        next unless cad[k].present?
+
+        case k
+          when '1_nombre_cientifico'
+            valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
+            kml+= "<Data name=\"\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+          when '3_thumb_url'
+            kml+= "<Data name=\"\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
+          when '4_attribution'
+            kml+= "<Data name=\"Atribución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '5_observed_on'
+            kml+= "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+          when '6_quality_grade'
+            kml+= "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t(cad[k])}\n</value>\n</Data>\n"
+          when '7_uri'
+            kml+= "<Data name=\"\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
           else
             next
         end

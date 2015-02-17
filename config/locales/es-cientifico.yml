@@ -252,6 +252,9 @@ es-cientifico:
     precision:
       format:
         delimiter: ''
+  quality_grade:
+    casual: caual
+    research: investigación
   sinonimo: sinónimo
   solo_taxones: solo taxones
   support:
