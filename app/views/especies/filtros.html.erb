@@ -92,7 +92,20 @@
         </div>
       </div>
 
-
+      <div class="panel panel-info" id="panelEstadoConservacionPt">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').toggleClass('hidden');$('#panelEstadoConservacionPt').toggleClass('dropup');">
+            <h4  class="panel-title">Estado de conservación:
+              <span class="caret"></span>
+            </h4>
+          </button>
+        </div>
+        <div class="panel-body hidden" id="panelEstadoConservacion">
+          <div class="checkbox">
+            <%= checkboxEstadoConservacion %>
+          </div>
+        </div>
+      </div>
 
       <div class="panel panel-info" id="panelTipoDistribucionEnPt">
         <div class="panel-heading">
@@ -143,22 +156,7 @@
         </div>
       </div>
 
-      <div class="panel panel-info" id="panelEstadoConservacionPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').toggleClass('hidden');$('#panelEstadoConservacionPt').toggleClass('dropup');">
-            <h4  class="panel-title">Estado de conservación:
-              <span class="caret"></span>
-            </h4>
-          </button>
-        </div>
-        <div class="panel-body hidden" id="panelEstadoConservacion">
-          <div class="checkbox">
-            <%= checkboxEstadoConservacion %>
-          </div>
-        </div>
-      </div>
-
-      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control', data: { disable_with: 'Procesando...' } %>
+      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
 
   <% end %>
 </div>

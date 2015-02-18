@@ -43,9 +43,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <div id="cse-search-form" class="form-control navbar-form navbar-right" style="width: 20%; padding-top:.45%; ">Cargando...</div>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to :Listas, listas_url %></li>
-        <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
         <% if usuario_signed_in? %>
+            <li><%= link_to :Listas, listas_url %></li>
+            <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
             <li>
               <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
             </li>

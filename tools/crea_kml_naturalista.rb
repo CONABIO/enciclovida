@@ -18,9 +18,8 @@ end
 
 def kml
   Especie.find_each do |taxon|
+    next unless taxon.id > 8010026
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    next unless taxon.id == 1000793
-    break if taxon.id > 1000793
     next unless taxon.species_or_lower?
     next unless proveedor = taxon.proveedor
     proveedor.kml_naturalista
