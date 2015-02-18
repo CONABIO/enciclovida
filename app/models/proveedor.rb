@@ -105,8 +105,8 @@ class Proveedor < ActiveRecord::Base
       cadena['5_observed_on'] = "#{ob['observed_on']} 00:00:00"
       cadena['6_quality_grade'] = ob['quality_grade']
       cadena['7_uri'] = ob['uri']
-      cadena['8_longitude'] = ob['longitud']
-      cadena['9_latitude'] = ob['latitud']
+      cadena['8_longitude'] = ob['longitude']
+      cadena['9_latitude'] = ob['latitude']
 
       ob['photos'].each do |photo|
         cadena['3_thumb_url'] = photo['thumb_url']
@@ -215,7 +215,7 @@ class Proveedor < ActiveRecord::Base
         case k
           when '1_nombre_cientifico'
             valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml << "<Data name=\"#{}\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+            kml << "<Data name=\" \">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_datetime'
             kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '4_nombre_coleccion'
@@ -255,17 +255,17 @@ class Proveedor < ActiveRecord::Base
         case k
           when '1_nombre_cientifico'
             valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml << "<Data name=\"\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Especie o grupo\">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_thumb_url'
-            kml << "<Data name=\"\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
+            kml << "<Data name=\"Observación\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
           when '4_attribution'
             kml << "<Data name=\"Atribución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '5_observed_on'
             kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '6_quality_grade'
-            kml << "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t(cad[k])}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t('quality_grade.' << cad[k])}\n</value>\n</Data>\n"
           when '7_uri'
-            kml << "<Data name=\"\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
+            kml << "<Data name=\"Registro\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
           else
             next
         end

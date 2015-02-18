@@ -33,8 +33,21 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @especie.to_json }
-      format.pdf do
+      format.kml do
+        redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
 
+        if params[:snib].present? && to_boolean(params[:snib])
+          redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.snib_kml
+          send_data @especie.proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+        elsif params[:naturalista].present? && to_boolean(params[:naturalista])
+          redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.naturalista_kml
+          send_data @especie.proveedor.naturalista_kml, :filename => "#{@especie.nombre_cientifico}.kml"
+        else
+          redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+        end
+      end
+
+      format.pdf do
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
                         CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
