@@ -24,6 +24,7 @@ def busca_fotos
   Especie.find_each do |taxon|
   #Especie.limit(100).each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    #next unless taxon.id > 7000000
     next unless proveedor = taxon.proveedor
     next unless proveedor.naturalista_info.present?
     proveedor.fotos(@usuario.id)
@@ -51,7 +52,6 @@ if ARGV.length == 1 && ARGV.first.present? && ARGV.first.downcase == 'truncate'
   system_call('rake tmp:cache:clear')
 elsif ARGV.blank?
   puts "Con comando default para crear: #{ARGV.first}" if OPTS[:debug]
-  puts 'desp'
   exit(0) unless @usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first
   busca_fotos
 else
