@@ -202,12 +202,12 @@ class Proveedor < ActiveRecord::Base
 
   def to_kml(cadenas)
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml+= "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
-    kml+= "<Document>\n"
+    kml << "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml << "<Document>\n"
 
     cadenas.each do |cad|
-      kml+= "<Placemark>\n"
-      kml+= "<ExtendedData>\n"
+      kml << "<Placemark>\n"
+      kml << "<ExtendedData>\n"
 
       cad.keys.sort.each do |k|
         next unless cad[k].present?
@@ -215,39 +215,39 @@ class Proveedor < ActiveRecord::Base
         case k
           when '1_nombre_cientifico'
             valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml+= "<Data name=\"#{}\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+            kml << "<Data name=\"#{}\">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_datetime'
-            kml+= "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '4_nombre_coleccion'
-            kml+= "<Data name=\"Colección\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Colección\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '5_nombre_institucion'
-            kml+= "<Data name=\"Institución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Institución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '6_nombre_colector'
-            kml+= "<Data name=\"Nombre del colector\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Nombre del colector\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '7_url_proyecto_conabio'
-            kml+= "<Data name=\"Enlace al proyecto\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Enlace al proyecto\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           else
             next
         end
       end
 
-      kml+= "</ExtendedData>\n"
-      kml+= "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
-      kml+= "</Placemark>\n"
+      kml << "</ExtendedData>\n"
+      kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
+      kml << "</Placemark>\n"
     end
 
-    kml+= "</Document>\n"
-    kml+= '</kml>'
+    kml << "</Document>\n"
+    kml << '</kml>'
   end
 
   def to_kml_naturalista(cadenas)
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml+= "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
-    kml+= "<Document>\n"
+    kml << "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml << "<Document>\n"
 
     cadenas.each do |cad|
-      kml+= "<Placemark>\n"
-      kml+= "<ExtendedData>\n"
+      kml << "<Placemark>\n"
+      kml << "<ExtendedData>\n"
 
       cad.keys.sort.each do |k|
         next unless cad[k].present?
@@ -255,29 +255,29 @@ class Proveedor < ActiveRecord::Base
         case k
           when '1_nombre_cientifico'
             valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml+= "<Data name=\"\">\n<value>\n#{valor}\n</value>\n</Data>\n"
+            kml << "<Data name=\"\">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_thumb_url'
-            kml+= "<Data name=\"\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
+            kml << "<Data name=\"\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
           when '4_attribution'
-            kml+= "<Data name=\"Atribución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Atribución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '5_observed_on'
-            kml+= "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
           when '6_quality_grade'
-            kml+= "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t(cad[k])}\n</value>\n</Data>\n"
+            kml << "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t(cad[k])}\n</value>\n</Data>\n"
           when '7_uri'
-            kml+= "<Data name=\"\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
+            kml << "<Data name=\"\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
           else
             next
         end
       end
 
-      kml+= "</ExtendedData>\n"
-      kml+= "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
-      kml+= "</Placemark>\n"
+      kml << "</ExtendedData>\n"
+      kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
+      kml << "</Placemark>\n"
     end
 
-    kml+= "</Document>\n"
-    kml+= '</kml>'
+    kml << "</Document>\n"
+    kml << '</kml>'
   end
 
   def photo_type(url)

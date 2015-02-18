@@ -19,9 +19,8 @@ end
 def kmz
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    proveedor = taxon.proveedor
 
-    next unless proveedor
+    next unless proveedor = taxon.proveedor
     proveedor.kml_naturalista
 
     if proveedor.naturalista_kml.present? && proveedor.naturalista_kml_changed?
