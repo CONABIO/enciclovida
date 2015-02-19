@@ -55,7 +55,6 @@ class Proveedor < ActiveRecord::Base
 
   #Guarda el kml asociado al taxon
   def kml
-    return [] unless snib_id.present?
     response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}", :timeout => 1000, :open_timeout => 1000
     return [] unless response.present?
     data = JSON.parse(response)
@@ -88,12 +87,12 @@ class Proveedor < ActiveRecord::Base
 
   #Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
-    return [] unless naturalista_obs.present?
     obs = eval(naturalista_obs).first
     return [] unless obs.count > 0
     cadenas = []
 
     obs.each do |ob|
+      # Las captivas no nos importan en los registros
       next if ob['captive']
       cadena = Hash.new
 
@@ -253,36 +252,49 @@ class Proveedor < ActiveRecord::Base
 
   def to_kml_naturalista(cadenas)
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml << "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
     kml << "<Document>\n"
+    kml << "<Style id=\"normalPlacemark\">\n"
+    kml << "<IconStyle>\n"
+    kml << "<Icon>\n"
+    kml << "<href>https://lh4.ggpht.com/FRLzoxHDpRHxP6aFWxxQ1OUPlWnc55ZqnO7EpLtD8FBn6EK1zBerpF9P3BE3jJ6SFLNF7P0=w9-h9</href>\n"
+    kml << "</Icon>\n"
+    kml << "</IconStyle>\n"
+    kml << "</Style>\n"
 
     cadenas.each do |cad|
+      valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad['1_nombre_cientifico']})</i>" : "<i><b>#{cad['1_nombre_cientifico']}</b></i>"
       kml << "<Placemark>\n"
-      kml << "<ExtendedData>\n"
+      kml << "<description>\n"
+      kml << "<![CDATA[\n"
+      kml << "<div>\n"
+      kml << "<h4>\n"
+      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{valor}</a>\n"
+      kml << "</h4>\n"
 
       cad.keys.sort.each do |k|
         next unless cad[k].present?
 
         case k
-          when '1_nombre_cientifico'
-            valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml << "<Data name=\"Especie o grupo\">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_thumb_url'
-            kml << "<Data name=\"Observación\">\n<value>\n<img src=\"#{cad[k]}\"/>\n</value>\n</Data>\n"
+            kml << "<p><img src=\"#{cad[k]}\"/></p>\n"
           when '4_attribution'
-            kml << "<Data name=\"Atribución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Atribución: </b><text>#{cad[k]}</text></p>\n"
           when '5_observed_on'
-            kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Fecha: </b><text>#{cad[k]}</text></p>\n"
           when '6_quality_grade'
-            kml << "<Data name=\"Grado de calidad\">\n<value>\n#{I18n.t('quality_grade.' << cad[k])}\n</value>\n</Data>\n"
+            kml << "<p><b>Grado de calidad: </b><text>#{I18n.t('quality_grade.' << cad[k])}</text></p>\n"
           when '7_uri'
-            kml << "<Data name=\"Registro\">\n<value>\nVer la <a href=\"#{cad[k]}\">observación</a>\n</value>\n</Data>\n"
+            kml << "<p><text>Ver la </text><a href=\"#{cad[k]}\">observación</a></p>\n"
           else
             next
         end
       end
 
-      kml << "</ExtendedData>\n"
+      kml << "</div>\n"
+      kml << "]]>\n"
+      kml << "</description>\n"
+      kml << '<styleUrl>#normalPlacemark</styleUrl>'
       kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end

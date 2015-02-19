@@ -9,7 +9,7 @@ Guarda en la base el kml y crea el kmz para una facil consulta y generacion del 
 
 Usage:
 
-rails r tools/crea_kml_naturalista.rb -d
+rails r tools/crea_kmz_naturalista.rb -d
 
 where [options] are:
   EOS
@@ -17,17 +17,18 @@ where [options] are:
 end
 
 def kml
-  Especie.find_each do |taxon|
-    next unless taxon.id > 8010026
+  Proveedor.where('naturalista_obs IS NOT NULL').find_each do |proveedor|
+    taxon = proveedor.especie
+    #next unless taxon.id > 8010026
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    next unless taxon.species_or_lower?
-    next unless proveedor = taxon.proveedor
     proveedor.kml_naturalista
 
     if proveedor.naturalista_kml.present? && proveedor.naturalista_kml_changed?
       puts "\tCon KML" if OPTS[:debug]
       if proveedor.save
-          puts "\t\tGuardo KML" if OPTS[:debug]
+        if proveedor.kmz_naturalista
+          puts "\t\tGuardo KMZ" if OPTS[:debug]
+        end
       end
     end
   end
