@@ -22,7 +22,7 @@ class NombreComun < ActiveRecord::Base
   end
 
   def completa_blurrily
-    FUZZY_NOM_CIEN.put(nombre_comun, id)
+    FUZZY_NOM_COM.put(nombre_comun, id)
   end
 
   def personalizaBusqueda

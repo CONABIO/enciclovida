@@ -16,15 +16,18 @@ end
 
 def exporta_a_blurrilly
   puts 'Exportando nombres cientificos ... ' if OPTS[:debug]
+  client_cientifico = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_cientificos')
+  client_comun = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_comunes')
+
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}"
-    taxon.completa_blurrily
+    client_cientifico.put(taxon.nombre_cientifico, taxon.id)
   end
 
   puts 'Exportando nombres comunes ... ' if OPTS[:debug]
   NombreComun.find_each do |nom|
     puts "#{nom.id}-#{nom.nombre_comun}"
-    nom.completa_blurrily
+    client_comun.put(nom.nombre_comun, nom.id)
   end
 end
 

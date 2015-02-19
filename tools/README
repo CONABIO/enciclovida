@@ -77,7 +77,7 @@
 20.- Completa la base de nombres cientificos en redis (519.614327159 seg):
         17.1.- rails r tools/nombres_cientificos_sql_redis.rb -d
 
-21.- Completa la base de nombres comunes en redis ():
+21.- Completa la base de nombres comunes en redis (11637.077650075 seg):
         17.1.- rails r tools/nombres_comunes_sql_redis.rb -d
 
 1.- Genera los triggers que mandaran a llamar al webservice para completar los campos que vengan de

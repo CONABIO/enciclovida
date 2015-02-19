@@ -31,7 +31,7 @@
     (
             ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución'],
             ["<%=raw "http://#{CONFIG.host_ip.to_s}:#{CONFIG.host_port.to_s}/especies/kmz?id=#{@especie.id}" %>","Registros de museos y colectas (GBIF)"],
-	    ["http://biodiversidad.gob.mx/calonso/layers/prueba6.kml", "Observaciones naturalista"]
+	        ["http://bios.conabio.gob.mx/kmz/" + TAXON.id + "/observaciones.kmz", "Observaciones de naturalista"]
     );
 
     info = function()

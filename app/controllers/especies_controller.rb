@@ -187,7 +187,7 @@ class EspeciesController < ApplicationController
         when 'nombre_comun'
           estatus = params[:estatus].join(',') if params[:estatus].present?
           sql = "NombreComun.select(\"especies.id, estatus, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_cientifico ASC')"
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_comun ASC')"
 
           totales = eval("#{sql}").length
           @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
@@ -202,19 +202,19 @@ class EspeciesController < ApplicationController
             encontro_con_distancia = false
 
             ids.each do |id|
-              @taxones=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-                  nom_com.where("nombres_comunes.id=#{id}")
+              taxon=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
+                  nom_com.where("nombres_comunes.id=#{id}").where("estatus IN (#{estatus ||= '2, 1'})")
 
-              if @taxones.first
-                # Si la distancia entre palabras es 1 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_comun].downcase, @taxones.first.nombre_comun.downcase)
+              if taxon.first
+                # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+                distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.first.nombre_comun.downcase)
                 @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
-                if distancia != 1
-                  next
-                else
+                if distancia < 3
+                  @taxones <<= taxon
                   encontro_con_distancia = true
-                  break
+                else
+                  next
                 end
 
               else
@@ -230,9 +230,6 @@ class EspeciesController < ApplicationController
 
         when 'nombre_cientifico'
           estatus = params[:estatus].join(',') if params[:estatus].present?
-          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
-          puts estatus.inspect
-          puts "\n--------------------------------------------------------------------------------------------------------------------------\n"
 
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
@@ -251,19 +248,19 @@ class EspeciesController < ApplicationController
             encontro_con_distancia = false
 
             ids.each do |id|
-              @taxones = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-                  where(:id => id)
+              taxon = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+                  where(:id => id).where("estatus IN (#{estatus ||= '2, 1'})")
 
-              if @taxones.first
-                # Si la distancia entre palabras es 1 que muestre la sugerencia
+              if taxon.first
+                # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
                 distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, @taxones.first.nombre_cientifico.downcase)
                 @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
-                if distancia != 1
-                  next
-                else
+                if distancia < 3
+                  @taxones <<= taxon
                   encontro_con_distancia = true
-                  break
+                else
+                  next
                 end
 
               else

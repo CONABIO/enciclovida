@@ -308,7 +308,7 @@ class Especie < ActiveRecord::Base
   end
 
   def completa_blurrily
-    FUZZY_NOM_COM.put(nombre_cientifico, id)
+    FUZZY_NOM_CIEN.put(nombre_cientifico, id)
   end
 
   def exporta_redis

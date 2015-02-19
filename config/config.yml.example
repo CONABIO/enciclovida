@@ -135,13 +135,6 @@ base: &base
   # iOS app ID. Used to display header notice about app in mobile views
   # ios_app_id: 421397028
 
-  # Configure taxon description callbacks. taxa/show will try to show
-  # species descriptions from these sources in this order, trying the next
-  # if one fails. You can see all the available describers in
-  # lib/taxon_describers/lib/taxon_describers
-  taxon_describers: [conabio, wikipediaes, eoles, eol, wikipedia]
-  photo_providers: [flickr, eol, wikimedia]
-
   # If you'd prefer the default taxon ranges to come from a particular Source, set the source ID here
   # taxon_range_source_id: 7538
 
