@@ -312,15 +312,15 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    foto = taxon.foto_principal.present? ? "<img src='#{foto_principal}' alt='#{nombre_cientifico}' width='30px' \>" :
-        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{nombre_cientifico}' width='30px' class='img-thumbnail'\>"
+    foto = foto_principal.present? ? "<img src='#{foto_principal}' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
+        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data <<  "\"score\":2,"
     data << "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(nombre_comun_principal)}\", "
-    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id}, \"estatus\":#{taxon.estatus}}"
+    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id}, \"estatus\":#{estatus}}"
     data << "}\n"
   end
 end

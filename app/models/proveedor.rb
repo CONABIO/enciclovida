@@ -23,7 +23,7 @@ class Proveedor < ActiveRecord::Base
       if nom_comunes.present?
         next if nom_comunes.include?(nombre)
       end
-      nombres_comunes_faltan << "#{especie.catalogo_id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica}"
+      nombres_comunes_faltan << "#{especie.catalogo_id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica},http://naturalista.conabio.gob.mx/taxa/#{naturalista_id}"
     end
 
     nombres_comunes_faltan

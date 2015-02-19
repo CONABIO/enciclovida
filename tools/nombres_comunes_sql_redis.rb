@@ -29,17 +29,10 @@ def batches
   NombreComun.find_each do |nombre_comun|
     puts "#{nombre_comun.id}-#{nombre_comun.nombre_comun}" if OPTS[:debug]
 
-    nombre_comun.especies.order('nombre_cientifico ASC').each do |especie|
-      foto = especie.foto_principal.present? ? "<img src='#{especie.foto_principal}' alt='#{especie.nombre_cientifico}' width='30px' \>" :
-          "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{especie.nombre_cientifico}' width='30px' \>"
+    nombre_comun.especies.order('nombre_cientifico ASC').each do |taxon|
+      data = nombre_comun.exporta_redis(taxon)
 
-      data = "{\"id\":\"#{nombre_comun.id}#{0}\","   #el ID de nombres_comunes no es unico (uno a muchos)
-      data+= "\"term\":\"#{Limpia.cadena(nombre_comun.nombre_comun.humaniza)}\","
-      data+= "\"score\":2,"
-      data+= "\"data\":{\"nombre_cientifico\":\"#{Limpia.cadena(especie.nombre_cientifico)}\", \"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(especie.nombre_autoridad)}\", \"id\":#{especie.id}}"
-      data+= "}\n"
-
-      File.open("#{@path}/nom_com_#{I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
+      File.open("#{@path}/nom_com_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
         f.puts data
       end
     end
@@ -73,7 +66,6 @@ start_time = Time.now
 @path='db/redis'     #cambiar si se desea otra ruta
 creando_carpeta
 delete_files
-puts 'Iniciando la creacion de los archivos json...' if OPTS[:debug]
 batches
 load_file
 

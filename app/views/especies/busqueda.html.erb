@@ -1,6 +1,5 @@
 <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
 
-
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
@@ -87,7 +86,7 @@
 
         if (event.data.num == '1' || event.data.num == '3')         //nombre comun
         {
-            var types = ['com_orden', 'com_familia', 'com_especie'];
+            var types = eval("<%=raw CategoriaTaxonomica.categorias_redis('com') %>");
             var render = function(term, data, type, index, id, foto)
             {
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
@@ -107,8 +106,7 @@
         }
         if (event.data.num == '2' || event.data.num == '4')          //nombre cientifico
         {
-            var types = ['cien_Reino', 'cien_phylum', 'cien_subphylum', 'cien_clase', 'cien_orden',
-                'cien_familia', 'cien_subespecie', 'cien_especie', 'cien_genero'];
+            var types = eval("<%=raw CategoriaTaxonomica.categorias_redis('cien') %>");
             var render = function(term, data, type, index, id, foto)
             {
                 event.data.num == '2' ? $('#id_basica_cientifico').attr('value', '') : $('#id_avanzada_cientifico').attr('value', '');
@@ -116,8 +114,8 @@
                 if (I18n.locale == 'es-cientifico')
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
-                    var nombres = data.nombre_comun.length == 0 ? '<i>' + term + '</i>' : data.nombre_comun + ' <i>(' + term + ')</i>';
-                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table";
+                    var nombres = data.nombre_comun.length == 0 ? '<b><i>' + term + '</i></b>' : data.nombre_comun + ' <i>(<b>' + term + '</b>)</i>';
+                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table>";
             }
             var select = function(term, data, type)
             {

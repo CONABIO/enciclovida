@@ -28,4 +28,17 @@ class NombreComun < ActiveRecord::Base
   def personalizaBusqueda
     "#{self.nombre_comun} (#{self.lengua})".html_safe
   end
+
+  def exporta_redis(taxon)
+    foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
+        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+
+    data = ''
+    data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
+    data << "\"term\":\"#{Limpia.cadena(nombre_comun.humanizar)}\","
+    data <<  "\"score\":2,"
+    data << "\"data\":{\"nombre_cientifico\":\"#{Limpia.cadena(taxon.nombre_cientifico)}\", "
+    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(taxon.nombre_autoridad)}\", \"id\":#{taxon.id}, \"estatus\":#{taxon.estatus}}"
+    data << "}\n"
+  end
 end
