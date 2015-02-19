@@ -78,10 +78,8 @@ class Proveedor < ActiveRecord::Base
       cadena['8_longitude'] = datos['longitud']
       cadena['9_latitude'] = datos['latitud']
 
-      #Pone la fecha correcta si tiene el formato indicado
-      #if datos['aniocolecta'] != 9999 && datos['mescolecta'] != 99 && datos['diacolecta'] != 99
-      cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta']}-#{datos['diacolecta']} 00:00:00"
-      #end
+      #Pone la fecha en formato tiemestamp
+      cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta'].to_s.rjust(2,'0')}-#{datos['diacolecta'].to_s.rjust(2,'0')} 00:00:00"
 
       cadenas << cadena
     end
@@ -202,36 +200,49 @@ class Proveedor < ActiveRecord::Base
 
   def to_kml(cadenas)
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml << "<kml xmlns=\"http://earth.google.com/kml/2.2\">\n"
+    kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
     kml << "<Document>\n"
+    kml << "<Style id=\"normalPlacemark\">\n"
+    kml << "<IconStyle>\n"
+    kml << "<Icon>\n"
+    kml << "<href>https://storage.googleapis.com/support-kms-prod/SNP_2752125_en_v0</href>\n"
+    kml << "</Icon>\n"
+    kml << "</IconStyle>\n"
+    kml << "</Style>\n"
 
     cadenas.each do |cad|
+      valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad['1_nombre_cientifico']})</i>" : "<i><b>#{cad['1_nombre_cientifico']}</b></i>"
       kml << "<Placemark>\n"
-      kml << "<ExtendedData>\n"
+      kml << "<description>\n"
+      kml << "<![CDATA[\n"
+      kml << "<div>\n"
+      kml << "<h4>\n"
+      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{valor}</a>\n"
+      kml << "</h4>\n"
 
       cad.keys.sort.each do |k|
         next unless cad[k].present?
 
         case k
-          when '1_nombre_cientifico'
-            valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad[k]})</i>" : "<i>#{cad[k]}</i>"
-            kml << "<Data name=\" \">\n<value>\n#{valor}\n</value>\n</Data>\n"
           when '3_datetime'
-            kml << "<Data name=\"Fecha\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Fecha: </b><text>#{cad[k]}</text></p>\n"
           when '4_nombre_coleccion'
-            kml << "<Data name=\"Colección\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Colección: </b><text>#{cad[k]}</text></p>\n"
           when '5_nombre_institucion'
-            kml << "<Data name=\"Institución\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Institución: </b><text>#{cad[k]}</text></p>\n"
           when '6_nombre_colector'
-            kml << "<Data name=\"Nombre del colector\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><b>Nombre del colector: </b><text>#{cad[k]}</text></p>\n"
           when '7_url_proyecto_conabio'
-            kml << "<Data name=\"Enlace al proyecto\">\n<value>\n#{cad[k]}\n</value>\n</Data>\n"
+            kml << "<p><text>Enlace al</text> <a href=\"#{cad[k]}\">proyecto</a></p>\n"
           else
             next
         end
       end
 
-      kml << "</ExtendedData>\n"
+      kml << "</div>\n"
+      kml << "]]>\n"
+      kml << "</description>\n"
+      kml << '<styleUrl>#normalPlacemark</styleUrl>'
       kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end
