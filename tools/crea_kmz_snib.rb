@@ -19,15 +19,13 @@ end
 def kmz
   Proveedor.where('snib_id IS NOT NULL').find_each do |proveedor|
     #Especie.limit(400).each do |taxon|
-    #next unless taxon.id > 6040301
-    # Quitamos estos taxones ya que estan muy pesados
     taxon = proveedor.especie
+    #next unless taxon.id > 6040301
+    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    # Quitamos estos taxones ya que estan muy pesados
     muchos_registros = [6040302, 6040409, 6053190, 6057583, 8000596]
     next if muchos_registros.include?(taxon.id)
-
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.species_or_lower?
-
     proveedor.kml
 
     if proveedor.snib_kml.present? && proveedor.snib_kml_changed?
