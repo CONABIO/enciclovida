@@ -19,6 +19,7 @@ end
 def foto_principal
   Especie.find_each do |taxon|
   #Especie.limit(30).each do |taxon|
+    #next unless taxon.id > 6011411
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.foto_principal.blank?  # Para evitar que la fotografia cambie cuando hacemos una migracion de bases
 
