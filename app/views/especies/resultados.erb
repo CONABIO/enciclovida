@@ -83,7 +83,7 @@
             return false;
         });
 
-        $(document).on('mouseenter', "[class^='datos_busqueda-']", function()
+        /*$(document).on('mouseenter', "[class^='datos_busqueda-']", function()
         {
             var id = $(this).attr('class').substring(15);
             $.ajax({
@@ -101,7 +101,7 @@
         $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
         {
             HideContent('datos_principales');
-        });
+        });*/
     });
 </script>
 
@@ -132,8 +132,9 @@
 
       <% columnas=0 %>
       <% @taxones.each do |taxon| %>
+
           <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
-            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :height => '75px' %>
+            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail' %>
             <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
             <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
           </div>

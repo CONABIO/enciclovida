@@ -199,31 +199,26 @@ class EspeciesController < ApplicationController
 
           if @taxones.empty?
             ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
-            encontro_con_distancia = false
 
-            ids.each do |id|
-              taxon=NombreComun.select('especies.*, nombre_categoria_taxonomica, nombre_comun').
-                  nom_com.where("nombres_comunes.id=#{id}").where("estatus IN (#{estatus ||= '2, 1'})")
+            if ids.present?
+              @taxones = NombreComun.none
+              taxones=NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica').
+                  nom_com.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
 
-              if taxon.first
+              taxones.each do |taxon|
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.first.nombre_comun.downcase)
+                distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.nombre_comun.downcase)
                 @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                 if distancia < 3
                   @taxones <<= taxon
-                  encontro_con_distancia = true
                 else
                   next
                 end
-
-              else
-                # Si no hubo coincidencias con el fuzzy match
-                next
               end
             end
 
-            if !encontro_con_distancia
+            if @taxones.empty?
               redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
             end
           end
@@ -253,7 +248,7 @@ class EspeciesController < ApplicationController
 
               if taxon.first
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, @taxones.first.nombre_cientifico.downcase)
+                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.first.nombre_cientifico.downcase)
                 @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                 if distancia < 3
@@ -269,6 +264,7 @@ class EspeciesController < ApplicationController
               end
             end
 
+            @taxones = @taxones.first if !@taxones.empty?
             if !encontro_con_distancia
               redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
             end
@@ -319,8 +315,13 @@ class EspeciesController < ApplicationController
               condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
             end
           else       # busquedas directas
-            condiciones+= conID.present? ? (".caso_sensitivo('especies.id', '#{conID}')") :
-                (".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?)
+            if conID.present?
+              condiciones+= ".caso_sensitivo('especies.id', '#{conID}')"
+            else
+              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
+            end
+            #condiciones+= conID.present? ? (".caso_sensitivo('especies.id', '#{conID}')") :
+            #    (".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?)
           end
 
           #parte de la distribucion (lugares)

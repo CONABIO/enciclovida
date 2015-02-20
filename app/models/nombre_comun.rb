@@ -12,6 +12,7 @@ class NombreComun < ActiveRecord::Base
   scope :caso_sensitivo, ->(columna, valor) { where("#{columna}='#{valor}'") }
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
+  scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :especies_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.nombre_comun_id=nombres_comunes.id').
       joins('LEFT JOIN especies ON especies.id=nombres_regiones.especie_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }

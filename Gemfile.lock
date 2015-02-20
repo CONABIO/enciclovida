@@ -101,7 +101,7 @@ GEM
       nokogiri
     arel (4.0.2)
     bcrypt (3.1.7)
-    blurrily (1.0.2)
+    blurrily (0.2.1)
       activesupport
       eventmachine
       json
@@ -261,7 +261,7 @@ DEPENDENCIES
   activerecord-session_store!
   activerecord-sqlserver-adapter!
   ancestry!
-  blurrily
+  blurrily (= 0.2.1)
   carrierwave
   cocoon (= 1.2.0)
   coffee-rails (~> 4.0.0)
