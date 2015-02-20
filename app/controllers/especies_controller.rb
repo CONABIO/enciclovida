@@ -308,14 +308,19 @@ class EspeciesController < ApplicationController
               condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
             else            #joins a las categorias con los descendientes
               taxon = Especie.find(conID)
-              arbol << taxon.ancestor_ids << taxon.descendant_ids << conID       #el arbol completo
-              arbolIDS = "\"'#{arbol.compact.flatten.uniq.join("','")}'\""
-              condiciones+= ".caso_rango_valores('especies.id', #{arbolIDS})"
+
+              if taxon.is_root?
+                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%'\")"
+              else
+                ancestros = taxon.ancestry_ascendente_directo
+                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%'\")"
+              end
+
               condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
             end
           else       # busquedas directas
-            condiciones+= conID.present? ? ".caso_sensitivo('especies.id', '#{conID}')" :
-                ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
+            condiciones+= conID.present? ? (".caso_sensitivo('especies.id', '#{conID}')") :
+                (".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?)
           end
 
           #parte de la distribucion (lugares)
