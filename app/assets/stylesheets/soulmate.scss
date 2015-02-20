@@ -89,7 +89,7 @@ html {
   list-style: none;
   margin: 0 0 0 10px;
   padding: 0;
-  position: absolute;
+  //position: absolute;
   text-shadow: 0 0 0 white;
   //top: 306px;
   width: $soulmateWidth;
@@ -103,7 +103,12 @@ html {
       border-top: none;
     }
   }
-  
+  #soulmate_1, #soulmate_2{
+    position: fixed;
+  }
+  #soulmate_3, #soulmate_4{
+    position: absolute;
+  }
   .soulmate-type-suggestions {
     border-left: 1px solid #ddd;
     float: right;
