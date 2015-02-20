@@ -35,11 +35,11 @@ class ConabioPhoto < Photo
     imagen = "#{CONFIG.bdi_imagenes.to_s}/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}"
     new(options.merge(
             :large_url => imagen,
-            :medium_url => imagen,
-            :small_url => imagen,
-            :thumb_url => imagen,
+            :medium_url => "#{imagen}",
+            :small_url => "#{imagen}",
+            :thumb_url => "#{imagen}?w=85",
             :native_photo_id => api_response.id,
-            :square_url => imagen,
+            :square_url => "#{imagen}",
             :original_url => imagen,
             :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
             :native_username => copyright,

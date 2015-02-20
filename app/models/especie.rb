@@ -59,6 +59,11 @@ class Especie < ActiveRecord::Base
       [1, 'sinónimo']
   ]
 
+  ESTATUS_VALOR = {
+      ESTATUS[0][0] => ESTATUS[0][1],
+      ESTATUS[1][0] => ESTATUS[1][1]
+  }
+
   ESTATUS_SIMBOLO = {
       2 => '',
       1 =>''
