@@ -87,5 +87,6 @@
         14.1.- rails r tools/triggers.rb -d create 03-Hongos-Sept14                #para correr solo un conjunto de bases
         14.2.- rails r tools/triggers.rb -d drop 03-Hongos-Sept14                  #para correr solo un conjunto de bases
 
-
+23.- Opcionalmente se pueden sacar los nombres comunes que los catalogos no tienen:
+        23.1.- rails r tools/datos_para_catalogos.rb -d
 
