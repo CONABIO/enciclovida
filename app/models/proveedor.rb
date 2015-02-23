@@ -171,6 +171,22 @@ class Proveedor < ActiveRecord::Base
     self.naturalista_obs = "#{data}" if data.present?
   end
 
+  def geodatos
+    ruta_snib_kmz = Rails.root.join('public', 'kmz', especie.id.to_s, 'registros.kmz')
+    ruta_snib_kml = Rails.root.join('public', 'kmz', especie.id.to_s, 'registros.kml')
+    ruta_naturalista_kmz = Rails.root.join('public', 'kmz', especie.id.to_s, 'observaciones.kmz')
+    ruta_naturalista_kml = Rails.root.join('public', 'kmz', especie.id.to_s, 'observaciones.kml')
+
+    rutas = Hash.new
+    ruta_absoluta = "#{CONFIG.servidor}/#{especie.id.to_s}"
+    rutas[:snib_kml] = "#{ruta_absoluta}/registros.kml" if File.exist?(ruta_snib_kml)
+    rutas[:snib_kmz] = "#{ruta_absoluta}/registros.kmz" if File.exist?(ruta_snib_kmz)
+    rutas[:naturalista_kml] = "#{ruta_absoluta}/observaciones.kml" if File.exist?(ruta_naturalista_kml)
+    rutas[:naturalista_kmz] = "#{ruta_absoluta}/observaciones.kmz" if File.exist?(ruta_naturalista_kmz)
+
+    rutas.to_json
+  end
+
   def self.crea_info_naturalista(taxon)
     response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
     data = JSON.parse(response)
