@@ -55,18 +55,21 @@ base: &base
   taxon_describers: [conabio, eol, eoles, wikipediaes, wikipedia]
   photo_providers: [conabio, eol, wikimedia,flickr]
 
-  # Email addresses
-  admin_email: admin@yoursite.com
-  noreply_email: no-reply@yoursite.com
-  help_email: help@yoursite.com
-  info_email: info@yoursite.com
-
   # Credenaciles generales por http
   username: tu-usuario
   password: tu-passwd
 
   # Usuario general para correr script de fotos
   usuario : calonso
+
+  #Servidor en produccion que tendra los kml y kmz
+  servidor: http://200.12.166.190/kmz
+
+  # Email addresses
+  admin_email: admin@yoursite.com
+  noreply_email: no-reply@yoursite.com
+  help_email: help@yoursite.com
+  info_email: info@yoursite.com
 
   # site contact, mainly just used for GBIF archive generation
   # contact:
