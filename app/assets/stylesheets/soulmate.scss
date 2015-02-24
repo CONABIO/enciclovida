@@ -79,6 +79,13 @@ html {
 //    outline: none; 
   }
 }
+#soulmate_1, #soulmate_2 {
+  margin: 30px 0 0 10px;
+}
+
+#soulmate_3, #soulmate_4 {
+  margin: 0 0 0 10px;
+}
 
 #soulmate_1, #soulmate_2, #soulmate_3, #soulmate_4 {
   background-color: #fafafa;
@@ -87,9 +94,9 @@ html {
   font: 12px/14px $helvetica;
   font-weight: normal;
   list-style: none;
-  margin: 0 0 0 10px;
+  //margin: 0 0 0 10px;
   padding: 0;
-  //position: absolute;
+  position: fixed; //Solía tener absolute, pero es necesario para que escape la sección de busquedas
   text-shadow: 0 0 0 white;
   //top: 306px;
   width: $soulmateWidth;
@@ -103,12 +110,7 @@ html {
       border-top: none;
     }
   }
-  #soulmate_1, #soulmate_2{
-    position: fixed;
-  }
-  #soulmate_3, #soulmate_4{
-    position: absolute;
-  }
+
   .soulmate-type-suggestions {
     border-left: 1px solid #ddd;
     float: right;
