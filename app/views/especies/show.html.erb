@@ -27,12 +27,32 @@
     var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
     var SPECIES_OR_LOWER = <%=raw @especie.species_or_lower? %>;
-    var MAPAS = new Array
+    /*var MAPAS = new Array
     (
             ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución'],
             ["http://bios.conabio.gob.mx/kmz/" + TAXON.id + "/registros.kmz","Registros de museos, colectas y proyectos de CONABIO (SNIB)"],
 	        ["http://bios.conabio.gob.mx/kmz/" + TAXON.id + "/observaciones.kmz", "Observaciones de naturalista"]
-    );
+    );*/
+
+    // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
+    var RUTAS_KMZ = eval(<%=raw @especie.proveedor.geodatos %>);
+    var CUANTOS_KMZ = Object.keys(RUTAS_KMZ).length;
+
+    if (CUANTOS_KMZ > 0)
+    {
+        var MAPAS = new Array();
+        if (RUTAS_KMZ.snib_kmz != undefined)
+        {
+            MAPAS[0] = new Array();
+            MAPAS[0]["Registros de museos, colectas y proyectos de CONABIO (SNIB)"] = RUTAS_KMZ.snib_kmz
+        }
+
+        if (RUTAS_KMZ.naturalista_kmz != undefined)
+        {
+            MAPAS[1] = new Array();
+            MAPAS[1]["Observaciones de naturalista"] = RUTAS_KMZ.naturalista_kmz
+        }
+    }
 
     info = function()
     {
@@ -145,56 +165,56 @@
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
-            // Inicia los mapas de distribucion
-            map = new GMaps({
-                div: '#map',
-                zoom: 5,
-                lat: 23.79162789,
-                lng: -102.04376221,
-                mapTypeId:google.maps.MapTypeId.HYBRID,
-                height: "450px",
-                width:	"450px"
-            });
 
-            for (var i = 0; i < MAPAS.length;i++)
+            if (CUANTOS_KMZ > 0)
             {
-                infoWindow =	new google.maps.InfoWindow({});
-                MAPAS[i][2]	=	function(direccion){
-                    return	map.loadFromKML({
-                        url: direccion,
-                        preserveViewport: true,
-                        suppressInfoWindows: true,
-                        events:{
-                            click: function(point){
-                                anchoInfo = function()
-                                {
-                                    return parseInt($("#map").width()/5)*4;
-                                };
-                                altoInfo = function()
-                                {
-                                    return parseInt($("#map").height()/10)*9;
-                                };
-                                if(point.featureData.infoWindowHtml.indexOf('$[description]')>-1)
-                                {
-                                    infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.name+"</div>");
-                                    infoWindow.maxWidth = 2;
-                                }else{
-                                    infoWindow.setContent("<div id='balloon' style='max-height: "+altoInfo()+"px; max-width: "+anchoInfo()+"px;'>"+point.featureData.infoWindowHtml+"</div>");
-                                };
-                                infoWindow.setPosition(point.latLng);
-                                infoWindow.open(map.map);
-                                $(function()
-                                {
-                                    $("#balloon div").removeAttr("style");
-                                });
-                            }
-                        }
-                    });
-                }
-            }
+                // Inicia el mapa
+                map = new GMaps({
+                    div: '#map',
+                    zoom: 5,
+                    lat: 23.79162789,
+                    lng: -102.04376221,
+                    mapTypeId: google.maps.MapTypeId.HYBRID,
+                    height: "450px",
+                    width: "450px"
+                });
 
-            anadeControlFullScreen();
-            anadeControlCapas();
+                for (var i = 0; i < MAPAS.length; i++) {
+                    infoWindow = new google.maps.InfoWindow({});
+                    MAPAS[i][2] = function (direccion) {
+                        return map.loadFromKML({
+                            url: direccion,
+                            preserveViewport: true,
+                            suppressInfoWindows: true,
+                            events: {
+                                click: function (point) {
+                                    anchoInfo = function () {
+                                        return parseInt($("#map").width() / 5) * 4;
+                                    };
+                                    altoInfo = function () {
+                                        return parseInt($("#map").height() / 10) * 9;
+                                    };
+                                    if (point.featureData.infoWindowHtml.indexOf('$[description]') > -1) {
+                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.name + "</div>");
+                                        infoWindow.maxWidth = 2;
+                                    } else {
+                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.infoWindowHtml + "</div>");
+                                    }
+                                    ;
+                                    infoWindow.setPosition(point.latLng);
+                                    infoWindow.open(map.map);
+                                    $(function () {
+                                        $("#balloon div").removeAttr("style");
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+
+                anadeControlFullScreen();
+                anadeControlCapas();
+            }
         }
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
@@ -218,7 +238,7 @@
   </h1>
   <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
-  | registros del SNIB <%= link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>
+  <!--| registros del SNIB <%# link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>-->
 </div>
 
 <%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
