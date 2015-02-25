@@ -1,5 +1,6 @@
 class Proveedor < ActiveRecord::Base
   belongs_to :especie
+  attr_accessor :snib_kml, :naturalista_kml
 
   # Saca los nombres comunes del campo naturalista_info
   def nombres_comunes
