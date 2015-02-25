@@ -1,4 +1,7 @@
-<script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
+<% taxon = @especie.to_json %>
+<% species_or_lower = @especie.species_or_lower? %>
+<% geodatos = @especie.proveedor.geodatos if species_or_lower %>
+<% geo = JSON.parse(geodatos) if geodatos %>
 
 <style>
     #map
@@ -23,34 +26,30 @@
     }
 </style>
 
+<script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
-    var TAXON = <%=raw @especie.to_json %>;
-    var NOMBRE_CIENTIFICO = "<%=raw URI.escape(@especie.nombre_cientifico) %>";
-    var SPECIES_OR_LOWER = <%=raw @especie.species_or_lower? %>;
-    /*var MAPAS = new Array
-    (
-            ["http://www.conabio.gob.mx/informacion/gis/maps/api/kml?nc=" + NOMBRE_CIENTIFICO,'Mapa de distribución'],
-            ["http://bios.conabio.gob.mx/kmz/" + TAXON.id + "/registros.kmz","Registros de museos, colectas y proyectos de CONABIO (SNIB)"],
-	        ["http://bios.conabio.gob.mx/kmz/" + TAXON.id + "/observaciones.kmz", "Observaciones de naturalista"]
-    );*/
+    var TAXON = <%=raw taxon %>;
+    var SPECIES_OR_LOWER = <%=raw species_or_lower %>;
 
-    // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
-    var RUTAS_KMZ = eval(<%=raw @especie.proveedor.geodatos %>);
-    var CUANTOS_KMZ = Object.keys(RUTAS_KMZ).length;
-
-    if (CUANTOS_KMZ > 0)
+    if (SPECIES_OR_LOWER)
     {
-        var MAPAS = new Array();
-        if (RUTAS_KMZ.snib_kmz != undefined)
-        {
-            MAPAS[0] = new Array();
-            MAPAS[0]["Registros de museos, colectas y proyectos de CONABIO (SNIB)"] = RUTAS_KMZ.snib_kmz
-        }
+        // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
+        var RUTAS_KMZ = eval(<%=raw geodatos %>);
+        var CUANTOS_KMZ = Object.keys(RUTAS_KMZ).length;
 
-        if (RUTAS_KMZ.naturalista_kmz != undefined)
-        {
-            MAPAS[1] = new Array();
-            MAPAS[1]["Observaciones de naturalista"] = RUTAS_KMZ.naturalista_kmz
+        if (CUANTOS_KMZ > 0) {
+            var MAPAS = new Array();
+            if (RUTAS_KMZ.snib_kmz != undefined) {
+                MAPAS[0] = new Array();
+                MAPAS[0][0] = RUTAS_KMZ.snib_kmz
+                MAPAS[0][1] = "Registros de museos, colectas y proyectos de CONABIO (SNIB)"
+            }
+
+            if (RUTAS_KMZ.naturalista_kmz != undefined) {
+                MAPAS[1] = new Array();
+                MAPAS[1][0] = RUTAS_KMZ.naturalista_kmz
+                MAPAS[1][1] = "Observaciones de naturalista"
+            }
         }
     }
 
@@ -168,6 +167,7 @@
 
             if (CUANTOS_KMZ > 0)
             {
+                console.log(MAPAS);
                 // Inicia el mapa
                 map = new GMaps({
                     div: '#map',
@@ -238,10 +238,19 @@
   </h1>
   <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
+
+  <% if geo && geo.count > 0 %>
+      <%= "| registros del SNIB #{link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
+      <%= "| observaciones de NaturaLista #{link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
+  <% end %>
   <!--| registros del SNIB <%# link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>-->
 </div>
 
-<%= @especie.species_or_lower? ? "<div style=\"width: 40%; float:left;\">".html_safe : "<div style=\"width: 100%; float:left;\">".html_safe %>
+<% if geo && geo.count > 0 %>
+    <div style="width: 40%; float:left;">
+<% else %>
+    <div style="width: 100%; float:left;">
+<% end %>
 
 <div id="photoscol" class="column span-13">
   <div id="photos">
@@ -256,7 +265,7 @@
 </div>
 </div>
 
-<% if @especie.species_or_lower? %>
+<% if geo && geo.count > 0 %>
     <div style="width: 60%; float:right;">
       <div id="map"></div>
     </div>
