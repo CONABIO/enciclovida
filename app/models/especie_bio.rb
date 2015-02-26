@@ -392,19 +392,29 @@ class EspecieBio < ActiveRecord::Base
   end
 
   def pon_nombre_cientifico
-    case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
-      when 'especie'
-        self.nombre_cientifico = "#{encuentra('genero')} #{nombre}"
-      when 'subespecie', 'variedad', 'forma'
-        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{nombre}"
-      when 'subvariedad'
-        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('variedad')} #{nombre}"
-      when 'subforma'
-        self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} #{encuentra('forma')} #{nombre}"
-      else
-        self.nombre_cientifico = nombre
+    nombre_cientifico = ''
+    tiene_subgenero = false
+
+    EspecieBio.select('especies.id, especies.nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', ancestor_ids.reverse.join(',')).each do |taxon|
+      #return taxon.nombre.limpiar if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == cat
+
+      case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
+        when 'especie'
+          self.nombre_cientifico = "#{encuentra('genero')} #{nombre.limpiar}"
+        when 'subespecie'
+          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subsp. #{nombre.limpiar}"
+        when 'variedad'
+          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} var. #{nombre.limpiar}"
+        when 'forma'
+          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} f. #{nombre.limpiar}"
+        when 'subvariedad'
+          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subvar. #{encuentra('variedad')} #{nombre.limpiar}"
+        when 'subforma'
+          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subf. #{encuentra('forma')} #{nombre.limpiar}"
+        else
+          self.nombre_cientifico = nombre.limpiar
+      end
     end
-    self.nombre_cientifico = Limpia.cadena(nombre_cientifico)
   end
 
   def pon_nombre_comun_principal
@@ -477,10 +487,9 @@ class EspecieBio < ActiveRecord::Base
   private
 
   def encuentra(cat)
-    ancestor_ids.reverse.each do |a|
-      tax = EspecieBio.find(a)
-      puts tax.nombre
-      return tax.nombre if I18n.transliterate(tax.categoria_taxonomica.nombre_categoria_taxonomica).downcase == cat
+    tiene_subgenero = false
+    EspecieBio.select('especies.id, especies.nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', ancestor_ids.reverse.join(',')).each do |taxon|
+      return taxon.nombre.limpiar if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == cat
     end
   end
 
