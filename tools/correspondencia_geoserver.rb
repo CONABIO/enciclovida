@@ -23,13 +23,13 @@ def write_file(line)
   genero = l[5]
   especie = l[6]
   subespecie = l[7]
-  mapa = l[8]
-  style = l[9]
-  boubox = l[10]
+  layers = l[8]
+  styles = l[9]
+  bbox = l[10]
 
   puts "Busqueda: ^#{genero} #{especie} #{subespecie}$" if OPTS[:debug]
   # Para guardar la informacion en json
-  info = info_a_json(mapa, style, boubox)
+  info = info_a_json(layers, styles, bbox)
 
   #hace la comparacion por si es vacio subespecie
   taxon = Especie.where(:nombre_cientifico => subespecie.present? ? "#{genero} #{especie} #{subespecie}" : "#{genero} #{especie}")
@@ -43,11 +43,11 @@ def write_file(line)
     end
 
     if proveedor.changed?
-      @bitacora.puts "#{genero},#{especie},#{subespecie},#{mapa},#{taxon.first.id}" if proveedor.save
+      @bitacora.puts "#{genero},#{especie},#{subespecie},#{layers},#{taxon.first.id}" if proveedor.save
     end
   else
     puts "\tNO encontro" if OPTS[:debug]
-    @bitacora_no_encontro.puts "#{genero},#{especie},#{subespecie}#{mapa}"
+    @bitacora_no_encontro.puts "#{genero},#{especie},#{subespecie}#{layers}"
   end
 end
 
@@ -60,11 +60,11 @@ def bitacoras(file, no_encontro)
   puts 'Iniciando bitacoras ...' if OPTS[:debug]
   if !File.exists?(file)
     @bitacora = File.new(file, 'w')
-    @bitacora.puts 'genero,especie,subespecie,mapa,id'
+    @bitacora.puts 'genero,especie,subespecie,layers,id'
   end
   if !File.exists?(no_encontro)
     @bitacora_no_encontro = File.new(no_encontro, 'w')
-    @bitacora_no_encontro.puts 'genero,especie,subespecie,mapa'
+    @bitacora_no_encontro.puts 'genero,especie,subespecie,layers'
   end
 end
 
@@ -78,11 +78,15 @@ def read_file(filename)
   @bitacora = nil
 end
 
-def info_a_json(mapa, style, boubox)
+def info_a_json(layers, styles, bbox)
   info = Hash.new
-  info[:mapa] = mapa
-  info[:style] = style
-  info[:boubox] = boubox
+  info[:layers] = layers
+  info[:styles] = styles
+
+  # Ordenamos las coordenadas para el bbox
+  bx = bbox.split(' ')
+  info[:bbox] = "#{bx[1][5..-1]},#{bx[0][5..-1]},#{bx[3][5..-1]},#{bx[2][5..-1]}"
+
   info.to_json
 end
 

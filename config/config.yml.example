@@ -36,7 +36,7 @@ base: &base
   snib_url: http://geoportal.conabio.gob.mx/snib?qtype=getDataSnib
 
   # URL geoserver
-  geoserver_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms
+  geoserver_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?height=1024&width=1024&request=GetMap&service=wms&format=kmz
 
   # URL y puerto de BDI
   bdi_imagenes: http://bdi.conabio.gob.mx:5050
