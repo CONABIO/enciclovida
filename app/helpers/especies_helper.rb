@@ -377,9 +377,10 @@ module EspeciesHelper
 
   def dameDescendientesDirectos(taxon)
     hijos=''
-    taxon.child_ids.each do |children|
-      subTaxon=Especie.find(children)
-      hijos+="<li>#{link_to(image_tag(subTaxon.foto_principal, :alt => subTaxon.nombre_cientifico, :title => subTaxon.nombre_cientifico, :width => '40px'), subTaxon)} #{tituloNombreCientifico(subTaxon, :link => true)}</li>" if subTaxon.present?
+    child_ids = taxon.child_ids
+    Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
+      hijos << "<li>#{link_to(image_tag(subTaxon.foto_principal, :alt => subTaxon.nombre_cientifico, :title => subTaxon.nombre_cientifico, :width => '40px'), subTaxon)} "
+      hijos << "#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
     end
     hijos.present? ? "<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
   end
