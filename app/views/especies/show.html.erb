@@ -49,16 +49,18 @@
 
             if (RUTAS_KMZ.snib_kmz != undefined)
             {
-                MAPAS[1] = new Array();
-                MAPAS[1][0] = RUTAS_KMZ.snib_kmz
-                MAPAS[1][1] = "Registros de museos, colectas y proyectos de CONABIO (SNIB)"
+                var CUANTOS = Object.keys(MAPAS).length;
+                MAPAS[CUANTOS] = new Array();
+                MAPAS[CUANTOS][0] = RUTAS_KMZ.snib_kmz
+                MAPAS[CUANTOS][1] = "Registros de museos, colectas y proyectos de CONABIO (SNIB)"
             }
 
             if (RUTAS_KMZ.naturalista_kmz != undefined)
             {
-                MAPAS[2] = new Array();
-                MAPAS[2][0] = RUTAS_KMZ.naturalista_kmz
-                MAPAS[2][1] = "Observaciones de naturalista"
+                var CUANTOS = Object.keys(MAPAS).length;
+                MAPAS[CUANTOS] = new Array();
+                MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
+                MAPAS[CUANTOS][1] = "Observaciones de naturalista"
             }
         }
     }
