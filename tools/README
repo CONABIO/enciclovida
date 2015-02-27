@@ -30,7 +30,7 @@
         8.1.- rails r tools/ancestry_regiones_sql.rb -d
         8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 
-9.- Corre el script para completar el nombre cientifico de la tabla Nombre
+9.- Corre el script para completar el nombre cientifico de la tabla Nombre: (1040.507450663 seg)
         9.1.- rails r tools/nombre_cientifico_sql.rb -d
         9.2.- rails r tools/nombre_cientifico_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 

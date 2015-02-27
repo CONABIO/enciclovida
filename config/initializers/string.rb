@@ -5,7 +5,7 @@ class String
 
   def limpiar
     return self unless self.present?
-    self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '\"').gsub("\t", ' ').gsub(/(\(|\))/, ' ').gsub(/( subsp\.| f\. | var\.)/, ' ').strip.gsub(/\s+/,' ')
+    self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '\"').gsub("\t", ' ').gsub(/\([^()]*\)/, ' ').gsub(/( subsp\.| f\. | var\.| subf\.| subvar\.| sect\.)/, ' ').strip.gsub(/\s+/,' ')
   end
 end
 
