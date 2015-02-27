@@ -55,7 +55,7 @@ class Especie < ActiveRecord::Base
   POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUS = [
-      [2, 'válido/correcto'],
+      [2, 'válido'],
       [1, 'sinónimo']
   ]
 
@@ -70,7 +70,7 @@ class Especie < ActiveRecord::Base
   }
 
   ESTATUS_SIGNIFICADO = {
-      2 => 'válido/correcto',
+      2 => 'válido',
       1 =>'sinónimo'
   }
 
@@ -324,8 +324,8 @@ class Especie < ActiveRecord::Base
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data <<  "\"score\":2,"
-    data << "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(nombre_comun_principal)}\", "
-    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id}, \"estatus\":#{estatus}}"
+    data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
+    data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 end

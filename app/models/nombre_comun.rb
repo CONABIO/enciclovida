@@ -36,10 +36,10 @@ class NombreComun < ActiveRecord::Base
 
     data = ''
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
-    data << "\"term\":\"#{Limpia.cadena(nombre_comun.humanizar)}\","
+    data << "\"term\":\"#{nombre_comun.limpia}\","
     data <<  "\"score\":2,"
-    data << "\"data\":{\"nombre_cientifico\":\"#{Limpia.cadena(taxon.nombre_cientifico)}\", "
-    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(taxon.nombre_autoridad)}\", \"id\":#{taxon.id}, \"estatus\":#{taxon.estatus}}"
+    data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
+    data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
 end
