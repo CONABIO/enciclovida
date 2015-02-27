@@ -1,5 +1,6 @@
 class Proveedor < ActiveRecord::Base
   belongs_to :especie
+  attr_accessor :snib_kml, :naturalista_kml
 
   # Saca los nombres comunes del campo naturalista_info
   def nombres_comunes
@@ -183,6 +184,11 @@ class Proveedor < ActiveRecord::Base
     rutas[:snib_kmz] = "#{ruta_absoluta}/registros.kmz" if File.exist?(ruta_snib_kmz)
     rutas[:naturalista_kml] = "#{ruta_absoluta}/observaciones.kml" if File.exist?(ruta_naturalista_kml)
     rutas[:naturalista_kmz] = "#{ruta_absoluta}/observaciones.kmz" if File.exist?(ruta_naturalista_kmz)
+
+    if geoserver_info.present?
+      info = JSON.parse(geoserver_info)
+      rutas[:geoserver_kmz] = "#{CONFIG.geoserver_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}"
+    end
 
     rutas.to_json
   end

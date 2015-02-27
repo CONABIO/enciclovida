@@ -28,12 +28,10 @@ def kmz
     next unless taxon.species_or_lower?
     proveedor.kml
 
-    if proveedor.snib_kml.present? && proveedor.snib_kml_changed?
+    if proveedor.snib_kml.present?
       puts "\tCon KML" if OPTS[:debug]
-      if proveedor.save
-        if proveedor.kmz
-          puts "\t\tCon KMZ" if OPTS[:debug]
-        end
+      if proveedor.kmz
+        puts "\t\tCon KMZ" if OPTS[:debug]
       end
     end
   end

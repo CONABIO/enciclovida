@@ -92,8 +92,8 @@
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
 
                 var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
-                        term + ' <i>(' + data.nombre_cientifico + ')</i>';
-                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table";
+                        '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
+                return "<p style=\"margin:0;\">" + nombres + "</p>";
             }
             var select = function(term, data, type)
             {
@@ -114,8 +114,8 @@
                 if (I18n.locale == 'es-cientifico')
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
-                    var nombres = data.nombre_comun.length == 0 ? '<b><i>' + term + '</i></b>' : data.nombre_comun + ' <i>(<b>' + term + '</b>)</i>';
-                return "<table><tr><td>" + data.foto + "</td><td>" + nombres + "</td></tr></table>";
+                    var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : data.nombre_comun + ' (<b>' + term + '</b>)';
+                return "<p style=\"margin:0;\">" + nombres + "</p>";
             }
             var select = function(term, data, type)
             {
@@ -135,7 +135,7 @@
                 renderCallback: render,
                 selectCallback: select,
                 minQueryLength: 2,
-                maxResults:     5,
+                maxResults:     15,
                 num: event.data.num
             });
         }

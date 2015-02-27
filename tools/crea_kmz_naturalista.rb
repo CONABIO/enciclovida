@@ -23,12 +23,10 @@ def kml
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     proveedor.kml_naturalista
 
-    if proveedor.naturalista_kml.present? && proveedor.naturalista_kml_changed?
+    if proveedor.naturalista_kml.present?
       puts "\tCon KML" if OPTS[:debug]
-      if proveedor.save
-        if proveedor.kmz_naturalista
-          puts "\t\tGuardo KMZ" if OPTS[:debug]
-        end
+      if proveedor.kmz_naturalista
+        puts "\t\tGuardo KMZ" if OPTS[:debug]
       end
     end
   end
