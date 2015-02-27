@@ -24,8 +24,10 @@ def completa
     taxon.evita_before_save = true
     taxon.pon_nombre_cientifico
 
-    if taxon.save
-      puts "--->  #{taxon.nombre_cientifico}" if OPTS[:debug]
+    if taxon.nombre_cientifico_changed?
+      if taxon.save
+        puts "\t#{taxon.nombre_cientifico}" if OPTS[:debug]
+      end
     end
   end
 end

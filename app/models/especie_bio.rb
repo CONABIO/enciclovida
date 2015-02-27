@@ -53,8 +53,7 @@ class EspecieBio < ActiveRecord::Base
       joins('LEFT JOIN bibliografias ON bibliografias.id=nombres_regiones_bibliografias.bibliografia_id') }
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=esepcies_catalogos.catalogo_id') }
-  scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
-  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
+  scope :categoria_taxonomica_join, -> { joins('LEFT JOIN CategoriaTaxonomica ON CategoriaTaxonomica.IdCategoriaTaxonomica=Nombre.IdCategoriaTaxonomica') }
 
   before_save :completa_datos, :unless => :evita_before_save
 
@@ -392,29 +391,88 @@ class EspecieBio < ActiveRecord::Base
   end
 
   def pon_nombre_cientifico
-    nombre_cientifico = ''
-    tiene_subgenero = false
+    return self.nombre_cientifico = nombre.limpiar if is_root?
+    self.nombre_cientifico = ''
+    subgenero = ''
+    seccion = ''
 
-    EspecieBio.select('especies.id, especies.nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', ancestor_ids.reverse.join(',')).each do |taxon|
-      #return taxon.nombre.limpiar if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == cat
+    EspecieBio.select('Nombre.IdNombre, Nombre.Nombre, NombreCategoriaTaxonomica AS nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('Nombre.IdNombre', ancestor_ids.reverse.join(',')).order('IdNombre DESC').each do |taxon|
+      subgenero << " (#{taxon.nombre.limpiar}) " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'subgenero'
+      seccion << " sect. #{taxon.nombre.limpiar} " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'seccion'
 
       case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
+
         when 'especie'
-          self.nombre_cientifico = "#{encuentra('genero')} #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << subgenero
+            self.nombre_cientifico << seccion
+            self.nombre_cientifico << " #{nombre.limpiar}"
+            break
+          end
+
         when 'subespecie'
-          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subsp. #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'especie'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << " subsp. #{nombre.limpiar}"
+          end
+
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} #{subgenero} #{seccion} #{nombre_cientifico}"
+            break
+          end
+
         when 'variedad'
-          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} var. #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'especie'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << " var. #{nombre.limpiar}"
+          end
+
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} #{subgenero} #{seccion} #{nombre_cientifico}"
+            break
+          end
+
         when 'forma'
-          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} f. #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'especie'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << " f. #{nombre.limpiar}"
+          end
+
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} #{subgenero} #{seccion} #{nombre_cientifico}"
+            break
+          end
+
         when 'subvariedad'
-          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subvar. #{encuentra('variedad')} #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'especie'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << " subvar. #{nombre.limpiar}"
+          end
+
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} #{subgenero} #{seccion} #{nombre_cientifico}"
+            break
+          end
+
         when 'subforma'
-          self.nombre_cientifico = "#{encuentra('genero')} #{encuentra('especie')} subf. #{encuentra('forma')} #{nombre.limpiar}"
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'especie'
+            self.nombre_cientifico << taxon.nombre.limpiar
+            self.nombre_cientifico << " subf. #{nombre.limpiar}"
+          end
+
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} #{subgenero} #{seccion} #{nombre_cientifico}"
+            break
+          end
+
         else
           self.nombre_cientifico = nombre.limpiar
       end
     end
+
+    # Para quitar los espacios adicionales
+    self.nombre_cientifico = nombre_cientifico.strip.gsub(/\s+/,' ')
   end
 
   def pon_nombre_comun_principal
@@ -482,18 +540,5 @@ class EspecieBio < ActiveRecord::Base
 
     Bases.conecta_a Rails.env
     Bases.update_en_volcado(id, base, tabla)
-  end
-
-  private
-
-  def encuentra(cat)
-    tiene_subgenero = false
-    EspecieBio.select('especies.id, especies.nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', ancestor_ids.reverse.join(',')).each do |taxon|
-      return taxon.nombre.limpiar if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == cat
-    end
-  end
-
-  def cambia_descendientes
-
   end
 end
