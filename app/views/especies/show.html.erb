@@ -249,7 +249,7 @@
     <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? %>
   </h1>
-  <%= datos_principales(@especie).html_safe %>
+  <%= datos_principales(@especie, :tab_catalogos => true).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
 
   <% if geo && geo.count > 0 %>
@@ -257,7 +257,6 @@
       <%= "| Registros del SNIB #{link_to(image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
       <%= "| Observaciones de NaturaLista #{link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
   <% end %>
-  <!--| registros del SNIB <%# link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), "#{root_url}especies/kmz?id=#{@especie.id}&kml=true", :target => :_blank) %>-->
 </div>
 
 <% if geo && geo.count > 0 %>

@@ -49,25 +49,11 @@ module EspeciesHelper
     end
   end
 
-  def datos_principales(taxon, en_resultados=false)
+  def datos_principales(taxon, opciones={})
     datos = dameNomComunes(taxon)
-    if en_resultados     #El preview en ajax de los resultados
-      if taxon.estatus == 1
-        datos << dameStatus(taxon)
-      elsif taxon.estatus == 2
-        taxon.species_or_lower?
-        datos << dameDistribucion(taxon) + ' - '
-        datos << dameCaracteristica(taxon)
-      end
-    else
-      if taxon.estatus == 1
-        datos << dameStatus(taxon)
-      elsif taxon.estatus == 2 && I18n.locale.to_s != 'es-cientifico'
-        taxon.species_or_lower?
-        datos << dameDistribucion(taxon) + ' - '
-        datos << dameCaracteristica(taxon)
-      end
-    end
+    datos << dameStatus(taxon, opciones)
+    datos << '<br>' << dameDistribucion(taxon) << ' - '
+    datos << dameCaracteristica(taxon)
     datos.html_safe
   end
 
@@ -322,28 +308,44 @@ module EspeciesHelper
     {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
   end
 
-  def dameStatus(taxon)
-    status=''
-
+  def dameStatus(taxon, opciones)
+    estatus_a = []
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
       taxSinonimo = Especie.find(estatus.especie_id2)                    # Suponiendo que no levante un raise
 
-      if taxon.estatus == 2                                              # Valido
-        status+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :link => true)}"
-        status+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-      elsif taxon.estatus == 1 && taxon.especies_estatus.count == 1      # Sinonimo
-        status+= tituloNombreCientifico(taxSinonimo, :link => true)
-        status+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
-      else
-        return '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
+      if opciones[:tab_catalogos]
+        if taxon.estatus == 2                                              # Valido
+          puts taxSinonimo.nombre_cientifico
+          estatus_a << tituloNombreCientifico(taxSinonimo, :title => true)
+        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo
+          estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
+        else
+          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
+        end
+      else   # En esta no los pongo en lista
+        if taxon.estatus == 2                                              # Valido
+          est = "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :title => true)}"
+          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
+          estatus_a << "#{est} #{obs}"
+        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo
+          est = tituloNombreCientifico(taxSinonimo, :link => true)
+          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}" : ''
+          estatus_a << "#{est} #{obs}"
+        else
+          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
+        end
       end
     end
 
-    if status.present?
-      titulo = taxon.estatus == 2 ? '<strong>Basónimos, sinónimos:</strong>' : '<strong>Aceptado como: </strong>'
-      taxon.estatus == 2 ? titulo + "<p><ul>#{status}</ul></p>" : "<p>#{titulo}#{status}</p>"
+    if estatus_a.present?
+      if opciones[:tab_catalogos]
+        taxon.estatus == 2 ? "<strong>Sinónimos: </strong>#{estatus_a.join(', ')}" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
+      else
+        titulo = taxon.estatus == 2 ? '<strong>Sinónimos: </strong>' : '<strong>Aceptado como: </strong>'
+        taxon.estatus == 2 ? titulo << "<p><ul>#{estatus_a.join('')}</ul></p>" : "<p>#{titulo}#{estatus_a.join('')}</p>"
+      end
     else
-      status
+      ''
     end
   end
 
