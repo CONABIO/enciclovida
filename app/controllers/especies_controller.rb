@@ -548,7 +548,18 @@ class EspeciesController < ApplicationController
     begin
       @especie = Especie.find(params[:id])
       @accion=params[:controller]
-    rescue
+
+      if @especie.estatus == 1   # Si es un sinonimo lo redireccciona al valido
+        estatus = @especie.especies_estatus
+        render(:error) unless estatus.length == 1  # Nos aseguramos que solo haya un valido
+
+        begin
+          @especie = Especie.find(estatus.first.especie_id2)
+        rescue
+          render :_error
+        end
+      end
+    rescue    #si no encontro el taxon
       render :_error
     end
   end
