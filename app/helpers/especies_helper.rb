@@ -325,14 +325,13 @@ module EspeciesHelper
   def dameStatus(taxon)
     status=''
 
-    taxon.especies_status.order('estatus_id ASC').each do |estatus|     #checa si existe alguna sinonimia
-      taxSinonimo = Especie.find(estatus.especie_id2)
-      next if taxSinonimo.nil?
+    taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
+      taxSinonimo = Especie.find(estatus.especie_id2)                    # Suponiendo que no levante un raise
 
-      if taxon.estatus == 2
+      if taxon.estatus == 2                                              # Valido
         status+= "<li>[#{estatus.estatus.descripcion.downcase}] #{tituloNombreCientifico(taxSinonimo, :link => true)}"
         status+= estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-      elsif taxon.estatus == 1 && taxon.especies_status.count == 1
+      elsif taxon.estatus == 1 && taxon.especies_estatus.count == 1      # Sinonimo
         status+= tituloNombreCientifico(taxSinonimo, :link => true)
         status+= "<br> <b>Observaciones: </b> #{estatus.observaciones}" if estatus.observaciones.present?
       else

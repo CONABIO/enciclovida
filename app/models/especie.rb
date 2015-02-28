@@ -9,7 +9,7 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_status, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
