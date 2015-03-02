@@ -1,6 +1,6 @@
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
-<% geodatos = @especie.proveedor.try(geodatos) if species_or_lower %>
+<% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
 <% geo = JSON.parse(geodatos) if geodatos %>
 
 <style>
