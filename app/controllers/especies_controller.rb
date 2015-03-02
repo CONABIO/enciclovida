@@ -186,7 +186,7 @@ class EspeciesController < ApplicationController
 
         when 'nombre_comun'
           estatus = params[:estatus].join(',') if params[:estatus].present?
-          sql = "NombreComun.select(\"especies.id, estatus, nombre_comun, #{:nombre_cientifico}, #{:nombre_autoridad}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}\").
+          sql = "NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica').
               nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_comun ASC')"
 
           totales = eval("#{sql}").length
@@ -272,7 +272,7 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, #{:nombre_cientifico}, #{:nombre_comun_principal}, #{:foto_principal}, #{:categoria_taxonomica_id}, #{:nombre_categoria_taxonomica}')"
+          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica')"
           joins = condiciones = conID = nombre_cientifico = ''
           arbol = []
           distinct = false
