@@ -98,6 +98,7 @@ class EspeciesController < ApplicationController
 
   # GET /especies/1/edit
   def edit
+    redirect_to(:root, notice: 'Lo sentimos. No tienes los permisos necesarios para realizar esta acción') unless current_usuario.id == 1
   end
 
   # POST /especies
