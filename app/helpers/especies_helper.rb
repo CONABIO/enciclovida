@@ -134,7 +134,7 @@ module EspeciesHelper
       if taxon.try(:is_root?) || taxon.nil?  # Si es root o es el arbol del index
         arbolCompleto = ''
         reino = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
-        Especie.where(:categoria_taxonomica_id => reino).each do |t|
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.where(:categoria_taxonomica_id => reino).each do |t|
           arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
         # Pone los reinos en una lista separada cada uno
@@ -146,9 +146,6 @@ module EspeciesHelper
         contadorNodos = 0
 
         Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', (taxon.ancestor_ids + [taxon.id]).join(',')).each do |ancestro|
-
-        #(taxon.ancestor_ids + [taxon.id]).each do |a|
-        #  ancestro = Especie.find(a)
           arbolCompleto << enlacesDelArbol(ancestro)
           contadorNodos+= 1
         end
