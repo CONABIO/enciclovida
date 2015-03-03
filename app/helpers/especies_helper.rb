@@ -99,12 +99,10 @@ module EspeciesHelper
   end
 
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
-    nodos="<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos+="#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
-
-    nodos+="#{image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle', :style => 'width: 50px; height: 50px;')}"
-
-    nodos+=" #{tituloNombreCientifico(taxon, :link => true)}"
+    nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
+    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
+    nodos << "#{image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle', :style => 'width: 50px; height: 50px;')}"
+    nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
     #Deja los nodos abiertos para que esten anidados (si conClick es falso)
     conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
   end
@@ -137,22 +135,25 @@ module EspeciesHelper
         arbolCompleto = ''
         reino = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
         Especie.where(:categoria_taxonomica_id => reino).each do |t|
-          arbolCompleto+= "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
+          arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
         # Pone los reinos en una lista separada cada uno
         arbolCompleto
 
       else
+        tags = ''
         arbolCompleto = "<ul class=\"nodo_mayor\">"
         contadorNodos = 0
-        tags = ''
-        (taxon.ancestor_ids + [taxon.id]).each do |a|
-          ancestro = Especie.find(a)
-          arbolCompleto+= enlacesDelArbol(ancestro)
+
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', (taxon.ancestor_ids + [taxon.id]).join(',')).each do |ancestro|
+
+        #(taxon.ancestor_ids + [taxon.id]).each do |a|
+        #  ancestro = Especie.find(a)
+          arbolCompleto << enlacesDelArbol(ancestro)
           contadorNodos+= 1
         end
 
-        contadorNodos.times {tags+= '</li></ul>'}
+        contadorNodos.times {tags << '</li></ul>'}
         arbolCompleto + tags + '</ul>'
       end
     end
