@@ -114,17 +114,14 @@ module EspeciesHelper
       if taxon.is_root? && taxon.categoria_taxonomica.nombre_categoria_taxonomica.downcase == 'reino'
         #Me aseguro que sean reinos
         categorias_reinos = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).map(&:id).join(',')
-        reinos = Especie.caso_rango_valores('categoria_taxonomica_id', categorias_reinos).where(:nombre => taxon.nombre)
+        # Junto los reinos para que los taxones que se repiten en mismos reinos de diferentes bases esten como descendientes
+        reinos = Especie.caso_rango_valores('categoria_taxonomica_id', categorias_reinos).where(:nombre => taxon.nombre).map{|r| r.child_ids}.flatten
 
-        reinos.each do |reino|
-          reino.child_ids.each do |childrenID|
-            children = Especie.find(childrenID)
-            nodo+= enlacesDelArbol(children, true)
-          end
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', reinos.join(',')).each do |children|
+          nodo+= enlacesDelArbol(children, true)
         end
       else
-        taxon.child_ids.each do |childrenID|
-          children = Especie.find(childrenID)
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.child_ids.join(',')).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
       end
