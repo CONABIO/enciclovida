@@ -9,7 +9,7 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_status, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+  has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
@@ -55,7 +55,7 @@ class Especie < ActiveRecord::Base
   POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUS = [
-      [2, 'válido/correcto'],
+      [2, 'válido'],
       [1, 'sinónimo']
   ]
 
@@ -70,7 +70,7 @@ class Especie < ActiveRecord::Base
   }
 
   ESTATUS_SIGNIFICADO = {
-      2 => 'válido/correcto',
+      2 => 'válido',
       1 =>'sinónimo'
   }
 
@@ -324,8 +324,8 @@ class Especie < ActiveRecord::Base
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data <<  "\"score\":2,"
-    data << "\"data\":{\"nombre_comun\":\"#{Limpia.cadena(nombre_comun_principal)}\", "
-    data <<  "\"foto\":\"#{Limpia.cadena(foto)}\", \"autoridad\":\"#{Limpia.cadena(nombre_autoridad)}\", \"id\":#{id}, \"estatus\":#{estatus}}"
+    data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
+    data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 end
