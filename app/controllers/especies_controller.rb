@@ -1,6 +1,6 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos, :filtros]
+  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos, :filtros, :arbol]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
                                      :edit_photos, :update_photos, :describe, :datos_principales, :kmz, :kmz_naturalista]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
