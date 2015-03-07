@@ -20,11 +20,13 @@ def write_file(line)
   puts "Busqueda: ^#{line}$" if OPTS[:debug]
 
   response = RestClient.get "http://conabio.inaturalist.org/projects/#{line}.json", :timeout => 1000, :open_timeout => 1000
-  @bitacora_no_encontro.puts "#{line}" unless response.present?
+  @bitacora_no_encontro.puts "#{line},0,0" unless response.present?
   data = JSON.parse(response)
+  @bitacora_no_encontro.puts "#{line},1,0" unless data['place_id'].present?
 
   # Para guardar la informacion en json
   csv = json_to_csv(data)
+
   @bitacora.puts csv
 end
 
@@ -41,7 +43,7 @@ def bitacoras(file, no_encontro)
   end
   if !File.exists?(no_encontro)
     @bitacora_no_encontro = File.new(no_encontro, 'w')
-    @bitacora_no_encontro.puts 'nombre_proyecto'
+    @bitacora_no_encontro.puts 'nombre_proyecto,encontro,mapa'
   end
 end
 
@@ -58,12 +60,17 @@ end
 def json_to_csv(data)
   csv = []
   csv << data['id']
-  csv << "\"#{data['title']}\""
-  csv << "\"#{data['description']}\""
+  csv << "\"#{data['title'].limpia_csv}\""
+  csv << "\"#{data['description'].limpia_csv}\""
   csv << "http://naturalista.conabio.gob.mx/projects/#{data['slug']}"
   csv << "http://naturalista.conabio.gob.mx/places/geometry/#{data['place_id']}.kml"
   csv << data['project_observations_count']
   csv << data['observed_taxa_count']
+
+  open("#{@ruta_kml}#{data['slug']}.kml", 'wb') do |file|
+    file << open("http://naturalista.conabio.gob.mx/places/geometry/#{data['place_id']}.kml").read
+  end
+
   csv.join(',')
 end
 
@@ -76,6 +83,7 @@ name = ARGV.first
 path = 'tools/correspondencia_proyectos_naturalista'
 log_path = 'tools/bitacoras/correspondencia_proyectos_naturalista/'
 no_encontro = "#{log_path}#{fecha}_no_encontro_#{name}.csv"
+@ruta_kml = 'tools/bitacoras/correspondencia_proyectos_naturalista/'
 
 file = "#{log_path}#{fecha}_#{name}.csv"
 puts "Ruta archivo: #{path}/#{name}" if OPTS[:debug]

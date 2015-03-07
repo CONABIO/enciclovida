@@ -15,5 +15,10 @@ class String
     return self unless self.present?
     self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '\"').gsub("\t", ' ').strip.gsub(/\s+/,' ')
   end
+
+  def limpia_csv
+    return self unless self.present?
+    self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '""').gsub("\t", ' ').strip.gsub(/\s+/,' ')
+  end
 end
 
