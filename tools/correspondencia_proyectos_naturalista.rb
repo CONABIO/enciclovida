@@ -60,8 +60,8 @@ end
 def json_to_csv(data)
   csv = []
   csv << data['id']
-  csv << "\"#{data['title'].limpia}\""
-  csv << "\"#{data['description'].limpia}\""
+  csv << "\"#{data['title'].limpia_csv}\""
+  csv << "\"#{data['description'].limpia_csv}\""
   csv << "http://naturalista.conabio.gob.mx/projects/#{data['slug']}"
   csv << "http://naturalista.conabio.gob.mx/places/geometry/#{data['place_id']}.kml"
   csv << data['project_observations_count']
