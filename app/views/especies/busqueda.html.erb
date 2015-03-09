@@ -244,7 +244,7 @@
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
                         return false
                     }
-                    location.reload(true);
+                    window.location.replace("http://<%=raw "#{CONFIG.ip}:#{CONFIG.port}" %>");
                 },
                 fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
