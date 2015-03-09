@@ -228,8 +228,6 @@ module EspeciesHelper
                      else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
                    end
     end
-
-
     checkBoxes.html_safe
   end
 

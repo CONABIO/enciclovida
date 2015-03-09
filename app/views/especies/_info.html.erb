@@ -4,10 +4,10 @@
   <tr>
     <td width="40%" valign="top">
       <fieldset>
-        <legend class="leyenda"><%= 'Información taxonómica'.html_safe %></legend>
+        <legend class="leyenda">Información del taxón</legend>
 
         <p>
-          <strong>Estatus:</strong>
+          <strong>Estatus taxonómico:</strong>
           <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
         </p>
 
@@ -53,7 +53,7 @@
 
     <td width="60%" valign="top">
       <%= dameDescendientesDirectos(@especie).html_safe %>
-      <%= "<fieldset><legend class='leyenda'>Distribución:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
+      <%= "<fieldset><legend class='leyenda'>Distribución reportada en literatura:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
     </td>
   </tr>
 </table>
