@@ -340,7 +340,7 @@ class EspeciesController < ApplicationController
           end
 
           #Parte del estatus
-          condiciones+= ".caso_rango_valores('estatus', \"'#{params[:estatus].join(',')}'\")" if params[:estatus].present?
+          condiciones+= ".caso_rango_valores('estatus', '#{params[:estatus].join(',')}')" if params[:estatus].present?
 
           #Parte del tipo de ditribucion
           if params[:dist].present?
