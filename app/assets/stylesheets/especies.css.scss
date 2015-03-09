@@ -6,7 +6,8 @@
 #photos img{max-width: 500px}
 
 #vista_arbol ul{
-  padding-left: 25px;
+  padding-left: 25px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
+  //padding: 0; /* Cambios para mostrar el arreglo horizontal, comentado para no afectar el funcionamiento en bios //ggonzale*/
 }
 
 nested-fields
@@ -141,3 +142,16 @@ nested-fields
   height: 1%; }
 *:first-child + html .digg_pagination {
   overflow: hidden; }
+
+/* Cambios para mostral el arreglo horizontal, comentado para no afectar el funcionamiento en bios //ggonzale
+ul.nodo_mayor{
+display: inline-table;
+margin: 30px 20px;
+padding: 0;
+}
+
+ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
+  display: block;
+  text-align: center;
+}
+*/

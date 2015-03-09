@@ -43,7 +43,7 @@
 
   <div class="panel panel-info dropup" id="panelValidoSinonimoBasicaPt">
     <div class="panel-heading">
-      <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggleClass('hidden');$('#panelValidoSinonimoBasicaPt').toggleClass('dropup');">
+      <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoBasicaPt').toggleClass('dropup')});">
         <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
           <span class="caret"></span>
         </h3>
@@ -78,10 +78,9 @@
       <div class=" dropup">
         <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
       </div>
-
       <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggleClass('hidden');$('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup');">
+          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
             <h3 class="panel-title"><%= t(:solo_taxones).html_safe %>
               <span class="caret"></span>
             </h3>
@@ -94,13 +93,13 @@
 
       <div class="panel panel-info" id="panelEstadoConservacionPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').toggleClass('hidden');$('#panelEstadoConservacionPt').toggleClass('dropup');">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
             <h4  class="panel-title">Estado de conservación:
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body hidden" id="panelEstadoConservacion">
+        <div class="panel-body" id="panelEstadoConservacion" style="display: none">
           <div class="checkbox">
             <%= checkboxEstadoConservacion %>
           </div>
@@ -109,7 +108,7 @@
 
       <div class="panel panel-info" id="panelTipoDistribucionEnPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').toggleClass('hidden');$('#panelTipoDistribucionEnPt').toggleClass('dropup');">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
             <h4 class="panel-title">Con tipo de distribución:
             <span class="caret"></span>
             </h4>
@@ -117,7 +116,7 @@
           <i><small>(Predeterminada: Cualquiera)</small></i>
           </button>
         </div>
-        <div class="panel-body hidden" id="panelTipoDistribucionEn">
+        <div class="panel-body" id="panelTipoDistribucionEn" style="display: none">
             <div class="checkbox">
               <%= checkboxTipoDistribucion %>
             </div>
@@ -126,14 +125,14 @@
 
       <div class="panel panel-info" id="panelTipoDistribucionConPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionCon').toggleClass('hidden');$('#panelTipoDistribucionConPt').toggleClass('dropup');">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionCon').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionConPt').toggleClass('dropup')});">
             <h4 class="panel-title">Con distribución en:
               <span class="caret"></span>
             </h4>
             <i><small>(Predeterminado: Nivel nacional)</small></i>
           </button>
         </div>
-        <div class="panel-body hidden" id="panelTipoDistribucionCon">
+        <div class="panel-body" id="panelTipoDistribucionCon" style="display: none">
           <div class="form-group form-group-sm">
             <%= select_tag :distribucion_nivel_1, options_for_select(TipoRegion.iniciales.collect {|tr| [tr.descripcion.humanizar, tr.id] }), prompt: 'Nacional', class: "form-control" %>
             <div id="distribucion_nivel"></div>
@@ -143,13 +142,13 @@
 
       <div class="panel panel-info" id="panelCategoriaTaxonomicaPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').toggleClass('hidden');$('#panelCategoriaTaxonomicaPt').toggleClass('dropup');">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
             <h4 class="panel-title">Categoria taxonómica:
               <span class="caret"></span>
             </h4>
           </button>
         </div>
-        <div class="panel-body hidden" id="panelCategoriaTaxonomica">
+        <div class="panel-body" id="panelCategoriaTaxonomica" style="display: none">
           <div class="checkbox">
             <%= checkboxCategoriaTaxonomica %>
           </div>
@@ -163,6 +162,7 @@
 
 <div>
   <%= label_tag :per_page, "Mostrar", :class => "control-label" %>
-  <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %> Resultados por Página
-  <br><%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
+  <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
+  <%= label_tag :limpiar, "Resultados por página", :class => "control-label"  %>
+  <%= button_tag :Limpiar, :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
 </div>
