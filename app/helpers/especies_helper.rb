@@ -391,16 +391,15 @@ module EspeciesHelper
     biblio.present? ? "<b>Bibliografía:</b><ul>#{biblio}</ul>" : biblio
   end
 
-  def dameDescendientesDirectos(taxon)
+  def dame_taxones_inferiores(taxon)
     hijos=''
     child_ids = taxon.child_ids
     return hijos unless child_ids.present?
 
     Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
-      hijos << "<li>#{link_to(image_tag(subTaxon.foto_principal, :alt => subTaxon.nombre_cientifico, :title => subTaxon.nombre_cientifico, :width => '40px'), subTaxon)} "
-      hijos << "#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
+      hijos << "<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
     end
-    hijos.present? ? "<fieldset><legend class='leyenda'>Descendientes directos</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
+    hijos.present? ? "<fieldset><legend class='leyenda'>Taxones Inferiores</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
   end
 
   def photo_providers(licensed=false, photo_providers=nil)
