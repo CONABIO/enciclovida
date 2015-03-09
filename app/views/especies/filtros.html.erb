@@ -123,23 +123,6 @@
         </div>
       </div>
 
-      <div class="panel panel-info" id="panelTipoDistribucionConPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionCon').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionConPt').toggleClass('dropup')});">
-            <h4 class="panel-title">Distribución en
-              <span class="caret"></span>
-            </h4>
-            <i><small>(Predeterminado: Nivel nacional)</small></i>
-          </button>
-        </div>
-        <div class="panel-body" id="panelTipoDistribucionCon" style="display: none">
-          <div class="form-group form-group-sm">
-            <%= select_tag :distribucion_nivel_1, options_for_select(TipoRegion.iniciales.collect {|tr| [tr.descripcion.humanizar, tr.id] }), prompt: 'Nacional', class: "form-control" %>
-            <div id="distribucion_nivel"></div>
-          </div>
-        </div>
-      </div>
-
       <div class="panel panel-info" id="panelCategoriaTaxonomicaPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">

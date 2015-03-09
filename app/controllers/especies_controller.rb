@@ -299,7 +299,7 @@ class EspeciesController < ApplicationController
           # Por default tiene que hacerce join con categorias_taxonomicas
           joins+= '.categoria_taxonomica_join'
 
-          if params[:cat].present?# ? params[:categoria].join('').present? : false
+          if params[:cat].present?
             if conID.blank?                 #join a la(s) categorias taxonomicas (params)
               condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
               condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
@@ -323,20 +323,6 @@ class EspeciesController < ApplicationController
             end
             #condiciones+= conID.present? ? (".caso_sensitivo('especies.id', '#{conID}')") :
             #    (".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?)
-          end
-
-          #parte de la distribucion (lugares)
-          if params[:distribucion_nivel_1].present?
-            if params[:distribucion_nivel_2].present? || params[:distribucion_nivel_3].present?
-              joins+= '.especies_regiones_join.region_join'
-              region = Region.find(params[:distribucion_nivel_3].present? ? params[:distribucion_nivel_3] : params[:distribucion_nivel_2])
-              condiciones+= '.' + tipoDeBusqueda(3, 'regiones.nombre_region', region.nombre_region)
-            else
-              joins+= '.especies_regiones_join.region_join.tipo_region_join'
-              tipo_region = TipoRegion.find(params[:distribucion_nivel_1])
-              condiciones+= '.' + tipoDeBusqueda(3, 'tipos_regiosnes.descripcion', tipo_region)
-            end
-            distinct = true
           end
 
           #Parte del estatus
