@@ -288,7 +288,7 @@
   <% if I18n.locale.to_s == 'es-cientifico' %>
       <ul>
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxonómico</span></a></li>
+        <li><a href="#arbol_taxonomico"><span>Arreglo taxonómico</span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
       </ul>
 
@@ -308,7 +308,7 @@
   <% else %>
       <ul>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
-        <li><a href="#arbol_taxonomico"><span>&Aacute;rbol taxonómico</span></a></li>
+        <li><a href="#arbol_taxonomico"><span>Arreglo taxonómico</span></a></li>
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
       </ul>
 

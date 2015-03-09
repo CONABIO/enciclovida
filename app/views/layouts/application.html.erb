@@ -61,9 +61,9 @@
             <% end %>
         <% end %>
         <% if I18n.locale.to_s == 'es-cientifico' %>
-            <li><%= link_to '[Ir a la vista predeterminada]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
+            <li><%= link_to '[Ir a la vista básica]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
         <% else %>
-            <li><%= link_to '[Ir a la vista de nombres científicios]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+            <li><%= link_to '[Ir a la vista avanzada]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
         <% end %>
        </ul>
     </div>
