@@ -1,40 +1,44 @@
-###README para poner nuevas bases y que se vean en web###
+###README para poner nuevas bases y que se vean en web, todas las pruebas y borrado de bases se realizara desde:
+### Servidor de pruebas SQL Server 2012 172.16.1.98
+### Servidor web de pruebas colibri
 
 1.- Poner en solo lectura la aplicacion, para que nuevos cambios no tengan lugar mientras se corren los scripts.
 
 2.- Crear los nuevos nombres para las bases de datos en SQL server (SQL2012), mandando mesa de ayuda.
-        2.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server (172.16.3.222;maquina virtual).
+        2.1.- Crea esos mismos nombres en una instancia de pruebas de SQL server.
 
-3.- Migrar todas las bases con Microsoft SQL Server Migration Assistant for Access 6.0 (172.16.3.222;maquina virtual),
+3.- Migrar todas las bases con Microsoft SQL Server Migration Assistant for Access 6.0,
     dejar las ligas al archivo de Access.
 
-4.- En una instancia de prueba del buscador (colibri) en config.config.yml cambiar la variable "bases" por
-    la lista de bases que se desea actualizar.
+4.- En /config/config.yml cambiar la variable "bases" por la lista de bases que se desea actualizar.
         4.1.- Cerciorate que en config/database.yml consulte la instancia de pruebas del servidor.
 
-5.- Corre el script para completar los campos adicionales en las tablas (3.069669087 seg):
+5.- Corre el script para completar los campos adicionales en las tablas (0.616043465 seg):
         5.1.- rails r tools/atributos_adicionales.rb -d create                     #para crear los campos adicionales en todas las bases
         5.2.- rails r tools/atributos_adicionales.rb -d drop                       #para borrar los campos adicionales en todas las bases
         5.3.- rails r tools/atributos_adicionales.rb -d create 03-Hongos-Sept14    #para crear los campos adicionales en un conjunto de bases
         5.4.- rails r tools/atributos_adicionales.rb -d drop 03-Hongos-Sept14      #para borrar los campos adicionales en un conjunto de bases
 
-6.- Corre el script para completar el campo ancestry_ascendente_directo de la tabla Nombre:
+
+*****NOTA:  6,7,8 se pueden correr en paralelo*****
+6.- Corre el script para completar el campo ancestry_ascendente_directo de la tabla Nombre: (5429.73830033 seg)
         6.1.- rails r tools/ancestry_ascendente_directo_sql.rb -d                  #para completarlo en todas las bases
         6.2.- rails r tools/ancestry_ascendente_directo_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
-7.- Corre el script para completar el campo ancestry_ascendente_obligatorio de la tabla Nombre:
+7.- Corre el script para completar el campo ancestry_ascendente_obligatorio de la tabla Nombre: (3595.652265486 seg)
         7.1.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d                  #para completarlo en todas las bases
         7.2.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
-8.- Corre el script para completar el campo ancestry de la tabla Region: (149.004173221 seg)
+8.- Corre el script para completar el campo ancestry de la tabla Region: (289.575500578 seg)
         8.1.- rails r tools/ancestry_regiones_sql.rb -d
         8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 
-9.- Corre el script para completar el nombre cientifico de la tabla Nombre: (1040.507450663 seg)
+*****NOTA: 9,10 se pueden correr en paralelo*****
+9.- Corre el script para completar el nombre cientifico de la tabla Nombre: (2721.764556946 seg)
         9.1.- rails r tools/nombre_cientifico_sql.rb -d
         9.2.- rails r tools/nombre_cientifico_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 
-10.- Corre el script para completar el nombre comun principal de la tabla Nombre (918.00047121 seg):
+10.- Corre el script para completar el nombre comun principal de la tabla Nombre (1233.145797181 seg):
         10.1.- rails r tools/nombre_comun_principal_sql.rb -d
         10.2.- rails r tools/nombre_comun_principal_sql.rb -d 02-Arthropoda        #para correr solo un conjunto de bases
 
@@ -44,9 +48,26 @@
         12.3.- Genera la funcion escalar, GetCurrentIP
         12.6.- Genera las tablas necesarias para el funcionamiento en web, rake db:migrate
 
-12.- Genera las vistas y la tabla que sera un volcado de las vistas (188.621193347 seg):
+12.- Genera las vistas y la tabla que sera un volcado de las vistas (46.538468827 seg):
         rails r tools/vistas.rb -d                                                 #por default crea las vistas
         rails r tools/vistas.rb -d drop                                            #para borrar las vistas
+
+*****Hasta aqui la base ya se puede ver para pruebas*****
+
+13.- Completa la base de nombres cientificos en redis (960.02018761 seg):
+        13.1.- Borra el archivo dump.rdb
+        13.2.- Alzar el servicio de redis: redis-server
+        13.3.- rails r tools/nombres_cientificos_sql_redis.rb -d
+
+14.- Completa la base de nombres comunes en redis (11637.077650075 seg):
+        14.1.- rails r tools/nombres_comunes_sql_redis.rb -d
+
+15.- Para generar los registros para el fuzzy match (4893.937891411 seg):
+        15.1.- Alzar el servicio del fuzzy match, en una consola de rails
+            15.1.1.- require 'blurrily/server.rb'
+            15.1.2.- server=Blurrily::Server.new(:host => CONFIG.ip, :directory=> './db/blurrily')
+            15.1.3.- server.start
+            15.1.4.- rails r tools/exporta_blurrily.rb
 
 13.- Corre el script para guardar la informacion de NaturaLista como la taxonomia y las observaciones (es el script mas tardado):
         16.1.- rails r tools/informacion_naturalista.rb -d
@@ -67,21 +88,12 @@
 18.- Para generar los kmz de naturalista:
         16.1.- rails r tools/crea_kmz_snib.rb -d
 
-19.- Para generar los registros para el fuzzy match (4893.937891411 seg):
-        16.1- rails r tools/exporta_blurrily.rb -d
-
 20.- Para guardar la foto principal en la tabla Nombre
         16.1.- rails r tools/foto_principal_sql.rb -d
 
 21.- Haz un drop de las vistas y del volcado y vulve a generarlos ya que el campo foto_principal se encuentra en cada tabla de las bases reales
         20.1.- rails r tools/vistas.rb -d drop                                     #para borrar las vistas
         20.2.- rails r tools/vistas.rb -d                                          #por default crea las vistas
-
-22.- Completa la base de nombres cientificos en redis (960.02018761 seg):
-        17.1.- rails r tools/nombres_cientificos_sql_redis.rb -d
-
-23.- Completa la base de nombres comunes en redis (11637.077650075 seg):
-        17.1.- rails r tools/nombres_comunes_sql_redis.rb -d
 
 24.- Genera los triggers que mandaran a llamar al webservice para completar los campos que vengan de
     cualquier parte excepto de web, y que actualiza el volcado igual que la vista:
