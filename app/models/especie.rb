@@ -108,6 +108,46 @@ class Especie < ActiveRecord::Base
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
 
+  GRUPOS_ICONICOS = {
+      # Reino Animalia
+      #'Animalia' => %w(Animales animalia.png),
+      'Mammalia' => %w(Mamíferos mammalia.png),
+      'Aves' => %w(Aves aves.png),
+      'Reptilia' => %w(Reptiles reptilia.png),
+      'Amphibia' => %w(Anfibios amphibia.png),
+      'Actinopterygii' => ['Peces óseos', 'actinopterygii.png'],
+      'Petromyzontida' => ['Lampreas y Mixines', 'petromyzontidaMixines.png'],
+      'Myxini' => ['Lampreas y Mixines', 'petromyzontidaMixines.png'],
+      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'chondrichthyes.png'],
+      'Cnidaria' => ['Medusas, corales y anémonas', 'cnidaria.png'],
+      'Arachnida' => %w(Arácnidos arachnida.png),
+      'Myriapoda' => ['Ciempiés y milpies', 'myriapoda.png'],
+      'Annelida' => ['Lombrices y gusanos marinos', 'annelida.png'],
+      'Insecta' => %w(Insectos insecta.png),
+      'Porifera' => %w(Esponjas porifera.png),
+      'Echinodermata' => ['Estrellas y erizos de mar', 'echinodermata.png'],
+      'Mollusca' => ['Caracoles, almejas y pulpos', 'mollusca.png'],
+      'Crustacea' => ['Camarones y cangrejos', 'crustacea.png'],
+
+      # Reino Plantae
+      #'Plantae' => %w(Plantas plantae.png),
+      'Bryophyta' => ['Musgos, hepáticas y antoceros', 'bryophyta.png'],
+      'Pteridophyta' => %w(Helechos pteridophyta.png),
+      'Cycadophyta' => %w(Cícadas cycadophyta.png),
+      'Gnetophyta' => %w(Canutillos gnetophyta.png),
+      'Liliopsida' => ['Pastos y palmeras', 'liliopsida.png'],
+      'Coniferophyta' => ['Pinos y cedros', 'coniferophyta.png'],
+      'Magnoliopsida' => ['Margaritas y magnolias', 'magnoliopsida.png'],
+
+      # Reino Protoctista
+      #'Protoctista' => %w(Protozoarios protoctista.png),
+
+      # Reino Fungi
+      #'Fungi' => %w(Hongos fungi.png),
+
+      # Reino Prokaryonte (desde 1930 ?)
+      #'Prokaryonte' => %w(Monera prokaryonte.png)
+  }
   CATEGORIAS_DIVISION = {
       1 => {
           0 => 'Reino',
@@ -327,5 +367,17 @@ class Especie < ActiveRecord::Base
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
     data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
+  end
+
+  def self.asigna_grupo_iconico
+    GRUPOS_ICONICOS.keys.sort.each do |grupo|
+      taxon = Especie.where(:nombre_cientifico => grupo).first
+      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
+
+      descendentes = taxon.subtree_ids
+      descendentes.each_slice(20000).to_a.each do |grupo_20k| # Fue necesario dividir el query ya que con muchos argumentos no funciona
+        Especie.where("id IN (#{grupo_20k.join(',')})").update_all(:nombre_icono => GRUPOS_ICONICOS[grupo][0], :icono => GRUPOS_ICONICOS[grupo][1])
+      end
+    end
   end
 end
