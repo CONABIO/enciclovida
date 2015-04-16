@@ -98,8 +98,8 @@ def camTab
                      "nombre_comun_principal",
                      "foto_principal",
                      "IdCAT as catalogo_id",
-                     "'' as icono",
-                     "'' as nombre_icono "
+                     "icono",
+                     "nombre_icono "
       ],
       'especies_bibliografias' => ["#{@id}+IdNombre as especie_id",
                                    "#{@id}+IdBibliografia as bibliografia_id",
