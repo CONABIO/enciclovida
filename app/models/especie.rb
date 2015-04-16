@@ -357,15 +357,14 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    foto = foto_principal.present? ? "<img src='#{foto_principal}' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
-        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+    icono = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' alt='#{nombre_icono}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
-    data <<  "\"score\":2,"
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data <<  "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 
