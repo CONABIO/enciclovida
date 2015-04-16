@@ -78,16 +78,18 @@
       <div class=" dropup">
         <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
       </div>
-      <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
+
+      <div class="panel panel-info" id="panelCategoriaTaxonomicaPt" style="display: none;">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
-            <h3 class="panel-title">Estatus taxonómico
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
+            <h4 class="panel-title">Categoria taxonómica
               <span class="caret"></span>
-            </h3>
+            </h4>
           </button>
         </div>
-        <div class="panel-body" id="panelValidoSinonimoAvanzada">
-            <%= checkboxValidoSinonimo %>
+        <div class="panel-body" id="panelCategoriaTaxonomica">
+          <div id="datos_cat">
+          </div>
         </div>
       </div>
 
@@ -109,7 +111,7 @@
       <div class="panel panel-info" id="panelTipoDistribucionEnPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
-            <h4 class="panel-title">Ttipo de distribución
+            <h4 class="panel-title">Tipo de distribución
             <span class="caret"></span>
             </h4>
 
@@ -123,18 +125,16 @@
         </div>
       </div>
 
-      <div class="panel panel-info" id="panelCategoriaTaxonomicaPt">
+      <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
         <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
-            <h4 class="panel-title">Categoria taxonómica
+          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
+            <h3 class="panel-title">Estatus taxonómico
               <span class="caret"></span>
-            </h4>
+            </h3>
           </button>
         </div>
-        <div class="panel-body" id="panelCategoriaTaxonomica" style="display: none">
-          <div class="checkbox">
-            <%= checkboxCategoriaTaxonomica %>
-          </div>
+        <div class="panel-body" id="panelValidoSinonimoAvanzada">
+          <%= checkboxValidoSinonimo %>
         </div>
       </div>
 

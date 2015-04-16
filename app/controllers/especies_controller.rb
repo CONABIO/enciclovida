@@ -1,10 +1,11 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos, :filtros, :arbol]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol,
-                                     :edit_photos, :update_photos, :describe, :datos_principales, :kmz, :kmz_naturalista]
+  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos,
+                                         :filtros, :arbol, :cat_tax_asociadas]
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol, :edit_photos, :update_photos, :describe,
+                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :filtros]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :filtros, :cat_tax_asociadas]
 
   # pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -527,6 +528,10 @@ class EspeciesController < ApplicationController
     else
       # Por default hace render de filtros
     end
+  end
+
+  # Las categoras asociadas de acuerdo al taxon que escogio
+  def cat_tax_asociadas
   end
 
   private

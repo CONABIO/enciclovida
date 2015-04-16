@@ -98,13 +98,13 @@ class Especie < ActiveRecord::Base
       '<' => 'mayor a'
   }
 
-  CAMPOS_A_MOSTRAR = {
-      '>' => 'menor a',
-      '>=' => 'menor o igual a',
-      '=' => 'igual a',
-      '<=' => 'mayor o igual a',
-      '<' => 'mayor a'
-  }
+  NIVEL_CATEGORIAS = [
+      ['inferior o igual a', '>='],
+      ['inferior a', '>'],
+      ['igual a', '='],
+      ['superior o igual a', '<='],
+      ['superior a', '<']
+  ]
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
 
@@ -366,6 +366,11 @@ class Especie < ActiveRecord::Base
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
     data <<  "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
+  end
+
+  def cat_tax_asociadas
+    limites = Bases.limites(id)
+    CategoriaTaxonomica.where(:id => limites[:limite_inferior]..limites[:limite_superior]).order('nivel1, nivel2, nivel3, nivel4 ASC')
   end
 
   def self.asigna_grupo_iconico
