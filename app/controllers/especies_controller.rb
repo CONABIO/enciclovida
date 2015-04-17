@@ -276,7 +276,6 @@ class EspeciesController < ApplicationController
           #Es necesario hacer un index con estos campos para aumentar la velocidad
           busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica')"
           joins = condiciones = conID = nombre_cientifico = ''
-          arbol = []
           distinct = false
 
           params.each do |key, value|  #itera sobre todos los campos
@@ -300,11 +299,9 @@ class EspeciesController < ApplicationController
           # Por default tiene que hacerce join con categorias_taxonomicas
           joins+= '.categoria_taxonomica_join'
 
-          if params[:cat].present?
-            if conID.blank?                 #join a la(s) categorias taxonomicas (params)
-              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
-              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
-            else            #joins a las categorias con los descendientes
+          # Parte de la categoria taxonomica
+          if params[:cat].present? && params[:nivel].present?
+            if conID.present?                 #join a la(s) categorias taxonomicas (params)
               taxon = Especie.find(conID)
 
               if taxon.is_root?
@@ -314,7 +311,9 @@ class EspeciesController < ApplicationController
                 condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%'\")"
               end
 
-              condiciones+= ".caso_rango_valores('nombre_categoria_taxonomica', \"'#{params[:cat].join("','")}'\")"
+              limites = Bases.limites(conID)
+              condiciones+= ".where(\"CONCAT(nivel1,nivel2,nivel3,nivel4) #{params[:nivel]} #{params[:cat]}\")"
+              condiciones+= ".where(\"especies.id BETWEEN #{limites[:limite_inferior]} AND #{limites[:limite_superior]}\")"
             end
           else       # busquedas directas
             if conID.present?
@@ -322,8 +321,6 @@ class EspeciesController < ApplicationController
             else
               condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
             end
-            #condiciones+= conID.present? ? (".caso_sensitivo('especies.id', '#{conID}')") :
-            #    (".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?)
           end
 
           #Parte del estatus

@@ -370,7 +370,7 @@ class Especie < ActiveRecord::Base
 
   def cat_tax_asociadas
     limites = Bases.limites(id)
-    CategoriaTaxonomica.where(:id => limites[:limite_inferior]..limites[:limite_superior]).order('nivel1, nivel2, nivel3, nivel4 ASC')
+    CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').where(:id => limites[:limite_inferior]..limites[:limite_superior]).order('nivel')
   end
 
   def self.asigna_grupo_iconico
