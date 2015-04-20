@@ -110,7 +110,7 @@ class Especie < ActiveRecord::Base
 
   GRUPOS_ICONICOS = {
       # Reino Animalia
-      #'Animalia' => %w(Animales animalia.png),
+      'Animalia' => %w(Animales animalia.png),
       'Mammalia' => %w(Mamíferos mammalia.png),
       'Aves' => %w(Aves aves.png),
       'Reptilia' => %w(Reptiles reptilia.png),
@@ -130,7 +130,7 @@ class Especie < ActiveRecord::Base
       'Crustacea' => ['Camarones y cangrejos', 'crustacea.png'],
 
       # Reino Plantae
-      #'Plantae' => %w(Plantas plantae.png),
+      'Plantae' => %w(Plantas plantae.png),
       'Bryophyta' => ['Musgos, hepáticas y antoceros', 'bryophyta.png'],
       'Pteridophyta' => %w(Helechos pteridophyta.png),
       'Cycadophyta' => %w(Cícadas cycadophyta.png),
@@ -140,123 +140,13 @@ class Especie < ActiveRecord::Base
       'Magnoliopsida' => ['Margaritas y magnolias', 'magnoliopsida.png'],
 
       # Reino Protoctista
-      #'Protoctista' => %w(Protozoarios protoctista.png),
+      'Protoctista' => %w(Protozoarios protoctista.png),
 
       # Reino Fungi
-      #'Fungi' => %w(Hongos fungi.png),
+      'Fungi' => %w(Hongos fungi.png),
 
       # Reino Prokaryonte (desde 1930 ?)
-      #'Prokaryonte' => %w(Monera prokaryonte.png)
-  }
-  CATEGORIAS_DIVISION = {
-      1 => {
-          0 => 'Reino',
-          1 => 'Subreino'
-      },
-      2 => {
-          0 => 'División',
-          1 => 'Subdivisión'
-      },
-      3 => {
-          0 => 'Clase',
-          1 => 'Subclase',
-          2 => 'Superorden'
-      },
-      4 => {
-          0 => 'Orden',
-          1 => 'Suborden'
-      },
-      5 => {
-          0 => 'Familia',
-          1 => 'Subfamilia',
-          2 => {
-              0 => 'Tribu',
-              1 => 'Subtribu'
-          }
-      },
-      6 => {
-          0 => 'Género',
-          1 => 'Subgénero',
-          2 => {
-              0 => 'Sección',
-              1 => 'Subsección'
-          },
-          3 => {
-              0 => 'Serie',
-              1 => 'Subserie'
-          }
-      },
-      7 => {
-          0 => 'Especie',
-          1 => 'Subespecie',
-          2 => {
-              0 => 'Variedad',
-              1 => 'Subvariedad'
-          },
-          3 => {
-              0 => 'Forma',
-              1 => 'Subforma'
-          }
-      }
-  }
-
-  CATEGORIAS_PHYLUM = {
-      1 => {
-          0 => 'Reino',
-          1 => 'Subreino',
-          2 => 'Superphylum'
-      },
-      2 => {
-          0 => 'Phylum',
-          1 => 'Subphylum',
-          2 => 'Superclase',
-          3 => 'Grado'
-      },
-      3 => {
-          0 => 'Clase',
-          1 => 'Subclase',
-          2 => 'Infraclase',
-          3 => 'Superorden'
-      },
-      4 => {
-          0 => 'Orden',
-          1 => 'Suborden',
-          2 => 'Infraorden',
-          3 => 'Superfamilia'
-      },
-      5 => {
-          0 => 'Familia',
-          1 => 'Subfamilia',
-          2 => 'Supertribu',
-          3 => {
-              0 => 'Tribu',
-              1 => 'Subtribu'
-          }
-      },
-      6 => {
-          0 => 'Género',
-          1 => 'Subgénero',
-          2 => {
-              0 => 'Sección',
-              1 => 'Subsección'
-          },
-          3 => {
-              0 => 'Serie',
-              1 => 'Subserie'
-          }
-      },
-      7 => {
-          0 => 'Especie',
-          1 => 'Subespecie',
-          2 => {
-              0 => 'Variedad',
-              1 => 'Subvariedad'
-          },
-          3 => {
-              0 => 'Forma',
-              1 => 'Subforma'
-          }
-      }
+      'Prokaryonte' => %w(Monera prokaryonte.png)
   }
 
   # Override assignment method provided by has_many to ensure that all
@@ -370,7 +260,22 @@ class Especie < ActiveRecord::Base
 
   def cat_tax_asociadas
     limites = Bases.limites(id)
-    CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').where(:id => limites[:limite_inferior]..limites[:limite_superior]).order('nivel')
+    rama = %w(0)
+
+    # Quiere decir que es con las categorias de phylum, clasificadas por el nivel2
+    if ancestry_ascendente_directo.include?('1000001') || id == 1000001
+      rama = %w(1 2)
+    end
+
+    if I18n.locale.to_s == 'es-cientifico'
+      CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+          where(:id => limites[:limite_inferior]..limites[:limite_superior]).where("nivel2 IN (#{rama.join(',')}) OR nombre_categoria_taxonomica='Reino'").order('nivel')
+    else # Con las categorias de division
+      CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+          where(:id => limites[:limite_inferior]..limites[:limite_superior]).
+          caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
+          where("nivel2 IN (#{rama.join(',')}) OR nombre_categoria_taxonomica='Reino'").order('nivel')
+    end
   end
 
   def self.asigna_grupo_iconico
