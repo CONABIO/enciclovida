@@ -1,3 +1,4 @@
+# coding: utf-8
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
@@ -305,6 +306,10 @@ class Especie < ActiveRecord::Base
     taxon_bio.evita_before_save = true
     taxon_bio.save if taxon_bio.changed?
     Bases.conecta_a Rails.env
+  end
+
+  def pon_foto_principal_alternatva
+    ancestry_ascendente_directo
   end
 
   # Guarda en cache el path del KMZ
