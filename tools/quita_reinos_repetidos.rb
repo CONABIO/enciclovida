@@ -39,40 +39,50 @@ def actualiza_ancestry
   querys = []
 
   animalia_millones = 'UPDATE especies SET '
-  animalia_millones << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia_millones << "ancestry_ascendente_obligatorio='10000001'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia_millones << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  animalia_millones << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   animalia_millones << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_0000001%'"
   querys << animalia_millones
 
   animalia = 'UPDATE especies SET '
-  animalia << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia << "ancestry_ascendente_obligatorio='10000001'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  animalia << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   animalia << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000001%'"
   querys << animalia
 
   plantae = 'UPDATE especies SET '
-  plantae << "ancestry_ascendente_directo='6000002'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  plantae << "ancestry_ascendente_obligatorio='60000002'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  plantae << "ancestry_ascendente_directo='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  plantae << "ancestry_ascendente_obligatorio='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   plantae << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000002%'"
   querys << plantae
 
   prokaryote = 'UPDATE especies SET '
-  prokaryote << "ancestry_ascendente_directo='7000003'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  prokaryote << "ancestry_ascendente_obligatorio='70000003'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  prokaryote << "ancestry_ascendente_directo='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  prokaryote << "ancestry_ascendente_obligatorio='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   prokaryote << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000003%'"
   querys << prokaryote
 
   fungi = 'UPDATE especies SET '
-  fungi << "ancestry_ascendente_directo='3000004'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  fungi << "ancestry_ascendente_obligatorio='30000004'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  fungi << "ancestry_ascendente_directo='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  fungi << "ancestry_ascendente_obligatorio='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   fungi << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000004%'"
   querys << fungi
 
   proctoctista = 'UPDATE especies SET '
-  proctoctista << "ancestry_ascendente_directo='7000005'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  proctoctista << "ancestry_ascendente_obligatorio='70000005'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  proctoctista << "ancestry_ascendente_directo='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  proctoctista << "ancestry_ascendente_obligatorio='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   proctoctista << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000005%'"
   querys << proctoctista
+
+  quita_ultima_diagonal_directo = 'UPDATE especies SET '
+  quita_ultima_diagonal_directo << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'/','') "
+  quita_ultima_diagonal_directo << "WHERE ancestry_ascendente_directo LIKE '%/'"
+  querys << quita_ultima_diagonal_directo
+
+  quita_ultima_diagonal_obligatorio = 'UPDATE especies SET '
+  quita_ultima_diagonal_obligatorio << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'/','') "
+  quita_ultima_diagonal_obligatorio << "WHERE ancestry_ascendente_obligatorio LIKE '%/'"
+  querys << quita_ultima_diagonal_obligatorio
 
   querys
 end
