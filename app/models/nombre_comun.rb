@@ -31,15 +31,14 @@ class NombreComun < ActiveRecord::Base
   end
 
   def exporta_redis(taxon)
-    foto = taxon.foto_principal.present? ? "<img src='#{taxon.foto_principal}' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
-        "<img src='/assets/app/iconic_taxa/mammalia-75px.png' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+    icono = taxon.icono.present? ? "<img src='/assets/app/iconic_taxa/#{taxon.icono}' alt='#{taxon.nombre_icono}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
 
     data = ''
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
     data << "\"term\":\"#{nombre_comun.limpia}\","
-    data <<  "\"score\":2,"
     data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
-    data <<  "\"foto\":\"#{foto.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
+    data <<  "\"foto\":\"#{icono.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
 end

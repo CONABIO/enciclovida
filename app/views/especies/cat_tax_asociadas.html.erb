@@ -1,0 +1,5 @@
+<%= select_tag :nivel, options_for_select(Especie::NIVEL_CATEGORIAS, '>=') %>
+
+<%= select_tag :cat, options_for_select(
+                           @especie.cat_tax_asociadas.collect{ |u| [u.nombre_categoria_taxonomica, u.nivel] },
+                           @especie.cat_tax_asociadas.collect{ |u| u.nivel if u.nombre_categoria_taxonomica == 'especie' }) %>

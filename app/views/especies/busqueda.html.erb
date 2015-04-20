@@ -101,7 +101,7 @@
                 $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
                 //pone el ID para mandar a la busqueda directa
-                event.data.num == '1' ? $('#id_basica_comun').attr('value', data.id) : $('#id_avanzada_comun').attr('value', data.id)
+                event.data.num == '1' ? $('#id_basica_comun').attr('value', data.id) : $('#id_avanzada_comun').attr('value', data.id);
             }
         }
         if (event.data.num == '2' || event.data.num == '4')          //nombre cientifico
@@ -123,7 +123,13 @@
                 $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
                 //pone el ID para mandar a la busqueda directa
-                event.data.num == '2' ? $('#id_basica_cientifico').attr('value', data.id) : $('#id_avanzada_cientifico').attr('value', data.id)
+                if (event.data.num == '2')
+                {
+                    $('#id_basica_cientifico').attr('value', data.id)
+                } else {
+                    $('#id_avanzada_cientifico').attr('value', data.id);
+                    cat_tax_asociadas(data.id);
+                }
             }
         }
 
@@ -189,6 +195,13 @@
                 $(this).attr('checked', false);
         });
 
+        $(document).on('change', "#nivel, #cat", function()
+        {
+            var valor=$(this).val();
+            $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
+            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+        });
+
         $(document).on('change', "[id^='distribucion_nivel_']", function()
         {
             var valor=$(this).val();
@@ -232,6 +245,10 @@
         {
             var id=$(this).attr('id');
             $(this).attr('value',$(this).val());
+
+            // La funcionalidad de las categorias taxonomicas solo la tiene el nombre cientifico de la vista avanzada
+            if ($(this).attr('id') == 'nombre_cientifico_1')
+                $('#panelCategoriaTaxonomicaPt').hide();
         });
 
         $(document).on('click', '#limpiar', function()

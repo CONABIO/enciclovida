@@ -207,18 +207,6 @@ module EspeciesHelper
     checkBoxes.html_safe
   end
 
-  def checkboxCategoriaTaxonomica
-    checkBoxes=''
-    contador=0
-
-    CategoriaTaxonomica.order('nivel1, nombre_categoria_taxonomica ASC').map(&:nombre_categoria_taxonomica).uniq.each do |cat|
-      #checkBoxes+='<br>' if contador%4 == 0    #para darle un mejor espacio
-      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('cat[]', cat, false, :class => :busqueda_atributo_checkbox)} #{cat}</label>"
-      contador+=1
-    end
-    checkBoxes.html_safe
-  end
-
   def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes=''
     Especie::ESTATUS.each do |e|
