@@ -110,14 +110,40 @@ module EspeciesHelper
   def arbolTaxonomico(taxon, accion=false)
     if accion  # Si es para desplegar o contraer
       nodo = ''
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.child_ids.join(',')).order(:nombre_cientifico).each do |children|
+      if I18n.locale.to_s == 'es-cientifico'
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+            caso_rango_valores('especies.id', taxon.child_ids.join(',')).order(:nombre_cientifico).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
+
+      else # Solo las categorias taxonomicas obligatorias
+        # Quito las categorias que no pertecene a la estructura del taxon (Division o Phylum)
+        cat_obl = if taxon.ancestry_ascendente_directo.include?('1000001') || taxon.id == 1000001
+                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'división'}.compact
+                  else
+                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'phylum'}.compact
+                  end
+
+
+        index_cat = cat_obl.index(taxon.categoria_taxonomica.nombre_categoria_taxonomica)
+        return '' if index_cat.nil?  # Si no encontro la categoria
+        return '' if index_cat == cat_obl.length - 1 # Si es la ultima categoria
+        index_cat+= 1
+
+        ancestry = taxon.is_root? ? taxon.id : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}"
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+            where("ancestry_ascendente_directo LIKE '#{ancestry}%'").
+            caso_sensitivo('nombre_categoria_taxonomica',cat_obl[index_cat]).order(:nombre_cientifico).each do |children|
+          nodo+= enlacesDelArbol(children, true)
+        end
+      end
       nodo
+
     else # Si es para cuando se despliega la pagina
       if taxon.nil?  # Si es el index
         arbolCompleto = ''
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+            where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
           arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
         # Pone los reinos en una lista separada cada uno
@@ -128,9 +154,19 @@ module EspeciesHelper
         arbolCompleto = "<ul class=\"nodo_mayor\">"
         contadorNodos = 0
 
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.path_ids.join(',')).each do |ancestro|
-          arbolCompleto << enlacesDelArbol(ancestro)
+        if I18n.locale.to_s == 'es-cientifico'
+          Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+              caso_rango_valores('especies.id', taxon.path_ids.join(',')).
+              arbolCompleto << enlacesDelArbol(ancestro)
           contadorNodos+= 1
+
+        else  # Solo las categorias taxonomicas obligatorias
+          Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+              caso_rango_valores('especies.id', taxon.path_ids.join(',')).
+              caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).each do |ancestro|
+            arbolCompleto << enlacesDelArbol(ancestro)
+            contadorNodos+= 1
+          end
         end
 
         contadorNodos.times {tags << '</li></ul>'}
