@@ -1,7 +1,7 @@
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos,
-                                         :filtros, :arbol, :cat_tax_asociadas]
+                                         :filtros, :arbol]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
@@ -305,15 +305,16 @@ class EspeciesController < ApplicationController
               taxon = Especie.find(conID)
 
               if taxon.is_root?
-                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%'\")"
+                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
               else
                 ancestros = taxon.ancestry_ascendente_directo
-                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%'\")"
+                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
               end
 
-              limites = Bases.limites(conID)
-              condiciones+= ".where(\"CONCAT(nivel1,nivel2,nivel3,nivel4) #{params[:nivel]} #{params[:cat]}\")"
-              condiciones+= ".where(\"especies.id BETWEEN #{limites[:limite_inferior]} AND #{limites[:limite_superior]}\")"
+              # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
+              #limites = Bases.limites(conID)
+              condiciones+= ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} #{params[:cat]}\")"
+              #condiciones+= ".where(\"especies.id BETWEEN #{limites[:limite_inferior]} AND #{limites[:limite_superior]}\")"
             end
           else       # busquedas directas
             if conID.present?
@@ -341,7 +342,7 @@ class EspeciesController < ApplicationController
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
-
+Rails.logger.info "---#{busqueda}"
           if distinct
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)

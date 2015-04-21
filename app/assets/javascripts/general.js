@@ -125,6 +125,26 @@ $(document).ready(function()
             });
         return false;
     }
+
+    /*
+     Cuando el usuario elige un taxon en la vists avanzada, las categorias
+     taxonimicas se despliegan segun las asociadas
+    */
+    cat_tax_asociadas = function(id)
+    {
+        $.ajax(
+            {
+                url: "/especies/cat_tax_asociadas",
+                type: 'GET',
+                data: {
+                    id: id
+                }
+            }).done(function(html)
+            {
+                $('#datos_cat').html('').html(html);
+                $('#panelCategoriaTaxonomicaPt').show();
+            });
+    }
 });
 
 
