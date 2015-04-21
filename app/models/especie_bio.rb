@@ -391,16 +391,21 @@ class EspecieBio < ActiveRecord::Base
   end
 
   def pon_nombre_cientifico
-    return self.nombre_cientifico = nombre.limpiar if is_root?
     self.nombre_cientifico = ''
+    return self.nombre_cientifico = nombre.limpiar if is_root?
     subgenero = ''
     seccion = ''
 
-    EspecieBio.select('Nombre.IdNombre, Nombre.Nombre, NombreCategoriaTaxonomica AS nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('Nombre.IdNombre', ancestor_ids.reverse.join(',')).order('IdNombre DESC').each do |taxon|
+    EspecieBio.select('Nombre.IdNombre, Nombre.Nombre, NombreCategoriaTaxonomica AS nombre_categoria_taxonomica').
+        categoria_taxonomica_join.caso_rango_valores('Nombre.IdNombre', ancestor_ids.reverse.join(',')).order('IdNombre DESC').each do |taxon|
+
       subgenero << " (#{taxon.nombre.limpiar}) " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'subgenero'
       seccion << " sect. #{taxon.nombre.limpiar} " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'seccion'
 
       case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
+
+        when 'genero'
+          self.nombre_cientifico = "#{nombre.limpiar} #{subgenero}"
 
         when 'especie'
           if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'

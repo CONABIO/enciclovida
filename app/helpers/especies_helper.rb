@@ -156,10 +156,10 @@ module EspeciesHelper
 
         if I18n.locale.to_s == 'es-cientifico'
           Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-              caso_rango_valores('especies.id', taxon.path_ids.join(',')).
-              arbolCompleto << enlacesDelArbol(ancestro)
-          contadorNodos+= 1
-
+              caso_rango_valores('especies.id', taxon.path_ids.join(',')).each do |ancestro|
+            arbolCompleto << enlacesDelArbol(ancestro)
+            contadorNodos+= 1
+          end
         else  # Solo las categorias taxonomicas obligatorias
           Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
               caso_rango_valores('especies.id', taxon.path_ids.join(',')).
