@@ -7,12 +7,12 @@ module EspeciesHelper
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{taxon.nombre_comun} (<i>#{link_to(taxon.nombre_cientifico, especy_path(taxon))}</i> #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{taxon.nombre_comun} (#{pon_italicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            "<i>#{link_to(taxon.nombre_cientifico, especy_path(taxon))}</i> #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            "#{pon_italicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          "<i>#{taxon.nombre_cientifico}</i> #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{pon_italicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -39,14 +39,14 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (<i>#{taxon.nombre_cientifico}</i> #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (<i>#{taxon.nombre_cientifico}</i> #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-                "<i>#{link_to(taxon.nombre_cientifico, especy_path(taxon))}</i> #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+                "#{pon_italicas(taxon,true)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (<i>#{taxon.nombre_cientifico}</i> #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-              "<i>#{taxon.nombre_cientifico}</i> #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+              "#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -68,6 +68,18 @@ module EspeciesHelper
           'Ocurrio un error en el título'.html_safe
         end
       end
+    end
+  end
+
+  # Para separar las italicas del nombre cientifico y la categoria taxonomica
+  def pon_italicas(taxon, con_link = false)
+    italicas = taxon.nombre_cientifico.gsub('subsp.','</i>subsp.<i>').gsub('var.','</i>var.<i>').gsub('f.','</i>f.<i>').
+        gsub('subvar.','</i>subvar.<i>').gsub('subf.','</i>subf.<i>')
+
+    if con_link
+      "<a href=\"/especies/#{taxon.id}\"><i>#{italicas}</i></a>"
+    else
+      "<i>#{italicas}</i>"
     end
   end
 
