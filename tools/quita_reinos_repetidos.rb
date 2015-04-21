@@ -6,7 +6,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Borra los reinos vacios y pone el campo de referencia del ancestry en uno solo.
 
-*** Este script puede usuarse para crear los campos adicionales o quitarlos.
+*** Este script debe usuarse cada vez que se cree el volcado.
 
 
 Usage:
@@ -31,7 +31,7 @@ def quita_reinos_vacios
   sql << '7000001,7000002,7000004,'
   sql << '8000001,8000002,8000003,8000004,8000005,'
   sql << '9000001,9000002,9000003,9000004,9000005,'
-  sql << '10000002,10000003,10000004,10000005'
+  sql << '10000001,10000002,10000003,10000004,10000005'
   sql << ')'
 end
 
@@ -90,7 +90,7 @@ end
 
 start_time = Time.now
 
-#Se coore como SQL directo para saltarse las validaciones de los modelos.
+#Se corre como SQL directo para saltarse las validaciones de los modelos.
 actualiza_ancestry.each do |query|
   puts "Ejecutando: #{query}" if OPTS[:debug]
   Bases.ejecuta query

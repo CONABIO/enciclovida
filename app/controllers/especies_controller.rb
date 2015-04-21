@@ -1,7 +1,6 @@
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos,
-                                         :filtros, :arbol]
+  skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos, :filtros]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
@@ -342,7 +341,7 @@ class EspeciesController < ApplicationController
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
-Rails.logger.info "---#{busqueda}"
+
           if distinct
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
