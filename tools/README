@@ -87,6 +87,11 @@
 22.- Vuelve a borrar los reinos vacios y re-asocia los taxones en solo 5 reinos (7.079292816 seg):
         22.1.- rails r tools/quita_reinos_repetidos.rb -d
 
+23.- Llena los campos icono y nombre_icono para todas las especies
+        23.1.- rails r tools/grupos_iconicos.rb -d
+
+
+
 13.- Corre el script para guardar la informacion de NaturaLista como la taxonomia y las observaciones (es el script mas tardado):
         16.1.- rails r tools/informacion_naturalista.rb -d
 
