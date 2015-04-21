@@ -108,41 +108,27 @@ module EspeciesHelper
   end
 
   def arbolTaxonomico(taxon, accion=false)
-    # Si es para desplegar o contraer
-    if accion
+    if accion  # Si es para desplegar o contraer
       nodo = ''
-      if taxon.is_root? && taxon.categoria_taxonomica.nombre_categoria_taxonomica.downcase == 'reino'
-        #Me aseguro que sean reinos
-        categorias_reinos = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).map(&:id).join(',')
-        # Junto los reinos para que los taxones que se repiten en mismos reinos de diferentes bases esten como descendientes
-        reinos = Especie.caso_rango_valores('categoria_taxonomica_id', categorias_reinos).where(:nombre => taxon.nombre).map{|r| r.child_ids}.flatten
-
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', reinos.join(',')).each do |children|
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.child_ids.join(',')).order(:nombre_cientifico).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
-      else
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.child_ids.join(',')).each do |children|
-          nodo+= enlacesDelArbol(children, true)
-        end
-      end
       nodo
-
-    else
-      if taxon.try(:is_root?) || taxon.nil?  # Si es root o es el arbol del index
+    else # Si es para cuando se despliega la pagina
+      if taxon.nil?  # Si es el index
         arbolCompleto = ''
-        reino = CategoriaTaxonomica.where(:nivel1 => 1, :nivel2 => 0, :nivel3 => 0, :nivel4 => 0).first
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.where(:categoria_taxonomica_id => reino).each do |t|
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
           arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
         # Pone los reinos en una lista separada cada uno
         arbolCompleto
 
-      else
+      else # Si es cualquier otro taxon
         tags = ''
         arbolCompleto = "<ul class=\"nodo_mayor\">"
         contadorNodos = 0
 
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', (taxon.ancestor_ids + [taxon.id]).join(',')).each do |ancestro|
+        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', taxon.path_ids.join(',')).each do |ancestro|
           arbolCompleto << enlacesDelArbol(ancestro)
           contadorNodos+= 1
         end
