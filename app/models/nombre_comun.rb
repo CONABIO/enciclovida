@@ -19,7 +19,7 @@ class NombreComun < ActiveRecord::Base
   scope :nom_com, -> { especies_join.categoria_taxonomica_join }
 
   def species_or_lower?(cat)
-    Especie::SPECIES_OR_LOWER.include? cat
+    Especie::SPECIES_OR_LOWER.include?(cat) || Especie::BAJO_GENERO.include?(cat)
   end
 
   def completa_blurrily
