@@ -167,15 +167,16 @@ module EspeciesHelper
         contadorNodos = 0
 
         if I18n.locale.to_s == 'es-cientifico'
-          Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-              caso_rango_valores('especies.id', taxon.path_ids.join(',')).each do |ancestro|
+          Especie.select('especies.*, nombre_categoria_taxonomica, CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').categoria_taxonomica_join.
+              caso_rango_valores('especies.id', taxon.path_ids.join(',')).order('nivel').each do |ancestro|
             arbolCompleto << enlacesDelArbol(ancestro)
             contadorNodos+= 1
           end
         else  # Solo las categorias taxonomicas obligatorias
-          Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+          Especie.select('especies.*, nombre_categoria_taxonomica, CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').categoria_taxonomica_join.
               caso_rango_valores('especies.id', taxon.path_ids.join(',')).
-              caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).each do |ancestro|
+              caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
+              order('nivel').each do |ancestro|
             arbolCompleto << enlacesDelArbol(ancestro)
             contadorNodos+= 1
           end
