@@ -248,8 +248,8 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    icono = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' alt='#{nombre_icono}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+    icono = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' alt='#{nombre_icono}' class='img-thumbnail icono-redis' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{nombre_cientifico}' class='img-thumbnail icono-redis' \>"
 
     data = ''
     data << "{\"id\":#{id},"

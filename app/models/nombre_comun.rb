@@ -31,8 +31,8 @@ class NombreComun < ActiveRecord::Base
   end
 
   def exporta_redis(taxon)
-    icono = taxon.icono.present? ? "<img src='/assets/app/iconic_taxa/#{taxon.icono}' alt='#{taxon.nombre_icono}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{taxon.nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+    icono = taxon.icono.present? ? "<img src='/assets/app/iconic_taxa/#{taxon.icono}' alt='#{taxon.nombre_icono}' class='img-thumbnail icono-redis' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{taxon.nombre_cientifico}' class='img-thumbnail icono-redis' \>"
 
     data = ''
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
