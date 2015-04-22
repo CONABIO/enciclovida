@@ -90,11 +90,11 @@ def actualiza_ancestry
   crustacea << "WHERE ancestry_ascendente_directo LIKE '%2000006%'"
   querys << crustacea
 
-  mandibulata = 'UPDATE especies SET '
-  mandibulata << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'9000006','10000006'), "
-  mandibulata << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'9000006','10000006') "
-  mandibulata << "WHERE ancestry_ascendente_directo LIKE '%9000006%'"
-  querys << mandibulata
+  arthropoda = 'UPDATE especies SET '
+  arthropoda << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'9000006','10000006'), "
+  arthropoda << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'9000006','10000006') "
+  arthropoda << "WHERE ancestry_ascendente_directo LIKE '%9000006%'"
+  querys << arthropoda
 
   diptera = 'UPDATE especies SET '
   diptera << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'1000001/10000006/9000007/9000008/9000009/9000010/9000011/9000012/9000013/9000014','1000001/10000006/10000007/10000008/10007423/10000009/10000010/10000011/10007439/10000012'), "

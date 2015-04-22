@@ -239,7 +239,16 @@ class Especie < ActiveRecord::Base
   end
 
   def pon_foto_principal_alternatva
-    ancestry_ascendente_directo
+  #(se supone pone el grupo icónico al vuelo, pero el encargado del proyecto los metió a la BD =s)
+    img=''
+    grupos=[]
+    ancestry_ascendente_directo.split('/').each do |name|
+      grupos << Especie.find(name).nombre_cientifico
+    end
+    Especie::GRUPOS_ICONICOS.keys.sort.each do |grupo|
+      img = grupos.include?(grupo) ? Especie::GRUPOS_ICONICOS[grupo] : img
+    end
+    img
   end
 
   # Guarda en cache el path del KMZ
