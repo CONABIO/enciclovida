@@ -93,7 +93,8 @@
 
                 var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
                         '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
-                return "<p style=\"margin:0;\">" + nombres + "</p>";
+                //return "<p style=\"margin:0;\">" + nombres + "</p>";
+                return "<table><tr><td>" + data.icono + "</td><td>" + nombres + "</td></tr></table";
             }
             var select = function(term, data, type)
             {
@@ -115,7 +116,8 @@
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
                     var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : data.nombre_comun + ' (<b>' + term + '</b>)';
-                return "<p style=\"margin:0;\">" + nombres + "</p>";
+                //return "<p style=\"margin:0;\">" + nombres + "</p>";
+                return "<table><tr><td>" + data.icono + "</td><td>" + nombres + "</td></tr></table>";
             }
             var select = function(term, data, type)
             {
