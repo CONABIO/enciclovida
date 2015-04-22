@@ -287,6 +287,7 @@ class EspeciesController < ApplicationController
 
             if key == 'nombre_cientifico' && value.present? && conID.blank?
               nombre_cientifico+= value.gsub("'", "''")
+              condiciones+= ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico}\")"
             end
 
             if key == 'nombre_comun' && value.present? && conID.blank?
