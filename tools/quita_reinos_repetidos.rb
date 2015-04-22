@@ -39,8 +39,8 @@ def actualiza_ancestry
   querys = []
 
   animalia_millones = 'UPDATE especies SET '
-  animalia_millones << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia_millones << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia_millones << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  animalia_millones << "ancestry_ascendente_obligatorio='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   animalia_millones << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_0000001%'"
   querys << animalia_millones
 
@@ -83,6 +83,27 @@ def actualiza_ancestry
   quita_ultima_diagonal_obligatorio << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'/','') "
   quita_ultima_diagonal_obligatorio << "WHERE ancestry_ascendente_obligatorio LIKE '%/'"
   querys << quita_ultima_diagonal_obligatorio
+
+  crustacea = 'UPDATE especies SET '
+  crustacea << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'2000006','10000006'), "
+  crustacea << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'2000006','10000006') "
+  crustacea << "WHERE ancestry_ascendente_directo LIKE '%2000006%'"
+  querys << crustacea
+
+  mandibulata = 'UPDATE especies SET '
+  mandibulata << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'9000006','10000006'), "
+  mandibulata << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'9000006','10000006') "
+  mandibulata << "WHERE ancestry_ascendente_directo LIKE '%9000006%'"
+  querys << mandibulata
+
+  diptera = 'UPDATE especies SET '
+  diptera << "ancestry_ascendente_directo=REPLACE(ancestry_ascendente_directo,'1000001/10000006/9000007/9000008/9000009/9000010/9000011/9000012/9000013/9000014','1000001/10000006/10000007/10000008/10007423/10000009/10000010/10000011/10007439/10000012'), "
+  diptera << "ancestry_ascendente_obligatorio=REPLACE(ancestry_ascendente_obligatorio,'1000001/10000006/9000007/9000008/9000009/9000010/9000011/9000012/9000013/9000014','1000001/10000006/10000007/10000008/10007423/10000009/10000010/10000011/10007439/10000012') "
+  diptera << "WHERE ancestry_ascendente_directo LIKE '1000001/10000006/9000007/9000008/9000009/9000010/9000011/9000012/9000013/9000014%'"
+  querys << diptera
+
+  repetidos = "DELETE FROM especies WHERE id IN (2000006,9000006,9000007) OR ancestry_ascendente_directo LIKE '%9000007%'"
+  querys << repetidos
 
   querys
 end
