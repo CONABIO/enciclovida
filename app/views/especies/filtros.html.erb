@@ -58,22 +58,27 @@
 
 <div id="busqueda_avanzada" style="display: none" >
   <%= form_tag resultados_especies_path, :method => :get, :class => ""  do %>
-      <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
-      <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
+
+      <% if I18n.locale.to_s == 'es-cientifico' %>
+        <%= radioGruposIconicos.html_safe %>
+      <% else %>
+          <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
+          <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
+      <% end %>
+
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
-      <div class="form-group form-group-sm">
-        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
 
-          <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-
-      </div>
-      <div class="form-group form-group-sm">
-        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
-
-          <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-
-      </div>
+      <% if I18n.locale.to_s != 'es-cientifico' %>
+        <div class="form-group form-group-sm">
+            <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
+            <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        </div>
+        <div class="form-group form-group-sm">
+            <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
+            <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+        </div>
+      <% end %>
 
       <div class=" dropup">
         <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>

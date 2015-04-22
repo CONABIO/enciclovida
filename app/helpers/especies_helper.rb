@@ -453,4 +453,15 @@ module EspeciesHelper
     n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
     n.html_safe
   end
+
+  def radioGruposIconicos
+    radios = ''
+    Especie.caso_rango_valores('nombre_cientifico', "'#{Especie::GRUPOS_ICONICOS.keys.join("','")}'").each do |taxon|
+      radios << image_tag("app/iconic_taxa/#{Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][1]}",
+                          :title => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0],
+                          :alt => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0])
+      radios << radio_button_tag(:id_nom_cientifico, taxon.id)
+    end
+    "<div>#{radios}</div>"
+  end
 end
