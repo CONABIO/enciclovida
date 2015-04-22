@@ -39,8 +39,8 @@ def actualiza_ancestry
   querys = []
 
   animalia_millones = 'UPDATE especies SET '
-  animalia_millones << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia_millones << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia_millones << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
+  animalia_millones << "ancestry_ascendente_obligatorio='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
   animalia_millones << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_0000001%'"
   querys << animalia_millones
 
