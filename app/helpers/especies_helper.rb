@@ -113,7 +113,7 @@ module EspeciesHelper
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
     nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
     nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
-    nodos << "#{image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle', :style => 'width: 50px; height: 50px;')}"
+    nodos << "#{image_tag("app/iconic_taxa/#{taxon.icono}", :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle icono-arbol')}"
     nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
     #Deja los nodos abiertos para que esten anidados (si conClick es falso)
     conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
@@ -459,7 +459,7 @@ module EspeciesHelper
     Especie.caso_rango_valores('nombre_cientifico', "'#{Especie::GRUPOS_ICONICOS.keys.join("','")}'").each do |taxon|
       radios << image_tag("app/iconic_taxa/#{Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][1]}",
                           :title => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0],
-                          :alt => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0])
+                          :alt => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0], :class => 'icono-busqueda_avanzada')
       radios << radio_button_tag(:id_nom_cientifico, taxon.id)
     end
     "<div>#{radios}</div>"
