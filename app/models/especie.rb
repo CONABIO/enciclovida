@@ -108,6 +108,7 @@ class Especie < ActiveRecord::Base
   ]
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
+  BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
   GRUPOS_ICONICOS = {
       # Reino Animalia
@@ -117,8 +118,8 @@ class Especie < ActiveRecord::Base
       'Reptilia' => %w(Reptiles reptilia.png),
       'Amphibia' => %w(Anfibios amphibia.png),
       'Actinopterygii' => ['Peces óseos', 'actinopterygii.png'],
-      'Petromyzontida' => ['Lampreas y Mixines', 'petromyzontidaMixines.png'],
-      'Myxini' => ['Lampreas y Mixines', 'petromyzontidaMixines.png'],
+      'Petromyzontida' => %w(Lampreas petromyzontida.png),
+      'Myxini' => %w(Mixines myxini.png),
       'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'chondrichthyes.png'],
       'Cnidaria' => ['Medusas, corales y anémonas', 'cnidaria.png'],
       'Arachnida' => %w(Arácnidos arachnida.png),
@@ -147,7 +148,7 @@ class Especie < ActiveRecord::Base
       'Fungi' => %w(Hongos fungi.png),
 
       # Reino Prokaryonte (desde 1930 ?)
-      'Prokaryonte' => %w(Monera prokaryonte.png)
+      'Prokaryotae' => %w(Monera prokaryotae.png)
   }
 
   # Override assignment method provided by has_many to ensure that all
@@ -161,8 +162,8 @@ class Especie < ActiveRecord::Base
     end
   end
 
-  def species_or_lower?(cat=nil)
-    SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
+  def species_or_lower?(cat=nil, con_genero=false)
+    SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica) || BAJO_GENERO.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
   #
@@ -261,14 +262,14 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    icono = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' alt='#{nombre_icono}' style='width:45px;height:45px;' class='img-thumbnail' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{nombre_cientifico}' style='width:45px;height:45px;' class='img-thumbnail' \>"
+    ic = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' title='#{nombre_icono}' class='img-thumbnail icono-redis' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' title='#{nombre_cientifico}' class='img-thumbnail icono-redis' \>"
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data <<  "\"icono\":\"#{ic.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 
@@ -293,7 +294,8 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-    GRUPOS_ICONICOS.keys.sort.each do |grupo|
+    GRUPOS_ICONICOS.keys.each do |grupo|
+      puts grupo
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 

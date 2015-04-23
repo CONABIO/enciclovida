@@ -29,12 +29,16 @@ class Filtro < ActiveRecord::Base
     end
   end
 
-  def self.destruye(sesion, usuario)    # Destruye el filtro asociado
+  def self.limpia(sesion, usuario)    # Limpia el filtro asociado
     if usuario.instance_of?(Usuario)
-      usuario.filtro.destroy if usuario.filtro.present?
+      if usuario.filtro.present?
+        usuario.filtro.html=''
+        usuario.filtro.save
+      end
     else
       return unless filtro = where(:sesion => sesion).first
-      filtro.destroy
+      filtro.html = ''
+      filtro.save if filtro.changed?
     end
   end
 end

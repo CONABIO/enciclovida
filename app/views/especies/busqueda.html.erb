@@ -93,7 +93,8 @@
 
                 var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
                         '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
-                return "<p style=\"margin:0;\">" + nombres + "</p>";
+                //return "<p style=\"margin:0;\">" + nombres + "</p>";
+                return "<table><tr><td>" + data.icono + "</td><td>" + nombres + "</td></tr></table";
             }
             var select = function(term, data, type)
             {
@@ -115,7 +116,8 @@
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
                     var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : data.nombre_comun + ' (<b>' + term + '</b>)';
-                return "<p style=\"margin:0;\">" + nombres + "</p>";
+                //return "<p style=\"margin:0;\">" + nombres + "</p>";
+                return "<table><tr><td>" + data.icono + "</td><td>" + nombres + "</td></tr></table>";
             }
             var select = function(term, data, type)
             {
@@ -187,12 +189,15 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox", function()
+        $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_radio", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
+
+            if ($(this).attr('class') == 'busqueda_atributo_radio')
+                cat_tax_asociadas($(this).val());
         });
 
         $(document).on('change', "#nivel, #cat", function()
@@ -267,7 +272,7 @@
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
                 },
                 type:'POST',
-                url:'/usuarios/limpiar',
+                url:'/usuarios/limpia_filtro',
                 cache:true
             });
         });
@@ -304,7 +309,7 @@
                 $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
             },
             type: 'GET',
-            url: '/especies/filtros'
+            url: '/usuarios/filtros'
         });
     });
 </script>

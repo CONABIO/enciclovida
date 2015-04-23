@@ -404,8 +404,10 @@ class EspecieBio < ActiveRecord::Base
 
       case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
 
-        when 'genero'
-          self.nombre_cientifico = "#{nombre.limpiar} #{subgenero}"
+        when 'subgenero'
+          if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
+            self.nombre_cientifico = "#{taxon.nombre.limpiar} (#{nombre.limpiar})"
+          end
 
         when 'especie'
           if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'genero'
