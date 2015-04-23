@@ -126,6 +126,7 @@
     </div>
 
     <div style="width: 100%; float:left;">
+      <%= checklist(@paginacion).html_safe  if @paginacion.present? %>
       <div class="digg_pagination">
         <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
       </div>
@@ -140,6 +141,7 @@
           </div>
           <% columnas+=1 %>
       <% end %>
+
 
       <% if @taxones.length >= 100 %>
           <div class="digg_pagination">

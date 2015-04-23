@@ -139,4 +139,11 @@ module ApplicationHelper
 
     html << '</div>'
   end
+
+  def checklist(datos)
+    sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
+    peticion = sin_page_per_page.compact.join('&')
+    peticion << "&por_pagina=#{datos[:totales]}&pagina=1&checklist=1"
+    link_to("Checklist (✓)", peticion)
+  end
 end

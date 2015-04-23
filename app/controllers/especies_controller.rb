@@ -347,6 +347,13 @@ class EspeciesController < ApplicationController
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
+            if longitud > 0 && params[:checklist]==1
+
+              puts "*****************************************************************************************************"
+              puts "****************aqui ira la redirección al checklist, WIIIIIIIIIII***********************************"
+              puts "*****************************************************************************************************"
+            end
+
             if longitud > 0
               @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               @taxones = Especie.find_by_sql(@taxones)
@@ -359,6 +366,7 @@ class EspeciesController < ApplicationController
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               @taxones = Especie.find_by_sql(@taxones)
             end
+
           end
         else
           respond_to do |format|
