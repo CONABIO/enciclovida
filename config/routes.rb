@@ -21,8 +21,9 @@ Buscador::Application.routes.draw do
   resources :usuarios do
     collection do
       post :guarda_filtro
-      post :limpiar
+      post :limpia_filtro
       post :cambia_locale
+      get :filtros
     end
   end
 
@@ -45,7 +46,6 @@ Buscador::Application.routes.draw do
       get :datos_principales
       get :kmz
       get :kmz_naturalista
-      get :filtros
       get :cat_tax_asociadas
     end
   end

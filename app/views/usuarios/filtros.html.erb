@@ -60,16 +60,16 @@
   <%= form_tag resultados_especies_path, :method => :get, :class => ""  do %>
 
       <% if I18n.locale.to_s == 'es-cientifico' %>
-        <%= radioGruposIconicos.html_safe %>
-      <% else %>
           <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
           <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
+      <% else %>
+          <%= radioGruposIconicos.html_safe %>
       <% end %>
 
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
-      <% if I18n.locale.to_s != 'es-cientifico' %>
+      <% if I18n.locale.to_s == 'es-cientifico' %>
         <div class="form-group form-group-sm">
             <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
             <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
