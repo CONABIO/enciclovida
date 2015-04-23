@@ -248,14 +248,14 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    icono = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' alt='#{nombre_icono}' class='img-thumbnail icono-redis' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' alt='#{nombre_cientifico}' class='img-thumbnail icono-redis' \>"
+    ic = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' title='#{nombre_icono}' class='img-thumbnail icono-redis' \>" :
+        "<img src='/assets/app/iconic_taxa/sin_icono.png' title='#{nombre_cientifico}' class='img-thumbnail icono-redis' \>"
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data <<  "\"icono\":\"#{ic.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 
