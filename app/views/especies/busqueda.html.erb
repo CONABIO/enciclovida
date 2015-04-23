@@ -189,12 +189,15 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox", function()
+        $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_radio", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
+
+            if ($(this).attr('class') == 'busqueda_atributo_radio')
+                cat_tax_asociadas($(this).val());
         });
 
         $(document).on('change', "#nivel, #cat", function()

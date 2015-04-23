@@ -460,7 +460,7 @@ module EspeciesHelper
       radios << image_tag("app/iconic_taxa/#{Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][1]}",
                           :title => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0],
                           :alt => Especie::GRUPOS_ICONICOS[taxon.nombre_cientifico][0], :class => 'icono-busqueda_avanzada')
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id)
+      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :class => 'busqueda_atributo_radio')
     end
     "<div>#{radios}</div>"
   end
