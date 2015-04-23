@@ -189,15 +189,25 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox, .busqueda_atributo_radio", function()
+        $(document).on('change', ".busqueda_atributo_checkbox", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
+        });
 
-            if ($(this).attr('class') == 'busqueda_atributo_radio')
-                cat_tax_asociadas($(this).val());
+        $(document).on('change', ".busqueda_atributo_radio", function()
+        {
+            var id = $(this).val();
+            // Quito las opciones seleccionadas para que despues no haya problema
+            $(".busqueda_atributo_radio").each(function(index) {
+                if (id != $(this).val())
+                    $(this).attr('checked', false);
+            });
+
+            $(this).attr('checked', true);
+            cat_tax_asociadas($(this).val());
         });
 
         $(document).on('change', "#nivel, #cat", function()
