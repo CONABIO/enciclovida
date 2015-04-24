@@ -222,7 +222,6 @@ class Photo < ActiveRecord::Base
 
   # Destroy a photo if it no longer belongs to any observations or taxa
   def self.destroy_orphans(id)
-    #photos = where('id IN (?)', id)
     photos = where(:id => id)
     return if photos.blank?
     photos.each do |photo|
