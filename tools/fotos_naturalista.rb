@@ -23,9 +23,8 @@ def busca_fotos
   # pueden haber quedado sin correspondencia
   Especie.find_each do |taxon|
   #Especie.limit(100).each do |taxon|
-    next unless taxon.id > 6033010
+    #next unless taxon.id > 6033010
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    #next unless taxon.id > 7000000
     next unless proveedor = taxon.proveedor
     next unless proveedor.naturalista_info.present?
     proveedor.fotos(@usuario.id)
