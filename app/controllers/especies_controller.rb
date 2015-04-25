@@ -571,7 +571,7 @@ class EspeciesController < ApplicationController
           photos << fp
         else
           pp = photo_class.get_api_response(photo_id)
-          photos << photo_class.new_from_api_response(pp, true, @especie.id, current_usuario.id) if pp
+          photos << photo_class.new_from_api_response(pp, current_usuario.id) if pp
         end
       end
     end

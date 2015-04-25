@@ -25,7 +25,6 @@ gem 'jquery-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'magick-metadata'    #maneja metadatos
 gem 'mime-types', '1.25.1'
-gem "mini_magick"  #corta imagenes al vuelo y las guarda
 gem 'mysql2'
 gem 'nokogiri', '1.5.11'  #hacer un parse con xml
 gem 'pg'
