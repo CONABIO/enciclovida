@@ -347,16 +347,21 @@ class EspeciesController < ApplicationController
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
-            if longitud > 0 && params[:checklist]==1
-
-              puts "*****************************************************************************************************"
-              puts "****************aqui ira la redirección al checklist, WIIIIIIIIIII***********************************"
-              puts "*****************************************************************************************************"
-            end
-
             if longitud > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              @taxones = Especie.find_by_sql(@taxones)
+              if params[:checklist]=="1"
+                @checklist = true
+                puts "*****************************************************************************************************"
+                puts busqueda
+                puts "*****************************************************************************************************"
+
+                @taxones = eval(busqueda)
+                respond_to do |format|
+                  format.html { render 'checklists' }
+                end
+              else
+                @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+                @taxones = Especie.find_by_sql(@taxones)
+              end
             end
           else
             longitud = eval(busqueda).order('nombre_cientifico ASC').count
@@ -364,7 +369,17 @@ class EspeciesController < ApplicationController
 
             if longitud > 0
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              puts @taxones
               @taxones = Especie.find_by_sql(@taxones)
+              if params[:checklist]=="1"
+               @checklist = true
+                puts "*****************************************************************************************************"
+                puts "****************aqui ira la redirección al checklist, distinct FALSE*********************************"
+                puts "*****************************************************************************************************"
+                respond_to do |format|
+                  format.html { render 'checklists' }
+                end
+              end
             end
 
           end
@@ -377,6 +392,26 @@ class EspeciesController < ApplicationController
   end
 
   def busca_por_lote
+  end
+
+  def checklists
+
+    sql =  "select distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica
+    from especies
+    left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
+    where  ancestry_ascendente_directo like '1000001%'
+	and categorias_taxonomicas.nombre_categoria_taxonomica not in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
+    union
+SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica
+	FROM especies
+	LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+	LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id
+	LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id
+	WHERE (ancestry_ascendente_directo LIKE '1000001%' OR especies.id=1000001)
+	and categorias_taxonomicas.nombre_categoria_taxonomica in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
+	AND (tipos_distribuciones.descripcion IN ('Endémica'))
+	order by arbol"
+    @taxones=Especie.find_by_sql(sql)
   end
 
   def resultados_por_lote
