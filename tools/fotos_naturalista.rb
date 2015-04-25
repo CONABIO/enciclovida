@@ -19,14 +19,9 @@ where [options] are:
 end
 
 def busca_fotos
-  # Empeizo por especies y no por proveedores porque cuando se sustituyan bases algunos taxones
-  # pueden haber quedado sin correspondencia
-  Especie.find_each do |taxon|
-  #Especie.limit(100).each do |taxon|
-    #next unless taxon.id > 6033010
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    next unless proveedor = taxon.proveedor
-    next unless proveedor.naturalista_info.present?
+  # Empeizo por provvedores para no correr todos los taxones
+  Proveedor.where("naturalista_info IS NOT NULL OR naturalista_info != ''").find_each do |proveedor|
+    puts proveedor.id if OPTS[:debug]
     proveedor.fotos(@usuario.id)
   end
 end
