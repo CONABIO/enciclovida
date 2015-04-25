@@ -30,21 +30,24 @@ class ConabioPhoto < Photo
     end
   end
 
-  def self.new_from_api_response(api_response, options = {})
+  def self.new_from_api_response(api_response, usuario_id = nil, options = {})
     copyright = api_response.artist.present? ? "#{api_response.artist} / Banco de Imágenes CONABIO" : 'Banco de Imágenes CONABIO'
     imagen = "#{CONFIG.bdi_imagenes.to_s}/#{api_response.path.sub('/fotosBDI/Toda la Base del BI/', '')}"
-    new(options.merge(
-            :large_url => imagen,
-            :medium_url => "#{imagen}",
-            :small_url => "#{imagen}",
-            :thumb_url => "#{imagen}?w=85",
-            :native_photo_id => api_response.id,
-            :square_url => "#{imagen}",
-            :original_url => imagen,
-            :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
-            :native_username => copyright,
-            :native_realname => copyright,
-            :license => 3
-        ))
+
+    params = options.merge(
+        :large_url => "#{imagen}?w=1024&h=1024&mode=max",
+        :medium_url => "#{imagen}?w=500&h=500&mode=max",
+        :small_url => "#{imagen}?w=240&h=240&mode=max",
+        :thumb_url => "#{imagen}?w=100&h=100&mode=max",
+        :native_photo_id => api_response.id,
+        :square_url => "#{imagen}?w=75&h=75&mode=crop",
+        :original_url => imagen,
+        :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
+        :native_username => copyright,
+        :native_realname => copyright,
+        :license => 3
+    )
+
+    usuario_id.present? ? new(params.merge(:usuario_id => usuario_id)) : new(params)
   end
 end

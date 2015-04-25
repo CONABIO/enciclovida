@@ -38,7 +38,7 @@ class NombreComun < ActiveRecord::Base
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
     data << "\"term\":\"#{nombre_comun.limpia}\","
     data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
-    data << "\"foto\":\"#{icono.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
+    data << "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
 end

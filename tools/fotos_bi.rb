@@ -5,13 +5,13 @@ require 'json'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Importa las fotos de proveedores hacia la tabla photos y taxon_photos.
+Importa las fotos de metadato_especies hacia la tabla photos y taxon_photos.
 
-*** En caso de estar en SQL Server, el volcado de tablas es necesario para esta accion
+*** El volcado de tablas es necesario para esta accion
 Usage:
 
-  rails r tools/fotos_naturalista.rb -d              #Llena photos y taxon_photos respectivamente
-  rails r tools/fotos_naturalista.rb -d truncate     #Hace un TRUCATE a  photos y taxon_photos (OJO en real)
+  rails r tools/fotos_bi.rb -d              #Llena photos y taxon_photos respectivamente
+  rails r tools/fotos_bi.rb -d truncate     #Hace un TRUCATE a  metadatos y metadato_especie (OJO en real)
 
 where [options] are:
   EOS
@@ -19,15 +19,16 @@ where [options] are:
 end
 
 def busca_fotos
-  # Empeizo por provvedores para no correr todos los taxones
-  Proveedor.where("naturalista_info IS NOT NULL OR naturalista_info != ''").find_each do |proveedor|
-    puts proveedor.id if OPTS[:debug]
-    proveedor.fotos(@usuario.id)
+  # Empiezo por MetadatoEspecie para no correr todos los taxones
+  MetadatoEspecie.find_each do |me|
+  #MetadatoEspecie.limit(100).each do |me|
+    puts "#{me.especie_id}-#{me.metadato_id}" if OPTS[:debug]
+    me.fotos_bi(@usuario.id)
   end
 end
 
 def truncate_tables
-  sql = ['TRUNCATE TABLE photos', 'TRUCATE TABLE taxon_photos']
+  sql = ['TRUNCATE TABLE metadatos', 'TRUCATE TABLE metadato_especies']
   sql.each do |sql|
     Bases.ejecuta(sql)
   end
@@ -46,7 +47,7 @@ if ARGV.length == 1 && ARGV.first.present? && ARGV.first.downcase == 'truncate'
   truncate_tables
   system_call('rake tmp:cache:clear')
 elsif ARGV.blank?
-  puts "Con comando default para crear: #{ARGV.first}" if OPTS[:debug]
+  puts 'Con comando default para crear: ' if OPTS[:debug]
   exit(0) unless @usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first
   busca_fotos
 else

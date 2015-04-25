@@ -614,7 +614,7 @@ SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, anc
           photos << fp
         else
           pp = photo_class.get_api_response(photo_id)
-          photos << photo_class.new_from_api_response(pp) if pp
+          photos << photo_class.new_from_api_response(pp, current_usuario.id) if pp
         end
       end
     end

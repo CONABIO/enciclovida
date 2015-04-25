@@ -39,7 +39,13 @@ class Proveedor < ActiveRecord::Base
     fotos_naturalista = taxon_photos(datos, usuario)
     return [] if fotos_naturalista.length == 0
     taxon = especie
-    fotos_buscador = taxon.photos
+
+    begin
+      fotos_buscador = taxon.photos
+    rescue
+      puts 'ERROR: Especie no existe'
+      return []
+    end
 
     if fotos_buscador
       # Para no borrar las anteriores fotos
@@ -335,6 +341,7 @@ class Proveedor < ActiveRecord::Base
     datos['taxon_photos'].each do |pho| #Guarda todas las fotos asociadas del taxon
       next unless pho['photo']['native_photo_id'].present?
       next unless pho['photo']['thumb_url'].present?
+      next unless photo_type(pho['photo']['thumb_url']).present?
 
       local_photo = Photo.where(:native_photo_id => pho['photo']['native_photo_id'], :type => photo_type(pho['photo']['thumb_url']))
       photo = local_photo.count == 1 ? local_photo.first : Photo.new #Crea o actualiza la foto
