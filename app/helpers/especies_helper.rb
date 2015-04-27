@@ -94,7 +94,12 @@ module EspeciesHelper
   def datos_principales(taxon, opciones={})
     datos = dameNomComunes(taxon)
     datos << dameStatus(taxon, opciones)
-    datos << '<br>' << dameDistribucion(taxon) << ' - '
+
+    dist = dameDistribucion(taxon)
+    if dist.present?
+      datos << '<br>' << dameDistribucion(taxon) << ' - '
+    end
+
     datos << dameCaracteristica(taxon)
     datos.html_safe
   end
