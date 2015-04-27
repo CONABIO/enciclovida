@@ -4,49 +4,49 @@ module EspeciesHelper
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
-          "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
+          "#{ponIcono(taxon)} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{taxon.nombre_comun} (#{pon_italicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{ponIcono(taxon)} #{taxon.nombre_comun} (#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            "#{pon_italicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            "#{ponIcono(taxon)} #{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          "#{pon_italicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{ponIcono(taxon)} #{ponItalicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
       else
         if params[:title]
-          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{ponIcono(taxon)} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{taxon.nombre_comun} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especy_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{ponIcono(taxon)} #{taxon.nombre_comun} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especy_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especy_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            "#{ponIcono(taxon)} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especy_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{ponIcono(taxon)} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
       end
 
-    else   #vistas menos cientificas
+    else   #vista basica
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (#{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-              "#{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
+          taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon)} #{taxon.nombre_comun_principal.humanizar} (#{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+              "#{ponIcono(taxon)} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{ponIcono(taxon)} #{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-                "#{pon_italicas(taxon,true)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon)} #{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+                "#{ponIcono(taxon)} #{ponItalicas(taxon,true)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-              "#{pon_italicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon)} #{taxon.nombre_comun_principal.humanizar} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+              "#{ponIcono(taxon)} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -72,7 +72,7 @@ module EspeciesHelper
   end
 
   # Para separar las italicas del nombre cientifico y la categoria taxonomica
-  def pon_italicas(taxon, con_link = false)
+  def ponItalicas(taxon, con_link = false)
     italicas = taxon.nombre_cientifico.gsub('subsp.','</i>subsp.<i>').gsub('var.','</i>var.<i>').gsub('f.','</i>f.<i>').
         gsub('subvar.','</i>subvar.<i>').gsub('subf.','</i>subf.<i>')
 
@@ -81,6 +81,14 @@ module EspeciesHelper
     else
       "<i>#{italicas}</i>"
     end
+  end
+
+  def ponIcono(taxon)
+    grupo_iconico = taxon.icono.split('|')
+    icono = grupo_iconico[0]
+    color = grupo_iconico[1]
+
+    "<i title=\"#{taxon.nombre_icono}\" style=\"color:#{color};font-size:35px;\" class=\"#{icono}\"></i>"
   end
 
   def datos_principales(taxon, opciones={})
@@ -113,7 +121,6 @@ module EspeciesHelper
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
     nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
     nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
-    nodos << "#{image_tag("app/iconic_taxa/#{taxon.icono}", :alt => taxon.nombre_cientifico, :title => taxon.nombre_cientifico, :class => 'img-thumbnail img-circle icono-arbol')}"
     nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
     #Deja los nodos abiertos para que esten anidados (si conClick es falso)
     conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"

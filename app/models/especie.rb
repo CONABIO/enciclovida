@@ -111,43 +111,43 @@ class Especie < ActiveRecord::Base
 
   GRUPOS_ICONICOS = {
       # Reino Animalia
-      'Animalia' => %w(Animales animalia.png),
-      'Mammalia' => %w(Mamíferos mammalia.png),
-      'Aves' => %w(Aves aves.png),
-      'Reptilia' => %w(Reptiles reptilia.png),
-      'Amphibia' => %w(Anfibios amphibia.png),
-      'Actinopterygii' => ['Peces óseos', 'actinopterygii.png'],
-      'Petromyzontida' => %w(Lampreas petromyzontida.png),
-      'Myxini' => %w(Mixines myxini.png),
-      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'chondrichthyes.png'],
-      'Cnidaria' => ['Medusas, corales y anémonas', 'cnidaria.png'],
-      'Arachnida' => %w(Arácnidos arachnida.png),
-      'Myriapoda' => ['Ciempiés y milpies', 'myriapoda.png'],
-      'Annelida' => ['Lombrices y gusanos marinos', 'annelida.png'],
-      'Insecta' => %w(Insectos insecta.png),
-      'Porifera' => %w(Esponjas porifera.png),
-      'Echinodermata' => ['Estrellas y erizos de mar', 'echinodermata.png'],
-      'Mollusca' => ['Caracoles, almejas y pulpos', 'mollusca.png'],
-      'Crustacea' => ['Camarones y cangrejos', 'crustacea.png'],
+      'Animalia' => %w(Animales icon-vacio sin-color),
+      'Mammalia' => %w(Mamíferos icon-mamifero sin-color),
+      'Aves' => %w(Aves icon-aves #821b18),
+      'Reptilia' => %w(Reptiles icon-reptil #cb4b19),
+      'Amphibia' => %w(Anfibios icon-anfibio #ba191d),
+      'Actinopterygii' => ['Peces óseos', 'icon-peces', '#9d331a'],
+      'Petromyzontida' => %w(Lampreas icon-vacio sin-color),
+      'Myxini' => %w(Mixines icon-vacio sin-color),
+      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'icon-tiburon_raya', '#c96016'],
+      'Cnidaria' => ['Medusas, corales y anémonas', 'icon-vacio', 'sin-color'],
+      'Arachnida' => %w(Arácnidos icon-arana #985f18),
+      'Myriapoda' => ['Ciempiés y milpies', 'icon-ciempies', '#a5752a'],
+      'Annelida' => ['Lombrices y gusanos marinos', 'icon-lombrices', '#c97e0f'],
+      'Insecta' => %w(Insectos icon-insectos #d88f2b),
+      'Porifera' => %w(Esponjas icon-vacio sin-color),
+      'Echinodermata' => ['Estrellas y erizos de mar', 'icon-estrellamar', '#7b6927'],
+      'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#6f502c'],
+      'Crustacea' => ['Camarones y cangrejos', 'icon-crustaceo', '#4c351a'],
 
       # Reino Plantae
-      'Plantae' => %w(Plantas plantae.png),
-      'Bryophyta' => ['Musgos, hepáticas y antoceros', 'bryophyta.png'],
-      'Pteridophyta' => %w(Helechos pteridophyta.png),
-      'Cycadophyta' => %w(Cícadas cycadophyta.png),
-      'Gnetophyta' => %w(Canutillos gnetophyta.png),
-      'Liliopsida' => ['Pastos y palmeras', 'liliopsida.png'],
-      'Coniferophyta' => ['Pinos y cedros', 'coniferophyta.png'],
-      'Magnoliopsida' => ['Margaritas y magnolias', 'magnoliopsida.png'],
+      'Plantae' => %w(Plantas icon-plantas #00802f),
+      'Bryophyta' => ['Musgos, hepáticas y antoceros', 'icon-musgo', '#7a7544'],
+      'Pteridophyta' => %w(Helechos icon-helecho #adb280),
+      'Cycadophyta' => %w(Cícadas icon-cicada #545a35),
+      'Gnetophyta' => %w(Canutillos icon-vacio sin-color),
+      'Liliopsida' => ['Pastos y palmeras', 'icon-pastos_palmeras', '#114722'],
+      'Coniferophyta' => ['Pinos y cedros', 'icon-pino', '#788c4a'],
+      'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
 
       # Reino Protoctista
-      'Protoctista' => %w(Protozoarios protoctista.png),
+      'Protoctista' => %w(Protozoarios icon-vacio sin-color),
 
       # Reino Fungi
-      'Fungi' => %w(Hongos fungi.png),
+      'Fungi' => %w(Hongos icon-hongos #501766),
 
       # Reino Prokaryonte (desde 1930 ?)
-      'Prokaryotae' => %w(Monera prokaryotae.png)
+      'Prokaryotae' => %w(Bacterias icon-bacterias #9a1a5d)
   }
 
   # Override assignment method provided by has_many to ensure that all
@@ -295,7 +295,7 @@ class Especie < ActiveRecord::Base
 
       descendentes = taxon.subtree_ids
       descendentes.each_slice(20000).to_a.each do |grupo_20k| # Fue necesario dividir el query ya que con muchos argumentos no funciona
-        Especie.where("id IN (#{grupo_20k.join(',')})").update_all(:nombre_icono => GRUPOS_ICONICOS[grupo][0], :icono => GRUPOS_ICONICOS[grupo][1])
+        Especie.where("id IN (#{grupo_20k.join(',')})").update_all(:icono => "#{GRUPOS_ICONICOS[grupo][1]}|#{GRUPOS_ICONICOS[grupo][2]}", :nombre_icono => GRUPOS_ICONICOS[grupo][0])
       end
     end
   end
