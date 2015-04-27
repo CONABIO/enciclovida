@@ -162,7 +162,11 @@ class Especie < ActiveRecord::Base
   end
 
   def species_or_lower?(cat=nil, con_genero=false)
-    SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica) || BAJO_GENERO.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
+    if con_genero
+      SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica) || BAJO_GENERO.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
+    else
+      SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
+    end
   end
 
   #
@@ -226,7 +230,10 @@ class Especie < ActiveRecord::Base
 
   def pon_foto_principal
     # Antes de cambiar de base ya que photos esta en Rails.env
-    foto_principal = photos.any? ? photos.first.thumb_url : '/assets/app/iconic_taxa/mammalia-75px.png'
+    fotos = photos.order(:type)
+    return unless fotos.any?
+    foto_principal = fotos.first.thumb_url
+
     id_bio = Bases.id_en_vista_a_id_original id
     numero_base = Bases.id_original_a_numero_base id
     Bases.conecta_a CONFIG.bases[numero_base]
@@ -234,6 +241,7 @@ class Especie < ActiveRecord::Base
     taxon_bio = EspecieBio.find(id_bio)
     taxon_bio.foto_principal = foto_principal
     taxon_bio.evita_before_save = true
+    taxon_bio.avoid_ancestry = true
     taxon_bio.save if taxon_bio.changed?
     Bases.conecta_a Rails.env
   end

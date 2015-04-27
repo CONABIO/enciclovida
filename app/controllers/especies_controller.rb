@@ -25,10 +25,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @photos = @especie.photos
-    #@photos = Rails.cache.fetch(@especie.photos_cache_key) do
-    #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
-    #end
+    @photos = @especie.photos.order(:type)
 
     respond_to do |format|
       format.html
