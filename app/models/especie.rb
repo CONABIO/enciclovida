@@ -141,7 +141,7 @@ class Especie < ActiveRecord::Base
       'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
 
       # Reino Protoctista
-      'Protoctista' => %w(Protozoarios icon-vacio sin-color),
+      'Protoctista' => %w(Arquea icon-arquea #00455f),
 
       # Reino Fungi
       'Fungi' => %w(Hongos icon-hongos #501766),
