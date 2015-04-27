@@ -25,10 +25,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    @photos = @especie.photos
-    #@photos = Rails.cache.fetch(@especie.photos_cache_key) do
-    #  @especie.photos_with_backfill(:skip_external => true, :limit => 24)
-    #end
+    @photos = @especie.photos.order(:type)
 
     respond_to do |format|
       format.html
@@ -187,7 +184,7 @@ class EspeciesController < ApplicationController
 
         when 'nombre_comun'
           estatus = params[:estatus].join(',') if params[:estatus].present?
-          sql = "NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica').
+          sql = "NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
               nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_comun ASC')"
 
           totales = eval("#{sql}").length
@@ -203,7 +200,7 @@ class EspeciesController < ApplicationController
 
             if ids.present?
               @taxones = NombreComun.none
-              taxones=NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica').
+              taxones=NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
                   nom_com.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
 
               taxones.each do |taxon|
@@ -273,7 +270,8 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal,
+                      foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
           joins = condiciones = conID = nombre_cientifico = ''
           distinct = false
 

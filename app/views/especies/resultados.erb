@@ -135,8 +135,10 @@
       <% @taxones.each do |taxon| %>
 
           <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
-            <%= image_tag taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail' %>
-            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
+            <% if I18n.locale.to_s != 'es-cientifico' %>
+                <%= image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail') if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
+            <% end %>
+            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none">
             <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
           </div>
           <% columnas+=1 %>

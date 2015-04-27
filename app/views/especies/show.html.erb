@@ -246,11 +246,10 @@
 
 <div class="titulo">
   <h1>
-    <%= image_tag("app/iconic_taxa/#{@especie.icono}", :title => @especie.nombre_icono, :alt => @especie.nombre_icono, :class => 'icono-show_titulo') %>
     <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? && current_usuario.id == 1 %>
   </h1>
-  <%= datos_principales(@especie, :tab_catalogos => true).html_safe %>
+  <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
 
   <% if geo && geo.count > 0 %>
