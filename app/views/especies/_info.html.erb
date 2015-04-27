@@ -11,8 +11,8 @@
           <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
         </p>
 
-        <%= dameStatus(@especie, {}).html_safe %>
-        <%= dameCaracteristica(@especie).html_safe %>
+        <%= dameStatus(@especie, :tab_catalogos => true).html_safe %>
+        <%= dameCaracteristica(@especie, :tab_catalogos => true).html_safe %>
         <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
         <%= "<p><strong>Tipo de distribución:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
 
