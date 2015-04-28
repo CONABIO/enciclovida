@@ -57,6 +57,8 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     $(document).ready(function()
     {
+        $('#tabs').tab();
+
         $.ajax({
             url: "/listas/dame_listas",
             type: 'POST'
@@ -81,6 +83,20 @@
         {
             $('#widget_listas').slideToggle();
             return false;
+        });
+
+        /**
+         *  Carga los taxones de la categoria dada
+         **/
+        $("[id^='nivel_']").click(function ()
+        {
+            var nivel = $(this).attr('id').substring(6);
+            var id_div = '#' + $(this).attr('id_div');
+            var url = $(this).attr('url') + '&solo_categoria=' + nivel;
+
+            // No se porque cuenta 13 elementos
+            if ($(id_div).html().length <= 13)
+                $(id_div).load(url);
         });
 
         /*$(document).on('mouseenter', "[class^='datos_busqueda-']", function()
@@ -111,50 +127,35 @@
 
 <p id="notice"><%= notice %></p>
 
-<%= form_tag aniade_taxones_listas_path, :method => :post do %>
+<div id="content">
+  <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+    <li class="active">
+      <a href="#todos" data-toggle="tab">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
+    </li>
 
-    <p class="notice">
-      <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
-    </p>
+    <% if @por_categoria.present? && @por_categoria.length > 0 %>
+        <% @por_categoria.each do |categoria| %>
+            <li>
+              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
+                 data-toggle="tab" id="<%= "nivel_#{categoria.nivel}" %>" url="<%= request.url %>"
+                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
+                <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
+              </a>
+            </li>
+        <% end %>
+    <% end %>
+  </ul>
 
-    <div style="width: 100%; float:left;">
-      <div class="titulo-busqueda">
-        <%= @paginacion[:rango_resultados] if @paginacion.present? %>
-      </div>
-      <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
-      <div id="widget_listas" style="display: none"></div>
+  <div id="my-tab-content" class="tab-content">
+    <div class="tab-pane active" id="todos">
+      <%= render :partial => 'especies/resultados' %>
     </div>
 
-    <div style="width: 100%; float:left;">
-      <%= checklist(@paginacion).html_safe  if @paginacion.present? %>
-      <div class="digg_pagination">
-        <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
-      </div>
-
-      <% columnas=0 %>
-      <% @taxones.each do |taxon| %>
-
-          <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
-            <% if I18n.locale.to_s != 'es-cientifico' %>
-                <%= image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail') if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
-            <% end %>
-            <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none">
-            <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
-          </div>
-          <% columnas+=1 %>
-      <% end %>
-
-
-      <% if @taxones.length >= 100 %>
-          <div class="digg_pagination">
-            <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
-          </div>
-      <% end %>
-
-      <p class="enlaces_acciones">
-        <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-      </p>
-
-      <div id="datos_principales"></div>
-    </div>
-<% end %>
+    <% if @por_categoria.present? && @por_categoria.length > 0 %>
+        <% @por_categoria.each do |categoria| %>
+            <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
+            </div>
+        <% end %>
+    <% end %>
+  </div>
+</div>

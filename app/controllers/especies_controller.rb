@@ -270,8 +270,8 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal,
-                      foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+
           joins = condiciones = conID = nombre_cientifico = ''
           distinct = false
 
@@ -311,7 +311,7 @@ class EspeciesController < ApplicationController
 
               # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
               #limites = Bases.limites(conID)
-              condiciones+= ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} #{params[:cat]}\")"
+              condiciones+= ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
               #condiciones+= ".where(\"especies.id BETWEEN #{limites[:limite_inferior]} AND #{limites[:limite_superior]}\")"
             end
           else       # busquedas directas
@@ -339,7 +339,13 @@ class EspeciesController < ApplicationController
             distinct = true
           end
 
+          # Parte de consultar solo un TAB (categoria taxonomica)
+          if params[:solo_categoria] && conID.present?
+            condiciones+= ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+          end
+
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
+          @por_categoria = Especie.por_categoria(busqueda) if params[:solo_categoria].blank? && conID.present?
 
           if distinct
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
@@ -380,6 +386,10 @@ class EspeciesController < ApplicationController
               end
             end
 
+          end
+
+          if params[:solo_categoria].present?
+            render :partial => 'especies/resultados'
           end
         else
           respond_to do |format|
@@ -617,6 +627,10 @@ SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, anc
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def tabs
+
   end
 
   def retrieve_photos

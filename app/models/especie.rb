@@ -142,7 +142,7 @@ class Especie < ActiveRecord::Base
       'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
 
       # Reino Protoctista
-      'Protoctista' => %w(Protozoarios icon-vacio sin-color),
+      'Protoctista' => %w(Arquea icon-arquea #00455f),
 
       # Reino Fungi
       'Fungi' => %w(Hongos icon-hongos #501766),
@@ -150,6 +150,18 @@ class Especie < ActiveRecord::Base
       # Reino Prokaryonte (desde 1930 ?)
       'Prokaryotae' => %w(Bacterias icon-bacterias #9a1a5d)
   }
+
+  def self.por_categoria(busqueda)
+    # Las condiciones y el join son los mismos pero cambia el select
+    sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
+    sql << "count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos,"
+    sql << "nombre_categoria_taxonomica')"
+
+    busq = busqueda.sub(/select\(.+mica'\)/, sql)
+    busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
+    busq << ".order('nivel ASC')"
+    eval(busq)
+  end
 
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
