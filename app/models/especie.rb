@@ -156,7 +156,7 @@ class Especie < ActiveRecord::Base
     sql << "count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos,"
     sql << "nombre_categoria_taxonomica')"
 
-    busq = busqueda.sub(/select\(.+mica\'\)/, sql)
+    busq = busqueda.sub(/select\(.+mica'\)/, sql)
     busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
     busq << ".order('nivel ASC')"
     eval(busq)

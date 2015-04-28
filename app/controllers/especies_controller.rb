@@ -270,8 +270,7 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal,
-                      foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
 
           joins = condiciones = conID = nombre_cientifico = ''
           distinct = false
@@ -346,7 +345,7 @@ class EspeciesController < ApplicationController
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
-          @por_categoria = "#{Especie.por_categoria(busqueda)}"
+          @por_categoria = Especie.por_categoria(busqueda) unless params[:solo_categoria].present?
 
           if distinct
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
@@ -364,6 +363,10 @@ class EspeciesController < ApplicationController
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               @taxones = Especie.find_by_sql(@taxones)
             end
+          end
+
+          if params[:solo_categoria].present?
+            render :partial => 'especies/resultados'
           end
         else
           respond_to do |format|
