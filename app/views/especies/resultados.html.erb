@@ -133,7 +133,7 @@
       <a href="#todos" data-toggle="tab">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
     </li>
 
-    <% if @por_categoria.length > 0 %>
+    <% if @por_categoria.present? && @por_categoria.length > 0 %>
         <% @por_categoria.each do |categoria| %>
             <li>
               <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
@@ -151,7 +151,7 @@
       <%= render :partial => 'especies/resultados' %>
     </div>
 
-    <% if @por_categoria.length > 0 %>
+    <% if @por_categoria.present? && @por_categoria.length > 0 %>
         <% @por_categoria.each do |categoria| %>
             <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
             </div>

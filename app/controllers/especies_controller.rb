@@ -345,7 +345,7 @@ class EspeciesController < ApplicationController
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
-          @por_categoria = Especie.por_categoria(busqueda) unless params[:solo_categoria].present?
+          @por_categoria = Especie.por_categoria(busqueda) if params[:solo_categoria].blank? && conID.present?
 
           if distinct
             longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
