@@ -125,12 +125,11 @@
 
     <div style="width: 100%; float:left;">
       <ul>
-          <% @taxones.each do |taxon| %>
-            <%= ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica) %>
-            <%= "<li class='hidden' style='padding-left: #{taxon.arbol.length}px;'><span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span></li>".html_safe %>
+
+          <% @taxones.reverse_each do |taxon| %>
+                <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span><span>#{taxon.nombre_categoria_taxonomica}</span></li>".html_safe %>
           <% end %>
       </ul>
-
       <p class="enlaces_acciones">
         <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
       </p>

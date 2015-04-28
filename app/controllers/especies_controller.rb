@@ -394,22 +394,45 @@ class EspeciesController < ApplicationController
 
   def checklists
 
-    sql =  "select distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica
+    sql =  "select  distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
     from especies
     left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
-    where  ancestry_ascendente_directo like '1000001%'
+    where  ancestry_ascendente_directo like '6000002%'
 	and categorias_taxonomicas.nombre_categoria_taxonomica not in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
-    union
-SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica
+	union
+select especies.id, nombre_cientifico, ancestry_ascendente_directo, cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
+    from especies
+    join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
+    where  especies.id = 6000002
+	union
+SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
 	FROM especies
 	LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
 	LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id
 	LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id
-	WHERE (ancestry_ascendente_directo LIKE '1000001%' OR especies.id=1000001)
+	WHERE ((ancestry_ascendente_directo LIKE '6000002%')
 	and categorias_taxonomicas.nombre_categoria_taxonomica in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
-	AND (tipos_distribuciones.descripcion IN ('Endémica'))
-	order by arbol"
+	AND (tipos_distribuciones.descripcion IN ('Endémica')))
+  or especies.id = '6000002'
+	order by arbol desc"
+
     @taxones=Especie.find_by_sql(sql)
+    padres = []
+=begin
+    @taxones.delete_if do |taxon|
+      if ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica)
+        padres += taxon.ancestry_ascendente_directo.split('/')
+        padres.uniq!
+        false
+      else
+        if padres.include?(taxon.id.to_s)
+          false
+        else
+          true
+        end
+      end
+    end
+=end
   end
 
   def resultados_por_lote
