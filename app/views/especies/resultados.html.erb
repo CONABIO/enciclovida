@@ -136,9 +136,9 @@
     <% if @por_categoria.length > 0 %>
         <% @por_categoria.each do |categoria| %>
             <li>
-              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase %>"
+              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
                  data-toggle="tab" id="<%= "nivel_#{categoria.nivel}" %>" url="<%= request.url %>"
-                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase %>">
+                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
                 <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
               </a>
             </li>
@@ -153,7 +153,7 @@
 
     <% if @por_categoria.length > 0 %>
         <% @por_categoria.each do |categoria| %>
-            <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase %>">
+            <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
             </div>
         <% end %>
     <% end %>
