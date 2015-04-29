@@ -354,14 +354,8 @@ class EspeciesController < ApplicationController
             if longitud > 0
               if params[:checklist]=="1"
                 @checklist = true
-                puts "*****************************************************************************************************"
-                puts busqueda
-                puts "*****************************************************************************************************"
-
-                @taxones = eval(busqueda)
-                respond_to do |format|
-                  format.html { render 'checklists' }
-                end
+                @taxones = Especie.por_arbol(busqueda)
+                checklists
               else
                 @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
                 @taxones = Especie.find_by_sql(@taxones)
@@ -404,45 +398,28 @@ class EspeciesController < ApplicationController
 
   def checklists
 
-    sql =  "select  distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
-    from especies
-    left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
-    where  ancestry_ascendente_directo like '6000002%'
-	and categorias_taxonomicas.nombre_categoria_taxonomica not in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
-	union
-select especies.id, nombre_cientifico, ancestry_ascendente_directo, cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
-    from especies
-    join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
-    where  especies.id = 6000002
-	union
-SELECT distinct especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono
-	FROM especies
-	LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
-	LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id
-	LEFT JOIN tipos_distribuciones ON tipos_distribuciones.id=especies_regiones.tipo_distribucion_id
-	WHERE ((ancestry_ascendente_directo LIKE '6000002%')
-	and categorias_taxonomicas.nombre_categoria_taxonomica in ('Especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad')
-	AND (tipos_distribuciones.descripcion IN ('Endémica')))
-  or especies.id = '6000002'
-	order by arbol desc"
+    @padres = {}
 
-    @taxones=Especie.find_by_sql(sql)
-    padres = []
-=begin
-    @taxones.delete_if do |taxon|
-      if ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica)
-        padres += taxon.ancestry_ascendente_directo.split('/')
-        padres.uniq!
-        false
-      else
-        if padres.include?(taxon.id.to_s)
-          false
-        else
-          true
-        end
+    #@taxones.map {|taxon| taxon.arbol.split('/').each {|p| @padres[p.to_i]=''}}
+
+    @taxones.each do |taxon|
+      taxon.arbol.split('/').each do |p|
+        @padres[p.to_i]=''
       end
     end
-=end
+
+    sql = "select  especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono from especies left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
+    where  especies.id in (#{@padres.keys.join(',')})
+		order by arbol"
+		puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
+		puts sql
+    puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
+    @taxones = Especie.find_by_sql(sql)
+
+
+    respond_to do |format|
+      format.html { render 'checklists' }
+    end
   end
 
   def resultados_por_lote

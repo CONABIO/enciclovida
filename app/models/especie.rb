@@ -163,6 +163,17 @@ class Especie < ActiveRecord::Base
     eval(busq)
   end
 
+  def self.por_arbol(busqueda)
+    # Las condiciones y el join son los mismos pero cambia el select
+    puts "*****************************************************************************************************"
+    puts busqueda
+    sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'
+    busq = busqueda.sub(/select\(.+mica'\)/, sql)
+    puts busq
+    puts "*****************************************************************************************************"
+    eval(busq)
+  end
+
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
   def photos=(new_photos)
