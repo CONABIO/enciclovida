@@ -96,4 +96,15 @@ module Bases
   def self.base_del_ambiente
     ActiveRecord::Base.configurations[Rails.env]['database']
   end
+
+  # Limpia el sql para que no se tarde cuando hace un distinct en SQL Server,
+  # lamejor forma de hacer ersto es cambiar el comportamiento de la gema de active record
+  def self.distinct_limpio(sql)
+    # Quita el select repetido del inicio
+    q = sql.sub(/^SELECT.+SELECT/, 'SELECT')
+    # Quita el DENSE_RANK y demas
+    q = q.sub(/, DENSE_RANK.+_row_num FROM/, ' FROM')
+    # Quita la parte final y con ello se nos fue el order by original
+    q = q.sub(/\) AS __sq .+/, '')
+  end
 end

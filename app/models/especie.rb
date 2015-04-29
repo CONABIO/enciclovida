@@ -151,16 +151,30 @@ class Especie < ActiveRecord::Base
       'Prokaryotae' => %w(Bacterias icon-bacterias #9a1a5d)
   }
 
-  def self.por_categoria(busqueda)
+  def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
-    sql << "count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos,"
-    sql << "nombre_categoria_taxonomica')"
+    sql << 'nombre_categoria_taxonomica,'
+
+    if distinct
+      sql << 'count(DISTINCT especies.id) as cuantos'
+    else
+      sql << 'count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos'
+    end
+
+    sql << "')"
 
     busq = busqueda.sub(/select\(.+mica'\)/, sql)
     busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
-    busq << ".order('nivel ASC')"
-    eval(busq)
+    busq << ".order('nivel')"
+
+    if distinct
+      query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
+      query_limpio << ' ORDER BY nivel ASC'
+      Especie.find_by_sql(query_limpio)
+    else
+      eval(busq)
+    end
   end
 
   def self.por_arbol(busqueda)
