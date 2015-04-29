@@ -366,8 +366,17 @@ class EspeciesController < ApplicationController
           end
 
           if params[:solo_categoria].present?
-            render :partial => 'especies/resultados'
+            if params[:pagina].present? && params[:pagina].to_i > 1
+              render :partial => 'especies/_resultados'
+            else
+              render :partial => 'especies/resultados'
+            end
+          else
+            if params[:pagina].present? && params[:pagina].to_i > 1
+              render :partial => 'especies/_resultados'
+            end
           end
+
         else
           respond_to do |format|
             format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
