@@ -13,9 +13,10 @@
     </div>
 
     <div style="width: 100%; float:left;">
-      <div class="digg_pagination">
-        <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
-      </div>
+        <%= checklist(@paginacion).html_safe  if @paginacion.present? %>
+        <div class="digg_pagination">
+            <%= paginacion(@paginacion).html_safe if @paginacion.present? %>
+        </div>
 
       <% columnas=0 %>
       <% @taxones.each do |taxon| %>

@@ -41,6 +41,7 @@ Buscador::Application.routes.draw do
       get :busca_por_lote
       get :arbol
       get :resultados
+      get :checklists
       post :resultados_por_lote
       get :error
       get :datos_principales

@@ -1,3 +1,4 @@
+# coding: utf-8
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
@@ -162,6 +163,17 @@ class Especie < ActiveRecord::Base
     eval(busq)
   end
 
+  def self.por_arbol(busqueda)
+    # Las condiciones y el join son los mismos pero cambia el select
+    puts "*****************************************************************************************************"
+    puts busqueda
+    sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'
+    busq = busqueda.sub(/select\(.+mica'\)/, sql)
+    puts busq
+    puts "*****************************************************************************************************"
+    eval(busq)
+  end
+
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
   def photos=(new_photos)
@@ -256,6 +268,19 @@ class Especie < ActiveRecord::Base
     taxon_bio.avoid_ancestry = true
     taxon_bio.save if taxon_bio.changed?
     Bases.conecta_a Rails.env
+  end
+
+  def pon_foto_principal_alternatva
+  #(se supone pone el grupo icónico al vuelo, pero el encargado del proyecto los metió a la BD =s)
+    img=''
+    grupos=[]
+    ancestry_ascendente_directo.split('/').each do |name|
+      grupos << Especie.find(name).nombre_cientifico
+    end
+    Especie::GRUPOS_ICONICOS.keys.sort.each do |grupo|
+      img = grupos.include?(grupo) ? Especie::GRUPOS_ICONICOS[grupo] : img
+    end
+    img
   end
 
   # Guarda en cache el path del KMZ

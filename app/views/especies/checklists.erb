@@ -57,16 +57,14 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     $(document).ready(function()
     {
-        $('#tabs').tab();
-
         $.ajax({
             url: "/listas/dame_listas",
             type: 'POST'
         }).done(function(html) {
-                    $('#widget_listas').html(html);
-                }).fail(function(){
-                    $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
-                });
+            $('#widget_listas').html(html);
+        }).fail(function(){
+            $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
+        });
 
         $(document).on('click', "#box_especie", function()
         {
@@ -85,39 +83,25 @@
             return false;
         });
 
-        /**
-         *  Carga los taxones de la categoria dada
-         **/
-        $("[id^='nivel_']").click(function ()
-        {
-            var nivel = $(this).attr('id').substring(6);
-            var id_div = '#' + $(this).attr('id_div');
-            var url = $(this).attr('url') + '&solo_categoria=' + nivel;
-
-            // No se porque cuenta 13 elementos
-            if ($(id_div).html().length <= 13)
-                $(id_div).load(url);
-        });
-
         /*$(document).on('mouseenter', "[class^='datos_busqueda-']", function()
-        {
-            var id = $(this).attr('class').substring(15);
-            $.ajax({
-                url: "/especies/datos_principales",
-                type: 'GET',
-                data: {id: id}
-            }).done(function(html) {
-                        $('#datos_principales').html(html);
-                        ShowContent('datos_principales');
-                    }).fail(function(){
-                        $('#datos_principales').html('Hubo un error al cargar los datos.');
-                    });
-        });
+         {
+         var id = $(this).attr('class').substring(15);
+         $.ajax({
+         url: "/especies/datos_principales",
+         type: 'GET',
+         data: {id: id}
+         }).done(function(html) {
+         $('#datos_principales').html(html);
+         ShowContent('datos_principales');
+         }).fail(function(){
+         $('#datos_principales').html('Hubo un error al cargar los datos.');
+         });
+         });
 
-        $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
-        {
-            HideContent('datos_principales');
-        });*/
+         $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
+         {
+         HideContent('datos_principales');
+         });*/
     });
 </script>
 
@@ -127,35 +111,28 @@
 
 <p id="notice"><%= notice %></p>
 
-<div id="content">
-  <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-    <li class="active">
-      <a href="#todos" data-toggle="tab">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
-    </li>
+    <p class="notice">
 
-    <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-            <li>
-              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
-                 data-toggle="tab" id="<%= "nivel_#{categoria.nivel}" %>" url="<%= request.url %>"
-                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
-                <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
-              </a>
-            </li>
-        <% end %>
-    <% end %>
-  </ul>
+    </p>
 
-  <div id="my-tab-content" class="tab-content">
-    <div class="tab-pane active" id="todos">
-      <%= render :partial => 'especies/resultados' %>
+    <div style="width: 100%; float:left;">
+      <div class="titulo-busqueda">
+
+      </div>
+
+      <div id="widget_listas" style="display: none"></div>
     </div>
 
-    <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-            <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
-            </div>
+    <div style="width: 100%; float:left;">
+      <ul>
+        <% @taxones.each do |taxon| %>
+            <%# if ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica) %>
+                <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span><span>#{taxon.nombre_categoria_taxonomica}</span></li>".html_safe %>
         <% end %>
-    <% end %>
-  </div>
-</div>
+      </ul>
+      <p class="enlaces_acciones">
+        <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
+
+      <div id="datos_principales"></div>
+    </div>

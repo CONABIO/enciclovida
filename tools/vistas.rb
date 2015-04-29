@@ -12,8 +12,8 @@ que son una copia de las vistas para una rapida consulta
 
 Usage:
 
-  rails r tools/vistas.rb -d         #por default crea las vistas
-  rails r tools/vistas.rb -d drop    #para borrar las vistas
+  rails r tools/vistas.rb -d         #por default crea las vistas Y volcado
+  rails r tools/vistas.rb -d drop    #para borrar las vistas Y volcado
 
 where [options] are:
   EOS

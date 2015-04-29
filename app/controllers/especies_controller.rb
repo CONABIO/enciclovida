@@ -352,8 +352,14 @@ class EspeciesController < ApplicationController
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
             if longitud > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              @taxones = Especie.find_by_sql(@taxones)
+              if params[:checklist]=="1"
+                @checklist = true
+                @taxones = Especie.por_arbol(busqueda)
+                checklists
+              else
+                @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+                @taxones = Especie.find_by_sql(@taxones)
+              end
             end
           else
             longitud = eval(busqueda).order('nombre_cientifico ASC').count
@@ -361,8 +367,19 @@ class EspeciesController < ApplicationController
 
             if longitud > 0
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              puts @taxones
               @taxones = Especie.find_by_sql(@taxones)
+              if params[:checklist]=="1"
+               @checklist = true
+                puts "*****************************************************************************************************"
+                puts "****************aqui ira la redirección al checklist, distinct FALSE*********************************"
+                puts "*****************************************************************************************************"
+                respond_to do |format|
+                  format.html { render 'checklists' }
+                end
+              end
             end
+
           end
 
           if params[:solo_categoria].present?
@@ -377,6 +394,32 @@ class EspeciesController < ApplicationController
   end
 
   def busca_por_lote
+  end
+
+  def checklists
+
+    @padres = {}
+
+    #@taxones.map {|taxon| taxon.arbol.split('/').each {|p| @padres[p.to_i]=''}}
+
+    @taxones.each do |taxon|
+      taxon.arbol.split('/').each do |p|
+        @padres[p.to_i]=''
+      end
+    end
+
+    sql = "select  especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono from especies left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
+    where  especies.id in (#{@padres.keys.join(',')})
+		order by arbol"
+		puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
+		puts sql
+    puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
+    @taxones = Especie.find_by_sql(sql)
+
+
+    respond_to do |format|
+      format.html { render 'checklists' }
+    end
   end
 
   def resultados_por_lote
