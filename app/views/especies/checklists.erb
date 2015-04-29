@@ -1,0 +1,138 @@
+<style type="text/css" data-turbolinks-track="true">
+    #datos_principales
+    {
+        display:none;
+        position:absolute;
+        border-style: solid;
+        background-color: white;
+        padding: 5px;
+    }
+</style>
+
+<script type="text/javascript" data-turbolinks-track="true">
+    var cX = 0; var cY = 0; var rX = 0; var rY = 0;
+    function UpdateCursorPosition(e){ cX = e.pageX; cY = e.pageY;}
+    function UpdateCursorPositionDocAll(e){ cX = event.clientX; cY = event.clientY;}
+    if(document.all) { document.onmousemove = UpdateCursorPositionDocAll; }
+    else { document.onmousemove = UpdateCursorPosition; }
+    function AssignPosition(d) {
+        if(self.pageYOffset) {
+            rX = self.pageXOffset;
+            rY = self.pageYOffset;
+        }
+        else if(document.documentElement && document.documentElement.scrollTop) {
+            rX = document.documentElement.scrollLeft;
+            rY = document.documentElement.scrollTop;
+        }
+        else if(document.body) {
+            rX = document.body.scrollLeft;
+            rY = document.body.scrollTop;
+        }
+        if(document.all) {
+            cX += rX;
+            cY += rY;
+        }
+        d.style.left = (cX+10) + "px";
+        d.style.top = (cY+10) + "px";
+    }
+    function HideContent(d) {
+        if(d.length < 1) { return; }
+        document.getElementById(d).style.display = "none";
+    }
+    function ShowContent(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        dd.style.display = "block";
+    }
+    function ReverseContentDisplay(d) {
+        if(d.length < 1) { return; }
+        var dd = document.getElementById(d);
+        AssignPosition(dd);
+        if(dd.style.display == "none") { dd.style.display = "block"; }
+        else { dd.style.display = "none"; }
+    }
+</script>
+
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    $(document).ready(function()
+    {
+        $.ajax({
+            url: "/listas/dame_listas",
+            type: 'POST'
+        }).done(function(html) {
+            $('#widget_listas').html(html);
+        }).fail(function(){
+            $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
+        });
+
+        $(document).on('click', "#box_especie", function()
+        {
+            checaCaja = $(this).is(":checked") ? true : false
+            if (checaCaja)
+            {
+                $(":input[class='especies']").prop("checked", true);
+            } else {
+                $(":input[class='especies']").prop("checked", false);
+            }
+        });
+
+        $("#muestra_listas").click(function ()
+        {
+            $('#widget_listas').slideToggle();
+            return false;
+        });
+
+        /*$(document).on('mouseenter', "[class^='datos_busqueda-']", function()
+         {
+         var id = $(this).attr('class').substring(15);
+         $.ajax({
+         url: "/especies/datos_principales",
+         type: 'GET',
+         data: {id: id}
+         }).done(function(html) {
+         $('#datos_principales').html(html);
+         ShowContent('datos_principales');
+         }).fail(function(){
+         $('#datos_principales').html('Hubo un error al cargar los datos.');
+         });
+         });
+
+         $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
+         {
+         HideContent('datos_principales');
+         });*/
+    });
+</script>
+
+<% content_for(:title) do %>
+    <%= @titulo='Resultados' %>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+    <p class="notice">
+
+    </p>
+
+    <div style="width: 100%; float:left;">
+      <div class="titulo-busqueda">
+
+      </div>
+
+      <div id="widget_listas" style="display: none"></div>
+    </div>
+
+    <div style="width: 100%; float:left;">
+      <ul>
+        <% @taxones.each do |taxon| %>
+            <%# if ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica) %>
+                <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span><span>#{taxon.nombre_categoria_taxonomica}</span></li>".html_safe %>
+        <% end %>
+      </ul>
+      <p class="enlaces_acciones">
+        <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
+
+      <div id="datos_principales"></div>
+    </div>
