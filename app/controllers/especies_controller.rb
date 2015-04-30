@@ -345,6 +345,8 @@ class EspeciesController < ApplicationController
           end
 
           busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
+
+          # Para sacar los resultados por categoria
           @por_categoria = Especie.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
 
           if distinct

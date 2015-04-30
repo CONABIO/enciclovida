@@ -35,14 +35,20 @@ class NombreComun < ActiveRecord::Base
   end
 
   def exporta_redis(taxon)
-    icono = taxon.icono.present? ? "<img src='/assets/app/iconic_taxa/#{taxon.icono}' title='#{taxon.nombre_icono}' class='img-thumbnail icono-redis' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' title='#{taxon.nombre_cientifico}' class='img-thumbnail icono-redis' \>"
+    ic = ''
+    color = ''
+
+    if taxon.icono.present?
+      datos_icono = taxon.icono.split('|')
+      ic = datos_icono[0]
+      color = datos_icono[1]
+    end
 
     data = ''
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
     data << "\"term\":\"#{nombre_comun.limpia}\","
     data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
-    data << "\"icono\":\"#{icono.limpia}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
+    data << "\"nombre_icono\":\"#{taxon.nombre_icono}\", \"icono\":\"#{ic}\", \"color\":\"#{color}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
 end

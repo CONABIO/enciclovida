@@ -1,51 +1,32 @@
 .loading-bar {
 	padding: 10px 20px;
-	display: block;
-	text-align: center;
-	box-shadow: inset 0px -45px 30px -40px rgba(0, 0, 0, 0.05);
 	border-radius: 5px;
 	margin: 20px 0;
-	font-size: 2em;
+	font-size: 1em;
 	font-family: "museo-sans", sans-serif;
-	border: 1px solid #ddd;
 	margin-right: 1px;
 	font-weight: bold;
-	cursor: pointer;
-	position: relative;
 }
 
-.loading-bar:hover {
-	box-shadow: inset 0px 45px 30px -40px rgba(0, 0, 0, 0.05);
-}
-
-#contenido {
-	width: 800px;
-	margin: 0px auto;
-}
-
-#contenido h1 {
+.resultados_scroll h1 {
 	font-family: "chaparral-pro", sans-serif;
 	color: #444;
 	font-size: 4.2em;
 }
 
-#contenido h1 a {
+.resultados_scroll h1 a {
 	color: #444;
 	text-decoration: none;
 }
 
-#contenido h1 a:hover {
-	color: #666;
-}
-
-#contenido p {
+.resultados_scroll p {
 	font-size: 2em;
 	line-height: 1.7em;
 	font-family: "museo-sans", sans-serif;
 	text-align: justify;	
 }
 
-#contenido hr {
+.resultados_scroll hr {
 	border-bottom: 1px solid #eee;
 	border-top: 0;
 	border-left: 0;

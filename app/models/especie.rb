@@ -51,9 +51,9 @@ class Especie < ActiveRecord::Base
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  POR_PAGINA_PREDETERMINADO = 10
+  POR_PAGINA_PREDETERMINADO = 50
 
-  POR_PAGINA = [10, 20, 50, 100, 200, 500, 1000]
+  POR_PAGINA = [50, 100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUS = [
       [2, 'válido'],
@@ -307,14 +307,20 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    ic = icono.present? ? "<img src='/assets/app/iconic_taxa/#{icono}' title='#{nombre_icono}' class='img-thumbnail icono-redis' \>" :
-        "<img src='/assets/app/iconic_taxa/sin_icono.png' title='#{nombre_cientifico}' class='img-thumbnail icono-redis' \>"
+    ic = ''
+    color = ''
+
+    if icono.present?
+      datos_icono = icono.split('|')
+      ic = datos_icono[0]
+      color = datos_icono[1]
+    end
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"icono\":\"#{ic.limpia}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data <<  "\"nombre_icono\":\"#{nombre_icono}\", \"icono\":\"#{ic}\", \"color\":\"#{color}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 

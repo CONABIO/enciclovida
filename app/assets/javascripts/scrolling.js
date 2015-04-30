@@ -1,18 +1,18 @@
+settings = {
+    nop     : 10, // The number of posts per scroll to be loaded
+    offset  : 2, // Initial offset, begins at 2 in this case
+    error   : 'No More Posts!', // When the user reaches the end this is the message that is
+                                // displayed. You can change this if you want.
+    delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
+                   // This is mainly for usability concerns. You can alter this as you see fit
+    scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
+    // but will still load if the user clicks.
+    url     : ''   //URL del request
+};
+
 (function($) {
 
 	$.fn.scrollPagination = function(options) {
-		
-		var settings = { 
-			nop     : 10, // The number of posts per scroll to be loaded
-			offset  : 2, // Initial offset, begins at 2 in this case
-			error   : 'No More Posts!', // When the user reaches the end this is the message that is
-			                            // displayed. You can change this if you want.
-			delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-			               // This is mainly for usability concerns. You can alter this as you see fit
-			scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
-			               // but will still load if the user clicks.
-            url     : ''   //URL del request
-		}
 		
 		// Extend the options so they work with the plugin
 		if(options) {
@@ -21,17 +21,17 @@
 		
 		// For each so that we keep chainability.
 		return this.each(function() {		
-			
-			// Some variables 
+
+			// Some variables
 			$this = $(this);
 			$settings = settings;
-			var offset = $settings.offset;
+			//var offset = $settings.offset;
 			var busy = false; // Checks if the scroll action is happening 
 			                  // so we don't run it multiple times
             var url = $settings.url;
-			
+
 			// Custom messages based on settings
-			if($settings.scroll == true) $initmessage = 'Scroll for more or click here';
+			if($settings.scroll == true) $initmessage = 'Baja para cargar más o da clic aquí';
 			else $initmessage = 'Click for more';
 			
 			// Append custom messages and extra UI
@@ -39,11 +39,12 @@
 			
 			function getData() {
 				// Post data to ajax.php
-				$.get(url, {
+
+				$.get(settings.url, {
 						
 					//action        : 'scrollpagination'
-				    pagina         : offset,
-				    por_pagina     : $settings.nop
+				    pagina         : settings.offset,
+				    por_pagina     : settings.nop
 					    
 				}, function(data) {
 						
@@ -57,8 +58,10 @@
 					else {
 						
 						// Offset increases
-					    offset = offset+1;
-						    
+					    settings.offset = settings.offset+1;
+                        eval("offset."+settings.cat + "=" + settings.offset);
+
+                        console.log(offset);
 						// Append the data to the content div
 					   	$this.find('.content').append(data);
 						
@@ -83,14 +86,14 @@
 						busy = true;
 						
 						// Tell the user we're loading posts
-						$this.find('.loading-bar').html('Loading Posts');
+						$this.find('.loading-bar').html('Cargando ...');
 						
 						// Run the function to fetch the data inside a delay
 						// This is useful if you have content in a footer you
 						// want the user to see.
 						setTimeout(function() {
-							
-							getData();
+
+                            getData();
 							
 						}, $settings.delay);
 							
