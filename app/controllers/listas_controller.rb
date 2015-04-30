@@ -1,10 +1,9 @@
 class ListasController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:aniade_taxones, :dame_listas, :create, :update]
+  skip_before_filter :set_locale, only: [:aniade_taxones, :dame_listas, :create, :update, :destroy]
   before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :dame_listas, :aniade_taxones]
-  before_action :es_propietario?, only: [:edit, :update, :destroy]
-  before_action 'es_propietario?(true)', only: [:aniade_taxones]
-  before_action :set_lista, only: [:show]
+  before_action :set_lista, only: [:show, :edit, :update, :destroy]
+  before_action :es_propietario?, only: [:edit, :update, :destroy, :aniade_taxones]
   layout false, :only => [:dame_listas, :aniade_taxones]
 
   # GET /listas
@@ -78,7 +77,7 @@ class ListasController < ApplicationController
   end
 
   def dame_listas
-    @listas = Lista.where(:usuario_id => current_usuario.id)
+    @listas = Lista.where(:usuario_id => current_usuario.id).limit(10)
   end
 
   def aniade_taxones
@@ -113,24 +112,7 @@ class ListasController < ApplicationController
     params.require(:lista).permit(:nombre_lista, :columnas, :formato, :esta_activa, :cadena_especies)
   end
 
-  def es_propietario?(aniade_taxones = false)
-    # Para la parte de aniadir taxones
-    if aniade_taxones
-      if params[:listas].present?
-        begin
-          listas = Lista.find(params[:listas])
-          listas.each do |l|
-            render :_error unless current_usuario.id == l.usuario_id
-          end
-        rescue
-          render :_error
-        end
-      else
-        redirect_to :back, :notice => 'Debes seleccionar por lo menos un taxon para poder incluirlo.'
-      end
-    else
-      set_lista
-      render :_error unless current_usuario.id == @lista.usuario_id
-    end
+  def es_propietario?
+    render :_error unless @lista.usuario_id == current_usuario.id
   end
 end
