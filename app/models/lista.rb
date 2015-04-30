@@ -2,7 +2,7 @@ class Lista < ActiveRecord::Base
 
   self.table_name='listas'
   validates :nombre_lista, :presence => true, :uniqueness => true
-  before_update :quitaRepetidos
+  before_update :quita_repetidos
   #validates :formato, :presence => true
 
   ESTATUS_LISTA = [
@@ -34,19 +34,22 @@ class Lista < ActiveRecord::Base
     return [] unless cadena_especies.present?
     resultados = []
 
-    begin
-      taxones = Especie.find(cadena_especies.split(',').first(50))
-    rescue
-      # Si algun taxon ya no tiene ese ID
-      taxones = []
-    end
+    Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').find_each do |taxon|
 
-    taxones.each do |taxon|
+    #end
+    #begin
+    #  taxones = Especie.find(cadena_especies.split(',').first(50))
+    #rescue
+    #  # Si algun taxon ya no tiene ese ID
+    #  taxones = []
+    #end
+
+    #taxones.each do |taxon|
       resultado = []
       columnas.split(',').each do |col|
 
         case col
-          when 'id', 'nombre_cientifico', 'nombre_autoridad', 'fuente', 'foto_principal',
+          when 'id', 'catalogo_id', 'nombre_cientifico', 'nombre_comun_principal', 'nombre_autoridad', 'fuente', 'foto_principal',
               'cita_nomenclatural', 'sis_clas_cat_dicc', 'anotacion', 'created_at', 'updated_at'
             resultado << taxon.send(col)
           when 'estatus'
@@ -82,7 +85,7 @@ class Lista < ActiveRecord::Base
     cabecera
   end
 
-  def quitaRepetidos
+  def quita_repetidos
     self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
   end
 end

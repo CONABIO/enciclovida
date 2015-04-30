@@ -4,7 +4,6 @@
 </script>
 
 <%= form_tag aniade_taxones_listas_path, :method => :post do %>
-
     <p class="notice">
       <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
     </p>
@@ -20,7 +19,6 @@
     </div>
 
     <div style="width: 100%; float:left;">
-      <%= checklist(@paginacion).html_safe  if @paginacion.present? %>
 
       <%= render :partial => 'especies/_resultados' %>
 
