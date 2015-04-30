@@ -126,7 +126,7 @@
 <% end %>
 
 <p id="notice"><%= notice %></p>
-
+<%= checklist(@paginacion).html_safe  if @paginacion.present? %>
 <div id="content">
   <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
     <li class="active">

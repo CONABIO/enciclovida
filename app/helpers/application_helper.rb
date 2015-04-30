@@ -141,9 +141,14 @@ module ApplicationHelper
   end
 
   def checklist(datos)
-    sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
-    peticion = sin_page_per_page.compact.join('&')
-    peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
-    link_to("Checklist (✓)", peticion)
+      if datos[:totales] > 0
+        sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
+        peticion = sin_page_per_page.compact.join('&')
+        peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
+        puts "-------------------------"+peticion
+        link_to("Listado para Revisión (✓)", peticion, :class => 'btn btn-info pull-right' )
+      else
+        ''
+      end
   end
 end
