@@ -181,7 +181,8 @@ class Especie < ActiveRecord::Base
       puts busqueda
       sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'
       busq = busqueda.sub(/select\(.+mica'\)/, sql)
-      puts busq
+      #puts busq
+
       puts "*****************************************************************************************************"
       eval(busq)
     end

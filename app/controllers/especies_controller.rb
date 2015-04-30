@@ -354,7 +354,7 @@ class EspeciesController < ApplicationController
             if longitud > 0
               if params[:checklist]=="1"
                 #@checklist = true
-                @taxones = Especie.por_arbol(busqueda, false)
+                @taxones = Especie.por_arbol(busqueda)
                 checklists
               else
                 @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
@@ -369,7 +369,7 @@ class EspeciesController < ApplicationController
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
               puts "------------------------------------------\n"+@taxones+"\n------------------------------------------\n"
               if params[:checklist]=="1"
-               #@sin_filtros = true
+                #@sin_filtros = false
                 @taxones = Especie.por_arbol(busqueda, true)
                 checklists(true)
               end
@@ -409,7 +409,7 @@ class EspeciesController < ApplicationController
       where  especies.id in (#{padres.keys.join(',')})
       order by arbol"
       puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
-      puts sql
+      #puts sql
       puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
       @taxones = Especie.find_by_sql(sql)
     end
