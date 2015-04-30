@@ -164,26 +164,15 @@ class Especie < ActiveRecord::Base
   end
 
   def self.por_arbol(busqueda, sin_filtros=false)
-    if sin_filtros
-      puts "******************************** SIN FILTROS ********************************************************"
-      puts busqueda
-      sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono")'
+    if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
+      sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, icono, nombre_icono")'
       busq = busqueda.sub(/select\(.+mica'\)/, sql)
       busq = busq.sub(/\.where\(\"CONCAT.+/,'')
-
       busq << ".order('arbol')"
-      puts busq
-      puts "*****************************************************************************************************"
       eval(busq)
-    else
-      # Las condiciones y el join son los mismos pero cambia el select
-      puts "*****************************************************************************************************"
-      puts busqueda
+    else # Las condiciones y el join son los mismos pero cambia el select, para desplegar el checklist
       sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'
       busq = busqueda.sub(/select\(.+mica'\)/, sql)
-      #puts busq
-
-      puts "*****************************************************************************************************"
       eval(busq)
     end
   end
