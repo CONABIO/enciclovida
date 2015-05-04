@@ -1,6 +1,6 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
     //settings.offset
-    //settings.nop = <%= params[:por_pagina].to_i || Especie::POR_PAGINA_PREDETERMINADO %>;
+    //settings.nop = <%# params[:por_pagina].to_i || Especie::POR_PAGINA_PREDETERMINADO %>;
 </script>
 
 <%= form_tag aniade_taxones_listas_path, :method => :post do %>
@@ -30,7 +30,7 @@
     </div>
 
     <p>
-        <div id="resultados<%= params[:solo_categoria] || '' %>" class="resultados_scroll"></div>
+        <div id="resultados<%= params[:solo_categoria] || '' %>"></div>
     </p>
 
 <% end %>
