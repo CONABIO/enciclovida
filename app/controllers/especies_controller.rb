@@ -270,7 +270,7 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
 
           joins = condiciones = conID = nombre_cientifico = ''
           distinct = false

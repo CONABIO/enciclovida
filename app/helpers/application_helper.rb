@@ -146,7 +146,7 @@ module ApplicationHelper
         peticion = sin_page_per_page.compact.join('&')
         peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
         puts "-------------------------"+peticion
-        link_to("Listado para Revisión (✓)", peticion, :class => 'btn btn-info pull-right' )
+        link_to("Listado para Revisión (✓)", peticion, :class => 'btn btn-info pull-right', :target => :_blank)
       else
         ''
       end
