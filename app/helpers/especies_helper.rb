@@ -480,4 +480,16 @@ module EspeciesHelper
     end
     "<div>#{radios}</div>"
   end
+
+  def checklist(datos)
+    if datos[:totales] > 0
+      sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
+      peticion = sin_page_per_page.compact.join('&')
+      peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
+      link_to('Listado para Revisión (✓)', peticion, :class => 'btn btn-info pull-right', :target => :_blank,
+              :onclick => "return aviso_tiempo();")
+    else
+      ''
+    end
+  end
 end

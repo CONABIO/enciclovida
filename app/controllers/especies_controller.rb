@@ -375,16 +375,18 @@ class EspeciesController < ApplicationController
               @taxones = Especie.find_by_sql(@taxones)
             end
           end
+
+          # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
           if params[:solo_categoria].present?
             if params[:pagina].present? && params[:pagina].to_i > 1
               render :partial => 'especies/_resultados'
             else
               render :partial => 'especies/resultados'
             end
-          else
-            if params[:pagina].present? && params[:pagina].to_i > 1
+          elsif params[:pagina].present? && params[:pagina].to_i > 1
               render :partial => 'especies/_resultados'
-            end
+          elsif params[:checklist].present? && params[:checklist].to_i == 1
+            render 'especies/checklists'
           end
 
         else

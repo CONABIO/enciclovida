@@ -65,28 +65,29 @@
         <% else %>
             <li><%= link_to '[Ir a la vista avanzada]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
         <% end %>
-       </ul>
+      </ul>
     </div>
   </div>
 </nav>
 
+
 <div class="container-fluid">
-<div class="row">
-  <div class="col-sm-4 col-md-3 sidebar">
-    <%= render :template => 'especies/busqueda' %>
-  </div>
+  <div class="row">
 
-  <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
-    <div class="table-responsive">
-      <%= yield %>
+    <% if params[:checklist].blank? %>
+        <div class="col-sm-4 col-md-3 sidebar">
+          <%= render :template => 'especies/busqueda' %>
+        </div>
+    <% end %>
+
+    <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
+      <div class="table-responsive">
+        <%= yield %>
+      </div>
     </div>
+
   </div>
-
-
-
 </div>
-</div>
-
 
 <%= bitacora.html_safe if bitacora.present? %>
 
