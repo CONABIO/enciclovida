@@ -82,26 +82,7 @@
             $('#widget_listas').slideToggle();
             return false;
         });
-
-        /*$(document).on('mouseenter', "[class^='datos_busqueda-']", function()
-         {
-         var id = $(this).attr('class').substring(15);
-         $.ajax({
-         url: "/especies/datos_principales",
-         type: 'GET',
-         data: {id: id}
-         }).done(function(html) {
-         $('#datos_principales').html(html);
-         ShowContent('datos_principales');
-         }).fail(function(){
-         $('#datos_principales').html('Hubo un error al cargar los datos.');
-         });
-         });
-
-         $(document).on('mouseleave', "[class^='datos_busqueda-']", function()
-         {
-         HideContent('datos_principales');
-         });*/
+        /*El javascipt aquí comentado se borra debido a que se presume no se utiliza en esta vista*/
     });
 </script>
 
@@ -126,8 +107,7 @@
     <div style="width: 100%; float:left;">
       <ul>
         <% @taxones.each do |taxon| %>
-            <%# if ['especie','subespecie', 'forma', 'subforma', 'variedad', 'subvariedad'].include?(taxon.nombre_categoria_taxonomica) %>
-                <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span><span>#{taxon.nombre_categoria_taxonomica}</span></li>".html_safe %>
+                <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span></li>".html_safe %>
         <% end %>
       </ul>
       <p class="enlaces_acciones">

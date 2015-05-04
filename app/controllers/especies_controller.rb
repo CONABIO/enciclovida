@@ -354,8 +354,7 @@ class EspeciesController < ApplicationController
             @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
 
             if longitud > 0
-              if params[:checklist]=="1"
-                #@checklist = true
+              if params[:checklist]=="1" #Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
                 @taxones = Especie.por_arbol(busqueda)
                 checklists
               else
@@ -369,17 +368,13 @@ class EspeciesController < ApplicationController
 
             if longitud > 0
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              puts "------------------------------------------\n"+@taxones+"\n------------------------------------------\n"
-              if params[:checklist]=="1"
-                #@sin_filtros = false
+              if params[:checklist]=="1" #Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
                 @taxones = Especie.por_arbol(busqueda, true)
                 checklists(true)
               end
               @taxones = Especie.find_by_sql(@taxones)
             end
-
           end
-
           if params[:solo_categoria].present?
             if params[:pagina].present? && params[:pagina].to_i > 1
               render :partial => 'especies/_resultados'
@@ -403,10 +398,9 @@ class EspeciesController < ApplicationController
   def busca_por_lote
   end
 
-  def checklists(sin_filtros=false)
-
+  def checklists(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
     if sin_filtros
-
+      #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
       padres = {}
       #@taxones.map {|taxon| taxon.arbol.split('/').each {|p| @padres[p.to_i]=''}}
@@ -415,18 +409,10 @@ class EspeciesController < ApplicationController
           padres[p.to_i]=''
         end
       end
-
       sql = "select  especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono from especies left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
       where  especies.id in (#{padres.keys.join(',')})
-      order by arbol"
-      puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
-      #puts sql
-      puts '-------------------------------------------------------------------------------------------------------------------------------------------------------'
+      order by arbol" #Este query se tiene que limpiar utilizando los metoditos que calonso creo con "plenty effort""
       @taxones = Especie.find_by_sql(sql)
-    end
-
-    respond_to do |format|
-      format.html { render 'checklists' }
     end
   end
 
