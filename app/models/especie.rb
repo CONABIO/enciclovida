@@ -129,7 +129,7 @@ class Especie < ActiveRecord::Base
       'Porifera' => %w(Esponjas icon-vacio sin-color),
       'Echinodermata' => ['Estrellas y erizos de mar', 'icon-estrellamar', '#7b6927'],
       'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#6f502c'],
-      'Crustacea' => ['Camarones y cangrejos', 'icon-crustaceo', '#4c351a'],
+      'Crustacea' => %w(Crustáceos icon-crustaceo #4c351a),
 
       # Reino Plantae
       'Plantae' => %w(Plantas icon-plantas #00802f),
