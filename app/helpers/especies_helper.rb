@@ -230,11 +230,14 @@ module EspeciesHelper
 
   def checkboxTipoDistribucion
     checkBoxes = ''
-    quitar_distribuciones = %w(actual original)
 
-    TipoDistribucion.all.order('descripcion ASC').map(&:descripcion).map{ |dis| I18n.transliterate(dis).downcase }.uniq.each do |tipoDist|
-      next if quitar_distribuciones.include?(tipoDist)      #Quita algunos tipos de distribucion que no son validos
-      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag("dist[]", t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+    TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
+      next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
+
+      if I18n.locale.to_s != 'es-cientifico'
+        next if TipoDistribucion::QUITAR_DIST_SOLO_BASICA.include?(tipoDist)
+      end
+      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
       end
     checkBoxes.html_safe
   end
