@@ -196,7 +196,7 @@
 <% end %>
 
 <p id="notice"><%= notice %></p>
-<%= checklist(@paginacion).html_safe  if @paginacion.present? %>
+<%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' %>
 
 <div id="content">
   <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">

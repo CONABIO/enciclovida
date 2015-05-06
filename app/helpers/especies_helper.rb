@@ -86,7 +86,7 @@ module EspeciesHelper
     end
   end
 
-  def ponIcono(taxon, params)
+  def ponIcono(taxon, params={})
     grupo_iconico = taxon.icono.split('|')
     icono = grupo_iconico[0]
     color = grupo_iconico[1]
