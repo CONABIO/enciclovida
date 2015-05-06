@@ -44,7 +44,8 @@ module Bases
     ActiveRecord::Base.connection.execute query
   end
 
-  def self.id_original_a_id_en_vista(id, base)
+  def self.id_original_a_id_en_vista(id, base=nil)
+    base = ActiveRecord::Base.connection_config[:database] unless base.present?
     base_num = CONFIG.bases.index(base) + 1   #numero de base
     id.to_i + base_num*1000000     # ID en la vista
   end
