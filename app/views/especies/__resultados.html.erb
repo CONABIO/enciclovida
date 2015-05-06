@@ -3,9 +3,16 @@
 
     <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
       <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none">
-      <%= "<span class=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
+
       <% if I18n.locale.to_s != 'es-cientifico' %>
-          <%= image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail') if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
+          <% if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
+              <%= image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail') %>
+              <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true, :con_icono => false)}</span>".html_safe %>
+          <% else %>
+              <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true, :font_size => 85)}</span>".html_safe %>
+          <% end %>
+      <% else %>
+          <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
       <% end %>
     </div>
     <% columnas+=1 %>
