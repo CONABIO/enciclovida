@@ -522,6 +522,7 @@ class EspecieBio < ActiveRecord::Base
       return unless default_name.present?
       return unless default_name['is_valid']
       return unless default_name['name'].present?
+      return unless default_name['lexicon'].present?
 
       lexicon = I18n.transliterate(default_name['lexicon']).gsub(' ','_').downcase
       return unless LENGUAS_ACEPTADAS.include?(lexicon)
