@@ -5,6 +5,7 @@ class Especie < ActiveRecord::Base
   self.primary_key='id'
 
   has_one :proveedor
+  has_one :adicional
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
@@ -112,43 +113,43 @@ class Especie < ActiveRecord::Base
 
   GRUPOS_ICONICOS = {
       # Reino Animalia
-      'Animalia' => %w(Animales icon-vacio sin-color),
-      'Mammalia' => %w(Mamíferos icon-mamifero sin-color),
-      'Aves' => %w(Aves icon-aves #821b18),
-      'Reptilia' => %w(Reptiles icon-reptil #cb4b19),
-      'Amphibia' => %w(Anfibios icon-anfibio #ba191d),
-      'Actinopterygii' => ['Peces óseos', 'icon-peces', '#9d331a'],
-      'Petromyzontida' => %w(Lampreas icon-vacio sin-color),
-      'Myxini' => %w(Mixines icon-vacio sin-color),
-      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'icon-tiburon_raya', '#c96016'],
-      'Cnidaria' => ['Medusas, corales y anémonas', 'icon-vacio', 'sin-color'],
-      'Arachnida' => %w(Arácnidos icon-arana #985f18),
-      'Myriapoda' => ['Ciempiés y milpies', 'icon-ciempies', '#a5752a'],
-      'Annelida' => ['Lombrices y gusanos marinos', 'icon-lombrices', '#c97e0f'],
-      'Insecta' => %w(Insectos icon-insectos #d88f2b),
-      'Porifera' => %w(Esponjas icon-vacio sin-color),
-      'Echinodermata' => ['Estrellas y erizos de mar', 'icon-estrellamar', '#7b6927'],
-      'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#6f502c'],
-      'Crustacea' => %w(Crustáceos icon-crustaceo #4c351a),
+      'Animalia' => %w(Animales icon-animales #6c3630),
+      'Mammalia' => %w(Mamíferos icon-mamifero #9d4c47),
+      'Aves' => %w(Aves icon-aves #9b7845),
+      'Reptilia' => %w(Reptiles icon-reptil #999744),
+      'Amphibia' => %w(Anfibios icon-anfibio #7a9944),
+      'Actinopterygii' => ['Peces óseos', 'icon-peces', '#44997d'],
+      'Petromyzontida' => %w(Lampreas icon-lampreas #449999),
+      'Myxini' => %w(Mixines icon-mixines #437395),
+      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'icon-tiburon_raya', '#284559'],
+      'Cnidaria' => ['Medusas, corales y anémonas', 'icon-medusasc', '#56686f'],
+      'Arachnida' => %w(Arácnidos icon-arana #6c4e30),
+      'Myriapoda' => ['Ciempiés y milpies', 'icon-ciempies', '#7b5637'],
+      'Annelida' => ['Lombrices y gusanos marinos', 'icon-lombrices', '#956e43'],
+      'Insecta' => %w(Insectos icon-insectos #aa774d),
+      'Porifera' => %w(Esponjas icon-porifera #a8734c),
+      'Echinodermata' => ['Estrellas y erizos de mar', 'icon-estrellamar', '#865a3c'],
+      'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#aa7961'],
+      'Crustacea' => %w(Crustáceos icon-crustaceo #a0837c),
 
       # Reino Plantae
-      'Plantae' => %w(Plantas icon-plantas #00802f),
+      'Plantae' => %w(Plantas icon-plantas #3f7e54),
       'Bryophyta' => ['Musgos, hepáticas y antoceros', 'icon-musgo', '#7a7544'],
       'Pteridophyta' => %w(Helechos icon-helecho #adb280),
       'Cycadophyta' => %w(Cícadas icon-cicada #545a35),
-      'Gnetophyta' => %w(Canutillos icon-vacio sin-color),
+      'Gnetophyta' => %w(Canutillos icon-canutillos #394822),
       'Liliopsida' => ['Pastos y palmeras', 'icon-pastos_palmeras', '#114722'],
       'Coniferophyta' => ['Pinos y cedros', 'icon-pino', '#788c4a'],
       'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
 
       # Reino Protoctista
-      'Protoctista' => %w(Arquea icon-arquea #00455f),
+      'Protoctista' => %w(Arquea icon-arquea #0c4354),
 
       # Reino Fungi
-      'Fungi' => %w(Hongos icon-hongos #501766),
+      'Fungi' => %w(Hongos icon-hongos #af7f45),
 
       # Reino Prokaryonte (desde 1930 ?)
-      'Prokaryotae' => %w(Bacterias icon-bacterias #9a1a5d)
+      'Prokaryotae' => %w(Bacterias icon-bacterias #0e5f59)
   }
 
   def self.por_categoria(busqueda, distinct = false)
@@ -189,6 +190,25 @@ class Especie < ActiveRecord::Base
       busq = busqueda.sub(/select\(.+mica'\)/, sql)
       eval(busq)
     end
+  end
+
+  def pon_adicional
+    if adicional
+      return if adicional.nombre_comun_principal.present?
+      adicional.pon_nombre_comun_principal
+    else
+      ad = crea_adicional
+      return {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
+    end
+
+    {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
+  end
+
+  def crea_adicional
+    ad = Adicional.new
+    ad.especie_id = id
+    ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+    ad
   end
 
   # Override assignment method provided by has_many to ensure that all
