@@ -18,9 +18,22 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
+def grupo_iconico
+  Especie.find_each do |taxon|
+    puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
+
+    adicional = taxon.asigna_nombre_comun
+
+    if adicional[:cambio]
+      puts "\t#{adicional[:adicional].icono}-#{adicional[:adicional].nombre_icono}-#{adicional[:adicional].color_icono}"
+      adicional[:adicional].save
+    end
+  end
+end
+
 
 start_time = Time.now
 
-Especie.asigna_grupo_iconico
+grupo_iconico
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

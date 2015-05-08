@@ -22,7 +22,7 @@ def nom_com_principal
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
 
-    adicional = taxon.pon_adicional
+    adicional = taxon.asigna_nombre_comun
 
     if adicional[:cambio]
       puts "\t#{adicional[:adicional].nombre_comun_principal}"
