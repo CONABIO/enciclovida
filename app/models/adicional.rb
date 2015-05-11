@@ -2,8 +2,7 @@ class Adicional < ActiveRecord::Base
   belongs_to :especie
 
   GRUPOS_ICONICOS = {
-      # Reino Animalia
-      'Animalia' => %w(Animales icon-animales #6c3630),
+      # Grupos de Animalia
       'Mammalia' => %w(Mamíferos icon-mamifero #9d4c47),
       'Aves' => %w(Aves icon-aves #9b7845),
       'Reptilia' => %w(Reptiles icon-reptil #999744),
@@ -22,8 +21,7 @@ class Adicional < ActiveRecord::Base
       'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#aa7961'],
       'Crustacea' => %w(Crustáceos icon-crustaceo #a0837c),
 
-      # Reino Plantae
-      'Plantae' => %w(Plantas icon-plantas #3f7e54),
+      # Grupos de Plantae
       'Bryophyta' => ['Musgos, hepáticas y antoceros', 'icon-musgo', '#7a7544'],
       'Pteridophyta' => %w(Helechos icon-helecho #adb280),
       'Cycadophyta' => %w(Cícadas icon-cicada #545a35),
@@ -31,6 +29,12 @@ class Adicional < ActiveRecord::Base
       'Liliopsida' => ['Pastos y palmeras', 'icon-pastos_palmeras', '#114722'],
       'Coniferophyta' => ['Pinos y cedros', 'icon-pino', '#788c4a'],
       'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
+
+      # Reino Animalia
+      'Animalia' => %w(Animales icon-animales #6c3630),
+
+      # Reino Plantae
+      'Plantae' => %w(Plantas icon-plantas #3f7e54),
 
       # Reino Protoctista
       'Protoctista' => %w(Arquea icon-arquea #0c4354),

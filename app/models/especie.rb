@@ -50,6 +50,7 @@ class Especie < ActiveRecord::Base
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
+  scope :adicionales, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
   POR_PAGINA_PREDETERMINADO = 50
@@ -327,49 +328,66 @@ class Especie < ActiveRecord::Base
     ad
   end
 
-  def self.asigna_grupo_iconico2
-    GRUPOS_ICONICOS.keys.each do |grupo|
-      puts grupo
-      taxon = Especie.where(:nombre_cientifico => grupo).first
-      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
-
-      descendentes = taxon.subtree_ids
-      descendentes.each_slice(20000).to_a.each do |grupo_20k| # Fue necesario dividir el query ya que con muchos argumentos no funciona
-        Especie.where("id IN (#{grupo_20k.join(',')})").update_all(:icono => "#{GRUPOS_ICONICOS[grupo][1]}|#{GRUPOS_ICONICOS[grupo][2]}", :nombre_icono => GRUPOS_ICONICOS[grupo][0])
-      end
-    end
-  end
-
   def self.asigna_grupo_iconico
     Adicional::GRUPOS_ICONICOS.keys.each do |grupo|
       puts grupo
+      reinos_grandes = %w(Animalia Plantae)
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      descendientes = taxon.subtree_ids
-      descendientes.each do |descendiente| # Itero sobre los descendientes
-        begin
-          t = Especie.find(descendiente)
-        rescue
-          next
+      if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
+        taxones_default = Especie.adicionales.
+            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%'").
+            where('adicionales.nombre_comun_principal IS NOT NULL')
+
+        taxones_default.find_each do |taxon_default|
+          puts "Descendiente de #{grupo}: #{taxon_default.id}"
+
+          begin
+            t = Especie.find(taxon_default.id)
+          rescue
+            next
+          end
+
+          if t.adicional
+            t.adicional.pon_grupo_iconico(grupo)
+          else
+            ad = t.crea_con_grupo_iconico(grupo)
+            ad.save
+            next
+          end
+
+          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
+            t.adicional.save
+          end
         end
 
-        if t.adicional
-          t.adicional.pon_grupo_iconico(grupo)
-        else
-          ad = t.crea_con_grupo_iconico(grupo)
-          return {:cambio => true, :adicional => ad}
-        end
+      else
+        descendientes = taxon.subtree_ids
+        descendientes.each do |descendiente| # Itero sobre los descendientes
+          puts "Descendiente de #{grupo}: #{descendiente}"
 
-        cambio = if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
-                   true
-                 else
-                   false
-                 end
+          begin
+            t = Especie.find(descendiente)
+          rescue
+            next
+          end
 
-        {:cambio => cambio, :adicional => t.adicional}
+          if t.adicional
+            t.adicional.pon_grupo_iconico(grupo)
+          else
+            ad = t.crea_con_grupo_iconico(grupo)
+            ad.save
+            next
+          end
+
+          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
+            t.adicional.save
+          end
+        end  # Cierra el each
       end
-    end
+
+    end  # Cierra el iterador de grupos
   end
 
   # Pone el grupo iconico en la tabla adicionales
