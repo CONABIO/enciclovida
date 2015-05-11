@@ -5,6 +5,7 @@ class Especie < ActiveRecord::Base
   self.primary_key='id'
 
   has_one :proveedor
+  has_one :adicional
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
@@ -49,6 +50,7 @@ class Especie < ActiveRecord::Base
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
+  scope :adicionales, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
   POR_PAGINA_PREDETERMINADO = 50
@@ -109,47 +111,6 @@ class Especie < ActiveRecord::Base
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
-
-  GRUPOS_ICONICOS = {
-      # Reino Animalia
-      'Animalia' => %w(Animales icon-vacio sin-color),
-      'Mammalia' => %w(Mamíferos icon-mamifero sin-color),
-      'Aves' => %w(Aves icon-aves #821b18),
-      'Reptilia' => %w(Reptiles icon-reptil #cb4b19),
-      'Amphibia' => %w(Anfibios icon-anfibio #ba191d),
-      'Actinopterygii' => ['Peces óseos', 'icon-peces', '#9d331a'],
-      'Petromyzontida' => %w(Lampreas icon-vacio sin-color),
-      'Myxini' => %w(Mixines icon-vacio sin-color),
-      'Chondrichthyes' => ['Tiburones, rayas y quimeras', 'icon-tiburon_raya', '#c96016'],
-      'Cnidaria' => ['Medusas, corales y anémonas', 'icon-vacio', 'sin-color'],
-      'Arachnida' => %w(Arácnidos icon-arana #985f18),
-      'Myriapoda' => ['Ciempiés y milpies', 'icon-ciempies', '#a5752a'],
-      'Annelida' => ['Lombrices y gusanos marinos', 'icon-lombrices', '#c97e0f'],
-      'Insecta' => %w(Insectos icon-insectos #d88f2b),
-      'Porifera' => %w(Esponjas icon-vacio sin-color),
-      'Echinodermata' => ['Estrellas y erizos de mar', 'icon-estrellamar', '#7b6927'],
-      'Mollusca' => ['Caracoles, almejas y pulpos', ' icon-caracol', '#6f502c'],
-      'Crustacea' => %w(Crustáceos icon-crustaceo #4c351a),
-
-      # Reino Plantae
-      'Plantae' => %w(Plantas icon-plantas #00802f),
-      'Bryophyta' => ['Musgos, hepáticas y antoceros', 'icon-musgo', '#7a7544'],
-      'Pteridophyta' => %w(Helechos icon-helecho #adb280),
-      'Cycadophyta' => %w(Cícadas icon-cicada #545a35),
-      'Gnetophyta' => %w(Canutillos icon-vacio sin-color),
-      'Liliopsida' => ['Pastos y palmeras', 'icon-pastos_palmeras', '#114722'],
-      'Coniferophyta' => ['Pinos y cedros', 'icon-pino', '#788c4a'],
-      'Magnoliopsida' => ['Margaritas y magnolias', 'icon-magnolias', '#495925'],
-
-      # Reino Protoctista
-      'Protoctista' => %w(Arquea icon-arquea #00455f),
-
-      # Reino Fungi
-      'Fungi' => %w(Hongos icon-hongos #501766),
-
-      # Reino Prokaryonte (desde 1930 ?)
-      'Prokaryotae' => %w(Bacterias icon-bacterias #9a1a5d)
-  }
 
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
@@ -269,37 +230,6 @@ class Especie < ActiveRecord::Base
     "views/info_tab_#{id}"
   end
 
-  def pon_foto_principal
-    # Antes de cambiar de base ya que photos esta en Rails.env
-    fotos = photos.order(:type)
-    return unless fotos.any?
-    foto_principal = fotos.first.thumb_url
-
-    id_bio = Bases.id_en_vista_a_id_original id
-    numero_base = Bases.id_original_a_numero_base id
-    Bases.conecta_a CONFIG.bases[numero_base]
-
-    taxon_bio = EspecieBio.find(id_bio)
-    taxon_bio.foto_principal = foto_principal
-    taxon_bio.evita_before_save = true
-    taxon_bio.avoid_ancestry = true
-    taxon_bio.save if taxon_bio.changed?
-    Bases.conecta_a Rails.env
-  end
-
-  def pon_foto_principal_alternatva
-  #(se supone pone el grupo icónico al vuelo, pero el encargado del proyecto los metió a la BD =s)
-    img=''
-    grupos=[]
-    ancestry_ascendente_directo.split('/').each do |name|
-      grupos << Especie.find(name).nombre_cientifico
-    end
-    Especie::GRUPOS_ICONICOS.keys.sort.each do |grupo|
-      img = grupos.include?(grupo) ? Especie::GRUPOS_ICONICOS[grupo] : img
-    end
-    img
-  end
-
   # Guarda en cache el path del KMZ
   def snib_cache_key
     "snib_#{id}"
@@ -347,16 +277,123 @@ class Especie < ActiveRecord::Base
     end
   end
 
+  def asigna_nombre_comun
+    if adicional
+      return if adicional.nombre_comun_principal.present?
+      adicional.pon_nombre_comun_principal
+    else
+      ad = crea_con_nombre_comun
+      return {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
+    end
+
+    {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
+  end
+
+  # Pone el nombre comun principal en la tabla adicionales
+  def crea_con_nombre_comun
+    ad = Adicional.new
+    ad.especie_id = id
+    ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+    ad
+  end
+
   def self.asigna_grupo_iconico
-    GRUPOS_ICONICOS.keys.each do |grupo|
+    Adicional::GRUPOS_ICONICOS.keys.each do |grupo|
       puts grupo
+      reinos_grandes = %w(Animalia Plantae)
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      descendentes = taxon.subtree_ids
-      descendentes.each_slice(20000).to_a.each do |grupo_20k| # Fue necesario dividir el query ya que con muchos argumentos no funciona
-        Especie.where("id IN (#{grupo_20k.join(',')})").update_all(:icono => "#{GRUPOS_ICONICOS[grupo][1]}|#{GRUPOS_ICONICOS[grupo][2]}", :nombre_icono => GRUPOS_ICONICOS[grupo][0])
+      if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
+        taxones_default = Especie.adicionales.
+            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
+            where('adicionales.icono IS NULL')
+
+        taxones_default.find_each do |taxon_default|
+          puts "Descendiente de #{grupo}: #{taxon_default.id}"
+
+          begin
+            t = Especie.find(taxon_default.id)
+          rescue
+            next
+          end
+
+          if t.adicional
+            t.adicional.pon_grupo_iconico(grupo)
+          else
+            ad = t.crea_con_grupo_iconico(grupo)
+            ad.save
+            next
+          end
+
+          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
+            t.adicional.save
+          end
+        end
+
+      else
+        descendientes = taxon.subtree_ids
+        descendientes.each do |descendiente| # Itero sobre los descendientes
+          puts "Descendiente de #{grupo}: #{descendiente}"
+
+          begin
+            t = Especie.find(descendiente)
+          rescue
+            next
+          end
+
+          if t.adicional
+            t.adicional.pon_grupo_iconico(grupo)
+          else
+            ad = t.crea_con_grupo_iconico(grupo)
+            ad.save
+            next
+          end
+
+          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
+            t.adicional.save
+          end
+        end  # Cierra el each
       end
+
+    end  # Cierra el iterador de grupos
+  end
+
+  # Pone el grupo iconico en la tabla adicionales
+  def crea_con_grupo_iconico(grupo)
+    ad = Adicional.new
+    ad.especie_id = id
+    ad.pon_grupo_iconico(grupo)
+    ad
+  end
+
+  # Pone la foto principal en la tabla adicionales
+  def asigna_foto
+    # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
+    foto_p = if fotos = photos.where("photos.type != 'ConabioPhoto'")
+                       fotos.first.thumb_url if fotos.any?
+                     elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
+                       fotos.first.thumb_url if fotos.any?
+                     end
+
+    return {:cambio => false} unless photos.any?
+
+    if adicional
+      return {:cambio => false} if adicional.foto_principal.present?
+      adicional.foto_principal = foto_p
+    else
+      ad = crea_con_foto(foto_p)
+      return {:cambio => ad.foto_principal.present?, :adicional => ad}
     end
+
+    {:cambio => adicional.foto_principal_changed?, :adicional => adicional}
+  end
+
+  # Pone la foto principal en la tabla adicionales
+  def crea_con_foto(foto_principal)
+    ad = Adicional.new
+    ad.especie_id = id
+    ad.foto_principal = foto_principal
+    ad
   end
 end
