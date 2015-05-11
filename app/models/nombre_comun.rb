@@ -3,7 +3,6 @@ class NombreComun < ActiveRecord::Base
   self.table_name='nombres_comunes'
   self.primary_key = 'id'
 
-
   has_many :nombres_regiones, :class_name => 'NombreRegion'
   has_many :especies, :through => :nombres_regiones, :class_name => 'Especie'
 
@@ -35,20 +34,14 @@ class NombreComun < ActiveRecord::Base
   end
 
   def exporta_redis(taxon)
-    ic = ''
-    color = ''
-
-    if taxon.icono.present?
-      datos_icono = taxon.icono.split('|')
-      ic = datos_icono[0]
-      color = datos_icono[1]
-    end
+    return unless ad = taxon.adicional
 
     data = ''
-    data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varias IDS repetidos)
+    data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varios IDS repetidos)
     data << "\"term\":\"#{nombre_comun.limpia}\","
     data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
-    data << "\"nombre_icono\":\"#{taxon.nombre_icono}\", \"icono\":\"#{ic}\", \"color\":\"#{color}\", \"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
+    data << "\"nombre_icono\":\"#{ad.nombre_icono}\", \"icono\":\"#{ad.icono}\", \"color\":\"#{ad.color_icono}\", "
+    data << "\"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
 end

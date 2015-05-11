@@ -240,20 +240,14 @@ class Especie < ActiveRecord::Base
   end
 
   def exporta_redis
-    ic = ''
-    color = ''
-
-    if icono.present?
-      datos_icono = icono.split('|')
-      ic = datos_icono[0]
-      color = datos_icono[1]
-    end
+    return unless ad = adicional
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
-    data << "\"data\":{\"nombre_comun\":\"#{nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"nombre_icono\":\"#{nombre_icono}\", \"icono\":\"#{ic}\", \"color\":\"#{color}\", \"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
+    data <<  "\"nombre_icono\":\"#{ad.nombre_icono}\", \"icono\":\"#{ad.icono}\", \"color\":\"#{ad.color_icono}\", "
+    data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
 
