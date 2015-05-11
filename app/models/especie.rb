@@ -230,37 +230,6 @@ class Especie < ActiveRecord::Base
     "views/info_tab_#{id}"
   end
 
-  def pon_foto_principal
-    # Antes de cambiar de base ya que photos esta en Rails.env
-    fotos = photos.order(:type)
-    return unless fotos.any?
-    foto_principal = fotos.first.thumb_url
-
-    id_bio = Bases.id_en_vista_a_id_original id
-    numero_base = Bases.id_original_a_numero_base id
-    Bases.conecta_a CONFIG.bases[numero_base]
-
-    taxon_bio = EspecieBio.find(id_bio)
-    taxon_bio.foto_principal = foto_principal
-    taxon_bio.evita_before_save = true
-    taxon_bio.avoid_ancestry = true
-    taxon_bio.save if taxon_bio.changed?
-    Bases.conecta_a Rails.env
-  end
-
-  def pon_foto_principal_alternatva
-  #(se supone pone el grupo icónico al vuelo, pero el encargado del proyecto los metió a la BD =s)
-    img=''
-    grupos=[]
-    ancestry_ascendente_directo.split('/').each do |name|
-      grupos << Especie.find(name).nombre_cientifico
-    end
-    Especie::GRUPOS_ICONICOS.keys.sort.each do |grupo|
-      img = grupos.include?(grupo) ? Especie::GRUPOS_ICONICOS[grupo] : img
-    end
-    img
-  end
-
   # Guarda en cache el path del KMZ
   def snib_cache_key
     "snib_#{id}"
@@ -313,7 +282,7 @@ class Especie < ActiveRecord::Base
       return if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
     else
-      ad = crea_adicional
+      ad = crea_con_nombre_comun
       return {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
     end
 
@@ -337,8 +306,8 @@ class Especie < ActiveRecord::Base
 
       if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
         taxones_default = Especie.adicionales.
-            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%'").
-            where('adicionales.nombre_comun_principal IS NOT NULL')
+            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
+            where('adicionales.icono IS NULL')
 
         taxones_default.find_each do |taxon_default|
           puts "Descendiente de #{grupo}: #{taxon_default.id}"
@@ -395,6 +364,36 @@ class Especie < ActiveRecord::Base
     ad = Adicional.new
     ad.especie_id = id
     ad.pon_grupo_iconico(grupo)
+    ad
+  end
+
+  # Pone la foto principal en la tabla adicionales
+  def asigna_foto
+    # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
+    foto_p = if fotos = photos.where("photos.type != 'ConabioPhoto'")
+                       fotos.first.thumb_url if fotos.any?
+                     elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
+                       fotos.first.thumb_url if fotos.any?
+                     end
+
+    return {:cambio => false} unless photos.any?
+
+    if adicional
+      return {:cambio => false} if adicional.foto_principal.present?
+      adicional.foto_principal = foto_p
+    else
+      ad = crea_con_foto(foto_p)
+      return {:cambio => ad.foto_principal.present?, :adicional => ad}
+    end
+
+    {:cambio => adicional.foto_principal_changed?, :adicional => adicional}
+  end
+
+  # Pone la foto principal en la tabla adicionales
+  def crea_con_foto(foto_principal)
+    ad = Adicional.new
+    ad.especie_id = id
+    ad.foto_principal = foto_principal
     ad
   end
 end

@@ -9,7 +9,7 @@ Importa la foto principal de los taxones a la tabla especies para un manejo faci
 
 Usage:
 
-  rails r tools/foto_principal_sql.rb -d
+  rails r tools/foto_principal.rb -d
 
 where [options] are:
   EOS
@@ -18,12 +18,13 @@ end
 
 def foto_principal
   Especie.find_each do |taxon|
-  #Especie.limit(30).each do |taxon|
-    #next unless taxon.id > 6011411
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    next unless taxon.foto_principal.blank?  # Para evitar que la fotografia cambie cuando hacemos una migracion de bases
+    adicional = taxon.asigna_foto
 
-    taxon.pon_foto_principal
+    if adicional[:cambio]
+      puts "\t#{adicional[:adicional].foto_principal}"
+      adicional[:adicional].save
+    end
   end
 end
 
