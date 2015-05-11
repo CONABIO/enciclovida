@@ -73,14 +73,15 @@ class Proveedor < ActiveRecord::Base
       datos = col['properties']
       next unless datos['nombrepaismapa'] == 'MEXICO'
       cadena = Hash.new
+      h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
       #Los numere para poder armar los datos en el orden deseado
-      cadena['1_nombre_cientifico'] = especie.nombre_cientifico
-      cadena['2_nombre_comun'] = especie.nombre_comun_principal
-      cadena['4_nombre_coleccion'] = datos['nombrecoleccion']
-      cadena['5_nombre_institucion'] = datos['nombreinstitucion']
-      cadena['6_nombre_colector'] = datos['nombrecolector']
-      cadena['7_url_proyecto_conabio'] = datos['url_proyecto_conabio']
+      cadena['1_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
+      cadena['2_nombre_comun'] = h.encode(especie.nombre_comun_principal)
+      cadena['4_nombre_coleccion'] = h.encode(datos['nombrecoleccion'])
+      cadena['5_nombre_institucion'] = h.encode(datos['nombreinstitucion'])
+      cadena['6_nombre_colector'] = h.encode(datos['nombrecolector'])
+      cadena['7_url_proyecto_conabio'] = h.encode(datos['url_proyecto_conabio'])
       cadena['8_longitude'] = datos['longitud']
       cadena['9_latitude'] = datos['latitud']
 
