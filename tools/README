@@ -61,7 +61,7 @@
 
 
 
-20.- Para guardar la foto principal en la tabla Nombre (3918.191890493 seg):
+20.- Para guardar la foto principal en la tabla Nombre (3720.650933859 seg):
         16.1.- rails r tools/foto_principal_sql.rb -d
 
 21.- Realizar de nuevo el paso 13.2, 13.1 y 14.1, esto debido a que lleno el campo foto_principal con ayuda del volcado
@@ -70,12 +70,12 @@
         23.1.- rails r tools/grupos_iconicos.rb -d
 
 *****NOTA: 14,15,16 se pueden correr en paralelo*****
-14.- Completa la base de nombres cientificos en redis (489.773013008 seg):
+14.- Completa la base de nombres cientificos en redis (6169.426945545 seg):
         14.1.- Borra el archivo dump.rdb
         14.2.- Alzar el servicio de redis: redis-server
         14.3.- rails r tools/nombres_cientificos_sql_redis.rb -d
 
-15.- Completa la base de nombres comunes en redis (6537.086120093 seg):
+15.- Completa la base de nombres comunes en redis (7787.854763815 seg):
         15.1.- rails r tools/nombres_comunes_sql_redis.rb -d
 
 16.- Para generar los registros para el fuzzy match (5084.139111456 seg):
@@ -102,10 +102,10 @@
 16.- Para generar la correspondencia de los kmz del geoserver:
         16.1.- rails r tools/correspondencia_geoserver.rb -d carpeta               #para recibir la capeta de archivos .csv
 
-17.- Para generar los kmz del snib:
+17.- Para generar los kmz del snib (13652.1079729 seg):
         16.1.- rails r tools/crea_kmz_snib.rb -d
 
-18.- Para generar los kmz de naturalista:
+18.- Para generar los kmz de naturalista (708.426385906 seg):
         16.1.- rails r tools/crea_kmz_snib.rb -d
 
 
