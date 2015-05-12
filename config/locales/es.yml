@@ -254,7 +254,7 @@ es:
       format:
         delimiter: ''
   quality_grade:
-    casual: caual
+    casual: casual
     research: investigación
   sinonimo: inactivos
   solo_taxones: Solo Especies o Grupos
