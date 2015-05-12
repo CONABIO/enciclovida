@@ -46,21 +46,23 @@
                 if (RUTAS_KMZ.geoserver_kmz != undefined) {
                     MAPAS[0] = new Array();
                     MAPAS[0][0] = RUTAS_KMZ.geoserver_kmz
-                    MAPAS[0][1] = "Mapa de distribución"
+                    MAPAS[0][1] = " Mapa de distribución"
                 }
 
                 if (RUTAS_KMZ.snib_kmz != undefined) {
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.snib_kmz
-                    MAPAS[CUANTOS][1] = "Registros de museos, colectas y proyectos de CONABIO (SNIB)"
+                    MAPAS[CUANTOS][1] = " <img src='/assets/app/placemarks/rojo.png'/> Registros de museos, colectas y proyectos de CONABIO (SNIB)"
                 }
 
                 if (RUTAS_KMZ.naturalista_kmz != undefined) {
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
-                    MAPAS[CUANTOS][1] = "Observaciones de naturalista"
+                    MAPAS[CUANTOS][1] = " Observaciones de <img src='/assets/app/naturalista.png' width='70'/>" +
+                        "<p><img src='/assets/app/placemarks/verde.png'/> Grado de investigación <br>" +
+                        "<img src='/assets/app/placemarks/amarillo.png'/> Grado casual</p>"
                 }
             }
         }
