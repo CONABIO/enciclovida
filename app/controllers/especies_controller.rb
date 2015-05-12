@@ -185,7 +185,7 @@ class EspeciesController < ApplicationController
         when 'nombre_comun'
           estatus = params[:estatus].join(',') if params[:estatus].present?
           sql = "NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_comun ASC')"
+              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus = 2\").uniq.order('nombre_comun ASC')" #Forzar que no se busquen sinónimos
 
           totales = eval("#{sql}").length
           @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
@@ -201,7 +201,7 @@ class EspeciesController < ApplicationController
             if ids.present?
               @taxones = NombreComun.none
               taxones=NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
-                  nom_com.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
+                  nom_com.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").where("estatus IN = 2").uniq.order('nombre_comun ASC') #Forzar que no se busquen sinónimos
 
               taxones.each do |taxon|
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
@@ -225,8 +225,8 @@ class EspeciesController < ApplicationController
           estatus = params[:estatus].join(',') if params[:estatus].present?
 
           sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
-            order('nombre_cientifico ASC')"
+            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus = 2 \").
+            order('nombre_cientifico ASC')" #Forzar que no se busquen sinónimos
 
           longitud = eval("#{sql}.count")
           @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
@@ -242,7 +242,7 @@ class EspeciesController < ApplicationController
 
             ids.each do |id|
               taxon = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-                  where(:id => id).where("estatus IN (#{estatus ||= '2, 1'})")
+                  where(:id => id).where("estatus = 2") #Forzar que no se busquen sinónimos
 
               if taxon.first
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
