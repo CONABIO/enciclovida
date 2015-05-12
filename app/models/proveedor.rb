@@ -281,15 +281,27 @@ class Proveedor < ActiveRecord::Base
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
     kml << "<Document>\n"
-    kml << "<Style id=\"normalPlacemark\">\n"
+
+    # Para las observaciones de grado cientifico, verde
+    kml << "<Style id=\"Placemark_cientifico\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>https://lh4.ggpht.com/FRLzoxHDpRHxP6aFWxxQ1OUPlWnc55ZqnO7EpLtD8FBn6EK1zBerpF9P3BE3jJ6SFLNF7P0=w9-h9</href>\n"
+    kml << "<href>https://lh6.ggpht.com/GO-A_KjZDF9yJeeER2fajzO4MgqML-q2rccm27ynBlD6R-xOR3pJOb42WKfE0MNFtRsKwK4=w9-h9</href>\n"
+    kml << "</Icon>\n"
+    kml << "</IconStyle>\n"
+    kml << "</Style>\n"
+
+    # Para las observaciones de grado casual, amarillo
+    kml << "<Style id=\"Placemark_casual\">\n"
+    kml << "<IconStyle>\n"
+    kml << "<Icon>\n"
+    kml << "<href>https://lh3.ggpht.com/XAjhu-6znztoLTr9AxuwM5v0wilaKiUJJMLKEiiFMn6lGOmBmY1Km7Kt1ohildzlIdWgkwy_5g=w9-h9</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
 
     cadenas.each do |cad|
+      grado = ''
       valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad['1_nombre_cientifico']})</i>" : "<i><b>#{cad['1_nombre_cientifico']}</b></i>"
       kml << "<Placemark>\n"
       kml << "<description>\n"
@@ -310,6 +322,7 @@ class Proveedor < ActiveRecord::Base
           when '5_observed_on'
             kml << "<p><b>Fecha: </b><text>#{cad[k]}</text></p>\n"
           when '6_quality_grade'
+            grado << cad[k]
             kml << "<p><b>Grado de calidad: </b><text>#{I18n.t('quality_grade.' << cad[k])}</text></p>\n"
           when '7_uri'
             kml << "<p><text>Ver la </text><a href=\"#{cad[k]}\">observación</a></p>\n"
@@ -321,7 +334,13 @@ class Proveedor < ActiveRecord::Base
       kml << "</div>\n"
       kml << "]]>\n"
       kml << "</description>\n"
-      kml << '<styleUrl>#normalPlacemark</styleUrl>'
+
+      if grado == 'research'
+        kml << '<styleUrl>#Placemark_cientifico</styleUrl>'
+      else
+        kml << '<styleUrl>#Placemark_casual</styleUrl>'
+      end
+
       kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end

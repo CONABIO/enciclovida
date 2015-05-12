@@ -5,7 +5,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Guarda en la base el kml y crea el kmz para una facil consulta y generacion del mismo
 
-*** Este script se corre cada semana para generar los kml y los kmz
+*** Este script se deberia correr cada 1-2 semanas generar los kml y los kmz
 
 Usage:
 
@@ -18,8 +18,7 @@ end
 
 def kml
   Proveedor.where('naturalista_obs IS NOT NULL').find_each do |proveedor|
-    taxon = proveedor.especie
-    #next unless taxon.id > 8010026
+    next unless taxon = proveedor.especie  # Por los IDS que borraron
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     proveedor.kml_naturalista
 
