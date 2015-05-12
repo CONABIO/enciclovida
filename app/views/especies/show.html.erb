@@ -255,7 +255,7 @@
   <% if geo && geo.count > 0 %>
       <%= "| Mapa de distribución #{link_to(image_tag('app/kmz.jpg', :alt => :KMZ, :width => 26), geo['geoserver_kmz'], :target => :_blank)}".html_safe if geo['geoserver_kmz'] %>
       <%= "| Registros del SNIB #{link_to(image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
-      <%= "| Observaciones de NaturaLista #{link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
+      <%= "| Observaciones de #{link_to(image_tag('app/naturalista.png', :alt => :KML, :width => 90), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
   <% end %>
 </div>
 
