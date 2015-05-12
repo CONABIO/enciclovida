@@ -423,7 +423,7 @@ module EspeciesHelper
 
     if conservacion.present?
       opciones[:tab_catalogos] ? "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>" :
-          "<p><strong>Característica del taxón:</strong><br>#{conservacion[0..-3]}</p>"
+          "<p><strong>Categorías de riesgo:</strong><br>#{conservacion[0..-3]}</p>"
     else
       conservacion
     end
