@@ -53,9 +53,9 @@ class Especie < ActiveRecord::Base
   scope :adicionales, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
   scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
 
-  POR_PAGINA_PREDETERMINADO = 50
+  POR_PAGINA_PREDETERMINADO = 100
 
-  POR_PAGINA = [50, 100, 200, 500, 1000]
+  POR_PAGINA = [100, 200, 500, 1000]
   CON_REGION = [19, 50]
   ESTATUS = [
       [2, 'válido'],
