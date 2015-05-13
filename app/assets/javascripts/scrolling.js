@@ -53,8 +53,7 @@ settings = {
 						
 					//action        : 'scrollpagination'
 				    pagina         : settings.offset,
-				    por_pagina     : settings.nop
-					    
+
 				}, function(data) {
 						
 					// Change loading bar content (it may have been altered)
@@ -92,6 +91,7 @@ settings = {
 			if(settings.scroll == true) {
 				// .. and the user is scrolling
 				$(window).scroll(function() {
+                    var $this=$("#resultados" + settings.nivel);
 					// Check the user is at the bottom of the element
 					if($(window).scrollTop() + $(window).height() > $this.height() && !settings.busy) {
 						

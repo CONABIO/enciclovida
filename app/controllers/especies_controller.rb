@@ -215,10 +215,13 @@ class EspeciesController < ApplicationController
                 end
               end
             end
+          end
 
-            if @taxones.empty?
-              redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
-            end
+          if @taxones.empty?
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
+          elsif params[:pagina].present? && params[:pagina].to_i > 1
+            # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+            render :partial => 'especies/_resultados'
           end
 
         when 'nombre_cientifico'
@@ -238,34 +241,31 @@ class EspeciesController < ApplicationController
 
           if @taxones.empty?
             ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-            encontro_con_distancia = false
 
-            ids.each do |id|
-              taxon = Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-                  where(:id => id).where("estatus IN (#{estatus ||= '2, 1'})")
+            if ids.present?
+              @taxones = Especie.none
+              taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+                  caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
 
-              if taxon.first
+              taxones.each do |taxon|
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.first.nombre_cientifico.downcase)
+                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
                 @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                 if distancia < 3
                   @taxones <<= taxon
-                  encontro_con_distancia = true
                 else
                   next
                 end
-
-              else
-                # Si no hubo coincidencias con el fuzzy match
-                next
               end
             end
+          end
 
-            @taxones = @taxones.first if !@taxones.empty?
-            if !encontro_con_distancia
-              redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
-            end
+          if @taxones.empty?
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
+          elsif params[:pagina].present? && params[:pagina].to_i > 1
+            # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+            render :partial => 'especies/_resultados'
           end
 
         when 'avanzada'
