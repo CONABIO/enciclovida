@@ -21,21 +21,7 @@ settings = {
 		}
 		
 		// For each so that we keep chainability.
-		return this.each(function() {		
-
-			// Some variables
-			//$this = $(this);
-			//$settings = settings;
-			//var offset = $settings.offset;
-			//busy = false; // Checks if the scroll action is happening
-			                  // so we don't run it multiple times
-            //var url = $settings.url;
-
-			// Custom messages based on settings
-
-			
-			// Append custom messages and extra UI
-			//$this.append('<div class="content"></div><div class="loading-bar">'+$initmessage+'</div>');
+		return this.each(function() {
 
             if(settings.scroll == true) initmessage = 'Baja para cargar o da clic aquí';
             else initmessage = 'Click for more';
@@ -45,24 +31,21 @@ settings = {
                 //var busy = false;
 
                 $this=$("#resultados" + settings.nivel);
-                //$('#content' + settings.nivel).remove();
                 $('#loading-bar' + settings.nivel).remove();
                 $this.append("<div class='loading-bar' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
 
 				$.get(settings.url, {
 						
 					//action        : 'scrollpagination'
-				    pagina         : settings.offset,
+				    pagina         : settings.offset
 
 				}, function(data) {
 						
 					// Change loading bar content (it may have been altered)
-					//$this.find("#resultados" + settings.nivel + '.loading-bar').html(initmessage);
                     $('#loading-bar' + settings.nivel).html(initmessage);
 						
 					// If there is no data returned, there are no more posts to be shown. Show error
 					if(data == "") { 
-						//$this.find("#resultados" + settings.nivel + '.loading-bar').html(settings.error);
                         $('#loading-bar' + settings.nivel).html(settings.error);
 					}
 					else {
@@ -70,10 +53,6 @@ settings = {
 						// Offset increases
 					    settings.offset = settings.offset+1;
                         eval("offset."+settings.cat + "=" + settings.offset);
-
-						// Append the data to the content div
-					   	//$this.find('.content').append(data);
-                        //$this.find("#resultados" + settings.nivel + '.content').append(data);
                         $this.append(data);
 						
 						// No longer busy!	
@@ -99,7 +78,6 @@ settings = {
 						settings.busy = true;
 						
 						// Tell the user we're loading posts
-						//$this.find("#resultados" + settings.nivel + '.loading-bar').html('Cargando ...');
                         $('#loading-bar' + settings.nivel).html('Cargando ...');
 						
 						// Run the function to fetch the data inside a delay
