@@ -7,14 +7,13 @@
       <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
       </div>
       <div class="form-group form-group-sm">
-        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
 
-            <div class="input-group">
-              <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-              <span class="input-group-btn">
+        <div class="input-group">
+          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+          <span class="input-group-btn">
                 <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
               </span>
-            </div>
+        </div>
 
       </div>
   <% end %>
@@ -27,7 +26,6 @@
     <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
     </div>
     <div class="form-group form-group-sm">
-      <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
       <div class="input-group" style="margin-bottom: 15px;">
         <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm'%>
         <span class="input-group-btn">
