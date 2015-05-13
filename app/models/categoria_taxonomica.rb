@@ -7,7 +7,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
   scope :cat_taxonom, ->(valor) { find(valor).nombre_categoria_taxonomica }
 
   # Despliego solo estas categorias para la vista basica
-  CATEGORIAS_OBLIGATORIAS  = %w(Reino phylum división clase orden familia género especie subespecie variedad forma)
+  CATEGORIAS_OBLIGATORIAS  = %w(Reino phylum división clase orden familia género especie subespecie)
 
   CATEGORIAS_DIVISION = {
       1 => {

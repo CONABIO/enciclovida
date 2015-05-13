@@ -46,21 +46,23 @@
                 if (RUTAS_KMZ.geoserver_kmz != undefined) {
                     MAPAS[0] = new Array();
                     MAPAS[0][0] = RUTAS_KMZ.geoserver_kmz
-                    MAPAS[0][1] = "Mapa de distribución"
+                    MAPAS[0][1] = " Mapa de distribución"
                 }
 
                 if (RUTAS_KMZ.snib_kmz != undefined) {
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.snib_kmz
-                    MAPAS[CUANTOS][1] = "Registros de museos, colectas y proyectos de CONABIO (SNIB)"
+                    MAPAS[CUANTOS][1] = " <img src='/assets/app/placemarks/rojo.png'/> Registros de museos, colectas y proyectos de CONABIO (SNIB)"
                 }
 
                 if (RUTAS_KMZ.naturalista_kmz != undefined) {
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
-                    MAPAS[CUANTOS][1] = "Observaciones de naturalista"
+                    MAPAS[CUANTOS][1] = " Observaciones de <img src='/assets/app/naturalista.png' width='70'/>" +
+                        "<p><img src='/assets/app/placemarks/verde.png'/> Grado de investigación <br>" +
+                        "<img src='/assets/app/placemarks/amarillo.png'/> Grado casual</p>"
                 }
             }
         }
@@ -184,7 +186,7 @@
                 // Inicia el mapa
                 map = new GMaps({
                     div: '#map',
-                    zoom: 5,
+                    zoom: 4,
                     lat: 23.79162789,
                     lng: -102.04376221,
                     mapTypeId: google.maps.MapTypeId.HYBRID,
@@ -255,7 +257,7 @@
   <% if geo && geo.count > 0 %>
       <%= "| Mapa de distribución #{link_to(image_tag('app/kmz.jpg', :alt => :KMZ, :width => 26), geo['geoserver_kmz'], :target => :_blank)}".html_safe if geo['geoserver_kmz'] %>
       <%= "| Registros del SNIB #{link_to(image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
-      <%= "| Observaciones de NaturaLista #{link_to(image_tag('app/kml.png', :alt => :KML, :width => 32, :height => 32), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
+      <%= "| Observaciones de #{link_to(image_tag('app/naturalista.png', :alt => :KML, :width => 90), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
   <% end %>
 </div>
 

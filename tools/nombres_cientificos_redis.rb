@@ -12,7 +12,7 @@ a menos que los cambios sean dinamicos en el codigo.
 
 Usage:
 
-  rails r tools/nombres_cientificos_sql_redis.rb -d
+  rails r tools/nombres_cientificos_redis.rb -d
 
 where [options] are:
   EOS
@@ -32,7 +32,7 @@ def batches
     data = taxon.exporta_redis
 
     File.open("#{@path}/nom_cien_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
-      f.puts data
+      f.puts(data) if data.present?
     end
   end
 end
