@@ -90,7 +90,7 @@ module EspeciesHelper
     begin  # Es un record con joins
       ic = taxon if taxon.color_icono.present?
     rescue
-      ic = taxon.adicional
+      ic = taxon.adicional.icono.present? ? taxon.adicional.icono : nil
     end
 
     font_size = params[:font_size].present? ? params[:font_size] : '35'
