@@ -87,12 +87,14 @@ module EspeciesHelper
   end
 
   def ponIcono(taxon, params={})
-    grupo_iconico = taxon.icono.split('|')
-    icono = grupo_iconico[0]
-    color = grupo_iconico[1]
-    font_size = params[:font_size].present? ? params[:font_size] : '35'
+    begin  # Es un record con joins
+      ic = taxon if taxon.color_icono.present?
+    rescue
+      ic = taxon.adicional
+    end
 
-    "<i title=\"#{taxon.nombre_icono}\" style=\"color:#{color};font-size:#{font_size}px;\" class=\"#{icono}\"></i>"
+    font_size = params[:font_size].present? ? params[:font_size] : '35'
+    "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
   end
 
   def datos_principales(taxon, opciones={})
@@ -139,7 +141,7 @@ module EspeciesHelper
     if accion  # Si es para desplegar o contraer
       nodo = ''
       if I18n.locale.to_s == 'es-cientifico'
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+        Especie.datos_basicos.
             caso_rango_valores('especies.id', taxon.child_ids.join(',')).order(:nombre_cientifico).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
@@ -159,8 +161,7 @@ module EspeciesHelper
         index_cat+= 1
 
         ancestry = taxon.is_root? ? taxon.id : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}"
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            where("ancestry_ascendente_directo LIKE '#{ancestry}%'").
+        Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}%'").
             caso_sensitivo('nombre_categoria_taxonomica',cat_obl[index_cat]).order(:nombre_cientifico).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
@@ -170,8 +171,7 @@ module EspeciesHelper
     else # Si es para cuando se despliega la pagina
       if taxon.nil?  # Si es el index
         arbolCompleto = ''
-        Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
-            where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
+        Especie.datos_basicos.where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
           arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
         end
         # Pone los reinos en una lista separada cada uno
@@ -183,13 +183,13 @@ module EspeciesHelper
         contadorNodos = 0
 
         if I18n.locale.to_s == 'es-cientifico'
-          Especie.select('especies.*, nombre_categoria_taxonomica, CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').categoria_taxonomica_join.
+          Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
               caso_rango_valores('especies.id', taxon.path_ids.join(',')).order('nivel').each do |ancestro|
             arbolCompleto << enlacesDelArbol(ancestro)
             contadorNodos+= 1
           end
         else  # Solo las categorias taxonomicas obligatorias
-          Especie.select('especies.*, nombre_categoria_taxonomica, CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').categoria_taxonomica_join.
+          Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
               caso_rango_valores('especies.id', taxon.path_ids.join(',')).
               caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
               order('nivel').each do |ancestro|
@@ -253,7 +253,6 @@ module EspeciesHelper
       contador=0
 
       valores.each do |edo|
-        #checkBoxes+='<br>' if contador%2 == 0    #para darle un mejor espacio
         checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}</label>"
         contador+=1
       end
@@ -438,12 +437,12 @@ module EspeciesHelper
     biblio.present? ? "<b>Bibliografía:</b><ul>#{biblio}</ul>" : biblio
   end
 
-  def dame_taxones_inferiores(taxon)
+  def dameTaxonesInferiores(taxon)
     hijos=''
     child_ids = taxon.child_ids
     return hijos unless child_ids.present?
 
-    Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
+    Especie.datos_basicos.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
       hijos << "<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
     end
     hijos.present? ? "<fieldset><legend class='leyenda'>Taxones Inferiores</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
@@ -480,7 +479,8 @@ module EspeciesHelper
 
   def radioGruposIconicos
     radios = ''
-    Especie.caso_rango_valores('nombre_cientifico', "'#{Adicional::GRUPOS_ICONICOS.keys.join("','")}'").
+    Especie.datos_basicos.
+        caso_rango_valores('nombre_cientifico', "'#{Adicional::GRUPOS_ICONICOS.keys.join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :class => 'busqueda_atributo_radio')
       radios << ponIcono(taxon)

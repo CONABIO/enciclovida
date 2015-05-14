@@ -184,15 +184,24 @@ class EspeciesController < ApplicationController
 
         when 'nombre_comun'
           estatus = params[:estatus].join(',') if params[:estatus].present?
-          sql = "NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
-              nom_com.caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").uniq.order('nombre_comun ASC')"
+          select = 'NombreComun.datos_basicos'
+          select_count = 'NombreComun.datos_count'
+          condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").
+                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_comun ASC')"
+          condiciones_count = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").
+                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\")"
+          sql = select << condiciones
+          sql_count = select_count << condiciones_count
 
-          totales = eval("#{sql}").length
-          @paginacion = paginacion(totales, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+          query = eval(sql).to_sql
+          consulta = Bases.distinct_limpio query
+          totales = eval(sql_count)[0].cuantos
+          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if totales > 0
-            @taxones = eval(sql).to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = consulta << " ORDER BY nombre_comun ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
+            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
           end
 
           if @taxones.empty?
@@ -200,8 +209,8 @@ class EspeciesController < ApplicationController
 
             if ids.present?
               @taxones = NombreComun.none
-              taxones=NombreComun.select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica').
-                  nom_com.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
+              taxones=NombreComun.datos_basicos.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").
+                  where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
 
               taxones.each do |taxon|
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
@@ -227,16 +236,18 @@ class EspeciesController < ApplicationController
         when 'nombre_cientifico'
           estatus = params[:estatus].join(',') if params[:estatus].present?
 
-          sql="Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+          sql = "Especie.datos_basicos.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
             order('nombre_cientifico ASC')"
 
-          longitud = eval("#{sql}.count")
-          @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+          consulta = eval(sql).to_sql
+          totales = eval(sql).count
+          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
-          if longitud > 0
-            @taxones = eval("#{sql}.to_sql") << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+          if totales > 0
+            @taxones = consulta << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
+            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
           end
 
           if @taxones.empty?
@@ -244,7 +255,7 @@ class EspeciesController < ApplicationController
 
             if ids.present?
               @taxones = Especie.none
-              taxones=Especie.select('especies.*, nombre_categoria_taxonomica').categoria_taxonomica_join.
+              taxones=Especie.datos_basicos.
                   caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
 
               taxones.each do |taxon|
@@ -270,7 +281,7 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
-          busqueda = "Especie.select('especies.id, nombre_cientifico, estatus, nombre_autoridad, nombre_comun_principal, foto_principal, icono, nombre_icono, categoria_taxonomica_id, nombre_categoria_taxonomica')"
+          busqueda = 'Especie.datos_basicos'
 
           joins = condiciones = conID = nombre_cientifico = ''
           distinct = false
@@ -293,9 +304,6 @@ class EspeciesController < ApplicationController
               condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
             end
           end
-
-          # Por default tiene que hacerce join con categorias_taxonomicas
-          joins+= '.categoria_taxonomica_join'
 
           # Parte de la categoria taxonomica
           if params[:cat].present? && params[:nivel].present?

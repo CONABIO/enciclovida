@@ -1,4 +1,3 @@
-# coding: utf-8
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
@@ -38,7 +37,7 @@ class Especie < ActiveRecord::Base
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
-  #Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
+  # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
   scope :nombres_comunes_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
@@ -50,8 +49,14 @@ class Especie < ActiveRecord::Base
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
-  scope :adicionales, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
-  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
+  scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+
+  # Select basico que contiene los campos a mostrar por ponNombreCientifico
+  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
+        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.icono, adicionales.nombre_icono,
+        adicionales.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
+  # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
+  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join }
 
 
   POR_PAGINA = [100, 200, 500, 1000]
@@ -123,10 +128,9 @@ class Especie < ActiveRecord::Base
     else
       sql << 'count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos'
     end
+    sql << "').categoria_taxonomica_join"
 
-    sql << "')"
-
-    busq = busqueda.sub(/select\(.+mica'\)/, sql)
+    busq = busqueda.gsub('datos_basicos', sql)
     busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
     busq << ".order('nivel')"
 
@@ -300,7 +304,7 @@ class Especie < ActiveRecord::Base
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
       if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
-        taxones_default = Especie.adicionales.
+        taxones_default = Especie.adicional_join.
             where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
             where('adicionales.icono IS NULL')
 
