@@ -102,7 +102,15 @@
                 $('#'+event.target.id).attr('value', term);
                 $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
                 //pone el ID para mandar a la busqueda directa
-                event.data.num == '1' ? $('#id_basica_comun').attr('value', data.id) : $('#id_avanzada_comun').attr('value', data.id);
+
+                if (event.data.num == '1')
+                {
+                    $('#id_basica_comun').attr('value', data.id);
+                    guardaFiltros(false);
+                    $('#b_comun').submit();
+                } else {
+                    $('#id_avanzada_comun').attr('value', data.id);
+                }
             }
         }
         if (event.data.num == '2' || event.data.num == '4')          //nombre cientifico
@@ -127,7 +135,9 @@
                 //pone el ID para mandar a la busqueda directa
                 if (event.data.num == '2')
                 {
-                    $('#id_basica_cientifico').attr('value', data.id)
+                    $('#id_basica_cientifico').attr('value', data.id);
+                    guardaFiltros(false);
+                    $('#b_cientifico').submit();
                 } else {
                     $('#id_avanzada_cientifico').attr('value', data.id);
                     cat_tax_asociadas(data.id);
