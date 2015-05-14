@@ -276,7 +276,7 @@
                         $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
                         return false
                     }
-                    window.location.replace("http://<%=raw "#{CONFIG.ip}:#{CONFIG.port}" %>");
+                    window.location.replace(window.location.origin);
                 },
                 fail: function() {
                     $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');

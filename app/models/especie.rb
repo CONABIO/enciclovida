@@ -1,4 +1,3 @@
-# coding: utf-8
 class Especie < ActiveRecord::Base
 
   self.table_name='especies'
@@ -38,7 +37,7 @@ class Especie < ActiveRecord::Base
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
 
-  #Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
+  # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
   scope :nombres_comunes_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id').
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id') }
@@ -50,12 +49,20 @@ class Especie < ActiveRecord::Base
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
-  scope :adicionales, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
-  scope :datos, -> { joins('LEFT JOIN especies_regiones ON especies.id=especies_regiones.especie_id').joins('LEFT JOIN categoria_taxonomica') }
+  scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
-  POR_PAGINA_PREDETERMINADO = 50
+  # Select basico que contiene los campos a mostrar por ponNombreCientifico
+  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
+        adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.icono, iconos.nombre_icono,
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
+  # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
+  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
 
-  POR_PAGINA = [50, 100, 200, 500, 1000]
+
+  POR_PAGINA = [100, 200, 500, 1000]
+  POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
+
   CON_REGION = [19, 50]
   ESTATUS = [
       [2, 'válido'],
@@ -122,10 +129,9 @@ class Especie < ActiveRecord::Base
     else
       sql << 'count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos'
     end
+    sql << "').categoria_taxonomica_join"
 
-    sql << "')"
-
-    busq = busqueda.sub(/select\(.+mica'\)/, sql)
+    busq = busqueda.gsub('datos_basicos', sql)
     busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
     busq << ".order('nivel')"
 
@@ -292,72 +298,69 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-    Adicional::GRUPOS_ICONICOS.keys.each do |grupo|
+    Icono.where("taxon_icono NOT IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
-      reinos_grandes = %w(Animalia Plantae)
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
-        taxones_default = Especie.adicionales.
-            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
-            where('adicionales.icono IS NULL')
+      descendientes = taxon.subtree_ids
+      descendientes.each do |descendiente| # Itero sobre los descendientes
+        puts "Descendiente de #{grupo}: #{descendiente}"
 
-        taxones_default.find_each do |taxon_default|
-          puts "Descendiente de #{grupo}: #{taxon_default.id}"
-
-          begin
-            t = Especie.find(taxon_default.id)
-          rescue
-            next
-          end
-
-          if t.adicional
-            t.adicional.pon_grupo_iconico(grupo)
-          else
-            ad = t.crea_con_grupo_iconico(grupo)
-            ad.save
-            next
-          end
-
-          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
-            t.adicional.save
-          end
+        begin
+          t = Especie.find(descendiente)
+        rescue
+          next
         end
 
-      else
-        descendientes = taxon.subtree_ids
-        descendientes.each do |descendiente| # Itero sobre los descendientes
-          puts "Descendiente de #{grupo}: #{descendiente}"
+        if t.adicional
+          t.adicional.icono_id = id
+        else
+          ad = t.crea_con_grupo_iconico(grupo)
+          ad.save
+          next
+        end
 
-          begin
-            t = Especie.find(descendiente)
-          rescue
-            next
-          end
-
-          if t.adicional
-            t.adicional.pon_grupo_iconico(grupo)
-          else
-            ad = t.crea_con_grupo_iconico(grupo)
-            ad.save
-            next
-          end
-
-          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
-            t.adicional.save
-          end
-        end  # Cierra el each
-      end
-
+        if t.adicional.icono_id_changed?
+          t.adicional.save
+        end
+      end  # Cierra el each
     end  # Cierra el iterador de grupos
+
+    # Corre los grupos grandes con muchos sub grupos iconicos y que no tienen icono
+    Icono.where("taxon_icono IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+      taxones_default = Especie.adicional_join.icono_join.where('iconos.icono IS NULL').
+          where("ancestry_ascendente_directo='#{id}' OR ancestry_ascendente_directo LIKE '#{id}/%' OR nombre_cientifico='#{grupo}'")
+
+      taxones_default.find_each do |taxon_default|
+        puts "Descendiente de #{grupo}: #{taxon_default.id}"
+
+        begin
+          t = Especie.find(taxon_default.id)
+        rescue
+          next
+        end
+
+        if t.adicional
+          t.adicional.icono_id = id
+        else
+          ad = t.crea_con_grupo_iconico(id)
+          ad.save
+          next
+        end
+
+        if t.adicional.icono_id_changed?
+          t.adicional.save
+        end
+      end
+    end
   end
 
   # Pone el grupo iconico en la tabla adicionales
-  def crea_con_grupo_iconico(grupo)
+  def crea_con_grupo_iconico(id)
     ad = Adicional.new
-    ad.especie_id = id
-    ad.pon_grupo_iconico(grupo)
+    ad.especie_id = self.id
+    ad.icono_id = id
     ad
   end
 

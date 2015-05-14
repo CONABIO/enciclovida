@@ -118,7 +118,7 @@
     {
         $('#tabs').tab();
 
-        scrolling_page("#resultados", <%= params[:por_pagina].to_i || Especie::POR_PAGINA_PREDETERMINADO %>, "<%= request.url %>");
+        scrolling_page("#resultados", settings.nop, settings.url);
 
         /**
          *  Carga los taxones de la categoria dada

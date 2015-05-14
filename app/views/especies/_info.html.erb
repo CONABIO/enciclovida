@@ -52,7 +52,7 @@
     </td>
 
     <td width="60%" valign="top">
-      <%= dame_taxones_inferiores(@especie).html_safe %>
+      <%= dameTaxonesInferiores(@especie).html_safe %>
       <%= "<fieldset><legend class='leyenda'>Distribución reportada en literatura:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
     </td>
   </tr>
