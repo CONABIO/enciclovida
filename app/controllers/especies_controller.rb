@@ -183,7 +183,8 @@ class EspeciesController < ApplicationController
       case params[:busqueda]
 
         when 'nombre_comun'
-          estatus = params[:estatus].join(',') if params[:estatus].present?
+
+          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
           condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").
@@ -234,7 +235,7 @@ class EspeciesController < ApplicationController
           end
 
         when 'nombre_cientifico'
-          estatus = params[:estatus].join(',') if params[:estatus].present?
+          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
 
           sql = "Especie.datos_basicos.
             caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
