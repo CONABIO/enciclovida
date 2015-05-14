@@ -94,7 +94,12 @@ module EspeciesHelper
     end
 
     font_size = params[:font_size].present? ? params[:font_size] : '35'
-    "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+
+    if ic.nil?  # Puede que no tenga icono
+      "<i title=\"Sin ícono\" style=\"color:black;font-size:0px;\" class=\"sin_icono\"></i>"
+    else
+      "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+    end
   end
 
   def datos_principales(taxon, opciones={})
@@ -480,7 +485,7 @@ module EspeciesHelper
   def radioGruposIconicos
     radios = ''
     Especie.datos_basicos.
-        caso_rango_valores('nombre_cientifico', "'#{Adicional::GRUPOS_ICONICOS.keys.join("','")}'").
+        caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :class => 'busqueda_atributo_radio')
       radios << ponIcono(taxon)

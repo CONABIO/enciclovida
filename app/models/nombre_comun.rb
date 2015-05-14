@@ -16,14 +16,15 @@ class NombreComun < ActiveRecord::Base
       joins('LEFT JOIN especies ON especies.id=nombres_regiones.especie_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, -> { select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad,
 categoria_taxonomica_id, nombre_categoria_taxonomica,
-adicionales.foto_principal, adicionales.nombre_comun_principal, adicionales.icono, adicionales.nombre_icono, adicionales.color_icono') }
+adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.icono, iconos.nombre_icono, iconos.color_icono') }
     #categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, -> { select_basico.especies_join.categoria_taxonomica_join.adicional_join }
+  scope :datos_basicos, -> { select_basico.especies_join.categoria_taxonomica_join.adicional_join.icono_join }
   # Este select es para contar todas las especies partiendo del nombre comun
   scope :datos_count, -> { select('count(DISTINCT concat(especies.id, nombre_comun)) AS cuantos').especies_join }
 

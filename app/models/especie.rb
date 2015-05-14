@@ -50,13 +50,14 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
-        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.icono, adicionales.nombre_icono,
-        adicionales.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
+        adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.icono, iconos.nombre_icono,
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join }
+  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
 
 
   POR_PAGINA = [100, 200, 500, 1000]
@@ -304,9 +305,8 @@ class Especie < ActiveRecord::Base
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
       if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
-        taxones_default = Especie.adicional_join.
+        taxones_default = Especie.adicional_join.where('adicionales.icono IS NULL').
             where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
-            where('adicionales.icono IS NULL')
 
         taxones_default.find_each do |taxon_default|
           puts "Descendiente de #{grupo}: #{taxon_default.id}"
