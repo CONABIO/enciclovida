@@ -167,7 +167,7 @@ module EspeciesHelper
 
         ancestry = taxon.is_root? ? taxon.id : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}"
 
-        Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}%'").caso_estatus('2').
+        Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}%'").caso_status('2').
             caso_sensitivo('nombre_categoria_taxonomica',cat_obl[index_cat]).order(:nombre_cientifico).each do |children|
           nodo+= enlacesDelArbol(children, true)
         end
