@@ -46,7 +46,5 @@ end
 # General settings
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
-#FUZZY_NOM_COM = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_comunes')
-#FUZZY_NOM_CIEN = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_cientificos')
-FUZZY_NOM_COM = Blurrily::Client.new(:host => '200.12.166.190', :db_name => 'nombres_comunes')
-FUZZY_NOM_CIEN = Blurrily::Client.new(:host => '200.12.166.190', :db_name => 'nombres_cientificos')
+FUZZY_NOM_COM = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_comunes')
+FUZZY_NOM_CIEN = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_cientificos')
