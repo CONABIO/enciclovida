@@ -298,71 +298,69 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-    Adicional::GRUPOS_ICONICOS.keys.each do |grupo|
+    Icono.where("taxon_icono NOT IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
-      reinos_grandes = %w(Animalia Plantae)
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      if reinos_grandes.include?(grupo)  # Los corro aparte para no volver a sobreescribir el valor
-        taxones_default = Especie.adicional_join.where('adicionales.icono IS NULL').
-            where("ancestry_ascendente_directo='#{taxon.id}' OR ancestry_ascendente_directo LIKE '#{taxon.id}/%' OR nombre_cientifico='#{grupo}'").
+      descendientes = taxon.subtree_ids
+      descendientes.each do |descendiente| # Itero sobre los descendientes
+        puts "Descendiente de #{grupo}: #{descendiente}"
 
-        taxones_default.find_each do |taxon_default|
-          puts "Descendiente de #{grupo}: #{taxon_default.id}"
-
-          begin
-            t = Especie.find(taxon_default.id)
-          rescue
-            next
-          end
-
-          if t.adicional
-            t.adicional.pon_grupo_iconico(grupo)
-          else
-            ad = t.crea_con_grupo_iconico(grupo)
-            ad.save
-            next
-          end
-
-          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
-            t.adicional.save
-          end
+        begin
+          t = Especie.find(descendiente)
+        rescue
+          next
         end
 
-      else
-        descendientes = taxon.subtree_ids
-        descendientes.each do |descendiente| # Itero sobre los descendientes
-          puts "Descendiente de #{grupo}: #{descendiente}"
+        if t.adicional
+          t.adicional.icono_id = id
+        else
+          ad = t.crea_con_grupo_iconico(grupo)
+          ad.save
+          next
+        end
 
-          begin
-            t = Especie.find(descendiente)
-          rescue
-            next
-          end
-
-          if t.adicional
-            t.adicional.pon_grupo_iconico(grupo)
-          else
-            ad = t.crea_con_grupo_iconico(grupo)
-            ad.save
-            next
-          end
-
-          if t.adicional.icono_changed? || t.adicional.nombre_icono_changed? || t.adicional.color_icono_changed?
-            t.adicional.save
-          end
-        end  # Cierra el each
-      end
-
+        if t.adicional.icono_id_changed?
+          t.adicional.save
+        end
+      end  # Cierra el each
     end  # Cierra el iterador de grupos
+
+    # Corre los grupos grandes con muchos sub grupos iconicos y que no tienen icono
+    Icono.where("taxon_icono IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+      taxones_default = Especie.adicional_join.icono_join.where('iconos.icono IS NULL').
+          where("ancestry_ascendente_directo='#{id}' OR ancestry_ascendente_directo LIKE '#{id}/%' OR nombre_cientifico='#{grupo}'")
+
+      taxones_default.find_each do |taxon_default|
+        puts "Descendiente de #{grupo}: #{taxon_default.id}"
+
+        begin
+          t = Especie.find(taxon_default.id)
+        rescue
+          next
+        end
+
+        if t.adicional
+          t.adicional.icono_id = id
+        else
+          ad = t.crea_con_grupo_iconico(id)
+          ad.save
+          next
+        end
+
+        if t.adicional.icono_id_changed?
+          t.adicional.save
+        end
+      end
+    end
   end
 
   # Pone el grupo iconico en la tabla adicionales
-  def crea_con_grupo_iconico(grupo)
+  def crea_con_grupo_iconico(id)
     ad = Adicional.new
-    ad.especie_id = id
-    ad.pon_grupo_iconico(grupo)
+    ad.especie_id = self.id
+    ad.icono_id = id
     ad
   end
 

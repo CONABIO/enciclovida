@@ -42,11 +42,4 @@ class Adicional < ActiveRecord::Base
       self.nombre_comun_principal
     end
   end
-
-  def pon_grupo_iconico(grupo)
-    datos_icono = GRUPOS_ICONICOS[grupo]
-    self.icono = datos_icono[1]
-    self.nombre_icono = datos_icono[0]
-    self.color_icono = datos_icono[2]
-  end
 end
