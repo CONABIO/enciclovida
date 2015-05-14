@@ -131,7 +131,7 @@
             </div>
         </div>
       </div>
-
+      <% if I18n.locale.to_s == 'es-cientifico' %>
       <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
@@ -144,6 +144,7 @@
           <%= checkboxValidoSinonimo %>
         </div>
       </div>
+      <% end %>
 
       <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
 
