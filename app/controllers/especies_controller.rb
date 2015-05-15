@@ -203,28 +203,34 @@ class EspeciesController < ApplicationController
             @taxones = consulta << " ORDER BY nombre_comun ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
             @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
-          end
 
-          if @taxones.empty?
-            ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
+          else
+            if @taxones.empty?
+              ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
 
-            if ids.present?
-              @taxones = NombreComun.none
-              taxones=NombreComun.datos_basicos.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").
-                  where("estatus IN (#{estatus ||= '2, 1'})").uniq.order('nombre_comun ASC')
+              if ids.present?
+                @taxones = NombreComun.none
+                taxones = NombreComun.datos_basicos.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").
+                    where("estatus IN (#{estatus ||= '2, 1'})").distinct.order('nombre_comun ASC').to_sql
+                consulta = Bases.distinct_limpio(taxones) << ' ORDER BY nombre_comun ASC'
+                res = NombreComun.find_by_sql(consulta)
 
-              taxones.each do |taxon|
-                # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.nombre_comun.downcase)
-                @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+                res.each do |taxon|
+                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+                  distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.nombre_comun.downcase)
+                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
-                if distancia < 3
-                  @taxones <<= taxon
-                else
-                  next
+                  if distancia < 3
+                    @taxones <<= taxon
+                  else
+                    next
+                  end
                 end
               end
             end
+
+            # Para que saga el total tambien con el fuzzy match
+            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
           if @taxones.empty?
@@ -249,28 +255,32 @@ class EspeciesController < ApplicationController
             @taxones = consulta << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
             @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
-          end
+          else
 
-          if @taxones.empty?
-            ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+            if @taxones.empty?
+              ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
 
-            if ids.present?
-              @taxones = Especie.none
-              taxones=Especie.datos_basicos.
-                  caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
+              if ids.present?
+                @taxones = Especie.none
+                taxones=Especie.datos_basicos.
+                    caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
 
-              taxones.each do |taxon|
-                # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
-                @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+                taxones.each do |taxon|
+                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+                  distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
+                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
-                if distancia < 3
-                  @taxones <<= taxon
-                else
-                  next
+                  if distancia < 3
+                    @taxones <<= taxon
+                  else
+                    next
+                  end
                 end
               end
             end
+
+            # Para que saga el total tambien con el fuzzy match
+            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
           if @taxones.empty?
