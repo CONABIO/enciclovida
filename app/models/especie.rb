@@ -329,8 +329,10 @@ class Especie < ActiveRecord::Base
 
     # Corre los grupos grandes con muchos sub grupos iconicos y que no tienen icono
     Icono.where("taxon_icono IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+      especie_id = Especie.where(:nombre_cientifico => grupo)[0].id
+
       taxones_default = Especie.adicional_join.icono_join.where('iconos.icono IS NULL').
-          where("ancestry_ascendente_directo='#{id}' OR ancestry_ascendente_directo LIKE '#{id}/%' OR nombre_cientifico='#{grupo}'")
+          where("ancestry_ascendente_directo='#{especie_id}' OR ancestry_ascendente_directo LIKE '#{especie_id}/%' OR nombre_cientifico='#{grupo}'")
 
       taxones_default.find_each do |taxon_default|
         puts "Descendiente de #{grupo}: #{taxon_default.id}"

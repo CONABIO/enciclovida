@@ -10,25 +10,31 @@
         <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
 
         <div class="input-group">
-          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :size => 60, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
+          <span class="input-group-btn">
+                <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
+                          </span>
         </div>
 
       </div>
   <% end %>
 
   <%= form_tag resultados_especies_path, :method => :get, :id => :b_cientifico, :role => 'form' do %>
-    <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-    <%= hidden_field_tag :busqueda, :nombre_cientifico %>
-    <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
-    <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
-    </div>
-    <div class="form-group form-group-sm">
-      <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
-
-      <div class="input-group" style="margin-bottom: 15px;">
-        <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :size => 60, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm'%>
+      <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
+      <%= hidden_field_tag :busqueda, :nombre_cientifico %>
+      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
+      <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
       </div>
-    </div>
+      <div class="form-group form-group-sm">
+        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
+
+        <div class="input-group" style="margin-bottom: 15px;">
+          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm'%>
+          <span class="input-group-btn">
+        <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
+                  </span>
+        </div>
+      </div>
   <% end %>
 
   <div class="">
@@ -36,18 +42,18 @@
   </div>
 
   <% if I18n.locale.to_s == 'es-cientifico' %>
-  <div class="panel panel-info dropup" id="panelValidoSinonimoBasicaPt">
-    <div class="panel-heading">
-      <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoBasicaPt').toggleClass('dropup')});">
-        <h3 class="panel-title">Estatus taxonómico
-          <span class="caret"></span>
-        </h3>
-      </button>
-    </div>
-    <div class="panel-body" id="panelValidoSinonimoBasica">
-      <%= checkboxValidoSinonimo ("BBShow") %>
-    </div>
-  </div>
+      <div class="panel panel-info dropup" id="panelValidoSinonimoBasicaPt">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoBasicaPt').toggleClass('dropup')});">
+            <h3 class="panel-title">Estatus taxonómico
+              <span class="caret"></span>
+            </h3>
+          </button>
+        </div>
+        <div class="panel-body" id="panelValidoSinonimoBasica">
+          <%= checkboxValidoSinonimo ("BBShow") %>
+        </div>
+      </div>
   <% end %>
 
 </div>
@@ -66,14 +72,14 @@
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
       <% if I18n.locale.to_s == 'es-cientifico' %>
-        <div class="form-group form-group-sm">
+          <div class="form-group form-group-sm">
             <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
             <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-        </div>
-        <div class="form-group form-group-sm">
+          </div>
+          <div class="form-group form-group-sm">
             <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
             <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico).split.map(&:capitalize).join(' ').html_safe, :autocomplete => :off, :class => 'form-control input-sm' %>
-        </div>
+          </div>
       <% end %>
 
       <div class=" dropup">
@@ -113,31 +119,31 @@
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
             <h4 class="panel-title">Tipo de distribución
-            <span class="caret"></span>
+              <span class="caret"></span>
             </h4>
 
-          <i><small>(Predeterminada: Cualquiera)</small></i>
+            <i><small>(Predeterminada: Cualquiera)</small></i>
           </button>
         </div>
         <div class="panel-body" id="panelTipoDistribucionEn" style="display: none">
-            <div class="checkbox">
-              <%= checkboxTipoDistribucion %>
-            </div>
+          <div class="checkbox">
+            <%= checkboxTipoDistribucion %>
+          </div>
         </div>
       </div>
       <% if I18n.locale.to_s == 'es-cientifico' %>
-      <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
-            <h3 class="panel-title">Estatus taxonómico
-              <span class="caret"></span>
-            </h3>
-          </button>
-        </div>
-        <div class="panel-body" id="panelValidoSinonimoAvanzada">
-          <%= checkboxValidoSinonimo %>
-        </div>
-      </div>
+          <div class="panel panel-info dropup" id="panelValidoSinonimoAvanzadaPt">
+            <div class="panel-heading">
+              <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
+                <h3 class="panel-title">Estatus taxonómico
+                  <span class="caret"></span>
+                </h3>
+              </button>
+            </div>
+            <div class="panel-body" id="panelValidoSinonimoAvanzada">
+              <%= checkboxValidoSinonimo %>
+            </div>
+          </div>
       <% end %>
 
       <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
