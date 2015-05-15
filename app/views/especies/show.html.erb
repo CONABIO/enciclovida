@@ -1,7 +1,3 @@
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" charset="utf-8" data-turbolinks-track="true"></script>
-<script data-turbolinks-track="true" src="/assets/gmaps.js"></script>
-<script data-turbolinks-track="true" src="/assets/mapas_dinamicos.js"></script>
-
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
