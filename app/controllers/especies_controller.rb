@@ -373,7 +373,6 @@ class EspeciesController < ApplicationController
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if distinct
-            Rails.logger.info "---#{busqueda.gsub('datos_basicos','select_count')}"
             totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
             if totales > 0

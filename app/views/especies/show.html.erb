@@ -176,6 +176,69 @@
             }
         });
 
+        // Edita el nombre comun principal
+        $('#edita_nom_com_principal').dialog({
+            modal: true,
+            title: 'Cambia o pon un nuevo nombre común',
+            autoOpen: false,
+            width: 700,
+            open: function( event, ui ) {
+                $('#edita_nom_com_principal').loadingShades('Cargando...', {cssClass: 'smallloading'});
+                //$('#edita_nom_com_principal').load('/adicionales/'+TAXON.id+'/edita_nom_comum', function() {
+                    /*var photoSelectorOptions = {
+                        defaultQuery: TAXON.nombre_cientifico,
+                        skipLocal: true,
+                        baseURL: '/conabio/photo_fields',
+                        taxon_id: TAXON.id,
+                        urlParams: {
+                            authenticity_token: $('meta[name=csrf-token]').attr('content'),
+                            limit: 14
+                        },
+                        afterQueryPhotos: function(q, wrapper, options) {
+                            $(wrapper).imagesLoaded(function() {
+                                $('#edita_nom_com_principal').centerDialog()
+                            })
+                        }
+                    };
+
+                    $('.tabs', this).tabs({
+                        beforeActivate: function( event, ui ) {
+                            if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                //$('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/flickr/photo_fields'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
+                                )
+                            } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
+                                $('.taxon_photos', ui.newPanel).photoSelector(
+                                        $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
+                                )
+                            }
+
+                            $(ui.newPanel).addClass('loaded')
+                            $('#edita_nom_com_principal').centerDialog()
+                        },
+                        create: function( event, ui) {
+                            $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
+                            $(ui.panel).addClass('loaded')
+                            $('#edita_nom_com_principal').centerDialog()
+                        }
+                    });*/
+                //});
+            }
+        });
+
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
@@ -249,7 +312,8 @@
 <div class="titulo">
   <h1>
     <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
-    <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? && current_usuario.id == 1 %>
+    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') %>
+    <div id="edita_nom_com_principal" class="dialog" style="display: none"></div>
   </h1>
   <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
