@@ -58,6 +58,8 @@ class Especie < ActiveRecord::Base
         iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
+  # Datos sacar los IDs unicos de especies
+  scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
 
 
   POR_PAGINA = [100, 200, 500, 1000]

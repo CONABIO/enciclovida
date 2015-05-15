@@ -292,9 +292,11 @@ class EspeciesController < ApplicationController
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
+          condiciones = []
+          joins = []
           busqueda = 'Especie.datos_basicos'
 
-          joins = condiciones = conID = nombre_cientifico = ''
+          conID = nombre_cientifico = ''
           distinct = false
 
           params.each do |key, value|  #itera sobre todos los campos
@@ -306,13 +308,13 @@ class EspeciesController < ApplicationController
             end
 
             if key == 'nombre_cientifico' && value.present? && conID.blank?
-              nombre_cientifico+= value.gsub("'", "''")
-              condiciones+= ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico}\")"
+              nombre_cientifico << value.gsub("'", "''")
+              condiciones << ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico}\")"
             end
 
             if key == 'nombre_comun' && value.present? && conID.blank?
-              joins+= '.nombres_comunes_join'
-              condiciones+= ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
+              joins << '.nombres_comunes_join'
+              condiciones << ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
             end
           end
 
@@ -322,72 +324,78 @@ class EspeciesController < ApplicationController
               taxon = Especie.find(conID)
 
               if taxon.is_root?
-                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
+                condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
               else
                 ancestros = taxon.ancestry_ascendente_directo
-                condiciones+= ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
+                condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
               end
 
               # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-              #limites = Bases.limites(conID)
-              condiciones+= ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
-              #condiciones+= ".where(\"especies.id BETWEEN #{limites[:limite_inferior]} AND #{limites[:limite_superior]}\")"
+              condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
             end
           else       # busquedas directas
             if conID.present?
-              condiciones+= ".caso_sensitivo('especies.id', '#{conID}')"
+              condiciones << ".caso_sensitivo('especies.id', '#{conID}')"
             else
-              condiciones+= ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
+              condiciones << ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
             end
           end
 
           #Parte del estatus
-          condiciones+= ".caso_rango_valores('estatus', '#{params[:estatus].join(',')}')" if params[:estatus].present?
+          condiciones << ".caso_rango_valores('estatus', '#{params[:estatus].join(',')}')" if params[:estatus].present?
 
           #Parte del tipo de ditribucion
           if params[:dist].present?
-            joins+= '.tipo_distribucion_join'
-            condiciones+= ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+            joins << '.tipo_distribucion_join'
+            condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
             distinct = true
           end
 
           #Parte del edo. de conservacion
           if params[:edo_cons].present?
-            joins+= '.catalogos_join'
-            condiciones+= ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+            joins << '.catalogos_join'
+            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
             distinct = true
           end
 
           # Parte de consultar solo un TAB (categoria taxonomica)
           if params[:solo_categoria] && conID.present?
-            condiciones+= ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+            condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
           end
 
-          busqueda+= joins.split('.').join('.') + condiciones      #pone los joins unicos
+          # Quita las condiciones y los joins repetidos
+          condiciones_unicas = condiciones.uniq.join('')
+          joins_unicos = joins.uniq.join('')
+          busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
           # Para sacar los resultados por categoria
           @por_categoria = Especie.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
+          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if distinct
-            longitud = eval(busqueda).order('nombre_cientifico ASC').distinct.length
-            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            Rails.logger.info "---#{busqueda.gsub('datos_basicos','select_count')}"
+            totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
-            if longitud > 0
-              if params[:checklist]=="1" #Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
+            if totales > 0
+              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+              if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
                 @taxones = Especie.por_arbol(busqueda)
                 checklists
               else
-                @taxones = eval(busqueda).order('nombre_cientifico ASC').distinct.to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-                @taxones = Especie.find_by_sql(@taxones)
+                query = eval(busqueda).distinct.to_sql
+                consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+                @taxones = Especie.find_by_sql(consulta)
               end
             end
           else
-            longitud = eval(busqueda).order('nombre_cientifico ASC').count
-            @paginacion = paginacion(longitud, params[:pagina] ||= 1, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            totales = eval(busqueda).count
 
-            if longitud > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(params[:pagina].to_i-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              if params[:checklist]=="1" #Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
+            if totales > 0
+              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+
+              if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
                 @taxones = Especie.por_arbol(busqueda, true)
                 checklists(true)
               end
