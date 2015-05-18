@@ -252,7 +252,7 @@
 
 <div class="titulo">
   <h1>
-    <%= "#{tituloNombreCientifico(@especie, :show => true)}".html_safe %>
+    <%= "#{tituloNombreCientifico(@especie, :show => true, :es_titulo => true).gsub!(' )',')')}".html_safe %>
     <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? && current_usuario.id == 1 %>
   </h1>
   <%= datos_principales(@especie).html_safe %>
