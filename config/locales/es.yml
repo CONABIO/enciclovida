@@ -278,6 +278,10 @@ es:
     errors:
       <<: *errors
   activerecord:
+    attributes:
+      adicional:
+        select_nom_comun: 'En catálogos'
+        text_nom_comun: 'Otro'
     errors:
       <<: *errors
   will_paginate:

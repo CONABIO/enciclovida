@@ -397,4 +397,21 @@ class Especie < ActiveRecord::Base
     ad.foto_principal = foto_principal
     ad
   end
+
+  def nom_com_prin(humanizar = true)
+    begin  # Para diferenciar el nombre_comun_principal de la tabla especies a la de adicionales
+      taxon_icono.present?
+      humanizar ? nombre_comun_principal.humanizar : nombre_comun_principal
+    rescue
+      if adicional
+        if adicional.nombre_comun_principal.present?
+          humanizar ? adicional.nombre_comun_principal.humanizar : adicional.nombre_comun_principal
+        else
+          ''
+        end
+      else
+        ''
+      end
+    end
+  end
 end

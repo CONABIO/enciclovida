@@ -1,6 +1,10 @@
 Buscador::Application.routes.draw do
 
-  resources :adicionales
+  resources :adicionales do
+    collection do
+      post :actualiza_nom_comun
+    end
+  end
 
   resources :metadatos
 

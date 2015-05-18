@@ -38,34 +38,34 @@ module EspeciesHelper
     else   #vista basica
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (#{taxon.nombre_cientifico})".html_safe :
+          taxon.nom_com_prin.present? ? "#{taxon.nom_com_prin} (#{taxon.nombre_cientifico})".html_safe :
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
             "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (#{ponItalicas(taxon)})".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (#{ponItalicas(taxon)})".html_safe :
+            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especy_path(taxon))} (#{ponItalicas(taxon)})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nombre_comun_principal.humanizar} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
               "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
       else
         if params[:title]
-          taxon.nombre_comun_principal.present? ? "#{taxon.nombre_comun_principal.humanizar} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+          taxon.nom_com_prin.present? ? "#{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
             "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especy_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
           else
-            taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun_principal.humanizar, especy_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especy_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especy_path(taxon))}".html_safe
           end
         elsif params[:show]
-          taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nombre_comun_principal.humanizar} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
               "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
@@ -283,7 +283,7 @@ module EspeciesHelper
     if I18n.locale.to_s == 'es-cientifico'
       nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
     else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nombre_comun_principal}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false)}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
     end
 
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}

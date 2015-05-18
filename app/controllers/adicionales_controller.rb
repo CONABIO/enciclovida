@@ -2,6 +2,7 @@ class AdicionalesController < ApplicationController
   skip_before_filter :set_locale
   before_action :authenticate_usuario!
   before_action :set_adicional, only: [:show, :edit, :update, :destroy]
+  before_action :actualiza_nom_comun_params, only: :actualiza_nom_comun
   layout false, only: [:edita_nom_comun]
 
   # GET /adicionales
@@ -72,18 +73,43 @@ class AdicionalesController < ApplicationController
       render :_error
     end
 
+    render :_error if !@adicional = @especie.adicional
     @nombres_comunes = @especie.nombres_comunes
-    @adicional = @especie.adicional
+    if @nombres_comunes.any?
+      @nombres_comunes = @nombres_comunes.distinct.map{|nc| ["#{nc.nombre_comun.humanizar} (#{nc.lengua})", nc.nombre_comun.humanizar]}.sort
+    end
+  end
+
+  def actualiza_nom_comun
+    @adicional = Adicional.find(params[:adicional][:id])
+
+    Rails.logger.info "---#{}"
+    if params[:adicional][:text_nom_comun].present?
+      @adicional.nombre_comun_principal = params[:adicional][:text_nom_comun]
+    elsif params[:adicional][:select_nom_comun].present?
+      @adicional.nombre_comun_principal = params[:adicional][:select_nom_comun]
+    else
+      @adicional.nombre_comun_principal = nil
+    end
+
+    @adicional.save if @adicional.nombre_comun_principal_changed?
+
+    redirect_to especy_url(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_adicional
-      @adicional = Adicional.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_adicional
+    @adicional = Adicional.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def adicional_params
-      params[:adicional]
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def adicional_params
+    params[:adicional]
+  end
+
+  # Parametros permitidos para actualizar el nombre comun
+  def actualiza_nom_comun_params
+    params.require(:adicional).permit(:id, :select_nom_comun, :text_nom_comun)
+  end
 end

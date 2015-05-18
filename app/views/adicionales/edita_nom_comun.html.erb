@@ -1,0 +1,38 @@
+<p>
+  <code>Ojo: Este cambio solo se verá reflejado solo en la vista predeterminada</code>
+</p>
+<%= form_for @adicional, url: {action: 'actualiza_nom_comun'}, :method => :post do |f| %>
+    <%= f.hidden_field :id, :value => @adicional.id %>
+    <% if @nombres_comunes.any? %>
+        <% nombres_comunes = @nombres_comunes.map{|nombre, id| id} %>
+
+        <%= f.label :select_nom_comun %>:
+        <% if nombres_comunes.include?(@adicional.nombre_comun_principal.humanizar) %>
+
+            <%= f.select :select_nom_comun, @nombres_comunes << %w(Otro Otro),
+                         :selected => @adicional.nombre_comun_principal.humanizar,
+                         :prompt => '---Selecciona---' %>
+
+            <p>
+              <%= f.label :text_nom_comun %>:
+              <%= f.text_field :text_nom_comun, :disabled => true %>
+            </p>
+        <% else %>
+            <%= f.select :select_nom_comun, @nombres_comunes << %w(Otro Otro),
+                         :selected => 'Otro',
+                         :prompt => '---Selecciona---' %>
+
+            <p>
+              <%= f.label :text_nom_comun %>:
+              <%= f.text_field :text_nom_comun, :value => @adicional.nombre_comun_principal %>
+            </p>
+        <% end %>
+    <% else %>
+        <p>
+          <%= f.label :text_nom_comun %>:
+          <%= f.text_field :text_nom_comun, :value => @adicional.nombre_comun_principal %>
+        </p>
+    <% end %>
+
+    <%= f.submit :value => 'Actualizar' %>
+<% end %>
