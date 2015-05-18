@@ -1,6 +1,10 @@
 class AdicionalesController < ApplicationController
   skip_before_filter :set_locale
   before_action :authenticate_usuario!
+  before_action do
+    permiso = tiene_permiso?(10)  # Minimo curador basico
+    render :_error unless permiso
+  end
   before_action :set_adicional, only: [:show, :edit, :update, :destroy]
   before_action :actualiza_nom_comun_params, only: :actualiza_nom_comun
   layout false, only: [:edita_nom_comun]
@@ -92,9 +96,15 @@ class AdicionalesController < ApplicationController
       @adicional.nombre_comun_principal = nil
     end
 
-    @adicional.save if @adicional.nombre_comun_principal_changed?
-
-    redirect_to especy_url(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
+    if @adicional.nombre_comun_principal_changed?
+      if @adicional.save
+        redirect_to especy_url(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
+      else
+        redirect_to especy_url(@adicional.especie_id), notice: 'Lo sentimos en este momento no se puede actualizar.'
+      end
+    else
+      redirect_to especy_url(@adicional.especie_id), notice: 'No se detecto ningun cambio en el nombre común.'
+    end
   end
 
   private

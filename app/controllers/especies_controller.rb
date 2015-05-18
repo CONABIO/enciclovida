@@ -3,7 +3,11 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:datos_principales, :kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
-  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :description]
+  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
+  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados] do
+    permiso = tiene_permiso?(100)  # Minimo administrador
+    render :_error unless permiso
+  end
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
   # pone en cache el webservice que carga por default
@@ -95,7 +99,6 @@ class EspeciesController < ApplicationController
 
   # GET /especies/1/edit
   def edit
-    redirect_to(:root, notice: 'Lo sentimos. No tienes los permisos necesarios para realizar esta acción') unless current_usuario.id == 1
   end
 
   # POST /especies

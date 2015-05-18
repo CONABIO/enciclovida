@@ -75,7 +75,24 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    { :rangos => rangos, :pagina => pagina, :rango_resultados => "Mostrando #{(pagina-1)*por_pagina+1} - #{pagina*por_pagina <= totales ? pagina*por_pagina : (pagina-1)*por_pagina + totales%por_pagina} de #{totales}",
+    { :rangos => rangos, :pagina => pagina,
+      :rango_resultados =>
+          "Mostrando #{(pagina-1)*por_pagina+1} - #{pagina*por_pagina <= totales ? pagina*por_pagina : (pagina-1)*por_pagina + totales%por_pagina} de #{totales}",
       :request => request.fullpath, :por_pagina => por_pagina, :totales => totales }
+  end
+
+  def tiene_permiso?(nivel)
+    #return false unless usuario_signed_in?
+    #return true if nivel.include?(usuario.rol_id)
+    if usuario_signed_in?
+      rol = current_usuario.rol.prioridad
+      if rol >= nivel
+        true
+      else
+        false
+      end
+    else
+      false
+    end
   end
 end
