@@ -85,19 +85,30 @@ class AdicionalesController < ApplicationController
   end
 
   def actualiza_nom_comun
+    nuevo = true
+    borro = false
     @adicional = Adicional.find(params[:adicional][:id])
 
-    Rails.logger.info "---#{}"
     if params[:adicional][:text_nom_comun].present?
       @adicional.nombre_comun_principal = params[:adicional][:text_nom_comun]
     elsif params[:adicional][:select_nom_comun].present?
+      nuevo = false
+      borro = true
       @adicional.nombre_comun_principal = params[:adicional][:select_nom_comun]
     else
+      nuevo = false
+      borro = true
       @adicional.nombre_comun_principal = nil
     end
 
     if @adicional.nombre_comun_principal_changed?
       if @adicional.save
+        if nuevo
+          @adicional.actualiza_o_crea_nom_com_en_redis
+        elsif borro
+          @adicional.borra_nom_comun_en_redis
+        end
+
         redirect_to especy_url(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
       else
         redirect_to especy_url(@adicional.especie_id), notice: 'Lo sentimos en este momento no se puede actualizar.'

@@ -56,8 +56,4 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.icono, ic
     data << "\"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end
-
-  def actualiza_crea_registro_redis
-
-  end
 end
