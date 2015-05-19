@@ -264,7 +264,7 @@
 <div>
   <h4>
     <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') %>
+    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
     <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
   </h4>
   <%= datos_principales(@especie).html_safe %>
