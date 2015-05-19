@@ -38,11 +38,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to "Inicio (#{CONFIG.site_name_short})", especies_url, class: "navbar-brand" %>
+      <%= link_to "".html_safe, especies_url, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 126px; background-size: cover; background-position: bottom left; background-repeat-x: no-repeat; background-repeat-y: no-repeat;" %>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <!--div id="cse-search-form" class="form-control navbar-form navbar-right" style="width: 20%; padding-top:.45%; ">Cargando...</div-->
-      <ul class="nav navbar-nav navbar-right">
+    <div id="navbar" class="navbar-collapse collapse" style="background-image: url('/assets/app/backEncabeza.png'); background-size: contain; background-position: bottom right; background-repeat-x: no-repeat; background-repeat-y: no-repeat;">
+      <ul class="nav navbar-nav navbar-right" style="margin-right: 30%">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
                 <li><%= link_to :Listas, listas_url %></li>
@@ -71,7 +70,7 @@
 </nav>
 
 
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 20px;">
   <div class="row">
 
     <% if params[:checklist].blank? %>
@@ -85,7 +84,7 @@
         <% if params[:action]=='index' && params[:controller]=='especies'%>
             <%= yield %>
           <% else %>
-            <div class="panel panel-success">
+            <div class="panel panel-success" style="margin-top: 10px">
               <div class="panel-body">
                 <%= yield %>
               </div>
