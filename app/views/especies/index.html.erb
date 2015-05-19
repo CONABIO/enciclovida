@@ -4,17 +4,12 @@
 
 <%= form_tag '/especies/destruye_seleccionados' %>
 <p id="notice"><%= notice %></p>
-
-<div class="titulo">
-  <h1 class="sub-header"><%= @titulo %></h1>
+<div class="panel panel-success">
+    <div class="panel-body">
+        <legend>Arreglo taxonómico</legend>
+        <%= render :partial => 'arbol' %>
+    </div>
 </div>
-
-<br><br>
-
-<fieldset>
-  <legend class="leyenda">Arreglo taxonómico</legend>
-  <%= render :partial => 'arbol' %>
-</fieldset>
 
 <div class="panel panel-success">
   <div class="panel-heading">

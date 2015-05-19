@@ -3,7 +3,7 @@
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
 <% geo = JSON.parse(geodatos) if geodatos %>
 
-<style>
+<style xmlns="http://www.w3.org/1999/html">
     #map
     {
         margin: 0px auto;
@@ -261,12 +261,12 @@
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
-<div class="titulo">
-  <h1>
-    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub!(' )',')')}".html_safe %>
+<div>
+  <h4>
+    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
     <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') %>
-    <div id="edita_nom_com_principal" class="dialog" style="display: none"></div>
-  </h1>
+    <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+  </h4>
   <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
 
@@ -278,28 +278,29 @@
 </div>
 
 <% if geo && geo.count > 0 %>
-    <div style="width: 40%; float:left;">
+    <div style="width: 45%; float:left;">
 <% else %>
     <div style="width: 100%; float:left;">
 <% end %>
 
-<div id="photoscol" class="column span-13">
-  <div id="photos">
-    <%= render :partial => 'photos', :locals => { :photos => @photos } %>
-    <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
-  </div>
+        <div id="photoscol" class="embed-responsive embed-responsive-4by3">
+          <div id="photos" >
+            <%= render :partial => 'photos', :locals => { :photos => @photos } %>
+            <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
+          </div>
 
-  <% if usuario_signed_in? %>
-      <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-      <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-  <% end %>
-</div>
-</div>
+          <% if usuario_signed_in? %>
+              <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+              <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+          <% end %>
+        </div>
+    </div>
 
 <% if geo && geo.count > 0 %>
-    <div style="width: 60%; float:right;">
-      <div id="map"></div>
-      <strong>NOTA:</strong> La distribución es sólo de México
+    <div style="width: 45%; float:right;">
+        <div class="embed-responsive embed-responsive-4by3">
+          <div id="map"></div>
+        </div> <strong>NOTA:</strong> La distribución es sólo de México
     </div>
 <% end %>
 

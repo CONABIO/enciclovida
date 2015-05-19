@@ -59,6 +59,8 @@ class Adicional < ActiveRecord::Base
       data << "\"nombre_icono\":\"sin_icono\", \"icono\":\"icono\", \"color\":\"color_icono\", "
     end
 
+    # Para diferecnia el campo que no saldra en el autocompletado de la vista avanzada
+    data << "\"basica\":1, "
     data << "\"autoridad\":\"#{especie.nombre_autoridad.limpia}\", \"id\":#{especie.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[especie.estatus]}\"}"
     data << "}\n"
   end

@@ -70,7 +70,11 @@ class UsuariosController < ApplicationController
     if filtro.present? && filtro.html.present?
       render :text => filtro.html.html_safe
     else
-      # Por default hace render de filtros
+      if I18n.locale.to_s == 'es-cientifico'
+        render :filtros_avanzada
+      else
+        render :filtros
+      end
     end
   end
 
