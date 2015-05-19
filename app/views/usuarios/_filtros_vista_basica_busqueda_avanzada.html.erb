@@ -1,0 +1,61 @@
+<div id="busqueda_avanzada" style="display: none" >
+  <%= form_tag resultados_especies_path, :method => :get, :id => :b_avanzada  do %>
+
+      <%= radioGruposIconicos.html_safe %>
+
+      <%= hidden_field_tag :busqueda, :avanzada %>
+      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+
+      <div class=" dropup">
+        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
+      </div>
+
+      <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
+            <h4 class="panel-title">Categoria taxonómica
+              <span class="caret"></span>
+            </h4>
+          </button>
+        </div>
+        <div class="panel-body" id="panelCategoriaTaxonomica">
+          <div id="datos_cat">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-success" id="panelEstadoConservacionPt">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
+            <h4  class="panel-title">Categorías de riesgo
+              <span class="caret"></span>
+            </h4>
+          </button>
+        </div>
+        <div class="panel-body" id="panelEstadoConservacion" style="display: none">
+          <div class="checkbox">
+            <%= checkboxEstadoConservacion %>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-success" id="panelTipoDistribucionEnPt">
+        <div class="panel-heading">
+          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
+            <h4 class="panel-title">Tipo de distribución
+              <span class="caret"></span>
+            </h4>
+
+            <i><small>(Predeterminada: Cualquiera)</small></i>
+          </button>
+        </div>
+        <div class="panel-body" id="panelTipoDistribucionEn" style="display: none">
+          <div class="checkbox">
+            <%= checkboxTipoDistribucion %>
+          </div>
+        </div>
+      </div>
+      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
+
+  <% end %>
+</div>
