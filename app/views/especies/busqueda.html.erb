@@ -217,16 +217,17 @@
                 if (id != id_radio)
                 {
                     $('#id_nom_cientifico_' + id_radio).attr('checked', false);
-                    $(this).css({"border-color": "#f5f5f5"});
+                    $(this).removeClass("busqueda_atributo_radio_seleccionado");
                 }
             });
 
             $('#id_nom_cientifico_' + id).prop('checked', true);
-            $(this).css({"border-color": "#dc5838"});
+            //$(this).css({"border-color": "#dc5838"});
+            $(this).addClass("busqueda_atributo_radio_seleccionado");
             cat_tax_asociadas(id);
         });
 
-        $(document).on('mouseover', ".busqueda_atributo_radio", function()
+        /*$(document).on('mouseover', ".busqueda_atributo_radio", function()
         {
             var id = $(this).attr('id_icono');
 
@@ -241,15 +242,15 @@
             });
 
             $(this).css({"border-color": "#dc5838"});
-        });
+        });*/
 
-        $(document).on('mouseout', ".busqueda_atributo_radio", function()
+        /*$(document).on('mouseout', ".busqueda_atributo_radio", function()
         {
             var id = $(this).attr('id_icono');
 
             if (!$('#id_nom_cientifico_' + id).prop('checked'))
                 $(this).css({"border-color": "#f5f5f5"});
-        });
+        });*/
 
         $(document).on('change', "#nivel, #cat", function()
         {

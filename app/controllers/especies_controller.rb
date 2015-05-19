@@ -449,10 +449,7 @@ class EspeciesController < ApplicationController
           padres[p.to_i]=''
         end
       end
-      sql = "select  especies.id, nombre_cientifico, nombre_autoridad, estatus, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, icono, nombre_icono from especies left join categorias_taxonomicas on categoria_taxonomica_id = categorias_taxonomicas.id
-      where  especies.id in (#{padres.keys.join(',')})
-      order by arbol" #Este query se tiene que limpiar utilizando los metoditos que calonso creo con "plenty effort""
-      @taxones = Especie.find_by_sql(sql)
+      @taxones = Especie.datos_arbol_sin_filtros.where("especies.id in (#{padres.keys.join(',')})").order('arbol')
     end
   end
 
