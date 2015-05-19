@@ -494,6 +494,7 @@ module EspeciesHelper
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
 
+      # Para dejar el espacio despues de los reinos
       if columnas == 6
         radios << '<br>'
         columnas = 7
