@@ -29,6 +29,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
+    EnviaTaxonomia.correo_prueba.deliver
     @photos = @especie.photos.order(:type)
 
     respond_to do |format|
@@ -69,9 +70,17 @@ class EspeciesController < ApplicationController
           break unless @description.blank?
         end
 
-        render :pdf => @especie.nombre_cientifico.gsub(' ','_'),
+        ruta = Rails.root.join('public', 'pdfs').to_s
+        fecha = Time.now.strftime("%Y%m%d%H%M%S")
+        pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+        FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+        #render :pdf => @especie.nombre_cientifico.parameterize,
+        render :pdf => @especie.nombre_cientifico.parameterize,
+               :save_to_file => pdf,
+               :save_only => true,
                :template => 'especies/show.pdf.erb',
-               :encoding => 'UTF-8'
+               :encoding => 'UTF-8',
+               :wkhtmltopdf => '/usr/bin/wkhtmltopdf'
       end
     end
   end
