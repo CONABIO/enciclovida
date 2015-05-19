@@ -4,7 +4,7 @@
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding-top: 50px;
+ padding-top: 85px;
 }
 
 
@@ -34,20 +34,26 @@ body {
   display: none;￼
 }
 @media (min-width: 768px) {
-  .sidebar {
+  .sidebar{
     position: fixed;
-    top: 100px;
-    bottom: 70px;
-    left: 5px;
+    top: 115px;
+    /*bottom: 70px;*/
+    /*left: 5px;*/
     z-index: 1000;
     display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    padding: 10px;
+    overflow-x: auto;
     background-color: #f5f5f5;
     border: 1px solid #998370;
     border-radius: 5px;
   }
+  .sidebar_busqueda_avanzada_ambas_vistas{
+    bottom: 70px;  
+    overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
+  }
+    .sidebar_busqueda_basica_vista_basica{
+        display: none;
+    }
 }
 
 /* Sidebar navigation */

@@ -4,22 +4,24 @@
 
 .busqueda_atributo_radio {
   display: inline-table;
-  border-left: 1px solid #998370;
-  border-top: 1px solid #998370;
-  /*border-radius:7px;*/
+  border: 1px solid #eee9ed;
+  border-left: 1px solid #d0b091;
+  border-top: 1px solid #d0b091;
+  border-radius:2px;
   margin:0px 0px;
-  padding: 1px;
-  background-color: #f9f9f9;
+  padding: 0px;
+  background-color: #eee9ed;
 }
 
 .busqueda_atributo_radio_seleccionado, .busqueda_atributo_radio:hover {
   border: 2px solid #dc5838;
-  border-left: 0px solid #dc5838;
-  border-top: 0px solid #dc5838;
-  margin:0px 1px 0px 0px;
+  border-left: 1px solid #d0b091;
+  border-top: 1px solid #d0b091;
   padding: 0px;
-  border-radius:8px;
-  background-color: transparent ;
+  margin:0px 0px 0px 0px;
+  border-radius:6px;
+  border-top-left-radius: 3px;
+  background-color: #f0ddd7;
 }
 
 //Para que la foto no se salga del tamanio

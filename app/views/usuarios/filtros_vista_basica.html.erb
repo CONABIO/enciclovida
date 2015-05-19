@@ -1,9 +1,5 @@
 <%= render :partial => 'usuarios/filtros_vista_basica_busqueda_basica' %>
 <%= render :partial => 'usuarios/filtros_vista_basica_busqueda_avanzada' %>
-
-<div>
-  <%= label_tag :per_page, "Mostrar", :class => "control-label" %>
-  <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
-  <%= label_tag :limpiar, "Resultados por página", :class => "control-label"  %>
-  <%= button_tag 'Limpiar búsqueda', :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
-</div>
+    <div>
+      <%= button_tag 'Limpiar búsqueda', :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
+    </div>
