@@ -14,6 +14,9 @@
   <div id="widget_listas" style="display: none"></div>
 </div>
 
+<p align="right">
+  Descargar en <%= link_to(image_tag('app/pdf.png', title: 'Verificación de listado'), request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank) %>
+</p>
 <div style="width: 100%; float:left;">
   <ul>
     <% @taxones.each do |taxon| %>

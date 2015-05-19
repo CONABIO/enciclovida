@@ -423,8 +423,26 @@ class EspeciesController < ApplicationController
             end
           elsif params[:pagina].present? && params[:pagina].to_i > 1
               render :partial => 'especies/_resultados'
+
           elsif params[:checklist].present? && params[:checklist].to_i == 1
-            render 'especies/checklists'
+            respond_to do |format|
+              format.html { render 'especies/checklists' }
+              format.pdf do  #Para imprimir el listado en PDF
+                ruta = Rails.root.join('public', 'pdfs').to_s
+                fecha = Time.now.strftime("%Y%m%d%H%M%S")
+                pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+                FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+
+                render :pdf => 'listado_de_especies',
+                       :save_to_file => pdf,
+                       #:save_only => true,
+                       :template => 'especies/checklists.pdf.erb',
+                       :encoding => 'UTF-8',
+                       :wkhtmltopdf => '/usr/bin/wkhtmltopdf',
+                       :orientation => 'Landscape'
+              end
+            end
+            #render 'especies/checklists'
           end
 
         else
