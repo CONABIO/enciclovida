@@ -29,7 +29,7 @@
 
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -82,7 +82,15 @@
 
     <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
       <div class="table-responsive">
-        <%= yield %>
+        <% if params[:action]=='index' && params[:controller]=='especies'%>
+            <%= yield %>
+          <% else %>
+            <div class="panel panel-success">
+              <div class="panel-body">
+                <%= yield %>
+              </div>
+            </div>
+          <% end %>
       </div>
     </div>
 
@@ -90,6 +98,14 @@
 </div>
 
 <%= bitacora.html_safe if bitacora.present? %>
-
+<footer class="footer">
+      <div class="container">
+        <p class="text-muted">
+            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
+            Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
+            Delegación Tlalpan, 14010, México, D.F.
+        </p>
+      </div>
+</footer>
 </body>
 </html>

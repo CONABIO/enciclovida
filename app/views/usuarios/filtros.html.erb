@@ -40,7 +40,6 @@
   <div class="">
     <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_avanzada();' %>
   </div>
-
 </div>
 
 <div id="busqueda_avanzada" style="display: none" >
@@ -55,7 +54,7 @@
         <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => 'return busqueda_basica();' %>
       </div>
 
-      <div class="panel panel-info" id="panelCategoriaTaxonomicaPt" style="display: none;">
+      <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
             <h4 class="panel-title">Categoria taxonómica
@@ -69,7 +68,7 @@
         </div>
       </div>
 
-      <div class="panel panel-info" id="panelEstadoConservacionPt">
+      <div class="panel panel-success" id="panelEstadoConservacionPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
             <h4  class="panel-title">Categorías de riesgo
@@ -84,7 +83,7 @@
         </div>
       </div>
 
-      <div class="panel panel-info" id="panelTipoDistribucionEnPt">
+      <div class="panel panel-success" id="panelTipoDistribucionEnPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
             <h4 class="panel-title">Tipo de distribución
@@ -100,7 +99,6 @@
           </div>
         </div>
       </div>
-
       <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
 
   <% end %>

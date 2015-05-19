@@ -10,9 +10,10 @@
  *
  *= require_self
  *= //require_tree .
- *= require bootstrap.min
- *= require bootstrap-theme.min
+ *= require bootstrap
+ *= require bootstrap-theme
  *= require dashboard
+ *= require sticky-footer
  *= //require bootstrap.css.map
  *= //require bootstrap-theme.css.map
  *= require especies
@@ -29,10 +30,22 @@
  */
 
 /*
-*= require jquery.ui.core
-*= require jquery.ui.theme
+*= //require jquery.ui.core
+*= //require jquery.ui.theme
 *= require dataTables/src/demo_table_jui
 */
+
+@font-face {
+    font-family: 'texgyreadventorregular';
+    src: url('../fonts/texgyreadventor-regular-webfont.eot');
+    src: url('../fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/texgyreadventor-regular-webfont.woff') format('woff'),
+         url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
+         url('../fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 
 #notice, .enlaces_acciones, #bitacora, .notice {
     text-align: center;
