@@ -489,12 +489,20 @@ module EspeciesHelper
 
   def radioGruposIconicos
     radios = ''
+    columnas = 1
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
 
+      if columnas == 6
+        radios << '<br>'
+        columnas = 7
+      end
+
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display:none')
       radios << ponIcono(taxon, con_recuadro: true)
+      radios << '<br>' if columnas%6 == 0
+      columnas+=1
     end
     "<div>#{radios}</div>"
   end
