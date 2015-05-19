@@ -47,12 +47,13 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.icono, ic
 
   def exporta_redis(taxon)
     return unless ad = taxon.adicional
+    return unless ic = ad.icono
 
     data = ''
     data << "{\"id\":#{id}#{0},"  #el ID de nombres_comunes no es unico (varios IDS repetidos)
     data << "\"term\":\"#{nombre_comun.limpia}\","
     data << "\"data\":{\"nombre_cientifico\":\"#{taxon.nombre_cientifico}\", "
-    data << "\"nombre_icono\":\"#{ad.nombre_icono}\", \"icono\":\"#{ad.icono}\", \"color\":\"#{ad.color_icono}\", "
+    data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
     data << "\"autoridad\":\"#{taxon.nombre_autoridad.limpia}\", \"id\":#{taxon.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[taxon.estatus]}\"}"
     data << "}\n"
   end

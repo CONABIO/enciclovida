@@ -488,8 +488,9 @@ module EspeciesHelper
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
+
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :class => 'busqueda_atributo_radio')
-      radios << ponIcono(taxon)
+      radios << ponIcono(taxon, con_recuadro: true)
     end
     "<div>#{radios}</div>"
   end
