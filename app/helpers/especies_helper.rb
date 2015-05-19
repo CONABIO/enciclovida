@@ -97,7 +97,11 @@ module EspeciesHelper
     if ic.nil?  # Puede que no tenga icono
       "<i title=\"Sin ícono\" style=\"color:black;font-size:0px;\" class=\"sin_icono\"></i>"
     else
-      "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+      if params[:con_recuadro]
+        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono} busqueda_atributo_radio\" id_icono=\"#{taxon.id}\"></i>"
+      else
+        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+      end
     end
   end
 
@@ -484,12 +488,21 @@ module EspeciesHelper
 
   def radioGruposIconicos
     radios = ''
+    columnas = 1
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
 
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :class => 'busqueda_atributo_radio')
+      # Para dejar el espacio despues de los reinos
+      if columnas == 6
+        radios << '<br>'
+        columnas = 7
+      end
+
+      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display:none')
       radios << ponIcono(taxon, con_recuadro: true)
+      radios << '<br>' if columnas%6 == 0
+      columnas+=1
     end
     "<div>#{radios}</div>"
   end

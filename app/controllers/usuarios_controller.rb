@@ -71,9 +71,9 @@ class UsuariosController < ApplicationController
       render :text => filtro.html.html_safe
     else
       if I18n.locale.to_s == 'es-cientifico'
-        render :filtros_avanzada
+        render :filtros_vista_avanzada
       else
-        render :filtros
+        render :filtros_vista_basica
       end
     end
   end
