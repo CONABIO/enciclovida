@@ -48,13 +48,7 @@ module EspeciesHelper
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
           end
         elsif params[:show]
-<<<<<<< HEAD
-          taxon.nombre_comun_principal.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nombre_comun_principal.humanizar} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]  unless params[:es_titulo]})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
-=======
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
->>>>>>> upstream/sql-server
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]})".html_safe : "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
