@@ -60,7 +60,9 @@ class Especie < ActiveRecord::Base
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies
   scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
-
+  #Select para el Checklist (por_arbol)
+  scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono, iconos.color_icono").categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join.icono_join }
 
   POR_PAGINA = [100, 200, 500, 1000]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -148,14 +150,15 @@ class Especie < ActiveRecord::Base
 
   def self.por_arbol(busqueda, sin_filtros=false)
     if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
-      sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, icono, nombre_icono")'
-      busq = busqueda.sub(/select\(.+mica'\)/, sql)
+      #sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, icono, nombre_icono")'
+      puts ('---'+busqueda)
+      busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
       busq = busq.sub(/\.where\(\"CONCAT.+/,'')
       busq << ".order('arbol')"
       eval(busq)
     else # Las condiciones y el join son los mismos pero cambia el select, para desplegar el checklist
-      sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'
-      busq = busqueda.sub(/select\(.+mica'\)/, sql)
+      #sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'[
+      busq = busqueda.gsub("datos_basicos", "datos_arbol_con_filtros")
       eval(busq)
     end
   end
