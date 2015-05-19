@@ -1,7 +1,3 @@
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" charset="utf-8" data-turbolinks-track="true"></script>
-<script data-turbolinks-track="true" src="/assets/gmaps.js"></script>
-<script data-turbolinks-track="true" src="/assets/mapas_dinamicos.js"></script>
-
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
@@ -180,6 +176,21 @@
             }
         });
 
+        // Edita el nombre comun principal
+        $('#edita_nom_com_principal').dialog({
+            modal: true,
+            title: 'Cambia o pon un nuevo nombre común',
+            autoOpen: false,
+            width: 700,
+            open: function( event, ui ) {
+                $('#edita_nom_com_principal').loadingShades('Cargando...', {cssClass: 'smallloading'});
+                $('#edita_nom_com_principal').load('/adicionales/'+TAXON.id+'/edita_nom_comun', function() {
+                    $(ui.panel).addClass('loaded');
+                    $('#edita_nom_com_principal').centerDialog();
+                });
+            }
+        });
+
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
@@ -252,8 +263,9 @@
 
 <div class="titulo">
   <h1>
-    <%= "#{tituloNombreCientifico(@especie, :show => true, :es_titulo => true).gsub!(' )',')')}".html_safe %>
-    <%= link_to(:Editar, edit_especy_path, :class => :link_azul, :style => 'font-size:12px;').html_safe if usuario_signed_in? && current_usuario.id == 1 %>
+    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub!(' )',')')}".html_safe %>
+    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') %>
+    <div id="edita_nom_com_principal" class="dialog" style="display: none"></div>
   </h1>
   <%= datos_principales(@especie).html_safe %>
   <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>

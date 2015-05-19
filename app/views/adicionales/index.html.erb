@@ -1,0 +1,25 @@
+<h1>Listing adicionales</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @adicionales.each do |adicional| %>
+      <tr>
+        <td><%= link_to 'Show', adicional %></td>
+        <td><%= link_to 'Edit', edit_adicional_path(adicional) %></td>
+        <td><%= link_to 'Destroy', adicional, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Adicional', new_adicional_path %>

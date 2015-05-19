@@ -1,5 +1,11 @@
 Buscador::Application.routes.draw do
 
+  resources :adicionales do
+    collection do
+      post :actualiza_nom_comun
+    end
+  end
+
   resources :metadatos
 
   devise_for :usuarios
@@ -92,6 +98,8 @@ Buscador::Application.routes.draw do
 
   match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get
+
+  match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
   match 'flickr/photo_fields' => 'flickr#photo_fields', :via => :get
   match '/conabio/photo_fields' => 'conabio#photo_fields', :via => :get
