@@ -70,21 +70,14 @@
 </nav>
 
 
-<div class="container" style="">
+<div class="container-fluid" style="">
   <div class="row">
     <% if params[:checklist].blank? %>
-        <% if I18n.locale.to_s == 'es-cientifico' %>
-            <div class="col-sm-4 col-md-3 sidebar" id="caja_filtros"><%= render :template => 'especies/busqueda' %></div>
-        <% else %>
-            <div class="col-sm-4 col-md-3 sidebar" id="caja_filtros"><%= render :template => 'especies/busqueda' %></div>
-            <!--a href="#" onclick="$('#caja_filtros').removeClass('sidebar_busqueda_basica');">Búsqueda avanzada</a-->
-        <% end %>
+        <div class="col-xs-4 col-sm-5 col-md-4 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
+        <div class="col-xs-1 col-sm-2 col-md-2 col-lg-2 sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
     <% end %>
-    <% if I18n.locale.to_s == 'es-cientifico' %>
-        <div class="col-sm-8 col-md-9 col-sm-offset-4 col-md-offset-3 main">
-    <% else %>
-        <div class="col-sm-8 col-md-9 col-sm-offset-4 col-md-offset-3 main">
-    <% end %>
+
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-9 col-xs-offset-1 col-sm-offset-2 col-md-offset-2 col-lg-offset-2 main">
       <div class="table-responsive">
         <% if params[:action]=='index' && params[:controller]=='especies'%>
             <%= yield %>

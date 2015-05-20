@@ -33,27 +33,29 @@ body {
 .sidebar {
   display: none;￼
 }
-@media (min-width: 768px) {
+@media (min-width: 872px) {
   .sidebar{
     position: fixed;
     top: 115px;
-    /*bottom: 70px;*/
-    /*left: 5px;*/
+    bottom: 20%;
+    left: 10px;
     z-index: 1000;
     display: block;
-    padding: 10px;
+    padding: 20px;
     overflow-x: auto;
-    background-color: #f5f5f5;
+    overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
+    background-color: rgba(245, 245, 245, 0.75);
     border: 1px solid #998370;
     border-radius: 5px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-left: 31px;
   }
-  .sidebar_busqueda_avanzada_ambas_vistas{
-    bottom: 70px;  
-    overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
+  .sidebar_lupa{
+    height: 66px;
+    /*margin-left: 61px;
+    margin-right: -30px;*/
   }
-    .sidebar_busqueda_basica_vista_basica{
-        display: none;
-    }
 }
 
 /* Sidebar navigation */
@@ -81,7 +83,7 @@ body {
 .main {
   padding: 20px;
 }
-@media (min-width: 768px) {
+@media (min-width: 872px) {
   .main {
     padding-right: 40px;
     padding-left: 40px;
