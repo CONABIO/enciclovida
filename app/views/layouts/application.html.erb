@@ -41,7 +41,7 @@
       <%= link_to "".html_safe, especies_url, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 126px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
     </div>
     <div id="navbar" class="navbar-collapse collapse" style="background-image: url('/assets/app/backEncabeza.png'); background-size: contain; background-position: bottom right; background-repeat: no-repeat;">
-      <ul class="nav navbar-nav" style="">
+      <ul class="nav navbar-nav" style="font-weight: bold; font-size: .88em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
                 <li><%= link_to :Listas, listas_url %></li>
