@@ -29,7 +29,6 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    EnviaTaxonomia.correo_prueba.deliver
     @photos = @especie.photos.order(:type)
 
     respond_to do |format|
