@@ -79,7 +79,7 @@ class Adicional < ActiveRecord::Base
     data << "}\n"
   end
 
-  # Pone un nuevo record en redis para el nombre comun
+  # Pone un nuevo record en redis para el nombre comun y el nombre cientifico
   def actualiza_o_crea_nom_com_en_redis
     fecha = Time.now.strftime("%Y%m%d%H%M%S")
     ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
@@ -102,19 +102,26 @@ class Adicional < ActiveRecord::Base
     system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
   end
 
-  # Para borra el registro de redis
+  # Para borra el registro del nombre comun y actualiza el del nombre cientifico
   def borra_nom_comun_en_redis
     fecha = Time.now.strftime("%Y%m%d%H%M%S")
-    ruta = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}.json").to_s
+    ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
+    ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
     carpeta_redis = Rails.root.join('tmp','redis').to_s
     categoria = I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-    json = "{\"id\":#{id}#{especie_id}}"
+    json_com = "{\"id\":#{id}#{especie_id}}"
+    json_cien = especie.exporta_redis
     Dir.mkdir(carpeta_redis, 0755) unless File.exists?(carpeta_redis)
 
-    File.open(ruta,'a') do |f|
-      f.puts(json)
+    File.open(ruta_com,'a') do |f|
+      f.puts(json_com)
     end
 
-    system("soulmate remove com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta}") if File.exists?(ruta)
+    File.open(ruta_cien,'a') do |f|
+      f.puts(json_cien)
+    end
+
+    system("soulmate remove com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
+    system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
   end
 end
