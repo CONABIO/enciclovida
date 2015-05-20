@@ -322,6 +322,20 @@ es:
       long: ! '%d de %B de %Y %H:%M'
       short: ! '%d de %b %H:%M'
     pm: pm
+  tipo_distribucion:
+    nativa:
+      icono: nativa.png
+      nombre: Nativa
+    endemica:
+      icono: endemica.png
+      nombre: Endémica
+    introducida:
+      icono: introducida.png
+      nombre: Introducida
+    invasora:
+      icono: invasora.png
+      nombre: Invasora
+
   valido_correcto: activos
   view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas con %{taxon} en <nobr>Banco de Imag&eacute;nes &raquo;</nobr>
 
