@@ -7,8 +7,10 @@ class Adicional < ActiveRecord::Base
   # Lenguas aceptadas de NaturaLista
   LENGUAS_ACEPTADAS = %w(spanish espanol_mexico huasteco maya maya_peninsular mayan_languages mazateco mixteco mixteco_de_yoloxochitl totonaco otomi nahuatl zapoteco english)
 
-  def pon_nombre_comun_principal
+  # El valido de catalogos
+  def nombre_comun_principal_catalogos
     con_espaniol = false
+    self.nombre_comun_principal = nil
 
     # Verifica el nombre en catalogos
     especie.nombres_comunes.each do |nc|
@@ -21,6 +23,10 @@ class Adicional < ActiveRecord::Base
         self.nombre_comun_principal = nc.nombre_comun.humanizar
       end
     end
+  end
+
+  def pon_nombre_comun_principal
+    nombre_comun_principal_catalogos
 
     # Si no tiene nombre comun en catalogos tratare de ponerle uno de NaturaLista
     if nombre_comun_principal.blank?
@@ -65,22 +71,10 @@ class Adicional < ActiveRecord::Base
     data << "}\n"
   end
 
-  # Para exportar el nombre cientifico con el nombre comun principal pegado
-  def exporta_nom_cien_a_redis
-    return unless ad = adicional
-    return unless ic = ad.icono
-
-    data = ''
-    data << "{\"id\":#{id},"
-    data << "\"term\":\"#{nombre_cientifico}\","
-    data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
-    data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
-    data << "}\n"
-  end
-
   # Pone un nuevo record en redis para el nombre comun y el nombre cientifico
   def actualiza_o_crea_nom_com_en_redis
+    return unless especie
+
     fecha = Time.now.strftime("%Y%m%d%H%M%S")
     ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
     ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
@@ -104,6 +98,8 @@ class Adicional < ActiveRecord::Base
 
   # Para borra el registro del nombre comun y actualiza el del nombre cientifico
   def borra_nom_comun_en_redis
+    return unless especie
+
     fecha = Time.now.strftime("%Y%m%d%H%M%S")
     ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
     ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
