@@ -40,7 +40,7 @@ module TaxonDescribers
     end
 
     def self.describer_name
-      "Wikipedia (EN)"
+      "Wikipedia (inglés)"
     end
   end
 

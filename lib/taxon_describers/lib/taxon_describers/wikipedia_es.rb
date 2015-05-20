@@ -7,7 +7,7 @@ module TaxonDescribers
     end
 
     def self.describer_name
-      "Wikipedia"
+      'Wikipedia (español)'
     end
 
     def page_url(taxon)
