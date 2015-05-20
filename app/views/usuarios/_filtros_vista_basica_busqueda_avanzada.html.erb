@@ -24,6 +24,10 @@
         </div>
       </div>
 
+      <p>
+        <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
+      </p>
+
       <div class="panel panel-success" id="panelEstadoConservacionPt">
         <div class="panel-heading">
           <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
@@ -32,7 +36,7 @@
             </h4>
           </button>
         </div>
-        <div class="panel-body" id="panelEstadoConservacion" style="display: none">
+        <div class="panel-body" id="panelEstadoConservacion">
           <div class="checkbox">
             <%= checkboxEstadoConservacion %>
           </div>
@@ -49,13 +53,12 @@
             <i><small>(Predeterminada: Cualquiera)</small></i>
           </button>
         </div>
-        <div class="panel-body" id="panelTipoDistribucionEn" style="display: none">
+        <div class="panel-body" id="panelTipoDistribucionEn">
           <div class="checkbox">
             <%= checkboxTipoDistribucion %>
           </div>
         </div>
       </div>
-      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
 
   <% end %>
 </div>

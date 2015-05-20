@@ -272,13 +272,11 @@ module EspeciesHelper
         end
 
       else
-        checkBoxes << ''
+        checkBoxes << image_tag("app/categorias_riesgo/tit#{k.upcase}.png") << '<br>'
 
         valores.each do |edo|
           next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-
-          checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"))}#{check_box_tag('edo_cons[]', edo, false, :class => "busqueda_atributo_checkbox_#{k} hide")}"
-
+          checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"))}#{check_box_tag('edo_cons[]', edo, false, :class => 'busqueda_atributo_checkbox')}"
         end
 
         checkBoxes << "<span id='seleccion_#{k}'></span>"
