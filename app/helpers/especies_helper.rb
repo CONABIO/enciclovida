@@ -250,10 +250,15 @@ module EspeciesHelper
     TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
       next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
 
-      if I18n.locale.to_s != 'es-cientifico'
-        next if TipoDistribucion::QUITAR_DIST_SOLO_BASICA.include?(tipoDist)
-      end
-      checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+        if I18n.locale.to_s != 'es-cientifico'
+          next if TipoDistribucion::QUITAR_DIST_SOLO_BASICA.include?(tipoDist)
+        end
+        if I18n.locale.to_s == 'es-cientifico'
+          checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+        else
+          #checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'></label>"
+          checkBoxes+= "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"))}#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)}"
+        end
       end
     checkBoxes.html_safe
   end
