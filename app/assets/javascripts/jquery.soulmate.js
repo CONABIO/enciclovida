@@ -111,9 +111,19 @@
           var _i, _len, _results2;
           _results2 = [];
           for (_i = 0, _len = typeResults.length; _i < _len; _i++) {
-            result = typeResults[_i];
-            this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num, result.foto));
-            _results2.push(i += 1);
+              result = typeResults[_i];
+
+              // Esto con el fin que los nombres que pusieron fuera de catalogos no se vean en la vista avanzada
+              if (I18n.locale == 'es-cientifico') {
+                  if (result.data.basica == undefined)
+                  {
+                      this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num, result.foto));
+                      _results2.push(i += 1);
+                  }
+              } else {
+                  this.suggestions.push(new Suggestion(i, result.term, result.data, type, this.num, result.foto));
+                  _results2.push(i += 1);
+              }
           }
           return _results2;
         }).call(this));

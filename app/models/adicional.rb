@@ -59,41 +59,69 @@ class Adicional < ActiveRecord::Base
       data << "\"nombre_icono\":\"sin_icono\", \"icono\":\"icono\", \"color\":\"color_icono\", "
     end
 
-    # Para diferecnia el campo que no saldra en el autocompletado de la vista avanzada
+    # Para diferenciar el campo que no saldra en el autocompletado de la vista avanzada
     data << "\"basica\":1, "
     data << "\"autoridad\":\"#{especie.nombre_autoridad.limpia}\", \"id\":#{especie.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[especie.estatus]}\"}"
     data << "}\n"
   end
 
-  # Pone un nuevo record en redis para el nombre comun
-  def actualiza_o_crea_nom_com_en_redis
-    fecha = Time.now.strftime("%Y%m%d%H%M%S")
-    ruta = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}.json").to_s
-    carpeta_redis = Rails.root.join('tmp','redis').to_s
-    categoria = I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-    json = exporta_nom_comun_a_redis
-    Dir.mkdir(carpeta_redis, 0755) unless File.exists?(carpeta_redis)
+  # Para exportar el nombre cientifico con el nombre comun principal pegado
+  def exporta_nom_cien_a_redis
+    return unless ad = adicional
+    return unless ic = ad.icono
 
-    File.open(ruta,'a') do |f|
-      f.puts(json)
-    end
-
-    system("soulmate add com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta}") if File.exists?(ruta)
+    data = ''
+    data << "{\"id\":#{id},"
+    data << "\"term\":\"#{nombre_cientifico}\","
+    data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
+    data <<  "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
+    data << "}\n"
   end
 
-  # Para borra el registro de redis
-  def borra_nom_comun_en_redis
+  # Pone un nuevo record en redis para el nombre comun y el nombre cientifico
+  def actualiza_o_crea_nom_com_en_redis
     fecha = Time.now.strftime("%Y%m%d%H%M%S")
-    ruta = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}.json").to_s
+    ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
+    ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
     carpeta_redis = Rails.root.join('tmp','redis').to_s
     categoria = I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-    json = "{\"id\":#{id}#{especie_id}}"
+    json_com = exporta_nom_comun_a_redis
+    json_cien = especie.exporta_redis
     Dir.mkdir(carpeta_redis, 0755) unless File.exists?(carpeta_redis)
 
-    File.open(ruta,'a') do |f|
-      f.puts(json)
+    File.open(ruta_com,'a') do |f|
+      f.puts(json_com)
     end
 
-    system("soulmate remove com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta}") if File.exists?(ruta)
+    File.open(ruta_cien,'a') do |f|
+      f.puts(json_cien)
+    end
+
+    system("soulmate add com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
+    system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
+  end
+
+  # Para borra el registro del nombre comun y actualiza el del nombre cientifico
+  def borra_nom_comun_en_redis
+    fecha = Time.now.strftime("%Y%m%d%H%M%S")
+    ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
+    ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
+    carpeta_redis = Rails.root.join('tmp','redis').to_s
+    categoria = I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+    json_com = "{\"id\":#{id}#{especie_id}}"
+    json_cien = especie.exporta_redis
+    Dir.mkdir(carpeta_redis, 0755) unless File.exists?(carpeta_redis)
+
+    File.open(ruta_com,'a') do |f|
+      f.puts(json_com)
+    end
+
+    File.open(ruta_cien,'a') do |f|
+      f.puts(json_cien)
+    end
+
+    system("soulmate remove com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
+    system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
   end
 end

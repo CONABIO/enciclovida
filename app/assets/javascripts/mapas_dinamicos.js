@@ -105,3 +105,31 @@ function anadeControlFullScreen()
         }
     });
 }
+
+function dimensionesIniciales()
+{
+    var wid = $('#contenedor_mapa').width()-4;
+    var hei = $('#contenedor_mapa').height()-30;
+    map.width = wid;
+    map.height = hei;
+
+    map = new GMaps({
+        div: '#map',
+        zoom: 4,
+        lat: 23.79162789,
+        lng: -102.04376221,
+        mapTypeId: google.maps.MapTypeId.HYBRID,
+        height: hei + 'px',
+        width: wid + 'px'
+    });
+}
+
+function redimensionaGmaps()
+{
+    var wid = $('#contenedor_mapa').width()-4;
+    var hei = $('#contenedor_mapa').height()-30;
+    document.getElementById("map").style.position="relative";
+    document.getElementById("map").style.height=hei+"px";
+    document.getElementById("map").style.width=wid+"px";
+    google.maps.event.trigger(map.map, 'resize');
+}

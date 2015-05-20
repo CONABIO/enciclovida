@@ -197,17 +197,8 @@
 
             if (CUANTOS_KMZ > 0)
             {
-                console.log(MAPAS);
+                dimensionesIniciales();
                 // Inicia el mapa
-                map = new GMaps({
-                    div: '#map',
-                    zoom: 4,
-                    lat: 23.79162789,
-                    lng: -102.04376221,
-                    mapTypeId: google.maps.MapTypeId.HYBRID,
-                    height: "450px",
-                    width: "450px"
-                });
 
                 for (var i = 0; i < MAPAS.length; i++) {
                     infoWindow = new google.maps.InfoWindow({});
@@ -244,8 +235,15 @@
 
                 anadeControlFullScreen();
                 anadeControlCapas();
+
+                $(window).resize(function(){
+                    redimensionaGmaps(function(){
+                        google.maps.event.trigger(map.map, 'resize');
+                    });
+                });
             }
         }
+
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -264,7 +262,7 @@
 <div>
   <h4>
     <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') %>
+    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
     <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
   </h4>
   <%= datos_principales(@especie).html_safe %>
@@ -300,7 +298,7 @@
     </div>
 
 <% if geo && geo.count > 0 %>
-    <div style="width: 45%; float:right;">
+    <div style="width: 45%; float:right;" id="contenedor_mapa">
         <div class="embed-responsive embed-responsive-4by3">
           <div id="map"></div>
         </div> <strong>NOTA:</strong> La distribución es sólo de México
