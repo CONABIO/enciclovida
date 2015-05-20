@@ -7,8 +7,13 @@
 <div class="panel panel-success" style="margin-top: -10px">
     <div class="panel-body">
       <img src="/assets/app/imgPortada.png" class="img-responsive">
-            <p>Las especies se reúnen en géneros, los géneros en familias, las familias en órdenes, los órdenes en clases, y las clases en divisiones para las plantas y en phyla para los animales. Las divisiones se agrupan en reinos y los reinos en dominios.</p>
-        <legend>Arreglo taxonómico</legend>
+          <p>Bios integra información de especies que viven en México, como nombres científicos, nombres comunes, descripciones, biología, ecología, usos,  categorías de riesgo nacional (Norma 059) e internacional (IUCN), comercio internacional (CITES), registros de distribución geográfica e imágenes.</p>
+          <p>El contenido e imágenes provienen de CONABIO y de otras fuentes (Enciclopedia de la Vida (EOL), NaturaLista, Wikipedia, Flicker). </p>
+          <% if I18n.locale.to_s == 'es-cientifico' %>
+          <legend>Arreglo Taxonómico</legend>
+          <% else %>
+          <legend>Clasificación</legend>
+          <% end %>
         <%= render :partial => 'arbol' %>
     </div>
 </div>
