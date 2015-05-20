@@ -38,7 +38,7 @@
   <% end %>
 
   <div class="">
-    <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#caja_filtros").addClass("sidebar_busqueda_avanzada_ambas_vistas");return busqueda_avanzada();' %>
+    <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#busquedas").addClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_avanzada();' %>
   </div>
 
   <div class="panel panel-success dropup" id="panelValidoSinonimoBasicaPt">
@@ -76,7 +76,7 @@
       </div>
 
       <div class=" dropup">
-        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#caja_filtros").removeClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_basica();' %>
+        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#busquedas").removeClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_basica();' %>
       </div>
 
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">

@@ -9,8 +9,17 @@
   border-top: 1px solid #d0b091;
   border-radius:2px;
   margin:0px 0px;
-  padding: 0px;
-  background-color: #eee9ed;
+  padding: 1px;
+}
+
+.bar_reino{
+  background-color: #ffffff;
+}
+.bar_animalia{
+  background-color: #eee9dd;
+}
+.bar_plantae{
+  background-color: #e2eedd;
 }
 
 .busqueda_atributo_radio_seleccionado, .busqueda_atributo_radio:hover {
@@ -18,7 +27,7 @@
   border-left: 1px solid #d0b091;
   border-top: 1px solid #d0b091;
   padding: 0px;
-  margin:0px 0px 0px 0px;
+  margin:0px 1px 0px 0px;
   border-radius:6px;
   border-top-left-radius: 3px;
   background-color: #f0ddd7;

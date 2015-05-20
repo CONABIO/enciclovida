@@ -7,7 +7,7 @@
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
       <div class=" dropup">
-        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#caja_filtros").removeClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_basica();' %>
+        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#busquedas").removeClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_basica();' %>
       </div>
 
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">

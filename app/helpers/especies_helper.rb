@@ -87,7 +87,7 @@ module EspeciesHelper
 
   def ponIcono(taxon, params={})
     begin  # Es un record con joins
-      ic = taxon if taxon.color_icono.present?
+      ic = taxon if taxon.taxon_icono.present?
     rescue
       ic = taxon.adicional.icono.present? ? taxon.adicional.icono : nil
     end
@@ -98,7 +98,10 @@ module EspeciesHelper
       "<i title=\"Sin ícono\" style=\"color:black;font-size:0px;\" class=\"sin_icono\"></i>"
     else
       if params[:con_recuadro]
-        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono} busqueda_atributo_radio\" id_icono=\"#{taxon.id}\"></i>"
+        clase = Icono::IR[-1] if Icono::IR.include?(ic.taxon_icono)
+        clase = Icono::IA[-1] if Icono::IA.include?(ic.taxon_icono)
+        clase = Icono::IP[-1] if Icono::IP.include?(ic.taxon_icono)
+        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:2.3em;\" class=\"#{ic.icono} busqueda_atributo_radio #{clase}\" id_icono=\"#{taxon.id}\"></i>"
       else
         "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
       end
@@ -520,7 +523,7 @@ module EspeciesHelper
       radios << '<br>' if columnas%6 == 0
       columnas+=1
     end
-    "<div>#{radios}</div>"
+    "<div style='text-align: center;'>#{radios}</div>"
   end
 
   def checklist(datos)

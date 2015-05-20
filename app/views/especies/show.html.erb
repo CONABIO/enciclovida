@@ -280,8 +280,11 @@
 <% else %>
     <div style="width: 100%; float:left;">
 <% end %>
-
+    <% if @photos.any?%>
         <div id="photoscol" class="embed-responsive embed-responsive-4by3">
+    <% else %>
+        <div id="photoscol">
+    <% end %>
           <div id="photos" >
             <%= render :partial => 'photos', :locals => { :photos => @photos } %>
             <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
