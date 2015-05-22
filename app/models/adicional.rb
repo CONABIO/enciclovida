@@ -92,8 +92,8 @@ class Adicional < ActiveRecord::Base
       f.puts(json_cien)
     end
 
-    system("soulmate add com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
-    system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
+    system("soulmate add com_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
+    system("soulmate add cien_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
   end
 
   # Para borra el registro del nombre comun y actualiza el del nombre cientifico
@@ -117,7 +117,7 @@ class Adicional < ActiveRecord::Base
       f.puts(json_cien)
     end
 
-    system("soulmate remove com_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
-    system("soulmate add cien_#{categoria} --redis=redis://#{CONFIG.ip}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
+    system("soulmate remove com_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
+    system("soulmate add cien_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
   end
 end

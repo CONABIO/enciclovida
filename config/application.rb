@@ -44,7 +44,8 @@ module Buscador
 end
 
 # General settings
+IP = CONFIG.site_url.split(':')[1].gsub('//','')
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
-FUZZY_NOM_COM = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_comunes')
-FUZZY_NOM_CIEN = Blurrily::Client.new(:host => CONFIG.ip, :db_name => 'nombres_cientificos')
+FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
+FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')

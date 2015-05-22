@@ -1,21 +1,17 @@
-# Example services and site config. Keys in all caps are globally scoped
-# You must replace these values with ones tailored to your own site.
-# For external services, follow the link in the note to go to the signup
-# page for the service.
-
 base: &base
-  # bases para la administracion
-  bases: [01-Echinodermata-Sept14, 02-Crustacea-Sept14, 03-Hongos-Sept14, 04-Invertebrados-Sept14, 05-Moluscos-Sept14, 06-Plantas-Sept14, 07-Proctoctistas-Sept14, 08-Vertebrados-Sept14, 09-Diptera-Sept14, 10-Arthropoda-Sept14]
+  # Bases de consulta y administracion
+  bases: [01-Echinodermata, 02-Crustaceos, 03-Hongos, 04-Invertebrados, 05-Moluscos, 06-Plantas, 07-Algas, 08-Vertebrados, 09-Diptera, 10-Arthropoda]
 
-  ip: localhost
-  port: 4000
-
-  # url of the site
+  # URL del sitio
   site_url: http://localhost:4000/
 
-  #Para las coultas de afuera
-  host_ip: localhost
-  host_port: 4000
+  # Nombre del sitio y vista por default
+  site_name: Bios
+  site_name_short: Bios
+  default_locale: es
+
+  # Limite del fuzzy match
+  limit_fuzzy : 10
 
   # IP de la cual recibira las peticiones
   ip_sql_server: [tus_ips]
@@ -24,21 +20,13 @@ base: &base
   # IP(s) de donde toman los cambios de BDI
   fotos_ip: [172.16.1.158]
 
-  # name of the site, used extensively within the app
-  site_name: Bios
-  default_locale: es
-
-  # shortened version of the name
-  site_name_short: Bios
-  imit_fuzzy : 10
-
   # URL SNIB
   snib_url: http://geoportal.conabio.gob.mx/snib?qtype=getDataSnib
 
   # URL geoserver
   geoserver_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?height=1024&width=1024&request=GetMap&service=wms&format=kmz
 
-  # URL y puerto de BDI
+  # URL BDI y URL basico para imagen
   bdi_imagenes: http://bdi.conabio.gob.mx:5050
   bdi_fotoweb: http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=
 
@@ -51,28 +39,26 @@ base: &base
   nelat: 32.2499
   nelng: -85.6933
 
-  # Configure taxon description callbacks. taxa/show will try to show
-  # species descriptions from these sources in this order, trying the next
-  # if one fails. You can see all the available describers in
-  # lib/taxon_describers/lib/taxon_describers
+  # Proveedores de fichas y fotos
   taxon_describers: [conabio, eol, eoles, wikipediaes, wikipedia]
   photo_providers: [conabio, eol, wikimedia,flickr]
+
+  # Usuario predeterminado para correr procesos desde los scripts de tools
+  usuario: usuario
 
   # Credenaciles generales por http
   username: tu-usuario
   password: tu-passwd
 
-  # Usuario general para correr script de fotos
-  usuario : calonso
+  # Servidor en produccion que tendra los kml y kmz (bios)
+  servidor: http://bios.conabio.gob.mx/kmz
 
-  #Servidor en produccion que tendra los kml y kmz
-  servidor: http://200.12.166.190/kmz
+  # Ruta del programa que genera los PDF's
+  wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
 
-  # Email addresses
-  admin_email: admin@yoursite.com
-  noreply_email: no-reply@yoursite.com
-  help_email: help@yoursite.com
-  info_email: info@yoursite.com
+
+
+###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation
   # contact:
@@ -226,12 +212,7 @@ base: &base
 
   # natureserve:
   #     key: 0x0x0x0x0x0x0x0x
-    
-  # wkhtmltopdf is an HTML-to-PDF converter that we use to generate PDFs.
-  # You'll need to have it installed somewhere on your system. We highly
-  # recommend using one of the static binaries.
-  # https://code.google.com/p/wkhtmltopdf/
-  wkhtmltopdf_path: '/usr/local/bin/wkhtmltopdf'
+
 
 development:
     <<: *base
