@@ -4,7 +4,7 @@
 
 .busqueda_atributo_radio {
   display: inline-table;
-  border: 1px solid #eee9ed;
+  //border: 1px solid #eee9ed;
   border-left: 1px solid #d0b091;
   border-top: 1px solid #d0b091;
   border-radius:2px;
@@ -23,13 +23,15 @@
 }
 
 .busqueda_atributo_radio_seleccionado, .busqueda_atributo_radio:hover {
-  border: 2px solid #dc5838;
+  border: 2px solid #B3977D;
   border-left: 1px solid #d0b091;
-  border-top: 1px solid #d0b091;
-  padding: 0px;
-  margin:0px 1px 0px 0px;
-  border-radius:6px;
-  border-top-left-radius: 3px;
+  border-right: 1px solid #B3977D;
+  border-bottom: 1px solid #f0ddd7;
+  padding: 0px 1px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  border-radius:0px;
+  border-top-right-radius: 2px;
+  //border-bottom-right-radius: 0px;
   background-color: #f0ddd7;
 }
 
