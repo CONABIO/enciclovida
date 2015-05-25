@@ -79,7 +79,7 @@ class EspeciesController < ApplicationController
                :save_only => true,
                :template => 'especies/show.pdf.erb',
                :encoding => 'UTF-8',
-               :wkhtmltopdf => '/usr/bin/wkhtmltopdf'
+               :wkhtmltopdf => CONFIG.wkhtmltopdf_path
       end
     end
   end
@@ -437,7 +437,7 @@ class EspeciesController < ApplicationController
                        #:save_only => true,
                        :template => 'especies/checklists.pdf.erb',
                        :encoding => 'UTF-8',
-                       :wkhtmltopdf => '/usr/bin/wkhtmltopdf',
+                       :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                        :orientation => 'Landscape'
               end
             end

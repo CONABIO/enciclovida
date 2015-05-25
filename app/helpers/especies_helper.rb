@@ -321,11 +321,20 @@ module EspeciesHelper
 
   def dameDistribucion(taxon)
     dist = []
-    taxon.especies_regiones.each do |reg|
-      dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
-    end
 
-    dist.any? ? dist.uniq.join(', ') : ''
+    if I18n.locale.to_s == 'es-cientifico'
+      taxon.especies_regiones.each do |reg|
+        dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
+      end
+
+      dist.any? ? dist.uniq.join(', ') : ''
+    else
+      taxon.especies_regiones.each do |reg|
+        dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
+      end
+
+      dist.any? ? dist.uniq.join(', ') : ''
+    end
   end
 
   def dameRegionesNombresBibliografia(especie)
