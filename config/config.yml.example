@@ -56,7 +56,13 @@ base: &base
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
 
-
+  # Credenciales smtp
+  smtp:
+    user_name: usuario
+    password: passwd
+    domain: localhost
+    address: localhost
+    port: puerto
 
 ###--------------------Aun no se ocupan------------------------###
 
