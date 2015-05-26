@@ -1,7 +1,5 @@
 Buscador::Application.routes.draw do
 
-  resources :comentarios
-
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
@@ -44,6 +42,8 @@ Buscador::Application.routes.draw do
   end
 
   resources :especies do
+    resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
+
     collection do
       post :update_photos, :as => :update_photos_for
       get :busca_por_lote

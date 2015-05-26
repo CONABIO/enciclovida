@@ -191,6 +191,21 @@
             }
         });
 
+        // Envia un comentario como parte de la retroalimentacion
+        $('#envia_comentario').dialog({
+            modal: true,
+            title: 'Envianos un comentario',
+            autoOpen: false,
+            width: 700,
+            open: function( event, ui ) {
+                $('#envia_comentario').loadingShades('Cargando...', {cssClass: 'smallloading'});
+                $('#envia_comentario').load('/adicionales/'+TAXON.id+'/edita_nom_comun', function() {
+                    $(ui.panel).addClass('loaded');
+                    $('#envia_comentario').centerDialog();
+                });
+            }
+        });
+
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas

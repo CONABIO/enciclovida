@@ -1,5 +1,11 @@
 class ComentariosController < ApplicationController
+  skip_before_filter :set_locale, only: [:create, :update, :destroy]
   before_action :set_comentario, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!, :only => [:index, :show, :update, :destroy]
+  before_action :only => [:index, :show, :update, :destroy] do
+    permiso = tiene_permiso?(100)  # Minimo administrador
+    render :_error unless permiso
+  end
 
   # GET /comentarios
   # GET /comentarios.json
