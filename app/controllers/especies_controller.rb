@@ -35,16 +35,16 @@ class EspeciesController < ApplicationController
       format.html
       format.json { render json: @especie.to_json }
       format.kml do
-        redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
+        redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
 
         if params[:snib].present? && to_boolean(params[:snib])
-          redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.snib_kml
+          redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.snib_kml
           send_data @especie.proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
         elsif params[:naturalista].present? && to_boolean(params[:naturalista])
-          redirect_to(especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.naturalista_kml
+          redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.naturalista_kml
           send_data @especie.proveedor.naturalista_kml, :filename => "#{@especie.nombre_cientifico}.kml"
         else
-          redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+          redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
         end
       end
 
@@ -503,7 +503,7 @@ class EspeciesController < ApplicationController
     bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => current_usuario.id)
     bitacora.save
     respond_to do |format|
-      format.html { redirect_to especies_url, :notice => "El taxón #{@especie.nombre_cientifico} fue elimanado correctamente" }
+      format.html { redirect_to especies_index_path, :notice => "El taxón #{@especie.nombre_cientifico} fue elimanado correctamente" }
       format.json { head :no_content }
     end
   end
@@ -540,10 +540,10 @@ class EspeciesController < ApplicationController
     else
       flash[:error] = "Algunas fotos no pudieron ser guardadas, debido a: #{errors.to_sentence.downcase}"
     end
-    redirect_to especy_path(@especie)
+    redirect_to especie_path(@especie)
   rescue Errno::ETIMEDOUT
     flash[:error] = t(:request_timed_out)
-    redirect_to especy_path(@especie)
+    redirect_to especie_path(@especie)
 =begin
   rescue Koala::Facebook::APIError => e
     raise e unless e.message =~ /OAuthException/
@@ -594,10 +594,10 @@ class EspeciesController < ApplicationController
           redirect_to "/kmz/#{@especie.id}/registros.kmz"
         end
       else
-        redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
       end
     else
-      redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
     end
   end
 
@@ -610,10 +610,10 @@ class EspeciesController < ApplicationController
           redirect_to "/kmz/#{@especie.id}/observaciones.kmz"
         end
       else
-        redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
       end
     else
-      redirect_to especy_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
     end
   end
 

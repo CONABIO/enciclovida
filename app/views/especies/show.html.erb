@@ -281,7 +281,7 @@
     <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
   </h4>
   <%= datos_principales(@especie).html_safe %>
-  <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
+  <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especie_path(@especie)}.pdf", :target => :_blank) %>
 
   <% if geo && geo.count > 0 %>
       <%= "| Mapa de distribución #{link_to(image_tag('app/kmz.jpg', :alt => :KMZ, :width => 26), geo['geoserver_kmz'], :target => :_blank)}".html_safe if geo['geoserver_kmz'] %>
@@ -366,5 +366,5 @@
 <!--div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
   <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
-              new_especy_path(:parent_id => @especie)).html_safe %>
+              new_especie_path(:parent_id => @especie)).html_safe %>
 </div-->

@@ -14,5 +14,5 @@
 <div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
   <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
-              new_especy_path(:parent_id => @especie)).html_safe %>
+              new_especie_path(:parent_id => @especie)).html_safe %>
 </div>

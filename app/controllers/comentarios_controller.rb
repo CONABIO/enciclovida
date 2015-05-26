@@ -62,7 +62,7 @@ class ComentariosController < ApplicationController
   def destroy
     @comentario.destroy
     respond_to do |format|
-      format.html { redirect_to comentarios_url }
+      format.html { redirect_to comentarios_path }
       format.json { head :no_content }
     end
   end
