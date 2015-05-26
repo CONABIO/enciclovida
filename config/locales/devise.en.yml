@@ -16,11 +16,11 @@ en:
       unconfirmed: Necesitas confirmar tu cuenta antes de continuar.
     mailer:
       confirmation_instructions:
-        subject: Instrucciones de confirmación
+        subject: Confirma tu cuenta en BIOS
       reset_password_instructions:
-        subject: Reiniciar las instrucciones de la contraseña
+        subject: Cambia tu contraseña en BIOS
       unlock_instructions:
-        subject: Desbloquear instrucciones
+        subject: Desbloquea tu cuenta en BIOS
     omniauth_callbacks:
       failure: No pudimos autenticarte de %{kind} debido a "%{reason}".
       success: Fuiste autenticado satisfactoriamente desde %{kind} de la cuenta.
