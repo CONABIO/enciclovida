@@ -15,3 +15,13 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.singular /([rlnd])es([A-Z]|_)([a-z]+)([aeiou])s($)/, '\1\2\3\4\5'
   inflect.irregular 'especy', 'especies'
 end
+
+ActionMailer::Base.smtp_settings = {
+    :domain => CONFIG.smtp.domain,
+    :address => CONFIG.smtp.address,
+    #:user_name => CONFIG.smtp.user_name,
+    #:password => CONFIG.smtp.password,
+    #:port => CONFIG.smtp.port,
+    :authentication => :plain,
+    :enable_starttls_auto => true
+}
