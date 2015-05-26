@@ -3,17 +3,17 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
+  belongs_to :rol
   has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
+  attr_accessor :login
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :omniauthable, :confirmable, :lockable
-  devise :database_authenticatable, :registerable,
+  # :lockable, :timeoutable, :omniauthable, :lockable
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable,
          :authentication_keys => [:login]
   # Para registrarse con el email o usuario
-  attr_accessor :login
 
-  belongs_to :rol
   #attr_accessor :confirma_contrasenia
   #validates :usuario, :presence => true, :uniqueness=>true
   #validates :correo, :presence => true, :uniqueness=>true

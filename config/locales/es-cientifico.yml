@@ -119,7 +119,7 @@ es-cientifico:
     failure:
       already_authenticated: Ya estabas con tu sesión previamente iniciada.
       inactive: Tu cuenta no ha sido confirmada aún.
-      invalid: Usuario/correo inválido.
+      invalid: Usuario o contraseña inválidos.
       locked: Tu cuenta ha sido bloqueda.
       last_attempt: Tienes una última oportunidad antes que tu cuenta sea bloqueda.
       not_found_in_database: Datos incorrectos. Por favor verifica.
@@ -204,7 +204,7 @@ es-cientifico:
     label:
       usuario:
         email: Correo
-        login: Usuario o contraseña
+        login: Usuario o correo
         password: Contraseña
         password_confirmation: Confirma la contraseña
         remember_me: Recordarme la próxima vez

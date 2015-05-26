@@ -171,7 +171,7 @@ es:
     failure:
       already_authenticated: Ya estabas con tu sesión previamente iniciada.
       inactive: Tu cuenta no ha sido confirmada aún.
-      invalid: Usuario/correo inválido.
+      invalid: Usuario o contraseña inválidos.
       locked: Tu cuenta ha sido bloqueda.
       last_attempt: Tienes una última oportunidad antes que tu cuenta sea bloqueda.
       not_found_in_database: Datos incorrectos. Por favor verifica.
@@ -209,16 +209,6 @@ es:
       send_instructions: Recibirás en unos minutos un correo con instrucciones para desbloquear tu cuenta.
       send_paranoid_instructions: Si tu cuenta existe, recibarás en unos minutos un correo con instrucciones para desbloquear tu cuenta.
       unlocked: Tu cuenta ha sido desbloqueda satisfactoriamente. Por favor inicia sesión para continuar.
-  errors:
-    messages:
-      already_confirmed: "was already confirmed, please try signing in"
-      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
-      expired: "has expired, please request a new one"
-      not_found: "not found"
-      not_locked: "was not locked"
-      not_saved:
-        one: "1 error prohibited this %{resource} from being saved:"
-        other: "%{count} errors prohibited this %{resource} from being saved:"
   distribucion:
     actual: Actual
     cuasiendemica: Cuasiendémica
@@ -235,12 +225,15 @@ es:
     format: ! '%{attribute} %{message}'
     messages:
       accepted: debe ser aceptado
+      already_confirmed: fue confirmado, por favor intenta iniciar sesión
       blank: no puede ser vacío
       confirmation: no coincide con la confirmación
+      confirmation_period_expired: necesitaba ser confirmado en un periodo de %{period}, por favor solicita una nueva confrimación
       empty: no puede estar vacío
       equal_to: debe ser igual a %{count}
       even: debe ser par
       exclusion: está reservado
+      expired: a expirado, por favor solicita una nueva confrimación
       greater_than: debe ser mayor que %{count}
       greater_than_or_equal_to: debe ser mayor que o igual a %{count}
       inclusion: no está incluido en la lista
@@ -249,7 +242,12 @@ es:
       less_than_or_equal_to: debe ser menor que o igual a %{count}
       not_a_number: no es un número
       not_an_integer: debe ser un entero
+      not_found: no ha sido encontrado
+      not_locked: no fue bloqueda
       not_saved: "Lo sentimos, existen errores en los siguientes campos:"
+      not_saved:
+        one: "1 error no permitio que el %{resource} fuese creado:"
+        other: "%{count} errores no permitieron que el %{resource} fuese creado:"
       odd: debe ser impar
       record_invalid: ! 'La validación falló: %{errors}'
       taken: ya está en uso
@@ -267,12 +265,12 @@ es:
       usuario:
         current_password: Contraseña actual
         email: Correo
-        login: Usuario o contraseña
+        login: Usuario o correo
         password: Contraseña
         password_confirmation: Confirma la contraseña
         remember_me: Recordarme la próxima vez
     select:
-      prompt: Por favor seleccione
+      prompt: Por favor selecciona
     submit:
       create: Crear %{model}
       submit: Guardar %{model}

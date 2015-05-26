@@ -1,4 +1,5 @@
 <h2>Inicia sesión</h2>
+<p id="notice"><%= notice ||= flash[:notice] ||= flash[:alert] %></p>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <div><%= f.label :login %><br />
