@@ -1,5 +1,5 @@
 <div id="busqueda_basica">
-  <%= form_tag resultados_especies_path, :method => :get, :id => :b_comun, :role => 'form' do %>
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_comun, :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
@@ -19,7 +19,7 @@
       </div>
   <% end %>
 
-  <%= form_tag resultados_especies_path, :method => :get, :id => :b_cientifico, :role => 'form' do %>
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_cientifico, :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
       <%= hidden_field_tag :busqueda, :nombre_cientifico %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
@@ -57,7 +57,7 @@
 </div>
 
 <div id="busqueda_avanzada" style="display: none" >
-  <%= form_tag resultados_especies_path, :method => :get, :id => :b_avanzada  do %>
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_avanzada  do %>
 
       <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>

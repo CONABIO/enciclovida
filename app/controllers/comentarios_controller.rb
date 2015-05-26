@@ -20,7 +20,7 @@ class ComentariosController < ApplicationController
 
   # GET /comentarios/new
   def new
-    @comentario = Comentario.new
+    @comentario = Comentario.new(especie_id: params[:especie_id])
   end
 
   # GET /comentarios/1/edit

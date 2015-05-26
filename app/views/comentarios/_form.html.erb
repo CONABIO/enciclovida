@@ -1,4 +1,5 @@
-<%= form_for(@comentario) do |f| %>
+<%= form_for(@comentario, url: especie_comentario_path(@comentario)) do |f| %>
+    <% Rails.logger.info 'antes del form' %>
   <% if @comentario.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@comentario.errors.count, "error") %> prohibited this comentario from being saved:</h2>
