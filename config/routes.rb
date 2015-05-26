@@ -1,5 +1,7 @@
 Buscador::Application.routes.draw do
 
+  resources :comentarios
+
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
