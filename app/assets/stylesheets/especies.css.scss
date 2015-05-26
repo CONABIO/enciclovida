@@ -23,16 +23,16 @@
 }
 
 .busqueda_atributo_radio_seleccionado, .busqueda_atributo_radio:hover {
-  border: 2px solid #B3977D;
+  border-top: 1px solid #B3977D;
   border-left: 1px solid #d0b091;
-  border-right: 1px solid #B3977D;
+  //border-right: 1px solid #B3977D;
   border-bottom: 1px solid #f0ddd7;
-  padding: 0px 1px 0px 0px;
+  padding: 0px 2px 0px 0px;
   margin: 0px 0px 0px 0px;
   border-radius:0px;
   border-top-right-radius: 2px;
   //border-bottom-right-radius: 0px;
-  background-color: #f0ddd7;
+  background-color: #f7c3b2;
 }
 
 //Para que la foto no se salga del tamanio
