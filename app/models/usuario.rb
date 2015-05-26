@@ -11,6 +11,7 @@ class Usuario < ActiveRecord::Base
   # :lockable, :timeoutable, :omniauthable, :lockable
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable,
+         :lockable, :timeoutable,
          :authentication_keys => [:login]
   # Para registrarse con el email o usuario
 
