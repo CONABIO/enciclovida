@@ -11,9 +11,9 @@
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>"
-      I18n.locale = "<%= I18n.locale %>"
-      I18n.fallbacks = true
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
   </script>
 
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true" />
@@ -38,14 +38,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to "".html_safe, especies_url, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 126px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 126px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
     </div>
     <div id="navbar" class="navbar-collapse collapse" style="background-image: url('/assets/app/backEncabeza.png'); background-size: contain; background-position: bottom right; background-repeat: no-repeat;">
       <ul class="nav navbar-nav" style="font-weight: bold; font-size: .88em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
-                <li><%= link_to :Listas, listas_url %></li>
-                <li><%= link_to 'Busca por lote', busca_por_lote_especies_url %></li>
+                <li><%= link_to :Listas, listas_path %></li>
+                <li><%= link_to 'Busca por lote', busca_por_lote_especie_index_path %></li>
             <% end %>
             <li>
               <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>

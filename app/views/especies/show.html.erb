@@ -191,6 +191,21 @@
             }
         });
 
+        // Envia un comentario como parte de la retroalimentacion
+        $('#envia_comentario').dialog({
+            modal: true,
+            title: 'Envianos tus comentarios',
+            autoOpen: false,
+            width: 700,
+            open: function( event, ui ) {
+                $('#envia_comentario').loadingShades('Cargando...', {cssClass: 'smallloading'});
+                $('#envia_comentario').load('/especies/'+TAXON.id+'/comentarios/new', function() {
+                    $(ui.panel).addClass('loaded');
+                    $('#envia_comentario').centerDialog();
+                });
+            }
+        });
+
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
@@ -264,10 +279,14 @@
     <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
     <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
     <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+    <span id="envia_comentario" class="dialog" style="display: none"></span>
   </h4>
   <%= datos_principales(@especie).html_safe %>
-  <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especy_path(@especie)}.pdf", :target => :_blank) %>
-
+  <br>Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especie_path(@especie)}.pdf", :target => :_blank) %>
+  <p>
+    ¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %>
+    y con gusto la atenderemos.
+  <p>
   <% if geo && geo.count > 0 %>
       <%= "| Mapa de distribución #{link_to(image_tag('app/kmz.jpg', :alt => :KMZ, :width => 26), geo['geoserver_kmz'], :target => :_blank)}".html_safe if geo['geoserver_kmz'] %>
       <%= "| Registros del SNIB #{link_to(image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
@@ -351,5 +370,5 @@
 <!--div class="enlaces_acciones">
   <%# accionesEnlaces(@especie, @accion).html_safe %><br>
   <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
-              new_especy_path(:parent_id => @especie)).html_safe %>
+              new_especie_path(:parent_id => @especie)).html_safe %>
 </div-->

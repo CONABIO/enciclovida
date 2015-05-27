@@ -41,7 +41,9 @@ Buscador::Application.routes.draw do
     end
   end
 
-  resources :especies do
+  resources :especies, as: :especie do
+    resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
+
     collection do
       post :update_photos, :as => :update_photos_for
       get :busca_por_lote
