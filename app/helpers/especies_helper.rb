@@ -281,7 +281,7 @@ module EspeciesHelper
           contador+=1
           next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
           checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), name: k.to_s+contador.to_s, title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select')}"
-          checkBoxes << "#{check_box_tag('edo_cons['+k.to_s+contador.to_s+']', edo, false, :class => 'busqueda_atributo_checkbox', :style => 'display: grid',:name => 'edo_cons['+k.to_s+contador.to_s+']')}"
+          checkBoxes << "#{check_box_tag('edo_cons['+k.to_s+contador.to_s+']', edo, false, :class => 'busqueda_atributo_checkbox', :style => 'display: none',:name => 'edo_cons['+k.to_s+contador.to_s+']')}"
         end
         checkBoxes << "<span id='seleccion_#{k}'></span>"
       end
@@ -528,7 +528,7 @@ module EspeciesHelper
         columnas = 7
       end
 
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display:none')
+      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => '')
       radios << ponIcono(taxon, con_recuadro: true)
       radios << '<br>' if columnas%6 == 0
       columnas+=1

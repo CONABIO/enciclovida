@@ -199,13 +199,14 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox", function()
+        /*$(document).on('change', ".busqueda_atributo_checkbox", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
-        });
+            $(this).toggleClass("busqueda_atributo_select_seleccionado");
+        });*/
 
         $(document).on('click', ".busqueda_atributo_radio", function()
         {
@@ -227,11 +228,12 @@
         });
 
         $(document).on('click', ".busqueda_atributo_select", function(){
-            //console.log($(this).attr('name'));
             if ($('#edo_cons_'+$(this).attr('name')).prop('checked')){
                 $('#edo_cons_'+$(this).attr('name')).prop('checked',false)
+                $('#edo_cons_'+$(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
             }else{
                 $('#edo_cons_'+$(this).attr('name')).prop('checked',true)
+                $('#edo_cons_'+$(this).attr('name')).attr('checked', true);//IDEM
             }
             $(this).toggleClass("busqueda_atributo_select_seleccionado");
         });
