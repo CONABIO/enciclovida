@@ -1,5 +1,5 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:create, :update, :destroy]
+  skip_before_filter :set_locale, only: [:new, :create, :update, :destroy]
   before_action :set_comentario, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :only => [:index, :show, :update, :destroy]
   before_action :only => [:index, :show, :update, :destroy] do
@@ -20,7 +20,8 @@ class ComentariosController < ApplicationController
 
   # GET /comentarios/new
   def new
-    @comentario = Comentario.new(especie_id: params[:especie_id])
+    @especie_id = params[:especie_id]
+    @comentario = Comentario.new(especie_id: @especie_id)
   end
 
   # GET /comentarios/1/edit
@@ -30,11 +31,12 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
-    @comentario = Comentario.new(comentario_params)
+    @especie_id = params[:especie_id]
+    @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
 
     respond_to do |format|
       if @comentario.save
-        format.html { redirect_to @comentario, notice: 'Comentario was successfully created.' }
+        format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
         format.json { render action: 'show', status: :created, location: @comentario }
       else
         format.html { render action: 'new' }
@@ -75,6 +77,7 @@ class ComentariosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comentario_params
-      params[:comentario]
+      #params[:comentario]
+      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre)
     end
 end

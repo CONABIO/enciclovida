@@ -1,18 +1,38 @@
-<%= form_for(@comentario, url: especie_comentario_path(@comentario)) do |f| %>
-    <% Rails.logger.info 'antes del form' %>
-  <% if @comentario.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@comentario.errors.count, "error") %> prohibited this comentario from being saved:</h2>
+<div id="error_mensaje"></div>
+<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios") do |f| %>
 
-      <ul>
-      <% @comentario.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+    <% if @comentario.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@comentario.errors.count, 'error') %> no permitió que el comentario fuese enviado:</h2>
+
+          <ul>
+            <% @comentario.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <% if !usuario_signed_in? %>
+        <div>
+          <%= f.label :correo %>
+          <%= f.text_field :correo %>
+        </div>
+
+        <div>
+          <%= f.label :nombre %>
+          <%= f.text_field :nombre %>
+        </div>
+    <% else %>
+        <%= f.hidden_field :usuario_id, value: current_usuario.id %>
+    <% end %>
+
+    <div>
+      <%= f.label :comentario %>
+      <%= f.text_area :comentario %>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="actions">
+      <%= f.submit :Enviar, id: 'comentario_submit' %>
+    </div>
 <% end %>
