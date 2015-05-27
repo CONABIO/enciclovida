@@ -267,25 +267,23 @@ module EspeciesHelper
     checkBoxes=''
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      contador=0
       if I18n.locale.to_s == 'es-cientifico'
         checkBoxes+= "<b>#{t(k)}</b>"
-        contador=0
-
         valores.each do |edo|
-          checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}</label>"
+          checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}</label>"
           contador+=1
         end
 
       else
-        checkBoxes << image_tag("app/categorias_riesgo/tit#{k.upcase}.png") << '<br>'
-
+        checkBoxes << "<u><h6>#{t(k)}</h6></u>"
         valores.each do |edo|
+          contador+=1
           next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-          checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"))}#{check_box_tag('edo_cons[]', edo, false, :class => 'busqueda_atributo_checkbox')}"
+          checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), name: k.to_s+contador.to_s, title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select')}"
+          checkBoxes << "#{check_box_tag('edo_cons['+k.to_s+contador.to_s+']', edo, false, :class => 'busqueda_atributo_checkbox', :style => 'display: grid',:name => 'edo_cons['+k.to_s+contador.to_s+']')}"
         end
-
         checkBoxes << "<span id='seleccion_#{k}'></span>"
-        checkBoxes << '<br />'
       end
     end
     checkBoxes.html_safe

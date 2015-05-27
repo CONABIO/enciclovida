@@ -222,9 +222,18 @@
             });
 
             $('#id_nom_cientifico_' + id).prop('checked', true);
-            //$(this).css({"border-color": "#dc5838"});
             $(this).toggleClass("busqueda_atributo_radio_seleccionado");
             cat_tax_asociadas(id);
+        });
+
+        $(document).on('click', ".busqueda_atributo_select", function(){
+            //console.log($(this).attr('name'));
+            if ($('#edo_cons_'+$(this).attr('name')).prop('checked')){
+                $('#edo_cons_'+$(this).attr('name')).prop('checked',false)
+            }else{
+                $('#edo_cons_'+$(this).attr('name')).prop('checked',true)
+            }
+            $(this).toggleClass("busqueda_atributo_select_seleccionado");
         });
 
         $(document).on('change', "#nivel, #cat", function()

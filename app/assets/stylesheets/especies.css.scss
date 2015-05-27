@@ -25,16 +25,26 @@
 .busqueda_atributo_radio_seleccionado, .busqueda_atributo_radio:hover {
   border-top: 1px solid #B3977D;
   border-left: 1px solid #d0b091;
-  //border-right: 1px solid #B3977D;
-  border-bottom: 1px solid #f0ddd7;
-  padding: 0px 2px 0px 0px;
+  border-right: 1px solid #f7c3b2;
+  border-bottom: 1px solid #f7c3b2;
+  padding: 0px 1px 0px 0px;
   margin: 0px 0px 0px 0px;
   border-radius:0px;
   border-top-right-radius: 2px;
   //border-bottom-right-radius: 0px;
   background-color: #f7c3b2;
+  //-webkit-transition: all 0.2s ease-in-out;
+  //-o-transition: all 0.2s ease-in-out;
+  //transition: all 0.2s ease-in-out;
 }
 
+.busqueda_atributo_select{
+  padding: 0px;
+}
+
+.busqueda_atributo_select_seleccionado, .busqueda_atributo_select:hover{
+  background-color: #f7c3b2;
+}
 //Para que la foto no se salga del tamanio
 //#photos img{max-width: 500px}
 
