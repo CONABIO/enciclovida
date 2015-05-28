@@ -25,6 +25,14 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 FLICKR_API_KEY = CONFIG.flickr.key
 FLICKR_SHARED_SECRET = CONFIG.flickr.shared_secret
 
+# General settings
+IP = CONFIG.site_url.split(':')[1].gsub('//','')
+PORT = CONFIG.site_url.split(':')[2][0..-1]
+SITE_NAME = CONFIG.site_name
+SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
+FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
+FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
+
 module Buscador
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -40,12 +48,8 @@ module Buscador
 
     #cambia en nombre de la tabla por default
     ActiveRecord::SessionStore::Session.table_name = 'sessions'
+
+    #devise
+    config.action_mailer.default_url_options = { host: IP, port: PORT }
   end
 end
-
-# General settings
-IP = CONFIG.site_url.split(':')[1].gsub('//','')
-SITE_NAME = CONFIG.site_name
-SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
-FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
-FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
