@@ -244,12 +244,18 @@ class EspeciesController < ApplicationController
             @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
-          if @taxones.empty?
-            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
-          elsif params[:pagina].present? && params[:pagina].to_i > 1
+
+          if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
             render :partial => 'especies/_resultados'
+          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+            # El scrolling acaba
+            render text: ''
+          elsif @taxones.empty?
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
+
+          # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
 
         when 'nombre_cientifico'
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
@@ -294,12 +300,18 @@ class EspeciesController < ApplicationController
             @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
-          if @taxones.empty?
-            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
-          elsif params[:pagina].present? && params[:pagina].to_i > 1
+
+          if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
             render :partial => 'especies/_resultados'
+          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+            # El scrolling acaba
+            render text: ''
+          elsif @taxones.empty?
+            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
+
+          # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
@@ -415,14 +427,17 @@ class EspeciesController < ApplicationController
 
           # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
           if params[:solo_categoria].present?
-            if params[:pagina].present? && params[:pagina].to_i > 1
+            if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
               render :partial => 'especies/_resultados'
+            elsif @taxones.empty?
+              render text: ''
             else
               render :partial => 'especies/resultados'
             end
-          elsif params[:pagina].present? && params[:pagina].to_i > 1
+          elsif params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
               render :partial => 'especies/_resultados'
-
+          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+            render text: ''
           elsif params[:checklist].present? && params[:checklist].to_i == 1
             respond_to do |format|
               format.html { render 'especies/checklists' }
