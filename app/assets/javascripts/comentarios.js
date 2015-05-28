@@ -9,7 +9,7 @@ $(document).ready(function(){
         {
             $('#error_mensaje').empty().html('El correo no puede ser vacio.');
             return false;
-        } else {
+        } else if ($('#comentario_correo').val() != undefined) {
             if (!es_correo($('#comentario_correo').val()))
             {
                 $('#error_mensaje').empty().html('El correo no es válido, por favor verifica.');
