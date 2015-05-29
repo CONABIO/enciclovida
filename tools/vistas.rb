@@ -195,12 +195,87 @@ def camTab
   }
 end
 
+def pone_index_pk
+  index_pk = []
+
+  index_pk << 'ALTER TABLE especies ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies ADD CONSTRAINT pk_id_especies PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_ancestry_ascendente_directo_especies ON especies(ancestry_ascendente_directo)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_nombre_cientifico_especies ON especies(nombre_cientifico)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_categoria_taxonomica_id_especies ON especies(categoria_taxonomica_id)'
+
+  index_pk << 'ALTER TABLE categorias_taxonomicas ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE categorias_taxonomicas ADD CONSTRAINT pk_id_categorias_taxonomicas PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_nombre_categoria_taxonomica_categorias_taxonomicas ON categorias_taxonomicas(nombre_categoria_taxonomica)'
+
+  index_pk << 'ALTER TABLE catalogos ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE catalogos ADD CONSTRAINT pk_id_catalogos PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_descripcion_catalogos ON catalogos(descripcion)'
+
+  index_pk << 'ALTER TABLE tipos_distribuciones ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE tipos_distribuciones ADD CONSTRAINT pk_id_tipos_distribuciones PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_descripcion_tipos_distribuciones ON tipos_distribuciones(descripcion)'
+
+  index_pk << 'ALTER TABLE regiones ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE regiones ADD CONSTRAINT pk_id_regiones PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_nombre_region_tipos_regiones ON regiones(nombre_region)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_tipo_region_id_tipos_regiones ON regiones(tipo_region_id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_ancestry_tipos_regiones ON regiones(ancestry)'
+
+  index_pk << 'ALTER TABLE tipos_regiones ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE tipos_regiones ADD CONSTRAINT pk_id_tipos_regiones PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_descripcion_tipos_regiones ON tipos_regiones(descripcion)'
+
+  index_pk << 'ALTER TABLE bibliografias ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE bibliografias ADD CONSTRAINT pk_id_bibliografias PRIMARY KEY CLUSTERED(id)'
+
+  index_pk << 'ALTER TABLE nombres_comunes ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_comunes ADD CONSTRAINT pk_id_nombres_comunes PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_nombre_comun_nombres_comunes ON nombres_comunes(nombre_comun)'
+
+  index_pk << 'ALTER TABLE estatuses ALTER COLUMN id INT NOT NULL'
+  index_pk << 'ALTER TABLE estatuses ADD CONSTRAINT pk_id_estatuses PRIMARY KEY CLUSTERED(id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_descripcion_estatuses ON estatuses(descripcion)'
+
+  index_pk << 'ALTER TABLE especies_regiones ALTER COLUMN especie_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_regiones ALTER COLUMN region_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_regiones ADD CONSTRAINT pk_especie_id_region_id_especies_regiones PRIMARY KEY CLUSTERED(especie_id, region_id)'
+  index_pk << 'CREATE NONCLUSTERED INDEX index_tipo_distribucion_id_especies_regiones ON especies_regiones(tipo_distribucion_id)'
+
+  index_pk << 'ALTER TABLE nombres_regiones ALTER COLUMN especie_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones ALTER COLUMN nombre_comun_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones ALTER COLUMN region_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones ADD CONSTRAINT pk_especie_id_nombre_comun_id_region_id_nombres_regiones PRIMARY KEY CLUSTERED(especie_id, nombre_comun_id, region_id)'
+
+  index_pk << 'ALTER TABLE nombres_regiones_bibliografias ALTER COLUMN especie_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones_bibliografias ALTER COLUMN nombre_comun_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones_bibliografias ALTER COLUMN region_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones_bibliografias ALTER COLUMN bibliografia_id INT NOT NULL'
+  index_pk << 'ALTER TABLE nombres_regiones_bibliografias ADD CONSTRAINT pk_especie_id_nombre_comun_id_region_id_bibliografia_id_nombres_regiones_bibliografias PRIMARY KEY CLUSTERED(especie_id, nombre_comun_id, region_id, bibliografia_id)'
+
+  index_pk << 'ALTER TABLE especies_bibliografias ALTER COLUMN especie_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_bibliografias ALTER COLUMN bibliografia_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_bibliografias ADD CONSTRAINT pk_especie_id_bibliografia_id_especies_bibliografias PRIMARY KEY CLUSTERED(especie_id, bibliografia_id)'
+
+  index_pk << 'ALTER TABLE especies_catalogos ALTER COLUMN especie_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_catalogos ALTER COLUMN catalogo_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_catalogos ADD CONSTRAINT pk_especie_id_catalogo_id_especies_catalogos PRIMARY KEY CLUSTERED(especie_id, catalogo_id)'
+
+  index_pk << 'ALTER TABLE especies_estatuses ALTER COLUMN especie_id1 INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_estatuses ALTER COLUMN especie_id2 INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_estatuses ALTER COLUMN estatus_id INT NOT NULL'
+  index_pk << 'ALTER TABLE especies_estatuses ADD CONSTRAINT pk_especie_id1_especie_id2_estatus_id_especies_estatuses PRIMARY KEY CLUSTERED(especie_id1, especie_id2, estatus_id)'
+
+  index_pk
+end
+
 
 start_time = Time.now
 
 @id = ''
 puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: DROP' : 'Ejecutando con argumento: CREATE (default)' if OPTS[:debug]
 
+# Arma las vistas
 CONFIG.bases.each do |base|
   @id = (CONFIG.bases.index(base)+1)*1000000         #obtiene el numero a aumentarse por base
 
@@ -214,6 +289,7 @@ CONFIG.bases.each do |base|
   }
 end
 
+# Genera las vistas y el volcado
 queriesVistas.each do |key,value|
   puts "Query: #{value}" if OPTS[:debug]
   Bases.ejecuta value
@@ -227,6 +303,12 @@ queriesVistas.each do |key,value|
 
   Bases.ejecuta query   #para las tablas del volcado
   puts "Query: #{query}" if OPTS[:debug]
+end
+
+# Para agregar los nonclustered index, quitar los NULL de las pk y agregar pk
+pone_index_pk.each do |query|
+  puts "Query: #{query}" if OPTS[:debug]
+  Bases.ejecuta query
 end
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
