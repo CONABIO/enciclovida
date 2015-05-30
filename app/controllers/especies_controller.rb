@@ -370,7 +370,8 @@ class EspeciesController < ApplicationController
           #Parte del tipo de ditribucion
           if params[:dist].present?
             joins << '.tipo_distribucion_join'
-            condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+            dist = params[:dist].respond_to?(:values) ? params[:dist].values : params[:dist]
+            condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{dist.join("','")}'\")"
             distinct = true
           end
 
