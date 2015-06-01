@@ -186,7 +186,7 @@ class EspeciesController < ApplicationController
     if params[:busqueda] == 'basica' || params[:id].present?
       set_especie
       respond_to do |format|
-        format.html { redirect_to @especie }
+        format.html { redirect_to especie_path(@especie) }
       end
     else
 
