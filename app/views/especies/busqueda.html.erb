@@ -199,13 +199,14 @@
             $('#hAtributo_' + id).val('');
         });
 
-        $(document).on('change', ".busqueda_atributo_checkbox", function()
+        /*$(document).on('change', ".busqueda_atributo_checkbox", function()
         {
             if ($(this).prop('checked'))
                 $(this).attr('checked', true);
             else
                 $(this).attr('checked', false);
-        });
+            $(this).toggleClass("busqueda_atributo_select_seleccionado");
+        });*/
 
         $(document).on('click', ".busqueda_atributo_radio", function()
         {
@@ -222,9 +223,31 @@
             });
 
             $('#id_nom_cientifico_' + id).prop('checked', true);
-            //$(this).css({"border-color": "#dc5838"});
             $(this).toggleClass("busqueda_atributo_radio_seleccionado");
             cat_tax_asociadas(id);
+        });
+
+        $(document).on('click', ".busqueda_atributo_select", function(){
+            if ($('#edo_cons_'+$(this).attr('name')).prop('checked')){
+                $('#edo_cons_'+$(this).attr('name')).prop('checked',false);
+                $('#edo_cons_'+$(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
+            }else{
+                if($('#dist_'+$(this).attr('name')).prop('checked')){
+                    $('#dist_'+$(this).attr('name')).prop('checked',false);
+                    $('#dist_'+$(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
+                }else {
+                    /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
+                     * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
+                     * pero dicho cambio no se realizara a las 22:00 en viernes
+                     * se redujo las ejecuciones dummie en 20% aprox
+                     * */
+                    $('#edo_cons_' + $(this).attr('name')).prop('checked', true);
+                    $('#edo_cons_' + $(this).attr('name')).attr('checked', true);//IDEM
+                    $('#dist_' + $(this).attr('name')).prop('checked', true);
+                    $('#dist_' + $(this).attr('name')).attr('checked', true);//IDEM
+                }
+            }
+            $(this).toggleClass("busqueda_atributo_select_seleccionado");
         });
 
         $(document).on('change', "#nivel, #cat", function()
