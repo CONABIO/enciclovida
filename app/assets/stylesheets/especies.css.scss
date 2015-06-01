@@ -60,6 +60,11 @@
 //Para que la foto no se salga del tamanio
 //#photos img{max-width: 500px}
 
+.abcd{
+  float: left;
+  /*display: block !important;*/
+}
+
 #vista_arbol ul{
   padding-left: 25px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
   //padding: 0; /* Cambios para mostrar el arreglo horizontal, comentado para no afectar el funcionamiento en bios //ggonzale*/
