@@ -75,8 +75,8 @@ class EspeciesController < ApplicationController
         FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
         #render :pdf => @especie.nombre_cientifico.parameterize,
         render :pdf => @especie.nombre_cientifico.parameterize,
-               :save_to_file => pdf,
-               :save_only => true,
+               #:save_to_file => pdf,
+               #:save_only => true,
                :template => 'especies/show.pdf.erb',
                :encoding => 'UTF-8',
                :wkhtmltopdf => CONFIG.wkhtmltopdf_path
