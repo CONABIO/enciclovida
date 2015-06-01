@@ -148,7 +148,7 @@
         if ($._data(campo, "events") == undefined)
         {        //para que no se repita n-veces la busqueda
             $(campo).soulmate({
-                url:            "http://<%= CONFIG.host_ip %>:<%= CONFIG.host_port %>/sm/search",
+                url:            "http://<%= IP %>:<%= PORT %>/sm/search",
                 types:          types,
                 renderCallback: render,
                 selectCallback: select,
@@ -198,16 +198,7 @@
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
         });
-
-        /*$(document).on('change', ".busqueda_atributo_checkbox", function()
-        {
-            if ($(this).prop('checked'))
-                $(this).attr('checked', true);
-            else
-                $(this).attr('checked', false);
-            $(this).toggleClass("busqueda_atributo_select_seleccionado");
-        });*/
-
+        
         $(document).on('click', ".busqueda_atributo_radio", function()
         {
             var id = $(this).attr('id_icono');
