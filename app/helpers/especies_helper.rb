@@ -246,22 +246,20 @@ module EspeciesHelper
 
   def checkboxTipoDistribucion
     checkBoxes = ''
-    contador = 0
-    TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
-      next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
-
-        if I18n.locale.to_s != 'es-cientifico'
-          next if TipoDistribucion::QUITAR_DIST_SOLO_BASICA.include?(tipoDist)
-        end
-        if I18n.locale.to_s == 'es-cientifico'
-          checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
-        else
-          contador += 1
-          #checkBoxes+="<label class='checkbox' style='margin: 0px 10px;'></label>"
-          checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
-          checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
-        end
+    if I18n.locale.to_s == 'es-cientifico'
+      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
+        next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
+        checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
       end
+    else
+      contador = 0
+      TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+        checkBoxes << "<span id='dist[#{tipoDist.to_s+contador.to_s}_span]' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
+      checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
+      checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
+      contador += 1
+      end
+    end
     checkBoxes.html_safe
   end
 
@@ -280,12 +278,12 @@ module EspeciesHelper
       else
         checkBoxes << "<u><h6>#{t(k)}</h6></u>"
         valores.each do |edo|
-          contador+=1
           next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
+          checkBoxes << "<span id='edo_cons[#{k.to_s+contador.to_s}_span]' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
           checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: k.to_s+contador.to_s)}"
           checkBoxes << "#{check_box_tag('edo_cons['+k.to_s+contador.to_s+']', edo, false, :class => 'busqueda_atributo_checkbox', :style => 'display:none')}"
+          contador+=1
         end
-        checkBoxes << "<span id='seleccion_#{k}'></span>"
       end
     end
     checkBoxes.html_safe

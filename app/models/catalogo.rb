@@ -23,7 +23,8 @@ class Catalogo < ActiveRecord::Base
     nom = [nom[2],nom[0],nom[1],nom[3]]#Orden propuesto por cgalindo
     # Esta categoria de IUCN esta repetida y no tenia nada asociado
     iucn = where(:nivel1 => 4, :nivel2=> 2).where("nivel3 > 0 AND descripcion != 'Riesgo bajo (LR): Casi amenazada (nt)'").map(&:descripcion).uniq
-    cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0').map(&:descripcion).uniq
+    iucn = [iucn[7],iucn[6],iucn[9],iucn[8],iucn[4],iucn[3],iucn[2],iucn[1],iucn[0],iucn[5]]#IDEM, el iucn[5] se quita en el helper, consultar con dhernandez ASAP
+    cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0').map(&:descripcion).uniq #Esta ya viene en orden (I,II,III)
     {:nom => nom, :iucn => iucn, :cites => cites}
   end
 end
