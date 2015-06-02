@@ -14,4 +14,6 @@ class TipoDistribucion < ActiveRecord::Base
   # Quita algunos tipos de distribucion que quiere Carlos G.
   QUITAR_DIST_SOLO_BASICA = %w(no_endemica cuasiendemica semiendemica)
 
+  # Ponerlos en un orden muy específico unicamente para la vista general tal cual como lo pide Carlos G.
+  DISTRIBUCIONES_SOLO_BASICA = %w(introducida invasora endemica nativa)
 end
