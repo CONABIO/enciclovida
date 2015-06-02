@@ -328,7 +328,7 @@ module EspeciesHelper
       dist.any? ? dist.uniq.join(', ') : ''
     else
       taxon.especies_regiones.each do |reg|
-        dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
+        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.icono"), title: t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.nombre")) if  reg.tipo_distribucion
       end
 
       dist.any? ? dist.uniq.join(', ') : ''
@@ -454,7 +454,7 @@ module EspeciesHelper
       edo_conserv = e.catalogo.nom_cites_iucn
       if edo_conserv.present?
         opciones[:tab_catalogos] ?  conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>" :
-            conservacion+="#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span>, "
+            conservacion+="#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.nombre"))}  "
       end
     end
 

@@ -287,7 +287,7 @@
   </div>
   <div class='text-primary pull-right' style="width: 48%; padding: 2%;">
     <%= dameCaracteristica(@especie).html_safe %>
-    <%=  dameDistribucion(@especie).html_safe %>
+    <%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %>
   </div>
 </div>
 
