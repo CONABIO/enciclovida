@@ -214,6 +214,8 @@
             });
 
             $('#id_nom_cientifico_' + id).prop('checked', true);
+            $('#id_nom_cientifico').attr('value',id);
+
             $(this).toggleClass("busqueda_atributo_radio_seleccionado");
             cat_tax_asociadas(id);
         });

@@ -3,6 +3,7 @@
 
       <%= radioGruposIconicos.html_safe %>
 
+      <%= hidden_field_tag :id_nom_cientifico %>
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 

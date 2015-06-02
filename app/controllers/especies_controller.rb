@@ -319,7 +319,8 @@ class EspeciesController < ApplicationController
           joins = []
           busqueda = 'Especie.datos_basicos'
 
-          conID = nombre_cientifico = ''
+          conID = ''
+          nombre_cientifico = ''
           distinct = false
 
           params.each do |key, value|  #itera sobre todos los campos
@@ -357,11 +358,7 @@ class EspeciesController < ApplicationController
               condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
             end
           else       # busquedas directas
-            if conID.present?
-              condiciones << ".caso_sensitivo('especies.id', '#{conID}')"
-            else
-              condiciones << ".caso_insensitivo('nombre_cientifico', '#{nombre_cientifico}')" if nombre_cientifico.present?
-            end
+            condiciones << ".caso_sensitivo('especies.id', '#{conID}')" if conID.present?
           end
 
           #Parte del estatus
@@ -393,6 +390,7 @@ class EspeciesController < ApplicationController
           joins_unicos = joins.uniq.join('')
           busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
+          Rails.logger.info "---#{busqueda}"
           # Para sacar los resultados por categoria
           @por_categoria = Especie.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1

@@ -196,7 +196,8 @@
 <% end %>
 
 <p id="notice"><%= notice %></p>
-<%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' %>
+<%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' &&
+     (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
 
 <div id="content">
   <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
