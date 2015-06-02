@@ -36,7 +36,9 @@
 *= require dataTables/src/demo_table_jui
 */
 
-
+body a{
+    color: #F4771D;
+}
 @font-face {
     font-family: 'texgyreadventorregular';
     src: url('../fonts/texgyreadventor-regular-webfont.eot');
