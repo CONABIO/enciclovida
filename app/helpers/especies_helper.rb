@@ -114,7 +114,7 @@ module EspeciesHelper
 
     dist = dameDistribucion(taxon)
     if dist.present?
-      datos << '<br>' << dameDistribucion(taxon) << ' - '
+      datos << dameDistribucion(taxon) << ' - '
     end
 
     datos << dameCaracteristica(taxon)
