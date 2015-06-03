@@ -390,7 +390,6 @@ class EspeciesController < ApplicationController
           joins_unicos = joins.uniq.join('')
           busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
-          Rails.logger.info "---#{busqueda}"
           # Para sacar los resultados por categoria
           @por_categoria = Especie.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
