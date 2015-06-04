@@ -29,7 +29,7 @@ def batches
   NombreComun.find_each do |nombre_comun|
     puts "#{nombre_comun.id}-#{nombre_comun.nombre_comun}" if OPTS[:debug]
 
-    nombre_comun.especies.order('nombre_cientifico ASC').each do |taxon|
+    nombre_comun.especies.distinct.each do |taxon|
       data = nombre_comun.exporta_redis(taxon)
 
       File.open("#{@path}/nom_com_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
