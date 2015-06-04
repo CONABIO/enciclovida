@@ -110,6 +110,9 @@
                     $('#b_comun').submit();
                 } else {
                     $('#id_avanzada_comun').attr('value', data.id);
+                    cat_tax_asociadas(data.id);
+                    // Quito el valor de la busqueda cientifica ya que tomo en cuenta el ultimo valor anotado
+                    $('#id_avanzada_cientifico').attr('value', '');
                 }
             }
         }
@@ -141,6 +144,8 @@
                 } else {
                     $('#id_avanzada_cientifico').attr('value', data.id);
                     cat_tax_asociadas(data.id);
+                    // Quito el valor de la busqueda cientifica ya que tomo en cuenta el ultimo valor anotado
+                    $('#id_avanzada_comun').attr('value', '');
                 }
             }
         }
