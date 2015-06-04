@@ -384,6 +384,15 @@ es:
     endemica:
       icono: endemica.png
       nombre: Endémica
+    no-endemica:
+      icono: no_endemica.png
+      nombre: No Endémica
+    cuasiendemica:
+      icono: cuasiendemica.png
+      nombre: Cuasiendémica
+    semiendemica:
+      icono: semiendemica.png
+      nombre: Semindémica
     introducida:
       icono: introducida.png
       nombre: Introducida

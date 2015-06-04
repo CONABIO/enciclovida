@@ -286,16 +286,16 @@
     <%= dameStatus(@especie, {}).html_safe %>
   </div>
   <div class='text-primary pull-right' style="width: 48%; padding: 2%;">
-    <%= dameCaracteristica(@especie).html_safe %>
-    <%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %>
+    <p><%= '<strong>Categorías de Riesgo: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+    <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
   </div>
 </div>
 
 <div class='text-primary' style="width: 100%; clear:both;">
     <% if geo && geo.count > 0 %>
-        <div style="width: 45%; float:left;">
+        <div style="width: 48%; float:left; margin-left:15px;">
     <% else %>
-        <div style="width: 45%; float:left;">
+        <div style="width: 48%; float:left; margin-left:15px;">
     <% end %>
     <% if @photos.any?%>
         <div id="photoscol" class="embed-responsive embed-responsive-4by3">
@@ -315,7 +315,7 @@
     </div>
 
     <% if geo && geo.count > 0 %>
-        <div style="width: 45%; float:right;" id="contenedor_mapa">
+        <div style="width: 48%; float:right; margin-right:15px;" id="contenedor_mapa">
             <div class="embed-responsive embed-responsive-4by3">
               <div id="map"></div>
             </div> <strong>NOTA:</strong> La distribución es sólo de México
