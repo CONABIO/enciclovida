@@ -375,16 +375,27 @@ class Especie < ActiveRecord::Base
   # Pone la foto principal en la tabla adicionales
   def asigna_foto
     # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
-    foto_p = if fotos = photos.where("photos.type != 'ConabioPhoto'")
-                       fotos.first.thumb_url if fotos.any?
-                     elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
-                       fotos.first.thumb_url if fotos.any?
-                     end
+    foto_p = ''
 
-    return {:cambio => false} unless photos.any?
+    if fotos = photos.where("photos.type != 'ConabioPhoto'")
+      fotos.each do |f|
+        if f.square_url.present?
+          foto_p = f.square_url
+          break
+        end
+      end
+    elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
+      fotos.each do |f|
+        if f.square_url.present?
+          foto_p = f.square_url
+          break
+        end
+      end
+    end
+
+    return {:cambio => false} unless foto_p.present?
 
     if adicional
-      return {:cambio => false} if adicional.foto_principal.present?
       adicional.foto_principal = foto_p
     else
       ad = crea_con_foto(foto_p)
