@@ -285,7 +285,7 @@ class Especie < ActiveRecord::Base
 
   def asigna_nombre_comun
     if adicional
-      return if adicional.nombre_comun_principal.present?
+      #return if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
     else
       ad = crea_con_nombre_comun
