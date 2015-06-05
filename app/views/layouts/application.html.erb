@@ -38,10 +38,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 126px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 107px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
     </div>
     <div id="navbar" class="navbar-collapse collapse" style="background-image: url('/assets/app/backEncabeza.png'); background-size: contain; background-position: bottom right; background-repeat: no-repeat;">
-      <ul class="nav navbar-nav" style="font-weight: bold; font-size: .88em">
+      <ul class="nav navbar-nav" style="font-weight: bold; font-size: 1em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
                 <li><%= link_to :Listas, listas_path %></li>
@@ -95,13 +95,11 @@
 
 <%= bitacora.html_safe if bitacora.present? %>
 <footer class="footer">
-      <div class="container-fluid">
-        <p class="text-success bg-success text-center">
-            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
-            Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
-            Delegación Tlalpan, 14010, México, D.F.
-        </p>
-      </div>
+    <p class="text-success bg-success text-center" style="margin: 0px;">
+        Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
+        Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
+        Delegación Tlalpan, 14010, México, D.F.
+    </p>
 </footer>
 </body>
 </html>
