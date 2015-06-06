@@ -275,17 +275,17 @@
 <% end %>
 
 <div>
-  <h4>
+  <h2>
     <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
     <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
     <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
     <span id="envia_comentario" class="dialog" style="display: none"></span>
-  </h4>
-  <div class='text-primary pull-left' style="width: 48%; padding: 2%;">
+  </h2>
+  <div class='text-primary pull-left' style="width: 38%; padding: 2%;">
     <%= dameNomComunes(@especie).html_safe %>
     <%= dameStatus(@especie, {}).html_safe %>
   </div>
-  <div class='text-primary pull-right' style="width: 48%; padding: 2%;">
+  <div class='text-primary pull-right' style="width: 60%;">
     <p><%= '<strong>Categorías de Riesgo: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
     <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
   </div>
@@ -293,9 +293,9 @@
 
 <div class='text-primary' style="width: 100%; clear:both;">
     <% if geo && geo.count > 0 %>
-        <div style="width: 38%; float:left; margin-left:10px;">
+        <div style="width: 38%; float:left; margin-left:5px;">
     <% else %>
-        <div style="width: 38%; float:left; margin-left:10px;">
+        <div style="width: 38%; float:left; margin-left:5px;">
     <% end %>
     <% if @photos.any?%>
         <div id="photoscol" class="embed-responsive embed-responsive-4by3">
@@ -316,22 +316,24 @@
 
     <% if geo && geo.count > 0 %>
         <div style="width: 60%; float:right; margin-right: 5px;" id="contenedor_mapa">
-            <div class="embed-responsive embed-responsive-4by3">
+            <div class="embed-responsive embed-responsive-4by3 text-center">
               <div id="map"></div>
-            </div> <strong>NOTA:</strong> La distribución es sólo de México
+              <strong>NOTA:</strong> La distribución es sólo de México
+            </div>
         </div>
     <% end %>
 </div>
-<div class='text-primary' style="width: 100%; clear:both;">
+<div class='text-primary text-center' style="width: 100%; clear:both;">
   <% if geo && geo.count > 0 %>
-      <%= "| Mapa de distribución #{link_to(image_tag('app/kmz.jpg', :alt => :KMZ, :width => 26), geo['geoserver_kmz'], :target => :_blank)}".html_safe if geo['geoserver_kmz'] %>
-      <%= "| Registros del SNIB #{link_to(image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :width => 32, :height => 32), geo['snib_kml'], :target => :_blank)}".html_safe if geo['snib_kml'] %>
-      <%= "| Observaciones de #{link_to(image_tag('app/naturalista.png', :alt => :KML, :width => 90), geo['naturalista_kml'], :target => :_blank)}".html_safe if geo['naturalista_kml'] %>
+  <div class="btn-group " role="group" aria-label="...">
+    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'width: 20px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['geoserver_kmz'] %>
+    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'width: 20px;')).html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['snib_kml'] %>
+    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML)).html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['naturalista_kml'] %>
   <% end %>
-  Imprime la página en PDF <%= link_to(image_tag('app/pdf.png', :alt => :PDF), "#{especie_path(@especie)}.pdf", :target => :_blank) %>
-  <p>
-    ¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %>
-    y con gusto la atenderemos.
+  </div>
+  <p class="text-success" style="padding-top: 15px; padding-bottom: 15px;">
+    <span class="pull-left">¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
+    <span class="pull-right"><%= link_to(("Descargar "+image_tag('app/pdf.png', :alt => :PDF, :style =>'width:20px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %></span>
   <p>
 </div>
 <div id="tabs" style="width: 100%; float:left; font-size: 90%">
