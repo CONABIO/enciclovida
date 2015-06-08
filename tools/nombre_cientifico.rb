@@ -10,8 +10,8 @@ Correr despues de tener el campo ancestry_ascendente_obligatorio listo
 
 Usage:
 
-  rails r tools/nombre_cientifico_sql.rb -d
-  rails r tools/nombre_cientifico_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+  rails r tools/nombre_cientifico.rb -d
+  rails r tools/nombre_cientifico.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 where [options] are:
   EOS

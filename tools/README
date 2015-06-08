@@ -23,20 +23,20 @@
 
 *****NOTA: 6,7,8 se pueden correr en paralelo*****
 6.- Corre el script para completar el campo ancestry_ascendente_directo de la tabla Nombre: (5429.73830033 seg)
-        6.1.- rails r tools/ancestry_ascendente_directo_sql.rb -d                  #para completarlo en todas las bases
-        6.2.- rails r tools/ancestry_ascendente_directo_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+        6.1.- rails r tools/ancestry_ascendente_directo.rb -d                  #para completarlo en todas las bases
+        6.2.- rails r tools/ancestry_ascendente_directo.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 7.- Corre el script para completar el campo ancestry_ascendente_obligatorio de la tabla Nombre: (3595.652265486 seg)
-        7.1.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d                  #para completarlo en todas las bases
-        7.2.- rails r tools/ancestry_ascendente_obligatorio_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+        7.1.- rails r tools/ancestry_ascendente_obligatorio.rb -d                  #para completarlo en todas las bases
+        7.2.- rails r tools/ancestry_ascendente_obligatorio.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 8.- Corre el script para completar el campo ancestry de la tabla Region: (289.575500578 seg)
-        8.1.- rails r tools/ancestry_regiones_sql.rb -d
-        8.2.- rails r tools/ancestry_regiones_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
+        8.1.- rails r tools/ancestry_regiones.rb -d
+        8.2.- rails r tools/ancestry_regiones.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 
 9.- Corre el script para completar el nombre cientifico de la tabla Nombre: (2721.764556946 seg)
-        9.1.- rails r tools/nombre_cientifico_sql.rb -d
-        9.2.- rails r tools/nombre_cientifico_sql.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
+        9.1.- rails r tools/nombre_cientifico.rb -d
+        9.2.- rails r tools/nombre_cientifico.rb -d 02-Arthropoda              #para correr solo un conjunto de bases
 
 10.- OJO: Solo si estas migrando la informaciona a un nuevo servidor de SQL Server:
         10.1.- Genera las 3 bases, buscador, buscador_development, buscador_test
@@ -80,7 +80,7 @@
 18.- Para generar los registros para el fuzzy match (5084.139111456 seg):
         18.1.- Alzar el servicio del fuzzy match, en una consola de rails
             18.1.1.- require 'blurrily/server.rb'
-            18.1.2.- server=Blurrily::Server.new(:host => CONFIG.ip, :directory=> './db/blurrily')
+            18.1.2.- server=Blurrily::Server.new(:host => IP, :directory=> './db/blurrily')
             18.1.3.- server.start
             18.1.4.- rails r tools/exporta_blurrily.rb
 

@@ -10,8 +10,8 @@ Completa el campo ancestry_ascendente_obligatorio.
 
 Usage:
 
-  rails r tools/ancestry_ascendente_obligatorio_sql.rb -d
-  rails r tools/ancestry_ascendente_obligatorio_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+  rails r tools/ancestry_ascendente_obligatorio.rb -d
+  rails r tools/ancestry_ascendente_obligatorio.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 where [options] are:
   EOS

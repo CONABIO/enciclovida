@@ -3,15 +3,15 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Completa el campo ancestry_ascendente_directo.
+Completa el campo ancestry.
 
 *** Este script tiene que correrse cada vez que se ingresa una nueva base
 
 
 Usage:
 
-  rails r tools/ancestry_ascendente_directo_sql.rb -d
-  rails r tools/ancestry_ascendente_directo_sql.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
+  rails r tools/ancestry_regiones.rb -d
+  rails r tools/ancestry_regiones.rb -d 02-Arthropoda    #para correr solo un conjunto de bases
 
 where [options] are:
   EOS
@@ -19,14 +19,14 @@ where [options] are:
 end
 
 def completa
-  EspecieBio.order('Nombre ASC').find_each do |e|
-    puts "#{e.id}-#{e.nombre}" if OPTS[:debug]
-    e.ancestry_directo
-    e.evita_before_save = true        # evita el metodo before_save
-    e.avoid_ancestry = true           # evita la gema ancestry
-    e.save
+  RegionBio.find_each do |r|
+    puts "#{r.id}-#{r.nombre_region}" if OPTS[:debug]
+    r.completa_ancestry
+    r.avoid_ancestry = true           # evita la gema ancestry
+    r.save
   end
 end
+
 
 start_time = Time.now
 
