@@ -66,13 +66,16 @@
 
 *****Servicios extra*****
 *****NOTA: 16,17,18 se pueden correr en paralelo*****
-16.- Completa la base de nombres cientificos en redis (6169.426945545 seg):
-        16.1.- Borra el archivo dump.rdb
-        16.2.- Alzar el servicio de redis: redis-server
-        16.3.- rails r tools/nombres_cientificos_sql_redis.rb -d
+15.- Completa la base de nombres cientificos en redis (6169.426945545 seg):
+        15.1.- Borra el archivo dump.rdb
+        15.2.- Alzar el servicio de redis: redis-server
+        15.3.- rails r tools/nombres_cientificos_redis.rb -d
 
-17.- Completa la base de nombres comunes en redis (7787.854763815 seg):
-        17.1.- rails r tools/nombres_comunes_sql_redis.rb -d
+16.- Completa la base de nombres comunes en redis (7787.854763815 seg):
+        16.1.- rails r tools/nombres_comunes_redis.rb -d
+
+17.- Completa los nombres comunes principales con los de NaturaLista, si es que no existe en catalogos
+        17.1.- rails r tools/nombres_principales_redis.rb -d
 
 18.- Para generar los registros para el fuzzy match (5084.139111456 seg):
         18.1.- Alzar el servicio del fuzzy match, en una consola de rails
