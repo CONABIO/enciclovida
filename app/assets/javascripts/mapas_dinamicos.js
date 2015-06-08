@@ -115,7 +115,7 @@ function dimensionesIniciales()
 
     map = new GMaps({
         div: '#map',
-        zoom: 4,
+        zoom: 5,
         lat: 23.79162789,
         lng: -102.04376221,
         mapTypeId: google.maps.MapTypeId.HYBRID,
