@@ -41,7 +41,7 @@ def load_file
   puts 'Cargando los datos a redis...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f="#{@path}/nom_cien_#{cat}.json"
-    system_call("soulmate load cien_#{cat} --redis=redis://#{CONFIG.ip}:6379/0 < #{f}") if File.exists?(f)
+    system_call("soulmate load cien_#{cat} --redis=redis://#{IP}:6379/0 < #{f}") if File.exists?(f)
   end
 end
 
