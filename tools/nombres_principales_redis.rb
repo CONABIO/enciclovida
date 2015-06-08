@@ -58,8 +58,8 @@ def load_file
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f_cien="#{@path}/nom_cien_prin_#{cat}.json"
     f_com="#{@path}/nom_com_prin_#{cat}.json"
-    system_call("soulmate add cien_#{cat} --redis=redis://#{CONFIG.ip}:6379/0 < #{f_cien}") if File.exists?(f_cien)
-    system_call("soulmate add com_#{cat} --redis=redis://#{CONFIG.ip}:6379/0 < #{f_com}") if File.exists?(f_com)
+    system_call("soulmate add cien_#{cat} --redis=redis://#{IP}:6379/0 < #{f_cien}") if File.exists?(f_cien)
+    system_call("soulmate add com_#{cat} --redis=redis://#{IP}:6379/0 < #{f_com}") if File.exists?(f_com)
   end
 end
 
