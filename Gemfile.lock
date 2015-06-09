@@ -96,10 +96,21 @@ GEM
     actionpack-action_caching (1.1.1)
       actionpack (>= 4.0.0, < 5.0)
     activerecord-deprecated_finders (1.0.3)
+    acts_as_xlsx (1.0.6)
+      activerecord (>= 2.3.9)
+      axlsx (>= 1.0.13)
+      i18n (>= 0.4.1)
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
     arel (4.0.2)
+    axlsx (2.0.1)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (~> 1.0.0)
+    axlsx_rails (0.3.0)
+      axlsx (>= 2.0.1)
+      rails (>= 3.1)
     bcrypt (3.1.7)
     blurrily (0.2.1)
       activesupport
@@ -188,6 +199,7 @@ GEM
       mime-types (>= 1.16)
     rinku (1.7.3)
     rubyntlm (0.3.4)
+    rubyzip (1.0.0)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -260,7 +272,10 @@ DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store!
   activerecord-sqlserver-adapter!
+  acts_as_xlsx
   ancestry!
+  axlsx
+  axlsx_rails
   blurrily (= 0.2.1)
   carrierwave
   cocoon (= 1.2.0)

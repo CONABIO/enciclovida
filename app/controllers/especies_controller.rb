@@ -20,9 +20,13 @@ class EspeciesController < ApplicationController
   # GET /especies
   # GET /especies.json
   def index
+    @especies = Especie.limit(100)
     respond_to do |format|
       format.html
       format.json { render json: EspecieDatatable.new(view_context) }
+      format.xlsx {
+        send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
+      }
     end
   end
 
@@ -424,6 +428,7 @@ class EspeciesController < ApplicationController
                 checklists(true)
               end
               @taxones = Especie.find_by_sql(@taxones)
+
             end
           end
 
@@ -456,6 +461,9 @@ class EspeciesController < ApplicationController
                        :encoding => 'UTF-8',
                        :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                        :orientation => 'Landscape'
+              end
+              format.xlsx do
+                @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
               end
             end
             #render 'especies/checklists'

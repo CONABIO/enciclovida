@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: 'Taxonomía') do |sheet|
+
+    sheet.add_row @columnas
+    i = 0
+
+    while i < @taxones.length  do
+        sheet.add_row @taxones.to_a.map(&:serializable_hash)[i].map{|k,v| v}
+        i +=1
+    end
+end
