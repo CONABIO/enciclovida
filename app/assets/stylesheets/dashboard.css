@@ -45,7 +45,7 @@ body {
     padding: 20px;
     overflow-x: overlay;
     overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
-    background-color: rgba(245, 245, 245, 0.75);
+    background-color: rgba(245, 245, 245, 0.85);
     border: 1px solid #998370;
     border-radius: 5px;
     border-top-right-radius: 2px;

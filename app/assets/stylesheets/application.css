@@ -36,6 +36,11 @@
 *= require dataTables/src/demo_table_jui
 */
 
+body{
+    background-image: url("app/fondo.png");
+    background-repeat: repeat;
+}
+
 @font-face {
     font-family: 'texgyreadventorregular';
     src: url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),

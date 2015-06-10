@@ -73,7 +73,7 @@
 <div class="container-fluid" style="">
   <div class="row">
     <% if params[:checklist].blank? %>
-        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
     <% end %>
 
