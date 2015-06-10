@@ -21,7 +21,6 @@
 //= stub gmaps
 //= stub mapas_dinamicos
 //= require_tree .
-// require
 //= require cocoon
 //= require general
 //= require autocomplete-rails
