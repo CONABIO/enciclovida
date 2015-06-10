@@ -205,9 +205,9 @@ class EspeciesController < ApplicationController
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
-          condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").
+          condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].limpia_sql}\").
                 where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_comun ASC')"
-          condiciones_count = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].gsub("'", "''")}\").
+          condiciones_count = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].limpia_sql}\").
                 where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\")"
           sql = select << condiciones
           sql_count = select_count << condiciones_count
@@ -268,7 +268,7 @@ class EspeciesController < ApplicationController
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
 
           sql = "Especie.datos_basicos.
-            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].gsub("'", "''")}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
+            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
             order('nombre_cientifico ASC')"
 
           consulta = eval(sql).to_sql
@@ -340,12 +340,12 @@ class EspeciesController < ApplicationController
 
             if key == 'nombre_cientifico' && value.present? && conID.blank?
               nombre_cientifico << value.gsub("'", "''")
-              condiciones << ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico}\")"
+              condiciones << ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico.limpia_sql}\")"
             end
 
             if key == 'nombre_comun' && value.present? && conID.blank?
               joins << '.nombres_comunes_join'
-              condiciones << ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.gsub("'", "''")}\")"
+              condiciones << ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.limpia_sql}\")"
             end
           end
 

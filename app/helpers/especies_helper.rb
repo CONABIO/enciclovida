@@ -306,9 +306,10 @@ module EspeciesHelper
     if I18n.locale.to_s == 'es-cientifico'
       nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
     else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false)}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
     end
 
+    # Agrupa los nombres por su lengua
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
     keys = agrupa_nombres.keys.sort
     keys.each do |k|
