@@ -43,7 +43,7 @@ body {
     z-index: 1000;
     display: block;
     padding: 20px;
-    overflow-x: auto;
+    overflow-x: overlay;
     overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
     background-color: rgba(245, 245, 245, 0.75);
     border: 1px solid #998370;
