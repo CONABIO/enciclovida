@@ -31,24 +31,35 @@
  */
 
 /*
-*= //require jquery.ui.core
-*= //require jquery.ui.theme
+*= require jquery.ui.core
+*= require jquery.ui.theme
 *= require dataTables/src/demo_table_jui
 */
 
-body a{
-    color: #F4771D;
+body{
+    background-image: url("app/fondo.png");
+    background-repeat: repeat;
 }
+
 @font-face {
     font-family: 'texgyreadventorregular';
-    src: url('../fonts/texgyreadventor-regular-webfont.eot');
-    src: url('../fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+    src: url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
+         url('../fonts/texgyreadventor-regular-webfont.eot'),
+         url('../fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
          url('../fonts/texgyreadventor-regular-webfont.woff') format('woff'),
-         url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
          url('../fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
     font-weight: normal;
     font-style: normal;
+}
 
+@font-face {
+    font-family: 'opensans';
+    src: url('../fonts/opensans-regular-webfont.ttf') format('truetype'),
+    url('../fonts/opensans-regular-webfont.eot'),
+    url('../fonts/opensans-regular-webfont.woff') format('woff'),
+    url('../fonts/opensans-regular-webfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
 #notice, .enlaces_acciones, #bitacora, .notice {

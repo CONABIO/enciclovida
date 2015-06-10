@@ -292,14 +292,14 @@
 
 <div class='text-primary' style="width: 100%; clear:both;">
     <% if geo && geo.count > 0 %>
-        <div style="width: 38%; float:left; margin-left:5px;">
+        <div style="width: 38%; margin-left:5px;" class="pull-left" >
     <% else %>
-        <div style="width: 38%; float:left; margin-left:5px;">
+        <div style="width: 38%; margin-left:5px;" class="pull-left">
     <% end %>
     <% if @photos.any?%>
-        <div id="photoscol" class="embed-responsive embed-responsive-4by3">
+        <div id="photoscol" class="img-responsive">
     <% else %>
-        <div id="photoscol">
+        <div id="photoscol" class="img-responsive">
     <% end %>
           <div id="photos" >
             <%= render :partial => 'photos', :locals => { :photos => @photos } %>
@@ -314,30 +314,30 @@
     </div>
 
     <% if geo && geo.count > 0 %>
-        <div style="width: 60%; float:right; margin-right: 5px;" id="contenedor_mapa">
-            <div class="embed-responsive embed-responsive-4by3 text-center">
+        <div style="width: 60%; margin-right: 5px;" id="contenedor_mapa" class="pull-right">
+            <div class="embed-responsive embed-responsive-4by3">
               <div id="map"></div>
               <strong>NOTA:</strong> La distribución es sólo de México
             </div>
         </div>
     <% end %>
 </div>
-<div class='text-primary text-center' style="width: 100%; clear:both;">
+<div class='text-primary text-center' style="width: 100%; clear:both; padding: 1em 0em;">
   <% if geo && geo.count > 0 %>
   <div class="btn-group " role="group" aria-label="...">
-    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'width: 20px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['geoserver_kmz'] %>
-    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'width: 20px;')).html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['snib_kml'] %>
-    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML)).html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button') if geo['naturalista_kml'] %>
+    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
+    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
+    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
   <% end %>
   </div>
   <p class="text-success" style="padding-top: 15px; padding-bottom: 15px;">
     <span class="pull-left">¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
-    <span class="pull-right"><%= link_to(("Descargar "+image_tag('app/pdf.png', :alt => :PDF, :style =>'width:20px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %></span>
+    <span class="pull-right"><%= link_to(("Descargar "+image_tag('app/pdf.png', :alt => :PDF, :style =>'width: 22px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %></span>
   <p>
 </div>
-<div id="tabs" style="width: 100%; float:left; font-size: 90%">
+<div id="tabs">
   <% if I18n.locale.to_s == 'es-cientifico' %>
-      <ul>
+      <ul class="nav nav-pills">
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
         <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
@@ -357,7 +357,7 @@
           </div>
       <% end %>
   <% else %>
-      <ul>
+      <ul class="nav nav-pills">
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
         <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
