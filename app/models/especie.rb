@@ -3,6 +3,17 @@ class Especie < ActiveRecord::Base
   self.table_name='especies'
   self.primary_key='id'
 
+  # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
+  attr_accessor :x_estatus, :x_categoria_taxonomica, :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
+                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal,
+                :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
+                :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
+                :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
+                :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
+                :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
+                :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo, :x_especies, :x_raza, :x_estirpe,
+                :x_subgrupo, :x_hiporden
+
   has_one :proveedor
   has_one :adicional
   belongs_to :categoria_taxonomica

@@ -1,6 +1,6 @@
 class Lista < ActiveRecord::Base
 
-  self.table_name='listas'
+  self.table_name = 'listas'
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
   #validates :formato, :presence => true
@@ -12,66 +12,94 @@ class Lista < ActiveRecord::Base
 
   FORMATOS = [
       [1, '.csv'],
-      [2, '.xls'],
+      [2, '.xlsx'],
       [3, '.txt']
   ]
 
+  # Columnas permitidas a exportar por el usuario
   COLUMNAS = %w(id nombre_cientifico nombre_comun categoria_taxonomica tipo_distribucion estado_conservacion nombre_autoridad
-                estatus fuente foto_principal cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at)
+                estatus fuente foto_principal cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
+                reino division subdivision clase subclase superorden orden suborden
+                familia subfamilia tribu subtribu genero subgenero seccion subseccion
+                serie subserie especie subespecie variedad subvariedad forma subforma
+                subreino superphylum phylum subphylum superclase grado infraclase
+                infraorden superfamilia supertribu parvorden superseccion grupo
+                infraphylum epiclase cohorte grupo especies raza estirpe
+                subgrupo hiporden)
 
   def to_csv(options = {})
     CSV.generate(options) do |csv|
       csv << nombres_columnas
-      datos = selecciona_columnas
-      datos.each do |d|
-        csv << d
+
+      datos.each do |dato|
+        csv << dato
       end
     end
   end
 
-  # Arma el query para ostrar el contenido de las listas
-  def selecciona_columnas
+  # Arma el query para mostrar el contenido de las listas
+  def datos
     return [] unless cadena_especies.present?
-    resultados = []
+    taxones = []
 
     Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').find_each do |taxon|
 
-    #end
-    #begin
-    #  taxones = Especie.find(cadena_especies.split(',').first(50))
-    #rescue
-    #  # Si algun taxon ya no tiene ese ID
-    #  taxones = []
-    #end
-
-    #taxones.each do |taxon|
-      resultado = []
       columnas.split(',').each do |col|
 
         case col
-          when 'id', 'catalogo_id', 'nombre_cientifico', 'nombre_comun_principal', 'nombre_autoridad', 'fuente', 'foto_principal',
-              'cita_nomenclatural', 'sis_clas_cat_dicc', 'anotacion', 'created_at', 'updated_at'
-            resultado << taxon.send(col)
+          #when 'id', 'catalogo_id', 'nombre_cientifico', 'nombre_autoridad', 'fuente',
+          #    'cita_nomenclatural', 'sis_clas_cat_dicc', 'anotacion', 'created_at', 'updated_at'
+          #  resultado << taxon.send(col)
+          when 'categoria_taxonomica'
+            taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
           when 'estatus'
-            resultado << Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
-          when 'nombre_comun'
-            nombres_comunes = taxon.nombres_comunes.map(&:nombre_comun).uniq
-            resultado << nombres_comunes.join(',')
+            taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
+          when 'foto_principal'
+            if adicional = taxon.adicional
+              taxon.x_foto_principal = adicional.foto_principal
+            end
+          when 'nombre_comun_principal'
+            if adicional = taxon.adicional
+              taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
+            end
+          when 'nombres_comunes'
+            nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun} (#{nom.lengua})"}.uniq
+            next unless nombres_comunes.any?
+            taxon.x_nombres_comunes = nombres_comunes.join(',')
           when 'tipo_distribucion'
             tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
-            resultado << tipos_distribuciones.join(',')
+            next unless tipos_distribuciones.any?
+            taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
           when 'estado_conservacion'
-            estados_conservacion = taxon.estados_conservacion.map(&:descripcion).uniq
-            resultado << estados_conservacion.join(',')
-          when 'categoria_taxonomica'
-            resultado << taxon.categoria_taxonomica.nombre_categoria_taxonomica
+            taxon.estados_conservacion.distinct.each do |cat_riesgo|
+              if cat_riesgo.nivel1 == 4 # Son categorias de riesgo
+                if cat_riesgo.nivel2 == 1 && cat_riesgo.nivel3 > 0 # Es de NOM
+                  taxon.x_nom = cat_riesgo.descripcion
+                elsif cat_riesgo.nivel2 == 2 && cat_riesgo.nivel3 > 0 # Es de IUCN
+                  taxon.x_iucn = cat_riesgo.descripcion
+                elsif cat_riesgo.nivel2 == 3 && cat_riesgo.nivel3 > 0 # Es de CITES
+                  taxon.x_cites = cat_riesgo.descripcion
+                end
+              end
+            end
+
           else
             next
         end
       end
-      resultados << resultado
+
+      # Para agregar todas las categorias taxonomicas que pidio
+      next unless taxon.ancestry_ascendente_directo.present?
+      ids = taxon.ancestry_ascendente_directo.gsub('/',',')
+
+      Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
+        categoria = I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_')
+        next unless COLUMNAS.include?(categoria)
+        taxon.send("x_#{categoria}", ancestro.nombre)  # Asigna el nombre del ancestro si es que coincidio con la categoria
+      end
+      resultados << taxon
     end
-    resultados
+    taxones
   end
 
   private
