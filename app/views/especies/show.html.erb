@@ -335,46 +335,49 @@
     <span class="pull-right"><%= link_to(("Descargar "+image_tag('app/pdf.png', :alt => :PDF, :style =>'width: 22px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %></span>
   <p>
 </div>
-<div id="tabs">
+<div id="content" class="tab-content">
   <% if I18n.locale.to_s == 'es-cientifico' %>
-      <ul class="nav nav-pills">
+      <ul id="tabs" class="nav nav-tabs">
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
         <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
       </ul>
-
-      <div id="conabio_info" class="last column span-20">
-        <%= render :partial => 'info' %>
-      </div>
-
-      <div id="arbol_taxonomico" class="last column span-20">
-        <%= render :partial => 'arbol' %>
-      </div>
-
-      <% if @especie.species_or_lower? %>
-          <div id="description" class="last column span-20">
-            <%= render :partial => 'description' %>
+      <div id="my-tab-content" class="tab-content">
+          <div id="conabio_info" class="tab-pane active">
+            <%= render :partial => 'info' %>
           </div>
-      <% end %>
+
+          <div id="arbol_taxonomico" class="tab-pane">
+            <%= render :partial => 'arbol' %>
+          </div>
+
+          <% if @especie.species_or_lower? %>
+              <div id="description" class="tab-pane">
+                <%= render :partial => 'description' %>
+              </div>
+          <% end %>
+      </div>
   <% else %>
-      <ul class="nav nav-pills">
+      <ul id="tabs" class="nav nav-tabs">
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
         <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
       </ul>
 
-      <% if @especie.species_or_lower? %>
-          <div id="description" class="last column span-20">
-            <%= render :partial => 'description' %>
+      <div id="my-tab-content" class="tab-content">
+          <% if @especie.species_or_lower? %>
+              <div id="description" class="tab-pane active">
+                <%= render :partial => 'description' %>
+              </div>
+          <% end %>
+
+          <div id="arbol_taxonomico" class="tab-pane">
+            <%= render :partial => 'arbol' %>
           </div>
-      <% end %>
 
-      <div id="arbol_taxonomico" class="last column span-20">
-        <%= render :partial => 'arbol' %>
-      </div>
-
-      <div id="conabio_info" class="last column span-20">
-        <%= render :partial => 'info' %>
+          <div id="conabio_info" class="tab-pane">
+            <%= render :partial => 'info' %>
+          </div>
       </div>
   <% end %>
 </div>

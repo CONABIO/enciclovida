@@ -11,8 +11,9 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 
-//= require jquery-1.11.1.min.js
+//= stub jquery-1.11.1.min.js
 //= require jquery
+//= require jquery-ui
 //= require jquery_ujs
 //= require turbolinks
 //= stub photo_selectors
@@ -20,6 +21,7 @@
 //= stub jquery.soulmate.js
 //= stub gmaps
 //= stub mapas_dinamicos
+//= stub jquery-ui-1.10.4.custom.min.js
 //= require_tree .
 //= require cocoon
 //= require general
