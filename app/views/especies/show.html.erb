@@ -2,7 +2,7 @@
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
 <% geo = JSON.parse(geodatos) if geodatos %>
-<%= puts '--------'+geo.inspect %>
+
 <style xmlns="http://www.w3.org/1999/html">
     #map
     {
@@ -285,7 +285,7 @@
     <%= dameStatus(@especie, {}).html_safe %>
   </div>
   <div class='text-primary pull-right' style="width: 60%;">
-    <p><%= '<strong>Categorías de Riesgo: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+    <p><%= '<strong>Categorías de riesgo y comercion internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
     <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
   </div>
 </div>
