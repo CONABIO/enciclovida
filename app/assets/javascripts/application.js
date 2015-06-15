@@ -10,19 +10,27 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-
-//= stub jquery-1.11.1.min.js
-//= require jquery
-//= require jquery-ui
+//= require jquery-1.11.3.js
+// require jquery
+//= require jquery-ui.js
 //= require jquery_ujs
 //= require turbolinks
-//= stub photo_selectors
-//= stub show
-//= stub jquery.soulmate.js
-//= stub gmaps
-//= stub mapas_dinamicos
-//= stub jquery-ui-1.10.4.custom.min.js
-//= require_tree .
-//= require cocoon
-//= require general
+// stub photo_selectors
+// stub show
+// stub jquery.soulmate.js
+// stub gmaps
+// stub mapas_dinamicos
+// require_tree .
+//= require adicional.js
+//= require bootstrap.js
+//= require comentarios.js
+//= require i18n.min.js
+//= require jquery.imagesloaded.min.js
+//= require jquery.mockjax.js
+//= require jquery.scrollTo-min.js
+//= require jQuery-Autocomplete.js
+//= require scrolling.js
+//= require typeahead.js
+//= require cocoon.js
+//= require general.js
 //= require autocomplete-rails
