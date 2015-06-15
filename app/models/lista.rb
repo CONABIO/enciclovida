@@ -17,14 +17,14 @@ class Lista < ActiveRecord::Base
   ]
 
   # Columnas permitidas a exportar por el usuario
-  COLUMNAS = %w(id nombre_cientifico nombre_comun categoria_taxonomica tipo_distribucion estado_conservacion nombre_autoridad
-                estatus fuente foto_principal cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
-                reino division subdivision clase subclase superorden orden suborden
+  COLUMNAS_GENERALES = %w(id nombre_cientifico nombre_comun categoria_taxonomica tipo_distribucion estado_conservacion nombre_autoridad
+                estatus foto_principal fuente cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at)
+  COLUMNAS_CATEGORIAS = %w(reino division subdivision clase subclase superorden orden suborden
                 familia subfamilia tribu subtribu genero subgenero seccion subseccion
                 serie subserie especie subespecie variedad subvariedad forma subforma
                 subreino superphylum phylum subphylum superclase grado infraclase
                 infraorden superfamilia supertribu parvorden superseccion grupo
-                infraphylum epiclase cohorte grupo especies raza estirpe
+                infraphylum epiclase cohorte grupo_especies raza estirpe
                 subgrupo hiporden)
 
   def to_csv(options = {})
@@ -44,7 +44,8 @@ class Lista < ActiveRecord::Base
 
     Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').find_each do |taxon|
 
-      columnas.split(',').each do |col|
+      cols = columnas.split(',')
+      cols.each do |col|
 
         case col
           #when 'id', 'catalogo_id', 'nombre_cientifico', 'nombre_autoridad', 'fuente',

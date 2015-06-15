@@ -277,21 +277,68 @@ es:
       update: Actualizar %{model}
   iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
   listas_columnas:
-    anotacion: Anotación
-    categoria_taxonomica: Categoria taxonómica
-    cita_nomenclatural: Cita nomenclatural
-    created_at: Fecha de creación
-    estado_conservacion: Estado de conservación
-    estatus: Estatus del nombre científico
-    foto_principal: Foto principal
-    fuente: Fuente
-    id: Identificador único
-    nombre_autoridad: Nombre autoridad
-    nombre_cientifico: Nombre científico
-    nombre_comun: Nombres comúnes
-    sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
-    tipo_distribucion: Tipo distribución
-    updated_at: Fecha de última modificación
+    generales:
+      anotacion: Anotación
+      categoria_taxonomica: Categoria taxonómica
+      cita_nomenclatural: Cita nomenclatural
+      created_at: Fecha de creación
+      estado_conservacion: Categorías de riesgo y comercio internacional
+      estatus: Estatus del nombre científico
+      foto_principal: Foto principal
+      fuente: Fuente
+      id: Identificador único
+      nombre_autoridad: Nombre autoridad
+      nombre_cientifico: Nombre científico
+      nombre_comun: Nombres comúnes
+      sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
+      tipo_distribucion: Tipo distribución
+      updated_at: Fecha de última modificación
+    categorias:
+      reino: Reino
+      division: división
+      subdivision: subdivisión
+      clase: clase
+      subclase: subclase
+      superorden: superorden
+      orden: orden
+      suborden: suborden
+      familia: familia
+      subfamilia: subfamilia
+      tribu: tribu
+      subtribu: subtribu
+      genero: género
+      subgenero: subgénero
+      seccion: sección
+      subseccion: subsección
+      serie: serie
+      subserie: subserie
+      especie: especie
+      subespecie: subespecie
+      variedad: variedad
+      subvariedad: subvariedad
+      forma: forma
+      subforma: subforma
+      subreino: subreino
+      superphylum: superphylum
+      phylum: phylum
+      subphylum: subphylum
+      superclase: superclase
+      grado: grado
+      infraclase: infraclase
+      infraorden: infraorden
+      superfamilia: superfamilia
+      supertribu: supertribu
+      parvorden: pavorden
+      superseccion: supersección
+      grupo: grupo
+      infraphylum: infraphylum
+      epiclase: epiclase
+      cohorte: cohorte
+      grupo_especies: grupo especies
+      raza: raza
+      estirpe: estirpe
+      subgrupo: subgrupo
+      hiporden: hiporden
   no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nom: Norma Oficial Mexicana NOM-059
   nombre_comun: Nombre común
