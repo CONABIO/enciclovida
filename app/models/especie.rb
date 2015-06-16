@@ -11,7 +11,7 @@ class Especie < ActiveRecord::Base
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
-                :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo, :x_especies, :x_raza, :x_estirpe,
+                :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden
 
   has_one :proveedor
