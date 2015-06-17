@@ -86,7 +86,7 @@
             else
                 settings.url = settings.url_original + "&solo_categoria=" + nivel;
         });
-        
+
         $(document).on('click', "#box_especie", function()
         {
             checaCaja = $(this).is(":checked") ? true : false
@@ -112,7 +112,6 @@
                         $('#widget_listas').html('<p>Hubo un error al cargar los datos.');
                     });
                 }
-                //alert($(this).html().length);
             });
             return false;
         });

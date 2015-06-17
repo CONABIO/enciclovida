@@ -1,7 +1,7 @@
 class ListasController < ApplicationController
 
   skip_before_filter :set_locale, only: [:aniade_taxones, :dame_listas, :create, :update, :destroy]
-  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :dame_listas, :aniade_taxones]
+  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :aniade_taxones]
   before_action :set_lista, only: [:show, :edit, :update, :destroy]
   before_action only: [:edit, :update, :destroy] do
     permiso = es_propietario?(@lista)
@@ -100,8 +100,13 @@ class ListasController < ApplicationController
     end
   end
 
+  # Consumido con ajax
   def dame_listas
-    @listas = Lista.where(:usuario_id => current_usuario.id).limit(10)
+    if usuario_signed_in?
+      @listas = Lista.where(:usuario_id => current_usuario.id).limit(10)
+    else
+      render text: 'Para poder ver tus listas necesitas iniciar sesión'
+    end
   end
 
   def aniade_taxones
