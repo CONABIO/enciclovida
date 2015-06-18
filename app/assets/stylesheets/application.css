@@ -36,6 +36,11 @@
 *= require dataTables/src/demo_table_jui
 */
 
+/*
+*= require slider/elastislide
+*= require slider/style
+*/
+
 body{
     background-image: url("app/fondo.png");
     background-repeat: repeat;
