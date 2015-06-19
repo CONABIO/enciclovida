@@ -34,3 +34,4 @@
 //= require cocoon.js
 //= require general.js
 //= require autocomplete-rails
+// require_directory ./slider

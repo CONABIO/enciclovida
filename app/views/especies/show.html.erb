@@ -1,31 +1,9 @@
+<%= javascript_include_tag "show", "data-turbolinks-track" => true %>
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
 <% geo = JSON.parse(geodatos) if geodatos %>
 
-<style xmlns="http://www.w3.org/1999/html">
-    #map
-    {
-        margin: 0px auto;
-        padding: 0px;
-    }
-    #map.fullscreen
-    {
-        top: 0px;
-        left: 0px;
-        z-index: 10000;
-    }
-    #balloon
-    {
-        color: rgb(3, 7, 48);
-        margin: 0px;
-        padding: 0px;
-        font-size: x-small;
-        line-height: 1.6em;
-    }
-</style>
-
-<script data-turbolinks-track="true" src="/assets/photo_selectors.js"></script>
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw taxon %>;
     var SPECIES_OR_LOWER = <%=raw species_or_lower %>;
@@ -60,8 +38,8 @@
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
                     MAPAS[CUANTOS][1] = " Observaciones de <img src='/assets/app/naturalista.png' width='70'/>" +
-                        "<p><img src='/assets/app/placemarks/verde.png'/> Grado de investigación <br>" +
-                        "<img src='/assets/app/placemarks/amarillo.png'/> Grado casual</p>"
+                    "<p><img src='/assets/app/placemarks/verde.png'/> Grado de investigación <br>" +
+                    "<img src='/assets/app/placemarks/amarillo.png'/> Grado casual</p>"
                 }
             }
         }
@@ -117,7 +95,7 @@
         });
         //$('#pestañas > div').addClass("panel-body");
 
-                // Inicia los proveedores de fotos
+        // Inicia los proveedores de fotos
         $('#edit_photos_dialog').dialog({
             modal: true,
             title: 'Escoge las fotos para este grupo o especie',
@@ -271,6 +249,7 @@
         <%# end %>
     });
 </script>
+
 
 <p id="notice"><%= notice %></p>
 

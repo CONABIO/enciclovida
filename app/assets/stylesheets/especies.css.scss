@@ -237,3 +237,23 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
 .icono-show_titulo {
   width: 90px;
 }
+
+#map
+{
+  margin: 0px auto;
+  padding: 0px;
+}
+#map.fullscreen
+{
+  top: 0px;
+  left: 0px;
+  z-index: 10000;
+}
+#balloon
+{
+  color: rgb(3, 7, 48);
+  margin: 0px;
+  padding: 0px;
+  font-size: x-small;
+  line-height: 1.6em;
+}
