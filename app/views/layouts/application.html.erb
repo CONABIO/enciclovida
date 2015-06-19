@@ -27,9 +27,7 @@
   <%= yield :extrajs %>
 </head>
 
-<body>
-
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -40,8 +38,8 @@
       </button>
       <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 107px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
     </div>
-    <div id="navbar" class="navbar-collapse collapse" style="background-image: url('/assets/app/backEncabeza.png'); background-size: contain; background-position: bottom right; background-repeat: no-repeat;">
-      <ul class="nav navbar-nav" style="font-weight: bold; font-size: 1em">
+    <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold; background-color: #ede6df; border-radius: 2em; width: 85%;float: right;">
+      <ul class="nav navbar-nav" style="font-weight: bold; font-size: .75em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
                 <li><%= link_to :Listas, listas_path %></li>
@@ -94,12 +92,15 @@
 </div>
 
 <%= bitacora.html_safe if bitacora.present? %>
-<footer class="footer">
-    <p class="text-success bg-success text-center" style="margin: 0px;">
-        Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
-        Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
-        Delegación Tlalpan, 14010, México, D.F.
+<div class="center-block" style="padding-left: 35%;">
+    <p  style="color: #F7F7F7;">
+        <img src="/assets/app/conabioW.png" style="width: 65px; float:left; margin-right: 10px;">
+        <strong><small>
+            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
+            Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
+            Delegación Tlalpan, 14010, México, D.F.
+        </small></strong>
     </p>
-</footer>
+</div>
 </body>
 </html>
