@@ -1,6 +1,6 @@
 .rg-image-wrapper{
     position:relative;
-    padding:20px 30px;
+    padding:10px 10px;
     background:transparent url(/assets/app/slider/black.png) repeat top left;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -8,7 +8,7 @@
     min-height:20px;
 }
 .rg-image{
-    position:relative;
+    position:relative
     text-align:center;
     line-height:0px;
 }
@@ -22,7 +22,7 @@
     left:0px;
     background:#000 url(/assets/app/slider/nav.png) no-repeat -20% 50%;
     width:28px;
-    height:100%;
+    height:50px;
     text-indent:-9000px;
     cursor:pointer;
     opacity:0.3;
@@ -43,17 +43,10 @@
     opacity:0.8;
 }
 .rg-caption {
-    text-align:center;
-    margin-top:15px;
     position:relative;
 }
 .rg-caption p{
-    font-size:11px;
-    letter-spacing:2px;
-    font-family: 'Trebuchet MS', 'Myriad Pro', Arial, sans-serif;
-    line-height:16px;
-    padding:0 15px;
-    text-transform:uppercase;
+    font-size:10px;
 }
 .rg-view{
     height:30px;

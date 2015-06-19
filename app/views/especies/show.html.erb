@@ -45,7 +45,7 @@
                 if (RUTAS_KMZ.geoserver_kmz != undefined) {
                     MAPAS[0] = new Array();
                     MAPAS[0][0] = RUTAS_KMZ.geoserver_kmz
-                    MAPAS[0][1] = " Mapa de distribución"
+                    MAPAS[0][1] = " Mapa de distribución potencial (CONABIO)"
                 }
 
                 if (RUTAS_KMZ.snib_kmz != undefined) {
@@ -282,10 +282,10 @@
   </h2>
   <div class='text-primary pull-left' style="width: 38%; padding: 2%;">
     <%= dameNomComunes(@especie).html_safe %>
-    <%= dameStatus(@especie, {}).html_safe %>
+    <%= dameStatus(@especie).html_safe %>
   </div>
   <div class='text-primary pull-right' style="width: 60%;">
-    <p><%= '<strong>Categorías de riesgo y comercion internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+    <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
     <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
   </div>
 </div>

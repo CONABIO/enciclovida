@@ -408,14 +408,18 @@ module EspeciesHelper
     {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
   end
 
-  def dameStatus(taxon, opciones)
+  def dameStatus(taxon, opciones={})
     estatus_a = []
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
-      taxSinonimo = Especie.find(estatus.especie_id2)                    # Suponiendo que no levante un raise
+      begin
+        taxSinonimo = Especie.find(estatus.especie_id2)
+      rescue
+        break
+      end
 
       if opciones[:tab_catalogos]
         if taxon.estatus == 2                                              # Valido
-          est = "<li>#{tituloNombreCientifico(taxSinonimo, :title => true)}"
+          est = "<li>#{tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)}"
           obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
           estatus_a << "#{est} #{obs}"
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
@@ -428,7 +432,7 @@ module EspeciesHelper
       else   # En esta no los pongo en lista
         if taxon.estatus == 2                                              # Valido
           puts taxSinonimo.nombre_cientifico
-          estatus_a << tituloNombreCientifico(taxSinonimo, :title => true)
+          estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
           estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
         else
@@ -451,11 +455,11 @@ module EspeciesHelper
 
   def dameCaracteristica(taxon, opciones={})
     conservacion=''
-    taxon.especies_catalogos.each do |e|
+    taxon.especies_catalogos.order("CONCAT(nivel1,nivel2,nivel3,nivel4) ASC").each do |e|
       edo_conserv = e.catalogo.nom_cites_iucn
       if edo_conserv.present?
         opciones[:tab_catalogos] ?  conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>" :
-            conservacion+="#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.nombre"))}  "
+            conservacion << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.nombre"))}  "
       end
     end
 
