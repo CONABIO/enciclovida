@@ -110,9 +110,14 @@
 
     $(document).ready(function()
     {
-        $('#tabs').tabs(); // Inicia los tabs
+        $('#pestañas').tabs(); // Inicia los tabs
+        $('#pestañas > .nav a').click(function(){
+            $('#pestañas > .nav li').removeClass("active");
+            $(this).parent().addClass("active");
+        });
+        //$('#pestañas > div').addClass("panel-body");
 
-        // Inicia los proveedores de fotos
+                // Inicia los proveedores de fotos
         $('#edit_photos_dialog').dialog({
             modal: true,
             title: 'Escoge las fotos para este grupo o especie',
@@ -324,65 +329,64 @@
 </div>
 <div class='text-primary text-center' style="width: 100%; clear:both; padding: 1em 0em;">
   <% if geo && geo.count > 0 %>
-  <div class="btn-group " role="group" aria-label="...">
-    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
-    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
-    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-default', :role => 'button', :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
+  <div class="btn-group text-right" style="width: 100%; role="group" aria-label="...">
+    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
+    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
+    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
   <% end %>
+    <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
   </div>
-  <p class="text-success" style="padding-top: 15px; padding-bottom: 15px;">
-    <span class="pull-left">¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
-    <span class="pull-right"><%= link_to(("Descargar "+image_tag('app/pdf.png', :alt => :PDF, :style =>'width: 22px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %></span>
+  <p class="text-success text-center" style="padding-top: 15px; padding-bottom: 15px;">
+    <span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
   <p>
 </div>
-<div id="my-tab-content" class="tab-content">
+<div id="pestañas" class="panel panel-default">
   <% if I18n.locale.to_s == 'es-cientifico' %>
-      <ul id="tabs" class="nav nav-tabs">
-        <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+      <ul class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
         <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
         <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
       </ul>
-      <div id="my-tab-content" class="tab-content">
-          <div id="conabio_info" class="tab-pane active">
-            <%= render :partial => 'info' %>
-          </div>
-
-          <div id="arbol_taxonomico" class="tab-pane">
-            <%= render :partial => 'arbol' %>
-          </div>
-
-          <% if @especie.species_or_lower? %>
-              <div id="description" class="tab-pane">
-                <%= render :partial => 'description' %>
-              </div>
-          <% end %>
+      <div id="conabio_info" class="tab-pane active">
+        <%= render :partial => 'info' %>
       </div>
+
+      <div id="arbol_taxonomico" class="tab-pane">
+        <%= render :partial => 'arbol' %>
+      </div>
+
+      <% if @especie.species_or_lower? %>
+          <div id="description" class="tab-pane">
+            <%= render :partial => 'description' %>
+          </div>
+      <% end %>
   <% else %>
-      <ul id="tabs" class="nav nav-tabs">
-        <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
-        <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+      <ul class="nav nav-tabs" data-tabs="tabs">
+        <% if @especie.species_or_lower? %>
+            <li class="active"><a href="#description"><span>Fichas</span></a></li>
+            <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+        <% else %>
+            <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+        <% end %>
         <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
       </ul>
 
-      <div id="my-tab-content" class="tab-content">
-          <% if @especie.species_or_lower? %>
-              <div id="description" class="tab-pane active">
-                <%= render :partial => 'description' %>
-              </div>
-          <% end %>
 
-          <div id="arbol_taxonomico" class="tab-pane">
-            <%= render :partial => 'arbol' %>
-          </div>
-
-          <div id="conabio_info" class="tab-pane">
+        <% if @especie.species_or_lower? %>
+            <div id="description" class="tab-pane panel-body">
+            <%= render :partial => 'description' %>
+            </div>
+            <div id="arbol_taxonomico" class="tab-pane panel-body">
+              <%= render :partial => 'arbol' %>
+            </div>
+        <% else %>
+            <div id="arbol_taxonomico" class="tab-pane panel-body">
+              <%= render :partial => 'arbol' %>
+            </div>
+        <% end %>
+        <div id="conabio_info" class="tab-pane panel-body">
             <%= render :partial => 'info' %>
-          </div>
-      </div>
+        </div>
+
   <% end %>
 </div>
-<!--div class="enlaces_acciones">
-  <%# accionesEnlaces(@especie, @accion).html_safe %><br>
-  <%# link_to("Nuevo taxón descendiente de #{@especie.nombre_cientifico}".html_safe,
-              new_especie_path(:parent_id => @especie)).html_safe %>
-</div-->

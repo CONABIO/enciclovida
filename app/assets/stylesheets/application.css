@@ -134,3 +134,11 @@ input.gsc-search-button {
     border-color: #666666;
     background-color: #c0c0c0;
 }
+
+#pestañas div.panel-body{
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    padding: 2.5em;
+}

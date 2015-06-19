@@ -11,7 +11,7 @@ class EspeciesController < ApplicationController
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
   # pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
+  #caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
