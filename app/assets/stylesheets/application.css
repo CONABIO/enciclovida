@@ -28,23 +28,25 @@
  *= require fontello-ie7-codes
  *= require scrolling
  *= require comentarios
+ *= require slider/elastislide
+ *= require slider/style
  */
 
 /*
-*= require jquery.ui.core
-*= require jquery.ui.theme
-*= require dataTables/src/demo_table_jui
-*/
-
-/*
-*= require slider/elastislide
-*= require slider/style
+* require jquery-ui
+* require jquery-ui.structure
+* require dataTables/src/demo_table_jui
 */
 
 body{
-    background-image: url("app/fondo.png");
-    background-repeat: repeat;
+    opacity: 0.85;
+    filter: alpha(opacity=85); /* For IE8 and eaarlier */
+    background-size: cover;
+    background-position: 50% 50%;
+    background: url("app/fondo.jpg");
 }
+
+
 
 @font-face {
     font-family: 'texgyreadventorregular';
@@ -138,4 +140,12 @@ input.gsc-input {
 input.gsc-search-button {
     border-color: #666666;
     background-color: #c0c0c0;
+}
+
+#pestañas div.panel-body{
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    padding: 2.5em;
 }

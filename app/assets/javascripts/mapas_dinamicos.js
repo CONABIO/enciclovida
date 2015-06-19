@@ -43,8 +43,8 @@ function anadeControlCapas()
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
         position: 'right_bottom',
-        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 5px;">'+
-            '<span class="ui-icon ui-icon-grip-diagonal-se">HOLA</span>'+
+        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
+            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>'+
             '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">Capas'+
             anadeLista()+
             '</ul>'+
@@ -79,8 +79,8 @@ function anadeControlFullScreen()
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
         position: 'top_right',
-        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 1px;">'+
-            '<span class="ui-icon ui-icon-arrow-4-diag">HOLA</span>'+
+        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
+            '<span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>'+
             '</div>',
         style: {
             margin: '3px',
