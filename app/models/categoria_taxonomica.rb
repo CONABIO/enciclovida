@@ -6,6 +6,8 @@ class CategoriaTaxonomica < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :cat_taxonom, ->(valor) { find(valor).nombre_categoria_taxonomica }
 
+  # Todas las categorias
+  CATEGORIAS  = self.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_').downcase}.uniq
   # Despliego solo estas categorias para la vista basica
   CATEGORIAS_OBLIGATORIAS  = %w(Reino phylum división clase orden familia género especie subespecie)
 

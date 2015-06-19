@@ -1,0 +1,62 @@
+<noscript>
+  <style>
+      .es-carousel ul{
+          display:block;
+      }
+  </style>
+</noscript>
+<script id="img-wrapper-tmpl" type="text/x-jquery-tmpl">
+    <div class="rg-image-wrapper">
+		{{if itemsCount > 1}}
+			<div class="rg-image-nav">
+				<a href="#" class="rg-image-nav-prev">Previous Image</a>
+				<a href="#" class="rg-image-nav-next">Next Image</a>
+			</div>
+		{{/if}}
+		<div class="rg-image"></div>
+		<div class="rg-loading"></div>
+		<div class="rg-caption-wrapper">
+			<div class="rg-caption" style="display:none;">
+				<p></p>
+			</div>
+		</div>
+	</div>
+</script>
+
+<% if @photos.any? %>
+    <div class="container" style="width:100%">
+      <div class="content">
+        <div id="rg-gallery" class="rg-gallery">
+          <div class="rg-thumbs">
+            <!-- Elastislide Carousel Thumbnail Viewer -->
+            <div class="es-carousel-wrapper">
+              <div class="es-nav">
+                <span class="es-nav-prev">Previous</span>
+                <span class="es-nav-next">Next</span>
+              </div>
+              <div class="es-carousel">
+                <ul>
+                  <% @photos.each do |p| %>
+                      <%-
+                          next unless p.square_url.present?
+                          img_square = p.square_url
+
+                          img_normal = p.best_photo
+                          next unless img_normal.present?
+                      -%>
+
+                      <li>
+                        <a href="#">
+                          <img src="<%= img_square %>" data-large="<%= img_normal %>" data-description="<%= p.attribution %>" />
+                        </a>
+                      </li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+            <!-- End Elastislide Carousel Thumbnail Viewer -->
+          </div><!-- rg-thumbs -->
+        </div><!-- rg-gallery -->
+      </div><!-- content -->
+    </div><!-- container -->
+<% end %>

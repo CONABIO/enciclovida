@@ -6,7 +6,7 @@
     <% if I18n.locale.to_s == 'es-cientifico' %>
         <div style="width: 100%; float:left;">
           <p>
-            <%= link_to :Ver_listas, '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
+            <%= link_to 'Exportar datos', '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
           <div id="widget_listas" style="display: none"></div>
           </p>
         </div>

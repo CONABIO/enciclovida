@@ -1,37 +1,60 @@
 module ListasHelper
-  def columnas(columnas)
-    cabecera = []
-    columnas.each do |col|
-      cabecera << t("listas_columnas.#{col}")
-    end
-    cabecera.join(',')
-  end
-
   def despliegaLista(lista)
     taxones = ''
     columnas = lista.columnas.split(',')
-    nombresComunesColumnas = columnas(columnas)
+    nombresComunesColumnas = lista.nombres_columnas(true)
 
-    datos = lista.selecciona_columnas
+    datos = lista.datos
     nombresComunesColumnas unless datos.present?
 
-    datos.each do |taxon|
-      taxones+= "<li>#{taxon.join(' <b>,</b> ')}</li>"
+    # Consulta las columnas que selecciono en la lista
+    solo_valores = datos.map{|t| [columnas.map{|c| t.send(c)}]}
+
+    solo_valores.each do |valor|
+      taxones << "<li>#{valor.join(' <b>,</b> ')}</li>"
     end
+
     "#{nombresComunesColumnas}<ol id='despliega_lista'>#{taxones}</ol>".html_safe
   end
 
   # Checkbox para la creacion o edicion
   def checkboxColumnas(columnas = nil)
-    checkBoxes=''
+    checkBoxes = ''
     contador=0
 
-    Lista::COLUMNAS.each do |c|
-      checkBoxes+='<br>' if contador%2 == 0 && contador != 0   #para darle un mejor espacio
+    checkBoxes << '<p><strong>Columnas generales</strong></p>'
+    Lista::COLUMNAS_GENERALES.each do |c|
+      checkBoxes << '<br>' if contador%2 == 0 && contador != 0   #para darle un mejor espacio
       if columnas.present?
-        checkBoxes+= check_box_tag('columnas[]', c, columnas.include?(c)) + " #{t("listas_columnas.#{c}")}"
+        checkBoxes << check_box_tag('columnas[]', c, columnas.include?(c)) + " #{t("listas_columnas.generales.#{c}")} "
       else
-        checkBoxes+= check_box_tag('columnas[]', c, false) + " #{t("listas_columnas.#{c}")}"
+        checkBoxes << check_box_tag('columnas[]', c, false) + " #{t("listas_columnas.generales.#{c}")} "
+      end
+      contador+=1
+    end
+
+    contador=0
+
+    checkBoxes << '<p><strong>Categorías de riesgo y comercio internacional</strong></p>'
+    Lista::COLUMNAS_RIESGO_COMERCIO.each do |c|
+      checkBoxes << '<br>' if contador%2 == 0 && contador != 0   #para darle un mejor espacio
+      if columnas.present?
+        checkBoxes << check_box_tag('columnas[]', c, columnas.include?(c)) + " #{t("listas_columnas.generales.#{c}")} "
+      else
+        checkBoxes << check_box_tag('columnas[]', c, false) + " #{t("listas_columnas.generales.#{c}")} "
+      end
+      contador+=1
+    end
+
+    contador=0
+
+    checkBoxes << '<p><strong>Categorías a exportar</strong></p>'
+    Lista::COLUMNAS_CATEGORIAS.each do |c|
+      checkBoxes << '<br>' if contador%2 == 0 && contador != 0   #para darle un mejor espacio
+      if columnas.present?
+        checkBoxes << check_box_tag('columnas[]', c, columnas.include?(c)) + " #{t("listas_columnas.categorias.#{c}")} "
+      else
+        checkBoxes << check_box_tag('columnas[]', c, false) + " #{t("listas_columnas.categorias.#{c}")} "
       end
       contador+=1
     end

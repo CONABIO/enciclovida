@@ -1,9 +1,33 @@
 class ListasController < ApplicationController
 
   skip_before_filter :set_locale, only: [:aniade_taxones, :dame_listas, :create, :update, :destroy]
-  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :dame_listas, :aniade_taxones]
+  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :aniade_taxones]
   before_action :set_lista, only: [:show, :edit, :update, :destroy]
-  before_action :es_propietario?, only: [:edit, :update, :destroy, :aniade_taxones]
+  before_action only: [:edit, :update, :destroy] do
+    permiso = es_propietario?(@lista)
+    render :_error unless permiso
+  end
+  before_action only: :aniade_taxones do
+    if params[:listas].present?
+      @listas = []
+      con_error = false
+
+      params[:listas].each do |lista_id|
+        lista = Lista.find(lista_id)
+        permiso = es_propietario?(lista)
+        con_error = true unless permiso
+
+        if permiso
+          @listas << lista
+        end
+      end
+
+      render :_error unless con_error
+    else
+      render :_error
+    end
+  end
+
   layout false, :only => [:dame_listas, :aniade_taxones]
 
   # GET /listas
@@ -76,13 +100,18 @@ class ListasController < ApplicationController
     end
   end
 
+  # Consumido con ajax
   def dame_listas
-    @listas = Lista.where(:usuario_id => current_usuario.id).limit(10)
+    if usuario_signed_in?
+      @listas = Lista.where(:usuario_id => current_usuario.id).limit(10)
+    else
+      render text: 'Para poder ver tus listas necesitas iniciar sesión'
+    end
   end
 
   def aniade_taxones
     notice = if params[:especies].present?
-               params[:listas].each do |lista|
+               @listas.each do |lista|
                  lista = Lista.find(lista)
                  lista.cadena_especies.present? ? lista.cadena_especies+= ',' + params[:especies].join(',') :
                      lista.cadena_especies = params[:especies].join(',')
@@ -110,9 +139,5 @@ class ListasController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def lista_params
     params.require(:lista).permit(:nombre_lista, :columnas, :formato, :esta_activa, :cadena_especies)
-  end
-
-  def es_propietario?
-    render :_error unless @lista.usuario_id == current_usuario.id
   end
 end

@@ -261,7 +261,7 @@
         }
       });
 
-      this.container.on('click', '.soulmate-suggestion', function() {
+      this.container.on('click', '.soulmate-suggestion', function(event) {
         event.preventDefault();
         that.suggestions.selectFocused();
         return that.input.focus();

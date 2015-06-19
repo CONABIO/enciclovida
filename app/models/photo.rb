@@ -60,6 +60,18 @@ class Photo < ActiveRecord::Base
   MEDIUM = 500
   LARGE = 1024
 
+  def best_photo
+    if original_url.present?
+      original_url
+    elsif large_url.present?
+      large_url
+    elsif medium_url.present?
+      medium_url
+    else
+      nil
+    end
+  end
+
   def to_s
     "<#{self.class} id: #{id}, usuario_id: #{usuario_id}>"
   end

@@ -82,11 +82,24 @@ class ApplicationController < ActionController::Base
   end
 
   def tiene_permiso?(nivel)
-    #return false unless usuario_signed_in?
-    #return true if nivel.include?(usuario.rol_id)
     if usuario_signed_in?
       rol = current_usuario.rol.prioridad
+
       if rol >= nivel
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+
+  def es_propietario?(obj)
+    if usuario_signed_in?
+      usuario_id = obj.usuario_id
+
+      if current_usuario.id == usuario_id
         true
       else
         false
