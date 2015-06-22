@@ -454,17 +454,32 @@ module EspeciesHelper
   end
 
   def dameCaracteristica(taxon, opciones={})
-    conservacion=''
-    taxon.especies_catalogos.order("CONCAT(nivel1,nivel2,nivel3,nivel4) ASC").each do |e|
-      edo_conserv = e.catalogo.nom_cites_iucn
+    conservacion = ''
+    orden_conservacion = Hash.new
+
+    taxon.especies_catalogos.each do |e|
+      cat = e.catalogo
+      edo_conserv = cat.nom_cites_iucn
+
       if edo_conserv.present?
-        opciones[:tab_catalogos] ?  conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>" :
-            conservacion << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.nombre"))}  "
+        if opciones[:tab_catalogos]
+          conservacion << conservacion << "<li>#{cat.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>"
+        else # Para ordenar las categorias de riesgo y comercio
+          if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
+            orden_conservacion[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
+            orden_conservacion[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
+            orden_conservacion[:c] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          end
+        end
       end
-    end
+    end  #Fin each
 
     if conservacion.present?
-      opciones[:tab_catalogos] ? "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>" : conservacion[0..-3]
+      "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
+    elsif orden_conservacion.any?
+      orden_conservacion.sort.map{|k,v| v}.join(' ')
     else
       conservacion
     end
