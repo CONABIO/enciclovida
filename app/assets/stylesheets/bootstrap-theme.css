@@ -5,8 +5,8 @@
  */
 
 /*!
- * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=2ea759f1daee031414c2)
- * Config saved to config.json and https://gist.github.com/2ea759f1daee031414c2
+ * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=c311358723b92c5146e9)
+ * Config saved to config.json and https://gist.github.com/c311358723b92c5146e9
  */
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
@@ -353,7 +353,7 @@ fieldset[disabled] .btn-danger.active {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#001a1a1a', endColorstr='#00000000', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-  border-radius: 2.5em;
+  border-radius: 1.5em;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075);
 }
@@ -380,7 +380,7 @@ fieldset[disabled] .btn-danger.active {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff7f7f7', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-  border-radius: 2.5em;
+  border-radius: 1.5em;
 }
 .navbar-inverse .navbar-nav > .open > a,
 .navbar-inverse .navbar-nav > .active > a {
@@ -510,7 +510,7 @@ fieldset[disabled] .btn-danger.active {
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 .list-group {
-  border-radius: 2.5em;
+  border-radius: 1.5em;
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
 }

@@ -106,7 +106,7 @@
                 if (event.data.num == '1')
                 {
                     $('#id_basica_comun').attr('value', data.id);
-                    guardaFiltros(false);
+                    //guardaFiltros(false);
                     $('#b_comun').submit();
                 } else {
                     $('#id_avanzada_comun').attr('value', data.id);
@@ -139,7 +139,7 @@
                 if (event.data.num == '2')
                 {
                     $('#id_basica_cientifico').attr('value', data.id);
-                    guardaFiltros(false);
+                    //guardaFiltros(false);
                     $('#b_cientifico').submit();
                 } else {
                     $('#id_avanzada_cientifico').attr('value', data.id);
@@ -168,7 +168,7 @@
     {
         $(document).on('click', '.busquedas', function()
         {
-            guardaFiltros(false);
+            //guardaFiltros(false);
         });
 
         $(document).on('change', "[id^='bAtributo_']", function()
@@ -342,14 +342,14 @@
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
 
-        // Carga el filtro predeterminado o el de la base
+        // *Carga el filtro predeterminado o el de la base
         jQuery.ajax
         ({
             success: function(html)
             {
                 $('#busquedas').empty().html(html);
                 $('#soulmate_1, #soulmate_2,#soulmate_3, #soulmate_4').remove();
-                guardaFiltros(false);
+                //guardaFiltros(false);
             },
             fail: function()
             {
