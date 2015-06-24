@@ -100,6 +100,7 @@ class Proveedor < ActiveRecord::Base
 
   #Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
+    return [] unless naturalista_obs.present?
     obs = eval(naturalista_obs).first
     return [] unless obs.count > 0
     cadenas = []
