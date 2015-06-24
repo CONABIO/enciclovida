@@ -19,7 +19,7 @@ where [options] are:
 end
 
 def busca_fotos
-  # Empeizo por provvedores para no correr todos los taxones
+  # Empeizo por proveedores para no correr todos los taxones
   Proveedor.where("naturalista_info IS NOT NULL OR naturalista_info != ''").find_each do |proveedor|
     puts proveedor.id if OPTS[:debug]
     proveedor.fotos(@usuario.id)

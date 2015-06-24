@@ -50,11 +50,16 @@ class Proveedor < ActiveRecord::Base
     if fotos_buscador
       # Para no borrar las anteriores fotos
       fotos_naturalista.each do |photo|
-        photo.save
-        taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
-        taxon_photo.save
+        if photo.new_record?
+          if photo.save
+            taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
+            taxon_photo.save
+          end
+        elsif photo.changed?
+          photo.save
+        end
       end
-    else
+    else  # Guarda todas las fotos asociadas al taxon
       fotos_buscador = fotos_naturalista
       taxon.save
     end
