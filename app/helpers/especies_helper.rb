@@ -538,6 +538,7 @@ module EspeciesHelper
   def radioGruposIconicos
     radios = ''
     columnas = 1
+    es_reino = " busqueda_atributo_radio_reino"
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
@@ -546,6 +547,7 @@ module EspeciesHelper
       if columnas == 6
         radios << '<br>'
         columnas = 7
+        es_reino=""
       end
 
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')
