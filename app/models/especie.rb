@@ -65,7 +65,7 @@ class Especie < ActiveRecord::Base
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
-        adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.icono, iconos.nombre_icono,
+        adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
         iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
@@ -425,10 +425,13 @@ class Especie < ActiveRecord::Base
   end
 
   def nom_com_prin(humanizar = true)
-    begin  # Para diferenciar el nombre_comun_principal de la tabla especies a la de adicionales
-      taxon_icono.present?
-      humanizar ? nombre_comun_principal.humanizar : nombre_comun_principal
-    rescue
+    if self.try(:taxon_icono).present?
+      if self.try(:nombre_comun_principal).present?
+        humanizar ? self.nombre_comun_principal.humanizar : self.nombre_comun_principal
+      else
+        ''
+      end
+    else
       if adicional
         if adicional.nombre_comun_principal.present?
           humanizar ? adicional.nombre_comun_principal.humanizar : adicional.nombre_comun_principal
@@ -439,5 +442,5 @@ class Especie < ActiveRecord::Base
         ''
       end
     end
-  end
+  end  # End if
 end

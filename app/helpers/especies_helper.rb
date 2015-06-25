@@ -35,7 +35,7 @@ module EspeciesHelper
         end
       end
 
-    else   #vista basica
+    else   #vista general
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           taxon.nom_com_prin.present? ? "#{taxon.nom_com_prin} (#{taxon.nombre_cientifico})".html_safe :
@@ -48,7 +48,8 @@ module EspeciesHelper
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
           end
         elsif params[:show]
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]})".html_safe : "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)})".html_safe :
+              "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -64,8 +65,8 @@ module EspeciesHelper
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}".html_safe
           end
         elsif params[:show]
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+              "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -255,9 +256,9 @@ module EspeciesHelper
       contador = 0
       TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
         checkBoxes << "<span id='dist[#{tipoDist.to_s+contador.to_s}_span]' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
-      checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
-      checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
-      contador += 1
+        checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
+        checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
+        contador += 1
       end
     end
     checkBoxes.html_safe
@@ -295,8 +296,8 @@ module EspeciesHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                     else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
-                   end
+                      else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
+                    end
     end
     checkBoxes.html_safe
   end
@@ -408,14 +409,18 @@ module EspeciesHelper
     {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
   end
 
-  def dameStatus(taxon, opciones)
+  def dameStatus(taxon, opciones={})
     estatus_a = []
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
-      taxSinonimo = Especie.find(estatus.especie_id2)                    # Suponiendo que no levante un raise
+      begin
+        taxSinonimo = Especie.find(estatus.especie_id2)
+      rescue
+        break
+      end
 
       if opciones[:tab_catalogos]
         if taxon.estatus == 2                                              # Valido
-          est = "<li>#{tituloNombreCientifico(taxSinonimo, :title => true)}"
+          est = "<li>#{tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)}"
           obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
           estatus_a << "#{est} #{obs}"
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
@@ -428,7 +433,7 @@ module EspeciesHelper
       else   # En esta no los pongo en lista
         if taxon.estatus == 2                                              # Valido
           puts taxSinonimo.nombre_cientifico
-          estatus_a << tituloNombreCientifico(taxSinonimo, :title => true)
+          estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
           estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
         else
@@ -450,17 +455,32 @@ module EspeciesHelper
   end
 
   def dameCaracteristica(taxon, opciones={})
-    conservacion=''
+    conservacion = ''
+    orden_conservacion = Hash.new
+
     taxon.especies_catalogos.each do |e|
-      edo_conserv = e.catalogo.nom_cites_iucn
+      cat = e.catalogo
+      edo_conserv = cat.nom_cites_iucn
+
       if edo_conserv.present?
-        opciones[:tab_catalogos] ?  conservacion+="<li>#{e.catalogo.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>" :
-            conservacion+="#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{e.catalogo.descripcion.parameterize}.nombre"))}  "
+        if opciones[:tab_catalogos]
+          conservacion << conservacion << "<li>#{cat.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>"
+        else # Para ordenar las categorias de riesgo y comercio
+          if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
+            orden_conservacion[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
+            orden_conservacion[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
+            orden_conservacion[:c] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          end
+        end
       end
-    end
+    end  #Fin each
 
     if conservacion.present?
-      opciones[:tab_catalogos] ? "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>" : conservacion[0..-3]
+      "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
+    elsif orden_conservacion.any?
+      orden_conservacion.sort.map{|k,v| v}.join(' ')
     else
       conservacion
     end

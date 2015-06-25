@@ -42,10 +42,10 @@ function anadeControlCapas()
 {
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
-        position: 'right_bottom',
+        position: 'top_right',
         content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
-            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>'+
-            '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">Capas'+
+            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">Capas</span>'+
+            '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">'+
             anadeLista()+
             '</ul>'+
             '</div>',

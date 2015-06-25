@@ -50,11 +50,16 @@ class Proveedor < ActiveRecord::Base
     if fotos_buscador
       # Para no borrar las anteriores fotos
       fotos_naturalista.each do |photo|
-        photo.save
-        taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
-        taxon_photo.save
+        if photo.new_record?
+          if photo.save
+            taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
+            taxon_photo.save
+          end
+        elsif photo.changed?
+          photo.save
+        end
       end
-    else
+    else  # Guarda todas las fotos asociadas al taxon
       fotos_buscador = fotos_naturalista
       taxon.save
     end
@@ -62,6 +67,7 @@ class Proveedor < ActiveRecord::Base
 
   #Guarda el kml asociado al taxon
   def kml
+    return [] unless snib_id.present?
     response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}", :timeout => 1000, :open_timeout => 1000
     return [] unless response.present?
     data = JSON.parse(response)
@@ -95,6 +101,7 @@ class Proveedor < ActiveRecord::Base
 
   #Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
+    return [] unless naturalista_obs.present?
     obs = eval(naturalista_obs).first
     return [] unless obs.count > 0
     cadenas = []
