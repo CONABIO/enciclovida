@@ -424,6 +424,7 @@ class Especie < ActiveRecord::Base
     ad
   end
 
+  # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye
   def nom_com_prin(humanizar = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?
