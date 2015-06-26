@@ -1,0 +1,5 @@
+@media (min-width: 872px) {
+    .sidebar {
+        overflow-x: auto;
+    }
+}
