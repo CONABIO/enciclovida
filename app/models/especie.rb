@@ -296,7 +296,8 @@ class Especie < ActiveRecord::Base
 
   def asigna_nombre_comun
     if adicional
-      return {:cambio => false} if adicional.nombre_comun_principal.present?
+      # Por si no se quiere sobre-escribir el nombre comun principal
+      #return {:cambio => false} if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
     else
       ad = crea_con_nombre_comun
@@ -424,6 +425,7 @@ class Especie < ActiveRecord::Base
     ad
   end
 
+  # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye
   def nom_com_prin(humanizar = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?

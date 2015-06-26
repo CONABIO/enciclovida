@@ -10,8 +10,11 @@ class EspeciesController < ApplicationController
   end
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
-  # pone en cache el webservice que carga por default
+  # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
+
+  # Servicios como las fotos, los registros geograficos, nombres comunes son atualizados
+  caches_action :cache_services, :expires_in => 2.minutes, :cache_path => Proc.new { |c| "cache_servicios/#{c.params[:id]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
@@ -610,37 +613,78 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def kmz
+  # Actualiza los diferentes servicios a nivel taxon unos minutos despues que el usuario vio el taxon y
+  # si es que caduco el cache
+  def cache_services
+    naturalista_service
+    snib_service
+    foto_principal_service
+    nombre_comun_principal_service
+  end
+
+  def naturalista_service
     if proveedor = @especie.proveedor
-      if proveedor.snib_kml.present?
-        if params[:kml].present? && to_boolean(params[:kml])
-          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        else
-          redirect_to "/kmz/#{@especie.id}/registros.kmz"
-        end
-      else
-        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-      end
+      proveedor.info_naturalista
     else
-      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+      proveedor = Proveedor.crea_info_naturalista(@especie)
+    end
+
+    if proveedor.instance_of?(Proveedor)
+      if proveedor.changed?
+        if proveedor.save
+          # Para guardar las fotos nuevas de naturalista
+          usuario = Usuario.where(usuario: CONFIG.usuario).first
+          proveedor.fotos(usuario.id)
+
+          # Para las nuevas observaciones
+          proveedor.kml_naturalista
+
+          if proveedor.naturalista_kml.present?
+            if proveedor.kmz_naturalista
+              puts "\t\tGuardo KMZ" if OPTS[:debug]
+            end
+          end
+        end  # Cierra si guardo
+      end  # Cierra si hubo cambios
+    end  # Cierra si hubo proveedor con naturalista
+  end
+
+  def snib_service
+    if proveedor = @especie.proveedor
+      proveedor.kml
+
+      if proveedor.snib_kml.present?
+        if proveedor.kmz
+          puts "\t\tCon KMZ" if OPTS[:debug]
+        end
+      end
     end
   end
 
-  def kmz_naturalista
-    if proveedor = @especie.proveedor
-      if proveedor.naturalista_kml.present?
-        if params[:kml].present? && to_boolean(params[:kml])
-          send_data proveedor.naturalista_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        else
-          redirect_to "/kmz/#{@especie.id}/observaciones.kmz"
-        end
-      else
-        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
+  def foto_principal_service
+    adicional = @especie.asigna_foto
+
+    if adicional[:cambio]
+      if adicional[:adicional].save
+        puts "\t\tFoto principal cambio" if OPTS[:debug]
       end
-    else
-      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
     end
   end
+
+  def nombre_comun_principal_service
+    adicional = @especie.asigna_nombre_comun
+
+    if adicional[:cambio]
+      if adicional[:adicional].save
+        puts "\t\tNombre comun principal cambio" if OPTS[:debug]
+      end
+    end
+  end
+
+  # Falta implementar el servicio del banco de imagenes
+  def bi_service
+  end
+
 
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas

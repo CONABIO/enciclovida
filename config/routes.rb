@@ -56,6 +56,7 @@ Buscador::Application.routes.draw do
       get :kmz
       get :kmz_naturalista
       get :cat_tax_asociadas
+      get :cache_services
     end
   end
 
