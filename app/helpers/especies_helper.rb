@@ -314,9 +314,9 @@ module EspeciesHelper
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
     keys = agrupa_nombres.keys.sort
     keys.each do |k|
-      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <span style='font-size:9px;'>(#{k})</span> / "
+      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <sub>(#{k})</sub> / "
     end
-    nombres_comunes.present? ? "<p>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
+    nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
   def dameDistribucion(taxon)
@@ -336,7 +336,7 @@ module EspeciesHelper
         dist << (icono =='' ? nombre : (image_tag('app/tipo_distribuciones/' << icono, title: nombre)))
       end
 
-      dist.any? ? dist.uniq.join(', ') : ''
+      dist.any? ? dist.uniq.join(' - ') : ''
     end
   end
 
@@ -450,7 +450,7 @@ module EspeciesHelper
         titulo = taxon.estatus == 2 ? '<strong>Sinónimos: </strong>' : '<strong>Aceptado como: </strong>'
         taxon.estatus == 2 ? titulo << "<p><ul>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join('')}</ul></p>" : "<p>#{titulo}#{estatus_a.join('')}</p>"
       else
-        taxon.estatus == 2 ? "<strong>Sinónimos: </strong>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
+        taxon.estatus == 2 ? "<strong>Sinónimos: </strong><small>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}</small>" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
       end
     else
       ''
@@ -483,7 +483,7 @@ module EspeciesHelper
     if conservacion.present?
       "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
     elsif orden_conservacion.any?
-      orden_conservacion.sort.map{|k,v| v}.join(' ')
+      orden_conservacion.sort.map{|k,v| v}.join(' - ')
     else
       conservacion
     end

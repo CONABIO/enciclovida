@@ -262,22 +262,27 @@
 <% end %>
 
 <div>
-  <h2>
-    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
-    <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-    <span id="envia_comentario" class="dialog" style="display: none"></span>
-  </h2>
-  <div class='text-primary pull-left' style="width: 38%; padding: 2%;">
-    <%= dameNomComunes(@especie).html_safe %>
-    <%= dameStatus(@especie).html_safe %>
-  </div>
-  <div class='text-primary pull-right' style="width: 60%;">
-    <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
-    <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
-  </div>
+    <h2>
+        <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
+        <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
+        <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+<span id="envia_comentario" class="dialog" style="display: none"></span>
+    </h2>
+    <div class='text-primary pull-left' style="width: 90%; padding: 0 2% 1% 4%;">
+        <%= dameNomComunes(@especie).html_safe %>
+        <%= dameStatus(@especie).html_safe %>
+    </div>
+    <div class='text-primary text-center pull-left' style="width: 45%; padding: 0 2%">
+        <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+    </div>
+    <div class='text-primary text-center pull-right' style="width: 45%; padding: 0 2%">
+        <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
+    </div>
+    <div class='text-center pull-left' style="width: 100%; padding: 1% 2%">
+        <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span></p>
+    </div>
 </div>
-
+<p>
 <div class='text-primary' style="width: 100%; clear:both;">
     <% if geo && geo.count > 0 %>
         <div style="width: 38%; margin-left:5px;" class="pull-left" >
@@ -317,9 +322,6 @@
   <% end %>
     <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
   </div>
-  <p class="text-success text-center" style="padding-top: 15px; padding-bottom: 15px;">
-    <span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
-  <p>
 </div>
 <div id="pestañas" class="panel panel-default">
   <% if I18n.locale.to_s == 'es-cientifico' %>
