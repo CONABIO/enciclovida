@@ -329,8 +329,11 @@ module EspeciesHelper
 
       dist.any? ? dist.uniq.join(', ') : ''
     else
-      taxon.especies_regiones.each do |reg|
-        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.icono"), title: t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.nombre")) if  reg.tipo_distribucion
+      taxon.especies_regiones.distinct.each do |reg|
+        next unless distribucion = reg.tipo_distribucion
+        icono=t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono",:default => "")
+        nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
+        dist << (icono =='' ? nombre : (image_tag('app/tipo_distribuciones/' << icono, title: nombre)))
       end
 
       dist.any? ? dist.uniq.join(', ') : ''
@@ -538,6 +541,7 @@ module EspeciesHelper
   def radioGruposIconicos
     radios = ''
     columnas = 1
+    es_reino = " busqueda_atributo_radio_reino"
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
@@ -546,6 +550,7 @@ module EspeciesHelper
       if columnas == 6
         radios << '<br>'
         columnas = 7
+        es_reino=""
       end
 
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')

@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.busqueda_atributo_radio {
+.busqueda_atributo_radio{
   display: inline-table;
   //border: 1px solid #eee9ed;
   border-left: 1px solid #d0b091;
@@ -10,11 +10,12 @@
   border-radius:2px;
   margin:0px 0px;
   padding: 1px;
-  font-size: 250%;
+  font-size: 220%;
 }
 
 .bar_reino{
   background-color: #ffffff;
+  font-size: 290%;
 }
 .bar_animalia{
   background-color: #eee9dd;
@@ -254,6 +255,14 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   color: rgb(3, 7, 48);
   margin: 0px;
   padding: 0px;
-  font-size: x-small;
-  line-height: 1.6em;
+  font-size: small;
+  line-height: 1em;
+}
+#balloon img{
+  padding: 4px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 1.5em;
+  max-width: 100%;
+  height: auto;
 }

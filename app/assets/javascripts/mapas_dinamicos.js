@@ -83,7 +83,7 @@ function anadeControlFullScreen()
             '<span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>'+
             '</div>',
         style: {
-            margin: '3px',
+            margin: '5px',
             padding: '0 0 0 0',
             border: 'solid 1px #717B87',
             background: '#fff'
