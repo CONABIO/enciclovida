@@ -77,29 +77,54 @@ class Proveedor < ActiveRecord::Base
 
     colectas.each do |col|
       datos = col['properties']
-      next unless datos['nombrepaismapa'] == 'MEXICO'
+
+      # Para registros solo de Mexico
+      #next unless datos['nombrepaismapa'] == 'MEXICO'
+
       cadena = Hash.new
       h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
-      #Los numere para poder armar los datos en el orden deseado
-      cadena['1_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
-      cadena['2_nombre_comun'] = h.encode(especie.nombre_comun_principal)
-      cadena['4_nombre_coleccion'] = h.encode(datos['nombrecoleccion'])
-      cadena['5_nombre_institucion'] = h.encode(datos['nombreinstitucion'])
-      cadena['6_nombre_colector'] = h.encode(datos['nombrecolector'])
-      cadena['7_url_proyecto_conabio'] = h.encode(datos['url_proyecto_conabio'])
-      cadena['8_longitude'] = datos['longitud']
-      cadena['9_latitude'] = datos['latitud']
+      # Los numere para poder armar los datos en el orden deseado
+      cadena['01_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
+      cadena['02_nombre_comun'] = h.encode(especie.nombre_comun_principal)
+      cadena['03_localidad'] = h.encode(datos['localidad'])
+      cadena['04_municipio'] = h.encode(datos['nombremunicipiomapa'])
+      cadena['05_estado'] = h.encode(datos['nombreestadomapa'])
+      cadena['06_pais'] = h.encode(datos['nombrepaismapa'])
 
-      #Pone la fecha en formato tiemestamp
-      cadena['3_datetime'] = "#{datos['aniocolecta']}-#{datos['mescolecta'].to_s.rjust(2,'0')}-#{datos['diacolecta'].to_s.rjust(2,'0')} 00:00:00"
+      # Para que no se vea feo MEXICO con mayusculas
+      if cadena['06_pais'] == 'MEXICO'
+        cadena['06_pais'] = 'México'
+      end
+
+      # Pone la fecha en formato tiemestamp
+      if datos['diacolecta'].to_s == '99'
+        datos['diacolecta'] = '??'
+      end
+      if datos['mescolecta'].to_s == '99'
+        datos['mescolecta'] = '??'
+      end
+      if datos['aniocolecta'].to_s == '9999'
+        datos['aniocolecta'] = '????'
+      end
+
+      cadena['07_datetime'] = "#{datos['diacolecta'].to_s.rjust(2,'0')}/#{datos['mescolecta'].to_s.rjust(2,'0')}/#{datos['aniocolecta']}"
+
+      cadena['08_nombre_colector'] = h.encode(datos['nombrecolector'])
+      cadena['09_nombre_coleccion'] = h.encode(datos['nombrecoleccion'])
+      cadena['10_nombre_institucion'] = h.encode(datos['nombreinstitucion'])
+      cadena['11_siglas_institucion'] = h.encode(datos['siglasinstitucion'])
+      cadena['12_pais_coleccion'] = h.encode(datos['paiscoleccion'])
+
+      cadena['13_longitude'] = datos['longitud']
+      cadena['14_latitude'] = datos['latitud']
 
       cadenas << cadena
     end
     self.snib_kml = to_kml(cadenas)
   end
 
-  #Guarda el kml de naturalista asociado al taxon
+  # Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
     return [] unless naturalista_obs.present?
     obs = eval(naturalista_obs).first
@@ -107,27 +132,35 @@ class Proveedor < ActiveRecord::Base
     cadenas = []
 
     obs.each do |ob|
-      # Las captivas no nos importan en los registros
-      next if ob['captive']
+      # Para evitar las captivas
+      #next if ob['captive']
+
       cadena = Hash.new
 
-      #Los numere para poder armar los datos en el orden deseado
-      cadena['1_nombre_cientifico'] = especie.nombre_cientifico
-      cadena['2_nombre_comun'] = especie.nombre_comun_principal
-      cadena['5_observed_on'] = "#{ob['observed_on']} 00:00:00"
-      cadena['6_quality_grade'] = ob['quality_grade']
-      cadena['7_uri'] = ob['uri']
-      cadena['8_longitude'] = ob['longitude']
-      cadena['9_latitude'] = ob['latitude']
+      # Los numere para poder armar los datos en el orden deseado
+      cadena['01_nombre_cientifico'] = especie.nombre_cientifico
+      cadena['02_nombre_comun'] = especie.nombre_comun_principal
+      cadena['05_place_guess'] = ob['place_guess']
+      cadena['06_observed_on'] = ob['observed_on'].gsub('-','/') if ob['observed_on'].present?
+      cadena['07_captive'] =  ob['captive'] ? 'Organismo silvestre / naturalizado' : nil
+      cadena['08_quality_grade'] = ob['quality_grade']
+      cadena['09_uri'] = ob['uri']
+      cadena['10_longitude'] = ob['longitude']
+      cadena['11_latitude'] = ob['latitude']
 
       ob['photos'].each do |photo|
-        cadena['3_thumb_url'] = photo['thumb_url']
-        cadena['4_attribution'] = photo['attribution']
+        cadena['03_thumb_url'] = photo['thumb_url']
+        cadena['04_attribution'] = photo['attribution']
         break
       end
       cadenas << cadena
     end
     self.naturalista_kml = to_kml_naturalista(cadenas)
+  end
+
+  def usuario_naturalista
+    response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
+    data = JSON.parse(response)
   end
 
   def kmz
@@ -232,6 +265,8 @@ class Proveedor < ActiveRecord::Base
   private
 
   def to_kml(cadenas)
+    evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']
+
     kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
     kml << "<Document>\n"
@@ -244,39 +279,52 @@ class Proveedor < ActiveRecord::Base
     kml << "</Style>\n"
 
     cadenas.each do |cad|
-      valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad['1_nombre_cientifico']})</i>" : "<i><b>#{cad['1_nombre_cientifico']}</b></i>"
+      nombre = cad['02_nombre_comun'].present? ? "<b>#{cad['02_nombre_comun']}</b> <i>(#{cad['01_nombre_cientifico']})</i>" : "<i><b>#{cad['01_nombre_cientifico']}</b></i>"
       kml << "<Placemark>\n"
       kml << "<description>\n"
       kml << "<![CDATA[\n"
       kml << "<div>\n"
       kml << "<h4>\n"
-      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{valor}</a>\n"
+      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{nombre}</a>\n"
       kml << "</h4>\n"
+      kml << "<dl>\n"
 
       cad.keys.sort.each do |k|
         next unless cad[k].present?
+        next if evitar_campos.include? cad[k]
 
         case k
-          when '3_datetime'
-            kml << "<p><b>Fecha: </b><text>#{cad[k]}</text></p>\n"
-          when '4_nombre_coleccion'
-            kml << "<p><b>Colección: </b><text>#{cad[k]}</text></p>\n"
-          when '5_nombre_institucion'
-            kml << "<p><b>Institución: </b><text>#{cad[k]}</text></p>\n"
-          when '6_nombre_colector'
-            kml << "<p><b>Nombre del colector: </b><text>#{cad[k]}</text></p>\n"
-          when '7_url_proyecto_conabio'
-            kml << "<p><text>Enlace al</text> <a href=\"#{cad[k]}\">proyecto</a></p>\n"
+          when '03_localidad'
+            kml << "<dt>Localidad</dt> <dd>#{cad[k]}</dd>\n"
+          when '04_municipio'
+            kml << "<dt>Municipio</dt> <dd>#{cad[k]}</dd>\n"
+          when '05_estado'
+            kml << "<dt>Estado</dt> <dd>#{cad[k]}</dd>\n"
+          when '06_pais'
+            kml << "<dt>País</dt> <dd>#{cad[k]}</dd>\n"
+          when '07_datetime'
+            kml << "<dt>Fecha</dt> <dd>#{cad[k]}</dd>\n"
+          when '08_nombre_colector'
+            kml << "<dt>Nombre del colector</dt> <dd>#{cad[k]}</dd>\n"
+          when '09_nombre_coleccion'
+            kml << "<dt>Colección</dt> <dd>#{cad[k]}</dd>\n"
+          when '10_nombre_institucion'
+            kml << "<dt>Institución</dt> <dd>#{cad[k]}</dd>\n"
+          when '11_siglas_institucion'
+            kml << "<dt>Siglas de la institución</dt> <dd>#{cad[k]}</dd>\n"
+          when '12_pais_coleccion'
+            kml << "<dt>País de la colección</dt> <dd>#{cad[k]}</dd>\n"
           else
             next
         end
       end
 
+      kml << "</dl>\n"
       kml << "</div>\n"
       kml << "]]>\n"
       kml << "</description>\n"
       kml << '<styleUrl>#normalPlacemark</styleUrl>'
-      kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
+      kml << "<Point>\n<coordinates>\n#{cad['13_longitude']},#{cad['14_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end
 
@@ -309,7 +357,10 @@ class Proveedor < ActiveRecord::Base
 
     cadenas.each do |cad|
       grado = ''
-      valor = cad['2_nombre_comun'].present? ? "<b>#{cad['2_nombre_comun']}</b> <i>(#{cad['1_nombre_cientifico']})</i>" : "<i><b>#{cad['1_nombre_cientifico']}</b></i>"
+      foto = ''
+      enlace = ''
+      campos = ''
+      valor = cad['02_nombre_comun'].present? ? "<b>#{cad['02_nombre_comun']}</b> <i>(#{cad['01_nombre_cientifico']})</i>" : "<i><b>#{cad['01_nombre_cientifico']}</b></i>"
       kml << "<Placemark>\n"
       kml << "<description>\n"
       kml << "<![CDATA[\n"
@@ -322,22 +373,26 @@ class Proveedor < ActiveRecord::Base
         next unless cad[k].present?
 
         case k
-          when '3_thumb_url'
-            kml << "<p><img src=\"#{cad[k]}\"/></p>\n"
-          when '4_attribution'
-            kml << "<p><b>Atribución: </b><text>#{cad[k]}</text></p>\n"
-          when '5_observed_on'
-            kml << "<p><b>Fecha: </b><text>#{cad[k]}</text></p>\n"
-          when '6_quality_grade'
-            grado << cad[k]
-            kml << "<p><b>Grado de calidad: </b><text>#{I18n.t('quality_grade.' << cad[k])}</text></p>\n"
-          when '7_uri'
-            kml << "<p><text>Ver la </text><a href=\"#{cad[k]}\">observación</a></p>\n"
+          when '03_thumb_url'
+            foto << "<div><img src=\"#{cad[k]}\"/></div>\n"
+          when '04_attribution'
+            campos << "<dt>Atribución</dt> <dd>#{cad[k]}</dd>\n"
+          when '05_place_guess'
+            campos << "<dt>Ubicación</dt> <dd>#{cad[k]}</dd>\n"
+          when '06_observed_on'
+            campos << "<dt>Fecha</dt> <dd>#{cad[k]}</dd>\n"
+          when '07_captive'
+            campos << "<dt>#{cad[k]}</dt> <dd> </dd\n"
+          when '08_quality_grade'
+            campos << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << cad[k])}</dd>\n"
+          when '09_uri'
+            enlace << "<span><text>Ver la </text><a href=\"#{cad[k]}\">observación en NaturaLista</a></span>\n"
           else
             next
         end
       end
 
+      kml << foto << '<dl>' << campos << '</dl>' << enlace << "\n"
       kml << "</div>\n"
       kml << "]]>\n"
       kml << "</description>\n"
@@ -348,7 +403,7 @@ class Proveedor < ActiveRecord::Base
         kml << '<styleUrl>#Placemark_casual</styleUrl>'
       end
 
-      kml << "<Point>\n<coordinates>\n#{cad['8_longitude']},#{cad['9_latitude']}\n</coordinates>\n</Point>\n"
+      kml << "<Point>\n<coordinates>\n#{cad['10_longitude']},#{cad['11_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end
 
