@@ -6,7 +6,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
-
+  <%= favicon_link_tag 'app/favicon.ico' %>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
@@ -97,7 +97,7 @@
         <strong><small>
            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
             Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
-            Delegación Tlalpan, 14010, México, D.F. <br />
+            Delegación Tlalpan, 14010, México, D.F. <br /><br />
         </small></strong>
     </p>
 </div>

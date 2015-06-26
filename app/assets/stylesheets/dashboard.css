@@ -35,23 +35,24 @@ body {
   display: none;￼
 }
 @media (min-width: 872px) {
-  .sidebar{
-    position: fixed;
-    top: 130px;
-    bottom: 20%;
-    left: 10px;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: auto;
-    overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
-    background-color: rgba(237, 230, 223, 0.85);
-    border: 1px solid #998370;
-    border-radius: 2.5em;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    margin-left: 31px;
-  }
+    .sidebar {
+        position: fixed;
+        top: 130px;
+        bottom: 20%;
+        left: 10px;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: inherit;
+        overflow-y: visible; /* Scrollable contents if viewport is shorter than content. */
+        background-color: rgba(237, 230, 223, 0.85);
+        border: 1px solid #998370;
+        border-radius: 2.5em;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        margin-left: 31px;
+    }
+}
   .sidebar_lupa{
     height: 66px;
     /*margin-left: 61px;

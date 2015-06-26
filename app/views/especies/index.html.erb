@@ -1,6 +1,9 @@
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
 <% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
+<% end %>
 
 <%= form_tag '/especies/destruye_seleccionados' %>
 <p id="notice"><%= notice %></p>
@@ -21,6 +24,8 @@
         e internacional (IUCN), comercio internacional (CITES), registros de distribución geográfica e imágenes.
       <p>El contenido e imágenes provienen de CONABIO y de otras fuentes (Enciclopedia de la Vida (EOL),
         NaturaLista, Wikipedia, Flicker). </p>
+      <p>Envíanos tus comentarios generales a <%= link_to "bios@conabio.gob.mx","mailto:bios@conabio.gob.mx" %> </p>
+      <p class="bg-success">Búsquedas geográficas en el Geoportal ¡próximamente!</p>
       <p><img src="/assets/app/imgPortada.png" class="img-responsive" style="width: 78%;"></p>
     </div>
   </div>
