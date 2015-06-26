@@ -329,8 +329,11 @@ module EspeciesHelper
 
       dist.any? ? dist.uniq.join(', ') : ''
     else
-      taxon.especies_regiones.each do |reg|
-        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.icono"), title: t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.nombre")) if  reg.tipo_distribucion
+      taxon.especies_regiones.distinct.each do |reg|
+        next unless distribucion = reg.tipo_distribucion
+        icono=t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono",:default => "")
+        nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
+        dist << (icono =='' ? nombre : (image_tag('app/tipo_distribuciones/' << icono, title: nombre)))
       end
 
       dist.any? ? dist.uniq.join(', ') : ''

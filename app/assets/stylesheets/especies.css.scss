@@ -10,12 +10,12 @@
   border-radius:2px;
   margin:0px 0px;
   padding: 1px;
-  font-size: 230%;
+  font-size: 220%;
 }
 
 .bar_reino{
   background-color: #ffffff;
-  font-size: 280%;
+  font-size: 290%;
 }
 .bar_animalia{
   background-color: #eee9dd;
@@ -255,6 +255,14 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   color: rgb(3, 7, 48);
   margin: 0px;
   padding: 0px;
-  font-size: x-small;
-  line-height: 1.6em;
+  font-size: small;
+  line-height: 1em;
+}
+#balloon img{
+  padding: 4px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 1.5em;
+  max-width: 100%;
+  height: auto;
 }
