@@ -1,4 +1,8 @@
-<%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+<% content_for(:extrajs) do %>
+    <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false' charset='utf-8' data-turbolinks-track='true'></script>
+    <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+<% end %>
+
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
@@ -213,16 +217,16 @@
                                         return parseInt($("#map").height() / 10) * 9;
                                     };
                                     if (point.featureData.infoWindowHtml.indexOf('$[description]') > -1) {
-                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.name + "</div>");
+                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 1px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.name + "</div>");
                                         infoWindow.maxWidth = 2;
                                     } else {
-                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.infoWindowHtml + "</div>");
+                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 1px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.infoWindowHtml + "</div>");
                                     }
                                     ;
                                     infoWindow.setPosition(point.latLng);
                                     infoWindow.open(map.map);
                                     $(function () {
-                                        $("#balloon div").removeAttr("style");
+                                       $("#balloon div").removeAttr("style");
                                     });
                                 }
                             }

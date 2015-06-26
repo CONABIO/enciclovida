@@ -39,8 +39,8 @@
 */
 
 body{
-    opacity: 0.85;
-    filter: alpha(opacity=85); /* For IE8 and eaarlier */
+    opacity: 0.9;
+    filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-size: cover;
     background-position: 50% 50%;
     background: url("app/fondo.jpg");
