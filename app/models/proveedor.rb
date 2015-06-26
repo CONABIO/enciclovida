@@ -145,6 +145,11 @@ class Proveedor < ActiveRecord::Base
       cadena['07_captive'] =  ob['captive'] ? 'Organismo silvestre / naturalizado' : nil
       cadena['08_quality_grade'] = ob['quality_grade']
       cadena['09_uri'] = ob['uri']
+
+      if cadena['09_uri'].present?
+        cadena['09_uri'] = cadena['09_uri'].gsub('www.inaturalist.org','naturalista.conabio.gob.mx').gsub('conabio.inaturalist.org', 'naturalista.conabio.gob.mx')
+      end
+
       cadena['10_longitude'] = ob['longitude']
       cadena['11_latitude'] = ob['latitude']
 
@@ -273,7 +278,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"normalPlacemark\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>https://storage.googleapis.com/support-kms-prod/SNP_2752125_en_v0</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/rojo.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -341,7 +346,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"Placemark_cientifico\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>https://lh6.ggpht.com/GO-A_KjZDF9yJeeER2fajzO4MgqML-q2rccm27ynBlD6R-xOR3pJOb42WKfE0MNFtRsKwK4=w9-h9</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/verde.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -350,7 +355,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"Placemark_casual\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>https://lh3.ggpht.com/XAjhu-6znztoLTr9AxuwM5v0wilaKiUJJMLKEiiFMn6lGOmBmY1Km7Kt1ohildzlIdWgkwy_5g=w9-h9</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/amarillo.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -385,6 +390,7 @@ class Proveedor < ActiveRecord::Base
             campos << "<dt>#{cad[k]}</dt> <dd> </dd\n"
           when '08_quality_grade'
             campos << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << cad[k])}</dd>\n"
+            grado = cad[k]
           when '09_uri'
             enlace << "<span><text>Ver la </text><a href=\"#{cad[k]}\">observación en NaturaLista</a></span>\n"
           else
