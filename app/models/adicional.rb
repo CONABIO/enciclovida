@@ -25,27 +25,31 @@ class Adicional < ActiveRecord::Base
     end
   end
 
+  def nombre_comun_principal_naturalista
+    return unless prov = especie.proveedor
+    return unless prov.naturalista_info.present?
+
+    datos = eval(prov.naturalista_info)
+    datos = datos.first if datos.is_a?(Array)
+    default_name = datos['default_name']
+
+    return unless default_name.present?
+    return unless default_name['is_valid']
+    return unless default_name['name'].present?
+    return unless default_name['lexicon'].present?
+
+    lexicon = I18n.transliterate(default_name['lexicon']).gsub(' ','_').downcase
+    return unless LENGUAS_ACEPTADAS.include?(lexicon)
+    nombre_comun_principal = default_name['name']
+    self.nombre_comun_principal = nombre_comun_principal.humanizar
+  end
+
   def pon_nombre_comun_principal
-    nombre_comun_principal_catalogos
+    nombre_comun_principal_naturalista
 
-    # Si no tiene nombre comun en catalogos tratare de ponerle uno de NaturaLista
+    # Si no tiene nombre comun NaturaLista pongo el de catalogos
     if nombre_comun_principal.blank?
-      return unless prov = especie.proveedor
-      return unless prov.naturalista_info.present?
-
-      datos = eval(prov.naturalista_info)
-      datos = datos.first if datos.is_a?(Array)
-      default_name = datos['default_name']
-
-      return unless default_name.present?
-      return unless default_name['is_valid']
-      return unless default_name['name'].present?
-      return unless default_name['lexicon'].present?
-
-      lexicon = I18n.transliterate(default_name['lexicon']).gsub(' ','_').downcase
-      return unless LENGUAS_ACEPTADAS.include?(lexicon)
-      nombre_comun_principal = default_name['name']
-      self.nombre_comun_principal = nombre_comun_principal.humanizar
+      nombre_comun_principal_catalogos
     else
       self.nombre_comun_principal
     end
