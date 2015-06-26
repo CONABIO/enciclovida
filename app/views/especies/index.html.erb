@@ -1,6 +1,9 @@
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
 <% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
+<% end %>
 
 <%= form_tag '/especies/destruye_seleccionados' %>
 <p id="notice"><%= notice %></p>

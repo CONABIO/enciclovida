@@ -2,6 +2,9 @@
     <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false' charset='utf-8' data-turbolinks-track='true'></script>
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
 <% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "show", media: "all", "data-turbolinks-track" => true %>
+<% end %>
 
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
