@@ -86,7 +86,7 @@ class Proveedor < ActiveRecord::Base
 
       # Los numere para poder armar los datos en el orden deseado
       cadena['01_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
-      cadena['02_nombre_comun'] = h.encode(especie.nombre_comun_principal)
+      cadena['02_nombre_comun'] = h.encode(especie.nom_com_prin(true))
       cadena['03_localidad'] = h.encode(datos['localidad'])
       cadena['04_municipio'] = h.encode(datos['nombremunicipiomapa'])
       cadena['05_estado'] = h.encode(datos['nombreestadomapa'])
@@ -138,9 +138,9 @@ class Proveedor < ActiveRecord::Base
       cadena = Hash.new
 
       # Los numere para poder armar los datos en el orden deseado
-      cadena['01_nombre_cientifico'] = especie.nombre_cientifico
-      cadena['02_nombre_comun'] = especie.nombre_comun_principal
-      cadena['05_place_guess'] = ob['place_guess']
+      cadena['01_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
+      cadena['02_nombre_comun'] = h.encode(especie.nom_com_prin(true))
+      cadena['05_place_guess'] = h.encode(ob['place_guess'])
       cadena['06_observed_on'] = ob['observed_on'].gsub('-','/') if ob['observed_on'].present?
       cadena['07_captive'] =  ob['captive'] ? 'Organismo silvestre / naturalizado' : nil
       cadena['08_quality_grade'] = ob['quality_grade']
@@ -155,7 +155,7 @@ class Proveedor < ActiveRecord::Base
 
       ob['photos'].each do |photo|
         cadena['03_thumb_url'] = photo['thumb_url']
-        cadena['04_attribution'] = photo['attribution']
+        cadena['04_attribution'] = h.encode(photo['attribution'])
         break
       end
       cadenas << cadena
@@ -195,7 +195,7 @@ class Proveedor < ActiveRecord::Base
       response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
       data = JSON.parse(response)
     else
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(especie.nombre_cientifico))}"
+      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
       data_todos = JSON.parse(response)
       data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
     end
@@ -203,6 +203,8 @@ class Proveedor < ActiveRecord::Base
     return nil unless data.present?
     self.naturalista_id = data['id']
     self.naturalista_info = "#{data}"     #solo para actualizar el json
+
+    # Solo para especies o inferiores
     return unless especie.species_or_lower?
     obs_naturalista
   end
