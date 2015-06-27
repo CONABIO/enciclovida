@@ -20,7 +20,7 @@ where [options] are:
 end
 
 def search
-  Especie.find_each do |t|
+  Especie.order(:id).find_each do |t|
     #Especie.limit(10).each do |t|
     #next unless t.id > 10016523
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]

@@ -211,17 +211,18 @@ class Proveedor < ActiveRecord::Base
 
   def obs_naturalista
     data = []
-    url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}"
-    url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}&has[]=geo"
+    url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo"
+    # Para limitarlo solo al cuadrado de la republica
+    #url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}"
 
-    # Loop de maximo 20000 registros para NaturaLista
-    for i in 1..100 do
+    # Loop de maximo 200,000 registros para NaturaLista (suficientes)
+    for i in 1..1000 do
       url << "&page=#{i}&per_page=200"
       rest_client = RestClient.get url
       response_obs = JSON.parse(rest_client)
       break unless response_obs.present?
       i == 1 ? data << response_obs : data + response_obs
-      break unless data.count < 200
+      break if i > 1000
     end
     self.naturalista_obs = "#{data}" if data.present?
   end
