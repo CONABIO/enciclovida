@@ -192,12 +192,23 @@ class Proveedor < ActiveRecord::Base
 
   def info_naturalista
     if naturalista_id.present?
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      data = JSON.parse(response)
+      puts "\t\t#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+
+      begin
+        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+        data = JSON.parse(response)
+      rescue
+        return nil
+      end
     else
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
-      data_todos = JSON.parse(response)
-      data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+      puts "\t\t#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
+      begin
+        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
+        data_todos = JSON.parse(response)
+        data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+      rescue
+        return nil
+      end
     end
 
     return nil unless data.present?
@@ -210,6 +221,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   def obs_naturalista
+    puts 'aqui'
     data = []
     url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo"
     # Para limitarlo solo al cuadrado de la republica
