@@ -629,24 +629,18 @@ class EspeciesController < ApplicationController
       proveedor = Proveedor.crea_info_naturalista(@especie)
     end
 
-    if proveedor.instance_of?(Proveedor)
-      if proveedor.changed?
-        if proveedor.save
-          # Para guardar las fotos nuevas de naturalista
-          usuario = Usuario.where(usuario: CONFIG.usuario).first
-          proveedor.fotos(usuario.id)
+    return unless proveedor.instance_of?(Proveedor)
+    return unless proveedor.changed?
+    return unless proveedor.save
 
-          # Para las nuevas observaciones
-          proveedor.kml_naturalista
+    # Para guardar las fotos nuevas de naturalista
+    usuario = Usuario.where(usuario: CONFIG.usuario).first
+    proveedor.fotos(usuario.id)
 
-          if proveedor.naturalista_kml.present?
-            if proveedor.kmz_naturalista
-              puts "\t\tGuardo KMZ" if OPTS[:debug]
-            end
-          end
-        end  # Cierra si guardo
-      end  # Cierra si hubo cambios
-    end  # Cierra si hubo proveedor con naturalista
+    # Para las nuevas observaciones
+    proveedor.kml_naturalista
+    return unless proveedor.naturalista_kml.present?
+    proveedor.kmz_naturalista
   end
 
   def snib_service
