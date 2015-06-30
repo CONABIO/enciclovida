@@ -2,9 +2,6 @@
     <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false' charset='utf-8' data-turbolinks-track='true'></script>
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
 <% end %>
-<% content_for(:extracss) do %>
-    <%= stylesheet_link_tag    "show", media: "all", "data-turbolinks-track" => true %>
-<% end %>
 
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
@@ -287,13 +284,12 @@
     </div>
 
     <% if geo && geo.count > 0 %>
-        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
     <% else %>
-        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
     <% end %>
 
-            <div id="photoscol" class="img-responsive">
-
+            <div id="photoscol">
                 <div id="photos" >
                     <%= render :partial => 'fotos_slider', :locals => { :photos => @photos } %>
                     <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
@@ -307,7 +303,7 @@
         </div>
 
     <% if geo && geo.count > 0 %>
-        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7" id="contenedor_mapa">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8" id="contenedor_mapa">
             <div class="img-thumbnail embed-responsive embed-responsive-4by3">
                 <div id="map"></div>
                 <strong>NOTA:</strong> La distribución potencial es sólo de México
@@ -316,7 +312,7 @@
     <% end %>
 
 
-    <div class='text-primary text-center' style="width: 100%; clear:both; padding: 1em 0em;">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <% if geo && geo.count > 0 %>
       <div class="btn-group text-right" style="width: 100%; role="group" aria-label="...">
         <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
@@ -326,54 +322,56 @@
         <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
       </div>
     </div>
-    <div id="pestañas" class="panel panel-default">
-      <% if I18n.locale.to_s == 'es-cientifico' %>
-          <ul class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-            <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-            <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
-          </ul>
-          <div id="conabio_info" class="tab-pane active">
-            <%= render :partial => 'info' %>
-          </div>
-
-          <div id="arbol_taxonomico" class="tab-pane">
-            <%= render :partial => 'arbol' %>
-          </div>
-
-          <% if @especie.species_or_lower? %>
-              <div id="description" class="tab-pane">
-                <%= render :partial => 'description' %>
-              </div>
-          <% end %>
-      <% else %>
-          <ul class="nav nav-tabs" data-tabs="tabs">
-            <% if @especie.species_or_lower? %>
-                <li class="active"><a href="#description"><span>Fichas</span></a></li>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="pestañas" class="panel panel-success">
+          <% if I18n.locale.to_s == 'es-cientifico' %>
+              <ul class="nav nav-tabs" data-tabs="tabs">
+                <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
                 <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-            <% else %>
-                <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-            <% end %>
-            <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-          </ul>
-
-
-            <% if @especie.species_or_lower? %>
-                <div id="description" class="tab-pane panel-body">
-                <%= render :partial => 'description' %>
-                </div>
-                <div id="arbol_taxonomico" class="tab-pane panel-body">
-                  <%= render :partial => 'arbol' %>
-                </div>
-            <% else %>
-                <div id="arbol_taxonomico" class="tab-pane panel-body">
-                  <%= render :partial => 'arbol' %>
-                </div>
-            <% end %>
-            <div id="conabio_info" class="tab-pane panel-body">
+                <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+              </ul>
+              <div id="conabio_info" class="tab-pane active">
                 <%= render :partial => 'info' %>
-            </div>
+              </div>
 
-      <% end %>
+              <div id="arbol_taxonomico" class="tab-pane">
+                <%= render :partial => 'arbol' %>
+              </div>
+
+              <% if @especie.species_or_lower? %>
+                  <div id="description" class="tab-pane">
+                    <%= render :partial => 'description' %>
+                  </div>
+              <% end %>
+          <% else %>
+              <ul class="nav nav-tabs" data-tabs="tabs">
+                <% if @especie.species_or_lower? %>
+                    <li class="active"><a href="#description"><span>Fichas</span></a></li>
+                    <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+                <% else %>
+                    <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+                <% end %>
+                <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+              </ul>
+
+
+                <% if @especie.species_or_lower? %>
+                    <div id="description" class="tab-pane panel-body">
+                    <%= render :partial => 'description' %>
+                    </div>
+                    <div id="arbol_taxonomico" class="tab-pane panel-body">
+                      <%= render :partial => 'arbol' %>
+                    </div>
+                <% else %>
+                    <div id="arbol_taxonomico" class="tab-pane panel-body">
+                      <%= render :partial => 'arbol' %>
+                    </div>
+                <% end %>
+                <div id="conabio_info" class="tab-pane panel-body">
+                    <%= render :partial => 'info' %>
+                </div>
+
+          <% end %>
+        </div>
     </div>
 </div>
