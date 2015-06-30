@@ -191,13 +191,9 @@ class EspeciesController < ApplicationController
   def resultados
     # Por si no coincidio nada
     @taxones = Especie.none
-
     # Despliega directo el taxon, si paso id
-    if params[:busqueda] == 'basica' || params[:id].present?
+    if params[:id].present?
       set_especie
-      respond_to do |format|
-        format.html { redirect_to especie_path(@especie) }
-      end
     else
 
       # Hace el query del tipo de busqueda
@@ -691,20 +687,28 @@ class EspeciesController < ApplicationController
   def set_especie
     begin
       @especie = Especie.find(params[:id])
-      @accion=params[:controller]
 
-      if @especie.estatus == 1   # Si es un sinonimo lo redireccciona al valido
+      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
         estatus = @especie.especies_estatus
-        render(:error) unless estatus.length == 1  # Nos aseguramos que solo haya un valido
 
-        begin
-          @especie = Especie.find(estatus.first.especie_id2)
-        rescue
-          render :_error
+        if estatus.length == 1  # Nos aseguramos que solo haya un valido
+          begin
+            @especie = Especie.find(estatus.first.especie_id2)
+            redirect_to especie_path(@especie)
+          rescue
+            render :_error and return
+          end
+        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+          render :_error and return
+        else  # Es sinonimo pero no tiene un valido asociado >.>!
+          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
+            redirect_to especie_path(@especie) and return
+          end
         end
       end
+
     rescue    #si no encontro el taxon
-      render :_error
+      render :_error and return
     end
   end
 
