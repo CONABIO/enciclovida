@@ -671,6 +671,9 @@ class EspeciesController < ApplicationController
     if adicional[:cambio]
       if adicional[:adicional].save
         puts "\t\tNombre comun principal cambio" if OPTS[:debug]
+
+        # Para crear el nombres comun y cientifico en redis si hubo cambios
+        adicional[:adicional].actualiza_o_crea_nom_com_en_redis
       end
     end
   end
@@ -678,7 +681,6 @@ class EspeciesController < ApplicationController
   # Falta implementar el servicio del banco de imagenes
   def bi_service
   end
-
 
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas

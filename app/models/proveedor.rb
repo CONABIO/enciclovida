@@ -221,7 +221,6 @@ class Proveedor < ActiveRecord::Base
   end
 
   def obs_naturalista
-    puts 'aqui'
     data = []
     url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo"
     # Para limitarlo solo al cuadrado de la republica

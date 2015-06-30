@@ -75,7 +75,7 @@ class Adicional < ActiveRecord::Base
     data << "}\n"
   end
 
-  # Pone un nuevo record en redis para el nombre comun y el nombre cientifico
+  # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
   def actualiza_o_crea_nom_com_en_redis
     return unless especie
 

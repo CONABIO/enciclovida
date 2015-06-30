@@ -444,5 +444,5 @@ class Especie < ActiveRecord::Base
         ''
       end
     end
-  end  # End if
+  end
 end

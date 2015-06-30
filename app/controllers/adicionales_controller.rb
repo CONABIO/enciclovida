@@ -95,7 +95,7 @@ class AdicionalesController < ApplicationController
       nuevo = false
       borro = true
       @adicional.nombre_comun_principal = params[:adicional][:select_nom_comun]
-    else
+    else  # No selecciono nada en los nombres comunes
       nuevo = false
       borro = true
       @adicional.nombre_comun_principal = nil
@@ -117,6 +117,7 @@ class AdicionalesController < ApplicationController
       redirect_to especy_url(@adicional.especie_id), notice: 'No se detecto ningun cambio en el nombre común.'
     end
   end
+
 
   private
   # Use callbacks to share common setup or constraints between actions.
