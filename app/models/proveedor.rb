@@ -130,6 +130,7 @@ class Proveedor < ActiveRecord::Base
     obs = eval(naturalista_obs).first
     return [] unless obs.count > 0
     cadenas = []
+    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
     obs.each do |ob|
       # Para evitar las captivas

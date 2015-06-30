@@ -202,7 +202,6 @@ class EspeciesController < ApplicationController
       case params[:busqueda]
 
         when 'nombre_comun'
-
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
