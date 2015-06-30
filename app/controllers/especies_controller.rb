@@ -638,6 +638,10 @@ class EspeciesController < ApplicationController
             redirect_to especie_path(@especie) and return
           end
         end
+      else
+        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+          redirect_to especie_path(@especie) and return
+        end
       end
 
     rescue    #si no encontro el taxon
