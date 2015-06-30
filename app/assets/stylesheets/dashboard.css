@@ -2,12 +2,6 @@
  * Base structure
  */
 
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
- /*padding-top: 90px;*/
-}
-
-
 /*
  * Global add-ons
  */
@@ -32,7 +26,7 @@ body {
 
 /* Hide for mobile, show later */
 .sidebar {
-  display: none;￼
+  display: none;
 }
 @media (min-width: 872px) {
     .sidebar {
@@ -83,7 +77,13 @@ body {
  */
 
 .main {
-  padding: 20px;
+    padding: 20px;
+    opacity: 0.9;
+    filter: alpha(opacity=90); /* For IE8 and eaarlier */
+    background-color: #f2f0ed;
+    border-radius: 1.5em;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 @media (min-width: 872px) {
   .main {
