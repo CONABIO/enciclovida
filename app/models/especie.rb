@@ -1,4 +1,5 @@
 class Especie < ActiveRecord::Base
+  include CacheServices
 
   self.table_name='especies'
   self.primary_key='id'
@@ -443,6 +444,14 @@ class Especie < ActiveRecord::Base
       else
         ''
       end
+    end
+  end
+
+  # Crea la entrada de cache y el trabajo para realizarse, si el cache no existe
+  def delayed_job_service
+    if !existe_cache?
+      escribe_cache
+      delay(:priority => NOTIFICATION_PRIORITY).cache_services
     end
   end
 end

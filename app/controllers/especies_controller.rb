@@ -8,20 +8,15 @@ class EspeciesController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
+
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
-  # Servicios como las fotos, los registros geograficos, nombres comunes son atualizados
-  caches_action :cache_services, :expires_in => 2.minutes, :cache_path => Proc.new { |c| "cache_servicios/#{c.params[:id]}" }
-
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
   #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
-
-  # Incluye los servicios de cache
-  include CacheServices
 
   # GET /especies
   # GET /especies.json
@@ -44,7 +39,9 @@ class EspeciesController < ApplicationController
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
 
     respond_to do |format|
-      format.html
+      format.html do
+        @especie.delayed_job_service
+      end
       format.json { render json: @especie.to_json }
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor

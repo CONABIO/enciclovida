@@ -1,4 +1,5 @@
 class Proveedor < ActiveRecord::Base
+
   belongs_to :especie
   attr_accessor :snib_kml, :naturalista_kml
 

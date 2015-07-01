@@ -16,24 +16,24 @@ module CacheServices
   end
 
   def naturalista_service
-    if proveedor = @especie.proveedor
-      proveedor.info_naturalista
+    if p = proveedor
+      p.info_naturalista
     else
-      proveedor = Proveedor.crea_info_naturalista(@especie)
+      p = Proveedor.crea_info_naturalista(self)
     end
 
-    return {valido: false} unless proveedor.instance_of?(Proveedor)
-    return {valido: false} unless proveedor.changed?
-    return {valido: false} unless proveedor.save
+    return {valido: false} unless p.instance_of?(Proveedor)
+    return {valido: false} unless p.changed?
+    return {valido: false} unless p.save
 
     puts "\t\tCambios en naturalista_info"
 
     # Para guardar las fotos nuevas de naturalista
     usuario = Usuario.where(usuario: CONFIG.usuario).first
-    proveedor.fotos(usuario.id)
+    p.fotos(usuario.id)
     puts "\t\tProceso fotos de NaturaLista"
 
-    return {valido: true, proveedor: proveedor}
+    return {valido: true, proveedor: p}
   end
 
   # Se tuvo que separar, para correr las observaciones al final cuando ya se tiene la foto y los nombres comunes
@@ -46,11 +46,11 @@ module CacheServices
   end
 
   def snib_service
-    if proveedor = @especie.proveedor
-      proveedor.kml
+    if p = proveedor
+      p.kml
 
-      if proveedor.snib_kml.present?
-        if proveedor.kmz
+      if p.snib_kml.present?
+        if p.kmz
           puts "\t\tCon KMZ SNIB"
         end
       end
@@ -58,7 +58,7 @@ module CacheServices
   end
 
   def foto_principal_service
-    adicional = @especie.asigna_foto
+    adicional = asigna_foto
 
     if adicional[:cambio]
       if adicional[:adicional].save
@@ -68,7 +68,7 @@ module CacheServices
   end
 
   def nombre_comun_principal_service
-    adicional = @especie.asigna_nombre_comun
+    adicional = asigna_nombre_comun
 
     if adicional[:cambio]
       if adicional[:adicional].save
@@ -80,21 +80,33 @@ module CacheServices
 
         # Para volver a poner los nombres comunes (catalogos) en el fuzzy match
         # puede que no hayan cambiado.
-        blurrily_service(adicional[:adicional])
+        blurrily_service
         puts "\t\tNombres procesados en blurrily"
       end
     end
   end
 
   # Servicios del fuzzy match
-  def blurrily_service(adicional)
-    adicional.especie.nombres_comunes.each do |nombre_comun|
+  def blurrily_service
+    nombres_comunes.each do |nombre_comun|
       nombre_comun.completa_blurrily
     end
   end
 
   # Falta implementar el servicio del banco de imagenes
   def bi_service
-    CONFIG.site_url
+  end
+
+  # Los servicios no se actualizaran en menos de un dia
+  def escribe_cache
+    Rails.cache.write("cache_service_#{id}", true, :expires_in => 1.day)
+  end
+
+  def existe_cache?
+    Rails.cache.exist?("cache_service_#{id}")
+  end
+
+  def borra_cache
+    Rails.cache.delete("cache_service_#{id}")
   end
 end
