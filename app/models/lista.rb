@@ -16,7 +16,7 @@ class Lista < ActiveRecord::Base
   ]
 
   # Columnas permitidas a exportar por el usuario
-  COLUMNAS_GENERALES = %w(id nombre_cientifico fuente cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
+  COLUMNAS_GENERALES = %w(id catalogo_id nombre_cientifico fuente cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
                         x_nombres_comunes x_nombre_comun_principal x_categoria_taxonomica
                         x_tipo_distribucion  nombre_autoridad x_estatus x_foto_principal)
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)

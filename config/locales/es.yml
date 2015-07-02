@@ -279,10 +279,11 @@ es:
   listas_columnas:
     generales:
       anotacion: Anotación
+      catalogo_id: Identificador de catalogos
       cita_nomenclatural: Cita nomenclatural
       created_at: Fecha de creación
       fuente: Fuente
-      id: Identificador único
+      id: Identificador de BIOS
       nombre_autoridad: Nombre autoridad
       nombre_cientifico: Nombre científico
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
