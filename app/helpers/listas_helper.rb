@@ -1,10 +1,10 @@
 module ListasHelper
-  def despliegaLista(lista)
+  def despliegaLista(lista, params={})
     taxones = ''
     columnas = lista.columnas.split(',')
     nombresComunesColumnas = lista.nombres_columnas(true)
 
-    datos = lista.datos
+    datos = lista.datos(params)
     nombresComunesColumnas unless datos.present?
 
     # Consulta las columnas que selecciono en la lista

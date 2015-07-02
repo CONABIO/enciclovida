@@ -14,7 +14,7 @@ Buscador::Application.routes.draw do
   resources :listas do
     collection do
       post :dame_listas
-      post :aniade_taxones
+      post :aniade_taxones_seleccionados
     end
   end
 
