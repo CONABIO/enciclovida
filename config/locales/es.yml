@@ -289,14 +289,17 @@ es:
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
       updated_at: Fecha de última modificación
       x_categoria_taxonomica: Categoria taxonómica
+      x_cites: Comercio Internacional (CITES)
       x_estatus: Estatus del nombre científico
       x_foto_principal: Foto principal
+      x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
+      x_naturalista_id: Identificador NaturaLista
+      x_nom: Norma Oficial Mexicana NOM-059
       x_nombre_comun_principal: Nombre común principal
       x_nombres_comunes: Nombres comúnes
+      x_snib_id: Identificador del SNIB
+      x_snib_reino: Reino en el SNIB
       x_tipo_distribucion: Tipo distribución
-      x_nom: Norma Oficial Mexicana NOM-059
-      x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
-      x_cites: Comercio Internacional (CITES)
     categorias:
       x_reino: Reino
       x_division: división

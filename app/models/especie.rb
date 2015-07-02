@@ -5,7 +5,8 @@ class Especie < ActiveRecord::Base
   self.primary_key='id'
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
-  attr_accessor :x_estatus, :x_categoria_taxonomica, :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
+  attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
+                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
                 :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
