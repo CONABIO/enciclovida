@@ -27,9 +27,6 @@ class Lista < ActiveRecord::Base
     CSV.generate(options) do |csv|
       csv << nombres_columnas
 
-      #solo_valores = datos.map{|t| [columnas.map{|c| t.send(c)}]}
-      #csv << solo_valores
-
       datos.each do |taxon|
         datos_taxon = []
 
@@ -47,7 +44,7 @@ class Lista < ActiveRecord::Base
     taxones = []
 
     # Por default muestra todos
-    Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').limit(params[:limit] ||= 300000).find_each do |taxon|
+    Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').limit(params[:limit] ||= 300000).each do |taxon|
 
       cols = columnas.split(',')
       cols.each do |col|

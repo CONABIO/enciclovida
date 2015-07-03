@@ -2,7 +2,7 @@
 <% @taxones.each do |taxon| %>
 
     <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
-      <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies">
+      <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none;">
 
       <% if I18n.locale.to_s != 'es-cientifico' %>
           <% if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
