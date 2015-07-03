@@ -26,10 +26,18 @@ $(document).ready(function() {
         // Navigation buttons //
         // Automated cycling //
         cycleBy: 'items',
-        cycleInterval: 850,
+        cycleInterval: 3000,
         pauseOnHover: 1,
         // Mixed options //
         // Classes //
         activeClass:   'seleccionada'
     }).init();
+    sly.on('active', function (eventName) {
+        x=$('img.seleccionada').attr('data-large');
+        console.log(x);
+        $('#foto-carrusel > img').attr('src',x);
+    });
+});
+$(window).resize(function(e) {
+    $frame.sly('reload');
 });

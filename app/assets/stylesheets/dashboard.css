@@ -31,9 +31,9 @@
 @media (min-width: 872px) {
     .sidebar {
         position: fixed;
-        top: 130px;
+        top: 115px;
         bottom: 20%;
-        left: 10px;
+        /*left: 10px;*/
         z-index: 1000;
         display: block;
         padding: 20px;
@@ -44,7 +44,7 @@
         border-radius: 2.5em;
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
-        margin-left: 31px;
+        /*margin-left: 31px;*/
     }
 }
   .sidebar_lupa{

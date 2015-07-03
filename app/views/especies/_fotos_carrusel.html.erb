@@ -5,7 +5,9 @@
     <% content_for(:extracss) do %>
         <%= stylesheet_link_tag    "carrusel", media: "all", "data-turbolinks-track" => true %>
     <% end %>
-
+    <div id="foto-carrusel">
+      <img src="<%= @photos[0].best_photo %>" class="img-responsive"/>
+    </div>
     <div id="carrusel" class="frame">
         <div class="slidee">
           <% @photos.each do |p| %>
