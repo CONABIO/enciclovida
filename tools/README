@@ -1,7 +1,7 @@
 ### README para poner nuevas bases y que se vean en web,
 ### Todas las pruebas y borrado de bases se realizara desde:
 ### Servidor de pruebas SQL Server 2012 172.16.1.98
-### Servidor web de pruebas colibri
+### Servidor web de pruebas colibri 172.16.1.158
 
 1.- Poner en solo lectura la aplicacion, para que nuevos cambios no tengan lugar mientras se corren los scripts (PENDIENTE).
 
@@ -55,10 +55,9 @@
 *****Hasta aqui la base ya se puede ver para pruebas*****
 
 
-13.- Corre el script para completar el nombre comun principal de la tabla Nombre (19516.001434746 seg):
+13.- Corre el script para completar el nombre comun principal de la tabla Nombre (21014.591169994 seg):
         13.1.- rails r tools/nombre_comun_principal.rb -d
         13.2.- rails r tools/nombre_comun_principal.rb -d 02-Arthropoda            #para correr solo un conjunto de bases
-
 
 14.- Llena los campos icono y nombre_icono para todas las adicionales (2351.556696826 seg):
         14.1.- rails r tools/grupos_iconicos.rb -d
@@ -66,16 +65,15 @@
 
 *****Servicios extra*****
 *****NOTA: 16,17,18 se pueden correr en paralelo*****
-15.- Completa la base de nombres cientificos en redis (6169.426945545 seg):
-        15.1.- Borra el archivo dump.rdb
-        15.2.- Alzar el servicio de redis: redis-server
-        15.3.- rails r tools/nombres_cientificos_redis.rb -d
+15.- Completa la base de nombres comunes en redis (7787.854763815 seg):
+        15.1.- rails r tools/nombres_comunes_redis.rb -d
 
-16.- Completa la base de nombres comunes en redis (7787.854763815 seg):
-        16.1.- rails r tools/nombres_comunes_redis.rb -d
+16.- Completa los nombres comunes principales con los de NaturaLista, si es que no existe en catalogos
+        16.1.- rails r tools/nombres_principales_redis.rb -d
 
-17.- Completa los nombres comunes principales con los de NaturaLista, si es que no existe en catalogos
-        17.1.- rails r tools/nombres_principales_redis.rb -d
+17.- Completa la base de nombres cientificos en redis (6169.426945545 seg):
+        17.1.- Alzar el servicio de redis: redis-server
+        17.2.- rails r tools/nombres_cientificos_redis.rb -d
 
 18.- Para generar los registros para el fuzzy match (5084.139111456 seg):
         18.1.- Alzar el servicio del fuzzy match, en una consola de rails
@@ -112,8 +110,8 @@
 25.- Para generar los kmz del snib (13652.1079729 seg):
         25.1.- rails r tools/crea_kmz_snib.rb -d
 
-26.- Para generar los kmz de naturalista (708.426385906 seg):
-        26.1.- rails r tools/crea_kmz_snib.rb -d
+26.- Para generar los kmz de naturalista (213.429414808 seg):
+        26.1.- rails r tools/crea_kmz_naturalista.rb -d
 
 
 *****Parte de Administracion*****
