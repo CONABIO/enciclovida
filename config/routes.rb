@@ -1,5 +1,10 @@
 Buscador::Application.routes.draw do
 
+  get "inicio/index"
+  get "inicio/coemntarios"
+  get "inicio/acerca"
+  get "inicio/terminos"
+  get "inicio/ayuda"
   resources :adicionales do
     collection do
       post :actualiza_nom_comun

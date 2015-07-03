@@ -2,12 +2,6 @@
  * Base structure
  */
 
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
- /*padding-top: 90px;*/
-}
-
-
 /*
  * Global add-ons
  */
@@ -32,14 +26,14 @@ body {
 
 /* Hide for mobile, show later */
 .sidebar {
-  display: none;￼
+  display: none;
 }
 @media (min-width: 872px) {
     .sidebar {
         position: fixed;
-        top: 130px;
+        top: 115px;
         bottom: 20%;
-        left: 10px;
+        /*left: 10px;*/
         z-index: 1000;
         display: block;
         padding: 20px;
@@ -50,7 +44,7 @@ body {
         border-radius: 2.5em;
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
-        margin-left: 31px;
+        /*margin-left: 31px;*/
     }
 }
   .sidebar_lupa{
@@ -83,12 +77,18 @@ body {
  */
 
 .main {
-  padding: 20px;
+    padding: 20px;
+    opacity: 0.9;
+    filter: alpha(opacity=90); /* For IE8 and eaarlier */
+    background-color: #f2f0ed;
+    border-radius: 1.5em;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 @media (min-width: 872px) {
   .main {
-    padding-right: 40px;
-    padding-left: 40px;
+    /*padding-right: 40px;
+    padding-left: 40px;*/
   }
 }
 .main .page-header {

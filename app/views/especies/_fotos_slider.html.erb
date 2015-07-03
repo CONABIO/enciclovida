@@ -35,7 +35,7 @@
                 <span class="es-nav-next">Next</span>
               </div>
               <div class="es-carousel">
-                <ul>
+                <ul style="display: inline-flex;">
                   <% @photos.each do |p| %>
                       <%-
                           next unless p.square_url.present?
@@ -44,7 +44,6 @@
                           img_normal = p.best_photo
                           next unless img_normal.present?
                       -%>
-
                       <li>
                         <a href="#">
                           <img src="<%= img_square %>" data-large="<%= img_normal %>" data-description="<%= p.attribution %>" />

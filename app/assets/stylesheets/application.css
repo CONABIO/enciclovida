@@ -28,8 +28,6 @@
  *= require fontello-ie7-codes
  *= require scrolling
  *= require comentarios
- *= require slider/elastislide
- *= require slider/style
  */
 
 /*
@@ -39,13 +37,16 @@
 */
 
 body{
-    opacity: 0.9;
-    filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-size: cover;
     background-position: 50% 50%;
     background: url("app/fondo.jpg");
 }
 
+
+
+div.footer{ /*Footer*/
+    background: linear-gradient(to right, transparent,#ede6df,transparent);
+}
 
 
 @font-face {

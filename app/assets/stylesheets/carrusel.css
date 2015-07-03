@@ -1,0 +1,42 @@
+.frame {
+    width: 100%;
+    height: 70px;
+    overflow: hidden;
+    background-color: #F7F7F7;
+    /*outline: 2px solid #000030;*/
+}
+.slidee {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.slidee img {
+    float: left;
+    margin: 0 1px;
+    padding: 0;
+    opacity: 0.6;
+    border-radius: 15%;
+    /*border: 2px solid #000030;*/
+}
+.scrollbar {
+     width: 100%;
+     height: 6px;
+     margin-top: 2px;
+     background-color: #F7F7F7;
+ }
+.scrollbar .handle {
+    width: 100px; /* overriden if dynamicHandle: 1 */
+    height: 100%;
+    background: #800000;
+    border-radius: 3px;
+}
+img.seleccionada {
+    border-radius: 15%;
+    /*border: 2px solid #800000;*/
+    opacity: 1;
+    padding: 2px;
+}
+#foto-carrusel{
+    /*height: 470px;*/
+    overflow: hidden;
+}
