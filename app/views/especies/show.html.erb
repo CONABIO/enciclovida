@@ -291,8 +291,7 @@
 
             <div id="photoscol">
                 <div id="photos" >
-                    <%= render :partial => 'fotos_slider', :locals => { :photos => @photos } %>
-                    <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
+                    <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
                 </div>
 
                 <% if usuario_signed_in? %>

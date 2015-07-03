@@ -1,0 +1,26 @@
+<% if @photos.any? %>
+    <% content_for(:extrajs) do %>
+        <%= javascript_include_tag "carrusel", "data-turbolinks-track" => true %>
+    <% end %>
+    <% content_for(:extracss) do %>
+        <%= stylesheet_link_tag    "carrusel", media: "all", "data-turbolinks-track" => true %>
+    <% end %>
+
+    <div id="carrusel" class="frame">
+        <div class="slidee">
+          <% @photos.each do |p| %>
+              <%-
+                  next unless p.square_url.present?
+                  img_square = p.square_url
+
+                  img_normal = p.best_photo
+                  next unless img_normal.present?
+              -%>
+                 <img src="<%= img_square %>" data-large="<%= img_normal %>" data-description="<%= p.attribution %>" width="75" height="75"/>
+          <% end %>
+        </div>
+    </div>
+    <div class="scrollbar">
+        <div class="handle"></div>
+    </div>
+<% end %>

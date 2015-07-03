@@ -1,0 +1,34 @@
+.frame {
+    width: 100%;
+    height: 75px;
+    overflow: hidden;
+    /*outline: 1px solid #800000;*/
+}
+.slidee {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.slidee img {
+    float: left;
+    margin: 0 1px;
+    padding: 0;
+    opacity: 0.6;
+}
+.scrollbar {
+     width: 100%;
+     height: 8px;
+     margin-top: 2px;
+ }
+.scrollbar .handle {
+    width: 100px; /* overriden if dynamicHandle: 1 */
+    height: 100%;
+    background: #000030;
+    border-radius: 3px;
+}
+img.seleccionada {
+    border-radius: 15%;
+    border: 2px solid #800000;
+    opacity: 1;
+    padding: 2px;
+}
