@@ -1,13 +1,16 @@
 class ListasController < ApplicationController
+  # Para crear listas de taxones o para exportar los datos y mandarlos al correo
 
-  skip_before_filter :set_locale, only: [:aniade_taxones, :dame_listas, :create, :update, :destroy]
-  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :aniade_taxones]
+  skip_before_filter :set_locale, only: [:aniade_taxones_seleccionados, :dame_listas, :create, :update, :destroy]
+  before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :aniade_taxones_seleccionados]
   before_action :set_lista, only: [:show, :edit, :update, :destroy]
+
   before_action only: [:edit, :update, :destroy] do
     permiso = es_propietario?(@lista)
     render :_error unless permiso
   end
-  before_action only: :aniade_taxones do
+
+  before_action only: :aniade_taxones_seleccionados do
     if params[:listas].present?
       @listas = []
       con_error = false
@@ -22,13 +25,13 @@ class ListasController < ApplicationController
         end
       end
 
-      render :_error unless con_error
+      render :_error if con_error
     else
-      render :_error
+      render :_error and return
     end
   end
 
-  layout false, :only => [:dame_listas, :aniade_taxones]
+  layout false, :only => [:dame_listas, :aniade_taxones_seleccionados]
 
   # GET /listas
   # GET /listas.json
@@ -109,7 +112,8 @@ class ListasController < ApplicationController
     end
   end
 
-  def aniade_taxones
+  # Aniade los taxones seleccionados con las cajas
+  def aniade_taxones_seleccionados
     notice = if params[:especies].present?
                @listas.each do |lista|
                  lista = Lista.find(lista)
@@ -123,6 +127,18 @@ class ListasController < ApplicationController
              end
 
     redirect_to :back, :notice => notice
+  end
+
+  # Aniade todos los taxones que salieron en el query
+  def aniade_taxones_query
+  end
+
+  # Envia por correo los taxones seleccionados con las cajas
+  def envia_taxones_seleccionados
+  end
+
+  # Envia por correo los taxones que saieron con el query
+  def envia_taxones_query
   end
 
   private

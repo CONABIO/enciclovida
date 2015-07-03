@@ -8,13 +8,11 @@ class EspeciesController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
+
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
-
-  # Servicios como las fotos, los registros geograficos, nombres comunes son atualizados
-  caches_action :cache_services, :expires_in => 2.minutes, :cache_path => Proc.new { |c| "cache_servicios/#{c.params[:id]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
@@ -23,14 +21,13 @@ class EspeciesController < ApplicationController
   # GET /especies
   # GET /especies.json
   def index
-    @especies = Especie.limit(100)
-    respond_to do |format|
-      format.html
-      format.json { render json: EspecieDatatable.new(view_context) }
-      format.xlsx {
-        send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
-      }
-    end
+    #@especies = Especie.limit(100)
+    #respond_to do |format|
+    #  format.html
+      #format.xlsx {
+      #  send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
+      #}
+    #end
   end
 
   # GET /especies/1
@@ -42,7 +39,9 @@ class EspeciesController < ApplicationController
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
 
     respond_to do |format|
-      format.html
+      format.html do
+        @especie.delayed_job_service
+      end
       format.json { render json: @especie.to_json }
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
@@ -191,20 +190,15 @@ class EspeciesController < ApplicationController
   def resultados
     # Por si no coincidio nada
     @taxones = Especie.none
-
     # Despliega directo el taxon, si paso id
-    if params[:busqueda] == 'basica' || params[:id].present?
+    if params[:id].present?
       set_especie
-      respond_to do |format|
-        format.html { redirect_to especie_path(@especie) }
-      end
     else
 
       # Hace el query del tipo de busqueda
       case params[:busqueda]
 
         when 'nombre_comun'
-
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
@@ -613,79 +607,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Actualiza los diferentes servicios a nivel taxon unos minutos despues que el usuario vio el taxon y
-  # si es que caduco el cache
-  def cache_services
-    naturalista_service
-    snib_service
-    foto_principal_service
-    nombre_comun_principal_service
-  end
-
-  def naturalista_service
-    if proveedor = @especie.proveedor
-      proveedor.info_naturalista
-    else
-      proveedor = Proveedor.crea_info_naturalista(@especie)
-    end
-
-    if proveedor.instance_of?(Proveedor)
-      if proveedor.changed?
-        if proveedor.save
-          # Para guardar las fotos nuevas de naturalista
-          usuario = Usuario.where(usuario: CONFIG.usuario).first
-          proveedor.fotos(usuario.id)
-
-          # Para las nuevas observaciones
-          proveedor.kml_naturalista
-
-          if proveedor.naturalista_kml.present?
-            if proveedor.kmz_naturalista
-              puts "\t\tGuardo KMZ" if OPTS[:debug]
-            end
-          end
-        end  # Cierra si guardo
-      end  # Cierra si hubo cambios
-    end  # Cierra si hubo proveedor con naturalista
-  end
-
-  def snib_service
-    if proveedor = @especie.proveedor
-      proveedor.kml
-
-      if proveedor.snib_kml.present?
-        if proveedor.kmz
-          puts "\t\tCon KMZ" if OPTS[:debug]
-        end
-      end
-    end
-  end
-
-  def foto_principal_service
-    adicional = @especie.asigna_foto
-
-    if adicional[:cambio]
-      if adicional[:adicional].save
-        puts "\t\tFoto principal cambio" if OPTS[:debug]
-      end
-    end
-  end
-
-  def nombre_comun_principal_service
-    adicional = @especie.asigna_nombre_comun
-
-    if adicional[:cambio]
-      if adicional[:adicional].save
-        puts "\t\tNombre comun principal cambio" if OPTS[:debug]
-      end
-    end
-  end
-
-  # Falta implementar el servicio del banco de imagenes
-  def bi_service
-  end
-
-
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
   end
@@ -695,20 +616,32 @@ class EspeciesController < ApplicationController
   def set_especie
     begin
       @especie = Especie.find(params[:id])
-      @accion=params[:controller]
 
-      if @especie.estatus == 1   # Si es un sinonimo lo redireccciona al valido
+      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
         estatus = @especie.especies_estatus
-        render(:error) unless estatus.length == 1  # Nos aseguramos que solo haya un valido
 
-        begin
-          @especie = Especie.find(estatus.first.especie_id2)
-        rescue
-          render :_error
+        if estatus.length == 1  # Nos aseguramos que solo haya un valido
+          begin
+            @especie = Especie.find(estatus.first.especie_id2)
+            redirect_to especie_path(@especie)
+          rescue
+            render :_error and return
+          end
+        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+          render :_error and return
+        else  # Es sinonimo pero no tiene un valido asociado >.>!
+          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
+            redirect_to especie_path(@especie) and return
+          end
+        end
+      else
+        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+          redirect_to especie_path(@especie) and return
         end
       end
+
     rescue    #si no encontro el taxon
-      render :_error
+      render :_error and return
     end
   end
 

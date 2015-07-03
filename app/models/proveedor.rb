@@ -1,4 +1,5 @@
 class Proveedor < ActiveRecord::Base
+
   belongs_to :especie
   attr_accessor :snib_kml, :naturalista_kml
 
@@ -130,6 +131,7 @@ class Proveedor < ActiveRecord::Base
     obs = eval(naturalista_obs).first
     return [] unless obs.count > 0
     cadenas = []
+    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
     obs.each do |ob|
       # Para evitar las captivas
@@ -192,12 +194,23 @@ class Proveedor < ActiveRecord::Base
 
   def info_naturalista
     if naturalista_id.present?
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      data = JSON.parse(response)
+      puts "\t\t#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+
+      begin
+        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+        data = JSON.parse(response)
+      rescue
+        return nil
+      end
     else
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
-      data_todos = JSON.parse(response)
-      data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+      puts "\t\t#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
+      begin
+        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
+        data_todos = JSON.parse(response)
+        data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+      rescue
+        return nil
+      end
     end
 
     return nil unless data.present?
