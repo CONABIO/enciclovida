@@ -314,7 +314,7 @@ module EspeciesHelper
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
     keys = agrupa_nombres.keys.sort
     keys.each do |k|
-      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <sub>(#{k})</sub> / "
+      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <small>(#{k})</small> / "
     end
     nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end

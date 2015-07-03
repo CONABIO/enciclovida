@@ -26,18 +26,17 @@ $(document).ready(function() {
         // Navigation buttons //
         // Automated cycling //
         cycleBy: 'items',
-        cycleInterval: 3000,
+        cycleInterval: 3500,
         pauseOnHover: 1,
         // Mixed options //
         // Classes //
         activeClass:   'seleccionada'
     }).init();
     sly.on('active', function (eventName) {
-        x=$('img.seleccionada').attr('data-large');
-        console.log(x);
-        $('#foto-carrusel > img').attr('src',x);
+        //x=$('img.seleccionada').attr('data-large');
+        $('#foto-carrusel > img').attr('src',$('img.seleccionada').attr('data-large'));
     });
 });
 $(window).resize(function(e) {
-    $frame.sly('reload');
+    $('#carrusel').sly('reload');
 });
