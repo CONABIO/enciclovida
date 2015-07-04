@@ -68,8 +68,8 @@
 <div class="container-fluid">
   <div class="row">
     <% if params[:checklist].blank? %>
-        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
-        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
+        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-link" style="float: right; padding: 0;" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
+        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-link" style="float: left; padding: 0;" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
     <% end %>
 
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
@@ -96,7 +96,5 @@
 </div>
 
 <%= bitacora.html_safe if bitacora.present? %>
-<!--div style="padding: 0% 30%  0% 30%; background: linear-gradient(to right, transparent,#ede6df,transparent);"-->
-
 </body>
 </html>
