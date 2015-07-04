@@ -2,7 +2,7 @@
     width: 100%;
     height: 70px;
     overflow: hidden;
-    background-color: #F7F7F7;
+    /*background-color: #a00000;*/
     /*outline: 2px solid #000030;*/
 }
 .slidee {
@@ -14,15 +14,16 @@
     float: left;
     margin: 0 1px;
     padding: 0;
-    opacity: 0.6;
+    opacity: 0.4;
     border-radius: 15%;
+    cursor: pointer;
     /*border: 2px solid #000030;*/
 }
 .scrollbar {
      width: 100%;
      height: 6px;
      margin-top: 2px;
-     background-color: #F7F7F7;
+     background-color: #C2BEB9;
  }
 .scrollbar .handle {
     width: 100px; /* overriden if dynamicHandle: 1 */
