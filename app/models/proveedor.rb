@@ -224,19 +224,32 @@ class Proveedor < ActiveRecord::Base
 
   def obs_naturalista
     data = []
-    url = "#{CONFIG.naturalista_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo"
+    url = "#{CONFIG.inaturalist_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo&per_page=200"
     # Para limitarlo solo al cuadrado de la republica
     #url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}"
 
+    # Para obtener los resultados totales y armar el paginado
+    rest_client = RestClient.get "#{url}&page=1"
+    resultados = rest_client.headers[:x_total_entries].to_i
+    return nil if resultados == 0
+    cociente = resultados/200
+    residuo = resultados%200
+    cociente+= 1 if residuo < 200
+
     # Loop de maximo 200,000 registros para NaturaLista (suficientes)
-    for i in 1..1000 do
-      url << "&page=#{i}&per_page=200"
-      rest_client = RestClient.get url
+    for i in 1..cociente do
+      if i > 1
+        url << "&page=#{i}"
+        rest_client = RestClient.get url
+      end
+
       response_obs = JSON.parse(rest_client)
       break unless response_obs.present?
+
+      puts "\t\t#{url}"
       i == 1 ? data << response_obs : data + response_obs
-      break if i > 1000
     end
+
     self.naturalista_obs = "#{data}" if data.present?
   end
 
