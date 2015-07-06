@@ -30,8 +30,10 @@ base: &base
   bdi_imagenes: http://bdi.conabio.gob.mx:5050
   bdi_fotoweb: http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=
 
-  # URL de NaturaLista
+  # URL de NaturaLista e iNaturalist
   naturalista_url: http://conabio.inaturalist.org
+  # Es necesario la URL de iNaturalist para las observaciones, ya que en NaturaLista no salen todas
+  inaturalist_url: http://www.inaturalist.org
 
   # Coordenadas del rectangulo de la republica, para las obs. de NaturaLista
   swlat: 13.9234
