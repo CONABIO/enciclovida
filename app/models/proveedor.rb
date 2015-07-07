@@ -128,7 +128,7 @@ class Proveedor < ActiveRecord::Base
   # Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
     return [] unless naturalista_obs.present?
-    obs = eval(naturalista_obs).first
+    obs = eval(naturalista_obs)
     return [] unless obs.count > 0
     cadenas = []
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
@@ -239,18 +239,18 @@ class Proveedor < ActiveRecord::Base
     # Loop de maximo 200,000 registros para NaturaLista (suficientes)
     for i in 1..cociente do
       if i > 1
-        url << "&page=#{i}"
-        rest_client = RestClient.get url
+        rest_client = RestClient.get "#{url}&page=#{i}"
       end
 
       response_obs = JSON.parse(rest_client)
       break unless response_obs.present?
 
-      puts "\t\t#{url}"
-      i == 1 ? data << response_obs : data + response_obs
+      puts "\t\t#{url}&page=#{i}"
+      data+= response_obs
     end
 
     self.naturalista_obs = "#{data}" if data.present?
+    puts "\t\t#{data.count} observaciones"
   end
 
   def geodatos

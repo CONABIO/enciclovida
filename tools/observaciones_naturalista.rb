@@ -7,7 +7,6 @@ OPTS = Trollop::options do
   banner <<-EOS
 Guarda las observaciones de NaturaLista, una vez que ya se asocio el ID
 
-
 Usage:
 
   rails r tools/observaciones_naturalista.rb -d
@@ -19,7 +18,8 @@ end
 
 def search
   Proveedor.where('naturalista_id IS NOT NULL').order(:especie_id).find_each do |proveedor|
-    return nil unless t = proveedor.especie
+    next unless t = proveedor.especie
+    next unless t.species_or_lower?
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
     proveedor.obs_naturalista
 
