@@ -37,9 +37,9 @@
 */
 
 body{
-    background-size: cover;
-    background-position: 50% 50%;
-    background: url("app/fondo.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("app/fondo.jpg");
 }
 
 
