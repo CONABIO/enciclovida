@@ -157,7 +157,7 @@ $(document).ready(function()
                            // This is mainly for usability concerns. You can alter this as you see fit
             scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
             // but will still load if the user clicks.
-            url     : url,
+            url     : url
         });
     }
 });
