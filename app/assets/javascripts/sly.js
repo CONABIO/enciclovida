@@ -193,7 +193,7 @@
 				// Save the number of current items
 				lastItemsCount = items.length;
 
-				// Reset itemNav related variables
+				// Reset itemNav related variables//= require sly
 				$items = $slidee.children(o.itemSelector);
 				items.length = 0;
 

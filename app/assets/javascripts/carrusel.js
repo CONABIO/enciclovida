@@ -1,6 +1,7 @@
 //= require sly
 
-$(document).ready(function() {
+var siCargue = 'si cargue ';
+console.log(siCargue+'1');
     var sly = new Sly('#carrusel', {
         horizontal: 1,
         // Item based navigation //
@@ -36,7 +37,8 @@ $(document).ready(function() {
         //x=$('img.seleccionada').attr('data-large');
         $('#foto-carrusel > img').attr('src',$('img.seleccionada').attr('data-large'));
     });
-});
-$(window).resize(function(e) {
-    $('#carrusel').sly('reload');
-});
+    console.log(siCargue+'2');
+
+    $(window).resize(function(e) {
+        $('#carrusel').sly('reload');
+    });
