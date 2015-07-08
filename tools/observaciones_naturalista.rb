@@ -19,8 +19,8 @@ end
 def search
   Proveedor.where('naturalista_id IS NOT NULL').order(:especie_id).find_each do |proveedor|
     next unless t = proveedor.especie
-    next unless t.species_or_lower?
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
+    next unless t.species_or_lower?
     proveedor.obs_naturalista
 
     if proveedor.changed?
