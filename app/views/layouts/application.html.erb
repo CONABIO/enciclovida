@@ -33,9 +33,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosMC.png'); width: 102px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosF.jpg'); width: 18em; background-size: cover; background-position: center; background-repeat: no-repeat;" %>
     </div>
-    <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold;  background: linear-gradient(to right, #ede6df,#FFFFFF,transparent); border-radius: 1em; width: 80%; float: right;">
+    <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold;  background: linear-gradient(to right, #ede6df,#FFFFFF,transparent); border-radius: .8em; width: 70%; float: right;">
       <ul class="nav navbar-nav" style="font-weight: bold; font-size: .75em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
@@ -64,13 +64,17 @@
   </div>
 </nav>
 
+<% if params[:checklist].blank? %>
+        <div class="sidebar sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1" id="filtros">
+          <button type="button" class="btn btn-link" style="float: right; padding: 0;" onclick="cambiaSidebar();">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+          <div class="row hidden"><%= render :template => 'especies/busqueda' %></div>
+        </div>
+<% end %>
 
 <div class="container-fluid">
   <div class="row">
-    <% if params[:checklist].blank? %>
-        <div class="sidebar hidden" id="filtros"><button type="button" class="btn btn-link" style="float: right; padding: 0;" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
-        <div class="sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-link" style="float: left; padding: 0;" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
-    <% end %>
 
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
       <div class="row main">
@@ -79,6 +83,7 @@
         </div>
       </div>
     </div>
+
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">

@@ -29,30 +29,37 @@
   display: none;
 }
 @media (min-width: 500px) {
-    .sidebar {
+    #filtros {
         position: fixed;
-        top: 115px;
+        top: 110px;
         bottom: 20%;
-        width: 30%;
-        /*left: 10px;*/
-        z-index: 9999;
+        left: -58px;
+        z-index: 10000003;
         display: block;
         padding: 20px;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: rgba(237, 230, 223, 0.85);
-        border: 1px solid #998370;
-        border-radius: 2.5em;
-        border-top-right-radius: 0px;
+        /*border: 1px solid #998370;*/
+        /*border: 1px solid #599008;*/
+        border-top-left-radius: 0px;
+        border-top-right-radius: 2.5em;
+        border-bottom-left-radius: 2.5em;
         border-bottom-right-radius: 0px;
         /*margin-left: 31px;*/
+        /*margin-left: 58px;*/
     }
-  .sidebar_lupa{
-    height: 64px;
-    /*margin-left: 55px;*/
-    width: auto !important;
-    /*margin-right: -30px;*/
-  }
+    .sidebar_lupa{
+        height: 64px;
+        width: auto !important;
+        /*margin-right: -30px;*/
+        background-color: rgba(141, 160, 10, .95);
+        border: 1px solid #599008;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 2.5em;
+        border-bottom-left-radius: 2.5em;
+        border-bottom-right-radius: 0px;
+    }
 }
 
 /* Sidebar navigation */
