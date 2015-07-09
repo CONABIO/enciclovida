@@ -268,7 +268,7 @@ class Proveedor < ActiveRecord::Base
 
     if geoserver_info.present?
       info = JSON.parse(geoserver_info)
-      rutas[:geoserver_kmz] = "#{CONFIG.geoserver_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}"
+      rutas[:geoserver_kmz] = "#{CONFIG.geoserver_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
     end
 
     rutas.to_json
