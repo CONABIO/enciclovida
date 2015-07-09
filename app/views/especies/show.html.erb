@@ -224,8 +224,9 @@
     });
 </script>
 
-
-<p class="text-danger"><%= notice %></p>
+<% if notice.present? %>
+    <div class="alert alert-success" role="alert"><%= notice %></div>
+<% end%>
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
