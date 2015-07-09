@@ -7,7 +7,6 @@ class ComentariosController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, only: :new
 
   # GET /comentarios
   # GET /comentarios.json
