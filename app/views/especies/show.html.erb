@@ -162,36 +162,6 @@
             }
         });
 
-        // Edita el nombre comun principal
-        $('#edita_nom_com_principal').dialog({
-            modal: true,
-            title: 'Cambia o pon un nuevo nombre común',
-            autoOpen: false,
-            width: 700,
-            open: function( event, ui ) {
-                $('#edita_nom_com_principal').loadingShades('Cargando...', {cssClass: 'smallloading'});
-                $('#edita_nom_com_principal').load('/adicionales/'+TAXON.id+'/edita_nom_comun', function() {
-                    $(ui.panel).addClass('loaded');
-                    $('#edita_nom_com_principal').centerDialog();
-                });
-            }
-        });
-
-        // Envia un comentario como parte de la retroalimentacion
-        $('#envia_comentario').dialog({
-            modal: true,
-            title: 'Envianos tus comentarios',
-            autoOpen: false,
-            width: 700,
-            open: function( event, ui ) {
-                $('#envia_comentario').loadingShades('Cargando...', {cssClass: 'smallloading'});
-                $('#envia_comentario').load('/especies/'+TAXON.id+'/comentarios/new', function() {
-                    $(ui.panel).addClass('loaded');
-                    $('#envia_comentario').centerDialog();
-                });
-            }
-        });
-
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
@@ -254,8 +224,9 @@
     });
 </script>
 
-
-<p id="notice"><%= notice %></p>
+<% if notice.present? %>
+    <div class="alert alert-success" role="alert"><%= notice %></div>
+<% end%>
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
@@ -263,9 +234,9 @@
 
 <h2>
   <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-  <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
+  <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
   <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-  <span id="envia_comentario" class="dialog" style="display: none"></span>
+  <div id="envia_comentario" class="dialog" style="display: none"></div>
 </h2>
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <%= dameNomComunes(@especie).html_safe %>
@@ -278,7 +249,7 @@
   <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
 </div>
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
-  <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span></p>
+  <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
 </div>
 
 <% if @photos.any? %>

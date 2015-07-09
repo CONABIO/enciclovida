@@ -10,8 +10,8 @@
  *
  *= require_self
  *= //require_tree .
- *= require bootstrap
- *= require bootstrap-theme
+ *= require bootstrap.css
+ *= require bootstrap-theme.css
  *= require dashboard
  *= //require sticky-footer
  *= //require bootstrap.css.map
@@ -27,6 +27,7 @@
  *= require fontello-ie7
  *= require fontello-ie7-codes
  *= require scrolling
+ * require jquery-ui
  *= require comentarios
  */
 

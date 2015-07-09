@@ -7,7 +7,6 @@ class AdicionalesController < ApplicationController
   end
   before_action :set_adicional, only: [:show, :edit, :update, :destroy]
   before_action :actualiza_nom_comun_params, only: :actualiza_nom_comun
-  layout false, only: [:edita_nom_comun]
 
   # GET /adicionales
   # GET /adicionales.json

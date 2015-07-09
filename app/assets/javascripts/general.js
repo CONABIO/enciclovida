@@ -162,4 +162,8 @@ $(document).ready(function()
     }
 });
 
-
+cambiaSidebar = function(){
+    $('.sidebar').toggleClass('sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-5 col-sm-4 col-md-4 col-lg-4');
+    $('.sidebar > button > span').toggleClass('glyphicon-search glyphicon-remove ');
+    $('.sidebar > div').toggleClass('hidden');
+};
