@@ -14,14 +14,13 @@
         = select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control"
         - if page_url = @describer.page_url(@especie)
           .col-xs-12{:class => "text-center"}
-            = link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui"
+            = link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => 'externallink ui', :target => :_blank
         - else
           .col-xs-12{:class => "text-center"}
-            %a{:href => "http://en.wikipedia.org/wiki/#{@especie.nombre_cientifico}"} Wikipedia
   - if @description.blank?
     %p.nocontent.meta
       - if @describer == TaxonDescribers::Wikipedia || @describer.blank?
-        =t :no_matching_article_from_x_to_y, :x => 'Wikipedia (EN)', :y => @especie.nombre_cientifico
+        =t :no_matching_article_from_x_to_y, :x => 'CONABIO', :y => @especie.nombre_cientifico
       - elsif @describer
         =t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico
   - else
