@@ -30,7 +30,7 @@ function anadeLista()
         //console.log(MAPAS[i][1]);
         if (i == 0)
         {   //para el default
-            x= x+'<li style="list-style: none;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')" checked></input><label>'+MAPAS[i][1]+'</label></li>';
+            x= x+'<li style="list-style: ;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')" checked></input><label>'+MAPAS[i][1]+'</label></li>';
             MAPAS[i][2](MAPAS[i][0]).setMap(map.map);
         } else
             x= x+'<li style="list-style: none;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')"></input><label>'+MAPAS[i][1]+'</label></li>';

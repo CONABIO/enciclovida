@@ -254,7 +254,7 @@
 
 <% if @photos.any? %>
     <% col1 = (geo && geo.count > 0) ? 'col-xs-5 col-sm-5 col-md-5 col-lg-5' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-    <div class="<%=col1%>">
+    <div class="<%=col1%>" id="contenedor_fotos">
 
       <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
       <% if usuario_signed_in? %>
