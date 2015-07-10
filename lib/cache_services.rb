@@ -99,7 +99,7 @@ module CacheServices
 
   # Los servicios no se actualizaran en menos de un dia
   def escribe_cache
-    Rails.cache.write("cache_service_#{id}", true, :expires_in => 1.day)
+    Rails.cache.write("cache_service_#{id}", true, :expires_in => 2.day)
   end
 
   def existe_cache?
