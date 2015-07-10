@@ -1,4 +1,4 @@
-buscador
+Bios
 ========
 
 Buscador y administrador de especies de la CONABIO
@@ -14,7 +14,7 @@ Una vez caragada la base ...
 
 require 'blurrily/server.rb'
 
-server=Blurrily::Server.new(:host => CONFIG.ip, :directory=> './db/blurrily')
+server=Blurrily::Server.new(:host => IP, :directory=> './db/blurrily')
 
 server.start
 
