@@ -1,14 +1,32 @@
+#foto-carrusel{
+    overflow: hidden;
+    height: 0;
+    padding-bottom: 100%;
+    min-height: 150px;
+}
+/*De momento los siguientes estilos no se ocupan, sin embargo,
+no borrar por si llegasen a hacer falta*/
+div#foto-carrusel-interna{
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    border-radius: 1.5em;
+    padding-bottom: 75%;
+}
 .frame {
     width: 100%;
     height: 70px;
     overflow: hidden;
-    /*background-color: #a00000;*/
+    margin-top: -70px;
+    background-color: rgb(250,250,250);
     /*outline: 2px solid #000030;*/
 }
 .slidee {
     list-style: none;
     margin: 0;
     padding: 0;
+    /*background-color: rgb(250,250,250);*/
 }
 .slidee img {
     float: left;
@@ -17,7 +35,14 @@
     opacity: 0.4;
     border-radius: 15%;
     cursor: pointer;
+    /*background-color: rgb(250,250,250);*/
     /*border: 2px solid #000030;*/
+}
+img.seleccionada {
+    border-radius: 15%;
+    /*border: 2px solid #800000;*/
+    opacity: 1;
+    padding: 2px;
 }
 .scrollbar {
      width: 100%;
@@ -30,14 +55,4 @@
     height: 100%;
     background: #800000;
     border-radius: 3px;
-}
-img.seleccionada {
-    border-radius: 15%;
-    /*border: 2px solid #800000;*/
-    opacity: 1;
-    padding: 2px;
-}
-#foto-carrusel{
-    /*height: 470px;*/
-    overflow: hidden;
 }
