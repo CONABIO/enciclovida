@@ -41,6 +41,13 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       format.html do
         @especie.delayed_job_service
+
+        # Para saber si es espcie y tiene un ID asociado a NaturaLista
+        if @especie.species_or_lower?
+          if proveedor = @especie.proveedor
+            @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
+          end
+        end
       end
       format.json { render json: @especie.to_json }
       format.kml do
@@ -82,7 +89,7 @@ class EspeciesController < ApplicationController
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
         pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
         FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
-        #render :pdf => @especie.nombre_cientifico.parameterize,
+
         render :pdf => @especie.nombre_cientifico.parameterize,
                #:save_to_file => pdf,
                #:save_only => true,

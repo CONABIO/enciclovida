@@ -249,6 +249,14 @@
   <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
 </div>
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+  <% if @con_naturalista %>
+    <p>
+        <span>
+        ¿Has visto esta especie? Sube tu observación y se parte de la red social de
+        <%= link_to(image_tag('app/naturalista.png'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank) %>
+        </span>
+    </p>
+  <% end %>
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
 </div>
 
