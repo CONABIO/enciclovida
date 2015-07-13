@@ -1,8 +1,16 @@
 #foto-carrusel{
     overflow: hidden;
     height: 0;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-left: 4px;
     padding-bottom: 100%;
     min-height: 150px;
+    background-color: #f7f7f7;
+}
+img#foto-carrusel-interna{
+    display: inline-block;
+    border-radius: 5px;
 }
 /*De momento los siguientes estilos no se ocupan, sin embargo,
 no borrar por si llegasen a hacer falta*/
@@ -19,7 +27,7 @@ div#foto-carrusel-interna{
     height: 70px;
     overflow: hidden;
     margin-top: -70px;
-    background-color: rgb(250,250,250);
+    /*background-color: rgb(250,250,250);*/
     /*outline: 2px solid #000030;*/
 }
 .slidee {
@@ -31,28 +39,29 @@ div#foto-carrusel-interna{
 .slidee img {
     float: left;
     margin: 0 1px;
-    padding: 0;
-    opacity: 0.4;
-    border-radius: 15%;
+    padding: 0px;
+    opacity: 0.5;
+    border-radius: 2px;
     cursor: pointer;
     /*background-color: rgb(250,250,250);*/
     /*border: 2px solid #000030;*/
 }
 img.seleccionada {
-    border-radius: 15%;
+    border-radius: 5px;
     /*border: 2px solid #800000;*/
     opacity: 1;
-    padding: 2px;
+    padding: 1px;
 }
 .scrollbar {
-     width: 100%;
-     height: 6px;
-     margin-top: 2px;
-     background-color: #C2BEB9;
- }
+    width: 100%;
+    height: 6px;
+    margin-top: 2px;
+    background-color: #bababa;
+    border-radius: 4px;
+}
 .scrollbar .handle {
     width: 100px; /* overriden if dynamicHandle: 1 */
     height: 100%;
     background: #800000;
-    border-radius: 3px;
+    border-radius: 4px;
 }

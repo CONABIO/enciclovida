@@ -33,7 +33,7 @@
         position: fixed;
         top: 110px;
         bottom: 20%;
-        left: -58px;
+        left: -57px;
         z-index: 10000003;
         display: block;
         padding: 20px;
@@ -41,7 +41,7 @@
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: rgba(237, 230, 223, 0.85);
         /*border: 1px solid #998370;*/
-        /*border: 1px solid #599008;*/
+        border: 1px solid #599008;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
         border-bottom-left-radius: 2.5em;
@@ -92,6 +92,7 @@
     border-radius: 1.5em;
     margin-bottom: 20px;
     margin-top: 20px;
+    border: 1px solid #599008;
 }
 @media (min-width: 872px) {
   .main {
