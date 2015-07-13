@@ -4,10 +4,13 @@
     <% content_for(:extracss) do %>
         <%= stylesheet_link_tag    "carrusel", media: "all", "data-turbolinks-track" => true %>
     <% end %>
+
     <div id="foto-carrusel" class="text-center">
         <!--div id="foto-carrusel-interna" style="background-image: url('<%# @photos[0].best_photo %>');"></div-->
         <img id="foto-carrusel-interna" src="<%= @photos[0].best_photo %>" class="img-thumbnail img-responsive"/>
+        <p><span id="foto-atribucion"><%= @photos[0].attribution %></span> <%= link_to 'Ver original', @photos[0].best_photo, :target => :_blank, :id => 'enlace-atribucion' %></p>
     </div>
+
     <div id="carrusel" class="frame">
         <div class="slidee">
           <% @photos.each do |p| %>
@@ -18,7 +21,7 @@
                   img_normal = p.best_photo
                   next unless img_normal.present?
               -%>
-              <img src="<%= img_square %>" data-large="<%= img_normal %>" data-description="<%= p.attribution %>" width="70" height="70"/>
+              <img src="<%= img_square %>" data-large="<%= img_normal %>" data-attribution="<%= p.attribution %>" width="70" height="70"/>
           <% end %>
         </div>
     </div>

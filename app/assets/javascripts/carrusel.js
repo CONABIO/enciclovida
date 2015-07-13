@@ -34,6 +34,10 @@ var sly = new Sly('#carrusel', {
 sly.on('active', function (eventName) {
     $('#foto-carrusel-interna').attr('src',$('img.seleccionada').attr('data-large'));
     $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-100);
+
+    // Para cambiar la atribucion de la foto
+    $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
+    $('#enlace-atribucion').attr('href',$('img.seleccionada').attr('data-large'));
     //$('#foto-carrusel-interna').css('background-image',"url('"+$('img.seleccionada').attr('data-large')+"')");
 });
 $(window).resize(function(e) {
