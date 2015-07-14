@@ -494,7 +494,7 @@ module EspeciesHelper
       "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
     elsif orden_conservacion.any? || ambiente.any?
       res = Hash.new
-      res[:conservacion] = orden_conservacion.sort.map{|k,v| v}.join(', ')
+      res[:conservacion] = orden_conservacion.sort.map{|k,v| v}.join(' ')
       res[:ambiente] = ambiente.join(', ')
       res
     else
