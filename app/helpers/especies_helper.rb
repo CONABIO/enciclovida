@@ -35,7 +35,7 @@ module EspeciesHelper
         end
       end
 
-    else   #vista basica
+    else   #vista general
       if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           taxon.nom_com_prin.present? ? "#{taxon.nom_com_prin} (#{taxon.nombre_cientifico})".html_safe :
@@ -48,7 +48,8 @@ module EspeciesHelper
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
           end
         elsif params[:show]
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]})".html_safe : "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)})".html_safe :
+              "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -64,8 +65,8 @@ module EspeciesHelper
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}".html_safe
           end
         elsif params[:show]
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{Especie::ESTATUS_VALOR[taxon.estatus] unless params[:es_titulo]}".html_safe
+          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+              "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -255,9 +256,9 @@ module EspeciesHelper
       contador = 0
       TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
         checkBoxes << "<span id='dist[#{tipoDist.to_s+contador.to_s}_span]' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
-      checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
-      checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
-      contador += 1
+        checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_select', name: tipoDist.to_s+contador.to_s)}"
+        checkBoxes << "#{check_box_tag('dist['+tipoDist.to_s+contador.to_s+']', t('distribucion.'+tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox, :style => 'display:none')}"
+        contador += 1
       end
     end
     checkBoxes.html_safe
@@ -295,8 +296,8 @@ module EspeciesHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                     else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
-                   end
+                      else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
+                    end
     end
     checkBoxes.html_safe
   end
@@ -313,9 +314,9 @@ module EspeciesHelper
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
     keys = agrupa_nombres.keys.sort
     keys.each do |k|
-      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <span style='font-size:9px;'>(#{k})</span> / "
+      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <small>(#{k})</small> / "
     end
-    nombres_comunes.present? ? "<p>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
+    nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
   def dameDistribucion(taxon)
@@ -328,11 +329,14 @@ module EspeciesHelper
 
       dist.any? ? dist.uniq.join(', ') : ''
     else
-      taxon.especies_regiones.each do |reg|
-        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.icono"), title: t("tipo_distribucion.#{reg.tipo_distribucion.descripcion.parameterize}.nombre")) if  reg.tipo_distribucion
+      taxon.especies_regiones.distinct.each do |reg|
+        next unless distribucion = reg.tipo_distribucion
+        icono=t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono",:default => "")
+        nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
+        dist << (icono =='' ? nombre : (image_tag('app/tipo_distribuciones/' << icono, title: nombre)))
       end
 
-      dist.any? ? dist.uniq.join(', ') : ''
+      dist.any? ? dist.uniq.join(' - ') : ''
     end
   end
 
@@ -446,7 +450,7 @@ module EspeciesHelper
         titulo = taxon.estatus == 2 ? '<strong>Sinónimos: </strong>' : '<strong>Aceptado como: </strong>'
         taxon.estatus == 2 ? titulo << "<p><ul>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join('')}</ul></p>" : "<p>#{titulo}#{estatus_a.join('')}</p>"
       else
-        taxon.estatus == 2 ? "<strong>Sinónimos: </strong>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
+        taxon.estatus == 2 ? "<strong>Sinónimos: </strong><small>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}</small>" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
       end
     else
       ''
@@ -479,7 +483,7 @@ module EspeciesHelper
     if conservacion.present?
       "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
     elsif orden_conservacion.any?
-      orden_conservacion.sort.map{|k,v| v}.join(' ')
+      orden_conservacion.sort.map{|k,v| v}.join(' - ')
     else
       conservacion
     end
@@ -537,6 +541,7 @@ module EspeciesHelper
   def radioGruposIconicos
     radios = ''
     columnas = 1
+    es_reino = " busqueda_atributo_radio_reino"
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
@@ -545,6 +550,7 @@ module EspeciesHelper
       if columnas == 6
         radios << '<br>'
         columnas = 7
+        es_reino=""
       end
 
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')

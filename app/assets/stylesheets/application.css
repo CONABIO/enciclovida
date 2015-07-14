@@ -10,8 +10,8 @@
  *
  *= require_self
  *= //require_tree .
- *= require bootstrap
- *= require bootstrap-theme
+ *= require bootstrap.css
+ *= require bootstrap-theme.css
  *= require dashboard
  *= //require sticky-footer
  *= //require bootstrap.css.map
@@ -27,9 +27,8 @@
  *= require fontello-ie7
  *= require fontello-ie7-codes
  *= require scrolling
+ * require jquery-ui
  *= require comentarios
- *= require slider/elastislide
- *= require slider/style
  */
 
 /*
@@ -39,13 +38,16 @@
 */
 
 body{
-    opacity: 0.85;
-    filter: alpha(opacity=85); /* For IE8 and eaarlier */
-    background-size: cover;
-    background-position: 50% 50%;
-    background: url("app/fondo.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("app/fondo.jpg");
 }
 
+
+
+div.footer{ /*Footer*/
+    background: linear-gradient(to right, transparent,#ede6df,transparent);
+}
 
 
 @font-face {
@@ -148,4 +150,13 @@ input.gsc-search-button {
     border-left: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
     padding: 2.5em;
+}
+
+/*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
+div#contenedor_mapa{
+    background-color: #f7f7f7;
+}
+
+div#map{
+    border-radius: 5px;
 }

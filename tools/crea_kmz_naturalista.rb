@@ -20,6 +20,7 @@ def kml
   Proveedor.where('naturalista_obs IS NOT NULL').find_each do |proveedor|
     next unless taxon = proveedor.especie  # Por los IDS que borraron
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    next unless taxon.species_or_lower?
     proveedor.kml_naturalista
 
     if proveedor.naturalista_kml.present?

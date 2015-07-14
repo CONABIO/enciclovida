@@ -1,12 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
       xmlns:fb="http://www.facebook.com/2008/fbml"
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
-
+  <%= favicon_link_tag 'app/favicon.ico' %>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
@@ -17,9 +16,7 @@
   </script>
 
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true" />
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" charset="utf-8" data-turbolinks-track="true"></script>
-  <script data-turbolinks-track="true" src="/assets/gmaps.js"></script>
-  <script data-turbolinks-track="true" src="/assets/mapas_dinamicos.js"></script>
+
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
@@ -36,9 +33,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios.png'); width: 107px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosMC.png'); width: 100px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <% # link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosF.jpg'); width: 265px; background-size: cover; background-position-x: 55%; background-position-y: 45%; background-repeat: no-repeat;" %>
+      <% # link_to (image_tag '/assets/app/logoBiosF.jpg', :alt => "Bios", :style => 'margin: -15px;'), especie_index_path, class: "navbar-brand"%>
     </div>
-    <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold; background-color: #ede6df; border-radius: 2em; width: 85%;float: right;">
+    <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold;  background: linear-gradient(to right, #ede6df,#FFFFFF,transparent); border-radius: .8em; width: 70%; float: right;">
       <ul class="nav navbar-nav" style="font-weight: bold; font-size: .75em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
@@ -67,40 +66,45 @@
   </div>
 </nav>
 
+<% if params[:checklist].blank? %>
+        <div class="sidebar sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1" id="filtros">
+            <span class="glyphicon glyphicon-search" aria-hidden="true" onclick="cambiaSidebar();"></span>
+          <div class="row hidden"><%= render :template => 'especies/busqueda' %></div>
+        </div>
+<% end %>
 
-<div class="container-fluid" style="">
+<div class="container-fluid">
   <div class="row">
-    <% if params[:checklist].blank? %>
-        <div class="col-xs-5 col-sm-5 col-md-4 col-lg-3 sidebar hidden" id="filtros"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button><%= render :template => 'especies/busqueda' %></div>
-        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 sidebar sidebar_lupa" id="lupa"><button type="button" class="btn btn-sm btn-info" onclick="$('.sidebar').toggleClass('hidden');"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
-    <% end %>
 
-    <div class="col-xs-11 col-sm-11 col-md-11 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 main">
-      <div class="table-responsive">
-        <% if params[:action]=='index' && params[:controller]=='especies'%>
-            <%= yield %>
-        <% else %>
-            <div class="panel panel-success">
-              <div class="panel-body">
-                <%= yield %>
-              </div>
-            </div>
-        <% end %>
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+      <div class="row main">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= yield %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">
+      <div class="row footer">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-4 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
+          <p style="color: #800000;">
+            <img src="/assets/app/conabioR.png" style="float:left; margin-right: 10px; width: 100px; padding-top: 10px;">
+            <br />
+            <strong><small>
+              Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
+              Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
+              Delegación Tlalpan, 14010, México, D.F. <br /><br />
+            </small></strong>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <%= bitacora.html_safe if bitacora.present? %>
-<div class="center-block" style="padding-left: 35%;">
-    <p  style="color: #F7F7F7;">
-        <img src="/assets/app/conabioW.png" style="width: 65px; float:left; margin-right: 10px;">
-        <strong><small>
-            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad <br />
-            Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, <br />
-            Delegación Tlalpan, 14010, México, D.F.
-        </small></strong>
-    </p>
-</div>
+<%= yield :extrajs_carrusel %>
 </body>
 </html>

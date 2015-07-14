@@ -12,12 +12,12 @@ class Lista < ActiveRecord::Base
 
   FORMATOS = [
       [1, '.csv'],
-      [2, '.xlsx'],
-      [3, '.txt']
+      [2, '.xlsx']
   ]
 
   # Columnas permitidas a exportar por el usuario
-  COLUMNAS_GENERALES = %w(id nombre_cientifico fuente cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
+  COLUMNAS_GENERALES = %w(id catalogo_id x_naturalista_id x_snib_id x_snib_reino nombre_cientifico fuente
+                        cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
                         x_nombres_comunes x_nombre_comun_principal x_categoria_taxonomica
                         x_tipo_distribucion  nombre_autoridad x_estatus x_foto_principal)
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
@@ -27,23 +27,41 @@ class Lista < ActiveRecord::Base
     CSV.generate(options) do |csv|
       csv << nombres_columnas
 
-      datos.each do |dato|
-        csv << dato
+      datos.each do |taxon|
+        datos_taxon = []
+
+        columnas.split(',').each do |col|
+          datos_taxon << eval("taxon.#{col}")
+        end
+        csv << datos_taxon
       end
     end
   end
 
   # Arma el query para mostrar el contenido de las listas
-  def datos
+  def datos(params={})
     return [] unless cadena_especies.present?
     taxones = []
 
-    Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').find_each do |taxon|
+    # Por default muestra todos
+    Especie.caso_rango_valores('especies.id',cadena_especies).order('nombre_cientifico ASC').limit(params[:limit] ||= 300000).each do |taxon|
 
       cols = columnas.split(',')
       cols.each do |col|
 
         case col
+          when 'x_snib_id'
+            if proveedor = taxon.proveedor
+              taxon.x_snib_id = proveedor.snib_id
+            end
+          when 'x_snib_reino'
+            if proveedor = taxon.proveedor
+              taxon.x_snib_reino = proveedor.snib_reino
+            end
+          when 'x_naturalista_id'
+            if proveedor = taxon.proveedor
+              taxon.x_naturalista_id = proveedor.naturalista_id
+            end
           when 'x_categoria_taxonomica'
             taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
           when 'x_estatus'

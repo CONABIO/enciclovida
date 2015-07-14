@@ -8,9 +8,10 @@ class EspeciesController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
+
   layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
 
-  # pone en cache el webservice que carga por default
+  # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
@@ -20,14 +21,13 @@ class EspeciesController < ApplicationController
   # GET /especies
   # GET /especies.json
   def index
-    @especies = Especie.limit(100)
-    respond_to do |format|
-      format.html
-      format.json { render json: EspecieDatatable.new(view_context) }
-      format.xlsx {
-        send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
-      }
-    end
+    #@especies = Especie.limit(100)
+    #respond_to do |format|
+    #  format.html
+      #format.xlsx {
+      #  send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
+      #}
+    #end
   end
 
   # GET /especies/1
@@ -39,7 +39,16 @@ class EspeciesController < ApplicationController
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
 
     respond_to do |format|
-      format.html
+      format.html do
+        @especie.delayed_job_service
+
+        # Para saber si es espcie y tiene un ID asociado a NaturaLista
+        if @especie.species_or_lower?
+          if proveedor = @especie.proveedor
+            @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
+          end
+        end
+      end
       format.json { render json: @especie.to_json }
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
@@ -80,7 +89,7 @@ class EspeciesController < ApplicationController
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
         pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
         FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
-        #render :pdf => @especie.nombre_cientifico.parameterize,
+
         render :pdf => @especie.nombre_cientifico.parameterize,
                #:save_to_file => pdf,
                #:save_only => true,
@@ -188,20 +197,15 @@ class EspeciesController < ApplicationController
   def resultados
     # Por si no coincidio nada
     @taxones = Especie.none
-
     # Despliega directo el taxon, si paso id
-    if params[:busqueda] == 'basica' || params[:id].present?
+    if params[:id].present?
       set_especie
-      respond_to do |format|
-        format.html { redirect_to especie_path(@especie) }
-      end
     else
 
       # Hace el query del tipo de busqueda
       case params[:busqueda]
 
         when 'nombre_comun'
-
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
@@ -610,38 +614,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def kmz
-    if proveedor = @especie.proveedor
-      if proveedor.snib_kml.present?
-        if params[:kml].present? && to_boolean(params[:kml])
-          send_data proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        else
-          redirect_to "/kmz/#{@especie.id}/registros.kmz"
-        end
-      else
-        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-      end
-    else
-      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-    end
-  end
-
-  def kmz_naturalista
-    if proveedor = @especie.proveedor
-      if proveedor.naturalista_kml.present?
-        if params[:kml].present? && to_boolean(params[:kml])
-          send_data proveedor.naturalista_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        else
-          redirect_to "/kmz/#{@especie.id}/observaciones.kmz"
-        end
-      else
-        redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-      end
-    else
-      redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-    end
-  end
-
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
   end
@@ -651,20 +623,32 @@ class EspeciesController < ApplicationController
   def set_especie
     begin
       @especie = Especie.find(params[:id])
-      @accion=params[:controller]
 
-      if @especie.estatus == 1   # Si es un sinonimo lo redireccciona al valido
+      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
         estatus = @especie.especies_estatus
-        render(:error) unless estatus.length == 1  # Nos aseguramos que solo haya un valido
 
-        begin
-          @especie = Especie.find(estatus.first.especie_id2)
-        rescue
-          render :_error
+        if estatus.length == 1  # Nos aseguramos que solo haya un valido
+          begin
+            @especie = Especie.find(estatus.first.especie_id2)
+            redirect_to especie_path(@especie)
+          rescue
+            render :_error and return
+          end
+        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+          render :_error and return
+        else  # Es sinonimo pero no tiene un valido asociado >.>!
+          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
+            redirect_to especie_path(@especie) and return
+          end
+        end
+      else
+        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+          redirect_to especie_path(@especie) and return
         end
       end
+
     rescue    #si no encontro el taxon
-      render :_error
+      render :_error and return
     end
   end
 

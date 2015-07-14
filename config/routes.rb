@@ -1,5 +1,11 @@
 Buscador::Application.routes.draw do
 
+  get "inicio/comentarios"
+  get "inicio/index"
+  get "inicio/coemntarios"
+  get "inicio/acerca"
+  get "inicio/terminos"
+  get "inicio/ayuda"
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
@@ -14,7 +20,7 @@ Buscador::Application.routes.draw do
   resources :listas do
     collection do
       post :dame_listas
-      post :aniade_taxones
+      post :aniade_taxones_seleccionados
     end
   end
 
@@ -56,6 +62,7 @@ Buscador::Application.routes.draw do
       get :kmz
       get :kmz_naturalista
       get :cat_tax_asociadas
+      get :cache_services
     end
   end
 

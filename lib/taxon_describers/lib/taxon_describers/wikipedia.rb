@@ -4,9 +4,12 @@ module TaxonDescribers
     def describe(taxon)
       #title = taxon.wikipedia_title
       title = taxon.nombre_cientifico# if title.blank?
-      decoded = ""
+      decoded = ''
+
       begin
-        parsed = wikipedia.parse(:page => title, :redirects => true).at('text').try(:inner_text).to_s
+        response = wikipedia.parse(:page => title, :redirects => true)
+        return if response.nil?
+        parsed = response.at('text').try(:inner_text).to_s
         decoded = clean_html(parsed) if parsed
       rescue Timeout::Error => e
         Rails.logger.info "[INFO] Wikipedia API call failed: #{e.message}"

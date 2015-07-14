@@ -1,27 +1,30 @@
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
 <% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
+<% end %>
 
 <%= form_tag '/especies/destruye_seleccionados' %>
 <p id="notice"><%= notice %></p>
-<div class="panel panel-success" style="margin-top: -9px">
-  <div class="panel-body">
-    <div style="float: left; width: 54%; padding: 3%;">
-        <img src="/assets/app/backEncabeza2.png" class="img-responsive" style="width: 75%;">
-        <% if I18n.locale.to_s == 'es-cientifico' %>
-            <legend>Arreglo taxonómico</legend>
-        <% else %>
-            <legend>Clasificación</legend>
-        <% end %>
-        <%= render :partial => 'arbol' %>
-    </div>
-    <div style="float: right; width: 42%; padding: 3%;">
-      <p><span style="font-size: 1.5em; font-weight: bold;">BIOS</span> integra información de especies que viven en México, como nombres científicos, nombres comunes,
-        descripciones, biología, ecología, usos, categorías de riesgo de extinción (Norma-059-Semarnat-2010)
-        e internacional (IUCN), comercio internacional (CITES), registros de distribución geográfica e imágenes.
-      <p>El contenido e imágenes provienen de CONABIO y de otras fuentes (Enciclopedia de la Vida (EOL),
-        NaturaLista, Wikipedia, Flicker). </p>
-      <p><img src="/assets/app/imgPortada.png" class="img-responsive" style="width: 78%;"></p>
-    </div>
-  </div>
+<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+  <img src="/assets/app/backEncabeza2.png" class="img-responsive" style="width: 100%; max-width: 680px;">
+  <% if I18n.locale.to_s == 'es-cientifico' %>
+      <legend>Arreglo taxonómico</legend>
+  <% else %>
+      <legend>Clasificación</legend>
+  <% end %>
+  <%= render :partial => 'arbol' %>
+</div>
+<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+  <p>
+  <%# image_tag '/assets/app/logoBiosMC.png', :alt => "Bios", :style => 'width: 8em; float: left; padding: 0 1em 1em 0;' %>
+  <span style="font-size: 4em; font-weight: bolder; float: left; padding: 0 .3em 0 0;">BIOS</span> integra información de especies que viven en México, como nombres científicos, nombres comunes,
+    descripciones, biología, ecología, usos, categorías de riesgo de extinción (Norma-059-Semarnat-2010)
+    e internacional (IUCN), comercio internacional (CITES), registros de distribución geográfica e imágenes.
+  <p>El contenido e imágenes provienen de CONABIO y de otras fuentes (Enciclopedia de la Vida (EOL),
+    NaturaLista, Wikipedia, Flicker). </p>
+  <p>Envíanos tus comentarios generales a <%= link_to "bios@conabio.gob.mx","mailto:bios@conabio.gob.mx" %> </p>
+  <p class="bg-success">Búsquedas geográficas en el Geoportal ¡próximamente!</p>
+  <p class="text-center"><img src="/assets/app/imgPortada.png" class="img-responsive" style="width: 100%; max-width: 680px;"></p>
 </div>

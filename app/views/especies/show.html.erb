@@ -1,4 +1,8 @@
-<%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+<% content_for(:extrajs) do %>
+    <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false' charset='utf-8' data-turbolinks-track='true'></script>
+    <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+<% end %>
+
 <% taxon = @especie.to_json %>
 <% species_or_lower = @especie.species_or_lower? %>
 <% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
@@ -158,36 +162,6 @@
             }
         });
 
-        // Edita el nombre comun principal
-        $('#edita_nom_com_principal').dialog({
-            modal: true,
-            title: 'Cambia o pon un nuevo nombre común',
-            autoOpen: false,
-            width: 700,
-            open: function( event, ui ) {
-                $('#edita_nom_com_principal').loadingShades('Cargando...', {cssClass: 'smallloading'});
-                $('#edita_nom_com_principal').load('/adicionales/'+TAXON.id+'/edita_nom_comun', function() {
-                    $(ui.panel).addClass('loaded');
-                    $('#edita_nom_com_principal').centerDialog();
-                });
-            }
-        });
-
-        // Envia un comentario como parte de la retroalimentacion
-        $('#envia_comentario').dialog({
-            modal: true,
-            title: 'Envianos tus comentarios',
-            autoOpen: false,
-            width: 700,
-            open: function( event, ui ) {
-                $('#envia_comentario').loadingShades('Cargando...', {cssClass: 'smallloading'});
-                $('#envia_comentario').load('/especies/'+TAXON.id+'/comentarios/new', function() {
-                    $(ui.panel).addClass('loaded');
-                    $('#envia_comentario').centerDialog();
-                });
-            }
-        });
-
         if (SPECIES_OR_LOWER)
         {
             getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
@@ -213,10 +187,10 @@
                                         return parseInt($("#map").height() / 10) * 9;
                                     };
                                     if (point.featureData.infoWindowHtml.indexOf('$[description]') > -1) {
-                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.name + "</div>");
+                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 0px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.name + "</div>");
                                         infoWindow.maxWidth = 2;
                                     } else {
-                                        infoWindow.setContent("<div id='balloon' style='max-height: " + altoInfo() + "px; max-width: " + anchoInfo() + "px;'>" + point.featureData.infoWindowHtml + "</div>");
+                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 0px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.infoWindowHtml + "</div>");
                                     }
                                     ;
                                     infoWindow.setPosition(point.latLng);
@@ -250,108 +224,116 @@
     });
 </script>
 
-
-<p id="notice"><%= notice %></p>
+<% if notice.present? %>
+    <div class="alert alert-success" role="alert"><%= notice %></div>
+<% end%>
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
-<div>
-  <h2>
-    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-    <%= link_to('Edita el nombre común principal', nil, :onClick => "$('#edita_nom_com_principal').dialog('open');return false;", :style => 'font-size:12px;') if usuario_signed_in? %>
-    <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-    <span id="envia_comentario" class="dialog" style="display: none"></span>
-  </h2>
-  <div class='text-primary pull-left' style="width: 38%; padding: 2%;">
-    <%= dameNomComunes(@especie).html_safe %>
-    <%= dameStatus(@especie).html_safe %>
-  </div>
-  <div class='text-primary pull-right' style="width: 60%;">
-    <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
-    <p><%= '<strong>Distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
-  </div>
+<h2>
+  <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
+  <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
+  <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+  <div id="envia_comentario" class="dialog" style="display: none"></div>
+</h2>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <%= dameNomComunes(@especie).html_safe %>
+  <%= dameStatus(@especie).html_safe %>
+</div>
+<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 text-left">
+  <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+</div>
+<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-left">
+  <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
 </div>
 
-<div class='text-primary' style="width: 100%; clear:both;">
-    <% if geo && geo.count > 0 %>
-        <div style="width: 38%; margin-left:5px;" class="pull-left" >
-    <% else %>
-        <div style="width: 38%; margin-left:5px;" class="pull-left">
-    <% end %>
-
-    <div id="photoscol" class="img-responsive">
-
-          <div id="photos" >
-            <%= render :partial => 'fotos_slider', :locals => { :photos => @photos } %>
-            <div id="photos_loading_status" class="loading status" style="display:none">Cargando más fotos...</div>
-          </div>
-
-          <% if usuario_signed_in? %>
-              <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-              <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-          <% end %>
-        </div>
+<% if @con_naturalista %>
+    <div class="sidebar sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-push-2 col-sm-push-2 col-md-push-2 col-lg-push-2" id="conNaturalista" onmouseover="cambiaSidebarNat();" onmouseout="cambiaSidebarNat();">
+      <%= image_tag('app/naturalista_ic.png') %>
+      <span class="glyphicon glyphicon-remove hidden" aria-hidden="true" ></span>
+      <div class="hidden text-center text-primary">
+        ¿Has visto esta especie? Sube tus observaciones y se parte de la red social: <%= link_to(image_tag('app/naturalista.png', :class => 'img-thumbnail'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank) %>
+      </div>
     </div>
+<% end %>
 
-    <% if geo && geo.count > 0 %>
-        <div style="width: 60%; margin-right: 5px;" id="contenedor_mapa" class="pull-right">
-            <div class="img-thumbnail embed-responsive embed-responsive-4by3">
-              <div id="map"></div>
-              <strong>NOTA:</strong> La distribución es sólo de México
-            </div>
-        </div>
-    <% end %>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+  <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
 </div>
-<div class='text-primary text-center' style="width: 100%; clear:both; padding: 1em 0em;">
-  <% if geo && geo.count > 0 %>
-  <div class="btn-group text-right" style="width: 100%; role="group" aria-label="...">
-    <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
-    <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
-    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
-  <% end %>
-    <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
-  </div>
-  <p class="text-success text-center" style="padding-top: 15px; padding-bottom: 15px;">
-    <span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', nil, :onClick => "$('#envia_comentario').dialog('open');return false;") %> y con gusto la atenderemos.</span>
-  <p>
-</div>
-<div id="pestañas" class="panel panel-default">
-  <% if I18n.locale.to_s == 'es-cientifico' %>
-      <ul class="nav nav-tabs" data-tabs="tabs">
-        <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-        <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-        <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
-      </ul>
-      <div id="conabio_info" class="tab-pane active">
-        <%= render :partial => 'info' %>
-      </div>
 
-      <div id="arbol_taxonomico" class="tab-pane">
-        <%= render :partial => 'arbol' %>
-      </div>
+<% if @photos.any? %>
+    <% col1 = (geo && geo.count > 0) ? 'col-xs-5 col-sm-5 col-md-5 col-lg-5' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+    <div class="<%=col1%>" id="contenedor_fotos">
 
-      <% if @especie.species_or_lower? %>
-          <div id="description" class="tab-pane">
-            <%= render :partial => 'description' %>
-          </div>
+      <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
+      <% if usuario_signed_in? %>
+          <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+          <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
       <% end %>
-  <% else %>
-      <ul class="nav nav-tabs" data-tabs="tabs">
+
+    </div>
+<% end %>
+
+<% if geo && geo.count > 0 %>
+    <% col2 = @photos.any? ? 'col-xs-7 col-sm-7 col-md-7 col-lg-7' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+    <div class="<%=col2%>" id="contenedor_mapa">
+      <div class="embed-responsive embed-responsive-4by3">
+        <div id="map"></div>
+        <strong>NOTA:</strong> La distribución potencial es sólo de México
+      </div>
+    </div>
+<% end %>
+
+<div class="row">
+  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 pull-right">
+    <div class="btn-group text-right" style="width: 100%;" role="group" aria-label="...">
+      <% if geo && geo.count > 0 %>
+          <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
+          <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
+          <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
+      <% end %>
+      <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
+    </div>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div id="pestañas" class="panel">
+    <% if I18n.locale.to_s == 'es-cientifico' %>
+        <ul class="nav nav-tabs" data-tabs="tabs">
+          <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+          <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+          <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+        </ul>
+        <div id="conabio_info" class="tab-pane active">
+          <%= render :partial => 'info' %>
+        </div>
+
+        <div id="arbol_taxonomico" class="tab-pane">
+          <%= render :partial => 'arbol' %>
+        </div>
+
         <% if @especie.species_or_lower? %>
-            <li class="active"><a href="#description"><span>Fichas</span></a></li>
-            <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-        <% else %>
-            <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+            <div id="description" class="tab-pane">
+              <%= render :partial => 'description' %>
+            </div>
         <% end %>
-        <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-      </ul>
+    <% else %>
+        <ul class="nav nav-tabs" data-tabs="tabs">
+          <% if @especie.species_or_lower? %>
+              <li class="active"><a href="#description"><span>Fichas</span></a></li>
+              <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+          <% else %>
+              <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+          <% end %>
+          <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+        </ul>
 
 
         <% if @especie.species_or_lower? %>
             <div id="description" class="tab-pane panel-body">
-            <%= render :partial => 'description' %>
+              <%= render :partial => 'description' %>
             </div>
             <div id="arbol_taxonomico" class="tab-pane panel-body">
               <%= render :partial => 'arbol' %>
@@ -362,8 +344,9 @@
             </div>
         <% end %>
         <div id="conabio_info" class="tab-pane panel-body">
-            <%= render :partial => 'info' %>
+          <%= render :partial => 'info' %>
         </div>
 
-  <% end %>
+    <% end %>
+  </div>
 </div>

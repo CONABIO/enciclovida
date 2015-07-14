@@ -7,6 +7,7 @@ class ComentariosController < ApplicationController
     render :_error unless permiso
   end
 
+
   # GET /comentarios
   # GET /comentarios.json
   def index

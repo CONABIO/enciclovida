@@ -73,8 +73,9 @@
             var id_div = '#' + $(this).attr('id_div');
             var url = $(this).attr('url') + '&solo_categoria=' + nivel;
 
-            // No se porque cuenta 13 elementos
-            if ($(id_div).html().length <= 13)
+            // Es cero ya que cuenta los espacios en el div ***
+            // No mover la linea del div donde pone el tab shalalala
+            if ($(id_div).html().length == 0)
                 $(id_div).load(url);
 
             settings.offset = eval("offset."+$(this).attr('id_div'));
@@ -125,36 +126,38 @@
 <p id="notice"><%= notice %></p>
 <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' &&
      (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
-
-<div id="content">
-  <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-    <li class="active">
-      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
-    </li>
-
-    <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-            <li>
-              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
-                 data-toggle="tab" id="<%= "nivel_#{categoria.nivel}" %>" url="<%= request.url %>"
-                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
-                <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
-              </a>
+<div class="row main">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="content">
+          <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+            <li class="active">
+              <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
             </li>
-        <% end %>
-    <% end %>
-  </ul>
 
-  <div id="my-tab-content" class="tab-content">
-    <div class="tab-pane active" id="todos">
-      <%= render :partial => 'especies/resultados' %>
-    </div>
+            <% if @por_categoria.present? && @por_categoria.length > 0 %>
+                <% @por_categoria.each do |categoria| %>
+                    <li>
+                      <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
+                         data-toggle="tab" id="<%= "nivel_#{categoria.nivel}" %>" url="<%= request.url %>"
+                         id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
+                        <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
+                      </a>
+                    </li>
+                <% end %>
+            <% end %>
+          </ul>
 
-    <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-            <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
+          <div id="my-tab-content" class="tab-content">
+            <div class="tab-pane active" id="todos">
+              <%= render :partial => 'especies/resultados' %>
             </div>
-        <% end %>
-    <% end %>
-  </div>
+
+            <% if @por_categoria.present? && @por_categoria.length > 0 %>
+                <% @por_categoria.each do |categoria| %>
+                    <div class="tab-pane" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"></div>
+                <% end %>
+            <% end %>
+          </div>
+        </div>
+    </div>
 </div>

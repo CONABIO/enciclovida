@@ -157,9 +157,19 @@ $(document).ready(function()
                            // This is mainly for usability concerns. You can alter this as you see fit
             scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
             // but will still load if the user clicks.
-            url     : url,
+            url     : url
         });
     }
 });
 
-
+cambiaSidebar = function(){
+    $('#filtros').toggleClass('sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-5 col-sm-4 col-md-4 col-lg-4');
+    $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
+    $('#filtros > div').toggleClass('hidden');
+};
+cambiaSidebarNat = function(){
+    $('#conNaturalista').toggleClass('sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xs-push-2 col-sm-push-2 col-md-push-2 col-lg-push-2');
+    $('#conNaturalista > img, #conNaturalista > span, #conNaturalista > div').toggleClass('hidden');
+    //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
+    //$('#conNaturalista > div').toggleClass('hidden');
+};

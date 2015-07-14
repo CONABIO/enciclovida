@@ -30,7 +30,7 @@ function anadeLista()
         //console.log(MAPAS[i][1]);
         if (i == 0)
         {   //para el default
-            x= x+'<li style="list-style: none;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')" checked></input><label>'+MAPAS[i][1]+'</label></li>';
+            x= x+'<li style="list-style: ;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')" checked></input><label>'+MAPAS[i][1]+'</label></li>';
             MAPAS[i][2](MAPAS[i][0]).setMap(map.map);
         } else
             x= x+'<li style="list-style: none;"><input type="checkbox" onChange="cambiaEstado(this,'+i+')"></input><label>'+MAPAS[i][1]+'</label></li>';
@@ -44,7 +44,7 @@ function anadeControlCapas()
     map.addControl({
         position: 'top_right',
         content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
-            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">Capas</span>'+
+            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>Capas'+
             '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">'+
             anadeLista()+
             '</ul>'+
@@ -79,11 +79,11 @@ function anadeControlFullScreen()
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
         position: 'top_right',
-        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
-            '<span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>'+
+        content: 	'<div class="gmapv3control overlaycontrol" id="fullScreen" style="padding: 6px;">'+
+            '<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>'+
             '</div>',
         style: {
-            margin: '3px',
+            margin: '5px',
             padding: '0 0 0 0',
             border: 'solid 1px #717B87',
             background: '#fff'
@@ -115,7 +115,7 @@ function dimensionesIniciales()
 
     map = new GMaps({
         div: '#map',
-        zoom: 5,
+        zoom: 4,
         lat: 23.79162789,
         lng: -102.04376221,
         mapTypeId: google.maps.MapTypeId.HYBRID,

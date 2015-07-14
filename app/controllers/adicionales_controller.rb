@@ -7,7 +7,6 @@ class AdicionalesController < ApplicationController
   end
   before_action :set_adicional, only: [:show, :edit, :update, :destroy]
   before_action :actualiza_nom_comun_params, only: :actualiza_nom_comun
-  layout false, only: [:edita_nom_comun]
 
   # GET /adicionales
   # GET /adicionales.json
@@ -95,7 +94,7 @@ class AdicionalesController < ApplicationController
       nuevo = false
       borro = true
       @adicional.nombre_comun_principal = params[:adicional][:select_nom_comun]
-    else
+    else  # No selecciono nada en los nombres comunes
       nuevo = false
       borro = true
       @adicional.nombre_comun_principal = nil
@@ -117,6 +116,7 @@ class AdicionalesController < ApplicationController
       redirect_to especy_url(@adicional.especie_id), notice: 'No se detecto ningun cambio en el nombre común.'
     end
   end
+
 
   private
   # Use callbacks to share common setup or constraints between actions.
