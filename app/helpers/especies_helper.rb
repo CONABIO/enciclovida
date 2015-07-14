@@ -459,31 +459,44 @@ module EspeciesHelper
 
   def dameCaracteristica(taxon, opciones={})
     conservacion = ''
+    ambiente = []
     orden_conservacion = Hash.new
 
     taxon.especies_catalogos.each do |e|
       cat = e.catalogo
-      edo_conserv = cat.nom_cites_iucn
+      edo_conserv_nombre = cat.nom_cites_iucn
+      ambiente_nombre = cat.ambiente
 
-      if edo_conserv.present?
+      if edo_conserv_nombre.present?
         if opciones[:tab_catalogos]
-          conservacion << conservacion << "<li>#{cat.descripcion}<span style='font-size:9px;'> (#{edo_conserv})</span></li>"
+          conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
         else # Para ordenar las categorias de riesgo y comercio
           if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            orden_conservacion[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            orden_conservacion[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            orden_conservacion[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            orden_conservacion[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            orden_conservacion[:c] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            orden_conservacion[:c] = "CITES: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           end
+        end
+      end
+
+      if ambiente_nombre.present?
+        if opciones[:tab_catalogos]
+          conservacion << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
+        else
+          ambiente << cat.descripcion
         end
       end
     end  #Fin each
 
     if conservacion.present?
       "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
-    elsif orden_conservacion.any?
-      orden_conservacion.sort.map{|k,v| v}.join(' - ')
+    elsif orden_conservacion.any? || ambiente.any?
+      res = Hash.new
+      res[:conservacion] = orden_conservacion.sort.map{|k,v| v}.join(', ')
+      res[:ambiente] = ambiente.join(', ')
+      res
     else
       conservacion
     end

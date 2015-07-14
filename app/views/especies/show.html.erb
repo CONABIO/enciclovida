@@ -242,12 +242,20 @@
   <%= dameNomComunes(@especie).html_safe %>
   <%= dameStatus(@especie).html_safe %>
 </div>
-<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
-  <p><%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << dameCaracteristica(@especie).html_safe if dameCaracteristica(@especie).present? %></p>
+
+<% caracteristica = dameCaracteristica(@especie) %>
+<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+  <p>
+    <%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << caracteristica[:conservacion].html_safe if caracteristica.present? && caracteristica[:conservacion].present? %>
+  </p>
 </div>
-<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
+<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
   <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
 </div>
+<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+  <p><%= '<strong>Ambiente: </strong><br>'.html_safe << caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %></p>
+</div>
+
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <% if @con_naturalista %>
     <p>
