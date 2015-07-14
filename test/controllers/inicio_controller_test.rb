@@ -6,8 +6,8 @@ class InicioControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get coemntarios" do
-    get :coemntarios
+  test "should get comentarios" do
+    get :comentarios
     assert_response :success
   end
 

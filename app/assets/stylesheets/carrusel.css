@@ -12,10 +12,10 @@
 #foto-carrusel > p{
     width: 80%;
     /*position: absolute;*/
-    float: right;
-    right: 2px;
+    /*float: right;*/
+    /*right: 20%;*/
     border-radius: 4px;
-    margin: 3px;
+    margin: 3px auto;
     padding: 3px;
     opacity: .8;
 }

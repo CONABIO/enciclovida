@@ -1,5 +1,6 @@
 Buscador::Application.routes.draw do
 
+  get "inicio/comentarios"
   get "inicio/index"
   get "inicio/coemntarios"
   get "inicio/acerca"

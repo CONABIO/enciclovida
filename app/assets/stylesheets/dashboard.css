@@ -35,10 +35,6 @@
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: rgba(237, 230, 223, 0.85);
         border: 1px solid #599008;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 2.5em;
-        border-bottom-left-radius: 2.5em;
-        border-bottom-right-radius: 0px;
     }
     #filtros{
         position: fixed;
@@ -47,15 +43,23 @@
         bottom: 20%;
         left: -50px;
         padding: 22px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 2.5em;
+        border-bottom-left-radius: 2.5em;
+        border-bottom-right-radius: 0px;
     }
     #conNaturalista{
         position: absolute;
         /*float: left;*/
-        top: 276px;
+        /*top: 276px;*/
         z-index: 10000010;
-        left: -63px;
+        /*left: -74px;*/
         padding: 20px;
         /*clear: none;*/
+        border-top-left-radius: 2.5em;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 2.5em;
     }
     .sidebar_lupa, .sidebar_naturalista{
         height: 64px;
@@ -95,10 +99,10 @@
     opacity: 0.9;
     filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-color: #f2f0ed;
-    border-radius: 1.5em;
+    border-radius: 10px;
     margin-bottom: 20px;
     margin-top: 20px;
-    border: 1px solid #599008;
+    /*border: 1px solid #599008;*/
 }
 @media (min-width: 872px) {
   .main {
