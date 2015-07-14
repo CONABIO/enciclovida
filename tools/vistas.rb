@@ -1,4 +1,3 @@
-#! /usr/local/bin/ruby
 require 'rubygems'
 require 'trollop'
 
@@ -94,12 +93,10 @@ def camTab
                      "#{@id}+IdCategoriaTaxonomica as categoria_taxonomica_id",
                      "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_directo",
                      "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_obligatorio",
-                     "nombre_cientifico",
-                     "nombre_comun_principal",
-                     "foto_principal",
                      "IdCAT as catalogo_id",
-                     "icono",
-                     "nombre_icono "
+                     "Prioritarias as prioritaria",
+                     "ListaInvasoras as invasora",
+                     "nombre_cientifico"
       ],
       'especies_bibliografias' => ["#{@id}+IdNombre as especie_id",
                                    "#{@id}+IdBibliografia as bibliografia_id",
@@ -283,7 +280,7 @@ CONFIG.bases.each do |base|
     if ARGV.any? { |e| e.downcase.include?('drop') }
       queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "DROP VIEW #{tabla}_0" : " \n" + queriesVistas[tabla]+"\n"
     else
-      queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "CREATE VIEW #{tabla}_0\nAS\n" : queriesVistas[tabla]+" union \n"
+      queriesVistas[tabla] = CONFIG.bases.index(base) == 0 ? "CREATE VIEW #{tabla}_0\nAS\n" : queriesVistas[tabla]+" UNION \n"
       queriesVistas[tabla]+= 'SELECT ' + campos.join(', ') +" FROM [#{base}].dbo.#{Bases::EQUIVALENCIA[tabla]}"
     end
   }

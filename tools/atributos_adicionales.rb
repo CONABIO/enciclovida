@@ -26,11 +26,7 @@ end
         {
             'nombre_cientifico' =>  'varchar(255) NULL,',
             'ancestry_ascendente_directo' => 'varchar(255) NULL,',
-            'ancestry_ascendente_obligatorio' => 'varchar(255) NULL,',
-            'nombre_comun_principal' => 'varchar(255) NULL,',
-            'foto_principal' => 'varchar(255) NULL,',
-            'icono' => 'varchar(255) NULL,',
-            'nombre_icono' => 'varchar(255) NULL,'
+            'ancestry_ascendente_obligatorio' => 'varchar(255) NULL,'
         },
     'regiones' =>
         {
