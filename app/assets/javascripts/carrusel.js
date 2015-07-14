@@ -32,9 +32,13 @@ var sly = new Sly('#carrusel', {
     activeClass:   'seleccionada'
 }).init();
 sly.on('active', function (eventName) {
+    // Para cambiar la atribucion de la foto (cŕeditos) tanto en texto, como en ligas
+    $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
+    $('.enlace-atribucion').attr('href',$('img.seleccionada').attr('data-large'));
+    //Para cambiar la foto interna
     $('#foto-carrusel-interna').attr('src',$('img.seleccionada').attr('data-large'));
-    $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-105);
-    //$('#foto-carrusel-interna').css('paddingTop', ($('#contenedor_fotos').height()-95-$('#foto-carrusel-interna').height())/2);
+    $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-100-$('#foto-carrusel > p').height());
+    //$('#foto-atribucion').css('marginTop',$('#foto-carrusel-interna').height()-20);
     //$('#foto-carrusel-interna').css('background-image',"url('"+$('img.seleccionada').attr('data-large')+"')");
 });
 $(window).resize(function(e) {

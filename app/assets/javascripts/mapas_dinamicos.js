@@ -44,7 +44,7 @@ function anadeControlCapas()
     map.addControl({
         position: 'top_right',
         content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
-            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">Capas</span>'+
+            '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>Capas'+
             '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">'+
             anadeLista()+
             '</ul>'+
@@ -79,8 +79,8 @@ function anadeControlFullScreen()
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
         position: 'top_right',
-        content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
-            '<span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>'+
+        content: 	'<div class="gmapv3control overlaycontrol" id="fullScreen" style="padding: 6px;">'+
+            '<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>'+
             '</div>',
         style: {
             margin: '5px',

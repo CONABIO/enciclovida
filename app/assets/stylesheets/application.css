@@ -154,9 +154,6 @@ input.gsc-search-button {
 
 /*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
 div#contenedor_mapa{
-    padding-top: 4px;
-    padding-right: 4px;
-    padding-left: 4px;
     background-color: #f7f7f7;
 }
 
