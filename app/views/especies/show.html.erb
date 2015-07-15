@@ -233,9 +233,9 @@
 <% end %>
 
 <% if @con_naturalista %>
-    <div class="sidebar sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-push-11 col-sm-push-11 col-md-push-11 col-lg-push-11" id="conNaturalista" onmouseover="cambiaSidebarNat();" onmouseout="cambiaSidebarNat();">
+    <div class="sidebar sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-push-11 col-sm-push-11 col-md-push-11 col-lg-push-11" id="conNaturalista" onmouseover="cambiaSidebarNat();" onclick="" onmouseout="cambiaSidebarNat();">
       <%= image_tag('app/naturalista_ic.png') %>
-      <span class="glyphicon glyphicon-remove hidden" aria-hidden="true" ></span>
+
       <div class="hidden text-center text-primary">
         <p>¿Has visto esta especie? <br /> Sube tus observaciones y se:</p> <%= link_to(image_tag('app/naturalista.png', :class => 'img-thumbnail'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank) %>
       </div>
