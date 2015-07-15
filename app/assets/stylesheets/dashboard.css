@@ -54,12 +54,14 @@
         /*top: 276px;*/
         z-index: 10000010;
         /*left: -74px;*/
-        padding: 20px;
+        padding: 10px;
         /*clear: none;*/
         border-top-left-radius: 2.5em;
         border-top-right-radius: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 2.5em;
+        /*width: auto !important;*/
+        height: auto !important;
     }
     .sidebar_lupa, .sidebar_naturalista{
         height: 64px;
