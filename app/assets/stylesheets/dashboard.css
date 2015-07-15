@@ -33,7 +33,6 @@
         display: block;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        background-color: rgba(237, 230, 223, 0.85);
         border: 1px solid #599008;
     }
     #filtros{
@@ -41,26 +40,23 @@
         top: 110px;
         z-index: 10000003;
         bottom: 20%;
-        left: -50px;
+        left: -60px;
         padding: 22px;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
         border-bottom-left-radius: 2.5em;
         border-bottom-right-radius: 0px;
+        background-color: rgba(223, 237, 228, 0.85);
     }
     #conNaturalista{
         position: absolute;
-        /*float: left;*/
-        /*top: 276px;*/
         z-index: 10000010;
-        /*left: -74px;*/
         padding: 10px;
-        /*clear: none;*/
         border-top-left-radius: 2.5em;
         border-top-right-radius: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 2.5em;
-        /*width: auto !important;*/
+        background-color: rgba(237, 230, 223, 0.85);
         height: auto !important;
     }
     .sidebar_lupa, .sidebar_naturalista{
@@ -134,4 +130,8 @@
 .placeholder img {
   display: inline-block;
   border-radius: 50%;
+}
+
+.panel-heading{
+    cursor: pointer;
 }

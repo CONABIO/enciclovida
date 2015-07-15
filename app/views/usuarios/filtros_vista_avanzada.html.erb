@@ -42,12 +42,8 @@
   </div>
 
   <div class="panel panel-success dropup" id="panelValidoSinonimoBasicaPt">
-    <div class="panel-heading">
-      <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoBasica').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoBasicaPt').toggleClass('dropup')});">
-        <h3 class="panel-title">Estatus taxonómico
-          <span class="caret"></span>
-        </h3>
-      </button>
+    <div class="panel-heading" onclick="$('#panelValidoSinonimoBasica').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoBasicaPt').toggleClass('dropup')});">
+        <h5>Estatus taxonómico<span class="caret"></span></h5>
     </div>
     <div class="panel-body" id="panelValidoSinonimoBasica">
       <%= checkboxValidoSinonimo ("BBShow") %>
@@ -80,12 +76,8 @@
       </div>
 
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
-            <h6>Categoria taxonómica
-              <span class="caret"></span>
-            </h6>
-          </button>
+        <div class="panel-heading" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
+            <h5>Categoria taxonómica<span class="caret"></span></h5>
         </div>
         <div class="panel-body" id="panelCategoriaTaxonomica">
           <div id="datos_cat">
@@ -94,12 +86,8 @@
       </div>
 
       <div class="panel panel-success" id="panelEstadoConservacionPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
-            <h6  class="panel-title">Categorías de riesgo y comercio internacional
-              <span class="caret"></span>
-            </h6>
-          </button>
+        <div class="panel-heading" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
+            <h5>Categorías de riesgo y comercio internacional<span class="caret"></span></h5>
         </div>
         <div class="panel-body" id="panelEstadoConservacion" style="display: none">
           <div class="checkbox">
@@ -109,14 +97,9 @@
       </div>
 
       <div class="panel panel-success" id="panelTipoDistribucionEnPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-sm" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
-            <h6>Tipo de distribución
-              <span class="caret"></span>
-            </h6>
-
+        <div class="panel-heading" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
+            <h5>Tipo de distribución<span class="caret"></span></h5>
             <i><small>(Predeterminada: Cualquiera)</small></i>
-          </button>
         </div>
         <div class="panel-body" id="panelTipoDistribucionEn" style="display: none">
           <div class="checkbox">
@@ -125,12 +108,8 @@
         </div>
       </div>
       <div class="panel panel-success dropup" id="panelValidoSinonimoAvanzadaPt">
-        <div class="panel-heading">
-          <button type="button" class="btn btn-link btn-xs" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
-            <h3 class="panel-title">Estatus taxonómico
-              <span class="caret"></span>
-            </h3>
-          </button>
+        <div class="panel-heading" onclick="$('#panelValidoSinonimoAvanzada').toggle({effect:'blind' ,easing: 'easeOutBounce', duration: 800, complete: $('#panelValidoSinonimoAvanzadaPt').toggleClass('dropup')});">
+            <h5>Estatus taxonómico<span class="caret"></span></h5>
         </div>
         <div class="panel-body" id="panelValidoSinonimoAvanzada">
           <%= checkboxValidoSinonimo %>
