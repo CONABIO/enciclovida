@@ -1,30 +1,32 @@
-    <% content_for(:extrajs_carrusel) do %>
-        <%= javascript_include_tag "carrusel", "data-turbolinks-track" => true %>
+<% content_for(:extrajs_carrusel) do %>
+    <%= javascript_include_tag "carrusel", "data-turbolinks-track" => true %>
+<% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "carrusel", media: "all", "data-turbolinks-track" => true %>
+<% end %>
+
+<div id="foto-carrusel" class="text-center">
+  <!--div id="foto-carrusel-interna" style="background-image: url('<%# @photos[0].best_photo %>');"></div-->
+  <%= link_to image_tag(@photos[0].best_photo, :id=>'foto-carrusel-interna', :class=>'img-responsive'), @photos[0].best_photo, :target => :_blank, :class => 'enlace-atribucion' %>
+  <p class="text-left bg-warning small"><%= link_to "<span class='glyphicon glyphicon-resize-full' aria-hidden='true'></span>".html_safe, @photos[0].best_photo, :target => :_blank, :class => 'enlace-atribucion pull-right' %><small id='foto-atribucion'><%= @photos[0].attribution %></small></p>
+
+
+</div>
+
+<div id="carrusel" class="frame">
+  <div class="slidee">
+    <% @photos.each do |p| %>
+        <%-
+            next unless p.square_url.present?
+            img_square = p.square_url
+
+            img_normal = p.best_photo
+            next unless img_normal.present?
+        -%>
+        <img src="<%= img_square %>" data-large="<%= img_normal %>" data-attribution="<%= p.attribution %>" width="70" height="70"/>
     <% end %>
-    <% content_for(:extracss) do %>
-        <%= stylesheet_link_tag    "carrusel", media: "all", "data-turbolinks-track" => true %>
-    <% end %>
-
-    <div id="foto-carrusel" class="text-center">
-        <!--div id="foto-carrusel-interna" style="background-image: url('<%# @photos[0].best_photo %>');"></div-->
-        <img id="foto-carrusel-interna" src="<%= @photos[0].best_photo %>" class="img-thumbnail img-responsive"/>
-        <p><span id="foto-atribucion"><%= @photos[0].attribution %></span> <%= link_to 'Ver original', @photos[0].best_photo, :target => :_blank, :id => 'enlace-atribucion' %></p>
-    </div>
-
-    <div id="carrusel" class="frame">
-        <div class="slidee">
-          <% @photos.each do |p| %>
-              <%-
-                  next unless p.square_url.present?
-                  img_square = p.square_url
-
-                  img_normal = p.best_photo
-                  next unless img_normal.present?
-              -%>
-              <img src="<%= img_square %>" data-large="<%= img_normal %>" data-attribution="<%= p.attribution %>" width="70" height="70"/>
-          <% end %>
-        </div>
-    </div>
-    <div class="scrollbar">
-        <div class="handle"></div>
-    </div>
+  </div>
+</div>
+<div class="scrollbar">
+  <div class="handle"></div>
+</div>

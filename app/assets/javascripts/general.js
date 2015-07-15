@@ -163,7 +163,14 @@ $(document).ready(function()
 });
 
 cambiaSidebar = function(){
-    $('.sidebar').toggleClass('sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-5 col-sm-4 col-md-4 col-lg-4');
-    $('.sidebar > button > span').toggleClass('glyphicon-search glyphicon-remove ');
-    $('.sidebar > div').toggleClass('hidden');
+    $('#filtros').toggleClass('sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-5 col-sm-4 col-md-4 col-lg-4');
+    $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
+    $('#filtros > div').toggleClass('hidden');
+};
+cambiaSidebarNat = function(){
+    $('#conNaturalista').toggleClass('sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xs-push-9 col-sm-push-9 col-md-push-9 col-lg-push-9');
+    $('#conNaturalista > img, #conNaturalista > span, #conNaturalista > div').toggleClass('hidden');
+    return false;
+    //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
+    //$('#conNaturalista > div').toggleClass('hidden');
 };

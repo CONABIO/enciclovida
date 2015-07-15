@@ -25,40 +25,52 @@
  */
 
 /* Hide for mobile, show later */
-.sidebar {
+#sidebar {
   display: none;
 }
 @media (min-width: 500px) {
-    #filtros {
-        position: fixed;
-        top: 110px;
-        bottom: 20%;
-        left: -58px;
-        z-index: 10000003;
+    .sidebar{
         display: block;
-        padding: 20px;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: rgba(237, 230, 223, 0.85);
-        /*border: 1px solid #998370;*/
-        /*border: 1px solid #599008;*/
+        border: 1px solid #599008;
+    }
+    #filtros{
+        position: fixed;
+        top: 110px;
+        z-index: 10000003;
+        bottom: 20%;
+        left: -50px;
+        padding: 22px;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
         border-bottom-left-radius: 2.5em;
         border-bottom-right-radius: 0px;
-        /*margin-left: 31px;*/
-        /*margin-left: 58px;*/
     }
-    .sidebar_lupa{
+    #conNaturalista{
+        position: absolute;
+        /*float: left;*/
+        /*top: 276px;*/
+        z-index: 10000010;
+        /*left: -74px;*/
+        padding: 10px;
+        /*clear: none;*/
+        border-top-left-radius: 2.5em;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 2.5em;
+        /*width: auto !important;*/
+        height: auto !important;
+    }
+    .sidebar_lupa, .sidebar_naturalista{
         height: 64px;
         width: auto !important;
-        /*margin-right: -30px;*/
-        background-color: rgba(141, 160, 10, .95);
-        border: 1px solid #599008;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 2.5em;
-        border-bottom-left-radius: 2.5em;
-        border-bottom-right-radius: 0px;
+    }
+    #filtros > span, #conNaturalista > span, #conNaturalista > img{
+        color: #800000;
+        float: right;
+        cursor: pointer;
     }
 }
 
@@ -89,9 +101,10 @@
     opacity: 0.9;
     filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-color: #f2f0ed;
-    border-radius: 1.5em;
+    border-radius: 10px;
     margin-bottom: 20px;
     margin-top: 20px;
+    /*border: 1px solid #599008;*/
 }
 @media (min-width: 872px) {
   .main {

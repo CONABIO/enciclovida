@@ -32,12 +32,13 @@ var sly = new Sly('#carrusel', {
     activeClass:   'seleccionada'
 }).init();
 sly.on('active', function (eventName) {
-    $('#foto-carrusel-interna').attr('src',$('img.seleccionada').attr('data-large'));
-    $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-100);
-
-    // Para cambiar la atribucion de la foto
+    // Para cambiar la atribucion de la foto (cŕeditos) tanto en texto, como en ligas
     $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
-    $('#enlace-atribucion').attr('href',$('img.seleccionada').attr('data-large'));
+    $('.enlace-atribucion').attr('href',$('img.seleccionada').attr('data-large'));
+    //Para cambiar la foto interna
+    $('#foto-carrusel-interna').attr('src',$('img.seleccionada').attr('data-large'));
+    $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-100-$('#foto-carrusel > p').height());
+    //$('#foto-atribucion').css('marginTop',$('#foto-carrusel-interna').height()-20);
     //$('#foto-carrusel-interna').css('background-image',"url('"+$('img.seleccionada').attr('data-large')+"')");
 });
 $(window).resize(function(e) {

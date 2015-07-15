@@ -2,7 +2,7 @@ class InicioController < ApplicationController
   def index
   end
 
-  def coemntarios
+  def comentarios
   end
 
   def acerca
