@@ -378,9 +378,14 @@ class EspeciesController < ApplicationController
           #Parte del tipo de ditribucion
           if params[:dist].present?
             #######################  Quitar cuando se arregle en la base
-            if params[:dist].include?('Invasora')
+            if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
               condiciones << ".where('especies.invasora IS NOT NULL')"
-            else
+            elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
+              params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
+              joins << '.tipo_distribucion_join'
+              condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
+              distinct = true
+            else  # Selecciono cualquiera menos invasora
               joins << '.tipo_distribucion_join'
               condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
               distinct = true
