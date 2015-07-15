@@ -259,10 +259,17 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   line-height: 1em;
 }
 #balloon img{
-  padding: 4px;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  border-radius: 1.5em;
+  /*padding: 4px;*/
+  /*background-color: #ffffff;*/
+  /*border: 1px solid #dddddd;*/
+  border-radius: 4px;
   max-width: 100%;
   height: auto;
+  position: absolute;
+}
+dt{
+  font-size: 80% !important;
+}
+#balloon dl.dl-horizontal + span {
+  float: right;
 }
