@@ -43,7 +43,7 @@
   //transition: all 0.2s ease-in-out;
 }
 
-.busqueda_atributo_select{
+.busqueda_atributo_imagen{
   padding: 0px;
   -webkit-transition: none;
   -o-transition: none;
@@ -54,11 +54,11 @@
   filter: alpha(opacity=40); /* For IE8 and earlier */
 }
 
-.busqueda_atributo_select_seleccionado, .busqueda_atributo_select:hover{
+.busqueda_atributo_imagen_seleccionado, .busqueda_atributo_imagen:hover{
   background-color: #ba9775;
   /*border: solid 1px #ba9775;*/
   opacity: 0.8;
-  filter: alpha(opacity=80); /* For IE8 and earlier */
+  /*filter: alpha(opacity=80); /* For IE8 and earlier */
 }
 //Para que la foto no se salga del tamanio
 //#photos img{max-width: 500px}

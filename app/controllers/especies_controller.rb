@@ -377,17 +377,17 @@ class EspeciesController < ApplicationController
 
           #Parte del tipo de ditribucion
           if params[:dist].present?
+            #######################
+            #######################
             joins << '.tipo_distribucion_join'
-            dist = params[:dist].respond_to?(:values) ? params[:dist].values : params[:dist]
-            condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{dist.join("','")}'\")"
+            condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
             distinct = true
           end
 
           #Parte del edo. de conservacion
           if params[:edo_cons].present?
             joins << '.catalogos_join'
-            edo_cons =  params[:edo_cons].respond_to?(:values) ? params[:edo_cons].values : params[:edo_cons]
-            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{edo_cons.join("','")}'\")"
+            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
             distinct = true
           end
 
@@ -473,11 +473,11 @@ class EspeciesController < ApplicationController
             #render 'especies/checklists'
           end
 
-        else
+        else  # Default switch
           respond_to do |format|
             format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
           end
-      end
+      end  # Fin switch
     end
   end
 
