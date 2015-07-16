@@ -448,8 +448,9 @@ module EspeciesHelper
 
   def dameCaracteristica(taxon, opciones={})
     conservacion = ''
+    comercio_int = ''
     ambiente = []
-    orden_conservacion = Hash.new
+    cat_riesgo = Hash.new
 
     taxon.especies_catalogos.each do |e|
       cat = e.catalogo
@@ -461,11 +462,11 @@ module EspeciesHelper
           conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
         else # Para ordenar las categorias de riesgo y comercio
           if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            orden_conservacion[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            cat_riesgo[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            orden_conservacion[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            cat_riesgo[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            orden_conservacion[:c] = "CITES: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            comercio_int << "CITES: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           end
         end
       end
@@ -481,9 +482,10 @@ module EspeciesHelper
 
     if conservacion.present?
       "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
-    elsif orden_conservacion.any? || ambiente.any?
+    elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
       res = Hash.new
-      res[:conservacion] = orden_conservacion.sort.map{|k,v| v}.join(' ')
+      res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(' ')
+      res[:comercio_int] = comercio_int
       res[:ambiente] = ambiente.join(', ')
       res
     else
