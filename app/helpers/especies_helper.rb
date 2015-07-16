@@ -266,20 +266,12 @@ module EspeciesHelper
     checkBoxes=''
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      if I18n.locale.to_s == 'es-cientifico'
-        checkBoxes+= "<b>#{t(k)}</b>"
-        valores.each do |edo|
-          checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('edo_cons[]', edo, false, :class => :busqueda_atributo_checkbox)} #{edo}</label>"
-        end
-
-      else
-        checkBoxes << "<u><h6>#{t(k)}</h6></u>"
-        valores.each do |edo|
-          next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-          checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
-          checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "edo_cons_#{edo.parameterize}")}"
-          checkBoxes << "#{check_box_tag('edo_cons[]', edo, false, :style => 'display:none', :id => "edo_cons_#{edo.parameterize}")}"
-        end
+      checkBoxes << "<u><h6>#{t(k)}</h6></u>"
+      valores.each do |edo|
+        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
+        checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
+        checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "edo_cons_#{edo.parameterize}")}"
+        checkBoxes << "#{check_box_tag('edo_cons[]', edo, false, :style => 'display:none', :id => "edo_cons_#{edo.parameterize}")}"
       end
     end
     checkBoxes.html_safe
@@ -322,22 +314,19 @@ module EspeciesHelper
   def dameDistribucion(taxon)
     dist = []
 
-    if I18n.locale.to_s == 'es-cientifico'
-      taxon.especies_regiones.each do |reg|
-        dist << reg.tipo_distribucion.descripcion if reg.tipo_distribucion
-      end
-
-      dist.any? ? dist.uniq.join(', ') : ''
-    else
-      taxon.especies_regiones.distinct.each do |reg|
-        next unless distribucion = reg.tipo_distribucion
-        icono=t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono",:default => "")
-        nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
-        dist << (icono =='' ? nombre : (image_tag('app/tipo_distribuciones/' << icono, title: nombre)))
-      end
-
-      dist.any? ? dist.uniq.join(' - ') : ''
+    taxon.especies_regiones.distinct.each do |reg|
+      next unless distribucion = reg.tipo_distribucion
+      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
+      icono = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono", :default => '')
+      nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
+      dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
     end
+
+    if taxon.invasora.present?
+      dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
+    end
+
+    dist.any? ? dist.uniq.join(' - ') : ''
   end
 
   def dameRegionesNombresBibliografia(especie)
