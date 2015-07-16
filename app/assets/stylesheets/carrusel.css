@@ -10,18 +10,25 @@
     min-height: 150px;
 }
 #foto-carrusel > p{
-    width: 80%;
+    /*width: 80%;*/
     /*position: absolute;*/
     /*float: right;*/
     /*right: 20%;*/
-    border-radius: 4px;
-    margin: 3px auto;
-    padding: 3px;
-    opacity: .8;
+    border-radius: 3px;
+    /*margin: 1px auto;*/
+    padding: 0px;
+    opacity: .6;
 }
 img#foto-carrusel-interna{
     display: inline-block;
     border-radius: 5px;
+    min-height: 100px;
+}
+#foto-atribucion{
+    font-size: .65em;
+    display: block;
+    border-radius: 3px;
+    opacity: .6;
 }
 /*De momento los siguientes estilos no se ocupan, sin embargo,
 no borrar por si llegasen a hacer falta*/
