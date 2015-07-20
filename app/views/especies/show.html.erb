@@ -227,7 +227,7 @@
 
 <% if notice.present? %>
     <div class="alert alert-success" role="alert"><%= notice %></div>
-<% end%>
+<% end %>
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
@@ -257,15 +257,21 @@
 <% caracteristica = dameCaracteristica(@especie) %>
 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-left">
   <p>
-    <%= '<strong>Categorías de riesgo y comercio internacional: </strong><br>'.html_safe << caracteristica[:conservacion].html_safe if caracteristica.present? && caracteristica[:conservacion].present? %>
+    <%= '<strong>Categorías de riesgo: </strong><br>'.html_safe << caracteristica[:cat_riesgo].html_safe if caracteristica.present? && caracteristica[:cat_riesgo].present? %>
   </p>
 </div>
 
-<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-left">
+<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
+  <p>
+    <%= '<strong>Comercio internacional: </strong><br>'.html_safe << caracteristica[:comercio_int].html_safe if caracteristica.present? && caracteristica[:comercio_int].present? %>
+  </p>
+</div>
+
+<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
   <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
 </div>
 
-<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-left">
+<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
   <p><%= '<strong>Ambiente: </strong><br>'.html_safe << caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %></p>
 </div>
 

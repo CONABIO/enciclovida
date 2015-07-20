@@ -47,5 +47,16 @@
         </div>
       </div>
 
+      <div class="panel panel-success" id="panelPrioritariaPt">
+        <div class="panel-heading" onclick="$('#panelPrioritaria').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelPrioritariaPt').toggleClass('dropup')});">
+          <h5>Especies prioritarias<span class="caret"></span></h5>
+        </div>
+            <div class="panel-body" id="panelPrioritaria">
+                <div class="checkbox" style="text-align: right">
+                    <%= checkboxPrioritaria.html_safe %>
+                </div>
+            </div>
+      </div>
+
   <% end %>
 </div>

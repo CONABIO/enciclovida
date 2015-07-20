@@ -400,6 +400,11 @@ class EspeciesController < ApplicationController
             distinct = true
           end
 
+          # Para las especies prioritarias
+          if params[:prioritaria].present? && params[:prioritaria] == '1'
+            condiciones << ".where('especies.prioritaria IS NOT NULL')"
+          end
+
           # Parte de consultar solo un TAB (categoria taxonomica)
           if params[:solo_categoria] && conID.present?
             condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
