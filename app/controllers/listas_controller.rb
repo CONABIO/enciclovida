@@ -1,5 +1,5 @@
 class ListasController < ApplicationController
-  # Para crear listas de taxones o para exportar los datos y mandarlos al correo
+  # Para crear listas de taxones o para exportar los datos y mandarlos al correo, y tambien valida el excel de estatales
 
   skip_before_filter :set_locale, only: [:aniade_taxones_seleccionados, :dame_listas, :create, :update, :destroy]
   before_action :authenticate_usuario!, only: [:index, :new, :edit, :create, :update, :destroy, :aniade_taxones_seleccionados]
@@ -139,6 +139,10 @@ class ListasController < ApplicationController
 
   # Envia por correo los taxones que saieron con el query
   def envia_taxones_query
+  end
+
+  # Valida un excel de entrada y el de salida lleva las correcciones
+  def valida_excel
   end
 
   private
