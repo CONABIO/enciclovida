@@ -52,11 +52,9 @@ Buscador::Application.routes.draw do
 
     collection do
       post :update_photos, :as => :update_photos_for
-      get :busca_por_lote
       get :arbol
       get :resultados
       get :checklists
-      post :resultados_por_lote
       get :error
       get :datos_principales
       get :kmz
