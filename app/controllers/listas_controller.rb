@@ -141,11 +141,9 @@ class ListasController < ApplicationController
   def envia_taxones_query
   end
 
-  # Valida un excel de entrada y el de salida lleva las correcciones
-  def valida_excel
-  end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_lista
     begin
