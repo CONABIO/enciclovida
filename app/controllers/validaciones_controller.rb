@@ -33,14 +33,10 @@ class ValidacionesController < ApplicationController
     render :text => 'Datos de DELETE correctos'
   end
 
+  def taxon
+  end
+
   # Validacion de taxones por medio de un csv o a traves de web
-  def taxon_simple
-  end
-
-  # Validacion a traves de un excel .xlsx
-  def taxon_excel
-  end
-
   def resultados_taxon_simple
     return @match_taxa= 'Por lo menos debe haber un taxón o un archivo' unless params[:lote].present? || params[:batch].present?
 
@@ -64,8 +60,8 @@ class ValidacionesController < ApplicationController
     #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
+  # Validacion a traves de un excel .xlsx
   def resultados_taxon_excel
-
   end
 
   private

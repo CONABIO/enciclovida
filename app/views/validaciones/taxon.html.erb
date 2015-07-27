@@ -1,1 +1,25 @@
-<strong>Validacion de <%= t :taxon_plural %> a través de una archivo o una lista.</strong>
+<script type="application/javascript">
+    $(document).ready(function() {
+        $('#pestañas').tabs(); // Inicia los tabs
+        $('#pestañas > .nav a').click(function(){
+            $('#pestañas > .nav li').removeClass("active");
+            $(this).parent().addClass("active");
+        });
+    });
+</script>
+<p>
+  <strong>Validacion de <%= t :taxon_plural %> a través de una archivo o una lista.</strong>
+</p>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div id="pestañas" class="panel">
+    <ul class="nav nav-tabs" data-tabs="tabs">
+      <li class="active"><a href="#simple"><span>Validación simple</span></a></li>
+      <li><a href="#excel"><span>Validación con excel</span></a></li>
+    </ul>
+    <div class="main">
+      <div id="simple" class="tab-pane active"><%= render partial: 'taxon_simple' %></div>
+      <div id="excel" class="tab-pane"><%= render partial: 'taxon_excel' %></div>
+    </div>
+  </div>
+</div>
