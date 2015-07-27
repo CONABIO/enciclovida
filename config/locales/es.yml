@@ -53,6 +53,14 @@ es:
       icono: cites_iii.png
       nombre: Apéndice III
   cites: Comercio Internacional (CITES)
+  columnas_obligatorias_excel:
+    familia: familia
+    genero: género
+    especie: especie
+    autoridad: autoridad
+    infraespecie: infraespecie
+    categoria: categoria
+    nombre_cientifico: nombre científico
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados
