@@ -188,6 +188,11 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.7.3)
+    roo (1.13.2)
+      nokogiri
+      rubyzip
+      spreadsheet (> 0.6.4)
+    ruby-ole (1.2.11.8)
     rubyntlm (0.3.4)
     rubyzip (1.0.0)
     sass (3.2.19)
@@ -219,6 +224,8 @@ GEM
       redis (>= 3.0)
       sinatra (>= 1.0)
       vegas (>= 0.1.0)
+    spreadsheet (1.0.4)
+      ruby-ole (>= 1.0)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -293,6 +300,7 @@ DEPENDENCIES
   rails3-jquery-autocomplete!
   rest-client
   rinku
+  roo
   sass-rails (~> 4.0.0)
   savon (= 2.4.0)
   sdoc

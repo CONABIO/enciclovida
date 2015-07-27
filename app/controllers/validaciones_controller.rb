@@ -43,8 +43,8 @@ class ValidacionesController < ApplicationController
     if params[:lote].present?
       @match_taxa = Hash.new
       params[:lote].split("\r\n").each do |linea|
-        #e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
         e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
+
         if e.first
           @match_taxa[linea] = e
         else
@@ -62,6 +62,27 @@ class ValidacionesController < ApplicationController
 
   # Validacion a traves de un excel .xlsx
   def resultados_taxon_excel
+    @errores = []
+    uploader = ArchivoUploader.new
+
+    begin
+      content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+      if params[:excel].content_type != content_type
+        @errores << t('errors.messages.extension_validacion_excel')
+      else
+        uploader.store!(params[:excel])
+        xlsx = Roo::Excelx.new(params[:excel].path, nil, :ignore)
+        sheet = xlsx.sheet(0)  # toma la primera hoja por default
+        rows = sheet.rows.length
+        columns = sheet.columns.length
+
+        @errores << 'La primera hoja de tu excel no tiene información' if rows < 2
+        @errores << 'Las columnas no son las mínimas necesarias para poder leer tu excel' if columns < 2
+      end
+    rescue CarrierWave::IntegrityError => c
+      @errores << c
+    end
   end
 
   private

@@ -1,0 +1,16 @@
+<% if @errores.present? %>
+    <div id="error_explanation">
+      <h2>Algunos errores prohibieron que tu archivo no fuese subido:</h2>
+
+      <ul>
+        <% @errores.each do |e| %>
+            <li><%= e %></li>
+        <% end %>
+      </ul>
+    </div>
+<% else %>
+    Tu formato fue subido al servidor correctamente. Por favor espera el correo en donde
+    te mandaremos la validación correspondiente a dicho archivo.
+
+    <%= @xlsx.sheets %>
+<% end %>

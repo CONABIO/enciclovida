@@ -227,6 +227,9 @@ es:
       accepted: debe ser aceptado
       already_confirmed: fue confirmado, por favor intenta iniciar sesión
       blank: no puede ser vacío
+      carrierwave_processing_error: no pudo ser procesado
+      carrierwave_integrity_error: no es de un tipo de archivo permitido
+      carrierwave_download_error: no pudo ser descargado
       confirmation: no coincide con la confirmación
       confirmation_period_expired: necesitaba ser confirmado en un periodo de %{period}, por favor solicita una nueva confrimación
       empty: no puede estar vacío
@@ -234,12 +237,19 @@ es:
       even: debe ser par
       exclusion: está reservado
       expired: a expirado, por favor solicita una nueva confrimación
+      extension_white_list_error: "No se pueden subir archivos con extensión %{extension}. Las extensiones permitidas son: %{allowed_types}"
+      extension_black_list_error: "No se pueden subir archivos con extensión %{extension}. Las extensiones prohibidas son: %{prohibited_types}"
+      extension_validacion_excel: "No se pueden subir en esta validación archivos con extensión .csv. Las extensión permitida es: xlsx"
       greater_than: debe ser mayor que %{count}
       greater_than_or_equal_to: debe ser mayor que o igual a %{count}
       inclusion: no está incluido en la lista
       invalid: no es válido
       less_than: debe ser menor que %{count}
       less_than_or_equal_to: debe ser menor que o igual a %{count}
+      mime_types_processing_error: "No se pudo procesar archivo con MIME::Types, quizá no tiene el content-type correcto? Error original: %{e}"
+      mini_magick_processing_error: "No se pudo manipular con MiniMagick, quizá porque no es una imágen? Error original: %{e}"
+      min_size_error: "El tamaño del archivo debe ser mayor que %{min_size}"
+      max_size_error: "El tamaño del archivo debe ser inferior a %{max_size}"
       not_a_number: no es un número
       not_an_integer: debe ser un entero
       not_found: no ha sido encontrado
@@ -250,6 +260,7 @@ es:
         other: "%{count} errores no permitieron que el %{resource} fuese creado:"
       odd: debe ser impar
       record_invalid: ! 'La validación falló: %{errors}'
+      rmagick_processing_error: "No se pudo manipular con rmagick, quizá porque no es una imágen? Error original: %{e}"
       taken: ya está en uso
       too_long: es demasiado largo (%{count} caracteres máximo)
       too_short: es demasiado corto (%{count} caracteres mínimo)
