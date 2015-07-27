@@ -64,6 +64,10 @@ class ValidacionesController < ApplicationController
     #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
+  def resultados_taxon_excel
+
+  end
+
   private
 
   def authenticate_request!

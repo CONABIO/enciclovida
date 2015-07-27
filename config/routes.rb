@@ -143,6 +143,7 @@ Buscador::Application.routes.draw do
   post 'validaciones/delete' => 'validaciones#delete'
 
   # Para las validaciones de taxones la simple y la avanzada
+  get 'validaciones/taxon' => 'validaciones#taxon'
   get 'validaciones/taxon_simple' => 'validaciones#taxon_simple'
   get 'validaciones/taxon_excel' => 'validaciones#taxon_excel'
   post 'validaciones/resultados_taxon_simple' => 'validaciones#resultados_taxon_simple'

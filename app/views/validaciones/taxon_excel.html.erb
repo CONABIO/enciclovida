@@ -1,0 +1,5 @@
+<p>Sube un archivo excel (.xlsx) con las siguientes especificaciones: </p>
+<%= form_tag validaciones_resultados_taxon_excel_path, :multipart => true, :method => :post do %>
+    <%= file_field_tag 'batch' %>
+    <%= submit_tag :Envia %>
+<% end %>
