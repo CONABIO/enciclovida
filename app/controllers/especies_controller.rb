@@ -495,9 +495,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def busca_por_lote
-  end
-
   def checklists(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
@@ -511,29 +508,6 @@ class EspeciesController < ApplicationController
       end
       @taxones = Especie.datos_arbol_sin_filtros.where("especies.id in (#{padres.keys.join(',')})").order('arbol')
     end
-  end
-
-  def resultados_por_lote
-    return @match_taxa= 'Por lo menos debe haber un taxón o un archivo' unless params[:lote].present? || params[:batch].present?
-
-    if params[:lote].present?
-      @match_taxa = Hash.new
-      params[:lote].split("\r\n").each do |linea|
-        #e= Especie.where("nombre_cientifico ILIKE '#{linea}'")       #linea de postgres
-        e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
-        if e.first
-          @match_taxa[linea] = e
-        else
-          ids = FUZZY_NOM_CIEN.find(linea, 3)
-          coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
-          @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
-        end
-      end
-    elsif params[:batch].present?
-      validaBatch(params[:batch])
-
-    end
-    #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
 
   def datos_principales

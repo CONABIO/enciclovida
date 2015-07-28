@@ -199,7 +199,7 @@ es-cientifico:
       header:
         one: No se pudo guardar este/a %{model} porque se encontró 1 error
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
-  este_taxon_no_tiene: Este tax&oacute;n no tiene una foto predeterminada
+  este_taxon_no_tiene: Este taxón no tiene una foto predeterminada
   helpers:
     label:
       usuario:
@@ -310,6 +310,8 @@ es-cientifico:
       last_word_connector: ! ', y '
       two_words_connector: ! ' y '
       words_connector: ! ', '
+  taxon: taxón
+  taxon_plural: taxones
   time:
     am: am
     formats:

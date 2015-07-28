@@ -36,6 +36,7 @@ gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'   #autocompleta las busquedas
 gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'    #extiende el metodo auto_link
+gem 'roo', :require => 'roo'
 gem 'sass-rails', '~> 4.0.0'
 gem 'savon', '2.4.0'       #para consumir webservices con SOAP y WSDL
 gem 'seed_dump'   #extrae las tuplas de un modelo o de toda la base

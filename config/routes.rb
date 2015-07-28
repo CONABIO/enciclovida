@@ -5,6 +5,7 @@ Buscador::Application.routes.draw do
   get "inicio/acerca"
   get "inicio/terminos"
   get "inicio/ayuda"
+
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
@@ -51,11 +52,9 @@ Buscador::Application.routes.draw do
 
     collection do
       post :update_photos, :as => :update_photos_for
-      get :busca_por_lote
       get :arbol
       get :resultados
       get :checklists
-      post :resultados_por_lote
       get :error
       get :datos_principales
       get :kmz
@@ -142,6 +141,13 @@ Buscador::Application.routes.draw do
   post 'validaciones/update' => 'validaciones#update'
   post 'validaciones/insert' => 'validaciones#insert'
   post 'validaciones/delete' => 'validaciones#delete'
+
+  # Para las validaciones de taxones la simple y la avanzada
+  get 'validaciones/taxon' => 'validaciones#taxon'
+  get 'validaciones/taxon_simple' => 'validaciones#taxon_simple'
+  get 'validaciones/taxon_excel' => 'validaciones#taxon_excel'
+  post 'validaciones/resultados_taxon_simple' => 'validaciones#resultados_taxon_simple'
+  post 'validaciones/resultados_taxon_excel' => 'validaciones#resultados_taxon_excel'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

@@ -17,7 +17,6 @@
 
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true" />
 
-
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
   <%= yield :extracss %>
@@ -33,16 +32,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%# link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosMC.png'); width: 100px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
-      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios_2.png'); width: 265px; background-size: cover; background-position-x: 55%; background-position-y: 45%; background-repeat: no-repeat;" %>
+      <%= link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBiosMC.png'); width: 100px; background-size: cover; background-position: bottom left; background-repeat: no-repeat;" %>
+      <%# link_to '', especie_index_path, class: "navbar-brand", style: "background-image: url('/assets/app/logoBios_2.png'); width: 265px; background-size: cover; background-position-x: 55%; background-position-y: 45%; background-repeat: no-repeat;" %>
       <% # link_to (image_tag '/assets/app/logoBiosF.jpg', :alt => "Bios", :style => 'margin: -15px;'), especie_index_path, class: "navbar-brand"%>
     </div>
     <div id="navbar" class="navbar-collapse collapse" style="font-weight: bold;  background: linear-gradient(to right, #ede6df,#ede6df,#ede6df,#ede6df,#ede6df,#ede6df,#FFFFFF,transparent); border-radius: .8em; width: 60%; float: right;">
       <ul class="nav navbar-nav" style="font-weight: bold; font-size: .75em">
         <% if usuario_signed_in? %>
             <% if I18n.locale.to_s == 'es-cientifico' %>
-                <li><%= link_to :Listas, listas_path %></li>
-                <li><%= link_to 'Busca por lote', busca_por_lote_especie_index_path %></li>
+                <li><%= link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
+                <li><%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
             <% end %>
             <li>
               <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>

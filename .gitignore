@@ -55,3 +55,4 @@ app/assets/taxones/*
 public/kmz/*
 tools/correspondencia_proyectos_naturalista/
 public/pdfs/
+public/uploads/
