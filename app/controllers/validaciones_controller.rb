@@ -71,7 +71,6 @@ class ValidacionesController < ApplicationController
       if params[:excel].content_type != content_type
         @errores << t('errors.messages.extension_validacion_excel')
       else
-        uploader.store!(params[:excel])
         xlsx = Roo::Excelx.new(params[:excel].path, nil, :ignore)
         @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
@@ -83,35 +82,63 @@ class ValidacionesController < ApplicationController
 
         if @errores.empty?
           cabecera = @sheet.row(1)
-          cco = comprueba_columnas_obligatorias(cabecera)
+          cco = comprueba_columnas(cabecera)
 
-          if cco.any?
-            @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cco.join(', ')}"
+          # Por si no cumple con las columnas obligatorias
+          if cco[:faltan].any?
+            @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cco[:faltan].join(', ')}"
+          else
+            uploader.store!(params[:excel])  # Guarda el archivo
+            valida_campos(@sheet, cco[:asociacion])  # Valida los campos en la base
           end
         end
-      end
+      end  # Fin del tipo de archivo
 
     rescue CarrierWave::IntegrityError => c
       @errores << c
-    end
+    end  # Fin del rescue
   end
 
   private
 
-  def comprueba_columnas_obligatorias(cabecera)
+  def valida_campos(sheet, asociacion)
+    @hash = []
+    primera_fila = true
+
+    sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
+    sheet.parse(asociacion).each do |hash|
+      if primera_fila
+        primera_fila = false
+        next
+      end
+
+      @hash << hash
+    end
+  end
+
+  def comprueba_columnas(cabecera)
     columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
+    columnas_opcionales = %w(division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+    columnas_asociadas = Hash.new
     columnas_faltantes = []
 
     cabecera.each do |c|
+      next unless c.present?  # para las cabeceras vacias
       cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
-      columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
+
+      if columnas_obligatoraias.include?(cab)
+        columnas_obligatoraias.delete(cab)
+
+        # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
+        columnas_asociadas[cab] = "^#{c}$"
+      end
     end
 
     columnas_obligatoraias.compact.each do |col_obl|
       columnas_faltantes << t("columnas_obligatorias_excel.#{col_obl}")
     end
 
-    columnas_faltantes
+    {faltan: columnas_faltantes, asociacion: columnas_asociadas}
   end
 
   def authenticate_request!
