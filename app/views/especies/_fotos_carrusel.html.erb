@@ -8,7 +8,7 @@
 <div id="foto-carrusel" class="text-center">
   <!--div id="foto-carrusel-interna" style="background-image: url('<%# @photos[0].best_photo %>');"></div-->
   <%= link_to image_tag(@photos[0].best_photo, :id=>'foto-carrusel-interna', :class=>'img-responsive'), @photos[0].best_photo, :target => :_blank, :class => 'enlace-atribucion' %>
-  <p class="text-left bg-warning small"><%= link_to "<span class='glyphicon glyphicon-resize-full' aria-hidden='true'></span>".html_safe, @photos[0].best_photo, :target => :_blank, :class => 'enlace-atribucion pull-right' %><small id='foto-atribucion'><%= @photos[0].attribution %></small></p>
+  <small class="text-left bg-danger" id='foto-atribucion'><%= @photos[0].attribution %></small>
 
 
 </div>
