@@ -101,29 +101,99 @@ class ValidacionesController < ApplicationController
 
   private
 
+  def asigna_categorias_correspondientes(taxon)
+    return nil unless taxon.ancestry_ascendente_directo.present?  # Por si se les olvido poner el ascendente_directo o es reino
+    ids = taxon.ancestry_ascendente_directo.gsub('/',',')
+
+    Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
+      categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
+      next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
+      eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+    end
+
+    # Asigna la categoria taxonomica
+    taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
+    taxon
+  end
+
+  # Si concidio mas de uno, busca recursivamente arriba de genero (familia) para ver el indicado
+  def busca_recursivamente(taxones, hash)
+    coincidio_alguno = false
+    taxon_coincidente = Especie.none
+    nombres = hash['nombre_cientifico'].split(' ')
+    h = hash
+
+    taxones.each do |t|  # Iterare cada taxon que resulto parecido para ver cual es el correcto
+      t = asigna_categorias_correspondientes(t)
+      next unless t.present?  # Por si regresa nulo
+
+      # Si es la especie lo mando directo a coincidencia
+      cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
+      if cat_tax_taxon_cat == 'especie' && nombres.length == 2 && hash[:infraespecie].blank?
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
+      if t.x_familia == hash['familia'].downcase
+
+        if coincidio_alguno
+          h = h.merge(SCAT_Observaciones: 'Existen 2 taxones iguales, coinciden familias')
+          return {hash: h, estatus: false}
+        else
+          taxon_coincidente = t
+          coincidio_alguno = true
+        end
+      end
+    end  #Fin each taxones coincidentes
+
+    # Mando el taxon si coincidio alguno
+    if coincidio_alguno
+      return {taxon: taxon_coincidente, hash: h, estatus: true}
+    else  # De lo contrario no hubo coincidencias claras
+      h = h.merge(SCAT_Observaciones: 'Existen 2 taxones iguales, no coinciden familias')
+      return {hash: h, estatus: false}
+    end
+  end
+
   # Encuentra el mas parecido
-  def encuentra_nombre_cientifico(hash = {})
-    return nil unless hash.present?
+  def encuentra_id_por_nombre_cientifico(hash = {})
+    # Evita que el nombre cientifico este vacio
+    if hash['nombre_cientifico'].blank?
+      h = h.merge(SCAT_Observaciones: 'El nombre cientifico está vacío')
+      return {hash: h, estatus: false}
+    end
+
+    h = hash
     taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'])
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
-      taxon.nombre_cientifico
-    elsif taxon.length > 1
+      return {taxon: taxon.first, hash: hash, estatus: true}
 
-      taxon.each do |t|
-        next unless taxon.ancestry_ascendente_directo.present?  # Por si se les olvido poner el ascendente_directo
-        ids = taxon.ancestry_ascendente_directo.gsub('/',',')
+    elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
+      return busca_recursivamente(taxon, hash)
 
-        # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
-        Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
-          categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
-          next unless COLUMNAS_CATEGORIAS.include?(categoria)
-          eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
-        end
+    else
+      # Parte de expresiones regulares a ver si encuentra alguna coincidencia
+      nombres = hash['nombre_cientifico'].split(' ')
 
+      taxon = if nombres.length == 2  # Especie
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]}'")
+              elsif nombres.length == 3  # Infraespecie
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]} %#{nombres[2]}'")
+              elsif nombres.length == 1 # Genero o superior
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
+              end
+
+      if taxon.length == 1  # Caso mas sencillo
+        return {taxon: taxon.first, hash: hash, estatus: true}
+      elsif taxon.length > 1
+        return busca_recursivamente(taxon, hash)
+      else  # Lo buscamos con el fuzzy match y despues con el algorithmo de aproximacion
+        h = h.merge(SCAT_Observaciones: 'Caso no muy claro')
+        return {hash: h, estatus: false}
       end
-      nil
-    end
+
+    end  #Fin de las posibles coincidencias
   end
 
   def valida_campos(sheet, asociacion)
@@ -138,8 +208,13 @@ class ValidacionesController < ApplicationController
         next
       end
 
-      nombre_cientifico = encuentra_nombre_cientifico(hash)
-      @hash << hash.merge(nombre_cientifico_cat: nombre_cientifico)
+      info = encuentra_id_por_nombre_cientifico(hash)
+
+      if info[:estatus]
+        @hash << info[:hash].merge(nombre_cientifico_cat: info[:taxon].nombre_cientifico)
+      else
+        @hash << info[:hash]
+      end
     end
   end
 
