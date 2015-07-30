@@ -1,4 +1,4 @@
-class CategoriaTaxonomicaBio < CategoriaTaxonomica
+class CategoriaTaxonomicaBio < ActiveRecord::Base
 
   self.table_name = 'CategoriaTaxonomica'
   self.primary_key = 'IdCategoriaTaxonomica'
