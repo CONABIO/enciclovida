@@ -82,14 +82,14 @@ class ValidacionesController < ApplicationController
 
         if @errores.empty?
           cabecera = @sheet.row(1)
-          cco = comprueba_columnas(cabecera)
+          cc = comprueba_columnas(cabecera)
 
           # Por si no cumple con las columnas obligatorias
-          if cco[:faltan].any?
-            @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cco[:faltan].join(', ')}"
+          if cc[:faltan].any?
+            @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
           else
             uploader.store!(params[:excel])  # Guarda el archivo
-            valida_campos(@sheet, cco[:asociacion])  # Valida los campos en la base
+            valida_campos(@sheet, cc[:asociacion])  # Valida los campos en la base
           end
         end
       end  # Fin del tipo de archivo
@@ -101,18 +101,45 @@ class ValidacionesController < ApplicationController
 
   private
 
+  # Encuentra el mas parecido
+  def encuentra_nombre_cientifico(hash = {})
+    return nil unless hash.present?
+    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'])
+
+    if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
+      taxon.nombre_cientifico
+    elsif taxon.length > 1
+
+      taxon.each do |t|
+        next unless taxon.ancestry_ascendente_directo.present?  # Por si se les olvido poner el ascendente_directo
+        ids = taxon.ancestry_ascendente_directo.gsub('/',',')
+
+        # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
+        Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
+          categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
+          next unless COLUMNAS_CATEGORIAS.include?(categoria)
+          eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+        end
+
+      end
+      nil
+    end
+  end
+
   def valida_campos(sheet, asociacion)
     @hash = []
     primera_fila = true
 
-    sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
+    puts asociacion.inspect
+    #sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
     sheet.parse(asociacion).each do |hash|
       if primera_fila
         primera_fila = false
         next
       end
 
-      @hash << hash
+      nombre_cientifico = encuentra_nombre_cientifico(hash)
+      @hash << hash.merge(nombre_cientifico_cat: nombre_cientifico)
     end
   end
 
@@ -126,8 +153,8 @@ class ValidacionesController < ApplicationController
       next unless c.present?  # para las cabeceras vacias
       cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
 
-      if columnas_obligatoraias.include?(cab)
-        columnas_obligatoraias.delete(cab)
+      if columnas_obligatoraias.include?(cab) || columnas_opcionales.include?(cab)
+        columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
 
         # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
         columnas_asociadas[cab] = "^#{c}$"
