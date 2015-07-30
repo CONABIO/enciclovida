@@ -5,9 +5,15 @@ class String
   end
 
   # Quita simbolos raros y quita los terminos con punto que estan abajo de especies y subgenero
-  def limpiar
+  def limpiar(ssp = false)
     return self unless self.present?
-    self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( subsp\.| f\. | var\.| subf\.| subvar\.| sect\.)/, ' ').strip.gsub(/\s+/,' ')
+
+    # Para poner ssp. como esta en NaturaLista y el Banco de Imagenes
+    if ssp
+      self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( f\. | var\. | subf\. | subvar\. )/, ' ').gsub(/ subsp\. /, ' ssp. ').strip.gsub(/\s+/,' ')
+    else
+      self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( subsp\. | f\. | var\. | subf\. | subvar\. )/, ' ').strip.gsub(/\s+/,' ')
+    end
   end
 
   # Quita simbolos raros
