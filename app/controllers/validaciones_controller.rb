@@ -175,7 +175,8 @@ class ValidacionesController < ApplicationController
     taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'])
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
-      return {taxon: taxon.first, hash: hash, estatus: true}
+      taxon = asigna_categorias_correspondientes(taxon.first)
+      return {taxon: taxon, hash: hash, estatus: true}
 
     elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       return busca_recursivamente(taxon, hash)
@@ -193,7 +194,8 @@ class ValidacionesController < ApplicationController
               end
 
       if taxon.length == 1  # Caso mas sencillo
-        return {taxon: taxon.first, hash: hash, estatus: true}
+        taxon = asigna_categorias_correspondientes(taxon.first)
+        return {taxon: taxon, hash: hash, estatus: true}
       elsif taxon.length > 1
         return busca_recursivamente(taxon, hash)
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
@@ -242,12 +244,7 @@ class ValidacionesController < ApplicationController
       end
 
       info = encuentra_record_por_nombre_cientifico(hash)
-
-      if info[:estatus]
-        @hash << info[:hash].merge(nombre_cientifico_cat: info[:taxon].nombre_cientifico)
-      else
-        @hash << info[:hash]
-      end
+      @hash << asocia_respuesta(info)
     end
   end
 
@@ -255,7 +252,6 @@ class ValidacionesController < ApplicationController
   def asocia_respuesta(info = {})
     if info[:estatus]
       taxon = info[:taxon]
-      hash = info
 
       if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
         estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
@@ -264,22 +260,26 @@ class ValidacionesController < ApplicationController
           begin  # Por si ya no existe ese taxon, suele pasar!
             taxon_valido = Especie.find(estatus.especie_id2)
             t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
-            hash[:taxon_valido] = t_val
+            info[:taxon_valido] = t_val
           rescue
-            hash[:estatus] = false
-            hash[:error] = 'No existe el taxón válido en CAT'
+            info[:estatus] = false
+            info[:error] = 'No existe el taxón válido en CAT'
           end
 
         else  # No existe el valido >.>!
-          hash[:estatus] = false
-          hash[:error] = 'No existe el taxón válido en CAT'
+          info[:estatus] = false
+          info[:error] = 'No existe el taxón válido en CAT'
         end
       end  # End estatus = 1
     end  # End info estatus
 
     # Se completa cada seccion del excel
-    resumen_hash = resumen(hash)
-    correcciones_hash = correcciones(hash)
+    resumen_hash = resumen(info)
+    correcciones_hash = correcciones(info)
+    validacion_interna_hash = validacion_interna(info)
+
+    # Devuelve toda la asociacion unida y en orden
+    info[:hash].merge(resumen_hash).merge(correcciones_hash).merge(validacion_interna_hash)
   end
 
   # Parte roja del excel
@@ -310,83 +310,83 @@ class ValidacionesController < ApplicationController
   # Parte azul del excel
   def correcciones(info = {})
     correcciones_hash = {}
+    hash = info[:hash]
 
     if info[:estatus]
       taxon = info[:taxon]
-      hash = info[:hash]
 
       if hash.key?('reino')
-        correcciones_hash['SCAT_CorreccionReino'] = taxon.x_reino.downcase == hash['reino'].downcase ? nil : taxon.x_reino
+        correcciones_hash['SCAT_CorreccionReino'] = taxon.x_reino.try(:downcase) == hash['reino'].try(:downcase) ? nil : taxon.x_reino
       end
 
       if hash.key?('division')
-        correcciones_hash['SCAT_CorreccionDivision'] = taxon.x_division.downcase == hash['division'].downcase ? nil : taxon.x_division
+        correcciones_hash['SCAT_CorreccionDivision'] = taxon.x_division.try(:downcase) == hash['division'].try(:downcase) ? nil : taxon.x_division
       end
 
       if hash.key?('subdivision')
-        correcciones_hash['SCAT_CorreccionSubdivision'] = taxon.x_subdivision.downcase == hash['subdivision'].downcase ? nil : taxon.x_subdivision
+        correcciones_hash['SCAT_CorreccionSubdivision'] = taxon.x_subdivision.try(:downcase) == hash['subdivision'].try(:downcase) ? nil : taxon.x_subdivision
       end
 
       if hash.key?('phylum')
-        correcciones_hash['SCAT_CorreccionPhylum'] = taxon.x_phylum.downcase == hash['phylum'].downcase ? nil : taxon.x_phylum
+        correcciones_hash['SCAT_CorreccionPhylum'] = taxon.x_phylum.try(:downcase) == hash['phylum'].try(:downcase) ? nil : taxon.x_phylum
       end
 
       if hash.key?('clase')
-        correcciones_hash['SCAT_CorreccionClase'] = taxon.x_clase.downcase == hash['clase'].downcase ? nil : taxon.x_clase
+        correcciones_hash['SCAT_CorreccionClase'] = taxon.x_clase.try(:downcase) == hash['clase'].try(:downcase) ? nil : taxon.x_clase
       end
 
       if hash.key?('subclase')
-        correcciones_hash['SCAT_CorreccionSubclase'] = taxon.x_subclase.downcase == hash['subclase'].downcase ? nil : taxon.x_subclase
+        correcciones_hash['SCAT_CorreccionSubclase'] = taxon.x_subclase.try(:downcase) == hash['subclase'].try(:downcase) ? nil : taxon.x_subclase
       end
 
       if hash.key?('orden')
-        correcciones_hash['SCAT_CorreccionOrden'] = taxon.x_orden.downcase == hash['orden'].downcase ? nil : taxon.x_orden
+        correcciones_hash['SCAT_CorreccionOrden'] = taxon.x_orden.try(:downcase) == hash['orden'].try(:downcase) ? nil : taxon.x_orden
       end
 
       if hash.key?('suborden')
-        correcciones_hash['SCAT_CorreccionSuborden'] = taxon.x_suborden.downcase == hash['suborden'].downcase ? nil : taxon.x_suborden
+        correcciones_hash['SCAT_CorreccionSuborden'] = taxon.x_suborden.try(:downcase) == hash['suborden'].try(:downcase) ? nil : taxon.x_suborden
       end
 
       if hash.key?('infraorden')
-        correcciones_hash['SCAT_CorreccionInfraorden'] = taxon.x_infraorden.downcase == hash['infraorden'].downcase ? nil : taxon.x_infraorden
+        correcciones_hash['SCAT_CorreccionInfraorden'] = taxon.x_infraorden.try(:downcase) == hash['infraorden'].try(:downcase) ? nil : taxon.x_infraorden
       end
 
       if hash.key?('superfamilia')
-        correcciones_hash['SCAT_CorreccionSuperfamilia'] = taxon.x_superfamilia.downcase == hash['superfamilia'].downcase ? nil : taxon.x_superfamilia
+        correcciones_hash['SCAT_CorreccionSuperfamilia'] = taxon.x_superfamilia.try(:downcase) == hash['superfamilia'].try(:downcase) ? nil : taxon.x_superfamilia
       end
 
       if hash.key?('familia')
-        correcciones_hash['SCAT_CorreccionFamilia'] = taxon.x_familia.downcase == hash['familia'].downcase ? nil : taxon.x_familia
+        correcciones_hash['SCAT_CorreccionFamilia'] = taxon.x_familia.try(:downcase) == hash['familia'].try(:downcase) ? nil : taxon.x_familia
       end
 
       if hash.key?('genero')
-        correcciones_hash['SCAT_CorreccionGenero'] = taxon.x_genero.downcase == hash['genero'].downcase ? nil : taxon.x_genero
+        correcciones_hash['SCAT_CorreccionGenero'] = taxon.x_genero.try(:downcase) == hash['genero'].try(:downcase) ? nil : taxon.x_genero
       end
 
       if hash.key?('subgenero')
-        correcciones_hash['SCAT_CorreccionSubgenero'] = taxon.x_subgenero.downcase == hash['subgenero'].downcase ? nil : taxon.x_subgenero
+        correcciones_hash['SCAT_CorreccionSubgenero'] = taxon.x_subgenero.try(:downcase) == hash['subgenero'].try(:downcase) ? nil : taxon.x_subgenero
       end
 
       if hash.key?('especie')
-        correcciones_hash['SCAT_CorreccionEspecie'] = taxon.x_especie.downcase == hash['especie'].downcase ? nil : taxon.x_especie
+        correcciones_hash['SCAT_CorreccionEspecie'] = taxon.x_especie.try(:downcase) == hash['especie'].try(:downcase) ? nil : taxon.x_especie
       end
 
       if hash.key?('autoridad')
-        correcciones_hash['SCAT_CorreccionAutorEspecie'] = taxon.x_nombre_autoridad_especie.downcase == hash['autoridad'].downcase ? nil : taxon.x_nombre_autoridad_especie
+        correcciones_hash['SCAT_CorreccionAutorEspecie'] = taxon.x_nombre_autoridad_especie.try(:downcase) == hash['autoridad'].try(:downcase) ? nil : taxon.x_nombre_autoridad_especie
       end
 
       if hash.key?('infraespecie')
         cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
 
         if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-          correcciones_hash['SCAT_CorreccionInfraespecie'] = taxon.nombre.downcase == hash['infraespecie'].downcase ? nil : taxon.nombre
+          correcciones_hash['SCAT_CorreccionInfraespecie'] = taxon.nombre.downcase == hash['infraespecie'].try(:downcase) ? nil : taxon.nombre
         else
           correcciones_hash['SCAT_CorreccionInfraespecie'] = nil
         end
       end
 
       if hash.key?('autoridad_infraespecie')
-        correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = taxon.x_nombre_autoridad_infraespecie.downcase == hash['autoridad_infraespecie'].downcase ? nil : taxon.x_nombre_autoridad_infraespecie
+        correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = taxon.x_nombre_autoridad_infraespecie.try(:downcase) == hash['autoridad_infraespecie'].try(:downcase) ? nil : taxon.x_nombre_autoridad_infraespecie
       end
 
       # correcciones_hash['SCAT_CorreccionSinonimo'] = ''  # Sin implementar
@@ -415,12 +415,118 @@ class ValidacionesController < ApplicationController
   end
 
   def validacion_interna(info = {})
+    validacion_interna_hash = {}
 
+    if info[:estatus]
+      taxon = info[:taxon_valido].present? ? info[:taxon_valido] : info[:taxon]
+      hash = info[:hash]
+
+      validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino
+
+      if taxon.x_phylum.present?
+        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_phylum
+      else
+        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_division
+      end
+
+      validacion_interna_hash['SCAT_Clase_valido'] = taxon.x_clase
+      validacion_interna_hash['SCAT_Subclase_valido'] = taxon.x_subclase
+      validacion_interna_hash['SCAT_Orden_valido'] = taxon.x_orden
+      validacion_interna_hash['SCAT_Suborden_valido'] = taxon.x_suborden
+      validacion_interna_hash['SCAT_Infraorden_valido'] = taxon.x_infraorden
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = taxon.x_superfamilia
+      validacion_interna_hash['SCAT_Familia_valido'] = taxon.x_familia
+      validacion_interna_hash['SCAT_Genero_valido'] = taxon.x_genero
+      validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero
+      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie
+      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad_especie
+
+      # Para la infraespecie
+      cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
+      if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre
+      else
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = nil
+      end
+
+      validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
+
+      # Para la NOM
+      nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
+      if nom.length == 1
+        taxon.x_nom = nom[0].descripcion
+        validacion_interna_hash['SCAT_NOM-059'] = taxon.x_nom
+      else
+        validacion_interna_hash['SCAT_NOM-059'] = nil
+      end
+
+      # Para IUCN
+      iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
+      if iucn.length == 1
+        taxon.x_iucn = iucn[0].descripcion
+        validacion_interna_hash['SCAT_IUCN'] = taxon.x_iucn
+      else
+        validacion_interna_hash['SCAT_IUCN'] = nil
+      end
+
+      cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
+      if cites.length == 1
+        taxon.x_cites = cites[0].descripcion
+        validacion_interna_hash['SCAT_CITES'] = taxon.x_cites
+      else
+        validacion_interna_hash['SCAT_CITES'] = nil
+      end
+
+      # Para el tipo de distribucion
+      tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
+      if tipos_distribuciones.any? || taxon.invasora.present?
+        tipos_distribuciones << 'invasora' if taxon.invasora.present?
+        taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
+        validacion_interna_hash['SCAT_Distribucion'] = taxon.x_tipo_distribucion
+      else
+        validacion_interna_hash['SCAT_Distribucion'] = nil
+      end
+
+      validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
+      validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
+
+    else  # Asociacion vacia, solo el error
+      validacion_interna_hash['SCAT_Reino_valido'] = nil
+      validacion_interna_hash['SCAT_Phylum/Division_valido'] = nil
+      validacion_interna_hash['SCAT_Clase_valido'] = nil
+      validacion_interna_hash['SCAT_Subclase_valido'] = nil
+      validacion_interna_hash['SCAT_Orden_valido'] = nil
+      validacion_interna_hash['SCAT_Suborden_valido'] = nil
+      validacion_interna_hash['SCAT_Infraorden_valido'] = nil
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = nil
+      validacion_interna_hash['SCAT_Familia_valido'] = nil
+      validacion_interna_hash['SCAT_Genero_valido'] = nil
+      validacion_interna_hash['SCAT_Subgenero_valido'] = nil
+      validacion_interna_hash['SCAT_Especie_valido'] = nil
+      validacion_interna_hash['SCAT_Especie_valido'] = nil
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = nil
+      validacion_interna_hash['SCAT_Infraespecie_valido'] = nil
+      validacion_interna_hash['SCAT_Infraespecie_valido'] = nil
+      validacion_interna_hash['SCAT_Categoria_valido'] = nil
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = nil
+      validacion_interna_hash['SCAT_NombreCient_valido'] = nil
+      validacion_interna_hash['SCAT_NOM-059'] = nil
+      validacion_interna_hash['SCAT_IUCN'] = nil
+      validacion_interna_hash['SCAT_CITES'] = nil
+      validacion_interna_hash['SCAT_Distribucion'] = nil
+      validacion_interna_hash['SCAT_CatalogoDiccionario'] = nil
+      validacion_interna_hash['SCAT_Fuente'] = nil
+    end
+
+    validacion_interna_hash
   end
 
   def comprueba_columnas(cabecera)
     columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
-    columnas_opcionales = %w(division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+    columnas_opcionales = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
     columnas_asociadas = Hash.new
     columnas_faltantes = []
 
