@@ -323,12 +323,36 @@ class ValidacionesController < ApplicationController
         correcciones_hash['SCAT_CorreccionDivision'] = taxon.x_division.downcase == hash['division'].downcase ? nil : taxon.x_division
       end
 
+      if hash.key?('subdivision')
+        correcciones_hash['SCAT_CorreccionSubdivision'] = taxon.x_subdivision.downcase == hash['subdivision'].downcase ? nil : taxon.x_subdivision
+      end
+
+      if hash.key?('phylum')
+        correcciones_hash['SCAT_CorreccionPhylum'] = taxon.x_phylum.downcase == hash['phylum'].downcase ? nil : taxon.x_phylum
+      end
+
       if hash.key?('clase')
         correcciones_hash['SCAT_CorreccionClase'] = taxon.x_clase.downcase == hash['clase'].downcase ? nil : taxon.x_clase
       end
 
+      if hash.key?('subclase')
+        correcciones_hash['SCAT_CorreccionSubclase'] = taxon.x_subclase.downcase == hash['subclase'].downcase ? nil : taxon.x_subclase
+      end
+
       if hash.key?('orden')
         correcciones_hash['SCAT_CorreccionOrden'] = taxon.x_orden.downcase == hash['orden'].downcase ? nil : taxon.x_orden
+      end
+
+      if hash.key?('suborden')
+        correcciones_hash['SCAT_CorreccionSuborden'] = taxon.x_suborden.downcase == hash['suborden'].downcase ? nil : taxon.x_suborden
+      end
+
+      if hash.key?('infraorden')
+        correcciones_hash['SCAT_CorreccionInfraorden'] = taxon.x_infraorden.downcase == hash['infraorden'].downcase ? nil : taxon.x_infraorden
+      end
+
+      if hash.key?('superfamilia')
+        correcciones_hash['SCAT_CorreccionSuperfamilia'] = taxon.x_superfamilia.downcase == hash['superfamilia'].downcase ? nil : taxon.x_superfamilia
       end
 
       if hash.key?('familia')
@@ -370,8 +394,14 @@ class ValidacionesController < ApplicationController
     else  # Asociacion vacia
         correcciones_hash['SCAT_CorreccionReino'] = nil if hash.key?('reino')
         correcciones_hash['SCAT_CorreccionDivision'] = nil if hash.key?('division')
+        correcciones_hash['SCAT_CorreccionSubdivision'] = nil if hash.key?('subdivision')
+        correcciones_hash['SCAT_CorreccionPhylum'] = nil if hash.key?('phylum')
         correcciones_hash['SCAT_CorreccionClase'] = nil if hash.key?('clase')
+        correcciones_hash['SCAT_CorreccionSubclase'] = nil if hash.key?('subclase')
         correcciones_hash['SCAT_CorreccionOrden'] = nil if hash.key?('orden')
+        correcciones_hash['SCAT_CorreccionSuborden'] = nil if hash.key?('suborden')
+        correcciones_hash['SCAT_CorreccionInfraorden'] = nil if hash.key?('infraorden')
+        correcciones_hash['SCAT_CorreccionSuperfamilia'] = nil if hash.key?('superfamilia')
         correcciones_hash['SCAT_CorreccionFamilia'] = nil if hash.key?('familia')
         correcciones_hash['SCAT_CorreccionGenero'] = nil if hash.key?('genero')
         correcciones_hash['SCAT_CorreccionSubgenero'] = nil if hash.key?('subgenero')
@@ -382,6 +412,10 @@ class ValidacionesController < ApplicationController
     end
 
     correcciones_hash
+  end
+
+  def validacion_interna(info = {})
+
   end
 
   def comprueba_columnas(cabecera)
