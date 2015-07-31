@@ -137,8 +137,7 @@ class ValidacionesController < ApplicationController
       if t.x_familia == hash['familia'].downcase
 
         if coincidio_alguno
-          h = h.merge(SCAT_Observaciones: 'Existen 2 taxones iguales, coinciden familias')
-          return {hash: h, estatus: false}
+          return {hash: h, estatus: false, error: 'Existen 2 taxones iguales, coinciden hasta familias'}
         else
           taxon_coincidente = t
           coincidio_alguno = true
@@ -150,17 +149,15 @@ class ValidacionesController < ApplicationController
     if coincidio_alguno
       return {taxon: taxon_coincidente, hash: h, estatus: true}
     else  # De lo contrario no hubo coincidencias claras
-      h = h.merge(SCAT_Observaciones: 'Existen 2 taxones iguales, no coinciden familias')
-      return {hash: h, estatus: false}
+      return {hash: h, estatus: false, error: 'Existen 2 taxones iguales, coinciden hasta familias'}
     end
   end
 
   # Encuentra el mas parecido
-  def encuentra_id_por_nombre_cientifico(hash = {})
+  def encuentra_record_por_nombre_cientifico(hash = {})
     # Evita que el nombre cientifico este vacio
     if hash['nombre_cientifico'].blank?
-      h = h.merge(SCAT_Observaciones: 'El nombre cientifico está vacío')
-      return {hash: h, estatus: false}
+      return {hash: h, estatus: false, error: 'El nombre cientifico está vacío'}
     end
 
     h = hash
@@ -195,8 +192,7 @@ class ValidacionesController < ApplicationController
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
 
           if taxones.empty?
-            h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
-            return {hash: h, estatus: false}
+            return {hash: h, estatus: false, error: 'Sin coincidencias'}
           end
 
           taxones_con_distancia = []
@@ -209,15 +205,13 @@ class ValidacionesController < ApplicationController
           end
 
           if taxones_con_distancia.empty?
-            h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
-            return {hash: h, estatus: false}
+            return {hash: h, estatus: false, error: 'Sin coincidencias'}
           else
             return busca_recursivamente(taxones_con_distancia, hash)
           end
 
         else  # No hubo coincidencias con su nombre cientifico
-          h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
-          return {hash: h, estatus: false}
+          return {hash: h, estatus: false, error: 'Sin coincidencias'}
         end
       end
 
@@ -236,7 +230,7 @@ class ValidacionesController < ApplicationController
         next
       end
 
-      info = encuentra_id_por_nombre_cientifico(hash)
+      info = encuentra_record_por_nombre_cientifico(hash)
 
       if info[:estatus]
         @hash << info[:hash].merge(nombre_cientifico_cat: info[:taxon].nombre_cientifico)
@@ -244,6 +238,93 @@ class ValidacionesController < ApplicationController
         @hash << info[:hash]
       end
     end
+  end
+
+  # Asocia la respuesta para armar el contenido del excel
+  def asocia_respuesta(info = {})
+    if info[:estatus]
+      taxon = info[:taxon]
+      hash = info
+
+      if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
+        estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
+
+        if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
+          begin  # Por si ya no existe ese taxon, suele pasar!
+            taxon_valido = Especie.find(estatus.especie_id2)
+            t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
+            hash[:taxon_valido] = t_val
+          rescue
+            hash[:estatus] = false
+            hash[:error] = 'No existe el taxón válido en CAT'
+          end
+
+        else  # No existe el valido >.>!
+          hash[:estatus] = false
+          hash[:error] = 'No existe el taxón válido en CAT'
+        end
+      end  # End estatus = 1
+    end  # End info estatus
+
+    # Se completa cada seccion del excel
+    resumen_hash = resumen(hash)
+  end
+
+  # Parte roja del excel
+  def resumen(info = {})
+    resumen_hash = {}
+
+    if info[:estatus]
+      taxon = info[:taxon]
+      hash = info[:hash]
+
+      resumen_hash['SCAT_NombreEstatus'] = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
+      resumen_hash['SCAT_Observaciones'] = nil
+      resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
+      resumen_hash['SCAT_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_cientifico : taxon.nombre_cientifico
+      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_autoridad : taxon.nombre_autoridad
+
+    else  # Asociacion vacia, solo el error
+      resumen_hash['SCAT_NombreEstatus'] = nil
+      resumen_hash['SCAT_Observaciones'] = info[:error]
+      resumen_hash['SCAT_Correccion_NombreCient'] = nil
+      resumen_hash['SCAT_NombreCient_valido'] = nil
+      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
+    end
+
+    resumen_hash
+  end
+
+  # Parte azul del excel
+  def correcciones(info = {})
+    correcciones_hash = {}
+
+    if info[:estatus]
+      taxon = info[:taxon]
+      hash = info[:hash]
+
+      correcciones_hash['SCAT_CorreccionReino'] = ''
+      correcciones_hash['SCAT_CorreccionDivision'] = ''
+      correcciones_hash['SCAT_CorreccionClase'] = ''
+      correcciones_hash['SCAT_CorreccionOrden'] = ''
+      correcciones_hash['SCAT_CorreccionFamilia'] = ''
+      correcciones_hash['SCAT_CorreccionGenero'] = ''
+      correcciones_hash['SCAT_CorreccionSubgenero'] = ''
+      correcciones_hash['SCAT_CorreccionEspecie'] = ''
+      correcciones_hash['SCAT_CorreccionAutorEspecie'] = ''
+      correcciones_hash['SCAT_CorreccionInfraespecie'] = ''
+      correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = ''
+      correcciones_hash['SCAT_CorreccionSinonimo'] = ''
+
+    else  # Asociacion vacia, solo el error
+      resumen_hash['SCAT_NombreEstatus'] = nil
+      resumen_hash['SCAT_Observaciones'] = info[:error]
+      resumen_hash['SCAT_Correccion_NombreCient'] = nil
+      resumen_hash['SCAT_NombreCient_valido'] = nil
+      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
+    end
+
+    correcciones_hash
   end
 
   def comprueba_columnas(cabecera)
