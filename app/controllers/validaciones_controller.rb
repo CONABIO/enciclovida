@@ -109,6 +109,17 @@ class ValidacionesController < ApplicationController
       categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
       next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
       eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+
+      # Asigna autoridades para el excel
+      if categoria == 'x_especie'
+        taxon.x_nombre_autoridad_especie = taxon.nombre_autoridad
+      end
+
+      # Para las infraespecies
+      infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.map{|c| "x_#{c}"}
+      if infraespecies.include?(categoria)
+        taxon.x_nombre_autoridad_infraespecie = taxon.nombre_autoridad
+      end
     end
 
     # Asigna la categoria taxonomica
@@ -268,6 +279,7 @@ class ValidacionesController < ApplicationController
 
     # Se completa cada seccion del excel
     resumen_hash = resumen(hash)
+    correcciones_hash = correcciones(hash)
   end
 
   # Parte roja del excel
@@ -303,25 +315,70 @@ class ValidacionesController < ApplicationController
       taxon = info[:taxon]
       hash = info[:hash]
 
-      correcciones_hash['SCAT_CorreccionReino'] = ''
-      correcciones_hash['SCAT_CorreccionDivision'] = ''
-      correcciones_hash['SCAT_CorreccionClase'] = ''
-      correcciones_hash['SCAT_CorreccionOrden'] = ''
-      correcciones_hash['SCAT_CorreccionFamilia'] = ''
-      correcciones_hash['SCAT_CorreccionGenero'] = ''
-      correcciones_hash['SCAT_CorreccionSubgenero'] = ''
-      correcciones_hash['SCAT_CorreccionEspecie'] = ''
-      correcciones_hash['SCAT_CorreccionAutorEspecie'] = ''
-      correcciones_hash['SCAT_CorreccionInfraespecie'] = ''
-      correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = ''
-      correcciones_hash['SCAT_CorreccionSinonimo'] = ''
+      if hash.key?('reino')
+        correcciones_hash['SCAT_CorreccionReino'] = taxon.x_reino.downcase == hash['reino'].downcase ? nil : taxon.x_reino
+      end
 
-    else  # Asociacion vacia, solo el error
-      resumen_hash['SCAT_NombreEstatus'] = nil
-      resumen_hash['SCAT_Observaciones'] = info[:error]
-      resumen_hash['SCAT_Correccion_NombreCient'] = nil
-      resumen_hash['SCAT_NombreCient_valido'] = nil
-      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
+      if hash.key?('division')
+        correcciones_hash['SCAT_CorreccionDivision'] = taxon.x_division.downcase == hash['division'].downcase ? nil : taxon.x_division
+      end
+
+      if hash.key?('clase')
+        correcciones_hash['SCAT_CorreccionClase'] = taxon.x_clase.downcase == hash['clase'].downcase ? nil : taxon.x_clase
+      end
+
+      if hash.key?('orden')
+        correcciones_hash['SCAT_CorreccionOrden'] = taxon.x_orden.downcase == hash['orden'].downcase ? nil : taxon.x_orden
+      end
+
+      if hash.key?('familia')
+        correcciones_hash['SCAT_CorreccionFamilia'] = taxon.x_familia.downcase == hash['familia'].downcase ? nil : taxon.x_familia
+      end
+
+      if hash.key?('genero')
+        correcciones_hash['SCAT_CorreccionGenero'] = taxon.x_genero.downcase == hash['genero'].downcase ? nil : taxon.x_genero
+      end
+
+      if hash.key?('subgenero')
+        correcciones_hash['SCAT_CorreccionSubgenero'] = taxon.x_subgenero.downcase == hash['subgenero'].downcase ? nil : taxon.x_subgenero
+      end
+
+      if hash.key?('especie')
+        correcciones_hash['SCAT_CorreccionEspecie'] = taxon.x_especie.downcase == hash['especie'].downcase ? nil : taxon.x_especie
+      end
+
+      if hash.key?('autoridad')
+        correcciones_hash['SCAT_CorreccionAutorEspecie'] = taxon.x_nombre_autoridad_especie.downcase == hash['autoridad'].downcase ? nil : taxon.x_nombre_autoridad_especie
+      end
+
+      if hash.key?('infraespecie')
+        cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
+
+        if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
+          correcciones_hash['SCAT_CorreccionInfraespecie'] = taxon.nombre.downcase == hash['infraespecie'].downcase ? nil : taxon.nombre
+        else
+          correcciones_hash['SCAT_CorreccionInfraespecie'] = nil
+        end
+      end
+
+      if hash.key?('autoridad_infraespecie')
+        correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = taxon.x_nombre_autoridad_infraespecie.downcase == hash['autoridad_infraespecie'].downcase ? nil : taxon.x_nombre_autoridad_infraespecie
+      end
+
+      # correcciones_hash['SCAT_CorreccionSinonimo'] = ''  # Sin implementar
+
+    else  # Asociacion vacia
+        correcciones_hash['SCAT_CorreccionReino'] = nil if hash.key?('reino')
+        correcciones_hash['SCAT_CorreccionDivision'] = nil if hash.key?('division')
+        correcciones_hash['SCAT_CorreccionClase'] = nil if hash.key?('clase')
+        correcciones_hash['SCAT_CorreccionOrden'] = nil if hash.key?('orden')
+        correcciones_hash['SCAT_CorreccionFamilia'] = nil if hash.key?('familia')
+        correcciones_hash['SCAT_CorreccionGenero'] = nil if hash.key?('genero')
+        correcciones_hash['SCAT_CorreccionSubgenero'] = nil if hash.key?('subgenero')
+        correcciones_hash['SCAT_CorreccionEspecie'] = nil if hash.key?('especie')
+        correcciones_hash['SCAT_CorreccionAutorEspecie'] = nil if hash.key?('autoridad')
+        correcciones_hash['SCAT_CorreccionInfraespecie'] = nil if hash.key?('infraespecie')
+        correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = nil if hash.key?('autoridad_infraespecie')
     end
 
     correcciones_hash

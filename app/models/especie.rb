@@ -14,7 +14,8 @@ class Especie < ActiveRecord::Base
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
-                :x_subgrupo, :x_hiporden
+                :x_subgrupo, :x_hiporden,
+                :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie  # Para que en el excel sea mas facil la consulta
 
   has_one :proveedor
   has_one :adicional
