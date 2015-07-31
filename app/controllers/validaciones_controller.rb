@@ -188,9 +188,37 @@ class ValidacionesController < ApplicationController
         return {taxon: taxon.first, hash: hash, estatus: true}
       elsif taxon.length > 1
         return busca_recursivamente(taxon, hash)
-      else  # Lo buscamos con el fuzzy match y despues con el algorithmo de aproximacion
-        h = h.merge(SCAT_Observaciones: 'Caso no muy claro')
-        return {hash: h, estatus: false}
+      else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
+        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'], limit=CONFIG.limit_fuzzy)
+
+        if ids.present?
+          taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
+
+          if taxones.empty?
+            h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
+            return {hash: h, estatus: false}
+          end
+
+          taxones_con_distancia = []
+          taxones.each do |taxon|
+            # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+            distancia = Levenshtein.distance(hash['nombre_cientifico'].downcase, taxon.nombre_cientifico.limpiar.downcase)
+
+            next if distancia > 2  # No cumple con la distancia
+            taxones_con_distancia << taxon
+          end
+
+          if taxones_con_distancia.empty?
+            h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
+            return {hash: h, estatus: false}
+          else
+            return busca_recursivamente(taxones_con_distancia, hash)
+          end
+
+        else  # No hubo coincidencias con su nombre cientifico
+          h = h.merge(SCAT_Observaciones: 'Sin coincidencias')
+          return {hash: h, estatus: false}
+        end
       end
 
     end  #Fin de las posibles coincidencias
