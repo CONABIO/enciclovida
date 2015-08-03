@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: 'Validación CAT') do |sheet|
+
+  sheet.add_row @columnas
+  i = 0
+
+  while i < @hash.length  do
+    sheet.add_row @hash[i].map{|k,v| v}
+    i +=1
+  end
+end

@@ -88,10 +88,6 @@ GEM
     actionpack-action_caching (1.1.1)
       actionpack (>= 4.0.0, < 5.0)
     activerecord-deprecated_finders (1.0.3)
-    acts_as_xlsx (1.0.6)
-      activerecord (>= 2.3.9)
-      axlsx (>= 1.0.13)
-      i18n (>= 0.4.1)
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
@@ -193,6 +189,9 @@ GEM
       rubyzip
       spreadsheet (> 0.6.4)
     ruby-ole (1.2.11.8)
+    rubyXL (3.1.0)
+      nokogiri (>= 1.4.4)
+      rubyzip (>= 1.0.0)
     rubyntlm (0.3.4)
     rubyzip (1.0.0)
     sass (3.2.19)
@@ -269,7 +268,6 @@ DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store!
   activerecord-sqlserver-adapter!
-  acts_as_xlsx
   ancestry!
   axlsx
   axlsx_rails
@@ -301,6 +299,7 @@ DEPENDENCIES
   rest-client
   rinku
   roo
+  rubyXL
   sass-rails (~> 4.0.0)
   savon (= 2.4.0)
   sdoc

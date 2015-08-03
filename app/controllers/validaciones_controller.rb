@@ -71,6 +71,7 @@ class ValidacionesController < ApplicationController
       if params[:excel].content_type != content_type
         @errores << t('errors.messages.extension_validacion_excel')
       else
+
         xlsx = Roo::Excelx.new(params[:excel].path, nil, :ignore)
         @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
@@ -88,8 +89,9 @@ class ValidacionesController < ApplicationController
           if cc[:faltan].any?
             @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
           else
-            uploader.store!(params[:excel])  # Guarda el archivo
+            #uploader.store!(params[:excel])  # Guarda el archivo
             valida_campos(@sheet, cc[:asociacion])  # Valida los campos en la base
+            escribe_excel
           end
         end
       end  # Fin del tipo de archivo
@@ -99,7 +101,33 @@ class ValidacionesController < ApplicationController
     end  # Fin del rescue
   end
 
+
   private
+
+
+  # Escribe los datos del excel con la gema rubyXL
+  def escribe_excel
+    @prueba = @sheet.last_column
+    xlsx = RubyXL::Parser.parse(params[:excel].path)  # El excel con su primera sheet
+    sheet = xlsx[0]
+    fila = 1  # Uno para que 0 sea la cabecera
+
+    @hash.each do |h|
+      columna = @sheet.last_column  # Desde la columna donde empieza
+
+      h.each do |k,v|
+
+        #while fila < @hash.first.count do  # El numero de columnas resultantes
+          sheet.add_cell(fila,columna,v)
+          columna+= 1
+        #end
+      end
+      fila+= 1
+    end
+
+    # Escribe el excel en cierta ruta
+    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/file.xlsx")
+  end
 
   def asigna_categorias_correspondientes(taxon)
     return nil unless taxon.ancestry_ascendente_directo.present?  # Por si se les olvido poner el ascendente_directo o es reino
