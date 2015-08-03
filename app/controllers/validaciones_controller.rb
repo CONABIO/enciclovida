@@ -107,7 +107,6 @@ class ValidacionesController < ApplicationController
 
   # Escribe los datos del excel con la gema rubyXL
   def escribe_excel
-    @prueba = @sheet.last_column
     xlsx = RubyXL::Parser.parse(params[:excel].path)  # El excel con su primera sheet
     sheet = xlsx[0]
     fila = 1  # Uno para que 0 sea la cabecera
@@ -117,16 +116,18 @@ class ValidacionesController < ApplicationController
 
       h.each do |k,v|
 
-        #while fila < @hash.first.count do  # El numero de columnas resultantes
-          sheet.add_cell(fila,columna,v)
-          columna+= 1
-        #end
+        # Para la cabecera
+        sheet.add_cell(0,columna,k) if fila == 1
+
+        # Para los demas datos
+        sheet.add_cell(fila,columna,v)
+        columna+= 1
       end
       fila+= 1
     end
 
     # Escribe el excel en cierta ruta
-    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/file.xlsx")
+    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/public/validaciones_excel/ColimaApendiceCompletoValidado.xlsx")
   end
 
   def asigna_categorias_correspondientes(taxon)
@@ -173,7 +174,7 @@ class ValidacionesController < ApplicationController
       end
 
       # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
-      if t.x_familia == hash['familia'].downcase
+      if t.x_familia == hash['familia'].try(:downcase)
 
         if coincidio_alguno
           return {hash: h, estatus: false, error: 'Existen 2 taxones iguales, coinciden hasta familias'}
@@ -196,7 +197,7 @@ class ValidacionesController < ApplicationController
   def encuentra_record_por_nombre_cientifico(hash = {})
     # Evita que el nombre cientifico este vacio
     if hash['nombre_cientifico'].blank?
-      return {hash: h, estatus: false, error: 'El nombre cientifico está vacío'}
+      return {hash: hash, estatus: false, error: 'El nombre cientifico está vacío'}
     end
 
     h = hash
@@ -221,10 +222,10 @@ class ValidacionesController < ApplicationController
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
               end
 
-      if taxon.length == 1  # Caso mas sencillo
+      if taxon.present? && taxon.length == 1  # Caso mas sencillo
         taxon = asigna_categorias_correspondientes(taxon.first)
         return {taxon: taxon, hash: hash, estatus: true}
-      elsif taxon.length > 1
+      elsif taxon.present? && taxon.length > 1
         return busca_recursivamente(taxon, hash)
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
         ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'], limit=CONFIG.limit_fuzzy)
@@ -286,7 +287,7 @@ class ValidacionesController < ApplicationController
 
         if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
           begin  # Por si ya no existe ese taxon, suele pasar!
-            taxon_valido = Especie.find(estatus.especie_id2)
+            taxon_valido = Especie.find(estatus.first.especie_id2)
             t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
             info[:taxon_valido] = t_val
           rescue
@@ -434,7 +435,7 @@ class ValidacionesController < ApplicationController
         correcciones_hash['SCAT_CorreccionGenero'] = nil if hash.key?('genero')
         correcciones_hash['SCAT_CorreccionSubgenero'] = nil if hash.key?('subgenero')
         correcciones_hash['SCAT_CorreccionEspecie'] = nil if hash.key?('especie')
-        correcciones_hash['SCAT_CorreccionAutorEspecie'] = nil if hash.key?('autoridad')
+        correcciones_hash['SCAT_CorreccionAutorEspecie'] = nil if hash.key?('autoridad_especie')
         correcciones_hash['SCAT_CorreccionInfraespecie'] = nil if hash.key?('infraespecie')
         correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = nil if hash.key?('autoridad_infraespecie')
     end
