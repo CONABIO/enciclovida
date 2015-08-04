@@ -432,14 +432,14 @@ class Especie < ActiveRecord::Base
   def nom_com_prin(humanizar = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?
-        humanizar ? self.nombre_comun_principal.humanizar : self.nombre_comun_principal
+        humanizar ? self.nombre_comun_principal.humanizar? : self.nombre_comun_principal
       else
         ''
       end
     else
       if adicional
         if adicional.nombre_comun_principal.present?
-          humanizar ? adicional.nombre_comun_principal.humanizar : adicional.nombre_comun_principal
+          humanizar ? adicional.nombre_comun_principal.humanizar? : adicional.nombre_comun_principal
         else
           ''
         end

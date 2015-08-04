@@ -31,5 +31,13 @@ class String
   def limpia_sql
     self.gsub("'", "''")
   end
+
+  # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
+  def humanizar?
+    # Verifica solo con el primer caracter
+    original = self
+    primera_capital = self[0,1].capitalize << self[1..-1]
+    original == primera_capital ? self : self.humanizar
+  end
 end
 
