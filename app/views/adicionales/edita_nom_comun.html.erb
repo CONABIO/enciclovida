@@ -7,7 +7,7 @@
         <% nombres_comunes = @nombres_comunes.map{|nombre, id| id} %>
 
         <%= f.label :select_nom_comun %>:
-        <% if nombres_comunes.include?(@adicional.nombre_comun_principal.humanizar) %>
+        <% if nombres_comunes.include?(@adicional.nombre_comun_principal) %>
 
             <%= f.select :select_nom_comun, @nombres_comunes << %w(Otro Otro),
                          :selected => @adicional.nombre_comun_principal.humanizar,
