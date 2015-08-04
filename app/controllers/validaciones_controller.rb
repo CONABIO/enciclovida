@@ -169,7 +169,34 @@ class ValidacionesController < ApplicationController
 
       # Si es la especie lo mando directo a coincidencia
       cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
-      if cat_tax_taxon_cat == 'especie' && nombres.length == 2 && hash[:infraespecie].blank?
+      if cat_tax_taxon_cat == 'especie' && nombres.length == 2 && hash['infraespecie'].blank?
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      # Caso para infraespecies
+      variedad = %w(var. var variedad)
+      if cat_tax_taxon_cat == 'variedad' && nombres.length == 3 && variedad.include?(hash['categoria'].try(:downcase))
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      subvariedad = %w(subvar. subvar subvariedad)
+      if cat_tax_taxon_cat == 'subvariedad' && nombres.length == 3 && subvariedad.include?(hash['categoria'].try(:downcase))
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      forma = %w(f. f forma)
+      if cat_tax_taxon_cat == 'forma' && nombres.length == 3 && forma.include?(hash['categoria'].try(:downcase))
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      subforma = %w(subf. subf subforma)
+      if cat_tax_taxon_cat == 'subforma' && nombres.length == 3 && subforma.include?(hash['categoria'].try(:downcase))
+        return {taxon: t, hash: h, estatus: true}
+      end
+
+      # Si no coincide ninguna de las infraespecies anteriores, toma subespecie por default
+      subespecies = %w(subsp. subsp subespecie ssp. ssp)
+      if cat_tax_taxon_cat == 'subespecie' && nombres.length == 3 && (hash['categoria'].blank? || subespecies.include?(hash['categoria'].try(:downcase)))
         return {taxon: t, hash: h, estatus: true}
       end
 
@@ -177,7 +204,7 @@ class ValidacionesController < ApplicationController
       if t.x_familia == hash['familia'].try(:downcase)
 
         if coincidio_alguno
-          return {hash: h, estatus: false, error: 'Existen 2 taxones iguales, coinciden hasta familias'}
+          return {hash: h, estatus: false, error: 'El taxón es ambiguo'}
         else
           taxon_coincidente = t
           coincidio_alguno = true
@@ -189,7 +216,7 @@ class ValidacionesController < ApplicationController
     if coincidio_alguno
       return {taxon: taxon_coincidente, hash: h, estatus: true}
     else  # De lo contrario no hubo coincidencias claras
-      return {hash: h, estatus: false, error: 'Existen 2 taxones iguales, coinciden hasta familias'}
+      return {hash: h, estatus: false, error: 'El taxón es ambiguo'}
     end
   end
 
