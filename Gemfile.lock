@@ -92,13 +92,6 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (4.0.2)
-    axlsx (2.0.1)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (~> 1.0.0)
-    axlsx_rails (0.3.0)
-      axlsx (>= 2.0.1)
-      rails (>= 3.1)
     bcrypt (3.1.7)
     blurrily (0.2.1)
       activesupport
@@ -269,8 +262,6 @@ DEPENDENCIES
   activerecord-session_store!
   activerecord-sqlserver-adapter!
   ancestry!
-  axlsx
-  axlsx_rails
   blurrily (= 0.2.1)
   carrierwave
   cocoon (= 1.2.0)
