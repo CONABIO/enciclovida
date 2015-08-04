@@ -108,12 +108,12 @@ class AdicionalesController < ApplicationController
           @adicional.borra_nom_comun_en_redis
         end
 
-        redirect_to especy_url(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
+        redirect_to especie_path(@adicional.especie_id), notice: 'El nombre común principal se actualizó correctamente.'
       else
-        redirect_to especy_url(@adicional.especie_id), notice: 'Lo sentimos en este momento no se puede actualizar.'
+        redirect_to especie_path(@adicional.especie_id), notice: 'Lo sentimos en este momento no se puede actualizar.'
       end
     else
-      redirect_to especy_url(@adicional.especie_id), notice: 'No se detecto ningun cambio en el nombre común.'
+      redirect_to especie_path(@adicional.especie_id), notice: 'No se detecto ningun cambio en el nombre común.'
     end
   end
 
