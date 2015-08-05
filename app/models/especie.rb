@@ -319,7 +319,9 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-    Icono.where("taxon_icono NOT IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+
+    # Itera los grupos
+    Icono.where("taxon_icono NOT IN ('#{CategoriaTaxonomica::CATEGORIAS_REINOS.join("','")}')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
@@ -333,6 +335,10 @@ class Especie < ActiveRecord::Base
         rescue
           next
         end
+
+        # No poner icono de genero hacia abajo
+        genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero'
+        next if genero_infraespecies.include?(I18n.transliterate(t.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
 
         if t.adicional
           t.adicional.icono_id = id
@@ -348,35 +354,21 @@ class Especie < ActiveRecord::Base
       end  # Cierra el each
     end  # Cierra el iterador de grupos
 
-    # Corre los grupos grandes con muchos sub grupos iconicos y que no tienen icono
-    Icono.where("taxon_icono IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
-      especie_id = Especie.where(:nombre_cientifico => grupo)[0].id
+    # Corre los reinos
+    Icono.where("taxon_icono IN ('#{CategoriaTaxonomica::CATEGORIAS_REINOS.join("','")}')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+      puts grupo
+      taxon = Especie.where(:nombre_cientifico => grupo).first
+      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      taxones_default = Especie.adicional_join.icono_join.where('iconos.icono IS NULL').
-          where("ancestry_ascendente_directo='#{especie_id}' OR ancestry_ascendente_directo LIKE '#{especie_id}/%' OR nombre_cientifico='#{grupo}'")
-
-      taxones_default.find_each do |taxon_default|
-        puts "Descendiente de #{grupo}: #{taxon_default.id}"
-
-        begin
-          t = Especie.find(taxon_default.id)
-        rescue
-          next
-        end
-
-        if t.adicional
-          t.adicional.icono_id = id
-        else
-          ad = t.crea_con_grupo_iconico(id)
-          ad.save
-          next
-        end
-
-        if t.adicional.icono_id_changed?
-          t.adicional.save
-        end
+      if taxon.adicional
+        taxon.adicional.icono_id = id
+      else
+        ad = taxon.crea_con_grupo_iconico(grupo)
+        ad.save
+        next
       end
-    end
+
+    end  # Cierra el iterador de grupos
   end
 
   # Pone el grupo iconico en la tabla adicionales

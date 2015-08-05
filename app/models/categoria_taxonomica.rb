@@ -10,8 +10,10 @@ class CategoriaTaxonomica < ActiveRecord::Base
   CATEGORIAS  = self.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_').downcase}.uniq
   # Despliego solo estas categorias para la vista basica
   CATEGORIAS_OBLIGATORIAS = %w(Reino phylum división clase orden familia género especie subespecie)
-  # Pras un mejor uso de las infraespecies
+  # Para un mejor uso de las infraespecies
   CATEGORIAS_INFRAESPECIES = %w(subespecie forma subforma variedad subvariedad)
+  # Reinos
+  CATEGORIAS_REINOS = %w(animalia plantae protoctista fungi prokaryotae)
 
   CATEGORIAS_DIVISION = {
       1 => {
