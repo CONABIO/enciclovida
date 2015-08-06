@@ -320,57 +320,56 @@ class Especie < ActiveRecord::Base
 
   def self.asigna_grupo_iconico
 
-    # Itera los grupos
-    Icono.where("taxon_icono NOT IN ('#{CategoriaTaxonomica::CATEGORIAS_REINOS.join("','")}')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+    # Itera los grupos y algunos reinos
+    animalia_plantae = %w(Animalia Plantae)
+    complemento_reinos = %w(Protoctista Fungi Prokaryotae)
+
+    puts complemento_reinos.inspect
+    Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
+      ad = Adicional.none
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      descendientes = taxon.subtree_ids
-      descendientes.each do |descendiente| # Itero sobre los descendientes
-        puts "Descendiente de #{grupo}: #{descendiente}"
-
-        begin
-          t = Especie.find(descendiente)
-        rescue
-          next
-        end
-
-        # No poner icono de genero hacia abajo
-        genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero'
-        next if genero_infraespecies.include?(I18n.transliterate(t.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
-
-        if t.adicional
-          t.adicional.icono_id = id
+      # solo animalia y plantae
+      if animalia_plantae.include?(grupo)
+        if ad = taxon.adicional
+          ad.icono_id = id
         else
-          ad = t.crea_con_grupo_iconico(grupo)
-          ad.save
-          next
+          ad = taxon.crea_con_grupo_iconico(grupo)
         end
 
-        if t.adicional.icono_id_changed?
-          t.adicional.save
-        end
-      end  # Cierra el each
-    end  # Cierra el iterador de grupos
+      else  # Los grupos y reinos menos animalia y plantae
+        descendientes = taxon.subtree_ids
 
-    # Corre los reinos
-    Icono.where("taxon_icono IN ('#{CategoriaTaxonomica::CATEGORIAS_REINOS.join("','")}')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
-      puts grupo
-      taxon = Especie.where(:nombre_cientifico => grupo).first
-      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
+        descendientes.each do |descendiente| # Itero sobre los descendientes
+          puts "Descendiente de #{grupo}: #{descendiente}"
 
-      if taxon.adicional
-        taxon.adicional.icono_id = id
-      else
-        ad = taxon.crea_con_grupo_iconico(grupo)
+          begin
+            taxon = Especie.find(descendiente)
+          rescue
+            next
+          end
+
+          if !complemento_reinos.include?(grupo)
+            # No poner icono de genero hacia abajo
+            genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero'
+            next if genero_infraespecies.include?(I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
+          end
+
+          if ad = taxon.adicional
+            ad.icono_id = id
+          else
+            ad = taxon.crea_con_grupo_iconico(grupo)
+          end
+        end  # Cierra el each
+      end
+
+      # Guarda el record
+      if ad.changed?
         ad.save
-        next
       end
 
-      if taxon.adicional.icono_id_changed?
-        taxon.adicional.save
-      end
     end  # Cierra el iterador de grupos
   end
 
