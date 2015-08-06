@@ -368,6 +368,9 @@ class Especie < ActiveRecord::Base
         next
       end
 
+      if taxon.adicional.icono_id_changed?
+        taxon.adicional.save
+      end
     end  # Cierra el iterador de grupos
   end
 
