@@ -362,6 +362,11 @@ class Especie < ActiveRecord::Base
           else
             ad = taxon.crea_con_grupo_iconico(grupo)
           end
+
+          # Guarda el record
+          if ad.changed?
+            ad.save
+          end
         end  # Cierra el each
       end
 
