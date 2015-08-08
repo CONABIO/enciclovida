@@ -400,7 +400,7 @@ class EspecieBio < ActiveRecord::Base
         categoria_taxonomica_join.caso_rango_valores('Nombre.IdNombre', ancestor_ids.reverse.join(',')).order('IdNombre DESC').each do |taxon|
 
       subgenero << " (#{taxon.nombre.limpiar}) " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'subgenero'
-      seccion << " sect. #{taxon.nombre.limpiar} " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'seccion'
+      seccion << " (sect. #{taxon.nombre.limpiar}) " if I18n.transliterate(taxon.nombre_categoria_taxonomica).downcase == 'seccion'
 
       case I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).downcase
 

@@ -1,5 +1,5 @@
 <p>
-  <code>Ojo: Este cambio solo se verá reflejado en la vista predeterminada</code>
+  <code>Ojo: Este cambio solo se verá reflejado en la vista general</code>
 </p>
 <%= form_for @adicional, url: {action: 'actualiza_nom_comun'}, :method => :post do |f| %>
     <%= f.hidden_field :id, :value => @adicional.id %>
@@ -7,7 +7,7 @@
         <% nombres_comunes = @nombres_comunes.map{|nombre, id| id} %>
 
         <%= f.label :select_nom_comun %>:
-        <% if nombres_comunes.include?(@adicional.nombre_comun_principal.humanizar) %>
+        <% if nombres_comunes.include?(@adicional.nombre_comun_principal) %>
 
             <%= f.select :select_nom_comun, @nombres_comunes << %w(Otro Otro),
                          :selected => @adicional.nombre_comun_principal.humanizar,

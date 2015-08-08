@@ -290,7 +290,7 @@ module EspeciesHelper
   end
 
   def checkboxPrioritaria
-    checkBoxes = "#{image_tag('app/32x32/help.png', title: 'Prioritarias', class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: 'campo_prioritaria')}"
+    checkBoxes = "#{image_tag('app/prioritaria.png', title: 'Prioritarias', class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: 'campo_prioritaria')}"
     checkBoxes << check_box_tag('prioritaria', '1', false, :style => 'display:none', :id => 'campo_prioritaria')
   end
 

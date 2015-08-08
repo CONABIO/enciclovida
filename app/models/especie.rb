@@ -14,7 +14,8 @@ class Especie < ActiveRecord::Base
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
-                :x_subgrupo, :x_hiporden
+                :x_subgrupo, :x_hiporden,
+                :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie  # Para que en el excel sea mas facil la consulta
 
   has_one :proveedor
   has_one :adicional
@@ -318,64 +319,63 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-    Icono.where("taxon_icono NOT IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
+
+    # Itera los grupos y algunos reinos
+    animalia_plantae = %w(Animalia Plantae)
+    complemento_reinos = %w(Protoctista Fungi Prokaryotae)
+
+    puts complemento_reinos.inspect
+    Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
+      ad = Adicional.none
       taxon = Especie.where(:nombre_cientifico => grupo).first
       puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
 
-      descendientes = taxon.subtree_ids
-      descendientes.each do |descendiente| # Itero sobre los descendientes
-        puts "Descendiente de #{grupo}: #{descendiente}"
-
-        begin
-          t = Especie.find(descendiente)
-        rescue
-          next
-        end
-
-        if t.adicional
-          t.adicional.icono_id = id
+      # solo animalia y plantae
+      if animalia_plantae.include?(grupo)
+        if ad = taxon.adicional
+          ad.icono_id = id
         else
-          ad = t.crea_con_grupo_iconico(grupo)
-          ad.save
-          next
+          ad = taxon.crea_con_grupo_iconico(grupo)
         end
 
-        if t.adicional.icono_id_changed?
-          t.adicional.save
-        end
-      end  # Cierra el each
-    end  # Cierra el iterador de grupos
+      else  # Los grupos y reinos menos animalia y plantae
+        descendientes = taxon.subtree_ids
 
-    # Corre los grupos grandes con muchos sub grupos iconicos y que no tienen icono
-    Icono.where("taxon_icono IN ('Animalia', 'Plantae')").map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
-      especie_id = Especie.where(:nombre_cientifico => grupo)[0].id
+        descendientes.each do |descendiente| # Itero sobre los descendientes
+          puts "Descendiente de #{grupo}: #{descendiente}"
 
-      taxones_default = Especie.adicional_join.icono_join.where('iconos.icono IS NULL').
-          where("ancestry_ascendente_directo='#{especie_id}' OR ancestry_ascendente_directo LIKE '#{especie_id}/%' OR nombre_cientifico='#{grupo}'")
+          begin
+            taxon = Especie.find(descendiente)
+          rescue
+            next
+          end
 
-      taxones_default.find_each do |taxon_default|
-        puts "Descendiente de #{grupo}: #{taxon_default.id}"
+          if !complemento_reinos.include?(grupo)
+            # No poner icono de genero hacia abajo
+            genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero'
+            next if genero_infraespecies.include?(I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
+          end
 
-        begin
-          t = Especie.find(taxon_default.id)
-        rescue
-          next
-        end
+          if ad = taxon.adicional
+            ad.icono_id = id
+          else
+            ad = taxon.crea_con_grupo_iconico(grupo)
+          end
 
-        if t.adicional
-          t.adicional.icono_id = id
-        else
-          ad = t.crea_con_grupo_iconico(id)
-          ad.save
-          next
-        end
-
-        if t.adicional.icono_id_changed?
-          t.adicional.save
-        end
+          # Guarda el record
+          if ad.changed?
+            ad.save
+          end
+        end  # Cierra el each
       end
-    end
+
+      # Guarda el record
+      if ad.changed?
+        ad.save
+      end
+
+    end  # Cierra el iterador de grupos
   end
 
   # Pone el grupo iconico en la tabla adicionales
@@ -431,14 +431,14 @@ class Especie < ActiveRecord::Base
   def nom_com_prin(humanizar = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?
-        humanizar ? self.nombre_comun_principal.humanizar : self.nombre_comun_principal
+        humanizar ? self.nombre_comun_principal.humanizar? : self.nombre_comun_principal
       else
         ''
       end
     else
       if adicional
         if adicional.nombre_comun_principal.present?
-          humanizar ? adicional.nombre_comun_principal.humanizar : adicional.nombre_comun_principal
+          humanizar ? adicional.nombre_comun_principal.humanizar? : adicional.nombre_comun_principal
         else
           ''
         end

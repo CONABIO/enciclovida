@@ -5,9 +5,15 @@ class String
   end
 
   # Quita simbolos raros y quita los terminos con punto que estan abajo de especies y subgenero
-  def limpiar
+  def limpiar(ssp = false)
     return self unless self.present?
-    self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( subsp\.| f\. | var\.| subf\.| subvar\.| sect\.)/, ' ').strip.gsub(/\s+/,' ')
+
+    # Para poner ssp. como esta en NaturaLista y el Banco de Imagenes
+    if ssp
+      self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( f\. | var\. | subf\. | subvar\. )/, ' ').gsub(/ subsp\. /, ' ssp. ').strip.gsub(/\s+/,' ')
+    else
+      self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( subsp\. | f\. | var\. | subf\. | subvar\. )/, ' ').strip.gsub(/\s+/,' ')
+    end
   end
 
   # Quita simbolos raros
@@ -24,6 +30,14 @@ class String
   # Escapa la comilla simple por dos comillas simples, para que SQL Server no marque error
   def limpia_sql
     self.gsub("'", "''")
+  end
+
+  # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
+  def humanizar?
+    # Verifica solo con el primer caracter
+    original = self
+    primera_capital = self[0,1].capitalize << self[1..-1]
+    original == primera_capital ? self : self.humanizar
   end
 end
 
