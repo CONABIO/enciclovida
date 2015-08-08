@@ -8,9 +8,9 @@ class Metadato < ActiveRecord::Base
 # Quita las siguientes cadenas: sp.$ | sp. | ssp. | sp$ | spp$ | sp..$ | spp..$
     object = []
     object_name.split(',').each do |obj|
-      object << obj.squeeze('.').gsub(/( spp.$)|( spp. )|( sp[p.]$)|( sp[p.] )|( sp$)|( sp )/, ' ').squeeze(' ').strip
+      object << obj.squeeze('.').gsub(/( spp.$)|( spp. )|( sp[p.]$)|( sp[p.] )|( sp$)|( sp )/, ' subesp. ').squeeze(' ').strip
     end
-    object.join(',')
+    self.object_name=object.join(',')
   end
 
   def asocia_metadatos
