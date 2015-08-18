@@ -39,38 +39,38 @@ def actualiza_ancestry
   querys = []
 
   animalia_millones = 'UPDATE especies SET '
-  animalia_millones << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia_millones << "ancestry_ascendente_obligatorio='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia_millones << "ancestry_ascendente_directo='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  animalia_millones << "ancestry_ascendente_obligatorio='1000001'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   animalia_millones << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_0000001%'"
   querys << animalia_millones
 
   animalia = 'UPDATE especies SET '
-  animalia << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  animalia << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  animalia << "ancestry_ascendente_directo='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  animalia << "ancestry_ascendente_obligatorio='1000001/'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   animalia << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000001%'"
   querys << animalia
 
   plantae = 'UPDATE especies SET '
-  plantae << "ancestry_ascendente_directo='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  plantae << "ancestry_ascendente_obligatorio='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  plantae << "ancestry_ascendente_directo='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  plantae << "ancestry_ascendente_obligatorio='6000002/'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   plantae << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000002%'"
   querys << plantae
 
   prokaryote = 'UPDATE especies SET '
-  prokaryote << "ancestry_ascendente_directo='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  prokaryote << "ancestry_ascendente_obligatorio='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  prokaryote << "ancestry_ascendente_directo='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  prokaryote << "ancestry_ascendente_obligatorio='7000003/'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   prokaryote << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000003%'"
   querys << prokaryote
 
   fungi = 'UPDATE especies SET '
-  fungi << "ancestry_ascendente_directo='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  fungi << "ancestry_ascendente_obligatorio='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  fungi << "ancestry_ascendente_directo='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  fungi << "ancestry_ascendente_obligatorio='3000004/'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   fungi << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000004%'"
   querys << fungi
 
   proctoctista = 'UPDATE especies SET '
-  proctoctista << "ancestry_ascendente_directo='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 200),"
-  proctoctista << "ancestry_ascendente_obligatorio='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 200) "
+  proctoctista << "ancestry_ascendente_directo='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 246),"
+  proctoctista << "ancestry_ascendente_obligatorio='7000005/'+SUBSTRING(ancestry_ascendente_directo,9, 246) "
   proctoctista << "WHERE SUBSTRING(ancestry_ascendente_directo,1, 8) LIKE '_000005%'"
   querys << proctoctista
 

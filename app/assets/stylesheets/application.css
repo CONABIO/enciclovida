@@ -44,7 +44,14 @@ body{
     background-size: cover;
 }
 
-
+#img-fondo {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+}
 
 div.footer{ /*Footer*/
     background: linear-gradient(to right, transparent,#ede6df,transparent);
