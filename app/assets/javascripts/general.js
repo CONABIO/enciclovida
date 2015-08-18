@@ -195,15 +195,15 @@ $(document).ready(function () {
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1000, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 3000, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1000);}, 28000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 3000);}, 4000);
             });
             return url;
         });
         if (fondo == 8){
             fondo = -1;
         };
-        setTimeout(cambiaFondoAuto, 30010);
+        setTimeout(cambiaFondoAuto, 10010);
     })();
 });
