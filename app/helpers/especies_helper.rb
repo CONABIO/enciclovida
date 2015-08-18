@@ -109,19 +109,6 @@ module EspeciesHelper
     end
   end
 
-  def datos_principales(taxon, opciones={})
-    datos = dameNomComunes(taxon)
-    datos << dameStatus(taxon, opciones)
-
-    dist = dameDistribucion(taxon)
-    if dist.present?
-      datos << dameDistribucion(taxon) << ' - '
-    end
-
-    datos << dameCaracteristica(taxon)
-    datos.html_safe
-  end
-
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
