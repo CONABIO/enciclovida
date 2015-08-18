@@ -322,9 +322,9 @@ module EspeciesHelper
       dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
     end
 
-    if taxon.invasora.present?
-      dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
-    end
+    #if taxon.invasora.present?
+    #  dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
+    #end
 
     dist.any? ? dist.uniq.join(' - ') : ''
   end
