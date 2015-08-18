@@ -466,7 +466,7 @@ module EspeciesHelper
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
             cat_riesgo[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            comercio_int << "CITES: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            comercio_int << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           end
         end
       end
