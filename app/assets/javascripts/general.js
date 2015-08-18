@@ -191,19 +191,19 @@ cambiafondo = function(){
 
 $(document).ready(function () {
     (function cambiaFondoAuto(){
-        fondo = fondo + 1;
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 3000, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 2500, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 3000);}, 4000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 2500);}, 10000);
             });
             return url;
         });
         if (fondo == 8){
             fondo = -1;
-        };
-        setTimeout(cambiaFondoAuto, 10010);
+        }
+        fondo = fondo + 1;
+        setTimeout(cambiaFondoAuto, 15000);
     })();
 });

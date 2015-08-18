@@ -461,6 +461,7 @@ module EspeciesHelper
         if opciones[:tab_catalogos]
           conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
         else # Para ordenar las categorias de riesgo y comercio
+
           if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
             cat_riesgo[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
@@ -491,6 +492,29 @@ module EspeciesHelper
     else
       conservacion
     end
+  end
+
+  def ponRiesgoComercio
+    caracteristicas=''
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      col = (k == :iucn) ? "col-xs-3 col-sm-3 col-md-3 col-lg-3" : "col-xs-2 col-sm-2 col-md-2 col-lg-2"
+      caracteristicas <<  "<div class=\" #{col} text-left\"><h6><strong>#{t(k)}</strong></h6>"
+      valores.each do |edo|
+        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
+        caracteristicas << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle caracteristicas', name: "edo_cons_#{edo.parameterize}", style: "", id: "edo_cons_#{edo.parameterize}_todos")}"
+      end
+      caracteristicas << "</div>"
+    end
+    caracteristicas.html_safe
+  end
+
+  def ponTipoDistribucion
+    distribucion = ''
+      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
+        #dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
+        distribucion << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle caracteristicas', name: "dist_#{tipoDist}")}"
+      end
+    distribucion.html_safe
   end
 
   def dameEspecieBibliografia(taxon)
