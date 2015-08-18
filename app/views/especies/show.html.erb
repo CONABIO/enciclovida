@@ -244,6 +244,7 @@
 
 <h2>
   <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
+  <%= image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.prioritaria.present? %>
   <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
   <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
   <div id="envia_comentario" class="dialog" style="display: none"></div>
