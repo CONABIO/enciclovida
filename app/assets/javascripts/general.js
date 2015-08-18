@@ -174,3 +174,17 @@ cambiaSidebarNat = function(){
     //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
     //$('#conNaturalista > div').toggleClass('hidden');
 };
+
+var fondo = 0;
+
+cambiafondo = function(){
+    fondo = fondo + 1;
+    url = "url(\"assets/app/fondo_"+fondo+".jpg\")";
+    console.log(url);
+    $('body').css('background-image',url);
+    if (fondo == 8){
+        fondo = -1;
+    }
+};
+
+//$('cambiarFondo').click(cambiafondo());
