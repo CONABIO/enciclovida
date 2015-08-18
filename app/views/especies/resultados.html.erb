@@ -124,8 +124,9 @@
 <% end %>
 
 <p id="notice"><%= notice %></p>
-<%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' &&
-     (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
+<p class="text-right">
+    <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
+</p>
 <div class="row main">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div id="content">
