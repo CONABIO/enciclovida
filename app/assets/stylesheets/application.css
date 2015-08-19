@@ -168,3 +168,20 @@ div#contenedor_mapa{
 div#map{
     border-radius: 5px;
 }
+
+.tabla_acerca {
+    padding:10px;
+}
+
+.tabla_acerca th {
+    padding: 10px;
+    background: #800000;
+    color: white;
+}
+
+.tabla_acerca td {
+    padding: 10px;
+}
+.tabla_acerca tr:nth-child(odd) {
+    background: #fff;
+}
