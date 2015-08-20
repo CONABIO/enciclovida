@@ -566,9 +566,9 @@ module EspeciesHelper
   def filtrosUltimaBusqueda(params = {})
     busqueda_texto = []
     if params[:nombre_cientifico].present? && params[:id_nom_cientifico].present?  # Selecciono con el autocomplete
-      busqueda_texto << 'Todos los grupos'
+      busqueda_texto << 'Todos los grupos taxonómicos'
 
-      if params[:nivel].present?
+      if params[:nivel].present? && params[:cat]
         busqueda_texto << Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]
       end
 
