@@ -123,6 +123,10 @@
     <%= @titulo='Resultados' %>
 <% end %>
 
+Tu última busqueda fue:
+<%= filtrosUltimaBusqueda(params).html_safe %>
+<%= params.inspect %>
+
 <p id="notice"><%= notice %></p>
 <p class="text-right">
     <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>

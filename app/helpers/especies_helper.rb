@@ -541,7 +541,6 @@ module EspeciesHelper
       if columnas == 6
         radios << '<br>'
         columnas = 7
-        es_reino=""
       end
 
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')
@@ -561,5 +560,30 @@ module EspeciesHelper
     else
       ''
     end
+  end
+
+  # Muestra en los resultados los filtros que puso, de una forma mas amigable
+  def filtrosUltimaBusqueda(params = {})
+    busqueda_texto = []
+    if params[:nombre_cientifico].present? && params[:id_nom_cientifico].present?  # Selecciono con el autocomplete
+      busqueda_texto << 'Todos los grupos'
+
+      if params[:nivel].present?
+        busqueda_texto << Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]
+      end
+
+      busqueda_texto << params[:nombre_cientifico]
+    end
+
+    if params[:edo_cons].present? && params[:edo_cons].length > 0
+      busqueda_texto << 'con categorías de riesgo o comercio internacional igual a'
+
+      params[:edo_cons].each do |edo|
+        busqueda_texto << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"),
+                  title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+      end
+    end
+
+    busqueda_texto.join(' ')
   end
 end
