@@ -141,7 +141,7 @@ class Especie < ActiveRecord::Base
   DALBERGIAS = %w(Dalbergia_glomerata Dalbergia_calycina Dalbergia_calderonii Dalbergia_congestiflora
 Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_luteola
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
-Dalbergia_ruddiae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
+Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
