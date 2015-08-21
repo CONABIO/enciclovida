@@ -137,6 +137,12 @@ class Especie < ActiveRecord::Base
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  # Muestra las fichas de Dalbergias
+  DALBERGIAS = %w(Dalbergia_glomerata Dalbergia_calycina Dalbergia_calderonii Dalbergia_congestiflora
+Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_luteola
+Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
+Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
+
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
