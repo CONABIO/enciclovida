@@ -564,26 +564,74 @@ module EspeciesHelper
 
   # Muestra en los resultados los filtros que puso, de una forma mas amigable
   def filtrosUltimaBusqueda(params = {})
+    # Solo para los filtros de busqueda avanzada
+    return unless params[:busqueda] == 'avanzada'
     busqueda_texto = []
-    if params[:nombre_cientifico].present? && params[:id_nom_cientifico].present?  # Selecciono con el autocomplete
-      busqueda_texto << 'Todos los grupos taxonómicos'
 
-      if params[:nivel].present? && params[:cat]
-        busqueda_texto << Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]
+    # Selecciono los filtros de busqueda avanzada
+    if params[:id_nom_cientifico].present?
+      if params[:nombre_cientifico].present?
+        nombre_cientifico = params[:nombre_cientifico]
+
+      else
+        begin
+          taxon = Especie.find(params[:id_nom_cientifico])
+        rescue
+          # No hace nada
+          return
+        end
+
+        nombre_cientifico = taxon.nombre_cientifico
       end
 
-      busqueda_texto << params[:nombre_cientifico]
+      if params[:nivel].present? && params[:cat].present?
+        # Para sacar el nombre de la categoria taxonomica de acuerdo al nivel
+        rangos = Bases.limites(params[:id_nom_cientifico].to_i)
+        categoria = CategoriaTaxonomica.
+            where(nivel1: params[:cat][0].to_i, nivel2: params[:cat][1].to_i, nivel3: params[:cat][2].to_i, nivel4: params[:cat][3].to_i).
+            where(id: rangos[:limite_inferior]..rangos[:limite_superior]).first
+
+        return unless categoria
+        busqueda_texto << "todos los grupos taxonómicos #{Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]} #{categoria.nombre_categoria_taxonomica}"
+      end
+
+      busqueda_texto << "del taxón #{nombre_cientifico}"
     end
 
+    # Parte del estado de conservacion
     if params[:edo_cons].present? && params[:edo_cons].length > 0
-      busqueda_texto << 'con categorías de riesgo o comercio internacional igual a'
+      edo_cons = []
 
       params[:edo_cons].each do |edo|
-        busqueda_texto << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"),
-                  title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+        edo_cons << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"),
+                                    title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+      end
+
+      if edo_cons.present?
+        busqueda_texto << "con categorías de riesgo o comercio internacional #{edo_cons.join(' ')}"
       end
     end
 
-    busqueda_texto.join(' ')
+    # Parte de la distribucion
+    if params[:dist].present? && params[:dist].length > 0
+      dist = []
+
+      params[:dist].each do |d|
+        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{d.parameterize}.icono"),
+                              title: t("tipo_distribucion.#{d.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+      end
+
+      if dist.present?
+        busqueda_texto << "con tipo de distribución #{dist.join(' ')}"
+      end
+    end
+
+    # Parte de prioritaria
+    if params[:prioritaria].present? && params[:prioritaria] == '1'
+      img = image_tag('app/prioritaria.png', title: 'Prioritaria', class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+      busqueda_texto << "marcadas como especies prioritarias #{img}"
+    end
+
+    busqueda_texto
   end
 end

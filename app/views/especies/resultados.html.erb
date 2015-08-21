@@ -123,9 +123,17 @@
     <%= @titulo='Resultados' %>
 <% end %>
 
-Tu última busqueda fue:
-<%= filtrosUltimaBusqueda(params).html_safe %>
-<%= params.inspect %>
+<% fub = filtrosUltimaBusqueda(params) %>
+<% if fub.present? %>
+    Tu última busqueda fue:
+    <ul>
+      <% fub.each do |f| %>
+        <li>
+          <%= f.html_safe %>
+        </li>
+      <% end %>
+    </ul>
+<% end %>
 
 <p id="notice"><%= notice %></p>
 <p class="text-right">

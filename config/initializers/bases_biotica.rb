@@ -29,7 +29,7 @@ module Bases
     id/1000000 - 1
   end
 
-  #para buscar en un rango de una base
+  # Para buscar en un rango de una base de acuerdo al ID de bios
   def self.limites(id)
     limite_inferior = (id/1000000)*1000000 + 1
     limite_superior = (id/1000000)*1000000 + 999999
