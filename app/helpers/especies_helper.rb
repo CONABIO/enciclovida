@@ -604,7 +604,7 @@ module EspeciesHelper
 
       params[:edo_cons].each do |edo|
         edo_cons << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"),
-                                    title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+                                    title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle icon-size')
       end
 
       if edo_cons.present?
@@ -618,7 +618,7 @@ module EspeciesHelper
 
       params[:dist].each do |d|
         dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{d.parameterize}.icono"),
-                              title: t("tipo_distribucion.#{d.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+                              title: t("tipo_distribucion.#{d.parameterize}.nombre"), class: 'img-circle icon-size')
       end
 
       if dist.present?
@@ -628,7 +628,7 @@ module EspeciesHelper
 
     # Parte de prioritaria
     if params[:prioritaria].present? && params[:prioritaria] == '1'
-      img = image_tag('app/prioritaria.png', title: 'Prioritaria', class: 'img-circle img-thumbnail busqueda_atributo_imagen')
+      img = image_tag('app/prioritaria.png', title: 'Prioritaria', class: 'img-circle icon-size')
       busqueda_texto << "marcadas como especies prioritarias #{img}"
     end
 
