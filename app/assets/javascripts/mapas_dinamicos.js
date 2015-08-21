@@ -42,10 +42,10 @@ function anadeControlCapas()
 {
     //console.log('Inserto el control de cambio de capa');
     map.addControl({
-        position: 'top_right',
+        position: 'right_top',
         content: 	'<div class="gmapv3control overlaycontrol" id="capas" style="padding: 6px;">'+
             '<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>Capas'+
-            '<ul id="lista_capas" style="display: none; margin-left: 20px; margin-right: 10px; padding: 0px;">'+
+            '<ul id="lista_capas" style="list-style-type: none; display: none; margin-left: 10px; margin-right: 10px; padding: 0px; ">'+
             anadeLista()+
             '</ul>'+
             '</div>',
@@ -53,7 +53,7 @@ function anadeControlCapas()
             margin: '5px',
             padding: '0 0 0 0',
             border: 'solid 1px #717B87',
-            background: '#fff'
+            background: '#fff',
         },
         events: {
             mouseover: function(){
@@ -83,7 +83,7 @@ function anadeControlFullScreen()
             '<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>'+
             '</div>',
         style: {
-            margin: '5px',
+            margin: '3px',
             padding: '0 0 0 0',
             border: 'solid 1px #717B87',
             background: '#fff'

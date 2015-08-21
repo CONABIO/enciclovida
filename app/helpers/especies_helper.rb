@@ -437,6 +437,7 @@ module EspeciesHelper
     conservacion = ''
     comercio_int = ''
     ambiente = []
+
     cat_riesgo = Hash.new
 
     taxon.especies_catalogos.each do |e|
@@ -448,6 +449,7 @@ module EspeciesHelper
         if opciones[:tab_catalogos]
           conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
         else # Para ordenar las categorias de riesgo y comercio
+
           if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
             cat_riesgo[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
@@ -478,6 +480,122 @@ module EspeciesHelper
     else
       conservacion
     end
+  end
+
+  def dameCaracteristicaJS(taxon, opciones={})
+    conservacion = ''
+    comercio_int = ''
+    distribucion = ''
+    ambiente = []
+    cat_riesgo = {}
+
+    # taxon.especies_regiones.distinct.each do |reg|
+    #   next unless distribucion = reg.tipo_distribucion
+    #   next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
+    #   icono = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono", :default => '')
+    #   nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
+    #   distribucion << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
+    # end
+    #
+    # if taxon.invasora.present?
+    #   distribucion << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
+    # end
+    #
+    # distribucion.any? ? distribucion.uniq.join(' - ') : ''
+
+
+
+
+
+    taxon.especies_catalogos.each do |e|
+      cat = e.catalogo
+      edo_conserv_nombre = cat.nom_cites_iucn
+      ambiente_nombre = cat.ambiente
+
+      if edo_conserv_nombre.present?
+        if opciones[:tab_catalogos]
+          conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
+        else # Para ordenar las categorias de riesgo y comercio
+
+          if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
+            cat_riesgo[:a] = "id" << cat.descripcion.parameterize
+          elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
+            cat_riesgo[:b] = "id" << cat.descripcion.parameterize
+          elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
+            comercio_int << "id" << cat.descripcion.parameterize
+          end
+        end
+      end
+
+      if ambiente_nombre.present?
+        if opciones[:tab_catalogos]
+          conservacion << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
+        else
+          ambiente << cat.descripcion
+        end
+      end
+    end  #Fin each
+
+    if conservacion.present?
+      "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
+    elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
+      res = Hash.new
+      res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(', #')
+      res[:comercio_int] = comercio_int
+      res[:ambiente] = ambiente.join('')
+      res
+    else
+      conservacion
+    end
+  end
+
+  def dameDistribucionJS(taxon)
+    nombre = []
+
+    taxon.especies_regiones.distinct.each do |reg|
+      next unless distribucion = reg.tipo_distribucion
+      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
+      nombre << 'id'+distribucion.descripcion.parameterize
+    end
+
+    if taxon.invasora.present?
+      nombre << 'idinvasora'
+    end
+
+    nombre.any? ? nombre.uniq.join(', #') : ''
+  end
+
+  def ponRiesgoComercio
+    caracteristicas=''
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      col = (k == :iucn) ? "col-xs-3 col-sm-3 col-md-3 col-lg-3" : "col-xs-2 col-sm-2 col-md-2 col-lg-2"
+      caracteristicas <<  "<div class=\" #{col} text-left\"><h6><strong>#{t(k)}</strong></h6>"
+      valores.each do |edo|
+        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
+        id = "id"<<edo.parameterize
+        icono = t("cat_riesgo.#{edo.parameterize}.icono")
+        nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
+        caracteristicas << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-circle', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+      end
+      caracteristicas << "</div>"
+    end
+    caracteristicas.html_safe
+  end
+
+  def ponTipoDistribucion
+    distribucion = ''
+      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
+        id = 'id'<<tipoDist.parameterize
+        icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
+        nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
+        distribucion << button_tag(((icono.present? ? (image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")) : "") << "<small>#{nombre}</small>".html_safe).html_safe, :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+
+      end
+    distribucion
+  end
+
+  def ponAmbiente
+    Catalogo.ambiente_todos
   end
 
   def dameEspecieBibliografia(taxon)
