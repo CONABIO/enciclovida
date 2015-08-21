@@ -137,6 +137,12 @@ class Especie < ActiveRecord::Base
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  # Muestra las fichas de Dalbergias
+  DALBERGIAS = %w(Dalbergia_glomerata Dalbergia_calycina Dalbergia_calderonii Dalbergia_congestiflora
+Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_luteola
+Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
+Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
+
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
@@ -319,12 +325,10 @@ class Especie < ActiveRecord::Base
   end
 
   def self.asigna_grupo_iconico
-
     # Itera los grupos y algunos reinos
     animalia_plantae = %w(Animalia Plantae)
     complemento_reinos = %w(Protoctista Fungi Prokaryotae)
 
-    puts complemento_reinos.inspect
     Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
       ad = Adicional.none
@@ -343,24 +347,27 @@ class Especie < ActiveRecord::Base
         descendientes = taxon.subtree_ids
 
         descendientes.each do |descendiente| # Itero sobre los descendientes
-          puts "Descendiente de #{grupo}: #{descendiente}"
 
           begin
-            taxon = Especie.find(descendiente)
+            taxon_desc = Especie.find(descendiente)
           rescue
             next
           end
 
+          puts "\tDescendiente de #{grupo}: #{taxon_desc.nombre_cientifico}"
+
           if !complemento_reinos.include?(grupo)
             # No poner icono de genero hacia abajo
-            genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero'
-            next if genero_infraespecies.include?(I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
+            genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero' << 'especie'
+            es_infraespecie = genero_infraespecies.include?(I18n.transliterate(taxon_desc.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
+            puts "\t\t#{es_infraespecie ? 'Infraespecie' : 'No es infraespecie'}"
+            next if es_infraespecie
           end
 
-          if ad = taxon.adicional
+          if ad = taxon_desc.adicional
             ad.icono_id = id
           else
-            ad = taxon.crea_con_grupo_iconico(grupo)
+            ad = taxon_desc.crea_con_grupo_iconico(grupo)
           end
 
           # Guarda el record

@@ -480,11 +480,10 @@ class EspeciesController < ApplicationController
                        :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                        :orientation => 'Landscape'
               end
-              format.xlsx do
+              format.xlsx do  # Falta implementar el excel de salida
                 @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
               end
             end
-            #render 'especies/checklists'
           end
 
         else  # Default switch

@@ -109,19 +109,6 @@ module EspeciesHelper
     end
   end
 
-  def datos_principales(taxon, opciones={})
-    datos = dameNomComunes(taxon)
-    datos << dameStatus(taxon, opciones)
-
-    dist = dameDistribucion(taxon)
-    if dist.present?
-      datos << dameDistribucion(taxon) << ' - '
-    end
-
-    datos << dameCaracteristica(taxon)
-    datos.html_safe
-  end
-
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
@@ -322,9 +309,9 @@ module EspeciesHelper
       dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
     end
 
-    if taxon.invasora.present?
-      dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
-    end
+    #if taxon.invasora.present?
+    #  dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
+    #end
 
     dist.any? ? dist.uniq.join(' - ') : ''
   end
@@ -468,7 +455,7 @@ module EspeciesHelper
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
             cat_riesgo[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            comercio_int << "CITES: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+            comercio_int << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           end
         end
       end
