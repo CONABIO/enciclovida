@@ -179,7 +179,7 @@ var fondo = 0;
 
 cambiafondo = function(){
     fondo = fondo + 1;
-    url = "url(\"assets/app/fondo_"+fondo+".jpg\")";
+    url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
     //console.log(url);
     $('body').css('background-image',url);
     if (fondo == 8){
