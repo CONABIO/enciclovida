@@ -185,3 +185,7 @@ div#map{
 .tabla_acerca tr:nth-child(odd) {
     background: #fff;
 }
+
+.icon-size {
+    width: 1.5em;
+}

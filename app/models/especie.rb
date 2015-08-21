@@ -118,12 +118,12 @@ class Especie < ActiveRecord::Base
       'nombre_autoridad' => 'autoridad'
   }
 
-  BUSQUEDAS_COMPARADOR = {
-      '>' => 'menor a',
-      '>=' => 'menor o igual a',
-      '=' => 'igual a',
-      '<=' => 'mayor o igual a',
-      '<' => 'mayor a'
+  NIVEL_CATEGORIAS_HASH = {
+      '>' => 'inferiores a',
+      '>=' => 'inferiores o iguales a',
+      '=' => 'iguales a',
+      '<=' => 'superiores o iguales a',
+      '<' => 'superiores a'
   }
 
   NIVEL_CATEGORIAS = [
