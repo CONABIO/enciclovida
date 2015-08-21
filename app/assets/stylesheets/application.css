@@ -182,6 +182,16 @@ div#map{
 .tabla_acerca td {
     padding: 10px;
 }
+
 .tabla_acerca tr:nth-child(odd) {
     background: #fff;
+}
+
+.multicolumna{
+    -moz-column-width: 10em;
+    -moz-column-gap: 10px;
+    -webkit-column-width: 10em;
+    -webkit-column-gap: 10px;
+    -webkit-column-rule: 1px solid #ccc;
+    -moz-column-rule: 1px solid #ccc;
 }
