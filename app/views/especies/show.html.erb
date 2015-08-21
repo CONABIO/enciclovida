@@ -254,27 +254,40 @@
   <%= dameStatus(@especie).html_safe %>
 </div>
 
-<% caracteristica = dameCaracteristica(@especie) %>
+
+<% if (@especie.species_or_lower?) %>
+<% caracteristica = dameCaracteristicaJS(@especie) %>
 <%= ponRiesgoComercio().html_safe %>
 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
   <%= '<h6><strong>Tipo de distribución: </strong></h6>'.html_safe << ponTipoDistribucion().html_safe %>
 </div>
 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
-  <p><%= '<h6><strong>Ambiente: </strong></h6>'.html_safe << caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %></p>
+  <%= '<h6><strong>Ambiente: </strong></h6>'.html_safe << button_tag(caracteristica[:ambiente].html_safe, :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: "id#{caracteristica[:ambiente]}") if caracteristica.present? && caracteristica[:ambiente].present? %>
 </div>
 
 
 
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left">
-  <p>
-    <%= '<h6><strong>Categorías de riesgo: </strong></h6>'.html_safe << caracteristica[:cat_riesgo].html_safe if caracteristica.present? && caracteristica[:cat_riesgo].present? %>
-    <%= '<h6><strong>Comercio internacional: </strong></h6>'.html_safe << caracteristica[:comercio_int].html_safe if caracteristica.present? && caracteristica[:comercio_int].present? %>
-    <%= '<h6><strong>Tipo de distribución: </strong></h6>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %>
-    <%= '<h6><strong>Ambiente: </strong></h6>'.html_safe << caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %>
-  </p>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#<%= dameDistribucionJS(@especie).html_safe if dameDistribucion(@especie).present? %>').removeClass('caracteristicas').removeAttr('disabled');
+            $('#<%= caracteristica[:cat_riesgo].html_safe if caracteristica.present? && caracteristica[:cat_riesgo].present? %>').removeClass('caracteristicas').removeAttr('disabled');
+            $('#<%= caracteristica[:comercio_int].html_safe if caracteristica.present? && caracteristica[:comercio_int].present? %>').removeClass('caracteristicas').removeAttr('disabled');
+            $('#id<%= caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %>').removeClass('caracteristicas').removeAttr('disabled');
+        });
+    </script>
 </div>
-
+<% else %>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
+      <%= '<h6><strong>Ambiente: </strong></h6>'.html_safe << button_tag(caracteristica[:ambiente].html_safe, :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: "id#{caracteristica[:ambiente]}") if caracteristica.present? && caracteristica[:ambiente].present? %>
+      <script type="text/javascript">
+          $(document).ready(function(){
+              $('#id<%= caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %>').removeClass('caracteristicas').removeAttr('disabled');
+          });
+      </script>
+    </div>
+<% end %>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
