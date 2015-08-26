@@ -26,5 +26,5 @@
 </div>
 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left" id="Ambiente">
   <h6><strong><%=t(:ambiente)%></strong></h6>
-  <%= button_tag(ids[:ambiente][0], :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: 'id'+ids[:ambiente][0]) %>
+  <%= button_tag(ids[:ambiente][0], :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: 'id'+ids[:ambiente][0]) if ids[:ambiente].present? %>
 </div>
