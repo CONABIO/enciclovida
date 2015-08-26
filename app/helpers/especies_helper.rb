@@ -510,7 +510,7 @@ module EspeciesHelper
     # if taxon.invasora.present?
     #   response[:distribucion] << 'idinvasora'
     # end
-    response[:distribucion] = response[:distribucion].uniq if response[:distribucion].any?
+    response[:distribucion] = response[:distribucion].uniq if response[:distribucion].present?
     response
   end
 
