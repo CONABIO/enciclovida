@@ -50,20 +50,27 @@
     }
     #conNaturalista{
         position: absolute;
+        right: 0px;
         z-index: 10000010;
         padding: 10px;
         border-top-left-radius: 2.5em;
         border-top-right-radius: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 2.5em;
-        background-color: rgba(237, 230, 223, 0.85);
+        background-color: rgba(207, 200, 193, 0.8);
         height: auto !important;
     }
-    .sidebar_lupa, .sidebar_naturalista{
+    #conNaturalista:hover > div, #conNaturalista > img{
+        display: block;
+    }
+    #conNaturalista:hover > img, #conNaturalista > div{
+        display: none;
+    }
+    .sidebar_lupa{
         height: 64px;
         width: auto !important;
     }
-    #filtros > span, #conNaturalista > span, #conNaturalista > img{
+    #filtros > span, #conNaturalista > img{
         color: #800000;
         float: right;
         cursor: pointer;
