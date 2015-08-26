@@ -647,6 +647,8 @@ module EspeciesHelper
         nombre_cientifico = taxon.nombre_cientifico
       end
 
+      busqueda_texto << nombre_cientifico
+
       if params[:nivel].present? && params[:cat].present?
         # Para sacar el nombre de la categoria taxonomica de acuerdo al nivel
         rangos = Bases.limites(params[:id_nom_cientifico].to_i)
@@ -657,8 +659,6 @@ module EspeciesHelper
         return unless categoria
         busqueda_texto << "todos los grupos taxonómicos #{Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]} #{categoria.nombre_categoria_taxonomica}"
       end
-
-      busqueda_texto << "del taxón #{nombre_cientifico}"
     end
 
     # Parte del estado de conservacion

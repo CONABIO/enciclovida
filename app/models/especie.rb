@@ -328,6 +328,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Itera los grupos y algunos reinos
     animalia_plantae = %w(Animalia Plantae)
     complemento_reinos = %w(Protoctista Fungi Prokaryotae)
+    iconos_plantae = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
     Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
       puts grupo
@@ -344,9 +345,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         end
 
       else  # Los grupos y reinos menos animalia y plantae
+        nivel = iconos_plantae.include?(grupo) ? 3000 : 3100
         descendientes = taxon.subtree_ids
 
-        descendientes.each do |descendiente| # Itero sobre los descendientes
+        # Itero sobre los descendientes
+        descendientes.each do |descendiente|
 
           begin
             taxon_desc = Especie.find(descendiente)
@@ -357,11 +360,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
           puts "\tDescendiente de #{grupo}: #{taxon_desc.nombre_cientifico}"
 
           if !complemento_reinos.include?(grupo)
-            # No poner icono de genero hacia abajo
-            genero_infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES << 'genero' << 'especie'
-            es_infraespecie = genero_infraespecies.include?(I18n.transliterate(taxon_desc.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_').downcase)
-            puts "\t\t#{es_infraespecie ? 'Infraespecie' : 'No es infraespecie'}"
-            next if es_infraespecie
+            # No poner icono inferiores de clase
+            clase_desc = taxon_desc.categoria_taxonomica
+            nivel_desc = "#{clase_desc.nivel1}#{clase_desc.nivel2}#{clase_desc.nivel3}#{clase_desc.nivel4}".to_i
+            puts "\t\t#{nivel_desc > nivel ? 'Inferior a clase' : 'Superior a clase'}"
+            next if nivel_desc > nivel
           end
 
           if ad = taxon_desc.adicional
@@ -374,8 +377,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
           if ad.changed?
             ad.save
           end
-        end  # Cierra el each
+        end  # Cierra el each de descendientes
       end
+
+      # Por si no estaba definido cuando termino el loop
+      next unless ad.present?
 
       # Guarda el record
       if ad.changed?
