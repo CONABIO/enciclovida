@@ -500,7 +500,7 @@ module EspeciesHelper
           response[:ambiente] = response[:ambiente].to_a << cat.descripcion
       end
     end  #Fin each
-    response[:ambiente] = response[:ambiente].uniq if response[:ambiente].any?
+    response[:ambiente] = response[:ambiente].uniq if response[:ambiente].present?
 
     taxon.especies_regiones.distinct.each do |reg|
       next unless distribucion = reg.tipo_distribucion
