@@ -167,16 +167,8 @@ cambiaSidebar = function(){
     $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
     $('#filtros > div').toggleClass('hidden');
 };
-cambiaSidebarNat = function(){
-    //$('#conNaturalista').toggleClass('sidebar_naturalista');
-    //$('#conNaturalista > img, #conNaturalista > div').toggleClass('hidden');
-    return false;
-    //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
-    //$('#conNaturalista > div').toggleClass('hidden');
-};
 
 var fondo = 0;
-
 cambiafondo = function(){
     fondo = fondo + 1;
     url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
@@ -186,9 +178,6 @@ cambiafondo = function(){
         fondo = -1;
     }
 };
-
-
-
 $(document).ready(function () {
     (function cambiaFondoAuto(){
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";

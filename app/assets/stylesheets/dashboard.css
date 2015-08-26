@@ -33,14 +33,14 @@
         display: block;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        border: 0px solid #2c8532;
+        border: 1px solid rgba(58, 175, 66, 0.3);
     }
     #filtros{
         position: fixed;
         top: 110px;
         z-index: 10000003;
         bottom: 20%;
-        left: -58px;
+        left: -60px;
         padding: 22px;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
@@ -48,29 +48,42 @@
         border-bottom-right-radius: 0px;
         background-color: rgba(223, 237, 228, 0.9);
     }
-    #conNaturalista{
+    .leaf{
         position: absolute;
-        right: 0px;
-        z-index: 10000010;
         padding: 10px;
         border-top-left-radius: 2.5em;
         border-top-right-radius: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 2.5em;
-        background-color: rgba(207, 200, 193, 0.8);
+        /*background-color: rgba(207, 200, 193, 0.8);*/
+        background-color: rgba(223, 237, 228, 0.95);
         height: auto !important;
+        border: 1px solid rgba(70, 184, 77, 0.20);
+        min-height: 45px;
+        min-width: 45px;
+        max-width: 300px;
     }
-    #conNaturalista:hover > div, #conNaturalista > img{
+    .leaf:hover > div, .leaf > img, .leaf:hover > div, .leaf > span{
         display: block;
     }
-    #conNaturalista:hover > img, #conNaturalista > div{
+    .leaf:hover > img, .leaf > div, .leaf:hover > span, .leaf > div{
         display: none;
+    }
+    #conNaturalista{
+        right: 50px;
+        z-index: 10000010;
+        padding: 11px;
+    }
+    #conSugerencia{
+        right: 0px;
+        z-index: 10000011;
+        padding: 15px;
     }
     .sidebar_lupa{
         height: 64px;
         width: auto !important;
     }
-    #filtros > span, #conNaturalista > img{
+    #filtros > span{
         color: #800000;
         float: right;
         cursor: pointer;
