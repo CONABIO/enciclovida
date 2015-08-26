@@ -167,16 +167,8 @@ cambiaSidebar = function(){
     $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
     $('#filtros > div').toggleClass('hidden');
 };
-cambiaSidebarNat = function(){
-    $('#conNaturalista').toggleClass('sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xs-push-9 col-sm-push-9 col-md-push-9 col-lg-push-9');
-    $('#conNaturalista > img, #conNaturalista > span, #conNaturalista > div').toggleClass('hidden');
-    return false;
-    //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
-    //$('#conNaturalista > div').toggleClass('hidden');
-};
 
 var fondo = 0;
-
 cambiafondo = function(){
     fondo = fondo + 1;
     url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
@@ -186,9 +178,6 @@ cambiafondo = function(){
         fondo = -1;
     }
 };
-
-
-
 $(document).ready(function () {
     (function cambiaFondoAuto(){
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
