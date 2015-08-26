@@ -482,7 +482,7 @@ module EspeciesHelper
     end
   end
 
-  def dameCaracteristicaDistribucionAmbienteJS(taxon, opciones={})
+  def dameCaracteristicaDistribucionAmbienteJS(taxon)
     response = {}
 
     taxon.especies_catalogos.each do |e|
@@ -535,15 +535,11 @@ module EspeciesHelper
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
     end
-    response[:ambiente] = ''
+    response[:ambiente] = '' # Aqupi ira dame todos los ambientes
     response
   end
 
-  def ponAmbiente
-    Catalogo.ambiente_todos
-  end
-
-  def dameEspecieBibliografia(taxon)
+ def dameEspecieBibliografia(taxon)
     biblio=''
     taxon.especies_bibliografias.each do |bib|
       biblio_comp = bib.bibliografia.cita_completa

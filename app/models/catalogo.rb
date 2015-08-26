@@ -32,14 +32,6 @@ class Catalogo < ActiveRecord::Base
     end
   end
 
-  def self.ambiente_todos
-    limites = Bases.limites(id)
-    id_inferior = limites[:limite_inferior]
-    id_superior = limites[:limite_superior]
-    ambiente = Catalogo.where(:nivel1 => 2, :nivel2 => 0, :nivel3 => 0).where(:id => id_inferior..id_superior)
-    ambiente.inspect
-  end
-
   def self.nom_cites_iucn_todos
     nom = where(:nivel1 => 4, :nivel2=> 1).where('nivel3 > 0').map(&:descripcion).uniq
     nom = [nom[3],nom[1],nom[0],nom[2]]#Orden propuesto por cgalindo
