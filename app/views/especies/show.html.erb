@@ -226,7 +226,7 @@
 </script>
 
 <% if notice.present? %>
-    <div class="alert alert-success" role="alert"><%= notice %></div>
+    <div class="row alert alert-success" role="alert"><%= notice %></div>
 <% end %>
 
 <% content_for(:title) do %>
@@ -250,8 +250,12 @@
         <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
         <div id="envia_comentario" class="dialog" style="display: none"></div>
     </h2>
-    <%= dameNomComunes(@especie).html_safe %>
-    <%= dameStatus(@especie).html_safe %>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= dameNomComunes(@especie).html_safe %>
+        <%= dameStatus(@especie).html_safe %>
+    </div>
 </div>
 
 
