@@ -290,30 +290,31 @@
         <div class="<%=col2%>" id="contenedor_mapa">
           <div class="embed-responsive embed-responsive-4by3">
             <div id="map"></div>
-            <strong>NOTA:</strong> La distribución potencial es sólo de México
+            <h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
           </div>
         </div>
     <% end %>
 </div>
 
 <div class="row">
-  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 pull-right">
-    <div class="btn-group text-right" style="width: 100%;" role="group" aria-label="...">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
+    <div class="btn-group pull-right" role="group" aria-label="...">
       <% if geo && geo.count > 0 %>
-          <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'margin: 1px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['geoserver_kmz'] %>
-          <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'margin: 1px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['snib_kml'] %>
-          <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'margin: 5px 0px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 0px 12px;') if geo['naturalista_kml'] %>
+          <%= link_to("Mapa de distribución: "+(image_tag('app/kmz.png', :alt => :KMZ, :style => 'height: 24px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') if geo['geoserver_kmz'] %>
+          <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'height: 24px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') if geo['snib_kml'] %>
+          <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'height: 22px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 4px;', :class => 'btn btn-default btn-link btn-sm') if geo['naturalista_kml'] %>
       <% end %>
       <!-- # Parche para mostrar el PDF de Dalbergia -->
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe,
-                      "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank) %>
+          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe,
+                      "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% else %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style =>'margin: 1px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank) %>
+          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% end %>
     </div>
   </div>
 </div>
+
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <div id="pestañas" class="panel">
     <% if I18n.locale.to_s == 'es-cientifico' %>
