@@ -37,7 +37,6 @@ class Catalogo < ActiveRecord::Base
     id_inferior = limites[:limite_inferior]
     id_superior = limites[:limite_superior]
     ambiente = Catalogo.where(:nivel1 => 2, :nivel2 => 0, :nivel3 => 0).where(:id => id_inferior..id_superior)
-    puts '+++++++++++++++++++++++'+ambiente.inspect
     ambiente.inspect
   end
 

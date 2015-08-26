@@ -242,67 +242,53 @@
     </div>
 <% end %>
 
-<h2>
-  <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-  <%= image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.prioritaria.present? %>
-  <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
-  <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-  <div id="envia_comentario" class="dialog" style="display: none"></div>
-</h2>
-
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  <%= dameNomComunes(@especie).html_safe %>
-  <%= dameStatus(@especie).html_safe %>
+<div class="row">
+    <h2>
+        <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
+        <%= image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.prioritaria.present? %>
+        <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
+        <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+        <div id="envia_comentario" class="dialog" style="display: none"></div>
+    </h2>
+    <%= dameNomComunes(@especie).html_safe %>
+    <%= dameStatus(@especie).html_safe %>
 </div>
 
 
 <% if (@especie.species_or_lower?) %>
-<% caracteristica = dameCaracteristicaJS(@especie) %>
-<%= ponRiesgoComercio().html_safe %>
-<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
-  <%= '<h6><strong>Tipo de distribución: </strong></h6>'.html_safe << ponTipoDistribucion().html_safe %>
-</div>
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
-  <%= '<h6><strong>Ambiente: </strong></h6>'.html_safe << button_tag(caracteristica[:ambiente].html_safe, :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: "id#{caracteristica[:ambiente]}") if caracteristica.present? && caracteristica[:ambiente].present? %>
-</div>
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left">
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#<%= dameDistribucionJS(@especie).html_safe if dameDistribucion(@especie).present? %>').removeClass('caracteristicas').removeAttr('disabled');
-            $('#<%= caracteristica[:cat_riesgo].html_safe if caracteristica.present? && caracteristica[:cat_riesgo].present? %>').removeClass('caracteristicas').removeAttr('disabled');
-            $('#<%= caracteristica[:comercio_int].html_safe if caracteristica.present? && caracteristica[:comercio_int].present? %>').removeClass('caracteristicas').removeAttr('disabled');
-            $('#id<%= caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %>').removeClass('caracteristicas').removeAttr('disabled');
-        });
-    </script>
+<div class="row">
+  <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
 </div>
 <% end %>
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+<div class="row text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
 </div>
 
-<% if @photos.any? %>
-    <% col1 = (geo && geo.count > 0) ? 'col-xs-5 col-sm-5 col-md-5 col-lg-5' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-    <div class="<%=col1%>" id="contenedor_fotos">
+<div class="row">
+    <% if @photos.any? %>
+        <% col1 = (geo && geo.count > 0) ? 'col-xs-5 col-sm-5 col-md-5 col-lg-5' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+        <div class="<%=col1%>" id="contenedor_fotos">
 
-      <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
-      <% if usuario_signed_in? %>
-          <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-          <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-      <% end %>
+          <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
+          <% if usuario_signed_in? %>
+              <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
+              <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
+          <% end %>
 
-    </div>
-<% end %>
+        </div>
+    <% end %>
 
-<% if geo && geo.count > 0 %>
-    <% col2 = @photos.any? ? 'col-xs-7 col-sm-7 col-md-7 col-lg-7' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-    <div class="<%=col2%>" id="contenedor_mapa">
-      <div class="embed-responsive embed-responsive-4by3">
-        <div id="map"></div>
-        <strong>NOTA:</strong> La distribución potencial es sólo de México
-      </div>
-    </div>
-<% end %>
+    <% if geo && geo.count > 0 %>
+        <% col2 = @photos.any? ? 'col-xs-7 col-sm-7 col-md-7 col-lg-7' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+        <div class="<%=col2%>" id="contenedor_mapa">
+          <div class="embed-responsive embed-responsive-4by3">
+            <div id="map"></div>
+            <strong>NOTA:</strong> La distribución potencial es sólo de México
+          </div>
+        </div>
+    <% end %>
+</div>
 
 <div class="row">
   <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 pull-right">
