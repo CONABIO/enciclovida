@@ -164,7 +164,7 @@ input.gsc-search-button {
 
 /*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
 div#contenedor_mapa > div.embed-responsive {
-    background-color: #282828;
+    background-color: #f7f7f7;
     padding-left: 6px;
     padding-top: 6px;
     margin-right: -12px;
