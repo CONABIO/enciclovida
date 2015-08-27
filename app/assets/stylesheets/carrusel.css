@@ -3,7 +3,7 @@
     padding-left: 4px;
     padding-top: 6px;
     padding-bottom: 4px;
-    background-color: #282828;
+    background-color: #F7F7F7;
 }
 #foto-carrusel{
     overflow: hidden;
@@ -77,12 +77,12 @@ img.seleccionada {
     height: 7px;
     margin-top: 4px;
     background-color: #cdcdcd;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 .scrollbar .handle {
     width: 100px; /* overriden if dynamicHandle: 1 */
     height: 100%;
-    background: #777;
-    border-radius: 3px;
+    background: #700000;
+    border-radius: 4px;
     cursor: move;
 }
