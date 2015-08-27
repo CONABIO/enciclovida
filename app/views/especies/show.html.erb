@@ -243,10 +243,10 @@
 
         </div>
     <% end %>
-    <div class="leaf" id="conSugerencia">
-        <span class="glyphicon glyphicon-send text-primary" aria-hidden="true"></span>
+    <div class="leaf text-primary" id="conSugerencia">
+        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
         <div class="text-center">
-          <p class="text-info">¿Tienes alguna duda, sugerencia ó corrección acerca de este taxón?</p><%= link_to('Comentar <span class="glyphicon glyphicon-send" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id), :class => 'btn btn-default') %>
+          <p>¿Tienes alguna duda, sugerencia ó corrección acerca de este taxón?</p><%= link_to('Comentar <span class="glyphicon glyphicon-send text-primary" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id), :class => 'btn btn-default') %>
         </div>
     </div>
     <h2>
