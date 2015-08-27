@@ -114,9 +114,9 @@
 
 .main {
     padding: 20px;
-    opacity: 0.9;
-    filter: alpha(opacity=90); /* For IE8 and eaarlier */
-    background-color: #f2f0ed;
+    /*opacity: 0.9;*/
+    /*filter: alpha(opacity=90); /* For IE8 and eaarlier */
+    background-color: rgba(242, 240, 237, 0.85);
     border-radius: 10px;
     margin-bottom: 20px;
     margin-top: 20px;

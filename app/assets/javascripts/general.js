@@ -183,9 +183,9 @@ $(document).ready(function () {
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 2500, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1750, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 2500);}, 10000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1750);}, 11500);
             });
             return url;
         });
