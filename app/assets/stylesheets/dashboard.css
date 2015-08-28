@@ -28,6 +28,15 @@
 #sidebar {
   display: none;
 }
+@media (max-width: 1380px) {
+    div#contenedor_mapa > div.embed-responsive, #contenedor_fotos, div#contenedor_mapa > div.embed-responsive h6{
+        background-color: #282828 !important;
+        color: #bababa !important;
+    }
+    .scrollbar .handle{
+        background-color: #777 !important;
+    }
+}
 @media (min-width: 500px) {
     .sidebar{
         display: block;
@@ -151,7 +160,6 @@
   display: inline-block;
   border-radius: 50%;
 }
-
 .panel-heading{
     cursor: pointer;
 }
