@@ -55,7 +55,7 @@ class ValidacionesController < ApplicationController
       end
     elsif params[:batch].present?
       validaBatch(params[:batch])
-
+      escribe_excel_csv
     end
     #@match_taxa = @match_taxa ? errores.join(' ') : 'Los datos fueron procesados correctamente'
   end
@@ -104,6 +104,175 @@ class ValidacionesController < ApplicationController
 
   private
 
+
+  # Valida el taxon cuando viene de un .csv
+  def validaBatch(batch)
+    errores = []
+    formatos_permitidos = %w(text/csv)
+
+    if !formatos_permitidos.include? batch.content_type
+      errores << 'Lo sentimos, el formato ' + batch.content_type + ' no esta permitido'
+      return @match_taxa = errores.join(' ')
+    end
+
+    @hash = []
+    lineas=File.open(batch.path).read
+
+    lineas.each_line do |linea|
+      info = encuentra_record_por_nombre_cientifico_csv(linea.limpia)
+      @hash << asocia_respuesta_csv(info)
+    end  # Fin each do lineas
+  end
+
+  def encuentra_record_por_nombre_cientifico_csv(linea)
+    taxon = Especie.where(:nombre_cientifico => linea)
+
+    if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
+      taxon = asigna_categorias_correspondientes(taxon.first)
+      return {taxon: taxon, linea: linea, estatus: true}
+
+    else
+      # Parte de expresiones regulares a ver si encuentra alguna coincidencia
+      nombres = linea.split(' ')
+
+      taxon = if nombres.length == 2  # Especie
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]}'")
+              elsif nombres.length == 3  # Infraespecie
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]} %#{nombres[2]}'")
+              elsif nombres.length == 1 # Genero o superior
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
+              end
+
+      if taxon.present? && taxon.length == 1  # Caso mas sencillo
+        taxon = asigna_categorias_correspondientes(taxon.first)
+        return {taxon: taxon, linea: linea, estatus: true}
+      elsif taxon.present? && taxon.length > 1
+        return busca_recursivamente_csv(taxon, linea)
+      else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
+        ids = FUZZY_NOM_CIEN.find(linea, limit=CONFIG.limit_fuzzy)
+
+        if ids.present?
+          taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
+
+          if taxones.empty?
+            return {estatus: false, linea: linea, error: 'Sin coincidencias'}
+          end
+
+          taxones_con_distancia = []
+          taxones.each do |taxon|
+            # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+            distancia = Levenshtein.distance(linea.downcase, taxon.nombre_cientifico.limpiar.downcase)
+
+            next if distancia > 2  # No cumple con la distancia
+            taxones_con_distancia << taxon
+          end
+
+          if taxones_con_distancia.empty?
+            return {estatus: false, linea: linea, error: 'Sin coincidencias'}
+          else
+            return busca_recursivamente_csv(taxones_con_distancia, linea)
+          end
+
+        else  # No hubo coincidencias con su nombre cientifico
+          return {estatus: false, linea: linea, error: 'Sin coincidencias'}
+        end
+      end
+
+    end  #Fin de las posibles coincidencias
+  end
+
+  # Si concidio mas de uno, busca recursivamente arriba de genero (familia) para ver el indicado
+  def busca_recursivamente_csv(taxones, linea)
+    taxon_coincidente = Especie.none
+    nombres = linea.split(' ')
+
+    taxones_coincidentes = taxones.map{|t| asigna_categorias_correspondientes(t)}
+    taxones_coincidentes.each do |t|  # Iterare cada taxon que resulto parecido para ver cual es el correcto
+      t = asigna_categorias_correspondientes(t)
+      next unless t.present?  # Por si regresa nulo
+
+      # Si es la especie lo mando directo a coincidencia
+      cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
+      if cat_tax_taxon_cat == 'especie' && nombres.length == 2
+        return {taxon: t, estatus: true, linea: linea, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+      end
+
+      # Toma subespecie por default
+      subespecies = %w(subsp. subsp subespecie ssp. ssp)
+      if cat_tax_taxon_cat == 'subespecie' && nombres.length == 3
+        return {taxon: t, estatus: true, linea: linea, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+      end
+
+      # Si no coincidio con ninguno le dejo el unico
+      if taxones.length == 1
+        return {taxon: t, estatus: true, linea: linea, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+      end
+
+      return {estatus: false, linea: linea, error: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+    end  #Fin each taxones coincidentes
+  end
+
+  # Asocia la respuesta para armar el contenido del excel
+  def asocia_respuesta_csv(info = {})
+    columna_resumen = Hash.new
+
+    if info[:estatus]
+      taxon = info[:taxon]
+
+      if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
+        estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
+
+        if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
+          begin  # Por si ya no existe ese taxon, suele pasar!
+            taxon_valido = Especie.find(estatus.first.especie_id2)
+            t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
+            info[:taxon_valido] = t_val
+          rescue
+            info[:estatus] = false
+            info[:error] = 'No existe el taxón válido en CAT'
+          end
+
+        else  # No existe el valido >.>!
+          info[:estatus] = false
+          info[:error] = 'No existe el taxón válido en CAT'
+        end
+      end  # End estatus = 1
+
+      columna_resumen['SCAT_Observaciones'] = "Información: #{info[:info]}" if info[:info].present?
+
+    else
+      columna_resumen['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
+    end  # End info estatus
+
+    # Se completa la seccion del excel en respuesta
+    {nombre_cientifico: info[:linea]}.merge(validacion_interna(info)).merge(columna_resumen)
+  end
+
+  # Escribe los datos del excel con la gema rubyXL
+  def escribe_excel_csv
+    xlsx = RubyXL::Workbook.new
+    sheet = xlsx[0]
+    sheet.sheet_name = 'Validacion_CONABIO'
+    fila = 1  # Uno para que 0 sea la cabecera
+
+    @hash.each do |h|
+      columna = 0  # Desde la columna donde empieza
+
+      h.each do |k,v|
+
+        # Para la cabecera
+        sheet.add_cell(0,columna,k) if fila == 1
+
+        # Para los demas datos
+        sheet.add_cell(fila,columna,v)
+        columna+= 1
+      end
+      fila+= 1
+    end
+
+    # Escribe el excel en cierta ruta
+    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/public/validaciones_excel/NombresGastronomicosValidadoCONABIO.xlsx")
+  end
 
   # Escribe los datos del excel con la gema rubyXL
   def escribe_excel
@@ -486,7 +655,6 @@ class ValidacionesController < ApplicationController
 
     if info[:estatus]
       taxon = info[:taxon_valido].present? ? info[:taxon_valido] : info[:taxon]
-      hash = info[:hash]
 
       validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino
 
