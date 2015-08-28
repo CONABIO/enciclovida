@@ -227,21 +227,29 @@ class ValidacionesController < ApplicationController
             taxon_valido = Especie.find(estatus.first.especie_id2)
             t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
             info[:taxon_valido] = t_val
+            columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
+            columna_resumen['url_bios'] = t_val.id
           rescue
             info[:estatus] = false
             info[:error] = 'No existe el taxón válido en CAT'
+            columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
+            columna_resumen['url_bios'] = ''
           end
 
         else  # No existe el valido >.>!
           info[:estatus] = false
           info[:error] = 'No existe el taxón válido en CAT'
+          columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
+          columna_resumen['url_bios'] = ''
         end
+      else
+        columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
+        columna_resumen['url_bios'] = taxon.id
       end  # End estatus = 1
-
-      columna_resumen['SCAT_Observaciones'] = "Información: #{info[:info]}" if info[:info].present?
 
     else
       columna_resumen['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
+      columna_resumen['url_bios'] = ''
     end  # End info estatus
 
     # Se completa la seccion del excel en respuesta
