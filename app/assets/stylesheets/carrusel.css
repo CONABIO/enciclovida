@@ -1,7 +1,9 @@
 #contenedor_fotos{
     padding-right: 4px;
     padding-left: 4px;
-    background-color: #f7f7f7;
+    padding-top: 6px;
+    padding-bottom: 4px;
+    background-color: #F7F7F7;
 }
 #foto-carrusel{
     overflow: hidden;
@@ -44,7 +46,7 @@ div#foto-carrusel-interna{
     width: 100%;
     height: 70px;
     overflow: hidden;
-    margin-top: -95px;
+    margin-top: -72px;
     /*background-color: rgb(250,250,250);*/
     /*outline: 2px solid #000030;*/
 }
@@ -72,14 +74,15 @@ img.seleccionada {
 }
 .scrollbar {
     width: 100%;
-    height: 6px;
-    margin-top: 2px;
-    background-color: #bababa;
+    height: 7px;
+    margin-top: 4px;
+    background-color: #cdcdcd;
     border-radius: 4px;
 }
 .scrollbar .handle {
     width: 100px; /* overriden if dynamicHandle: 1 */
     height: 100%;
-    background: #800000;
+    background: #700000;
     border-radius: 4px;
+    cursor: move;
 }

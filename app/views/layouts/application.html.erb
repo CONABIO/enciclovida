@@ -23,7 +23,7 @@
   <%= yield :extrajs %>
 </head>
 <body>
-<div id="img-fondo"></div>
+<div id="img-fondo">
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
@@ -109,6 +109,6 @@
 
 <%= bitacora.html_safe if bitacora.present? %>
 <%= yield :extrajs_carrusel %>
-
+</div>
 </body>
 </html>

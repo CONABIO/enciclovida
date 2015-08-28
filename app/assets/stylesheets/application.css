@@ -45,14 +45,14 @@ body{
 }
 
 #img-fondo {
-    position: absolute;
+    /*position: absolute;*/
     min-width: 100%;
     min-height: 100%;
-    top: 0;
-    left: 0;
+    /*top: 0;*/
+    /*left: 0;*/
     background-color: transparent;
-    background-repeat: repeat-y;
-    background-attachment: fixed;
+    /*background-repeat: repeat-y;*/
+    /*background-attachment: fixed;*/
 }
 
 div.footer{ /*Footer*/
@@ -163,8 +163,14 @@ input.gsc-search-button {
 }
 
 /*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
-div#contenedor_mapa{
+div#contenedor_mapa > div.embed-responsive {
     background-color: #f7f7f7;
+    padding-left: 6px;
+    padding-top: 6px;
+    margin-right: -12px;
+}
+div#contenedor_mapa{
+    padding-right: 6px;
 }
 
 div#map{
