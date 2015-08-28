@@ -163,48 +163,59 @@ class ValidacionesController < ApplicationController
     nombres = hash['nombre_cientifico'].split(' ')
     h = hash
 
-    taxones.each do |t|  # Iterare cada taxon que resulto parecido para ver cual es el correcto
+    taxones_coincidentes = taxones.map{|t| asigna_categorias_correspondientes(t)}
+    taxones_coincidentes.each do |t|  # Iterare cada taxon que resulto parecido para ver cual es el correcto
       t = asigna_categorias_correspondientes(t)
       next unless t.present?  # Por si regresa nulo
 
       # Si es la especie lo mando directo a coincidencia
       cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
       if cat_tax_taxon_cat == 'especie' && nombres.length == 2 && hash['infraespecie'].blank?
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       # Caso para infraespecies
       variedad = %w(var. var variedad)
       if cat_tax_taxon_cat == 'variedad' && nombres.length == 3 && variedad.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       subvariedad = %w(subvar. subvar subvariedad)
       if cat_tax_taxon_cat == 'subvariedad' && nombres.length == 3 && subvariedad.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       forma = %w(f. f forma)
       if cat_tax_taxon_cat == 'forma' && nombres.length == 3 && forma.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       subforma = %w(subf. subf subforma)
       if cat_tax_taxon_cat == 'subforma' && nombres.length == 3 && subforma.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       # Si no coincide ninguna de las infraespecies anteriores, toma subespecie por default
       subespecies = %w(subsp. subsp subespecie ssp. ssp)
       if cat_tax_taxon_cat == 'subespecie' && nombres.length == 3 && (hash['categoria'].blank? || subespecies.include?(hash['categoria'].try(:downcase)))
-        return {taxon: t, hash: h, estatus: true}
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+      end
+
+      # Para poner el genero si esque esta vacio con especie
+      if cat_tax_taxon_cat == 'genero' && nombres.length == 1 && hash['especie'].blank?
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: (validó hasta género) #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
+      end
+
+      # Si no coincidio con ninguno le dejo el unico
+      if taxones.length == 1
+        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 
       # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
       if t.x_familia == hash['familia'].try(:downcase)
 
         if coincidio_alguno
-          return {hash: h, estatus: false, error: 'El taxón es ambiguo'}
+          return {hash: h, estatus: false, error: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
         else
           taxon_coincidente = t
           coincidio_alguno = true
@@ -216,7 +227,7 @@ class ValidacionesController < ApplicationController
     if coincidio_alguno
       return {taxon: taxon_coincidente, hash: h, estatus: true}
     else  # De lo contrario no hubo coincidencias claras
-      return {hash: h, estatus: false, error: 'El taxón es ambiguo'}
+      return {hash: h, estatus: false, error: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
     end
   end
 
@@ -347,14 +358,14 @@ class ValidacionesController < ApplicationController
       hash = info[:hash]
 
       resumen_hash['SCAT_NombreEstatus'] = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
-      resumen_hash['SCAT_Observaciones'] = nil
+      resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}" if info[:info].present?
       resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
       resumen_hash['SCAT_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_cientifico : taxon.nombre_cientifico
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_autoridad : taxon.nombre_autoridad
 
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
-      resumen_hash['SCAT_Observaciones'] = info[:error]
+      resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
       resumen_hash['SCAT_Correccion_NombreCient'] = nil
       resumen_hash['SCAT_NombreCient_valido'] = nil
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
