@@ -8,6 +8,7 @@ class ValidacionesController < ApplicationController
   #Quita estos metodos para que pueda cargar correctamente la peticion
   skip_before_filter  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
   before_action :authenticate_request!, only: [:update, :insert, :delete]
+  before_action :authenticate_usuario!, :only => [:taxon, :resultados_taxon_simple, :resultados_taxon_excel]
   layout false, only: [:update, :insert, :delete]
 
   def update
