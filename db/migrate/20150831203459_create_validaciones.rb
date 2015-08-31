@@ -4,7 +4,7 @@ class CreateValidaciones < ActiveRecord::Migration
       t.integer :usuario_id, :null => false
       t.string :nombre_archivo, null: false
       t.integer :enviado, limit: 1, default: 0, null: false
-      t.datetime :fecha_envio, null: false
+      t.datetime :fecha_envio
       t.timestamps
     end
   end
