@@ -229,28 +229,28 @@ class ValidacionesController < ApplicationController
             t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
             info[:taxon_valido] = t_val
             columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
-            columna_resumen['url_bios'] = t_val.id
+            columna_resumen['SCAT_id'] = t_val.id
           rescue
             info[:estatus] = false
             info[:error] = 'No existe el taxón válido en CAT'
             columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
-            columna_resumen['url_bios'] = ''
+            columna_resumen['SCAT_id'] = ''
           end
 
         else  # No existe el valido >.>!
           info[:estatus] = false
           info[:error] = 'No existe el taxón válido en CAT'
           columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
-          columna_resumen['url_bios'] = ''
+          columna_resumen['SCAT_id'] = ''
         end
       else
         columna_resumen['SCAT_Observaciones'] = info[:info].present? ? "Información: #{info[:info]}" : ''
-        columna_resumen['url_bios'] = taxon.id
+        columna_resumen['SCAT_id'] = taxon.id
       end  # End estatus = 1
 
     else
       columna_resumen['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
-      columna_resumen['url_bios'] = ''
+      columna_resumen['SCAT_id'] = ''
     end  # End info estatus
 
     # Se completa la seccion del excel en respuesta
@@ -736,6 +736,7 @@ class ValidacionesController < ApplicationController
 
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
+      validacion_interna_hash['SCAT_id'] = taxon.catalogo_id
 
     else  # Asociacion vacia, solo el error
       validacion_interna_hash['SCAT_Reino_valido'] = nil
@@ -763,6 +764,7 @@ class ValidacionesController < ApplicationController
       validacion_interna_hash['SCAT_Distribucion'] = nil
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = nil
       validacion_interna_hash['SCAT_Fuente'] = nil
+      validacion_interna_hash['SCAT_id'] = nil
     end
 
     validacion_interna_hash
