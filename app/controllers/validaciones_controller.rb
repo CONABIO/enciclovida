@@ -55,12 +55,8 @@ class ValidacionesController < ApplicationController
         end
       end
     elsif params[:batch].present?
-      validacion = Validacion.new(usuario: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
-
-      if validacion.save
-        validacion.batch = params[:batch]
-        validacion.delay.valida_batch
-      end
+      validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
+      validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(params[:batch].path, params[:batch].content_type) if validacion.save
     end
   end
 
@@ -108,7 +104,7 @@ class ValidacionesController < ApplicationController
 
   private
 
-  
+
   def authenticate_request!
     return nil unless CONFIG.ip_sql_server.include?(request.remote_ip)
     return nil unless params[:secret] == CONFIG.secret_sql_server.to_s.parameterize

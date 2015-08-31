@@ -1,20 +1,19 @@
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
 class Validacion < ActiveRecord::Base
 
-  attr_accessor :batch
+  FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando viene de un .csv
-  def self.valida_batch
+  def valida_batch(path, content_type)
     errores = []
-    formatos_permitidos = %w(text/csv)
 
-    if !formatos_permitidos.include? batch.content_type
-      errores << 'Lo sentimos, el formato ' + batch.content_type + ' no esta permitido'
+    if !FORMATOS_PERMITIDOS_BATCH.include? content_type
+      errores << 'Lo sentimos, el formato ' + content_type + ' no esta permitido'
       return @match_taxa = errores.join(' ')
     end
 
     @hash = []
-    lineas=File.open(batch.path).read
+    lineas=File.open(path).read
 
     lineas.each_line do |linea|
       info = encuentra_record_por_nombre_cientifico_csv(linea.limpia)
