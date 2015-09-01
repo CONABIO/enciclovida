@@ -127,8 +127,8 @@
     /*filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-color: rgba(242, 240, 237, 0.85);
     border-radius: 10px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    /*margin-bottom: 20px;*/
+    /*margin-top: 20px;*/
     /*border: 1px solid #599008;*/
 }
 @media (min-width: 872px) {

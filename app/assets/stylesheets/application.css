@@ -51,12 +51,53 @@ body{
     top: 0;
     left: 0;
     background-color: transparent;
+    z-index: -1;
     /*background-repeat: repeat-y;*/
     /*background-attachment: fixed;*/
 }
 
-div.footer{ /*Footer*/
-    background: linear-gradient(to right, transparent,#ede6df,transparent);
+#brandBar{
+    /*background-color: rgba(245, 245, 245, 0.75);*/
+    /*max-height: 100px;*/
+}
+#brandBar > div{
+    width: 80%;
+    margin: 0 auto;
+}
+#brandBar > div > a{
+    float: right;
+}
+#brandBar > div > a > img{
+    max-height: 75px;
+    padding: 5px;
+}
+#brandBar > div > ul {
+    font-size: .75em;
+    font-weight: bold;
+    background-color: rgba(242, 240, 237, 0.75);
+    border-top-right-radius: 1.5em;
+    border-top-left-radius: 1.5em;
+    /*border-bottom-right-radius: 1.5em;*/
+    /*border-bottom-left-radius: 1.5em;*/
+    /*clear: both;*/
+}
+#brandBar > div > ul > li > a {
+    padding: 4px 4px;
+}
+
+
+div.footer > div {
+    width: 60%;
+    margin: 0 auto;
+    background-color: rgba(242, 240, 237, 0.65);
+    /*border-top-right-radius: 1.5em;*/
+    /*border-top-left-radius: 1.5em;*/
+    border-bottom-right-radius: 1.5em;
+    border-bottom-left-radius: 1.5em;
+}
+div.footer > div > p{
+    color: #800000;
+    font-size: .75em;
 }
 
 
