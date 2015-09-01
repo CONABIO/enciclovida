@@ -55,8 +55,16 @@ class ValidacionesController < ApplicationController
         end
       end
     elsif params[:batch].present?
-      validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
-      validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(params[:batch].path, params[:batch].content_type) if validacion.save
+      @errores = []
+
+      if !FORMATOS_PERMITIDOS_BATCH.include? content_type
+        @errores << 'Lo sentimos, el formato ' + content_type + ' no esta permitido'
+      end
+
+      if @errores.empty?
+        validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
+        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(params[:batch].path) if validacion.save
+      end
     end
   end
 

@@ -3,15 +3,8 @@ class Validacion < ActiveRecord::Base
 
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
-  # Valida el taxon cuando viene de un .csv
-  def valida_batch(path, content_type)
-    errores = []
-
-    if !FORMATOS_PERMITIDOS_BATCH.include? content_type
-      errores << 'Lo sentimos, el formato ' + content_type + ' no esta permitido'
-      return @match_taxa = errores.join(' ')
-    end
-
+  # Valida el taxon cuando solo pasan el nombre cientifico
+  def valida_batch(path)
     @hash = []
     lineas=File.open(path).read
 
@@ -21,6 +14,7 @@ class Validacion < ActiveRecord::Base
     end  # Fin each do lineas
 
     escribe_excel_csv
+
   end
 
   def encuentra_record_por_nombre_cientifico_csv(linea)
