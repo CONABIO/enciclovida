@@ -71,7 +71,7 @@ class ValidacionesController < ApplicationController
   # Validacion a traves de un excel .xlsx
   def resultados_taxon_excel
     @errores = []
-    uploader = ArchivoUploader.new
+    #uploader = ArchivoUploader.new
 
     begin
       content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -81,16 +81,16 @@ class ValidacionesController < ApplicationController
       else
 
         xlsx = Roo::Excelx.new(params[:excel].path, nil, :ignore)
-        @sheet = xlsx.sheet(0)  # toma la primera hoja por default
+        sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
-        rows = @sheet.last_row - @sheet.first_row  # Para quietarle del conteo la cabecera
-        columns = @sheet.last_column
+        rows = sheet.last_row - sheet.first_row  # Para quietarle del conteo la cabecera
+        columns = sheet.last_column
 
         @errores << 'La primera hoja de tu excel no tiene información' if rows < 0
         @errores << 'Las columnas no son las mínimas necesarias para poder leer tu excel' if columns < 7
 
         if @errores.empty?
-          cabecera = @sheet.row(1)
+          cabecera = sheet.row(1)
           cc = comprueba_columnas(cabecera)
 
           # Por si no cumple con las columnas obligatorias
@@ -98,8 +98,8 @@ class ValidacionesController < ApplicationController
             @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
           else
             #uploader.store!(params[:excel])  # Guarda el archivo
-            valida_campos(@sheet, cc[:asociacion])  # Valida los campos en la base
-            escribe_excel
+            validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename.gsub('.xlsx','')}")
+            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
           end
         end
       end  # Fin del tipo de archivo
@@ -119,5 +119,30 @@ class ValidacionesController < ApplicationController
     return nil if params[:id].blank? || params[:base].blank? || params[:tabla].blank?
     return nil unless CONFIG.bases.include?(params[:base])
     return nil unless Bases::EQUIVALENCIA.include?(params[:tabla])
+  end
+
+  def comprueba_columnas(cabecera)
+    columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
+    columnas_opcionales = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+    columnas_asociadas = Hash.new
+    columnas_faltantes = []
+
+    cabecera.each do |c|
+      next unless c.present?  # para las cabeceras vacias
+      cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
+
+      if columnas_obligatoraias.include?(cab) || columnas_opcionales.include?(cab)
+        columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
+
+        # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
+        columnas_asociadas[cab] = "^#{c}$"
+      end
+    end
+
+    columnas_obligatoraias.compact.each do |col_obl|
+      columnas_faltantes << t("columnas_obligatorias_excel.#{col_obl}")
+    end
+
+    {faltan: columnas_faltantes, asociacion: columnas_asociadas}
   end
 end

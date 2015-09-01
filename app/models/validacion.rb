@@ -173,9 +173,10 @@ class Validacion < ActiveRecord::Base
   end
 
   # Escribe los datos del excel con la gema rubyXL
-  def escribe_excel
-    xlsx = RubyXL::Parser.parse(params[:excel].path)  # El excel con su primera sheet
+  def escribe_excel(path)
+    xlsx = RubyXL::Parser.parse(path)  # El excel con su primera sheet
     sheet = xlsx[0]
+    #sheet_orig = xlsx(0)
     fila = 1  # Uno para que 0 sea la cabecera
 
     @hash.each do |h|
@@ -194,7 +195,10 @@ class Validacion < ActiveRecord::Base
     end
 
     # Escribe el excel en cierta ruta
-    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/public/validaciones_excel/ColimaApendiceCompletoValidado.xlsx")
+    ruta_excel = Rails.root.join('public','validaciones_excel', usuario_id.to_s)
+    FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+    puts "#{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
+    xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
   def asigna_categorias_correspondientes(taxon)
@@ -365,13 +369,15 @@ class Validacion < ActiveRecord::Base
     end  #Fin de las posibles coincidencias
   end
 
-  def valida_campos(sheet, asociacion)
+  def valida_campos(path, asociacion)
     @hash = []
     primera_fila = true
 
-    puts asociacion.inspect
+    xlsx = Roo::Excelx.new(path, nil, :ignore)
+    @sheet = xlsx.sheet(0)  # toma la primera hoja por default
+
     #sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
-    sheet.parse(asociacion).each do |hash|
+    @sheet.parse(asociacion).each do |hash|
       if primera_fila
         primera_fila = false
         next
@@ -380,6 +386,9 @@ class Validacion < ActiveRecord::Base
       info = encuentra_record_por_nombre_cientifico(hash)
       @hash << asocia_respuesta(info)
     end
+
+    escribe_excel(path)
+    EnviaCorreo.excel(self).deliver
   end
 
   # Asocia la respuesta para armar el contenido del excel
@@ -655,30 +664,5 @@ class Validacion < ActiveRecord::Base
     end
 
     validacion_interna_hash
-  end
-
-  def comprueba_columnas(cabecera)
-    columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
-    columnas_opcionales = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
-    columnas_asociadas = Hash.new
-    columnas_faltantes = []
-
-    cabecera.each do |c|
-      next unless c.present?  # para las cabeceras vacias
-      cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
-
-      if columnas_obligatoraias.include?(cab) || columnas_opcionales.include?(cab)
-        columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
-
-        # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
-        columnas_asociadas[cab] = "^#{c}$"
-      end
-    end
-
-    columnas_obligatoraias.compact.each do |col_obl|
-      columnas_faltantes << t("columnas_obligatorias_excel.#{col_obl}")
-    end
-
-    {faltan: columnas_faltantes, asociacion: columnas_asociadas}
   end
 end
