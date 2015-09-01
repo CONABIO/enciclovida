@@ -59,6 +59,7 @@ body{
 #brandBar{
     /*background-color: rgba(245, 245, 245, 0.75);*/
     /*max-height: 100px;*/
+    padding-top: 10px;
 }
 #brandBar > div{
     width: 80%;
@@ -68,8 +69,8 @@ body{
     float: right;
 }
 #brandBar > div > a > img{
-    max-height: 80px;
-    padding: 6px 10px 0 10px;
+    max-height: 74px;
+    padding: 0px 10px 0 10px;
 }
 #brandBar > div > ul {
     font-size: .75em;
@@ -81,7 +82,7 @@ body{
     /*border-bottom-right-radius: 1.5em;*/
     /*border-bottom-left-radius: 1.5em;*/
     /*clear: both;*/
-    margin-top: 10px;
+    margin-top: 15px;
 }
 #brandBar > div > ul > li > a {
     /*padding: 5px 5px;*/
