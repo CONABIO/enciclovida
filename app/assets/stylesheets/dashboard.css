@@ -42,14 +42,14 @@
         display: block;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        border: 1px solid rgba(58, 175, 66, 0.3);
+        /*border: 1px solid rgba(58, 175, 66, 0.3);*/
     }
     #filtros{
         position: fixed;
         top: 110px;
         z-index: 10000003;
         bottom: 20%;
-        left: -60px;
+        left: -58px;
         padding: 22px;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
@@ -130,6 +130,7 @@
     /*margin-bottom: 20px;*/
     /*margin-top: 20px;*/
     /*border: 1px solid #599008;*/
+    border: 1px solid rgba(58, 175, 66, 0.3);
 }
 @media (min-width: 872px) {
   .main {
