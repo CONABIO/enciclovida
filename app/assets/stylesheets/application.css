@@ -62,41 +62,45 @@ body{
 }
 #brandBar > div{
     width: 80%;
-    margin: 0 auto;
+    margin: 0 auto 0 auto;
 }
 #brandBar > div > a{
     float: right;
 }
 #brandBar > div > a > img{
-    max-height: 75px;
-    padding: 5px;
+    max-height: 80px;
+    padding: 6px 10px 0 10px;
 }
 #brandBar > div > ul {
     font-size: .75em;
     font-weight: bold;
-    background-color: rgba(242, 240, 237, 0.75);
+    /*background-color: rgba(242, 240, 237, 0.75);*/
     border-top-right-radius: 1.5em;
     border-top-left-radius: 1.5em;
+    background-color: rgba(223, 237, 228, 0.9);
     /*border-bottom-right-radius: 1.5em;*/
     /*border-bottom-left-radius: 1.5em;*/
     /*clear: both;*/
+    margin-top: 10px;
 }
 #brandBar > div > ul > li > a {
-    padding: 4px 4px;
+    /*padding: 5px 5px;*/
 }
 
 
 div.footer > div {
     width: 60%;
     margin: 0 auto;
-    background-color: rgba(242, 240, 237, 0.65);
+    /*background-color: rgba(242, 240, 237, 0.65);*/
+    background-color: rgba(223, 237, 228, 0.9);
     /*border-top-right-radius: 1.5em;*/
     /*border-top-left-radius: 1.5em;*/
     border-bottom-right-radius: 1.5em;
     border-bottom-left-radius: 1.5em;
+    padding: 5px;
 }
 div.footer > div > p{
-    color: #800000;
+    /*color: #800000;*/
     font-size: .75em;
 }
 
