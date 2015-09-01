@@ -3,7 +3,9 @@ class EnviaCorreo < Devise::Mailer
 
   # Metodos adicionales
   def excel(validacion)
-    mail(:to => validacion.usuario.email, :subject => "Validacion de #{validacion.nombre_archivo}")
+    usuario = validacion.usuario
+    @ruta_excel = "#{CONFIG.servidor_bios}/assets/validaciones_excel/#{usuario.id}/#{validacion.nombre_archivo}.xlsx"
+    mail(:to => usuario.email, :subject => "Validacion de #{validacion.nombre_archivo}")
 
     validacion.enviado = 1
     validacion.fecha_envio = Time.now

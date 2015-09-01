@@ -166,7 +166,10 @@ class Validacion < ActiveRecord::Base
     end
 
     # Escribe el excel en cierta ruta
-    xlsx.write("/home/calonso/Documents/proyectosRoR/buscador/public/validaciones_excel/NombresGastronomicosValidadoCONABIO.xlsx")
+    ruta_excel = Rails.root.join('public','validaciones_excel', usuario_id.to_s)
+    FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+    puts "#{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
+    xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
   # Escribe los datos del excel con la gema rubyXL
