@@ -839,44 +839,4 @@ class EspeciesController < ApplicationController
         "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
-
-  def validaBatch(batch)
-    errores = []
-    formatos_permitidos = %w(text/csv text/plain)
-    path = Rails.root.join('tmp', 'batchs')
-    file = path.join(Time.now.strftime("%Y_%m_%d_%H-%M-%S") + '_' + batch.original_filename)
-    Dir.mkdir(path, 0700) if !File.exists?(path)
-
-    if !formatos_permitidos.include? batch.content_type
-      errores << 'Lo sentimos, el formato ' + batch.content_type + ' no esta permitido'
-      return @match_taxa = errores.join(' ')
-    end
-
-    File.open(file, 'wb') do |file|
-      file.write(batch.read)
-    end
-
-    File.open(file, 'r') do |f|
-      if !(1..1000).cover? f.readlines.size         #no mas de 1000 taxones por consulta para no forzar la base
-        errores << "Lo sentimos, no se permiten #{f.readlines.size} lineas."
-        File.delete file
-        return @match_taxa = errores.join(' ')
-      end
-    end
-
-    @match_taxa = Hash.new
-    lineas=File.open(file).read
-
-    lineas.each_line do |linea|
-      l = linea.strip
-      e = Especie.where(:nombre_cientifico => l)
-      if e.first
-        @match_taxa[l] = e
-      else
-        ids = FUZZY_NOM_CIEN.find(l, 3)
-        coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
-        @match_taxa[l] = coincidencias.present? ? coincidencias : 'Sin coincidencia'
-      end
-    end
-  end
 end
