@@ -1,6 +1,8 @@
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
 class Validacion < ActiveRecord::Base
 
+  belongs_to :usuario
+
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando solo pasan el nombre cientifico
@@ -14,7 +16,7 @@ class Validacion < ActiveRecord::Base
     end  # Fin each do lineas
 
     escribe_excel_csv
-
+    EnviaCorreo.excel(self).deliver
   end
 
   def encuentra_record_por_nombre_cientifico_csv(linea)

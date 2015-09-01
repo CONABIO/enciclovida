@@ -1,32 +1,3 @@
-<ol>
-  <% if @match_taxa.is_a? String %>
-
-      <%= @match_taxa.html_safe %>
-
-  <%-
-      else
-        @match_taxa.each do |linea, taxones|
-  -%>
-          <li>
-            <%= "#{linea} ---> ".html_safe %>
-            <%-
-                if !taxones.is_a? String
-                  if taxones.length == 1
-            -%>
-                    <%= tituloNombreCientifico taxones.first, :link => true %><br>
-                <% else %>
-                    Sin coincidencias. <b>Quizás quisiste decir:</b><br>
-                    <% taxones.each do |taxon| %>
-
-                        <%= tituloNombreCientifico taxon, :link => true %><br>
-                    <%-
-                        end
-                        end
-                        else
-                    -%>
-                <%= "&#09;&#09;#{taxones}<br>".html_safe %>
-            <% end %>
-          </li>
-      <% end %>
-  <% end %>
-</ol>
+La validación fue enviada correctamente, cuando termine el proceso se te enviará a tu
+correo el excel validado por CONABIO. Por favor se paciente este proceso puede tardar
+dependiendo del número de taxones.

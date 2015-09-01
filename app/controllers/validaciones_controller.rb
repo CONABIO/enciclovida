@@ -57,8 +57,8 @@ class ValidacionesController < ApplicationController
     elsif params[:batch].present?
       @errores = []
 
-      if !FORMATOS_PERMITIDOS_BATCH.include? content_type
-        @errores << 'Lo sentimos, el formato ' + content_type + ' no esta permitido'
+      if !Validacion::FORMATOS_PERMITIDOS_BATCH.include? params[:batch].content_type
+        @errores << 'Lo sentimos, el formato ' + params[:batch].content_type + ' no esta permitido'
       end
 
       if @errores.empty?
