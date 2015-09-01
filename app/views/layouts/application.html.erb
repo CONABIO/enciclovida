@@ -31,6 +31,7 @@
       <%= link_to image_tag('/assets/app/logoConabio.png', :alt => 'Brand', :class=>'img-responsive'), 'http://www.conabio.gob.mx', :target => :_blank, :class => ''  %>
       <%= link_to image_tag('/assets/app/biomexWair.png', :alt => 'Brand', :class=>'img-responsive'), 'http://www.biodiversidad.gob.mx', :target => :_blank, :class => ''  %>
     </div>
+
     <div class="row">
         <ul class="nav nav-pills navbar-right">
             <% if I18n.locale.to_s == 'es-cientifico' %>
@@ -42,7 +43,7 @@
             <% if usuario_signed_in? %>
                 <% if I18n.locale.to_s == 'es-cientifico' %>
                     <li><%# link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
-                    <li><%# link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
+                    <li><%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
                 <% end %>
                 <li>
                   <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>

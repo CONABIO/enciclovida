@@ -9,17 +9,12 @@
       </ul>
     </div>
 <% else %>
-    Tu formato fue subido al servidor correctamente. Por favor espera el correo en donde
-    te mandaremos la validación correspondiente a dicho archivo.
+    <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
+      correo el excel validado por CONABIO.</p>
+    Por favor se paciente este proceso puede tardar
+    dependiendo del número de taxones.
 
-    <%# @sheet.row(1) %>
-    <br>
-    <%= @hash.inspect %>
-
-    <%# @prueba %>
-    <%# hash = @sheet.get_table %>
-    <br>
-    <%# @hash.inspect %>
-    <%# hash[:sorted_headers] %>
-    <%# hash[:table] %>
+    <p>
+      <strong>NOTA: </strong> el archivo solo durará 7 días en nuestro servidor
+    </p>
 <% end %>

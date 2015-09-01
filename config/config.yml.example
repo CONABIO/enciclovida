@@ -54,6 +54,7 @@ base: &base
 
   # Servidor en produccion que tendra los kml y kmz (bios)
   servidor: http://bios.conabio.gob.mx/kmz
+  servidor_bios: http://bios.conabio.gob.mx
 
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
