@@ -168,19 +168,16 @@ cambiaSidebar = function(){
     $('#filtros > div').toggleClass('hidden');
 };
 
-var fondo = 0;
+var fondo = 1;
 cambiafondo = function(){
-    fondo = fondo + 1;
-    url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
+    fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
+    url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
     //console.log(url);
     $('body').css('background-image',url);
-    if (fondo == 8){
-        fondo = -1;
-    }
 };
 $(document).ready(function () {
     (function cambiaFondoAuto(){
-        url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
+        url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
             $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1750, function () {
@@ -189,10 +186,7 @@ $(document).ready(function () {
             });
             return url;
         });
-        if (fondo == 8){
-            fondo = -1;
-        }
-        fondo = fondo + 1;
+        fondo = ((fondo >= 16) ? 1 : fondo+1);//ya q puede darse el caso de q aumente mientras se da click
         setTimeout(cambiaFondoAuto, 15000);
     })();
 });
