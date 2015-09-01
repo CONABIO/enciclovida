@@ -52,13 +52,9 @@ body{
     left: 0;
     background-color: transparent;
     z-index: -1;
-    /*background-repeat: repeat-y;*/
-    /*background-attachment: fixed;*/
 }
 
 #brandBar{
-    /*background-color: rgba(245, 245, 245, 0.75);*/
-    /*max-height: 100px;*/
     padding-top: 10px;
 }
 #brandBar > div{
@@ -75,13 +71,9 @@ body{
 #brandBar > div > ul {
     font-size: .75em;
     font-weight: bold;
-    /*background-color: rgba(242, 240, 237, 0.75);*/
     border-top-right-radius: 1.5em;
     border-top-left-radius: 1.5em;
     background-color: rgba(223, 237, 228, 0.9);
-    /*border-bottom-right-radius: 1.5em;*/
-    /*border-bottom-left-radius: 1.5em;*/
-    /*clear: both;*/
     margin-top: 15px;
 }
 #brandBar > div > ul > li > a {
@@ -92,10 +84,7 @@ body{
 div.footer > div {
     width: 60%;
     margin: 0 auto;
-    /*background-color: rgba(242, 240, 237, 0.65);*/
-    background-color: rgba(223, 237, 228, 0.9);
-    /*border-top-right-radius: 1.5em;*/
-    /*border-top-left-radius: 1.5em;*/
+    background-color: rgba(223, 237, 228, 0.6);
     border-bottom-right-radius: 1.5em;
     border-bottom-left-radius: 1.5em;
     padding: 5px;
