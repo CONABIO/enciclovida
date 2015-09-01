@@ -5,6 +5,7 @@ Buscador::Application.routes.draw do
   get "inicio/acerca"
   get "inicio/terminos"
   get "inicio/ayuda"
+  get "inicio/creditos"
 
   resources :adicionales do
     collection do
