@@ -58,35 +58,45 @@ body{
     padding-top: 10px;
 }
 #brandBar > div{
+}
+#brandBar > div:nth-child(2) { /*menú arriba main*/
     width: 80%;
-    margin: 0 auto 0 auto;
+    margin: 10px auto 0 auto;
 }
-#brandBar > div > a{
-    float: right;
+#brandBar div > a > img {
+    max-height: 80px;
 }
-#brandBar > div > a > img{
-    max-height: 74px;
-    padding: 0px 10px 0 10px;
-}
+/*#brandBar div > div:first-child  img {*/
+    /*padding: 5px 0px 5px 0;*/
+/*}*/
+/*#brandBar div > div:nth-child(2)  img{*/
+    /*padding: 20px 0px 10px 0;*/
+/*}*/
+/*#brandBar div > div:nth-child(3)  img {*/
+    /*padding: 10px 0px 10px 0;*/
+/*}*/
 #brandBar > div > ul {
     font-size: .75em;
     font-weight: bold;
     border-top-right-radius: 1.5em;
     border-top-left-radius: 1.5em;
+    /*border-bottom-right-radius: 1.5em;*/
+    /*border-bottom-left-radius: 1.5em;*/
     background-color: rgba(223, 237, 228, 0.9);
-    margin-top: 15px;
 }
 #brandBar > div > ul > li > a {
-    /*padding: 5px 5px;*/
+    /*padding: 2px 15px;*/
 }
 
 
 div.footer > div {
     width: 60%;
-    margin: 0 auto;
-    background-color: rgba(223, 237, 228, 0.6);
-    border-bottom-right-radius: 1.5em;
-    border-bottom-left-radius: 1.5em;
+    margin: 20px auto;
+    background-color: rgba(223, 237, 228, 0.4);
+    border-top-right-radius: 2.5em;
+    border-top-left-radius: 2.5em;
+    border-bottom-right-radius: 2.5em;
+    border-bottom-left-radius: 2.5em;
     padding: 5px;
 }
 div.footer > div > p{
