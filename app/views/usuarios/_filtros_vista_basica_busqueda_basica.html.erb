@@ -11,9 +11,9 @@
 
         <div class="input-group">
           <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
-          <span class="input-group-btn">
+            <span class="input-group-btn">
                 <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
-                          </span>
+            </span>
         </div>
 
       </div>
@@ -30,9 +30,9 @@
 
         <div class="input-group" style="margin-bottom: 15px;">
           <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
-          <span class="input-group-btn">
-        <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
-                  </span>
+            <span class="input-group-btn">
+                <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
+            </span>
         </div>
       </div>
   <% end %>
