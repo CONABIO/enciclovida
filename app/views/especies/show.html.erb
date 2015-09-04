@@ -290,7 +290,7 @@
         <div class="<%=col2%>" id="contenedor_mapa">
           <div class="embed-responsive embed-responsive-4by3">
             <div id="map"></div>
-            <h6 class="text-right" padding-right: 6px;"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
+            <h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
           </div>
         </div>
     <% end %>
@@ -306,8 +306,7 @@
       <% end %>
       <!-- # Parche para mostrar el PDF de Dalbergia -->
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe,
-                      "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
+          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% else %>
           <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% end %>

@@ -1,4 +1,4 @@
-<div id="busqueda_avanzada" style="display: none" >
+<div id="busqueda_avanzada">
   <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_avanzada  do %>
 
       <%= radioGruposIconicos.html_safe %>
@@ -6,10 +6,6 @@
       <%= hidden_field_tag :id_nom_cientifico %>
       <%= hidden_field_tag :busqueda, :avanzada %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
-
-      <div class=" dropup">
-        <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda básica"), '', :id => :busqueda_basica_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#busquedas").removeClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_basica();' %>
-      </div>
 
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
         <div class="panel-heading" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
@@ -20,9 +16,6 @@
         </div>
       </div>
 
-      <p>
-        <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
-      </p>
 
       <div class="panel panel-success" id="panelEstadoConservacionPt">
         <div class="panel-heading" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
@@ -57,6 +50,9 @@
                 </div>
             </div>
       </div>
+      <p>
+        <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
+      </p>
 
   <% end %>
 </div>
