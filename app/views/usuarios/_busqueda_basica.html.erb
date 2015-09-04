@@ -92,7 +92,7 @@
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
 
                 var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
-                        '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
+                '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
 
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
             }
@@ -203,7 +203,7 @@
             var id=$(this).attr('id').split('_')[1];
             $('#hAtributo_' + id).val('');
         });
-        
+
         $(document).on('click', ".busqueda_atributo_radio", function()
         {
             var id = $(this).attr('id_icono');
@@ -231,13 +231,13 @@
                 $('#' + $(this).attr('name')).prop('checked',false);
                 $('#' + $(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
             } else {
-                    /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
-                     * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
-                     * pero dicho cambio no se realizara a las 22:00 en viernes
-                     * se redujo las ejecuciones dummie en 20% aprox
-                     * */
-                    $('#' + $(this).attr('name')).prop('checked', true);
-                    $('#' + $(this).attr('name')).attr('checked', true);//IDEM
+                /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
+                 * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
+                 * pero dicho cambio no se realizara a las 22:00 en viernes
+                 * se redujo las ejecuciones dummie en 20% aprox
+                 * */
+                $('#' + $(this).attr('name')).prop('checked', true);
+                $('#' + $(this).attr('name')).attr('checked', true);//IDEM
             }
             $(this).toggleClass("busqueda_atributo_imagen_seleccionado");
         });
@@ -354,4 +354,48 @@
         });
     });
 </script>
-<div id="busquedas"></div>
+
+<div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_comun, :class => 'form-inline '+ ('hidden' if I18n.locale.to_s == 'es-cientifico').to_s, :role => 'form' do %>
+      <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
+      <%= hidden_field_tag :busqueda, :nombre_comun %>
+      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
+      <%= hidden_field_tag :valido_sinonimo_basico, 3 %>
+      <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
+      </div>
+      <div class="form-group form-group-sm">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-default btn-sm active glyphicon glyphicon-user" aria-hidden="true"><%# t(:nombre_comun) %></span>
+                <span class="btn btn-default btn-sm glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_cientifico) %></span>
+            </span>
+            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
+            <span class="input-group-btn">
+                <%= button_tag "<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
+            </span>
+        </div>
+      </div>
+  <% end %>
+
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_cientifico, :class => 'form-inline '+ (I18n.locale.to_s == 'es-cientifico'? '' :'hidden') , :role => 'form' do %>
+      <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
+      <%= hidden_field_tag :busqueda, :nombre_cientifico %>
+      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
+      <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
+      </div>
+      <div class="form-group form-group-sm">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-default btn-sm glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_comun) %></span>
+                <span class="btn btn-default btn-sm active glyphicon glyphicon-education" aria-hidden="true" ><%# t(:nombre_cientifico) %></span>
+            </span>
+            <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
+            <span class="input-group-btn">
+                <%= button_tag "<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span>".html_safe, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
+            </span>
+        </div>
+      </div>
+
+  <% end %>
+
+</div>
