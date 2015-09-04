@@ -1,5 +1,5 @@
-<div id="busqueda_basica">
-  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_comun, :role => 'form' do %>
+<div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_comun, :class => 'form-inline', :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
@@ -7,37 +7,46 @@
       <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
       </div>
       <div class="form-group form-group-sm">
-        <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
-
         <div class="input-group">
-          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
             <span class="input-group-btn">
-                <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
+                <button class="btn btn-primary btn-sm"><%= t(:nombre_comun) %></button>
+                <button class="btn btn-default btn-sm"><%= t(:nombre_cientifico) %></button>
+            </span>
+            <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
+            <span class="input-group-btn">
+                <%= button_tag "<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-info btn-sm busquedas" %>
             </span>
         </div>
-
       </div>
+      <!--<div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 input-group">
+      <input type="text" class="form-control" placeholder="Nombre común" />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+            </span>
+      </div>-->
   <% end %>
 
-  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_cientifico, :role => 'form' do %>
+  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_cientifico, :class => 'form-inline', :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
       <%= hidden_field_tag :busqueda, :nombre_cientifico %>
       <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
       <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
       </div>
       <div class="form-group form-group-sm">
-        <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
-
-        <div class="input-group" style="margin-bottom: 15px;">
-          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
+        <div class="input-group">
             <span class="input-group-btn">
-                <%= button_tag :Buscar.to_s, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
+                <button class="btn btn-default btn-sm"><%= t(:nombre_comun) %></button>
+                <button class="btn btn-primary btn-sm"><%= t(:nombre_cientifico) %></button>
+            </span>
+            <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
+            <span class="input-group-btn">
+                <%= button_tag "<span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span>".html_safe, data: { disable_with: 'Procesando...' }, :class => "btn btn-info btn-sm busquedas" %>
             </span>
         </div>
       </div>
+
   <% end %>
 
-  <div class="">
-    <%= link_to (content_tag(:span, '', :class => "caret")+" Búsqueda avanzada"), '', :id => :busqueda_avanzada_link, :class => "btn btn-sm btn-link btn-block", :onClick => '$("#busquedas").addClass("sidebar_busqueda_avanzada_ambas_vistas"); return busqueda_avanzada();' %>
-  </div>
 </div>
