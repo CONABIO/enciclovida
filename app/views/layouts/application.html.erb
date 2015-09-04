@@ -3,10 +3,10 @@
       xmlns:fb="http://www.facebook.com/2008/fbml"
       xmlns:og="http://ogp.me/ns#">
 <head>
-  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
   <%= favicon_link_tag 'app/favicon.ico' %>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
@@ -15,7 +15,7 @@
       I18n.fallbacks = true;
   </script>
 
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true" />
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
@@ -26,47 +26,65 @@
 <div id="img-fondo">
 </div>
 <div id="brandBar" class="container-fluid">
-    <div class="row">
-      <%= link_to image_tag('/assets/app/logoBios_3.png', :alt => 'Brand', :class=>'img-responsive'), especie_index_path, :class => '', :style => 'float: left !important;' %>
-      <%= link_to image_tag('/assets/app/logoConabio.png', :alt => 'Brand', :class=>'img-responsive'), 'http://www.conabio.gob.mx', :target => :_blank, :class => ''  %>
-      <%= link_to image_tag('/assets/app/biomexWair.png', :alt => 'Brand', :class=>'img-responsive'), 'http://www.biodiversidad.gob.mx', :target => :_blank, :class => ''  %>
+  <div class="row">
+    <div class="col-xs-12 col-sm-11 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
+      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <%= link_to image_tag('/assets/app/logoBios_3.png', :alt => 'Brand', :class => 'img-responsive'), especie_index_path %>
+      </div>
+      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+        <%= link_to image_tag('/assets/app/biomex.png', :alt => 'Brand', :class => 'img-responsive'), 'http://www.biodiversidad.gob.mx', :target => :_blank %>
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <%= link_to image_tag('/assets/app/logoConabio.png', :alt => 'Brand', :class => 'img-responsive'), 'http://www.conabio.gob.mx', :target => :_blank %>
+      </div>
     </div>
-    <div class="row">
-        <ul class="nav nav-pills navbar-right">
-            <% if I18n.locale.to_s == 'es-cientifico' %>
-              <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
-            <% else %>
-              <li><%= link_to '[Ir a la vista de especialistas]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
-            <% end %>
-            <li><%= link_to 'Acerca de', inicio_acerca_path %></li>
-            <% if usuario_signed_in? %>
-                <% if I18n.locale.to_s == 'es-cientifico' %>
-                    <li><%# link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
-                    <li><%# link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
-                <% end %>
-                <li>
-                  <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
-                </li>
-                <li>
-                  <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: { confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe } %>
-                </li>
-            <% else %>
-                <% if I18n.locale.to_s == 'es-cientifico' %>
-                    <li><%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path %></li>
-                <% end %>
-            <% end %>
-        </ul>
-    </div>
+    <!--<div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 input-group">
+      <input type="text" class="form-control" placeholder="Nombre común" />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+            </span>
+    </div>-->
     <div>
       <%= render :partial => 'usuarios/filtros_vista_basica_busqueda_basica' %>
     </div>
+  </div>
+
+  <div class="row">
+    <ul class="nav nav-pills navbar-right">
+      <% if I18n.locale.to_s == 'es-cientifico' %>
+          <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
+      <% else %>
+          <li><%= link_to '[Ir a la vista de especialistas]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+      <% end %>
+      <li><%= link_to 'Acerca de', inicio_acerca_path %></li>
+      <% if usuario_signed_in? %>
+          <% if I18n.locale.to_s == 'es-cientifico' %>
+              <li><%# link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
+              <li><%# link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
+          <% end %>
+          <li>
+            <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
+          </li>
+          <li>
+            <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %>
+          </li>
+      <% else %>
+          <% if I18n.locale.to_s == 'es-cientifico' %>
+              <li><%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path %></li>
+          <% end %>
+      <% end %>
+    </ul>
+  </div>
 </div>
 
 <% if params[:checklist].blank? %>
-        <div class="sidebar sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1" id="filtros">
-            <span class="glyphicon glyphicon-search" aria-hidden="true" onclick="cambiaSidebar();"></span>
-          <!--<div class="row hidden"><%# render :template => 'especies/busqueda' %></div>-->
-        </div>
+    <div class="sidebar sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1" id="filtros">
+      <span class="glyphicon glyphicon-search" aria-hidden="true" onclick="cambiaSidebar();"></span>
+
+      <div class="row hidden"><%# render :template => 'especies/busqueda' %></div>
+    </div>
 <% end %>
 
 <div class="container-fluid">
@@ -74,7 +92,7 @@
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
       <div class="row main">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <%= yield %>
+          <%= yield %>
         </div>
       </div>
     </div>
@@ -85,11 +103,15 @@
       <div class="footer">
         <div>
           <p class="text-center">
-              <strong onclick=cambiafondo()>Comisión Nacional para el Conocimiento y Uso de la Biodiversidad </strong><br />
-              Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, Delegación Tlalpan, 14010, México, D.F. <br />
-              Tel. 5004.5000 | <%= link_to 'Créditos', inicio_creditos_path %>
+            Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, Delegación Tlalpan, 14010, México,
+            D.F. | Tel. 5004-5000
           </p>
-          <p class="text-center"><a href="mailto:bios@conabio.gob.mx">Comentarios y sugerencias generales <span class="glyphicon glyphicon-envelope"></span></a> | Plano de ubicación  CONABIO con <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank">PDF </a>
+
+          <p class="text-center"><a href="mailto:bios@conabio.gob.mx">Comentarios y sugerencias generales
+            <span class="glyphicon glyphicon-envelope"></span></a> | Plano de ubicación CONABIO con
+            <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
+            <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank">PDF </a>
+            | <%= link_to 'Créditos', inicio_creditos_path, :target => '_blank' %>
           </p>
         </div>
       </div>
