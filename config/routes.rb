@@ -7,6 +7,9 @@ Buscador::Application.routes.draw do
   get "inicio/ayuda"
   get "inicio/creditos"
 
+  get "usuarios/busqueda_avanzada_vista_avanzada"
+  get "usuarios/busqueda_avanzada_vista_basica"
+
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
