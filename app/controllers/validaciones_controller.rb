@@ -99,7 +99,8 @@ class ValidacionesController < ApplicationController
           else
             #uploader.store!(params[:excel])  # Guarda el archivo
             validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename.gsub('.xlsx','')}")
-            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
+            #validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
+            validacion.valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
           end
         end
       end  # Fin del tipo de archivo
@@ -122,8 +123,8 @@ class ValidacionesController < ApplicationController
   end
 
   def comprueba_columnas(cabecera)
-    columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
-    columnas_opcionales = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+    # Se hace una copia para poder borrarlas del array
+    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS
     columnas_asociadas = Hash.new
     columnas_faltantes = []
 
@@ -131,7 +132,7 @@ class ValidacionesController < ApplicationController
       next unless c.present?  # para las cabeceras vacias
       cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
 
-      if columnas_obligatoraias.include?(cab) || columnas_opcionales.include?(cab)
+      if columnas_obligatoraias.include?(cab) || Validacion::COLUMNAS_OPCIONALES.include?(cab)
         columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
 
         # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)

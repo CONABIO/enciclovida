@@ -3,6 +3,8 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
+  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+  COLUMNAS_OBLIGATORIAS = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando solo pasan el nombre cientifico
@@ -172,6 +174,9 @@ class Validacion < ActiveRecord::Base
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
+  ###############################################
+  # Parte de la validacion del excel
+  ###############################################
   # Escribe los datos del excel con la gema rubyXL
   def escribe_excel(path)
     xlsx = RubyXL::Parser.parse(path)  # El excel con su primera sheet
@@ -227,7 +232,7 @@ class Validacion < ActiveRecord::Base
     taxon
   end
 
-  # Si concidio mas de uno, busca recursivamente arriba de genero (familia) para ver el indicado
+  # Si concidio mas de uno, busca recursivamente el indicado
   def busca_recursivamente(taxones, hash)
     coincidio_alguno = false
     taxon_coincidente = Especie.none
@@ -434,14 +439,26 @@ class Validacion < ActiveRecord::Base
       hash = info[:hash]
 
       resumen_hash['SCAT_NombreEstatus'] = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
-      resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}" if info[:info].present?
+
+      if info[:info].present?
+        resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}"
+      else
+        resumen_hash['SCAT_Observaciones'] = nil
+      end
+
       resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
       resumen_hash['SCAT_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_cientifico : taxon.nombre_cientifico
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_autoridad : taxon.nombre_autoridad
 
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
-      resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
+
+      if info[:error].present?
+        resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}"
+      else
+        resumen_hash['SCAT_Observaciones'] = nil
+      end
+
       resumen_hash['SCAT_Correccion_NombreCient'] = nil
       resumen_hash['SCAT_NombreCient_valido'] = nil
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
