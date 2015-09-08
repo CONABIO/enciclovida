@@ -3,82 +3,6 @@
 <!--link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /-->
 <script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    guardaFiltros = function ()
-    {
-        jQuery.ajax({
-            fail: function()
-            {
-                $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
-            },
-            type: 'POST',
-            url: '/usuarios/guarda_filtro',
-            data: { html: $('#busquedas').html().replace(/\n/g, '') }
-        });
-        return false;
-    };
-
-    estructuraFiltro = function(numeroAtributos)
-    {
-        var bAtributo, cAtributo, vAtributo, hAtributo, imagenQuitar, anteriores;
-        bAtributo="<div id='capa_"+numeroAtributos+"'><select class='busqueda_atributo form-control' name='bAtributo_"+numeroAtributos+"' id='bAtributo_"+numeroAtributos+"'>";
-        bAtributo+="<option value='nombre_cientifico'>nombre científico</option>";
-        bAtributo+="<option value='nombre_comun'>nombre común</option>";
-        bAtributo+="<option value='catalogos.descripcion'>característica del taxón</option>";
-        bAtributo+="<option value='nombre_autoridad'>autoridad</option></select> ";
-
-        cAtributo="<select class='busqueda_atributo form-control' name='cAtributo_"+numeroAtributos+"' id='cAtributo_"+numeroAtributos+"'>";
-        cAtributo+="<option value='1'>contiene</option>";
-        cAtributo+="<option value='2'>empieza con</option>";
-        cAtributo+="<option value='3'>igual a</option>";
-        cAtributo+="<option value='4'>termina con</option></select> ";
-
-        vAtributo="<input class='busqueda_atributo form-control' name='vAtributo_"+numeroAtributos+"' id='vAtributo_"+numeroAtributos+"' size='30' maxlength='255' type='text' data-autocomplete='/especies/autocomplete_especie_nombre' autocomplete='off' />";
-        hAtributo="<input class='busqueda_atributo form-control' name='hAtributo_" + numeroAtributos + "' id='hAtributo_" + numeroAtributos + "' type='hidden' />";
-        imagenQuitar="&nbsp;&nbsp;&nbsp;<a onClick='return quitaFiltros(this.id);' id='enlace_filtro_"+numeroAtributos+"' href=''><img src='/assets/app/24x24/delete.png' width='20px;'></a></div>";
-
-        return bAtributo+cAtributo+vAtributo+hAtributo+imagenQuitar;
-    };
-
-    masFiltros = function()
-    {
-        var numeroAtributos = parseInt($("[id^='bAtributo_']:last").attr("id").split('_')[1]) + 1;
-        $('#atributos_extra').append(estructuraFiltro(numeroAtributos));
-        return false;
-    };
-
-    quitaFiltros = function(id)
-    {
-        $('#capa_'+id.substring(14)).html("");
-        return false;
-    };
-
-    busqueda_avanzada = function(id)
-    {
-        $('#busqueda_basica').show();
-        $('#busqueda_avanzada').hide();
-        $('#busqueda_basica').removeAttr('style').css('display','none');
-        $('#busqueda_avanzada').removeAttr('style').css('display','block');
-        return false;
-    };
-
-    busqueda_basica = function(id)
-    {
-        $('#busqueda_avanzada').show();
-        $('#busqueda_basica').hide();
-        $('#busqueda_basica').removeAttr('style').css('display','block');
-        $('#busqueda_avanzada').removeAttr('style').css('display','none');
-        return false;
-    };
-
-    quitaAutocompletar = function()
-    {
-        $("[id^='vAtributo_']").each(function()
-        {
-            var id=$(this).attr('id').split('_')[1];
-            if ($('#bAtributo_' + id).val() != 'nombre_cientifico' && $('#bAtributo_' + id).val() != 'nombre_comun')
-                $(this).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
-        });
-    };
 
     soulmate_asigna = function(event)
     {
@@ -95,7 +19,7 @@
                 '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
 
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
-            }
+            };
             var select = function(term, data, type)
             {
                 $('#'+event.target.id).val(term);
@@ -129,7 +53,7 @@
                     var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : data.nombre_comun + ' (<b>' + term + '</b>)';
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
                 //return data.icono + nombres;
-            }
+            };
             var select = function(term, data, type)
             {
                 $('#'+event.target.id).val(term);
@@ -166,43 +90,6 @@
 
     $(document).ready(function()
     {
-        $(document).on('click', '.busquedas', function()
-        {
-            guardaFiltros(false);
-        });
-
-        $(document).on('change', "[id^='bAtributo_']", function()
-        {
-            var valor=$(this).val();
-            $('#'+$(this).attr('id') + ' option').removeAttr('selected');
-            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-
-            var id=$(this).attr('id').split('_')[1];
-            if ($(this).val() == 'nombre_cientifico')
-            {
-                $('#vAtributo_' + id).attr('data-autocomplete', '/especies/autocomplete_especie_nombre').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
-            } else if ($(this).val() == 'nombre_comun')
-            {
-                $('#vAtributo_' + id).attr('data-autocomplete', '/nombres_comunes/autocomplete_nombre_comun_comun').attr('autocomplete', 'off').addClass('ui-autocomplete-input');
-            } else {
-                $('#vAtributo_' + id).removeAttr('data-autocomplete').removeAttr('autocomplete').removeClass('ui-autocomplete-input');
-            }
-            $('#hAtributo_' + id).val('');
-        });
-
-        $(document).on('change', "[id^='cAtributo_']", function()
-        {
-            var valor=$(this).val();
-            $('#'+$(this).attr('id') + ' option').removeAttr('selected');
-            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-        });
-
-        $(document).on('change', "[id^='vAtributo_']", function()
-        {
-            $(this).attr('value',$(this).val());
-            var id=$(this).attr('id').split('_')[1];
-            $('#hAtributo_' + id).val('');
-        });
 
         $(document).on('click', ".busqueda_atributo_radio", function()
         {
@@ -249,44 +136,44 @@
             $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
         });
 
-        $(document).on('change', "[id^='distribucion_nivel_']", function()
-        {
-            var valor=$(this).val();
-            $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
-            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-            var nivel=parseInt($(this).attr('name').substring(19));
-
-            if ($(this).val() != '')
-            {
-                jQuery.ajax({
-                    success: function(html){
-                        $('#distribucion_nivel_'+(nivel)).nextAll("[id^='distribucion_nivel_']").remove();
-                        switch (nivel)
-                        {
-                            case 1:
-                                $('#distribucion_nivel').empty().html(html);       //pare el inicial
-                                break;
-                            case 2:
-                                $('#distribucion_nivel').append(html);
-                                break;
-                        }
-                    },
-                    fail: function(){
-                        $('#notice').html('Hubo un error al cargar los filtros, por favor intentalo de nuevo.');
-                    },
-                    type:'POST',
-                    url:'/regiones/regiones',
-                    cache:true,
-                    data: {region: $(this).val(), region_nivel: nivel}
-                });
-            }
-
-            if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
-                $('#distribucion_nivel').empty();
-
-            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
-                $('#distribucion_nivel_3').remove();
-        });
+//        $(document).on('change', "[id^='distribucion_nivel_']", function()
+//        {
+//            var valor=$(this).val();
+//            $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
+//            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+//            var nivel=parseInt($(this).attr('name').substring(19));
+//
+//            if ($(this).val() != '')
+//            {
+//                jQuery.ajax({
+//                    success: function(html){
+//                        $('#distribucion_nivel_'+(nivel)).nextAll("[id^='distribucion_nivel_']").remove();
+//                        switch (nivel)
+//                        {
+//                            case 1:
+//                                $('#distribucion_nivel').empty().html(html);       //pare el inicial
+//                                break;
+//                            case 2:
+//                                $('#distribucion_nivel').append(html);
+//                                break;
+//                        }
+//                    },
+//                    fail: function(){
+//                        $('#notice').html('Hubo un error al cargar los filtros, por favor intentalo de nuevo.');
+//                    },
+//                    type:'POST',
+//                    url:'/regiones/regiones',
+//                    cache:true,
+//                    data: {region: $(this).val(), region_nivel: nivel}
+//                });
+//            }
+//
+//            if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
+//                $('#distribucion_nivel').empty();
+//
+//            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
+//                $('#distribucion_nivel_3').remove();
+//        });
 
         $(document).on('change', "#nombre_comun, #nombre_cientifico, #nombre_comun_1, #nombre_cientifico_1", function()
         {
@@ -335,23 +222,6 @@
         // autocomplete para la busqueda avanzada
         $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
         $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-
-        // *Carga el filtro predeterminado o el de la base
-        jQuery.ajax
-        ({
-            success: function(html)
-            {
-                $('#busquedas').empty().html(html);
-                $('#soulmate_1, #soulmate_2,#soulmate_3, #soulmate_4').remove();
-                guardaFiltros(false);
-            },
-            fail: function()
-            {
-                $('#notice').html('Hubo un error con los filtros, por favor intentalo de nuevo.');
-            },
-            type: 'GET',
-            url: '/usuarios/filtros'
-        });
     });
 </script>
 
@@ -372,7 +242,7 @@
             <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
             <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-                <%= link_to '', usuarios_busqueda_avanzada_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
+                <%= link_to '', avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
             </span>
         </div>
       </div>
@@ -393,7 +263,7 @@
             <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
             <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-                <%= link_to '', usuarios_busqueda_avanzada_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
+                <%= link_to '', avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
             </span>
         </div>
       </div>
