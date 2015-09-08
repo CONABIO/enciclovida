@@ -1,4 +1,8 @@
 class BusquedasController < ApplicationController
+
+  skip_before_filter :set_locale, only: [:cat_tax_asociadas]
+  layout false, :only => [:cat_tax_asociadas]
+
   def basica
   end
 
@@ -10,7 +14,7 @@ class BusquedasController < ApplicationController
     @taxones = Especie.none
     # Despliega directo el taxon, si paso id
     if params[:id].present?
-      set_especie
+      redirect_to especie_path(params[:id])
     else
 
       # Hace el query del tipo de busqueda
@@ -35,7 +39,7 @@ class BusquedasController < ApplicationController
           if totales > 0
             @taxones = consulta << " ORDER BY nombre_comun ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
-            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
 
           else
             if @taxones.empty?
@@ -63,7 +67,7 @@ class BusquedasController < ApplicationController
             end
 
             # Para que saga el total tambien con el fuzzy match
-            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any? ##CAMBIAR para resultados_controller
+            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any? ##CAMBIAR para resultados_controller
           end
 
 
@@ -93,7 +97,7 @@ class BusquedasController < ApplicationController
           if totales > 0
             @taxones = consulta << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
-            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
           else
 
             if @taxones.empty?
@@ -119,7 +123,7 @@ class BusquedasController < ApplicationController
             end
 
             # Para que saga el total tambien con el fuzzy match
-            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO) if @taxones.any?
+            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
 
@@ -227,17 +231,17 @@ class BusquedasController < ApplicationController
           busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
           # Para sacar los resultados por categoria
-          @por_categoria = Especie.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
+          @por_categoria = Busqueda.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if distinct
             totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
             if totales > 0
-              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-                @taxones = Especie.por_arbol(busqueda)
+                @taxones = Busqueda.por_arbol(busqueda)
                 checklists
               else
                 query = eval(busqueda).distinct.to_sql
@@ -250,10 +254,10 @@ class BusquedasController < ApplicationController
 
             if totales > 0
               @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Especie::POR_PAGINA_PREDETERMINADO)
+              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
-                @taxones = Especie.por_arbol(busqueda, true)
+                @taxones = Busqueda.por_arbol(busqueda, true)
                 checklists(true)
               end
               @taxones = Especie.find_by_sql(@taxones)
@@ -264,19 +268,19 @@ class BusquedasController < ApplicationController
           # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
           if params[:solo_categoria].present?
             if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-              render :partial => 'especies/_resultados'
+              render :partial => 'busquedas/_resultados'
             elsif @taxones.empty?
               render text: ''
             else
-              render :partial => 'especies/resultados'
+              render :partial => 'busquedas/resultados'
             end
           elsif params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-            render :partial => 'especies/_resultados'
+            render :partial => 'busquedas/_resultados'
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             render text: ''
           elsif params[:checklist].present? && params[:checklist].to_i == 1
             respond_to do |format|
-              format.html { render 'especies/checklists' }
+              format.html { render 'busquedas/checklists' }
               format.pdf do  #Para imprimir el listado en PDF
                 ruta = Rails.root.join('public', 'pdfs').to_s
                 fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -286,7 +290,7 @@ class BusquedasController < ApplicationController
                 render :pdf => 'listado_de_especies',
                        :save_to_file => pdf,
                        #:save_only => true,
-                       :template => 'especies/checklists.pdf.erb',
+                       :template => 'busquedas/checklists.pdf.erb',
                        :encoding => 'UTF-8',
                        :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                        :orientation => 'Landscape'
@@ -328,6 +332,7 @@ class BusquedasController < ApplicationController
 
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
+    @especie = Especie.find(params[:id])
   end
 
   def tabs

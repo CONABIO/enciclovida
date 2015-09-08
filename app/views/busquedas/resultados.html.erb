@@ -55,7 +55,7 @@
     settings.offset = offset.todos;
     settings.url = "<%= request.url %>";
     settings.url_original = "<%= request.url %>";
-    settings.nop = <%= params[:por_pagina].to_i || Especie::POR_PAGINA_PREDETERMINADO %>;
+    settings.nop = <%= params[:por_pagina].to_i || Busqueda::POR_PAGINA_PREDETERMINADO %>;
     settings.nivel = '';
 
     $(document).ready(function()

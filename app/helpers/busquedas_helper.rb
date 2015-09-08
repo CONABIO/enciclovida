@@ -122,7 +122,7 @@ module BusquedasHelper
             where(id: rangos[:limite_inferior]..rangos[:limite_superior]).first
 
         return unless categoria
-        busqueda_texto << "todos los grupos taxonómicos #{Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]} #{categoria.nombre_categoria_taxonomica}"
+        busqueda_texto << "todos los grupos taxonómicos #{Busqueda::NIVEL_CATEGORIAS_HASH[params[:nivel]]} #{categoria.nombre_categoria_taxonomica}"
       end
     end
 

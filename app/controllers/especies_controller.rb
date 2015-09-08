@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :cat_tax_asociadas]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -322,6 +322,7 @@ class EspeciesController < ApplicationController
     )
   end
 
+
   def retrieve_photos
     #[retrieve_remote_photos, retrieve_local_photos].flatten.compact
     [retrieve_remote_photos].flatten.compact
@@ -490,6 +491,21 @@ class EspeciesController < ApplicationController
                    :bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]} :
               {:bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]}
         end
+    end
+  end
+
+  def tipoDeBusqueda(tipo, columna, valor)
+    case tipo.to_i
+      when 1
+        "caso_insensitivo('#{columna}', '#{valor}')"
+      when 2
+        "caso_empieza_con('#{columna}', '#{valor}')"
+      when 3
+        "caso_sensitivo('#{columna}', '#{valor}')"
+      when 4
+        "caso_termina_con('#{columna}', '#{valor}')"
+      when 5
+        "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
 end

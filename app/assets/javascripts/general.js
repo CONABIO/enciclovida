@@ -124,42 +124,7 @@ $(document).ready(function()
                 return false;
             });
         return false;
-    }
-
-    /*
-     Cuando el usuario elige un taxon en la vists avanzada, las categorias
-     taxonimicas se despliegan segun las asociadas
-    */
-    cat_tax_asociadas = function(id)
-    {
-        $.ajax(
-            {
-                url: "/especies/cat_tax_asociadas",
-                type: 'GET',
-                data: {
-                    id: id
-                }
-            }).done(function(html)
-            {
-                $('#datos_cat').html('').html(html);
-                $('#panelCategoriaTaxonomicaPt').show();
-            });
-    }
-
-    scrolling_page = function(objeto, por_pagina, url)
-    {
-        $(objeto).scrollPagination({
-            nop     : por_pagina, // The number of posts per scroll to be loaded
-            offset  : 2, // Initial offset, begins at 0 in this case
-            error   : '', // When the user reaches the end this is the message that is
-            // displayed. You can change this if you want.
-            delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-                           // This is mainly for usability concerns. You can alter this as you see fit
-            scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
-            // but will still load if the user clicks.
-            url     : url
-        });
-    }
+    };
 });
 
 cambiaSidebar = function(){
