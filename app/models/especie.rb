@@ -465,7 +465,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def delayed_job_service
     if !existe_cache?
       escribe_cache
-      delay(:priority => NOTIFICATION_PRIORITY).cache_services
+      delay(run_at: 8.hours.from_now).cache_services
     end
   end
 end
