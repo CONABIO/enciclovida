@@ -78,10 +78,9 @@ class Especie < ActiveRecord::Base
   scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono, iconos.color_icono, iconos.taxon_icono").categoria_taxonomica_join.adicional_join.icono_join }
   scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join.icono_join }
 
-  POR_PAGINA = [100, 200, 500, 1000]
-  POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
 
   CON_REGION = [19, 50]
+
   ESTATUS = [
       [2, 'válido'],
       [1, 'sinónimo']
@@ -92,47 +91,10 @@ class Especie < ActiveRecord::Base
       ESTATUS[1][0] => ESTATUS[1][1]
   }
 
-  ESTATUS_SIMBOLO = {
-      2 => '',
-      1 =>''
-  }
-
   ESTATUS_SIGNIFICADO = {
       2 => 'válido',
       1 =>'sinónimo'
   }
-
-  ESPECIES_Y_MENORES = %w(19 20 21 22 23 24 50 51 52 53 54 55)
-
-  BUSQUEDAS_TEXTO = {
-      1 => 'contiene',
-      2 => 'empieza con',
-      3 => 'igual a',
-      4 => 'termina con'
-  }
-
-  BUSQUEDAS_ATRIBUTO = {
-      'nombre_cientifico' => 'nombre científico',
-      'nombre_comun' => 'nombre común',
-      'catalogos.descripcion' => 'característica del taxón',
-      'nombre_autoridad' => 'autoridad'
-  }
-
-  NIVEL_CATEGORIAS_HASH = {
-      '>' => 'inferiores a',
-      '>=' => 'inferiores o iguales a',
-      '=' => 'iguales a',
-      '<=' => 'superiores o iguales a',
-      '<' => 'superiores a'
-  }
-
-  NIVEL_CATEGORIAS = [
-      ['inferior o igual a', '>='],
-      ['inferior a', '>'],
-      ['igual a', '='],
-      ['superior o igual a', '<='],
-      ['superior a', '<']
-  ]
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
@@ -143,45 +105,6 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
-  def self.por_categoria(busqueda, distinct = false)
-    # Las condiciones y el join son los mismos pero cambia el select
-    sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
-    sql << 'nombre_categoria_taxonomica,'
-
-    if distinct
-      sql << 'count(DISTINCT especies.id) as cuantos'
-    else
-      sql << 'count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos'
-    end
-    sql << "').categoria_taxonomica_join"
-
-    busq = busqueda.gsub('datos_basicos', sql)
-    busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
-    busq << ".order('nivel')"
-
-    if distinct
-      query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
-      query_limpio << ' ORDER BY nivel ASC'
-      Especie.find_by_sql(query_limpio)
-    else
-      eval(busq)
-    end
-  end
-
-  def self.por_arbol(busqueda, sin_filtros=false)
-    if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
-      #sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, icono, nombre_icono")'
-      puts ('---'+busqueda)
-      busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
-      busq = busq.sub(/\.where\(\"CONCAT.+/,'')
-      busq << ".order('arbol')"
-      eval(busq)
-    else # Las condiciones y el join son los mismos pero cambia el select, para desplegar el checklist
-      #sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'[
-      busq = busqueda.gsub("datos_basicos", "datos_arbol_con_filtros")
-      eval(busq)
-    end
-  end
 
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
@@ -321,81 +244,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     ad = Adicional.new
     ad.especie_id = id
     ad.nombre_comun_principal = ad.pon_nombre_comun_principal
-    ad
-  end
-
-  def self.asigna_grupo_iconico
-    # Itera los grupos y algunos reinos
-    animalia_plantae = %w(Animalia Plantae)
-    complemento_reinos = %w(Protoctista Fungi Prokaryotae)
-    iconos_plantae = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
-
-    Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
-      puts grupo
-      ad = Adicional.none
-      taxon = Especie.where(:nombre_cientifico => grupo).first
-      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
-
-      # solo animalia y plantae
-      if animalia_plantae.include?(grupo)
-        if ad = taxon.adicional
-          ad.icono_id = id
-        else
-          ad = taxon.crea_con_grupo_iconico(grupo)
-        end
-
-      else  # Los grupos y reinos menos animalia y plantae
-        nivel = iconos_plantae.include?(grupo) ? 3000 : 3100
-        descendientes = taxon.subtree_ids
-
-        # Itero sobre los descendientes
-        descendientes.each do |descendiente|
-
-          begin
-            taxon_desc = Especie.find(descendiente)
-          rescue
-            next
-          end
-
-          puts "\tDescendiente de #{grupo}: #{taxon_desc.nombre_cientifico}"
-
-          if !complemento_reinos.include?(grupo)
-            # No poner icono inferiores de clase
-            clase_desc = taxon_desc.categoria_taxonomica
-            nivel_desc = "#{clase_desc.nivel1}#{clase_desc.nivel2}#{clase_desc.nivel3}#{clase_desc.nivel4}".to_i
-            puts "\t\t#{nivel_desc > nivel ? 'Inferior a clase' : 'Superior a clase'}"
-            next if nivel_desc > nivel
-          end
-
-          if ad = taxon_desc.adicional
-            ad.icono_id = id
-          else
-            ad = taxon_desc.crea_con_grupo_iconico(grupo)
-          end
-
-          # Guarda el record
-          if ad.changed?
-            ad.save
-          end
-        end  # Cierra el each de descendientes
-      end
-
-      # Por si no estaba definido cuando termino el loop
-      next unless ad.present?
-
-      # Guarda el record
-      if ad.changed?
-        ad.save
-      end
-
-    end  # Cierra el iterador de grupos
-  end
-
-  # Pone el grupo iconico en la tabla adicionales
-  def crea_con_grupo_iconico(id)
-    ad = Adicional.new
-    ad.especie_id = self.id
-    ad.icono_id = id
     ad
   end
 
