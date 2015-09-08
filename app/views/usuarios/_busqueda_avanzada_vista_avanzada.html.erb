@@ -1,5 +1,5 @@
 <div id="busqueda_avanzada">
-  <%= form_tag resultados_especie_index_path, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+  <%= form_tag resultados_especie_index_path, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
 
       <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
@@ -16,7 +16,7 @@
         <%= label_tag :nombre_cientifico, t(:nombre_cientifico), :class => "control-label " %>
         <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm' %>
       </div>
-
+      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
         <div class="panel-heading" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
             <h5>Categoria taxonómica<span class="caret"></span></h5>
@@ -58,14 +58,14 @@
         </div>
       </div>
 
-      <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
 
-  <% end %>
-</div>
 
-<div>
+
+
   <%= label_tag :per_page, "Mostrar", :class => "control-label" %>
   <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
   <%= label_tag :limpiar, "Resultados por página", :class => "control-label"  %>
   <%= button_tag 'Limpiar búsqueda', :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
+
+  <% end %>
 </div>

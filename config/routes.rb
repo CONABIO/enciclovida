@@ -7,7 +7,7 @@ Buscador::Application.routes.draw do
   get "inicio/ayuda"
   get "inicio/creditos"
 
-  get "usuarios/busqueda_avanzada"
+  get 'busquedaAvanzada', to: "usuarios#busqueda_avanzada", as: :avanzada
 
   resources :adicionales do
     collection do
