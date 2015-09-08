@@ -226,7 +226,7 @@
 </script>
 
 <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-5 col-lg-4 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
-  <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if I18n.locale.to_s == 'es-cientifico').to_s, :role => 'form' do %>
+  <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if ((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico')).to_s, :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
@@ -239,7 +239,7 @@
                 <span class="btn btn-default btn-sm active glyphicon glyphicon-user" aria-hidden="true"><%# t(:nombre_comun) %></span>
                 <span class="btn btn-default btn-sm glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_cientifico) %></span>
             </span>
-          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
+          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
           <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
             <%= link_to '', avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
@@ -248,7 +248,7 @@
       </div>
   <% end %>
 
-  <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_cientifico, :class => 'form-horizontal '+ (I18n.locale.to_s == 'es-cientifico'? '' :'hidden') , :role => 'form' do %>
+  <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_cientifico, :class => 'form-horizontal '+ (((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico') ? '' :'hidden') , :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
       <%= hidden_field_tag :busqueda, :nombre_cientifico %>
       <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
@@ -260,7 +260,7 @@
                 <span class="btn btn-default btn-sm glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_comun) %></span>
                 <span class="btn btn-default btn-sm active glyphicon glyphicon-education" aria-hidden="true" ><%# t(:nombre_cientifico) %></span>
             </span>
-          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
+          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
           <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
             <%= link_to '', avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
