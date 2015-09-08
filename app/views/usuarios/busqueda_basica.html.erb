@@ -372,7 +372,7 @@
             <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm' %>
             <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-                <%= link_to '', usuarios_busqueda_avanzada_vista_basica_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
+                <%= link_to '', usuarios_busqueda_avanzada_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
             </span>
         </div>
       </div>
@@ -393,7 +393,7 @@
             <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm'%>
             <span class="input-group-btn">
                 <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-                <%= link_to '', usuarios_busqueda_avanzada_vista_basica_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
+                <%= link_to '', usuarios_busqueda_avanzada_path, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
             </span>
         </div>
       </div>
