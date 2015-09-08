@@ -1,12 +1,12 @@
 <div id="busqueda_avanzada">
-  <%= form_tag resultados_especie_index_path, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
 
       <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
       <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
 
 
       <%= hidden_field_tag :busqueda, :avanzada %>
-      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+      <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
       <div class="form-group form-group-sm">
         <%= label_tag :nombre_comun, t(:nombre_comun), :class => "control-label" %>
@@ -63,7 +63,7 @@
 
 
   <%= label_tag :per_page, "Mostrar", :class => "control-label" %>
-  <%= select_tag :per_page, options_for_select(Especie::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
+  <%= select_tag :per_page, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
   <%= label_tag :limpiar, "Resultados por página", :class => "control-label"  %>
   <%= button_tag 'Limpiar búsqueda', :id => :limpiar, :class => "form-control btn btn-default btn-sm", data: { disable_with: 'Limpiando...' } %>
 
