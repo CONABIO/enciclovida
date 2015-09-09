@@ -101,7 +101,10 @@ class ValidacionesController < ApplicationController
             nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
             validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
 
-            # Gurdando el archivo
+            # Creando la carpeta del usuario y gurdando el archivo
+            ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
+            FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+
             path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
             File.open(path, 'wb') do |file|
               file.write(params[:excel].read)
