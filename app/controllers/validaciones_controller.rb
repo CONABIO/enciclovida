@@ -107,8 +107,6 @@ class ValidacionesController < ApplicationController
               file.write(params[:excel].read)
             end
 
-            puts params[:excel].read.inspect
-
             validacion.valida_campos(path.to_s, cc[:asociacion]) if validacion.save
             #validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
           end
@@ -133,8 +131,8 @@ class ValidacionesController < ApplicationController
   end
 
   def comprueba_columnas(cabecera)
-    # Se hace una copia para poder borrarlas del array
-    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS
+    # Se hace un clon para poder borrarlas del array
+    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.clone
     columnas_asociadas = Hash.new
     columnas_faltantes = []
 
