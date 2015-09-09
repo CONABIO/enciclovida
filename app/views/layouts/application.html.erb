@@ -39,7 +39,7 @@
       </div>
     </div>
     <div>
-      <%= render :partial => 'usuarios/busqueda_basica' %>
+      <%= render :template => 'busquedas/basica' %>
     </div>
   </div>
 
@@ -49,11 +49,6 @@
           <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
       <% else %>
           <li><%= link_to '[Ir a la vista de especialistas]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
-      <% end %>
-      <% if I18n.locale.to_s == 'es-cientifico' %>
-          <li><%= link_to 'Búsqueda Avanzada', usuarios_busqueda_avanzada_vista_avanzada_path %></li>
-      <% else %>
-          <li><%= link_to 'Búsqueda Avanzada', usuarios_busqueda_avanzada_vista_basica_path %></li>
       <% end %>
       <li><%= link_to 'Acerca de', inicio_acerca_path %></li>
       <% if usuario_signed_in? %>
@@ -75,14 +70,6 @@
     </ul>
   </div>
 </div>
-
-<% #if params[:checklist].blank? %>
-<!--<div class="sidebar sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1" id="filtros">-->
-<!--<span class="glyphicon glyphicon-search" aria-hidden="true" onclick="cambiaSidebar();"></span>-->
-
-<!--<div class="row hidden"><%# render :template => 'especies/busqueda' %></div>-->
-<!--</div>-->
-<% #end %>
 
 <div class="container-fluid">
   <div class="row">

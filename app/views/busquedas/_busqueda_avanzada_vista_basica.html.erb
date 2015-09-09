@@ -1,11 +1,11 @@
 <div id="busqueda_avanzada">
-  <%= form_tag resultados_especie_index_path, :method => :get, :id => :b_avanzada  do %>
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
 
       <%= radioGruposIconicos.html_safe %>
 
       <%= hidden_field_tag :id_nom_cientifico %>
       <%= hidden_field_tag :busqueda, :avanzada %>
-      <%= hidden_field_tag :por_pagina, Especie::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+      <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
       <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
         <div class="panel-heading" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">

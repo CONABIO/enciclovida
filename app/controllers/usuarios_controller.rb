@@ -127,11 +127,8 @@ class UsuariosController < ApplicationController
                                     :grado_academico, :contrasenia, :confirma_contrasenia)
   end
 
-  def busqueda_avanzada_vista_avanzada
+  def busqueda_avanzada
 
   end
 
-  def busqueda_avanzada_vista_basica
-
-  end
 end
