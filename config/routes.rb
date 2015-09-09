@@ -1,10 +1,19 @@
 Buscador::Application.routes.draw do
 
+  get "busquedas/basica"
+  get "busquedas/avanzada"
+  get "busquedas/resultados"
   get "inicio/comentarios"
   get "inicio/index"
   get "inicio/acerca"
   get "inicio/terminos"
   get "inicio/ayuda"
+  get "inicio/creditos"
+
+  get 'avanzada', to: "busquedas#avanzada", as: :avanzada
+  get 'resultados', to: "busquedas#resultados", as: :resultados
+  get 'checklist', to: "busquedas#checklist", as: :checklist
+  get 'cat_tax_asociadas', to: "busquedas#cat_tax_asociadas", as: :cat_tax_asociadas
 
   resources :adicionales do
     collection do
@@ -32,10 +41,7 @@ Buscador::Application.routes.draw do
 
   resources :usuarios do
     collection do
-      post :guarda_filtro
-      post :limpia_filtro
       post :cambia_locale
-      get :filtros
     end
   end
 
@@ -53,13 +59,10 @@ Buscador::Application.routes.draw do
     collection do
       post :update_photos, :as => :update_photos_for
       get :arbol
-      get :resultados
-      get :checklists
       get :error
       get :datos_principales
       get :kmz
       get :kmz_naturalista
-      get :cat_tax_asociadas
       get :cache_services
     end
   end
@@ -149,42 +152,4 @@ Buscador::Application.routes.draw do
   post 'validaciones/resultados_taxon_simple' => 'validaciones#resultados_taxon_simple'
   post 'validaciones/resultados_taxon_excel' => 'validaciones#resultados_taxon_excel'
 
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
 end

@@ -33,4 +33,6 @@
 //= require typeahead.js
 //= require cocoon.js
 //= require general.js
+//= require jquery.soulmate.js
+//= require busquedas.js
 //= require autocomplete-rails

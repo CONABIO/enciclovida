@@ -40,7 +40,7 @@
 body{
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-image: url("app/fondo_0.jpg");
+    background-image: url("app/fondos/01.jpg");
     background-size: cover;
 }
 
@@ -51,12 +51,57 @@ body{
     top: 0;
     left: 0;
     background-color: transparent;
-    background-repeat: repeat-y;
-    background-attachment: fixed;
+    z-index: -1;
 }
 
-div.footer{ /*Footer*/
-    background: linear-gradient(to right, transparent,#ede6df,transparent);
+#brandBar{
+    padding-top: 10px;
+}
+#brandBar > div{
+}
+#brandBar > div:nth-child(2) { /*menú arriba main*/
+    width: 80%;
+    margin: 10px auto 0 auto;
+}
+#brandBar div > a > img {
+    max-height: 80px;
+}
+/*#brandBar div > div:first-child  img {*/
+    /*padding: 5px 0px 5px 0;*/
+/*}*/
+/*#brandBar div > div:nth-child(2)  img{*/
+    /*padding: 20px 0px 10px 0;*/
+/*}*/
+/*#brandBar div > div:nth-child(3)  img {*/
+    /*padding: 10px 0px 10px 0;*/
+/*}*/
+#brandBar > div > ul {
+    font-size: .75em;
+    font-weight: bold;
+    border-top-right-radius: 1.5em;
+    border-top-left-radius: 1.5em;
+    /*border-bottom-right-radius: 1.5em;*/
+    /*border-bottom-left-radius: 1.5em;*/
+    background-color: rgba(223, 237, 228, 0.9);
+}
+#brandBar > div > ul > li > a {
+    /*padding: 2px 15px;*/
+}
+
+
+div.footer > div {
+    width: 60%;
+    margin: 20px auto;
+    background-color: rgba(223, 237, 228, 0.4);
+    border-top-right-radius: 2.5em;
+    border-top-left-radius: 2.5em;
+    border-bottom-right-radius: 2.5em;
+    border-bottom-left-radius: 2.5em;
+    padding: 5px;
+}
+div.footer > div > p{
+    /*color: #800000;*/
+    font-size: .75em;
 }
 
 
@@ -163,8 +208,14 @@ input.gsc-search-button {
 }
 
 /*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
-div#contenedor_mapa{
+div#contenedor_mapa > div.embed-responsive {
     background-color: #f7f7f7;
+    padding-left: 6px;
+    padding-top: 6px;
+    margin-right: -12px;
+}
+div#contenedor_mapa{
+    padding-right: 6px;
 }
 
 div#map{

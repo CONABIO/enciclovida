@@ -1,0 +1,5 @@
+<% if I18n.locale.to_s == 'es-cientifico' %>
+    <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
+<% else %>
+    <%= render :partial => 'busqueda_avanzada_vista_basica' %>
+<% end %>

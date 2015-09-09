@@ -124,42 +124,7 @@ $(document).ready(function()
                 return false;
             });
         return false;
-    }
-
-    /*
-     Cuando el usuario elige un taxon en la vists avanzada, las categorias
-     taxonimicas se despliegan segun las asociadas
-    */
-    cat_tax_asociadas = function(id)
-    {
-        $.ajax(
-            {
-                url: "/especies/cat_tax_asociadas",
-                type: 'GET',
-                data: {
-                    id: id
-                }
-            }).done(function(html)
-            {
-                $('#datos_cat').html('').html(html);
-                $('#panelCategoriaTaxonomicaPt').show();
-            });
-    }
-
-    scrolling_page = function(objeto, por_pagina, url)
-    {
-        $(objeto).scrollPagination({
-            nop     : por_pagina, // The number of posts per scroll to be loaded
-            offset  : 2, // Initial offset, begins at 0 in this case
-            error   : '', // When the user reaches the end this is the message that is
-            // displayed. You can change this if you want.
-            delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-                           // This is mainly for usability concerns. You can alter this as you see fit
-            scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
-            // but will still load if the user clicks.
-            url     : url
-        });
-    }
+    };
 });
 
 cambiaSidebar = function(){
@@ -167,43 +132,26 @@ cambiaSidebar = function(){
     $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
     $('#filtros > div').toggleClass('hidden');
 };
-cambiaSidebarNat = function(){
-    $('#conNaturalista').toggleClass('sidebar_naturalista col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xs-push-9 col-sm-push-9 col-md-push-9 col-lg-push-9');
-    $('#conNaturalista > img, #conNaturalista > span, #conNaturalista > div').toggleClass('hidden');
-    return false;
-    //$('#conNaturalista > span').toggleClass('glyphicon- glyphicon-remove');
-    //$('#conNaturalista > div').toggleClass('hidden');
-};
 
-var fondo = 0;
-
+var fondo = 1;
 cambiafondo = function(){
-    fondo = fondo + 1;
-    url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
+    fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
+    url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
     //console.log(url);
     $('body').css('background-image',url);
-    if (fondo == 8){
-        fondo = -1;
-    }
 };
-
-
-
 $(document).ready(function () {
     (function cambiaFondoAuto(){
-        url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
+        url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 2500, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1750, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 2500);}, 10000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1750);}, 11500);
             });
             return url;
         });
-        if (fondo == 8){
-            fondo = -1;
-        }
-        fondo = fondo + 1;
+        fondo = ((fondo >= 16) ? 1 : fondo+1);//ya q puede darse el caso de q aumente mientras se da click
         setTimeout(cambiaFondoAuto, 15000);
     })();
 });

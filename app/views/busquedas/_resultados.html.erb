@@ -1,0 +1,30 @@
+<%= form_tag aniade_taxones_seleccionados_listas_path, :method => :post do %>
+    <p class="notice">
+      <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
+    </p>
+
+    <%# if I18n.locale.to_s == 'es-cientifico' %>
+        <!--div style="width: 100%; float:left;">
+          <p>
+            <%# link_to 'Exportar datos', '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
+          <div id="widget_listas" style="display: none"></div>
+          </p>
+        </div-->
+    <%# end %>
+
+    <div style="width: 100%; float:left;">
+
+      <%= render :partial => 'busquedas/_resultados' %>
+
+      <p class="enlaces_acciones">
+        <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
+      </p>
+
+      <div id="datos_principales"></div>
+    </div>
+
+    <p>
+    <div id="resultados<%= params[:solo_categoria] || '' %>"></div>
+    </p>
+
+<% end %>

@@ -126,4 +126,9 @@ class UsuariosController < ApplicationController
     params.require(:usuario).permit(:usuario, :correo, :nombre, :apellido, :institucion,
                                     :grado_academico, :contrasenia, :confirma_contrasenia)
   end
+
+  def busqueda_avanzada
+
+  end
+
 end

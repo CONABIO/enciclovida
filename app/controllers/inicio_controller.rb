@@ -13,4 +13,7 @@ class InicioController < ApplicationController
 
   def ayuda
   end
+
+  def creditos
+  end
 end

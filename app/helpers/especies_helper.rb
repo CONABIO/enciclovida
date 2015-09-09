@@ -74,7 +74,7 @@ module EspeciesHelper
     end
   end
 
-  # Para separar las italicas del nombre cientifico y la categoria taxonomica
+  # Para separar SÓLO las italicas EN el nombre cientifico y la categoria taxonomica
   def ponItalicas(taxon, con_link = false)
     italicas = taxon.nombre_cientifico.gsub('subsp.','</i>subsp.<i>').gsub('var.','</i>var.<i>').gsub('f.','</i>f.<i>').
         gsub('subvar.','</i>subvar.<i>').gsub('subf.','</i>subf.<i>')
@@ -222,63 +222,6 @@ module EspeciesHelper
             #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
             #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
     end
-  end
-
-  def busquedas(iterador)
-    opciones=''
-    iterador.each do |valor, nombre|
-      opciones+="<option value=\"#{valor}\">#{nombre}</option>"
-    end
-    opciones
-  end
-
-  def checkboxTipoDistribucion
-    checkBoxes = ''
-    if I18n.locale.to_s == 'es-cientifico'
-      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
-        next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
-        checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
-      end
-    else
-      TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-        checkBoxes << "<span id='dist_#{tipoDist}_span' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
-        checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "dist_#{tipoDist}")}"
-        checkBoxes << "#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}", :style => 'display:none')}"
-      end
-    end
-    checkBoxes.html_safe
-  end
-
-  def checkboxEstadoConservacion
-    checkBoxes=''
-
-    Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes << "<u><h6>#{t(k)}</h6></u>"
-      valores.each do |edo|
-        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-        checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
-        checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "edo_cons_#{edo.parameterize}")}"
-        checkBoxes << "#{check_box_tag('edo_cons[]', edo, false, :style => 'display:none', :id => "edo_cons_#{edo.parameterize}")}"
-      end
-    end
-    checkBoxes.html_safe
-  end
-
-  def checkboxValidoSinonimo (busqueda=nil)
-    checkBoxes=''
-    Especie::ESTATUS.each do |e|
-
-      checkBoxes += case busqueda
-                      when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
-                    end
-    end
-    checkBoxes.html_safe
-  end
-
-  def checkboxPrioritaria
-    checkBoxes = "#{image_tag('app/prioritaria.png', title: 'Prioritarias', class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: 'campo_prioritaria')}"
-    checkBoxes << check_box_tag('prioritaria', '1', false, :style => 'display:none', :id => 'campo_prioritaria')
   end
 
   def dameNomComunes(taxon)
@@ -482,123 +425,64 @@ module EspeciesHelper
     end
   end
 
-  def dameCaracteristicaJS(taxon, opciones={})
-    conservacion = ''
-    comercio_int = ''
-    distribucion = ''
-    ambiente = []
-    cat_riesgo = {}
-
-    # taxon.especies_regiones.distinct.each do |reg|
-    #   next unless distribucion = reg.tipo_distribucion
-    #   next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-    #   icono = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono", :default => '')
-    #   nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
-    #   distribucion << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
-    # end
-    #
-    # if taxon.invasora.present?
-    #   distribucion << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
-    # end
-    #
-    # distribucion.any? ? distribucion.uniq.join(' - ') : ''
-
-
-
-
+  def dameCaracteristicaDistribucionAmbienteJS(taxon)
+    response = {}
 
     taxon.especies_catalogos.each do |e|
       cat = e.catalogo
-      edo_conserv_nombre = cat.nom_cites_iucn
-      ambiente_nombre = cat.ambiente
-
-      if edo_conserv_nombre.present?
-        if opciones[:tab_catalogos]
-          conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
-        else # Para ordenar las categorias de riesgo y comercio
-
+      if cat.nom_cites_iucn.present?
           if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            cat_riesgo[:a] = "id" << cat.descripcion.parameterize
+            response[:nom] = response[:nom].to_s << cat.descripcion.parameterize
           elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            cat_riesgo[:b] = "id" << cat.descripcion.parameterize
+            response[:iucn] = response[:iucn].to_s << cat.descripcion.parameterize
           elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            comercio_int << "id" << cat.descripcion.parameterize
+            response[:cites] = response[:cites].to_s << cat.descripcion.parameterize
           end
-        end
       end
-
-      if ambiente_nombre.present?
-        if opciones[:tab_catalogos]
-          conservacion << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
-        else
-          ambiente << cat.descripcion
-        end
+      if cat.ambiente.present?
+          response[:ambiente] = response[:ambiente].to_a << cat.descripcion
       end
     end  #Fin each
-
-    if conservacion.present?
-      "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
-    elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
-      res = Hash.new
-      res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(', #')
-      res[:comercio_int] = comercio_int
-      res[:ambiente] = ambiente.join('')
-      res
-    else
-      conservacion
-    end
-  end
-
-  def dameDistribucionJS(taxon)
-    nombre = []
+    response[:ambiente] = response[:ambiente].uniq if response[:ambiente].present?
 
     taxon.especies_regiones.distinct.each do |reg|
       next unless distribucion = reg.tipo_distribucion
       next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      nombre << 'id'+distribucion.descripcion.parameterize
+      response[:distribucion] = response[:distribucion].to_a << distribucion.descripcion.parameterize
     end
-
-    if taxon.invasora.present?
-      nombre << 'idinvasora'
-    end
-
-    nombre.any? ? nombre.uniq.join(', #') : ''
+    # if taxon.invasora.present?
+    #   response[:distribucion] << 'idinvasora'
+    # end
+    response[:distribucion] = response[:distribucion].uniq if response[:distribucion].present?
+    response
   end
 
-  def ponRiesgoComercio
-    caracteristicas=''
+  def ponCaracteristicaDistribucionAmbienteJS
+    response = {}
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      col = (k == :iucn) ? "col-xs-3 col-sm-3 col-md-3 col-lg-3" : "col-xs-2 col-sm-2 col-md-2 col-lg-2"
-      caracteristicas <<  "<div class=\" #{col} text-left\"><h6><strong>#{t(k)}</strong></h6>"
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
+        next if edo == 'No evaluado (NE)' #Se quitan a petición de CG, se opta por dejar el modelo intacto
+        next if edo == 'Datos insuficientes (DD)' #IDEM
+        next if edo == 'Riesgo bajo (LR): Preocupación menor (lc)'  #IDEM
+        next if edo == 'Riesgo bajo (LR): Casi amenazado (nt)' #IDEM
         id = "id"<<edo.parameterize
         icono = t("cat_riesgo.#{edo.parameterize}.icono")
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        caracteristicas << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-circle', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+        response[k] = response[k].to_a << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-circle', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
       end
-      caracteristicas << "</div>"
     end
-    caracteristicas.html_safe
+    TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+      id = 'id'<<tipoDist.parameterize
+      icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
+      nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+    end
+    response[:ambiente] = '' # Aqupi ira dame todos los ambientes
+    response
   end
 
-  def ponTipoDistribucion
-    distribucion = ''
-      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
-        id = 'id'<<tipoDist.parameterize
-        icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
-        nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-        distribucion << button_tag(((icono.present? ? (image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")) : "") << "<small>#{nombre}</small>".html_safe).html_safe, :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
-
-      end
-    distribucion
-  end
-
-  def ponAmbiente
-    Catalogo.ambiente_todos
-  end
-
-  def dameEspecieBibliografia(taxon)
+ def dameEspecieBibliografia(taxon)
     biblio=''
     taxon.especies_bibliografias.each do |bib|
       biblio_comp = bib.bibliografia.cita_completa
@@ -645,111 +529,5 @@ module EspeciesHelper
     # el id de NombreComun
     n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
     n.html_safe
-  end
-
-  def radioGruposIconicos
-    radios = ''
-    columnas = 1
-    es_reino = " busqueda_atributo_radio_reino"
-    Especie.datos_basicos.
-        caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
-        order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
-
-      # Para dejar el espacio despues de los reinos
-      if columnas == 6
-        radios << '<br>'
-        columnas = 7
-      end
-
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')
-      radios << ponIcono(taxon, con_recuadro: true)
-      radios << '<br>' if columnas%6 == 0
-      columnas+=1
-    end
-    "<div style='text-align: center;'>#{radios}</div>"
-  end
-
-  def checklist(datos)
-    if datos[:totales] > 0
-      sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
-      peticion = sin_page_per_page.compact.join('&')
-      peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
-      link_to('Listado para Revisión (✓)', peticion, :class => 'btn btn-info', :target => :_blank)
-    else
-      ''
-    end
-  end
-
-  # Muestra en los resultados los filtros que puso, de una forma mas amigable
-  def filtrosUltimaBusqueda(params = {})
-    # Solo para los filtros de busqueda avanzada
-    return unless params[:busqueda] == 'avanzada'
-    busqueda_texto = []
-
-    # Selecciono los filtros de busqueda avanzada
-    if params[:id_nom_cientifico].present?
-      if params[:nombre_cientifico].present?
-        nombre_cientifico = params[:nombre_cientifico]
-
-      else
-        begin
-          taxon = Especie.find(params[:id_nom_cientifico])
-        rescue
-          # No hace nada
-          return
-        end
-
-        nombre_cientifico = taxon.nombre_cientifico
-      end
-
-      if params[:nivel].present? && params[:cat].present?
-        # Para sacar el nombre de la categoria taxonomica de acuerdo al nivel
-        rangos = Bases.limites(params[:id_nom_cientifico].to_i)
-        categoria = CategoriaTaxonomica.
-            where(nivel1: params[:cat][0].to_i, nivel2: params[:cat][1].to_i, nivel3: params[:cat][2].to_i, nivel4: params[:cat][3].to_i).
-            where(id: rangos[:limite_inferior]..rangos[:limite_superior]).first
-
-        return unless categoria
-        busqueda_texto << "todos los grupos taxonómicos #{Especie::NIVEL_CATEGORIAS_HASH[params[:nivel]]} #{categoria.nombre_categoria_taxonomica}"
-      end
-
-      busqueda_texto << "del taxón #{nombre_cientifico}"
-    end
-
-    # Parte del estado de conservacion
-    if params[:edo_cons].present? && params[:edo_cons].length > 0
-      edo_cons = []
-
-      params[:edo_cons].each do |edo|
-        edo_cons << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"),
-                                    title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle icon-size')
-      end
-
-      if edo_cons.present?
-        busqueda_texto << "con categorías de riesgo o comercio internacional #{edo_cons.join(' ')}"
-      end
-    end
-
-    # Parte de la distribucion
-    if params[:dist].present? && params[:dist].length > 0
-      dist = []
-
-      params[:dist].each do |d|
-        dist << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{d.parameterize}.icono"),
-                              title: t("tipo_distribucion.#{d.parameterize}.nombre"), class: 'img-circle icon-size')
-      end
-
-      if dist.present?
-        busqueda_texto << "con tipo de distribución #{dist.join(' ')}"
-      end
-    end
-
-    # Parte de prioritaria
-    if params[:prioritaria].present? && params[:prioritaria] == '1'
-      img = image_tag('app/prioritaria.png', title: 'Prioritaria', class: 'img-circle icon-size')
-      busqueda_texto << "marcadas como especies prioritarias #{img}"
-    end
-
-    busqueda_texto
   end
 end
