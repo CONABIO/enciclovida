@@ -107,8 +107,7 @@ class ValidacionesController < ApplicationController
               file.write(params[:excel].read)
             end
 
-            validacion.valida_campos(path.to_s, cc[:asociacion]) if validacion.save
-            #validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
+            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
           end
         end
       end  # Fin del tipo de archivo

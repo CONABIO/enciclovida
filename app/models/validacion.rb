@@ -9,6 +9,7 @@ class Validacion < ActiveRecord::Base
 
   # Valida el taxon cuando solo pasan el nombre cientifico
   def valida_batch(path)
+    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     lineas=File.open(path).read
 
