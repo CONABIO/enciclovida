@@ -20,7 +20,7 @@
 <div style="width: 100%; float:left;">
   <ul>
     <% @taxones.each do |taxon| %>
-        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, :link => true)}</span></li>".html_safe %>
+        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, link: true, con_icono: false)}</span></li>".html_safe %>
     <% end %>
   </ul>
   <p class="enlaces_acciones">

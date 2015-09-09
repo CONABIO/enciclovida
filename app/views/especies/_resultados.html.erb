@@ -3,14 +3,14 @@
       <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
     </p>
 
-    <% if I18n.locale.to_s == 'es-cientifico' %>
-        <div style="width: 100%; float:left;">
+    <%# if I18n.locale.to_s == 'es-cientifico' %>
+        <!--div style="width: 100%; float:left;">
           <p>
-            <%= link_to 'Exportar datos', '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
+            <%# link_to 'Exportar datos', '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
           <div id="widget_listas" style="display: none"></div>
           </p>
-        </div>
-    <% end %>
+        </div-->
+    <%# end %>
 
     <div style="width: 100%; float:left;">
 

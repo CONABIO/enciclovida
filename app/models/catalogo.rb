@@ -21,7 +21,7 @@ class Catalogo < ActiveRecord::Base
 
   # Saco el nombre del ambiente ya que al unir los catalogos, los nombres aveces no coinciden
   def ambiente
-    if nivel1 == 2 && nivel2 > 0 && nivel3 > 0   #se asegura que el valor pertenece a la nom, iucn o cites
+    if nivel1 == 2 && nivel2 > 0 && nivel3 > 0   #se asegura que el valor pertenece al ambiente
       limites = Bases.limites(id)
       id_inferior = limites[:limite_inferior]
       id_superior = limites[:limite_superior]
@@ -30,6 +30,15 @@ class Catalogo < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def self.ambiente_todos
+    limites = Bases.limites(id)
+    id_inferior = limites[:limite_inferior]
+    id_superior = limites[:limite_superior]
+    ambiente = Catalogo.where(:nivel1 => 2, :nivel2 => 0, :nivel3 => 0).where(:id => id_inferior..id_superior)
+    puts '+++++++++++++++++++++++'+ambiente.inspect
+    ambiente.inspect
   end
 
   def self.nom_cites_iucn_todos

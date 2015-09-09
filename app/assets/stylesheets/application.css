@@ -51,6 +51,8 @@ body{
     top: 0;
     left: 0;
     background-color: transparent;
+    background-repeat: repeat-y;
+    background-attachment: fixed;
 }
 
 div.footer{ /*Footer*/
@@ -185,6 +187,10 @@ div#map{
 
 .tabla_acerca tr:nth-child(odd) {
     background: #fff;
+}
+
+.icon-size {
+    width: 1.5em;
 }
 
 .multicolumna{

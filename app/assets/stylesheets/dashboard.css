@@ -33,20 +33,20 @@
         display: block;
         overflow-x: inherit;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        border: 1px solid #599008;
+        border: 0px solid #2c8532;
     }
     #filtros{
         position: fixed;
         top: 110px;
         z-index: 10000003;
         bottom: 20%;
-        left: -60px;
+        left: -58px;
         padding: 22px;
         border-top-left-radius: 0px;
         border-top-right-radius: 2.5em;
         border-bottom-left-radius: 2.5em;
         border-bottom-right-radius: 0px;
-        background-color: rgba(223, 237, 228, 0.85);
+        background-color: rgba(223, 237, 228, 0.9);
     }
     #conNaturalista{
         position: absolute;

@@ -179,7 +179,7 @@ var fondo = 0;
 
 cambiafondo = function(){
     fondo = fondo + 1;
-    url = "url(\"assets/app/fondo_"+fondo+".jpg\")";
+    url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
     //console.log(url);
     $('body').css('background-image',url);
     if (fondo == 8){
@@ -191,19 +191,19 @@ cambiafondo = function(){
 
 $(document).ready(function () {
     (function cambiaFondoAuto(){
-        fondo = fondo + 1;
         url = "url(\"/assets/app/fondo_"+fondo+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1000, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 2500, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1000);}, 28000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 2500);}, 10000);
             });
             return url;
         });
         if (fondo == 8){
             fondo = -1;
-        };
-        setTimeout(cambiaFondoAuto, 30010);
+        }
+        fondo = fondo + 1;
+        setTimeout(cambiaFondoAuto, 15000);
     })();
 });
