@@ -59,7 +59,7 @@
       <% if usuario_signed_in? %>
           <% if I18n.locale.to_s == 'es-cientifico' %>
               <li><%# link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
-              <li><%# link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
+              <li><%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
           <% end %>
           <li>
             <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
