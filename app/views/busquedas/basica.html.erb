@@ -1,9 +1,5 @@
 <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
-
-<!--link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /-->
-<script data-turbolinks-track="true" src="/assets/jquery.soulmate.js" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-
     soulmate_asigna = function(event)
     {
         var campo = document.getElementById(event.target.id);
@@ -89,7 +85,7 @@
 
 </script>
 
-<div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-5 col-lg-4 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
+<div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-5 col--4 col-sm-offset-1 col-md-offset-0 col--offset-1">
   <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if ((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico')).to_s, :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
@@ -97,16 +93,16 @@
       <%= hidden_field_tag :valido_sinonimo_basico, 3 %>
       <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
       </div>
-      <div class="form-group form-group-sm">
+      <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default btn-sm active glyphicon glyphicon-user" aria-hidden="true"><%# t(:nombre_comun) %></span>
-                <span class="btn btn-default btn-sm glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_cientifico) %></span>
+                <span class="btn btn-default btn-warning  active glyphicon glyphicon-user" aria-hidden="true" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
             </span>
-          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control input-sm', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
+          <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
           <span class="input-group-btn">
-                <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-            <%= link_to "".html_safe, avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
+            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-primary busquedas", :title=>'Buscar' %>
+            <%= link_to "".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-default glyphicon glyphicon-filter", "aria-hidden" =>"true" %>
             </span>
         </div>
       </div>
@@ -118,17 +114,17 @@
       <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
       <div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
       </div>
-      <div class="form-group form-group-sm">
+      <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default btn-sm glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');"><%# t(:nombre_comun) %></span>
-                <span class="btn btn-default btn-sm active glyphicon glyphicon-education" aria-hidden="true" ><%# t(:nombre_cientifico) %></span>
+                <span class="btn btn-default glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default btn-warning active glyphicon glyphicon-education" aria-hidden="true" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
             </span>
-          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control input-sm', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
+          <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
           <span class="input-group-btn">
-                <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-info btn-sm busquedas" %>
-            <%= link_to "".html_safe, avanzada_url, :class =>"btn btn-default btn-sm glyphicon glyphicon-cog", "aria-hidden" =>"true" %>
-            </span>
+            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-primary busquedas", :title=>'Buscar' %>
+            <%= link_to "".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-default glyphicon glyphicon-filter", "aria-hidden" =>"true"%>
+          </span>
         </div>
       </div>
 
