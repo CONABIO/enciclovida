@@ -3,10 +3,13 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
+  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+  COLUMNAS_OBLIGATORIAS = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando solo pasan el nombre cientifico
   def valida_batch(path)
+    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     lineas=File.open(path).read
 
@@ -172,17 +175,20 @@ class Validacion < ActiveRecord::Base
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
+  ###############################################
+  # Parte de la validacion del excel
+  ###############################################
   # Escribe los datos del excel con la gema rubyXL
   def escribe_excel(path)
     xlsx = RubyXL::Parser.parse(path)  # El excel con su primera sheet
     sheet = xlsx[0]
-    #sheet_orig = xlsx(0)
-    fila = 1  # Uno para que 0 sea la cabecera
+    fila = 1  # Empezamos por la cabecera
 
     @hash.each do |h|
       columna = @sheet.last_column  # Desde la columna donde empieza
 
       h.each do |k,v|
+        next if COLUMNAS_OPCIONALES.include?(k) || COLUMNAS_OBLIGATORIAS.include?(k)
 
         # Para la cabecera
         sheet.add_cell(0,columna,k) if fila == 1
@@ -197,8 +203,8 @@ class Validacion < ActiveRecord::Base
     # Escribe el excel en cierta ruta
     ruta_excel = Rails.root.join('public','validaciones_excel', usuario_id.to_s)
     FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
-    puts "#{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
+    puts "Escribio excel en: #{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
   end
 
   def asigna_categorias_correspondientes(taxon)
@@ -227,7 +233,7 @@ class Validacion < ActiveRecord::Base
     taxon
   end
 
-  # Si concidio mas de uno, busca recursivamente arriba de genero (familia) para ver el indicado
+  # Si concidio mas de uno, busca recursivamente el indicado
   def busca_recursivamente(taxones, hash)
     coincidio_alguno = false
     taxon_coincidente = Especie.none
@@ -317,6 +323,14 @@ class Validacion < ActiveRecord::Base
       return {taxon: taxon, hash: hash, estatus: true}
 
     elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
+      # Mando a imprimir solo el valido
+      taxon.each do |t|
+        if t.estatus == 2
+          tax = asigna_categorias_correspondientes(t)
+          return {taxon: tax, hash: hash, estatus: true}
+        end
+      end
+
       return busca_recursivamente(taxon, hash)
 
     else
@@ -324,9 +338,9 @@ class Validacion < ActiveRecord::Base
       nombres = hash['nombre_cientifico'].split(' ')
 
       taxon = if nombres.length == 2  # Especie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]}'")
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
               elsif nombres.length == 3  # Infraespecie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]} %#{nombres[2]}'")
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]} % #{nombres[2]}'")
               elsif nombres.length == 1 # Genero o superior
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
               end
@@ -351,6 +365,11 @@ class Validacion < ActiveRecord::Base
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
             distancia = Levenshtein.distance(hash['nombre_cientifico'].downcase, taxon.nombre_cientifico.limpiar.downcase)
 
+            if distancia == 0  # Es exactamente el mismo taxon
+              t = asigna_categorias_correspondientes(taxon)
+              return {taxon: t, hash: hash, estatus: true}
+            end
+
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
           end
@@ -370,6 +389,7 @@ class Validacion < ActiveRecord::Base
   end
 
   def valida_campos(path, asociacion)
+    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     primera_fila = true
 
@@ -434,14 +454,26 @@ class Validacion < ActiveRecord::Base
       hash = info[:hash]
 
       resumen_hash['SCAT_NombreEstatus'] = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
-      resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}" if info[:info].present?
+
+      if info[:info].present?
+        resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}"
+      else
+        resumen_hash['SCAT_Observaciones'] = nil
+      end
+
       resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
       resumen_hash['SCAT_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_cientifico : taxon.nombre_cientifico
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_autoridad : taxon.nombre_autoridad
 
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
-      resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}" if info[:error].present?
+
+      if info[:error].present?
+        resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}"
+      else
+        resumen_hash['SCAT_Observaciones'] = nil
+      end
+
       resumen_hash['SCAT_Correccion_NombreCient'] = nil
       resumen_hash['SCAT_NombreCient_valido'] = nil
       resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
