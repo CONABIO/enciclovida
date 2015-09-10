@@ -11,7 +11,7 @@ class Validacion < ActiveRecord::Base
   def valida_batch(path)
     sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
-    lineas=File.open(path).read
+    lineas = File.open(path).read
 
     lineas.each_line do |linea|
       info = encuentra_record_por_nombre_cientifico_csv(linea.limpia)
@@ -23,20 +23,36 @@ class Validacion < ActiveRecord::Base
   end
 
   def encuentra_record_por_nombre_cientifico_csv(linea)
+    # Evita que el nombre cientifico este vacio
+    if linea.blank?
+      return {estatus: false, linea: linea, error: 'El nombre cientifico está vacío'}
+    end
+
     taxon = Especie.where(:nombre_cientifico => linea)
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       taxon = asigna_categorias_correspondientes(taxon.first)
       return {taxon: taxon, linea: linea, estatus: true}
 
+    elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
+      # Mando a imprimir solo el valido
+      taxon.each do |t|
+        if t.estatus == 2
+          tax = asigna_categorias_correspondientes(t)
+          return {taxon: tax, linea: linea, estatus: true}
+        end
+      end
+
+      return busca_recursivamente_csv(taxon, linea)
+
     else
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
       nombres = linea.split(' ')
 
       taxon = if nombres.length == 2  # Especie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]}'")
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
               elsif nombres.length == 3  # Infraespecie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} %#{nombres[1]} %#{nombres[2]}'")
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]} % #{nombres[2]}'")
               elsif nombres.length == 1 # Genero o superior
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
               end
@@ -60,6 +76,11 @@ class Validacion < ActiveRecord::Base
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
             distancia = Levenshtein.distance(linea.downcase, taxon.nombre_cientifico.limpiar.downcase)
+
+            if distancia == 0  # Es exactamente el mismo taxon
+              t = asigna_categorias_correspondientes(taxon)
+              return {taxon: t, linea: linea, estatus: true}
+            end
 
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
@@ -92,12 +113,6 @@ class Validacion < ActiveRecord::Base
       # Si es la especie lo mando directo a coincidencia
       cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
       if cat_tax_taxon_cat == 'especie' && nombres.length == 2
-        return {taxon: t, estatus: true, linea: linea, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Toma subespecie por default
-      subespecies = %w(subsp. subsp subespecie ssp. ssp)
-      if cat_tax_taxon_cat == 'subespecie' && nombres.length == 3
         return {taxon: t, estatus: true, linea: linea, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
       end
 

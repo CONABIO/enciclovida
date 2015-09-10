@@ -62,8 +62,19 @@ class ValidacionesController < ApplicationController
       end
 
       if @errores.empty?
+        nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename}"
         validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
-        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(params[:batch].path) if validacion.save
+
+        # Creando la carpeta del usuario y gurdando el archivo
+        ruta_batch = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
+        FileUtils.mkpath(ruta_batch, :mode => 0755) unless File.exists?(ruta_batch)
+
+        path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
+        File.open(path, 'wb') do |file|
+          file.write(params[:batch].read)
+        end
+
+        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(path) if validacion.save
       end
     end
   end
