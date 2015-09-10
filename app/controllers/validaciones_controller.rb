@@ -62,8 +62,19 @@ class ValidacionesController < ApplicationController
       end
 
       if @errores.empty?
+        nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename}"
         validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
-        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(params[:batch].path) if validacion.save
+
+        # Creando la carpeta del usuario y gurdando el archivo
+        ruta_batch = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
+        FileUtils.mkpath(ruta_batch, :mode => 0755) unless File.exists?(ruta_batch)
+
+        path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
+        File.open(path, 'wb') do |file|
+          file.write(params[:batch].read)
+        end
+
+        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(path) if validacion.save
       end
     end
   end
@@ -98,8 +109,19 @@ class ValidacionesController < ApplicationController
             @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
           else
             #uploader.store!(params[:excel])  # Guarda el archivo
-            validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename.gsub('.xlsx','')}")
-            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(params[:excel].path, cc[:asociacion]) if validacion.save
+            nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
+            validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
+
+            # Creando la carpeta del usuario y gurdando el archivo
+            ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
+            FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+
+            path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
+            File.open(path, 'wb') do |file|
+              file.write(params[:excel].read)
+            end
+
+            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
           end
         end
       end  # Fin del tipo de archivo
@@ -122,8 +144,8 @@ class ValidacionesController < ApplicationController
   end
 
   def comprueba_columnas(cabecera)
-    columnas_obligatoraias = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
-    columnas_opcionales = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
+    # Se hace un clon para poder borrarlas del array
+    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.clone
     columnas_asociadas = Hash.new
     columnas_faltantes = []
 
@@ -131,7 +153,7 @@ class ValidacionesController < ApplicationController
       next unless c.present?  # para las cabeceras vacias
       cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
 
-      if columnas_obligatoraias.include?(cab) || columnas_opcionales.include?(cab)
+      if columnas_obligatoraias.include?(cab) || Validacion::COLUMNAS_OPCIONALES.include?(cab)
         columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
 
         # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
