@@ -34,8 +34,8 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     # Esto es para mostrar primero las fotos de NaturaLista, despues las de CONABIO
-    fotos_naturalista = @especie.photos.where("type != 'ConabioPhoto'")
-    fotos_conabio = @especie.photos.where(type: 'ConabioPhoto')
+    fotos_naturalista = @especie.photos.where.not(type: 'ConabioPhoto',medium_url: nil, large_url: nil, original_url: nil)
+    fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where.not(medium_url: nil, large_url: nil, original_url: nil)
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
 
     respond_to do |format|
