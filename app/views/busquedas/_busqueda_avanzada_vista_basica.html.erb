@@ -1,58 +1,65 @@
-<div id="busqueda_avanzada">
-  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+<div id="busqueda_avanzada" class="row">
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
 
-      <%= radioGruposIconicos.html_safe %>
-
-      <%= hidden_field_tag :id_nom_cientifico %>
-      <%= hidden_field_tag :busqueda, :avanzada %>
-      <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
-
-      <div class="panel panel-success" id="panelCategoriaTaxonomicaPt" style="display: none;">
-        <div class="panel-heading" onclick="$('#panelCategoriaTaxonomica').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCategoriaTaxonomicaPt').toggleClass('dropup')});">
-            <h5>Categoria taxonómica<span class="caret"></span></h5>
-        </div>
-        <div class="panel-body" id="panelCategoriaTaxonomica">
-          <div id="datos_cat"></div>
-        </div>
-      </div>
-
-
-      <div class="panel panel-success" id="panelEstadoConservacionPt">
-        <div class="panel-heading" onclick="$('#panelEstadoConservacion').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelEstadoConservacionPt').toggleClass('dropup')});">
-            <h5>Categorías de riesgo y comercio internacional<span class="caret"></span></h5>
-        </div>
-        <div class="panel-body" id="panelEstadoConservacion">
-          <div class="checkbox" style="text-align: right">
-            <%= checkboxEstadoConservacion %>
+      <div class="col-sm-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="panel panel-success dropup" id="panelFiltrosPt">
+          <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
+            <h4><span class="glyphicon glyphicon-filter" aria-hidden="true"></span>  Búsqueda Avanzada<span class="caret"></span></h4>
           </div>
-        </div>
-      </div>
+          <div class="panel-body" id="panelFiltros">
+            <div class="col-xs-12 col-sm-7 col-md-5 col-lg-5">
+              <fieldset>
+                <legend><h5><strong>Búsqueda por grupo icónico:</strong></h5></legend>
+                <%= radioGruposIconicos.html_safe %>
 
-      <div class="panel panel-success" id="panelTipoDistribucionEnPt">
-        <div class="panel-heading" onclick="$('#panelTipoDistribucionEn').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelTipoDistribucionEnPt').toggleClass('dropup')});">
-            <h5>Tipo de distribución<span class="caret"></span></h5>
-            <i><small>(Predeterminada: Cualquiera)</small></i>
-        </div>
-        <div class="panel-body" id="panelTipoDistribucionEn">
-          <div class="checkbox" style="text-align: right">
-            <%= checkboxTipoDistribucion %>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel panel-success" id="panelPrioritariaPt">
-        <div class="panel-heading" onclick="$('#panelPrioritaria').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelPrioritariaPt').toggleClass('dropup')});">
-          <h5>Especies prioritarias<span class="caret"></span></h5>
-        </div>
-            <div class="panel-body" id="panelPrioritaria">
-                <div class="checkbox" style="text-align: right">
-                    <%= checkboxPrioritaria.html_safe %>
-                </div>
+                <%= hidden_field_tag :id_nom_cientifico %>
+                <%= hidden_field_tag :busqueda, :avanzada %>
+                <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+              </fieldset>
             </div>
-      </div>
-      <p>
-        <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
-      </p>
 
+            <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+              <fieldset>
+                <legend><h5><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
+                <div class="checkbox">
+                  <%= checkboxEstadoConservacion %>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+              <fieldset>
+                <legend><h5><strong>Tipo de distribución</strong></h5><h5><i><small>(Predeterminada: Cualquiera)</small></i></h5></legend>
+                <div class="checkbox">
+                  <%= checkboxTipoDistribucion %>
+                </div>
+              </fieldset>
+            </div>
+
+
+            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+              <fieldset>
+                <legend><h5><strong>Especies prioritarias</strong></h5></legend>
+                <div class="checkbox" style="text-align: right">
+                  <%= checkboxPrioritaria.html_safe %>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="col-xs-12 col-sm-4 col-md-5 col-lg-5" id="panelCategoriaTaxonomicaPt" style="display: none;">
+              <fieldset>
+                <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
+              </fieldset>
+              <div id="datos_cat"></div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+              <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
+              <button class="form-control btn btn-default" disabled="disabled" data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
   <% end %>
 </div>
