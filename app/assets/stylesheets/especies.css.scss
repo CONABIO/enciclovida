@@ -276,6 +276,13 @@ dt{
   float: right;
 }
 
-.caracteristicas img{
-  width: 1.6em;
+.btn-img-panel > img{
+ width: 2em !important;
+}
+.img-panel{
+  width: 2.5em;
+}
+#NOM059,#IUCN,#CITES,#TipoDistribucion,#Ambiente{
+  padding-left: 15px;
+  padding-right: 0px;
 }

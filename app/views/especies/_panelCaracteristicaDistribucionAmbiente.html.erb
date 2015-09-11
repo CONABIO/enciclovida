@@ -1,33 +1,33 @@
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     <% ids = dameCaracteristicaDistribucionAmbienteJS(@especie) %>
     $(document).ready(function(){
-        $('<%="#id"+ids.join(", #id")%>').removeClass('caracteristicas').removeAttr('disabled');
+        $('<%="#id"+ids.join(", #id")%>').removeClass('btn-img-panel').removeAttr('disabled');
     });
 </script>
 
 <% botones = ponCaracteristicaDistribucionAmbienteJS %>
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left" id="NOM059">
+
+
+  <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 text-left" id="NOM059">
     <h6><strong><%=t(:nom)%></strong></h6>
     <%= botones[:nom].join("\n").html_safe %>
-</div>
-
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left" id="IUCN">
+  </div>
+  <div class="col-xs-6 col-sm-5 col-md-3 col-lg-4 text-left" id="IUCN">
     <h6><strong><%=t(:iucn)%></strong></h6>
-  <%= botones[:iucn].join("\n").html_safe %>
-</div>
-
-<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left" id="CITES">
+    <%= botones[:iucn].join("\n").html_safe %>
+  </div>
+  <div class="col-xs-7 col-sm-3 col-md-2 col-lg-2 text-left" id="CITES">
     <h6><strong><%=t(:cites)%></strong></h6>
-  <%= botones[:cites].join("\n").html_safe %>
-</div>
+    <%= botones[:cites].join("\n").html_safe %>
+  </div>
+  <div class="col-xs-5 col-sm-6 col-md-2 col-lg-2 text-left" id="TipoDistribucion">
+    <h6><strong>Tipo de distribución: </strong></h6>
+    <%= botones[:tipoDistribucion].join("\n").html_safe %>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 text-left" id="Ambiente">
+    <h6><strong>Ambiente</strong></h6>
+    <%= botones[:ambiente].join("\n").html_safe %>
+  </div>
 
-<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left" id="TipoDistribucion">
-  <h6><strong>Tipo de distribución: </strong></h6>
-  <%= botones[:tipoDistribucion].join("\n").html_safe %>
-</div>
 
-<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left" id="Ambiente">
-  <h6><strong>Ambiente</strong></h6>
-  <%# button_tag(ids[:ambiente][0], :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: 'id'+ids[:ambiente][0]) if ids[:ambiente].present? %>
-  <%= botones[:ambiente].join("\n").html_safe %>
-</div>
+

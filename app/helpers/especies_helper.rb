@@ -451,7 +451,7 @@ module EspeciesHelper
         id = "id" << edo.parameterize
         icono = t("cat_riesgo.#{edo.parameterize}.icono")
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        response[k] = response[k].to_a << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-circle', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+        response[k] = response[k].to_a << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-panel', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
       end
     end
 
@@ -459,14 +459,14 @@ module EspeciesHelper
       id = 'id' << tipoDist.parameterize
       icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, class: 'img-panel', name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
     end
 
     Catalogo.ambiente_todos.each do |amb|
       id = "id#{amb.parameterize}"
       icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
       nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag('app/ambientes/' << icono, title: nombre, name: "amb_#{amb}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag('app/ambientes/' << icono, title: nombre, class: 'img-panel', name: "amb_#{amb}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
     end
 
     response
