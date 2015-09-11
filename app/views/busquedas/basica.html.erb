@@ -81,12 +81,9 @@
             });
         }
     };
-
-
 </script>
 
-<div id="busqueda_basica" class="col-xs-10 col-sm-10 col-md-5 col-lg-4 col-xs-offset-1 col-sm-offset-1 col-md-offset-0 col--offset-1">
-  <%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if ((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico')).to_s, :role => 'form' do %>
+<%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if ((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico')).to_s, :role => 'form' do %>
       <%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
       <%= hidden_field_tag :busqueda, :nombre_comun %>
       <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
@@ -102,9 +99,9 @@
           <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
           <span class="input-group-btn">
             <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
-            <%= link_to "".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-default glyphicon glyphicon-filter", "aria-hidden" =>"true" %>
             </span>
         </div>
+        <%= link_to "Búsqueda avanzada".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-link" %>
       </div>
   <% end %>
 
@@ -123,10 +120,8 @@
           <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
           <span class="input-group-btn">
             <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
-            <%= link_to "".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-default glyphicon glyphicon-filter", "aria-hidden" =>"true"%>
           </span>
         </div>
+        <%= link_to "<span class='label'>Búsqueda avanzada</span>".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-link" %>
       </div>
-
   <% end %>
-</div>
