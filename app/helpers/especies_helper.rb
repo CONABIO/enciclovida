@@ -426,59 +426,49 @@ module EspeciesHelper
   end
 
   def dameCaracteristicaDistribucionAmbienteJS(taxon)
-    response = {}
-
-    taxon.especies_catalogos.each do |e|
-      cat = e.catalogo
-      if cat.nom_cites_iucn.present?
-          if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            response[:nom] = response[:nom].to_s << cat.descripcion.parameterize
-          elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            response[:iucn] = response[:iucn].to_s << cat.descripcion.parameterize
-          elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            response[:cites] = response[:cites].to_s << cat.descripcion.parameterize
-          end
-      end
-      if cat.ambiente.present?
-          response[:ambiente] = response[:ambiente].to_a << cat.descripcion
-      end
-    end  #Fin each
-    response[:ambiente] = response[:ambiente].uniq if response[:ambiente].present?
+    response = []
+    response << taxon.nom_cites_iucn_ambiente
 
     taxon.especies_regiones.distinct.each do |reg|
       next unless distribucion = reg.tipo_distribucion
       next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      response[:distribucion] = response[:distribucion].to_a << distribucion.descripcion.parameterize
+      response << distribucion.descripcion.parameterize
     end
+
     # if taxon.invasora.present?
     #   response[:distribucion] << 'idinvasora'
     # end
-    response[:distribucion] = response[:distribucion].uniq if response[:distribucion].present?
-    response
+
+    response.flatten.uniq
   end
 
   def ponCaracteristicaDistribucionAmbienteJS
     response = {}
+
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
-        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-        next if edo == 'No evaluado (NE)' #Se quitan a petición de CG, se opta por dejar el modelo intacto
-        next if edo == 'Datos insuficientes (DD)' #IDEM
-        next if edo == 'Riesgo bajo (LR): Preocupación menor (lc)'  #IDEM
-        next if edo == 'Riesgo bajo (LR): Casi amenazado (nt)' #IDEM
-        id = "id"<<edo.parameterize
+        next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
+        id = "id" << edo.parameterize
         icono = t("cat_riesgo.#{edo.parameterize}.icono")
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
         response[k] = response[k].to_a << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-circle', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
       end
     end
+
     TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-      id = 'id'<<tipoDist.parameterize
+      id = 'id' << tipoDist.parameterize
       icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
     end
-    response[:ambiente] = '' # Aqupi ira dame todos los ambientes
+
+    Catalogo.ambiente_todos.each do |amb|
+      id = "id#{amb.parameterize}"
+      icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
+      nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
+      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag('app/ambientes/' << icono, title: nombre, name: "amb_#{amb}")), :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: id)
+    end
+
     response
   end
 
