@@ -1,4 +1,26 @@
 es:
+  ambiente:
+    marino:
+      icono: marino.png
+      nombre: Marino
+    dulceacuicola:
+      icono: dulceacuicola.png
+      nombre: Dulceacuícola
+    salobre:
+      icono: salobre.png
+      nombre: Salobre
+    terrestre:
+      icono: terrestre.png
+      nombre: Terrestre
+    neritico:
+      icono: marino.png
+      nombre: Nerítico
+    neritico-y-oceanico:
+      icono: marino.png
+      nombre: Nerítico y oceánico
+    oceanico:
+      icono: marino.png
+      nombre: Oceánico
   arreglo_taxonomico: Clasificación
   cat_riesgo:
     en-peligro-de-extincion-p:
