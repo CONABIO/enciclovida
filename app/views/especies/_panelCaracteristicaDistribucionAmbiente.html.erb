@@ -1,9 +1,10 @@
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     <% ids = dameCaracteristicaDistribucionAmbienteJS(@especie) %>
     $(document).ready(function(){
-    $('<%="#id"+ids.values.flatten.join(", #id")%>').removeClass('caracteristicas').removeAttr('disabled');
+        $('<%="#id"+ids.join(", #id")%>').removeClass('caracteristicas').removeAttr('disabled');
     });
 </script>
+
 <% botones = ponCaracteristicaDistribucionAmbienteJS %>
 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left" id="NOM059">
     <h6><strong><%=t(:nom)%></strong></h6>
@@ -24,7 +25,9 @@
   <h6><strong>Tipo de distribución: </strong></h6>
   <%= botones[:tipoDistribucion].join("\n").html_safe %>
 </div>
+
 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left" id="Ambiente">
-  <h6><strong><%=t(:ambiente)%></strong></h6>
-  <%= button_tag(ids[:ambiente][0], :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: 'id'+ids[:ambiente][0]) if ids[:ambiente].present? %>
+  <h6><strong>Ambiente</strong></h6>
+  <%# button_tag(ids[:ambiente][0], :class => 'btn btn-default btn-xs  caracteristicas', :disabled => '', id: 'id'+ids[:ambiente][0]) if ids[:ambiente].present? %>
+  <%= botones[:ambiente].join("\n").html_safe %>
 </div>

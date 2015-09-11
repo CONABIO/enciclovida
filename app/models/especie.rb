@@ -105,6 +105,26 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
+  # Para sacar los nombres de las categorias de IUCN, NOM, CITES y el ambiente, regresa un array
+  def nom_cites_iucn_ambiente
+    response = []
+
+    especies_catalogos.each do |e|
+      cat = e.catalogo
+
+      nom_cites_iucn = cat.nom_cites_iucn(true)
+      if nom_cites_iucn.present?
+        response << nom_cites_iucn.parameterize
+      end
+
+      amb = cat.ambiente
+      if amb.present?
+        response << amb.parameterize
+      end
+    end  #Fin each
+
+    response.uniq
+  end
 
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
