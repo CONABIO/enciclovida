@@ -270,6 +270,21 @@
       this.input.keydown(this.handleKeydown).keyup(this.handleKeyup).mouseover(function() {
         return that.suggestions.blurAll();
       });
+
+      // Parche para que funcionara tambien con el paste, capricho de cgarcia!
+      this.input.on("paste", function(e) {
+          var valor = e.originalEvent.clipboardData.getData('text')
+          that.query.setValue(valor);
+
+          if (that.query.hasChanged()) {
+              if (that.query.willHaveResults()) {
+                  that.suggestions.blurAll();
+                  return that.fetchResults();
+              } else {
+                  return that.hideContainer();
+              }
+          }
+      });
     }
 
     Soulmate.prototype.handleKeydown = function(event) {
