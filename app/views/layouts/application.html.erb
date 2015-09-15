@@ -44,7 +44,7 @@
   </div>
 
   <div class="row">
-    <ul class="nav nav-pills navbar-right">
+    <ul class="nav nav-pills navbar-right bg-info">
       <% if I18n.locale.to_s == 'es-cientifico' %>
           <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
       <% else %>
