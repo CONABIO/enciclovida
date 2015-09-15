@@ -96,7 +96,8 @@ html {
   list-style: none;
   //margin: 0 0 0 10px;
   padding: 0;
-  position: fixed; //Solía tener absolute, pero es necesario para que escape la sección de busquedas
+  position: absolute; //Solía tener absolute, pero es necesario para que escape la sección de busquedas.
+                      //EDIT: Ahora solía tener fixed, pero ya que no existe sidebar, aprece que es moemnto que regrese a absolute
   overflow-x: hidden; //
   overflow-y: visible; //Para que muestre los resultados completamente
   text-shadow: 0 0 0 white;
@@ -174,4 +175,11 @@ html {
       text-decoration: underline;
     }
   }
+}
+
+#panelFiltros div{
+  margin-bottom: 15px;
+}
+#busqueda_avanzada fieldset > legend{
+  margin-bottom: 5px;
 }

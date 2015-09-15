@@ -1,7 +1,6 @@
 <div id="busqueda_avanzada" class="row">
-  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
 
-      <div class="col-sm-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-success dropup" id="panelFiltrosPt">
           <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
             <h4><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>  Búsqueda Avanzada<span class="caret"></span></h4>
@@ -16,6 +15,12 @@
                 <%= hidden_field_tag :busqueda, :avanzada %>
                 <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
               </fieldset>
+              <div id="panelCategoriaTaxonomicaPt" style="display: none;">
+                <fieldset>
+                  <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
+                </fieldset>
+                <div id="datos_cat"></div>
+              </div>
             </div>
 
             <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
@@ -46,20 +51,13 @@
               </fieldset>
             </div>
 
-            <div class="col-xs-12 col-sm-4 col-md-5 col-lg-5" id="panelCategoriaTaxonomicaPt" style="display: none;">
-              <fieldset>
-                <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
-              </fieldset>
-              <div id="datos_cat"></div>
-            </div>
 
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+            <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9">
               <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
               <button class="form-control btn btn-default" disabled="disabled" data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
             </div>
 
           </div>
         </div>
-      </div>
   <% end %>
 </div>
