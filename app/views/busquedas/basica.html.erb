@@ -101,7 +101,9 @@
             <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
             </span>
         </div>
-        <%= link_to "Búsqueda avanzada".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-link" %>
+        <div class="irBusquedaAvanzada">
+            <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada ".html_safe, avanzada_url, :title=>'Búsqueda Avanzada' %>
+        </div>
       </div>
   <% end %>
 
@@ -122,6 +124,8 @@
             <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
           </span>
         </div>
-        <%= link_to "<span class='label'>Búsqueda avanzada</span>".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class =>"btn btn-link" %>
+        <div class="irBusquedaAvanzada">
+          <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada ".html_safe, avanzada_url, :title=>'Búsqueda Avanzada' %>
+        </div>
       </div>
   <% end %>

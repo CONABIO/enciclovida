@@ -252,3 +252,13 @@ div#map{
     -webkit-column-rule: 1px solid #ccc;
     -moz-column-rule: 1px solid #ccc;
 }
+.irBusquedaAvanzada{
+    background-color: #ddd;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 3px 38px 2px 40px;
+    margin: 0px 40px 0px 38px;
+    font-size: 75%;
+    text-align: center;
+}
