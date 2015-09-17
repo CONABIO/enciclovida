@@ -408,7 +408,7 @@ class Validacion < ActiveRecord::Base
     @hash = []
     primera_fila = true
 
-    xlsx = Roo::Excelx.new(path, nil, :ignore)
+    xlsx = Roo::Excelx.new(path, packed: nil, file_warning: :ignore)
     @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
     #sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas

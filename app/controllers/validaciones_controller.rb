@@ -91,7 +91,7 @@ class ValidacionesController < ApplicationController
         @errores << t('errors.messages.extension_validacion_excel')
       else
 
-        xlsx = Roo::Excelx.new(params[:excel].path, nil, :ignore)
+        xlsx = Roo::Excelx.new(params[:excel].path, packed: nil, file_warning: :ignore)
         sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
         rows = sheet.last_row - sheet.first_row  # Para quietarle del conteo la cabecera
