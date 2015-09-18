@@ -83,7 +83,6 @@ class ValidacionesController < ApplicationController
   def resultados_taxon_excel
     @errores = []
     #uploader = ArchivoUploader.new
-    puts "---AQUIIII"
     content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
     if params[:excel].content_type != content_type
@@ -109,7 +108,6 @@ class ValidacionesController < ApplicationController
         xlsx = Roo::Excelx.new(path.to_s)
         sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
-        puts "---#{sheet.row(1).inspect}"
         rows = sheet.last_row - sheet.first_row  # Para quietarle del conteo la cabecera
         columns = sheet.last_column
 
