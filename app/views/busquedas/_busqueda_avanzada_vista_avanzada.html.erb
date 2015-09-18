@@ -1,10 +1,8 @@
 <div id="busqueda_avanzada" class="row">
-  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-inline', :id => :b_avanzada  do %>
-
-      <div class="col-sm-12 col-sm-12 col-md-12 col-lg-12">
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
         <div class="panel panel-success dropup" id="panelFiltrosPt">
           <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
-            <h4><span class="glyphicon glyphicon-filter" aria-hidden="true"></span>  Búsqueda Avanzada<span class="caret"></span></h4>
+            <h5><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span><strong>  Búsqueda Avanzada<span class="caret"></span></strong></h5>
           </div>
           <div class="panel-body" id="panelFiltros">
 
@@ -37,16 +35,17 @@
                 </div>
 
               </fieldset>
+              <div id="panelCategoriaTaxonomicaPt" style="display: none;">
+                <fieldset>
+                  <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
+                </fieldset>
+                <div id="datos_cat"></div>
+              </div>
             </div>
 
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" id="panelCategoriaTaxonomicaPt" style="display: none;">
-              <fieldset>
-                <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
-              </fieldset>
-              <div id="datos_cat"></div>
-            </div>
 
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+
+            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-5">
               <fieldset>
                 <legend><h5><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
                 <div class="checkbox">
@@ -56,31 +55,37 @@
             </div>
 
 
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 col-sm-offset-1 col-md-offset-0 col-lg-offset-0">
               <fieldset>
-                <legend><h5><strong>Tipo de distribución<i><small>(Predeterminada: Cualquiera)</small></i></strong></h5></legend>
+                <legend><h5><strong>Tipo de distribución</strong></h5></legend>
                 <div class="checkbox">
                   <%= checkboxTipoDistribucion %>
                 </div>
               </fieldset>
             </div>
 
-
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3">
               <fieldset>
                 <legend><h5><strong>Estatus taxonómico</strong></h5></legend>
                 <%= checkboxValidoSinonimo %>
               </fieldset>
             </div>
 
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-              <%= submit_tag :Buscar, :class => 'btn btn-primary form-control busquedas', data: { disable_with: 'Procesando...' } %>
+            <div class="col-xs-12 col-sm-5 col-md-3 col-lg-3">
+              <fieldset>
+                <legend><h5><strong>Especies prioritarias para la conservación</strong></h5></legend>
+                <div class="checkbox" style="text-align: right">
+                  <%= checkboxPrioritaria.html_safe %>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3 col-sm-offset-2 col-md-offset-8 col-lg-offset-9">
+              <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>
               <button class="form-control btn btn-default" disabled="disabled" data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
             </div>
 
           </div>
         </div>
-      </div>
-
   <% end %>
 </div>
