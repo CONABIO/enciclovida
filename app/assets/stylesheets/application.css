@@ -78,11 +78,12 @@ body{
 #brandBar > div > ul {
     font-size: .75em;
     font-weight: bold;
-    border-top-right-radius: 1.5em;
-    border-top-left-radius: 1.5em;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
     /*border-bottom-right-radius: 1.5em;*/
     /*border-bottom-left-radius: 1.5em;*/
-    /*background-color: rgba(223, 237, 228, 0.9);*/
+    /*background-color: rgba(223, 237, 228, 0.6);*/
+    background-color: rgba(242, 240, 237, 0.6);
 }
 #brandBar > div > ul > li > a {
     /*padding: 2px 15px;*/
@@ -92,12 +93,10 @@ body{
 div.footer > div {
     width: 60%;
     margin: 20px auto;
-    background-color: rgba(223, 237, 228, 0.4);
-    border-top-right-radius: 2.5em;
-    border-top-left-radius: 2.5em;
-    border-bottom-right-radius: 2.5em;
-    border-bottom-left-radius: 2.5em;
-    padding: 5px;
+    /*background-color: rgba(223, 237, 228, 0.6);*/
+    background-color: rgba(242, 240, 237, 0.6);
+    border-radius: 1.5em;
+    padding: 10px 20px 5px 20px;
 }
 div.footer > div > p{
     /*color: #800000;*/
@@ -253,20 +252,23 @@ div#map{
     -moz-column-rule: 1px solid #ccc;
 }
 .irBusquedaAvanzada {
-    /*background-color: rgba(24, 214, 255, 0.5);*/
+    /*background-color: rgba(230, 230, 230, 0.6);*/
+    /*background-color: rgba(223, 237, 228, 0.6);*/
+    background-color: rgba(242, 240, 237, 0.85);
     /*background-color: rgba(204, 204, 204, 0.75);*/
     border-bottom-left-radius: 2em;
     border-bottom-right-radius: 2em;
-    border: 0px solid #ccc;
-    padding: 6px 38px 2px 40px;
-    margin: -19px 40px 0px 78px;
-    font-size: 75%;
+    /*border: 0px solid #ccc;*/
+    border: 1px solid rgba(58, 175, 66, 0.3);
+    padding: 5px 38px 3px 40px;
+    margin: -22px 40px 0px 78px;
+    font-size: 85%;
     text-align: center;
     position: relative;
 }
 .irBusquedaAvanzada:hover {
     margin-top: 0px;
-    margin-bottom: -8px;
+    margin-bottom: -10px;
 }
 .irBusquedaAvanzada:hover > span {
     display: none !important;
