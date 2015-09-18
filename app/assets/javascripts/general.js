@@ -134,7 +134,7 @@ cambiaSidebar = function(){
 };
 
 var fondo = 1;
-cambiafondo = function(){
+cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
     url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
     //console.log(url);

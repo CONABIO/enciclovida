@@ -44,7 +44,7 @@
   </div>
 
   <div class="row">
-    <ul class="nav nav-pills navbar-right bg-info">
+    <ul class="nav nav-pills navbar-right">
       <% if I18n.locale.to_s == 'es-cientifico' %>
           <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
       <% else %>
@@ -92,7 +92,7 @@
           </p>
 
           <p class="text-center"><a href="mailto:bios@conabio.gob.mx">Comentarios y sugerencias generales
-            <span class="glyphicon glyphicon-envelope"></span></a> | Plano de ubicación CONABIO con
+            <span class="glyphicon glyphicon-envelope"></span></a> | Plano de ubicación <span onclick="cambiaFondo();">CONABIO</span> con
             <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
             <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank">PDF </a>
             | <%= link_to 'Créditos', inicio_creditos_path, :target => '_blank' %>
