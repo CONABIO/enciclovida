@@ -83,15 +83,29 @@ class ValidacionesController < ApplicationController
   def resultados_taxon_excel
     @errores = []
     #uploader = ArchivoUploader.new
+    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-    begin
-      content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    if params[:excel].content_type != content_type
+      @errores << t('errors.messages.extension_validacion_excel')
+    else
+      #uploader.store!(params[:excel])  # Guarda el archivo
+      nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
+      validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
 
-      if params[:excel].content_type != content_type
-        @errores << t('errors.messages.extension_validacion_excel')
+      # Creando la carpeta del usuario y gurdando el archivo
+      ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
+      FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+
+      path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
+      File.open(path, 'wb') do |file|
+        file.write(params[:excel].read)
+      end
+
+      if !File.exists?(path)
+        @errores << 'El archivo tiene una inconsistencia'
       else
-
-        xlsx = Roo::Excelx.new(params[:excel].path, packed: nil, file_warning: :ignore)
+        #begin
+        xlsx = Roo::Excelx.new(path.to_s)
         sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
         rows = sheet.last_row - sheet.first_row  # Para quietarle del conteo la cabecera
@@ -99,36 +113,25 @@ class ValidacionesController < ApplicationController
 
         @errores << 'La primera hoja de tu excel no tiene información' if rows < 0
         @errores << 'Las columnas no son las mínimas necesarias para poder leer tu excel' if columns < 7
+        #rescue
+        #rescue Roo::Excelx::ExceedsMaxError => e
+        #  puts e.inspect
+        #end
+      end
 
-        if @errores.empty?
-          cabecera = sheet.row(1)
-          cc = comprueba_columnas(cabecera)
 
-          # Por si no cumple con las columnas obligatorias
-          if cc[:faltan].any?
-            @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
-          else
-            #uploader.store!(params[:excel])  # Guarda el archivo
-            nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
-            validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
+      if @errores.empty?
+        cabecera = sheet.row(1)
+        cc = comprueba_columnas(cabecera)
 
-            # Creando la carpeta del usuario y gurdando el archivo
-            ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
-            FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
-
-            path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
-            File.open(path, 'wb') do |file|
-              file.write(params[:excel].read)
-            end
-
-            validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
-          end
+        # Por si no cumple con las columnas obligatorias
+        if cc[:faltan].any?
+          @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
+        else
+          validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
         end
-      end  # Fin del tipo de archivo
-
-    rescue CarrierWave::IntegrityError => c
-      @errores << c
-    end  # Fin del rescue
+      end  # Fin errores empty
+    end  # Fin del tipo de archivo
   end
 
 

@@ -1,5 +1,5 @@
 <div id="error_mensaje"></div>
-<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios") do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", class: 'form-inline') do |f| %>
 
     <% if @comentario.errors.any? %>
         <div id="error_explanation">
@@ -29,7 +29,7 @@
 
     <div>
       <%= f.label :comentario %>
-      <%= f.text_area :comentario %>
+      <%= f.text_area :comentario, class: 'form-control' %>
     </div>
 
     <div class="actions">
