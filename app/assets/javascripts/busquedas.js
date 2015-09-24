@@ -56,23 +56,23 @@ $(document).ready(function()
         $(this).toggleClass("busqueda_atributo_radio_seleccionado");
         cat_tax_asociadas(id);
     });
-
-    $(document).on('click', ".busqueda_atributo_imagen", function(){
-        if ($('#' + $(this).attr('name')).prop('checked'))
-        {
-            $('#' + $(this).attr('name')).prop('checked',false);
-            $('#' + $(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
-        } else {
-            /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
-             * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
-             * pero dicho cambio no se realizara a las 22:00 en viernes
-             * se redujo las ejecuciones dummie en 20% aprox
-             * */
-            $('#' + $(this).attr('name')).prop('checked', true);
-            $('#' + $(this).attr('name')).attr('checked', true);//IDEM
-        }
-        $(this).toggleClass("busqueda_atributo_imagen_seleccionado");
-    });
+    //
+    //$(document).on('click', ".busqueda_atributo_imagen", function(){
+    //    if ($('#' + $(this).attr('name')).prop('checked'))
+    //    {
+    //        $('#' + $(this).attr('name')).prop('checked',false);
+    //        $('#' + $(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
+    //    } else {
+    //        /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
+    //         * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
+    //         * pero dicho cambio no se realizara a las 22:00 en viernes
+    //         * se redujo las ejecuciones dummie en 20% aprox
+    //         * */
+    //        $('#' + $(this).attr('name')).prop('checked', true);
+    //        $('#' + $(this).attr('name')).attr('checked', true);//IDEM
+    //    }
+    //    $(this).toggleClass("busqueda_atributo_imagen_seleccionado");
+    //});
 
     $(document).on('change', "#nivel, #cat", function()
     {
@@ -130,26 +130,28 @@ $(document).ready(function()
             $('#panelCategoriaTaxonomicaPt').hide();
     });
 
-    $(document).on('click', '#limpiar', function()
-    {
-        jQuery.ajax({
-            success: function(html)
-            {
-                if (html!='true')
-                {
-                    $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-                    return false
-                }
-                window.location.replace(window.location.origin);
-            },
-            fail: function() {
-                $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-            },
-            type:'POST',
-            url:'/usuarios/limpia_filtro',
-            cache:true
-        });
-    });
+
+/*Sección comentada ya que ya no se guarda el html en la BD :D*/
+    //$(document).on('click', '#limpiar', function()
+    //{
+    //    jQuery.ajax({
+    //        success: function(html)
+    //        {
+    //            if (html!='true')
+    //            {
+    //                $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+    //                return false
+    //            }
+    //            window.location.replace(window.location.origin);
+    //        },
+    //        fail: function() {
+    //            $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
+    //        },
+    //        type:'POST',
+    //        url:'/usuarios/limpia_filtro',
+    //        cache:true
+    //    });
+    //});
 
     $(document).on('change', "#per_page", function(k)
     {
