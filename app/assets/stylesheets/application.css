@@ -240,6 +240,6 @@ div#map{
     margin-top: 0px;
     margin-bottom: -10px;
 }
-.irBusquedaAvanzada:hover > div {
+.irBusquedaAvanzada:hover > span {
     display: none !important;
 }
