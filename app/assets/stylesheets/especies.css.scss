@@ -55,7 +55,7 @@
 }
 
 .busqueda_atributo_imagen_seleccionado, .busqueda_atributo_imagen:hover{
-  background-color: #ba9775;
+  background-color: #9bbc21;
   /*border: solid 1px #ba9775;*/
   opacity: 0.8;
   /*filter: alpha(opacity=80); /* For IE8 and earlier */
@@ -63,10 +63,6 @@
 //Para que la foto no se salga del tamanio
 //#photos img{max-width: 500px}
 
-.abcd{/*Clase de prueba para los textos en los filtros en la busqueda avanzada vista general*/
-  float: left;
-  /*display: block !important;*/
-}
 
 #vista_arbol ul{
   padding-left: 25px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
@@ -285,4 +281,21 @@ dt{
 #NOM059,#IUCN,#CITES,#TipoDistribucion,#Ambiente{
   padding-left: 15px;
   padding-right: 0px;
+}
+
+
+/*los stilos a continuación deben ir en busquedas.css*/
+.checkbox label{
+padding-left: 4px;
+}
+.checkbox input{
+display: none;
+}
+.checkbox input:checked + span, .checkbox input + span:hover{
+  background-color: #e0e0e0;
+  border-color: #dbdbdb;
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.25);
 }
