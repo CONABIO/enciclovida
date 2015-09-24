@@ -13,13 +13,18 @@ module BusquedasHelper
     if I18n.locale.to_s == 'es-cientifico'
       TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
         next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
-        checkBoxes << "<label class='checkbox' style='margin: 0px 10px;'>#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, :class => :busqueda_atributo_checkbox)} #{t('distribucion.'+tipoDist.gsub(' ', '_'))}</label>"
+        checkBoxes << "<label>#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, :class => '')} <span class='btn btn-default btn-xs' title= '#{t('distribucion.'+tipoDist.gsub(' ', '_'))}'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span></label>"
       end
     else
       TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-        checkBoxes << "<span id='dist_#{tipoDist}_span' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
-        checkBoxes << "#{image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), title: t("tipo_distribucion.#{tipoDist.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "dist_#{tipoDist}")}"
-        checkBoxes << "#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}", :style => 'display:none')}"
+        #checkBoxes << "<span id='dist_#{tipoDist}_span' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
+        checkBoxes << "<label>"
+        checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}", class: "")
+        checkBoxes << "<span class = 'btn btn-default btn-xs' title = '#{t("tipo_distribucion.#{tipoDist.parameterize}.nombre")}'>"
+        checkBoxes << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), class: 'img-panel', name: "dist_#{tipoDist}")
+        checkBoxes << "</span>"
+        checkBoxes << "</label>"
+
       end
     end
     checkBoxes.html_safe
@@ -32,9 +37,14 @@ module BusquedasHelper
       checkBoxes << "<u><h6>#{t(k)}</h6></u>"
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-        checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
-        checkBoxes << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), title: t("cat_riesgo.#{edo.parameterize}.nombre"), class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: "edo_cons_#{edo.parameterize}")}"
-        checkBoxes << "#{check_box_tag('edo_cons[]', edo, false, :style => 'display:none', :id => "edo_cons_#{edo.parameterize}")}"
+        #checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
+        checkBoxes << "<label>"
+        checkBoxes << check_box_tag('edo_cons[]', edo, false, :id => "edo_cons_#{edo.parameterize}", class: "")
+        checkBoxes << "<span class = 'btn btn-default btn-xs' title = '#{t("cat_riesgo.#{edo.parameterize}.nombre")}'>"
+        checkBoxes << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), class: 'img-panel', name: "edo_cons_#{edo.parameterize}")
+        #checkBoxes << "<span class = 'btn btn-default btn-xs' title = '#{t("cat_riesgo.#{edo.parameterize}.nombre")}' style=\"background-image:url('/assets/app/categorias_riesgo/#{t("cat_riesgo.#{edo.parameterize}.icono")}');display: block;width:38px; height:38px;background-repeat:no-repeat;\"> "
+        checkBoxes << "</span>"
+        checkBoxes << "</label>"
       end
     end
     checkBoxes.html_safe
@@ -46,15 +56,19 @@ module BusquedasHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox)} #{e.last}</label>"
+                      else "<label>#{check_box_tag('estatus[]', e.first, false, :class => '')} <span class = 'btn btn-default btn-xs' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
     checkBoxes.html_safe
   end
 
   def checkboxPrioritaria
-    checkBoxes = "#{image_tag('app/prioritaria.png', title: 'Prioritarias', class: 'img-circle img-thumbnail busqueda_atributo_imagen', name: 'campo_prioritaria')}"
-    checkBoxes << check_box_tag('prioritaria', '1', false, :style => 'display:none', :id => 'campo_prioritaria')
+    checkBoxes = "<label>"
+    checkBoxes << check_box_tag('prioritaria', '1', false, :style => 'display:;', :id => 'campo_prioritaria')
+    checkBoxes << "<span class = 'btn btn-default btn-xs' title = 'Prioritarias'>"
+    checkBoxes << image_tag('app/prioritaria.png', class: 'img-panel', name: 'campo_prioritaria')
+    checkBoxes << "</span>"
+    checkBoxes << "</label>"
   end
 
   def radioGruposIconicos
