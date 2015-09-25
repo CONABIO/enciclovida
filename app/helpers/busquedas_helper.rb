@@ -34,7 +34,7 @@ module BusquedasHelper
     checkBoxes=''
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes << "<u><h6>#{t(k)}</h6></u>"
+      checkBoxes << "<h6><strong>#{t(k)}</strong><h6>"
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
         #checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
@@ -84,9 +84,10 @@ module BusquedasHelper
         radios << '<br>'
         columnas = 7
       end
-
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false, :style => 'display: none;')
+      radios << "<label>"
+      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false)
       radios << ponIcono(taxon, con_recuadro: true)
+      radios << "</label>"
       radios << '<br>' if columnas%6 == 0
       columnas+=1
     end
