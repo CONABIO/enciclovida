@@ -36,26 +36,26 @@ $(document).ready(function()
         });
     };
 
-    //$(document).on('click', ".busqueda_atributo_radio", function()
-    //{
-    //    var id = $(this).attr('id_icono');
-    //
-    //    // Quito las opciones seleccionadas para que despues no haya problema
-    //    $(".busqueda_atributo_radio").each(function(index) {
-    //        var id_radio = $(this).attr('id_icono');
-    //        if (id != id_radio)
-    //        {
-    //            $('#id_nom_cientifico_' + id_radio).attr('checked', false);
-    //            $(this).removeClass("busqueda_atributo_radio_seleccionado");
-    //        }
-    //    });
-    //
-    //    $('#id_nom_cientifico_' + id).prop('checked', true);
-    //    $('#id_nom_cientifico').attr('value',id);
-    //
-    //    $(this).toggleClass("busqueda_atributo_radio_seleccionado");
-    //    cat_tax_asociadas(id);
-    //});
+    $(document).on('click', ".radios input", function()
+    {
+        var id = $(this).attr('value');
+
+        // Quito las opciones seleccionadas para que despues no haya problema
+        //$(".busqueda_atributo_radio").each(function(index) {
+        //    var id_radio = $(this).attr('id_icono');
+        //    if (id != id_radio)
+        //    {
+        //        $('#id_nom_cientifico_' + id_radio).attr('checked', false);
+        //        $(this).removeClass("busqueda_atributo_radio_seleccionado");
+        //    }
+        //});
+        //
+        //$('#id_nom_cientifico_' + id).prop('checked', true);
+        //$('#id_nom_cientifico').attr('value',id);
+        //
+        //$(this).toggleClass("busqueda_atributo_radio_seleccionado");
+        cat_tax_asociadas(id);
+    });
 
     $(document).on('change', "#nivel, #cat", function()
     {
@@ -114,7 +114,9 @@ $(document).ready(function()
     });
 
     $(document).on('click', '#limpiar', function(){
-        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico").attr("value", '');
+        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico").attr("value", "");
+        $("#datos_cat").html("");
+        $("#panelCategoriaTaxonomicaPt").hide();
     });
 
     // autocomplete para la busqueda basica
