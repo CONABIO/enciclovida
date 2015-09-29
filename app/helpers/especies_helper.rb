@@ -274,6 +274,7 @@ module EspeciesHelper
         niveles = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
         distribucion[niveles] = [] if distribucion[niveles].nil?
 
+      # Separa por niveles la distribucion
         case niveles
           when '100'
             distribucion[niveles].push('<b>En todo el territorio nacional</b>')
@@ -304,8 +305,9 @@ module EspeciesHelper
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
         end
 
+      # Parte de los nombres comunes con la bibliografia
       e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
-        nomBib="#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
+        nomBib = "#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
         nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
           nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
 <div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"
@@ -314,6 +316,8 @@ module EspeciesHelper
         nombresComunes+="<li>#{nomBib}</li>"
       end
     end
+
+    Especie.nombre_bibliografia_join
 
     distribucion.each do |k, v|
       # Quita el titulo del territorio nacional si tambien esta en un estado en particular
