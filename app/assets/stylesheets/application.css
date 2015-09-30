@@ -66,24 +66,16 @@ body{
 #brandBar div > a > img {
     max-height: 80px;
 }
-/*#brandBar div > div:first-child  img {*/
-    /*padding: 5px 0px 5px 0;*/
-/*}*/
-/*#brandBar div > div:nth-child(2)  img{*/
-    /*padding: 20px 0px 10px 0;*/
-/*}*/
-/*#brandBar div > div:nth-child(3)  img {*/
-    /*padding: 10px 0px 10px 0;*/
-/*}*/
 #brandBar > div > ul {
-    font-size: .75em;
+    font-size: .8em;
     font-weight: bold;
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-    /*border-bottom-right-radius: 1.5em;*/
-    /*border-bottom-left-radius: 1.5em;*/
-    /*background-color: rgba(223, 237, 228, 0.6);*/
-    background-color: rgba(242, 240, 237, 0.6);
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    /*border-bottom-right-radius: 8px;*/
+    /*border-bottom-left-radius: 8px;*/
+    /*background-color: rgba(135, 163, 28, 0.6);*/
+    /*background-color: rgba(242, 240, 237, 0.6);*/
+    background-image: linear-gradient(to bottom, rgba(242, 240, 237, 0.60) 10%, rgba(135, 163, 28, 1) 110%);;
 }
 #brandBar > div > ul > li > a {
     /*padding: 2px 15px;*/
@@ -93,13 +85,11 @@ body{
 div.footer > div {
     width: 60%;
     margin: 20px auto;
-    /*background-color: rgba(223, 237, 228, 0.6);*/
     background-color: rgba(242, 240, 237, 0.6);
-    border-radius: 1.5em;
+    border-radius: 8px;
     padding: 10px 20px 5px 20px;
 }
 div.footer > div > p{
-    /*color: #800000;*/
     font-size: .75em;
 }
 
@@ -221,54 +211,22 @@ div#map{
     border-radius: 5px;
 }
 
-.tabla_acerca {
-    padding:10px;
-}
-
-.tabla_acerca th {
-    padding: 10px;
-    background: #800000;
-    color: white;
-}
-
-.tabla_acerca td {
-    padding: 10px;
-}
-
-.tabla_acerca tr:nth-child(odd) {
-    background: #fff;
-}
-
-.icon-size {
-    width: 1.5em;
-}
-
-.multicolumna{
-    -moz-column-width: 10em;
-    -moz-column-gap: 10px;
-    -webkit-column-width: 10em;
-    -webkit-column-gap: 10px;
-    -webkit-column-rule: 1px solid #ccc;
-    -moz-column-rule: 1px solid #ccc;
-}
 .irBusquedaAvanzada {
-    /*background-color: rgba(230, 230, 230, 0.6);*/
-    /*background-color: rgba(223, 237, 228, 0.6);*/
-    background-color: rgba(242, 240, 237, 0.85);
-    /*background-color: rgba(204, 204, 204, 0.75);*/
-    border-bottom-left-radius: 2em;
-    border-bottom-right-radius: 2em;
-    /*border: 0px solid #ccc;*/
-    border: 1px solid rgba(58, 175, 66, 0.3);
+    background-image: linear-gradient(to bottom, #f2f0ed 60%, rgba(169, 169, 169, 0.90) 90%);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border: 1px solid rgb(174, 174, 174);
     padding: 5px 38px 3px 40px;
-    margin: -22px 40px 0px 78px;
-    font-size: 85%;
+    margin: -24px 50px 0px 90px;
+    font-weight: bold;
     text-align: center;
     position: relative;
 }
 .irBusquedaAvanzada:hover {
-    margin-top: 0px;
-    margin-bottom: -10px;
+    margin-top: -1px;
+    margin-bottom: -6px;
+    font-size: 85%;
+    background-image: linear-gradient(to bottom, #f2f0ed 30%, rgba(169, 169, 169, 0.90) 110%);
 }
 .irBusquedaAvanzada:hover > span {
     display: none !important;
