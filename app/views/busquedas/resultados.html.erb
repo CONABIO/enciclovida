@@ -123,18 +123,6 @@
     <%= @titulo='Resultados' %>
 <% end %>
 
-<% fub = filtrosUltimaBusqueda(params) %>
-<% if fub.present? %>
-    Tu última busqueda fue:
-    <ul>
-      <% fub.each do |f| %>
-        <li>
-          <%= f.html_safe %>
-        </li>
-      <% end %>
-    </ul>
-<% end %>
-
 <p id="notice"><%= notice %></p>
 <p class="text-right">
     <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>

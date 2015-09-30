@@ -260,18 +260,19 @@ module EspeciesHelper
   end
 
   def dameRegionesNombresBibliografia(especie)
-    distribuciones=nombresComunes=tipoDistribuciones=''
-    distribucion={}
-    tipoDist=[]
-    biblioCont=1
+    distribuciones = ''
+    nombresComunes=  ''
+    tipoDistribuciones = ''
+    distribucion = {}
+    tipoDist = []
+    biblioCont = 1
 
     especie.especies_regiones.each do |e|
       tipoDist << e.tipo_distribucion.descripcion if e.tipo_distribucion_id.present?
 
-      if e.tipo_distribucion_id.present?
-        tipo_reg=e.region.tipo_region
-        niveles="#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
-        distribucion[niveles]=[] if distribucion[niveles].nil?
+        tipo_reg = e.region.tipo_region
+        niveles = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
+        distribucion[niveles] = [] if distribucion[niveles].nil?
 
         case niveles
           when '100'
@@ -302,7 +303,6 @@ module EspeciesHelper
             distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
         end
-      end
 
       e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
         nomBib="#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
@@ -316,12 +316,15 @@ module EspeciesHelper
     end
 
     distribucion.each do |k, v|
-      titulo=true
+      # Quita el titulo del territorio nacional si tambien esta en un estado en particular
+      next if distribucion.count > 1 && k == '100'
+
+      titulo = true
       v.each do |reg|
-        titulo ? distribuciones+="#{reg}<ul>" : distribuciones+=reg
-        titulo=false
+        titulo ? distribuciones+= "#{reg}<ul>" : distribuciones+= reg
+        titulo = false
       end
-      distribuciones+='</ul>'
+      distribuciones+= '</ul>'
     end
 
     tipoDist.uniq.each do |d|
