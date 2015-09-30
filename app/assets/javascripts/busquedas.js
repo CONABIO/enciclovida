@@ -36,24 +36,9 @@ $(document).ready(function()
         });
     };
 
-    $(document).on('click', ".radios input", function()
+    $(document).on('click', ".radio input", function()
     {
         var id = $(this).attr('value');
-
-        // Quito las opciones seleccionadas para que despues no haya problema
-        //$(".busqueda_atributo_radio").each(function(index) {
-        //    var id_radio = $(this).attr('id_icono');
-        //    if (id != id_radio)
-        //    {
-        //        $('#id_nom_cientifico_' + id_radio).attr('checked', false);
-        //        $(this).removeClass("busqueda_atributo_radio_seleccionado");
-        //    }
-        //});
-        //
-        //$('#id_nom_cientifico_' + id).prop('checked', true);
-        //$('#id_nom_cientifico').attr('value',id);
-        //
-        //$(this).toggleClass("busqueda_atributo_radio_seleccionado");
         cat_tax_asociadas(id);
     });
 

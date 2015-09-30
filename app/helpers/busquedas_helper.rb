@@ -37,12 +37,10 @@ module BusquedasHelper
       checkBoxes << "<h6><strong>#{t(k)}</strong><h6>"
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
-        #checkBoxes << "<span id='edo_cons_#{t("cat_riesgo.#{edo.parameterize}.nombre")}_span' class='hidden abcd'>#{t("cat_riesgo.#{edo.parameterize}.nombre")}</span>"
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('edo_cons[]', edo, false, :id => "edo_cons_#{edo.parameterize}", class: "")
         checkBoxes << "<span class = 'btn btn-default btn-xs' title = '#{t("cat_riesgo.#{edo.parameterize}.nombre")}'>"
         checkBoxes << image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{edo.parameterize}.icono"), class: 'img-panel', name: "edo_cons_#{edo.parameterize}")
-        #checkBoxes << "<span class = 'btn btn-default btn-xs' title = '#{t("cat_riesgo.#{edo.parameterize}.nombre")}' style=\"background-image:url('/assets/app/categorias_riesgo/#{t("cat_riesgo.#{edo.parameterize}.icono")}');display: block;width:38px; height:38px;background-repeat:no-repeat;\"> "
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
@@ -56,7 +54,7 @@ module BusquedasHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label>#{check_box_tag('estatus[]', e.first, false, :class => '')} <span class = 'btn btn-default btn-xs' title = #{e.last}>#{e.last}</span></label>"
+                      else "<label> #{check_box_tag('estatus[]', e.first, false, :class => '')} <span class = 'btn btn-default btn-xs' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
     checkBoxes.html_safe
