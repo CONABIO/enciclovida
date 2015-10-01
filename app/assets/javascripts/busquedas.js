@@ -36,42 +36,10 @@ $(document).ready(function()
         });
     };
 
-    $(document).on('click', ".busqueda_atributo_radio", function()
+    $(document).on('click', ".radio input", function()
     {
-        var id = $(this).attr('id_icono');
-
-        // Quito las opciones seleccionadas para que despues no haya problema
-        $(".busqueda_atributo_radio").each(function(index) {
-            var id_radio = $(this).attr('id_icono');
-            if (id != id_radio)
-            {
-                $('#id_nom_cientifico_' + id_radio).attr('checked', false);
-                $(this).removeClass("busqueda_atributo_radio_seleccionado");
-            }
-        });
-
-        $('#id_nom_cientifico_' + id).prop('checked', true);
-        $('#id_nom_cientifico').attr('value',id);
-
-        $(this).toggleClass("busqueda_atributo_radio_seleccionado");
+        var id = $(this).attr('value');
         cat_tax_asociadas(id);
-    });
-
-    $(document).on('click', ".busqueda_atributo_imagen", function(){
-        if ($('#' + $(this).attr('name')).prop('checked'))
-        {
-            $('#' + $(this).attr('name')).prop('checked',false);
-            $('#' + $(this).attr('name')).attr('checked', false);//Esto es para que genere el HTML y sea guardado en la bd !>.>
-        } else {
-            /* Se ponen los dos tipos de id ya que en este punto no se a cual de los dos tipos de select NO fue el que entre
-             * Se puede mejorar la funcion añadiendo una clase fantasma tanto a la imágenes como a los input
-             * pero dicho cambio no se realizara a las 22:00 en viernes
-             * se redujo las ejecuciones dummie en 20% aprox
-             * */
-            $('#' + $(this).attr('name')).prop('checked', true);
-            $('#' + $(this).attr('name')).attr('checked', true);//IDEM
-        }
-        $(this).toggleClass("busqueda_atributo_imagen_seleccionado");
     });
 
     $(document).on('change', "#nivel, #cat", function()
@@ -120,37 +88,6 @@ $(document).ready(function()
 //                $('#distribucion_nivel_3').remove();
 //        });
 
-    $(document).on('change', "#nombre_comun, #nombre_cientifico, #nombre_comun_1, #nombre_cientifico_1", function()
-    {
-        var id=$(this).attr('id');
-        $(this).attr('value',$(this).val());
-
-        // La funcionalidad de las categorias taxonomicas solo la tiene el nombre cientifico de la vista avanzada
-        if ($(this).attr('id') == 'nombre_cientifico_1')
-            $('#panelCategoriaTaxonomicaPt').hide();
-    });
-
-    $(document).on('click', '#limpiar', function()
-    {
-        jQuery.ajax({
-            success: function(html)
-            {
-                if (html!='true')
-                {
-                    $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-                    return false
-                }
-                window.location.replace(window.location.origin);
-            },
-            fail: function() {
-                $('#notice').html('Hubo un error al limpiar los filtros, por favor intentalo de nuevo.');
-            },
-            type:'POST',
-            url:'/usuarios/limpia_filtro',
-            cache:true
-        });
-    });
-
     $(document).on('change', "#per_page", function(k)
     {
         var valor=$(this).val();
@@ -159,6 +96,12 @@ $(document).ready(function()
 
         $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
         $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
+    });
+
+    $(document).on('click', '#limpiar', function(){
+        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico").attr("value", "");
+        $("#datos_cat").html("");
+        $("#panelCategoriaTaxonomicaPt").hide();
     });
 
     // autocomplete para la busqueda basica
