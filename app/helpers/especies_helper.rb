@@ -265,6 +265,7 @@ module EspeciesHelper
     tipoDistribuciones = ''
     distribucion = {}
     tipoDist = []
+    nombres_comunes_unicos = []
     biblioCont = 1
 
     especie.especies_regiones.each do |e|
@@ -294,7 +295,6 @@ module EspeciesHelper
             distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
           when '500'
-
             distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
           when '510'
@@ -307,6 +307,10 @@ module EspeciesHelper
 
       # Parte de los nombres comunes con la bibliografia
       e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
+        # Si ya estaba ese nombre comun, me lo salto
+        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}")
+        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}"
+
         nomBib = "#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
         nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
           nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
@@ -316,8 +320,6 @@ module EspeciesHelper
         nombresComunes+="<li>#{nomBib}</li>"
       end
     end
-
-    Especie.nombre_bibliografia_join
 
     distribucion.each do |k, v|
       # Quita el titulo del territorio nacional si tambien esta en un estado en particular
