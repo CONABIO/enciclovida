@@ -37,7 +37,7 @@ var sly = new Sly('#carrusel', {
 sly.on('active', function (eventName) {
     // Para cambiar la atribucion de la foto (cŕeditos) tanto en texto, como en ligas
     $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
-    $('.enlace-atribucion').attr('href',$('img.seleccionada').attr('data-large'));
+    $('.enlace-atribucion').attr('href',$('img.seleccionada').attr('data-native-page-url'));
     //Para cambiar la foto interna y establecer el tamaño máximo
     $('#foto-carrusel-interna').attr('src',$('img.seleccionada').attr('data-large'));
     $('#foto-carrusel-interna').css('max-height',$('#contenedor_fotos').height()-100-$('#foto-carrusel > p').height());
