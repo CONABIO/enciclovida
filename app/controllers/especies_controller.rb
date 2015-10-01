@@ -1,8 +1,12 @@
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :arbol, :edit_photos, :update_photos, :describe,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
+  before_action :only => [:arbol] do
+    set_especie(true)
+  end
+
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados] do
     permiso = tiene_permiso?(100)  # Minimo administrador
@@ -279,33 +283,36 @@ class EspeciesController < ApplicationController
 
 
   private
-  def set_especie
+
+  def set_especie(arbol = false)
     begin
       @especie = Especie.find(params[:id])
 
-      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
-        estatus = @especie.especies_estatus
+      # Por si no viene del arbol, ya que no necesito encontrar el valido
+      if !arbol
+        if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
+          estatus = @especie.especies_estatus
 
-        if estatus.length == 1  # Nos aseguramos que solo haya un valido
-          begin
-            @especie = Especie.find(estatus.first.especie_id2)
-            redirect_to especie_path(@especie)
-          rescue
+          if estatus.length == 1  # Nos aseguramos que solo haya un valido
+            begin
+              @especie = Especie.find(estatus.first.especie_id2)
+              redirect_to especie_path(@especie)
+            rescue
+              render :_error and return
+            end
+          elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
             render :_error and return
+          else  # Es sinonimo pero no tiene un valido asociado >.>!
+            if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
+              redirect_to especie_path(@especie) and return
+            end
           end
-        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
-          render :_error and return
-        else  # Es sinonimo pero no tiene un valido asociado >.>!
-          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
+        else
+          if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
             redirect_to especie_path(@especie) and return
           end
         end
-      else
-        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
-          redirect_to especie_path(@especie) and return
-        end
       end
-
     rescue    #si no encontro el taxon
       render :_error and return
     end
