@@ -179,6 +179,7 @@ GEM
     rake (10.3.2)
     rdoc (4.1.1)
       json (~> 1.4)
+    recaptcha (0.4.0)
     redis (3.1.0)
     ref (1.0.5)
     rest-client (1.6.7)
@@ -295,6 +296,7 @@ DEPENDENCIES
   rack-contrib
   rails!
   rails3-jquery-autocomplete!
+  recaptcha
   rest-client
   rinku
   roo
