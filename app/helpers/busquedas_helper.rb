@@ -13,13 +13,13 @@ module BusquedasHelper
     if I18n.locale.to_s == 'es-cientifico'
       TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
         next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
-        checkBoxes << "<label>#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, :class => '')} <span class='btn btn-default btn-xs btn-basica' title= '#{t('distribucion.'+tipoDist.gsub(' ', '_'))}'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span></label>"
+        checkBoxes << "<label>#{check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")} <span class='btn btn-default btn-xs btn-basica' title= '#{t('distribucion.'+tipoDist.gsub(' ', '_'))}'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span></label>"
       end
     else
       TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
         #checkBoxes << "<span id='dist_#{tipoDist}_span' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}", class: "")
+        checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
         checkBoxes << "<span class = 'btn btn-default btn-xs btn-basica' title = '#{t("tipo_distribucion.#{tipoDist.parameterize}.nombre")}'>"
         checkBoxes << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), class: 'img-panel', name: "dist_#{tipoDist}")
         checkBoxes << "</span>"

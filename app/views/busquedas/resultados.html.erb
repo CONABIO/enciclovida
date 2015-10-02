@@ -123,6 +123,9 @@
     <%= @titulo='Resultados' %>
 <% end %>
 
+<h1><%= @taxones.length %></h1>
+
+
 <p id="notice"><%= notice %></p>
 <p class="text-right">
     <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
@@ -131,8 +134,8 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div id="content">
           <%= render :file => 'busquedas/avanzada' %>
-          <script type="application/javascript">
-
+          <script type="text/javascript">
+              $('#<%= @oldparams.join(', #') %>').prop('checked', true);
           </script>
           <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
             <li class="active">

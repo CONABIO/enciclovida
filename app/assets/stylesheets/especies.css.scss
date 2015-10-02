@@ -249,7 +249,7 @@ dt{
   color: #333333 !important;
 }
 
-.btn-basica:hover, .btn-basica-activa {
+input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background-color: #e0e0e0;
   border-color: #888888;
   outline: 0;
