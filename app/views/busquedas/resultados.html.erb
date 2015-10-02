@@ -130,6 +130,10 @@
 <div class="row main">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div id="content">
+          <%= render :file => 'busquedas/avanzada' %>
+          <script type="application/javascript">
+
+          </script>
           <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
             <li class="active">
               <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>

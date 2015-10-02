@@ -1,10 +1,10 @@
 <div id="busqueda_avanzada" class="row">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
-        <div class="panel panel-success dropup" id="panelFiltrosPt">
+        <div class="panel panel-success <%= params[:action]=='resultados' ? '' : 'dropup' %>" id="panelFiltrosPt">
           <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
             <h5><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span><strong>  Búsqueda Avanzada</strong><span class="caret pull-right"></span></h5>
           </div>
-          <div class="panel-body" id="panelFiltros">
+          <div class="panel-body" id="panelFiltros" style="display: <%= params[:action]=='resultados' ? 'none' : 'block' %>;">
 
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
               <fieldset>
