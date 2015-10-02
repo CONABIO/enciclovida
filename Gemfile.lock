@@ -83,7 +83,7 @@ GIT
       activerecord (>= 3.0.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionpack-action_caching (1.1.1)
       actionpack (>= 4.0.0, < 5.0)
