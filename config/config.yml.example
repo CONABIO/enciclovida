@@ -67,6 +67,11 @@ base: &base
     address: localhost
     port: puerto
 
+  # Recaptcha de google
+  recaptcha:
+    public_key: 6Lfg8A0TAAAAAAYWdn7oIW-7iWzLlAMuIJrzgpOl
+    private_key: 6Lfg8A0TAAAAACt_ncSrQjKjRj0yhEw39tKMdrVQ
+
 ###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation
