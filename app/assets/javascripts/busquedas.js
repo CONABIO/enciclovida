@@ -36,7 +36,7 @@ $(document).ready(function()
         });
     };
 
-    $(document).on('click', ".radio input", function()
+    $(document).on('change', ".radio input", function()
     {
         var id = $(this).attr('value');
         cat_tax_asociadas(id);
@@ -99,7 +99,7 @@ $(document).ready(function()
     });
 
     $(document).on('click', '#limpiar', function(){
-        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico").attr("value", "");
+        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico, #nombre_comun_1, #nombre_cientifico_1").attr("value", "");
         $("#datos_cat").html("");
         $("#panelCategoriaTaxonomicaPt").hide();
     });

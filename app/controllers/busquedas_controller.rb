@@ -10,6 +10,22 @@ class BusquedasController < ApplicationController
   end
 
   def resultados
+    @oldparams = []
+    params.each do |k,v|
+      @oldparams += case k
+                      when 'id_nom_cientifico'
+                        [k+'_'+v]
+                      when 'edo_cons'
+                        v.map{|x| 'edo_cons_'+x.parameterize}
+                      when 'dist'
+                        v.map{|x| 'dist_'+x.parameterize}
+                      when 'prioritaria'
+                        ['campo_'+k]
+                      else
+                        next
+                    end
+    end
+
     # Por si no coincidio nada
     @taxones = Especie.none
     # Despliega directo el taxon, si paso id

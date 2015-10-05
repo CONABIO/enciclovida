@@ -19,14 +19,14 @@
                   <span class="label" style="color: #333333; font-weight: normal;">
                     <span class="glyphicon glyphicon-user" aria-hidden="true"></span><%= '  '+t(:nombre_comun) %>
                   </span>
-                  <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control' %>
+                  <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
                 </div>
 
                 <div class="form-group">
                   <span class="label" style="color: #333333; font-weight: normal;">
                     <span class="glyphicon glyphicon-education" aria-hidden="true"></span><%= '  '+t(:nombre_cientifico) %>
                   </span>
-                  <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control' %>
+                  <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_cientifico] : nil %>
                 </div>
 
                 <div class="form-group">

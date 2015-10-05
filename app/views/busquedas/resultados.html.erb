@@ -123,9 +123,6 @@
     <%= @titulo='Resultados' %>
 <% end %>
 
-<h1><%= @taxones.length %></h1>
-
-
 <p id="notice"><%= notice %></p>
 <p class="text-right">
     <%= checklist(@paginacion).html_safe  if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
