@@ -132,7 +132,12 @@
         <div id="content">
           <%= render :file => 'busquedas/avanzada' %>
           <script type="text/javascript">
-              $('#<%= @oldparams.join(', #') %>').prop('checked', true);
+              $(document).ready(function(){
+                  $('#<%= @oldparams.join(', #') %>').prop('checked', true);
+                  <% if params[:id_nom_cientifico] != ''%>
+                    cat_tax_asociadas(<%= params[:id_nom_cientifico] %>,'<%= params[:nivel] %>',<%= params[:cat] %>);
+                  <% end %>
+              });
           </script>
           <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
             <li class="active">

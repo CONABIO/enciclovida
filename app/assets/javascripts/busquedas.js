@@ -5,14 +5,16 @@
 
 $(document).ready(function()
 {
-    cat_tax_asociadas = function(id)
+    cat_tax_asociadas = function(id,nivel,cat)
     {
         $.ajax(
             {
                 url: "/cat_tax_asociadas",
                 type: 'GET',
                 data: {
-                    id: id
+                    id: id,
+                    nivel: nivel,
+                    cat: cat
                 }
             }).done(function(html)
             {
@@ -39,15 +41,15 @@ $(document).ready(function()
     $(document).on('change', ".radio input", function()
     {
         var id = $(this).attr('value');
-        cat_tax_asociadas(id);
+        cat_tax_asociadas(id,'','');
     });
 
-    $(document).on('change', "#nivel, #cat", function()
-    {
-        var valor=$(this).val();
-        $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
-        $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-    });
+    //$(document).on('change', "#nivel, #cat", function()
+    //{
+    //    var valor=$(this).val();
+    //    $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
+    //    $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+    //});
 
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
 //        {
