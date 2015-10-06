@@ -36,7 +36,7 @@ class ComentariosController < ApplicationController
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
 
     respond_to do |format|
-      if verify_recaptcha(:model => @comentario, :message => 'Lo sentimos, hubo un error en el captcha') && @comentario.save
+      if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
         format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
         format.json { render action: 'show', status: :created, location: @comentario }
       else
