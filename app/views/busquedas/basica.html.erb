@@ -93,8 +93,8 @@
       <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default btn-info active glyphicon glyphicon-user" aria-hidden="true" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
-                <span class="btn btn-default glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
+                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-user" aria-hidden="true" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default btn-basica glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
             </span>
           <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
           <span class="input-group-btn">
@@ -117,8 +117,8 @@
       <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
-                <span class="btn btn-default btn-info active glyphicon glyphicon-education" aria-hidden="true" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
+                <span class="btn btn-default btn-basica glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-education" aria-hidden="true" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
             </span>
           <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
           <span class="input-group-btn">

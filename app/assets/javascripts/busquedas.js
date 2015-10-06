@@ -5,14 +5,16 @@
 
 $(document).ready(function()
 {
-    cat_tax_asociadas = function(id)
+    cat_tax_asociadas = function(id,nivel,cat)
     {
         $.ajax(
             {
                 url: "/cat_tax_asociadas",
                 type: 'GET',
                 data: {
-                    id: id
+                    id: id,
+                    nivel: nivel,
+                    cat: cat
                 }
             }).done(function(html)
             {
@@ -36,18 +38,18 @@ $(document).ready(function()
         });
     };
 
-    $(document).on('click', ".radio input", function()
+    $(document).on('change', ".radio input", function()
     {
         var id = $(this).attr('value');
-        cat_tax_asociadas(id);
+        cat_tax_asociadas(id,'','');
     });
 
-    $(document).on('change', "#nivel, #cat", function()
-    {
-        var valor=$(this).val();
-        $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
-        $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-    });
+    //$(document).on('change', "#nivel, #cat", function()
+    //{
+    //    var valor=$(this).val();
+    //    $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
+    //    $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
+    //});
 
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
 //        {
@@ -99,7 +101,7 @@ $(document).ready(function()
     });
 
     $(document).on('click', '#limpiar', function(){
-        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico").attr("value", "");
+        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico, #nombre_comun_1, #nombre_cientifico_1").attr("value", "");
         $("#datos_cat").html("");
         $("#panelCategoriaTaxonomicaPt").hide();
     });
