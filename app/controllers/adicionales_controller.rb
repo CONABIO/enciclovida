@@ -101,7 +101,7 @@ class AdicionalesController < ApplicationController
     end
 
     if @adicional.nombre_comun_principal_changed?
-      if @adicional.save
+      if verify_recaptcha(:model => @adicional, :message => t('recaptcha.errors.missing_confirm')) && @adicional.save
         if nuevo
           @adicional.actualiza_o_crea_nom_com_en_redis
         elsif borro
