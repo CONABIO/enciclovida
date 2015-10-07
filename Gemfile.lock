@@ -1,0 +1,315 @@
+GIT
+  remote: git://github.com/calonso-conabio/rails3-jquery-autocomplete.git
+  revision: a4ef3d870c7b8982af40274a2c51bf7e7c55ccf3
+  branch: master
+  specs:
+    rails3-jquery-autocomplete (1.0.11)
+      rails (>= 3.0)
+
+GIT
+  remote: git://github.com/kueda/flickraw.git
+  revision: 35cc21b0f1b6b1af3d10b19d53ea46dd2e5316ea
+  branch: ssl-cert
+  specs:
+    flickraw (0.9.8)
+
+GIT
+  remote: git://github.com/rails/activerecord-session_store.git
+  revision: e879bf087eb684452aaddb734efa20b95588b141
+  specs:
+    activerecord-session_store (0.1.0)
+      actionpack (>= 4.0.0, < 5)
+      activerecord (>= 4.0.0, < 5)
+      railties (>= 4.0.0, < 5)
+
+GIT
+  remote: git://github.com/rails/rails.git
+  revision: 973490a2879358db9269ecf75e03b2777f9c9e24
+  branch: 4-0-stable
+  specs:
+    actionmailer (4.0.8)
+      actionpack (= 4.0.8)
+      mail (~> 2.5, >= 2.5.4)
+    actionpack (4.0.8)
+      activesupport (= 4.0.8)
+      builder (~> 3.1.0)
+      erubis (~> 2.7.0)
+      rack (~> 1.5.2)
+      rack-test (~> 0.6.2)
+    activemodel (4.0.8)
+      activesupport (= 4.0.8)
+      builder (~> 3.1.0)
+    activerecord (4.0.8)
+      activemodel (= 4.0.8)
+      activerecord-deprecated_finders (~> 1.0.2)
+      activesupport (= 4.0.8)
+      arel (~> 4.0.0)
+    activesupport (4.0.8)
+      i18n (~> 0.6, >= 0.6.9)
+      minitest (~> 4.2)
+      multi_json (~> 1.3)
+      thread_safe (~> 0.1)
+      tzinfo (~> 0.3.37)
+    rails (4.0.8)
+      actionmailer (= 4.0.8)
+      actionpack (= 4.0.8)
+      activerecord (= 4.0.8)
+      activesupport (= 4.0.8)
+      bundler (>= 1.3.0, < 2.0)
+      railties (= 4.0.8)
+      sprockets-rails (~> 2.0)
+    railties (4.0.8)
+      actionpack (= 4.0.8)
+      activesupport (= 4.0.8)
+      rake (>= 0.8.7)
+      thor (>= 0.18.1, < 2.0)
+
+GIT
+  remote: https://github.com/calonso-conabio/activerecord-sqlserver-adapter.git
+  revision: 47b6d7b5eb6175cf7ae6929678fbe157f53c9f77
+  ref: 47b6d7b
+  branch: 4-0-stable
+  specs:
+    activerecord-sqlserver-adapter (4.0.0)
+      activerecord (~> 4.0.0)
+      arel (~> 4.0.1)
+
+GIT
+  remote: https://github.com/calonso-conabio/ancestry.git
+  revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
+  ref: bfadb2c
+  specs:
+    ancestry (2.1.0)
+      activerecord (>= 3.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    actionpack-action_caching (1.1.1)
+      actionpack (>= 4.0.0, < 5.0)
+    activerecord-deprecated_finders (1.0.3)
+    akami (1.2.2)
+      gyoku (>= 0.4.0)
+      nokogiri
+    arel (4.0.2)
+    axlsx (2.0.1)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (~> 1.0.0)
+    axlsx_rails (0.3.0)
+      axlsx (>= 2.0.1)
+      rails (>= 3.1)
+    bcrypt (3.1.7)
+    blurrily (0.2.1)
+      activesupport
+      eventmachine
+      json
+    builder (3.1.4)
+    carrierwave (0.10.0)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+      json (>= 1.7)
+      mime-types (>= 1.16)
+    cocoon (1.2.0)
+    coffee-rails (4.0.1)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0, < 5.0)
+    coffee-script (2.3.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.7.1)
+    composite_primary_keys (6.0.6)
+      activerecord (~> 4.0.0)
+    daemons (1.1.9)
+    delayed_job (4.0.2)
+      activesupport (>= 3.0, < 4.2)
+    delayed_job_active_record (4.0.1)
+      activerecord (>= 3.0, < 4.2)
+      delayed_job (>= 3.0, < 4.1)
+    devise (3.2.4)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
+    erubis (2.7.0)
+    eventmachine (1.0.7)
+    execjs (2.2.1)
+    exifr (1.1.3)
+    ffi (1.9.6)
+    gyoku (1.1.1)
+      builder (>= 2.1.2)
+    haml (4.0.5)
+      tilt
+    hike (1.2.3)
+    htmlentities (4.3.2)
+    httpi (2.1.0)
+      rack
+      rubyntlm (~> 0.3.2)
+    i18n (0.6.11)
+    i18n-js (2.1.2)
+      i18n
+    jbuilder (1.0.2)
+      activesupport (>= 3.0.0)
+    jquery-rails (3.1.2)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    json (1.8.1)
+    levenshtein-ffi (1.1.0)
+      ffi (~> 1.9)
+    libv8 (3.16.14.3)
+    magick-metadata (0.0.3)
+    mail (2.6.1)
+      mime-types (>= 1.16, < 3)
+    mime-types (1.25.1)
+    minitest (4.7.5)
+    multi_json (1.10.1)
+    mysql2 (0.3.17)
+    nokogiri (1.5.11)
+    nori (2.3.0)
+    orm_adapter (0.5.0)
+    pg (0.17.1)
+    rack (1.5.2)
+    rack-contrib (1.1.0)
+      rack (>= 0.9.1)
+    rack-protection (1.5.3)
+      rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rake (10.3.2)
+    rdoc (4.1.1)
+      json (~> 1.4)
+    recaptcha (0.4.0)
+    redis (3.1.0)
+    ref (1.0.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rinku (1.7.3)
+    roo (1.13.2)
+      nokogiri
+      rubyzip
+      spreadsheet (> 0.6.4)
+    ruby-ole (1.2.11.8)
+    rubyXL (3.1.0)
+      nokogiri (>= 1.4.4)
+      rubyzip (>= 1.0.0)
+    rubyntlm (0.3.4)
+    rubyzip (1.0.0)
+    sass (3.2.19)
+    sass-rails (4.0.3)
+      railties (>= 4.0.0, < 5.0)
+      sass (~> 3.2.0)
+      sprockets (~> 2.8, <= 2.11.0)
+      sprockets-rails (~> 2.0)
+    savon (2.4.0)
+      akami (~> 1.2.0)
+      builder (>= 2.1.2)
+      gyoku (~> 1.1.0)
+      httpi (~> 2.1.0)
+      nokogiri (>= 1.4.0)
+      nori (~> 2.3.0)
+      wasabi (~> 3.2.2)
+    sdoc (0.4.0)
+      json (~> 1.8)
+      rdoc (~> 4.0, < 5.0)
+    seed_dump (3.1.0)
+      activerecord
+      activesupport
+    sinatra (1.4.5)
+      rack (~> 1.4)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    soulmate (1.1.0)
+      multi_json (>= 1.0)
+      redis (>= 3.0)
+      sinatra (>= 1.0)
+      vegas (>= 0.1.0)
+    spreadsheet (1.0.4)
+      ruby-ole (>= 1.0)
+    sprockets (2.11.0)
+      hike (~> 1.2)
+      multi_json (~> 1.0)
+      rack (~> 1.0)
+      tilt (~> 1.1, != 1.3.0)
+    sprockets-rails (2.1.3)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      sprockets (~> 2.8)
+    therubyracer (0.12.1)
+      libv8 (~> 3.16.14.0)
+      ref
+    thor (0.19.1)
+    thread_safe (0.3.4)
+    tilt (1.4.1)
+    tiny_tds (0.6.2)
+    trollop (2.0)
+    turbolinks (2.2.2)
+      coffee-rails
+    tzinfo (0.3.40)
+    uglifier (2.5.3)
+      execjs (>= 0.3.0)
+      json (>= 1.8.0)
+    vegas (0.1.11)
+      rack (>= 1.0.0)
+    warden (1.2.3)
+      rack (>= 1.0)
+    wasabi (3.2.3)
+      httpi (~> 2.0)
+      mime-types (< 2.0.0)
+      nokogiri (>= 1.4.0)
+    wash_out (0.9.0)
+      nori (>= 2.0.0)
+    wicked_pdf (0.11.0)
+      rails
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  actionpack-action_caching
+  activerecord-session_store!
+  activerecord-sqlserver-adapter!
+  ancestry!
+  axlsx_rails
+  blurrily (= 0.2.1)
+  carrierwave
+  cocoon (= 1.2.0)
+  coffee-rails (~> 4.0.0)
+  composite_primary_keys
+  daemons
+  delayed_job
+  delayed_job_active_record
+  devise
+  exifr
+  flickraw (~> 0.9.8)!
+  haml
+  htmlentities
+  i18n-js
+  jbuilder (~> 1.0.1)
+  jquery-rails
+  levenshtein-ffi
+  magick-metadata
+  mime-types (= 1.25.1)
+  mysql2
+  nokogiri (= 1.5.11)
+  pg
+  rack-contrib
+  rails!
+  rails3-jquery-autocomplete!
+  recaptcha
+  rest-client
+  rinku
+  roo
+  rubyXL
+  sass-rails (~> 4.0.0)
+  savon (= 2.4.0)
+  sdoc
+  seed_dump
+  soulmate
+  therubyracer
+  tiny_tds
+  trollop
+  turbolinks
+  uglifier (>= 1.3.0)
+  wash_out
+  wicked_pdf
