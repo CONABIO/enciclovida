@@ -33,7 +33,6 @@ rerun.txt
 pickle-email-*.html
 config/development.sphinx.conf
 db/sphinx/
-Gemfile.lock
 log/development.sphinx.pid
 db/blurrily/
 db/redis/
