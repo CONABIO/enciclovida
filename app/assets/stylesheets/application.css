@@ -212,22 +212,16 @@ div#map{
 }
 
 .irBusquedaAvanzada {
-    background-image: linear-gradient(to bottom, #f2f0ed 60%, rgba(169, 169, 169, 0.90) 90%);
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border: 1px solid rgb(174, 174, 174);
-    padding: 5px 38px 3px 40px;
-    margin: -24px 50px 0px 90px;
-    font-weight: bold;
-    text-align: center;
-    position: relative;
+    margin: -25px 0px 0px 78px;
 }
 .irBusquedaAvanzada:hover {
-    margin-top: -1px;
-    margin-bottom: -6px;
-    font-size: 85%;
-    background-image: linear-gradient(to bottom, #f2f0ed 30%, rgba(169, 169, 169, 0.90) 110%);
+    margin-top: -4px;
+    margin-bottom: -9px;
 }
-.irBusquedaAvanzada:hover > span {
+.irBusquedaAvanzada > a {
+    font-weight: bold;
+    font-size: 85%;
+}
+.irBusquedaAvanzada:hover > a > span:nth-child(2) {
     display: none !important;
 }
