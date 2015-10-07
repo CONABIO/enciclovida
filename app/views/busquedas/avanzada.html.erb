@@ -1,5 +1,22 @@
-<% if I18n.locale.to_s == 'es-cientifico' %>
-    <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
-<% else %>
-    <%= render :partial => 'busqueda_avanzada_vista_basica' %>
-<% end %>
+<div id="busqueda_avanzada" class="row">
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+      <div class="panel panel-success <%= params[:action]=='resultados' ? '' : 'dropup' %>" id="panelFiltrosPt">
+        <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
+          <h5><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+            <%= (params[:action]=='resultados' ? 'Tu última <strong>búsqueda avanzada</strong> se realizo con los siguientes filtros: ' : '<strong>  Búsqueda Avanzada</strong>').html_safe %>
+          <span class="caret"></span></h5>
+        </div>
+        <div class="panel-body" id="panelFiltros" style="display: <%= params[:action]=='resultados' ? 'none' : 'block' %>;">
+          <% if I18n.locale.to_s == 'es-cientifico' %>
+              <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
+          <% else %>
+              <%= render :partial => 'busqueda_avanzada_vista_basica' %>
+          <% end %>
+          <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9">
+            <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>
+            <button class="form-control btn btn-default"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
