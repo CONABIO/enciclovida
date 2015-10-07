@@ -44,13 +44,6 @@ $(document).ready(function()
         cat_tax_asociadas(id,'','');
     });
 
-    //$(document).on('change', "#nivel, #cat", function()
-    //{
-    //    var valor=$(this).val();
-    //    $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
-    //    $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-    //});
-
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
 //        {
 //            var valor=$(this).val();
