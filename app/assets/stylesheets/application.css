@@ -57,30 +57,19 @@ body{
 #brandBar{
     padding-top: 10px;
 }
-#brandBar > div{
-}
 #brandBar > div:nth-child(2) { /*menú arriba main*/
-    width: 80%;
-    margin: 10px auto 0 auto;
+    margin: 15px auto 0 auto;
 }
 #brandBar div > a > img {
     max-height: 80px;
 }
-#brandBar > div > ul {
+#brandBar > div > div > a {
     font-size: .8em;
     font-weight: bold;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
-    /*border-bottom-right-radius: 8px;*/
-    /*border-bottom-left-radius: 8px;*/
-    /*background-color: rgba(135, 163, 28, 0.6);*/
-    /*background-color: rgba(242, 240, 237, 0.6);*/
-    background-image: linear-gradient(to bottom, rgba(242, 240, 237, 0.60) 10%, rgba(135, 163, 28, 1) 110%);;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin-bottom: -1px;
 }
-#brandBar > div > ul > li > a {
-    /*padding: 2px 15px;*/
-}
-
 
 div.footer > div {
     width: 60%;
@@ -92,7 +81,6 @@ div.footer > div {
 div.footer > div > p{
     font-size: .75em;
 }
-
 
 @font-face {
     font-family: 'texgyreadventorregular';
