@@ -43,31 +43,31 @@
     </div>
   </div>
 
-  <div class="row">
-    <ul class="nav nav-pills navbar-right">
+  <div class="row text-right">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
       <% if I18n.locale.to_s == 'es-cientifico' %>
-          <li><%= link_to '[Ir a la vista general]', nil, :name => :es, :onClick => 'return cambia_locale(this.name);' %></li>
+          <%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% else %>
-          <li><%= link_to '[Ir a la vista de especialistas]', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);' %></li>
+          <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% end %>
-      <li><%= link_to 'Acerca de', inicio_acerca_path %></li>
+      <%= link_to 'Acerca de', inicio_acerca_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% if usuario_signed_in? %>
           <% if I18n.locale.to_s == 'es-cientifico' %>
-              <li><%# link_to "Listas de #{t(:taxon_plural)}", listas_path %></li>
-              <li><%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
+              <%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
+              <%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
           <% end %>
-          <li>
-            <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %>
-          </li>
-          <li>
-            <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %>
-          </li>
+
+          <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
+
+
+          <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe}, :class => 'btn btn-success btn-sm', :role => 'button' %>
+
       <% else %>
           <% if I18n.locale.to_s == 'es-cientifico' %>
-              <li><%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path %></li>
+              <%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
           <% end %>
       <% end %>
-    </ul>
+    </div>
   </div>
 </div>
 
