@@ -30,6 +30,7 @@ gem 'pg'
 gem 'rack-contrib'
 gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'  # autocompleta las busquedas
+gem 'rake', '10.4.2'
 gem 'recaptcha', :require => 'recaptcha/rails'  # con el api de google
 gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'  # extiende el metodo auto_link
