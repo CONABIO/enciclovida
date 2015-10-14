@@ -97,9 +97,15 @@ class EspeciesController < ApplicationController
         render :pdf => @especie.nombre_cientifico.parameterize,
                #:save_to_file => pdf,
                #:save_only => true,
+               :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                :template => 'especies/show.pdf.erb',
-               :encoding => 'UTF-8',
-               :wkhtmltopdf => CONFIG.wkhtmltopdf_path
+               #:encoding => 'UTF-8',
+               :user_style_sheet => 'http://bios.conabio.gob.mx/assets/application.css'
+               #:print_media_type => false,
+               #:disable_internal_links => false,
+               #
+
+
       end
     end
   end

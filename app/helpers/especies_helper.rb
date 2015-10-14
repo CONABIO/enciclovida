@@ -386,10 +386,10 @@ module EspeciesHelper
   end
 
   def dameCaracteristica(taxon, opciones={})
-    conservacion = ''
+    catalogos = ''
     comercio_int = ''
     ambiente = []
-
+    prioritaria = []
     cat_riesgo = Hash.new
 
     taxon.especies_catalogos.each do |e|
@@ -399,30 +399,33 @@ module EspeciesHelper
 
       if edo_conserv_nombre.present?
         if opciones[:tab_catalogos]
-          conservacion << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
+          catalogos << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
         else # Para ordenar las categorias de riesgo y comercio
 
-          if cat.nivel1 ==4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            cat_riesgo[:a] = "NOM 059: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 ==4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            cat_riesgo[:b] = "IUCN: #{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 ==4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
+          if cat.nivel1 == 4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
+            cat_riesgo[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 == 4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
+            cat_riesgo[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+          elsif cat.nivel1 == 4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
             comercio_int << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+
+          elsif cat.nivel1 == 4 && cat.nivel2 == 4 && cat.nivel3 > 0  # Prioritarias, DOF, CONABIO
+            prioritaria << "#{image_tag('app/prioritarias/' << t("cat_riesgo.#{cat.descripcion.downcase}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
           end
         end
       end
 
       if ambiente_nombre.present?
         if opciones[:tab_catalogos]
-          conservacion << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
+          catalogos << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
         else
           ambiente << cat.descripcion
         end
       end
     end  #Fin each
 
-    if conservacion.present?
-      "<p><strong>Característica del taxón:</strong><ul>#{conservacion}</ul></p>"
+    if catalogos.present?
+      "<p><strong>Característica del taxón:</strong><ul>#{catalogos}</ul></p>"
     elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
       res = Hash.new
       res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(' ')
@@ -430,7 +433,7 @@ module EspeciesHelper
       res[:ambiente] = ambiente.join(', ')
       res
     else
-      conservacion
+      catalogos
     end
   end
 
@@ -460,7 +463,7 @@ module EspeciesHelper
         id = "id" << edo.parameterize
         icono = t("cat_riesgo.#{edo.parameterize}.icono")
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        response[k] = response[k].to_a << button_tag((image_tag('app/categorias_riesgo/' << icono, title: nombre, class: 'img-panel', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+        response[k] = response[k].to_a << button_tag((image_tag(CONFIG.site_url << 'app/categorias_riesgo/' << icono, title: nombre, class: 'img-panel', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
       end
     end
 
@@ -468,14 +471,14 @@ module EspeciesHelper
       id = 'id' << tipoDist.parameterize
       icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag('app/tipo_distribuciones/' << icono, title: nombre, class: 'img-panel', name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag(CONFIG.site_url << 'app/tipo_distribuciones/' << icono, title: nombre, class: 'img-panel', name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
     end
 
     Catalogo.ambiente_todos.each do |amb|
       id = "id#{amb.parameterize}"
       icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
       nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag('app/ambientes/' << icono, title: nombre, class: 'img-panel', name: "amb_#{amb}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag(CONFIG.site_url << '/assets/app/ambientes/' << icono, title: nombre, class: 'img-panel', name: "amb_#{amb}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
     end
 
     response

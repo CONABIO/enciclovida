@@ -5,14 +5,14 @@
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></title>
 
-  <%= wicked_pdf_stylesheet_link_tag 'webservices' %>
+  <%= wicked_pdf_stylesheet_link_tag 'bootstrap' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
 
   <script>
       $(document).ready(function() {
-          I18n.defaultLocale = "<%= 'es-cientifico' %>"
-          I18n.locale = "<%= 'es-cientifico' %>"
+          I18n.defaultLocale = "<%= 'es-cientifico' %>";
+          I18n.locale = "<%= 'es-cientifico' %>";
           I18n.fallbacks = true
       });
   </script>
@@ -20,29 +20,6 @@
 </head>
 
 <body>
-
-<style>
-    #map
-    {
-        margin: 0px auto;
-        padding: 0px;
-    }
-    #map.fullscreen
-    {
-        top: 0px;
-        left: 0px;
-        z-index: 10000;
-    }
-    #balloon
-    {
-        color: rgb(3, 7, 48);
-        margin: 0px;
-        padding: 0px;
-        font-size: x-small;
-        text-transform: capitalize;
-        line-height: 1.6em;
-    }
-</style>
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
@@ -59,26 +36,9 @@
   <%= dameStatus(@especie).html_safe %>
 </div>
 
-<% caracteristica = dameCaracteristica(@especie) %>
-<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-left">
-  <p>
-    <%= '<strong>Categorías de riesgo: </strong><br>'.html_safe << caracteristica[:cat_riesgo].html_safe if caracteristica.present? && caracteristica[:cat_riesgo].present? %>
-  </p>
-</div>
+<% pcda = ponCaracteristicaDistribucionAmbienteJS %>
+<%= pcda[:ambiente].first.html_safe %>
 
-<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
-  <p>
-    <%= '<strong>Comercio internacional: </strong><br>'.html_safe << caracteristica[:comercio_int].html_safe if caracteristica.present? && caracteristica[:comercio_int].present? %>
-  </p>
-</div>
-
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
-  <p><%= '<strong>Tipo de distribución: </strong><br>'.html_safe << dameDistribucion(@especie).html_safe if dameDistribucion(@especie).present? %></p>
-</div>
-
-<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 text-left">
-  <p><%= '<strong>Ambiente: </strong><br>'.html_safe << caracteristica[:ambiente].html_safe if caracteristica.present? && caracteristica[:ambiente].present? %></p>
-</div>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
