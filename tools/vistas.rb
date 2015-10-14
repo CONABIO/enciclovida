@@ -94,8 +94,6 @@ def camTab
                      "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_directo",
                      "dbo.fnSplitString(ancestry_ascendente_directo, '/', #{@id}) AS ancestry_ascendente_obligatorio",
                      "IdCAT as catalogo_id",
-                     "Prioritarias as prioritaria",
-                     "ListaInvasoras as invasora",
                      "nombre_cientifico"
       ],
       'especies_bibliografias' => ["#{@id}+IdNombre as especie_id",
