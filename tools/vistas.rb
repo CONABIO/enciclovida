@@ -272,7 +272,8 @@ puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: 
 
 # Arma las vistas
 CONFIG.bases.each do |base|
-  @id = (CONFIG.bases.index(base)+1)*1000000         #obtiene el numero a aumentarse por base
+  numero_base = base.split('-').first.to_i  # obtiene el numero de base de acuerdo al nombre de la misma
+  @id = numero_base*1000000  # obtiene el numero a aumentarse de la base con millones
 
   camTab.each {|tabla, campos|
     if ARGV.any? { |e| e.downcase.include?('drop') }
