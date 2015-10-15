@@ -232,8 +232,10 @@ class BusquedasController < ApplicationController
           end
 
           # Para las especies prioritarias
-          if params[:prioritaria].present? && params[:prioritaria] == '1'
-            condiciones << ".where('especies.prioritaria IS NOT NULL')"
+          if params[:prioritaria].present?
+            joins << '.catalogos_join'
+            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prioritaria].join("','")}'\")"
+            distinct = true
           end
 
           # Parte de consultar solo un TAB (categoria taxonomica)
