@@ -455,6 +455,16 @@ es:
     precision:
       format:
         delimiter: ''
+  prioritaria:
+    alto:
+      icono: alto.png
+      nombre: Prioritaria con grado alto para la conservación
+    medio:
+      icono: medio.png
+      nombre: Prioritaria con grado medio para la conservación
+    bajo:
+      icono: bajo.png
+      nombre: Prioritaria con grado bajo para la conservación
   quality_grade:
     casual: casual
     research: investigación

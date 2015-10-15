@@ -106,8 +106,8 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
-  # Para sacar los nombres de las categorias de IUCN, NOM, CITES y el ambiente, regresa un array
-  def nom_cites_iucn_ambiente
+  # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
+  def nom_cites_iucn_ambiente_prioritaria
     response = []
 
     especies_catalogos.each do |e|
@@ -121,6 +121,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       amb = cat.ambiente
       if amb.present?
         response << amb.parameterize
+      end
+
+      prio = cat.prioritaria
+      if prio.present?
+        response << prio.parameterize
       end
     end  #Fin each
 

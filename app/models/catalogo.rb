@@ -9,6 +9,7 @@ class Catalogo < ActiveRecord::Base
   IUCN_QUITAR_EN_FICHA = ['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)',
   'Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
+  NIVELES_PRIORITARIAS = %w(alto medio bajo)
 
   # Saco el nombre de la categoria de riesgo o comercio ya que al unir los catalogos, los nombres aveces no coinciden
   def nom_cites_iucn(cat_actual = false)
@@ -32,6 +33,15 @@ class Catalogo < ActiveRecord::Base
     if nivel1 == 2 && nivel2 == 6 && nivel3 > 0   #se asegura que el valor pertenece al ambiente
       descripcion
     else
+      nil
+    end
+  end
+
+  # Saco el nivel de la especie prioritaria
+  def prioritaria
+    if nivel1 == 4 && nivel2 == 4 && nivel3 > 0   #se asegura que el valor pertenece a prioritaria del diario oficial (DOF)
+      descripcion
+    elsif nivel1 == 4 && nivel2 == 5 && nivel3 > 0   #se asegura que el valor pertenece a prioritaria de de la CONABIO
       nil
     end
   end
