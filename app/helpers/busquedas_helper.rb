@@ -61,12 +61,18 @@ module BusquedasHelper
   end
 
   def checkboxPrioritaria
-    checkBoxes = "<label>"
-    checkBoxes << check_box_tag('prioritaria', '1', false, :style => 'display:;', :id => 'campo_prioritaria')
-    checkBoxes << "<span class = 'btn btn-default btn-xs btn-basica' title = 'Prioritarias'>"
-    checkBoxes << image_tag('app/prioritaria.png', class: 'img-panel', name: 'campo_prioritaria')
-    checkBoxes << "</span>"
-    checkBoxes << "</label>"
+    checkBoxes = ''
+
+    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
+      checkBoxes << '<label>'
+      checkBoxes << check_box_tag('prioritaria[]', prior, false, :style => 'display:;', :id => "prior-#{prior}")
+      checkBoxes << "<span class = 'btn btn-default btn-xs btn-basica' title = '#{t("prioritaria.#{prior.parameterize}.nombre")}'>"
+      checkBoxes << image_tag('app/prioritarias/' + t("prioritaria.#{prior.parameterize}.icono"), class: 'img-panel')
+      checkBoxes << '</span>'
+      checkBoxes << '</label>'
+    end
+
+    checkBoxes.html_safe
   end
 
   def radioGruposIconicos
