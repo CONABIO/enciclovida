@@ -457,13 +457,10 @@ es:
         delimiter: ''
   prioritaria:
     alto:
-      icono: alto.png
       nombre: Prioritaria con grado alto para la conservación
     medio:
-      icono: medio.png
       nombre: Prioritaria con grado medio para la conservación
     bajo:
-      icono: bajo.png
       nombre: Prioritaria con grado bajo para la conservación
   quality_grade:
     casual: casual
@@ -471,7 +468,7 @@ es:
   recaptcha:
     errors:
       incorrect-captcha-sol: 'Fail'
-      missing_confirm: 'Por favor confirma la casilla de "No soy un robot"'
+      missing_confirm: 'Por favor confirma la casilla de "No soy un maldito robot"'
   sinonimo: inactivos
   solo_taxones: Solo especies o grupos
   support:
