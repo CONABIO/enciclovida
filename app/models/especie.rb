@@ -255,8 +255,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def asigna_nombre_comun
     if adicional
       # Por si no se quiere sobre-escribir el nombre comun principal
-      return {:cambio => false} if adicional.nombre_comun_principal.present?
-
+      #return {:cambio => false} if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
       {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
     else

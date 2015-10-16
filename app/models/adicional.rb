@@ -10,7 +10,6 @@ class Adicional < ActiveRecord::Base
   # El valido de catalogos
   def nombre_comun_principal_catalogos
     con_espaniol = false
-    self.nombre_comun_principal = nil
 
     # Verifica el nombre en catalogos
     especie.nombres_comunes.each do |nc|
@@ -45,6 +44,7 @@ class Adicional < ActiveRecord::Base
   end
 
   def pon_nombre_comun_principal
+    self.nombre_comun_principal = nil
     nombre_comun_principal_naturalista
 
     # Si no tiene nombre comun NaturaLista pongo el de catalogos
