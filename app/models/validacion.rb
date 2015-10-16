@@ -668,8 +668,8 @@ class Validacion < ActiveRecord::Base
 
       # Para el tipo de distribucion
       tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
-      if tipos_distribuciones.any? || taxon.invasora.present?
-        tipos_distribuciones << 'invasora' if taxon.invasora.present?
+
+      if tipos_distribuciones.any?
         taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
         validacion_interna_hash['SCAT_Distribucion'] = taxon.x_tipo_distribucion
       else
