@@ -11,7 +11,7 @@ class Especie < ActiveRecord::Base
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
-                :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
+                :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
@@ -257,12 +257,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       # Por si no se quiere sobre-escribir el nombre comun principal
       #return {:cambio => false} if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
+      {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
     else
       ad = crea_con_nombre_comun
-      return {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
+      {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
     end
-
-    {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
   end
 
   # Pone el nombre comun principal en la tabla adicionales

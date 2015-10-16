@@ -17,7 +17,6 @@ module BusquedasHelper
       end
     else
       TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-        #checkBoxes << "<span id='dist_#{tipoDist}_span' class='hidden abcd'>#{t('distribucion.'+tipoDist.gsub(' ', '_'))}</span>"
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
         checkBoxes << "<span class = 'btn btn-default btn-xs btn-basica' title = '#{t("tipo_distribucion.#{tipoDist.parameterize}.nombre")}'>"

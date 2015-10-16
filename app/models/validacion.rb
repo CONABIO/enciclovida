@@ -370,12 +370,9 @@ class Validacion < ActiveRecord::Base
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
-
-          if taxones.empty?
-            return {hash: h, estatus: false, error: 'Sin coincidencias'}
-          end
-
+          return {hash: h, estatus: false, error: 'Sin coincidencias'} if taxones.empty?
           taxones_con_distancia = []
+
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
             distancia = Levenshtein.distance(hash['nombre_cientifico'].downcase, taxon.nombre_cientifico.limpiar.downcase)
@@ -671,8 +668,8 @@ class Validacion < ActiveRecord::Base
 
       # Para el tipo de distribucion
       tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
-      if tipos_distribuciones.any? || taxon.invasora.present?
-        tipos_distribuciones << 'invasora' if taxon.invasora.present?
+
+      if tipos_distribuciones.any?
         taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
         validacion_interna_hash['SCAT_Distribucion'] = taxon.x_tipo_distribucion
       else
