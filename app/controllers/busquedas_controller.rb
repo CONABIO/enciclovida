@@ -20,7 +20,7 @@ class BusquedasController < ApplicationController
                       when 'dist'
                         v.map{|x| 'dist_'+x.parameterize}
                       when 'prioritaria'
-                        ['campo_'+k]
+                        v.map{|x| 'prior_'+x.parameterize}
                       else
                         next
                     end
