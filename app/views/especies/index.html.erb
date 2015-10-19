@@ -1,6 +1,18 @@
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
 <% end %>
+<% content_for(:ribbon) do %>
+    <div style="color: white;
+            font-weight: bold;
+            font-size: .7em;
+            padding: 1px 17px;
+            transform: matrix(1,-0.9,0.9,1,-11,55);
+            position: absolute;
+            z-index: 5;
+            background-color: #ff931e;" onclick="$(this).hide();">
+      Catálogos actualizados 09/15
+    </div>
+<% end %>
 <% content_for(:extracss) do %>
     <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
 <% end %>
