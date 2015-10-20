@@ -213,12 +213,3 @@ div#map{
 .irBusquedaAvanzada:hover > a > span:nth-child(2) {
     display: none !important;
 }
-.prio-alto{
-    background-image: linear-gradient(to bottom, #F0F0F0 10%, #ff931e 10%);
-}
-.prio-medio{
-    background-image: linear-gradient(to bottom, #F0F0F0 50%, #ff931e 50%);
-}
-.prio-bajo{
-    background-image: linear-gradient(to bottom, #F0F0F0 80%, #ff931e 80%)
-}
