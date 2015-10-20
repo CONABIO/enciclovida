@@ -272,6 +272,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     ad
   end
 
+  # Pone el grupo iconico en la tabla adicionales
+  def crea_con_grupo_iconico(id)
+    ad = Adicional.new
+    ad.especie_id = self.id
+    ad.icono_id = id
+    ad
+  end
+
   # Pone la foto principal en la tabla adicionales
   def asigna_foto
     # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
