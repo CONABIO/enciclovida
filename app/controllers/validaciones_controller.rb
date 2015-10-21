@@ -128,7 +128,8 @@ class ValidacionesController < ApplicationController
         if cc[:faltan].any?
           @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
         else
-          validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
+          #validacion.delay(priority: NOTIFICATION_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
+          validacion.valida_campos(path.to_s, cc[:asociacion]) if validacion.save
         end
       end  # Fin errores empty
     end  # Fin del tipo de archivo
