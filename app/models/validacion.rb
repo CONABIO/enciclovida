@@ -401,7 +401,7 @@ class Validacion < ActiveRecord::Base
   end
 
   def valida_campos(path, asociacion)
-    sleep(3)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
+    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     primera_fila = true
 
