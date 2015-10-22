@@ -3,7 +3,7 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Exporta todas los nombres comunes principales que no son de catalogos, a redis:
+Exporta todas los nombres comunes principales que no son de catalogos (Naturalista y los que entran por web), a redis:
 Se almacenara el .json en db/redis
 
 *** Este script podria correrse cada 15 dias junto con informacion_naturalista.rb

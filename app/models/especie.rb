@@ -221,13 +221,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def exporta_redis
     return unless ad = adicional
-    return unless ic = ad.icono
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+
+    if ic = ad.icono
+      data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    else
+      data << "\"nombre_icono\":\"\", \"icono\":\"\", \"color\":\"\", "
+    end
+
     data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
