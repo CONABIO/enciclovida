@@ -66,8 +66,8 @@ module BusquedasHelper
       checkBoxes << '<label>'
       checkBoxes << check_box_tag('prioritaria[]', prior, false, :id => "prior_#{prior.parameterize}")
       checkBoxes << "<span class = 'btn btn-default btn-xs btn-basica' title = '#{t("prioritaria.#{prior.parameterize}.nombre")}'>"
-      #checkBoxes << image_tag('app/' << t("prioritaria.#{prior.parameterize}.icono"), class: 'img-panel')
-      checkBoxes << image_tag('app/prioritaria_gris.png', class: "img-panel prio-#{prior.downcase}")
+      checkBoxes << image_tag("app/prioritarias/#{prior.downcase}.png", class: 'img-panel')
+      #checkBoxes << image_tag('app/prioritaria_gris.png', class: "img-panel prio-#{prior.downcase}")
       checkBoxes << '</span>'
       checkBoxes << '</label>'
     end

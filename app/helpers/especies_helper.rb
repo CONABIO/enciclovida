@@ -485,7 +485,7 @@ module EspeciesHelper
       id = "id#{prio.parameterize}"
       icono = t("prioritaria.#{prio.parameterize}.icono", :default => '')
       nombre = t("prioritaria.#{prio.parameterize}.nombre", :default => '')
-      response[:prioritaria] = response[:prioritaria].to_a << button_tag((image_tag("#{CONFIG.site_url}/assets/app/prioritaria_gris.png", title: nombre, class: "img-panel prio-#{prio.downcase}", name: "prio_#{prio}")), :class => "btn btn-default btn-xs btn-img-panel", :disabled => '', id: id)
+      response[:prioritaria] = response[:prioritaria].to_a << button_tag((image_tag("#{CONFIG.site_url}/assets/app/prioritarias/#{prio.downcase}.png", title: nombre, class: "img-panel", name: "prio_#{prio}")), :class => "btn btn-default btn-xs btn-img-panel", :disabled => '', id: id)
     end
 
     response
