@@ -9,6 +9,7 @@ class Adicional < ActiveRecord::Base
 
   # El valido de catalogos
   def nombre_comun_principal_catalogos
+    self.nombre_comun_principal = nil
     con_espaniol = false
 
     # Verifica el nombre en catalogos
@@ -28,6 +29,7 @@ class Adicional < ActiveRecord::Base
     return unless prov = especie.proveedor
     return unless prov.naturalista_info.present?
 
+    self.nombre_comun_principal = nil
     datos = eval(prov.naturalista_info)
     datos = datos.first if datos.is_a?(Array)
     default_name = datos['default_name']
@@ -44,7 +46,6 @@ class Adicional < ActiveRecord::Base
   end
 
   def pon_nombre_comun_principal
-    self.nombre_comun_principal = nil
     nombre_comun_principal_naturalista
 
     # Si no tiene nombre comun NaturaLista pongo el de catalogos
