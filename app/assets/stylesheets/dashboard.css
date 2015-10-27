@@ -1,9 +1,5 @@
 /*
- * Base structure
- */
-
-/*
- * Global add-ons
+ * Estilos del tema de bootstrap con sidebar ALTAMENTE modificado, ya no tiene que ver con el original, muchas cosas han desaparecido (como el sidebar mismo)
  */
 
 .sub-header {
@@ -20,14 +16,7 @@
   padding-top: 5px;
 }
 
-/*
- * Sidebar
- */
 
-/* Hide for mobile, show later */
-#sidebar {
-  display: none;
-}
 @media (max-width: 1380px) {
     div#contenedor_mapa > div.embed-responsive, #contenedor_fotos, div#contenedor_mapa > div.embed-responsive h6{
         background-color: #282828 !important;
@@ -88,32 +77,11 @@
         z-index: 10000011;
         padding: 15px;
     }
-    .sidebar_lupa{
-        height: 64px;
-        width: auto !important;
-    }
     #filtros > span{
         color: #800000;
         float: right;
         cursor: pointer;
     }
-}
-
-/* Sidebar navigation */
-.nav-sidebar {
-  /*margin-right: -21px; /* 20px padding + 1px border */
-  /*margin-bottom: 20px;*/
-  /*margin-left: -20px;*/
-}
-.nav-sidebar > li > a {
-  /*padding-right: 20px;*/
-  /*padding-left: 20px;*/
-}
-.nav-sidebar > .active > a,
-.nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
-  /*color: #fff;*/
-  /*background-color: #428bca;*/
 }
 
 

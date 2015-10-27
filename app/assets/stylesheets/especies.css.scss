@@ -2,18 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.bar_reino{
-  background-image: linear-gradient(to bottom, #ffffff 0%, #e7f3ff 100%);
-  font-size: 2.1em;
-}
-.bar_animalia{
-  background-image: linear-gradient(to bottom, #ffffff 0%, #f8ffe8 100%);
-  font-size: 1.6em;
-}
-.bar_plantae{
-  background-image: linear-gradient(to bottom, #ffffff 0%, #d8ffee 100%);
-  font-size: 1.6em;
-}
 
 #vista_arbol ul{
   padding-left: 25px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
@@ -168,7 +156,7 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
 
 
 /*
-* Los diferentes tamanios de iconos
+* Los diferentes tamaños de iconos
 */
 .icono-redis {
   width: 50px;
@@ -197,8 +185,7 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   left: 0px;
   z-index: 10000;
 }
-#capas{
-}
+
 #balloon
 {
   color: rgb(3, 7, 48);
@@ -236,6 +223,19 @@ dt{
 
 
 /*los stilos a continuación deben ir en busquedas.css*/
+.bar_reino{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #e7f3ff 100%);
+  font-size: 2.1em;
+}
+.bar_animalia{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f8ffe8 100%);
+  font-size: 1.6em;
+}
+.bar_plantae{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #d8ffee 100%);
+  font-size: 1.6em;
+}
+
 .checkbox label, .radio label{
   padding-left: 2px;
 }
