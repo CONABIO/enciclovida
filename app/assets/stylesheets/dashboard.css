@@ -26,64 +26,38 @@
         background-color: #777 !important;
     }
 }
-@media (min-width: 500px) {
-    .sidebar{
-        display: block;
-        overflow-x: inherit;
-        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        /*border: 1px solid rgba(58, 175, 66, 0.3);*/
+.leaf{
+    position: absolute;
+    float: right;
+    padding: 10px;
+    border-top-left-radius: 4.5em;
+    border-top-right-radius: 1.5em;
+    border-bottom-left-radius: 1.5em;
+    border-bottom-right-radius: 4.5em;
+    height: auto !important;
+    font-size: .85em;
+    font-weight: bold;
     }
-    #filtros{
-        position: fixed;
-        top: 110px;
-        z-index: 10000003;
-        bottom: 20%;
-        left: -58px;
-        padding: 22px;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 2.5em;
-        border-bottom-left-radius: 2.5em;
-        border-bottom-right-radius: 0px;
-        background-color: rgba(223, 237, 228, 0.9);
-    }
-    .leaf{
-        position: absolute;
-        padding: 10px;
-        border-top-left-radius: 2.5em;
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 2.5em;
-        /*background-color: rgba(207, 200, 193, 0.8);*/
-        background-color: rgba(223, 237, 228, 0.95);
-        height: auto !important;
-        border: 1px solid rgba(70, 184, 77, 0.20);
-        min-height: 45px;
-        min-width: 45px;
-        max-width: 300px;
-    }
-    .leaf:hover > div, .leaf > img, .leaf:hover > div, .leaf > span{
-        display: block;
-    }
-    .leaf:hover > img, .leaf > div, .leaf:hover > span, .leaf > div{
-        display: none;
-    }
-    #conNaturalista{
-        right: 50px;
-        z-index: 10000010;
-        padding: 11px;
-    }
-    #conSugerencia{
-        right: 0px;
-        z-index: 10000011;
-        padding: 15px;
-    }
-    #filtros > span{
-        color: #800000;
-        float: right;
-        cursor: pointer;
-    }
+#conNaturalista:hover > p, #conNaturalista > img{
+    display: block;
 }
-
+#conNaturalista:hover > img, #conNaturalista > p{
+    display: none;
+    }
+#conNaturalista{
+    border-style: solid;
+    border-color: #DCBCBC;
+    border-width: 1px;
+    padding: 15px;
+    right: 0px;
+    z-index: 1;
+}
+    #conSugerencia{
+        right: 50px;
+    }
+.leaf p{
+        margin: 0;
+}
 
 /*
  * Main content
@@ -91,13 +65,9 @@
 
 .main {
     padding: 20px;
-    /*opacity: 0.9;*/
     /*filter: alpha(opacity=90); /* For IE8 and eaarlier */
     background-color: rgba(242, 240, 237, 0.85);
     border-radius: 10px;
-    /*margin-bottom: 20px;*/
-    /*margin-top: 20px;*/
-    /*border: 1px solid #599008;*/
     border: 1px solid rgba(58, 175, 66, 0.3);
 }
 @media (min-width: 872px) {
@@ -114,7 +84,6 @@
 /*
  * Placeholder dashboard ideas
  */
-
 .placeholders {
   margin-bottom: 30px;
   text-align: center;
@@ -130,5 +99,5 @@
   border-radius: 50%;
 }
 .panel-heading{
-    cursor: pointer;
+    cursor: ponter;
 }
