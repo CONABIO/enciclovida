@@ -184,21 +184,6 @@ input.gsc-search-button {
     padding: 2.5em;
 }
 
-/*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
-div#contenedor_mapa > div.embed-responsive {
-    background-color: #f7f7f7;
-    padding-left: 6px;
-    padding-top: 6px;
-    margin-right: -12px;
-}
-div#contenedor_mapa{
-    padding-right: 6px;
-}
-
-div#map{
-    border-radius: 5px;
-}
-
 .irBusquedaAvanzada {
     margin: -25px 0px 0px 78px;
 }
@@ -212,4 +197,19 @@ div#map{
 }
 .irBusquedaAvanzada:hover > a > span:nth-child(2) {
     display: none !important;
+}
+/*Lo sigueinte pertenece al mapa, hay que acomodarlo donde es debido (crear un content for shalala)*/
+/*Lo mas seguro es que deba ir en  el css de especies*/
+div#contenedor_mapa > div.embed-responsive {
+    background-color: #f7f7f7;
+    padding-left: 6px;
+    padding-top: 6px;
+    margin-right: -12px;
+}
+div#contenedor_mapa{
+    padding-right: 6px;
+}
+
+div#map{
+    border-radius: 5px;
 }

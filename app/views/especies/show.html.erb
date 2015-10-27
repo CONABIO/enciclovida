@@ -234,27 +234,22 @@
 <% end %>
 
 <div class="row">
-    <% if @con_naturalista %>
-        <div class="leaf" id="conNaturalista">
-                <%= image_tag('app/naturalista_ic.png') %>
-                <div class="text-center text-primary">
-                  <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un </p> <%= link_to(image_tag('app/naturalista.png', :class => 'img-thumbnail'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank) %>
-                </div>
+  <% if @con_naturalista %>
+      <div class="leaf bg-warning text-primary text-center" id="conNaturalista">
+        <%= image_tag('app/naturalista_ic.png') %>
+        <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(image_tag('app/naturalista.png'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-default btn-xs') %></p>
+      </div>
+  <% end %>
+  <div class="leaf bg-success text-success" id="conSugerencia">
+    <p>¿Algún <%= link_to('comentario', new_especie_comentario_path(@especie.id)) %> acerca de este taxón? <span class="glyphicon glyphicon-send" aria-hidden="true"></span></p>
+  </div>
 
-        </div>
-    <% end %>
-    <div class="leaf text-primary" id="conSugerencia">
-        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-        <div class="text-center">
-          <p>¿Tienes alguna duda, sugerencia ó corrección acerca de este taxón?</p><%= link_to('Comentar <span class="glyphicon glyphicon-send text-primary" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id), :class => 'btn btn-default') %>
-        </div>
-    </div>
-    <h2>
-        <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-        <%# image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.species_or_lower? && @especie.prioritaria.present? %>
-        <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
-        <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-    </h2>
+  <h2>
+    <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
+    <%# image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.species_or_lower? && @especie.prioritaria.present? %>
+    <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
+    <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+  </h2>
 </div>
 
 <div class="row">
