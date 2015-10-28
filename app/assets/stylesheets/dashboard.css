@@ -37,26 +37,58 @@
     height: auto !important;
     font-size: .85em;
     font-weight: bold;
+    z-index: 1;
     }
-#conNaturalista:hover > p, #conNaturalista > img{
+#conNaturalista:hover > p{
     display: block;
 }
 #conNaturalista:hover > img, #conNaturalista > p{
     display: none;
-    }
-#conNaturalista{
-    border-style: solid;
-    border-color: #DCBCBC;
-    border-width: 1px;
-    padding: 15px;
-    right: 0px;
-    z-index: 1;
 }
-    #conSugerencia{
-        right: 50px;
-    }
+#conNaturalista{
+    border: 1px solid #DCBCBC;
+    right: 0px;
+}
+#conNaturalista:hover{
+    padding: 13px;
+    min-width: 210px;
+    top: -30px;
+    right: -40px;
+}
+#conSugerencia{
+    right: 0px;
+    min-width: 300px;
+}
 .leaf p{
-        margin: 0;
+    margin: 0;
+}
+@media (max-width: 768px) {
+    .leaf{
+        position: relative;
+        float: none;
+        border-top-left-radius: 1em;
+        border-top-right-radius: 1em;
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+    }
+    #conNaturalista > p{
+        display: block;
+    }
+    #conNaturalista > img{
+        display: none;
+    }
+    #conNaturalista:hover, #conNaturalista{
+        padding: 10px;
+        width: auto;
+        top: 0px;
+        right: 0px;
+        border: 0px;
+    }
+    #conSugerencia{
+        right: 0px;
+        width: auto;
+        text-align: center;
+    }
 }
 
 /*

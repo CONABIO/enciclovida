@@ -147,11 +147,11 @@ $(document).ready(function () {
         $('body').css('backgroundImage', function () {
             $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1750, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1750);}, 11500);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1750);}, 26500);
             });
             return url;
         });
         fondo = ((fondo >= 16) ? 1 : fondo+1);//ya q puede darse el caso de q aumente mientras se da click
-        setTimeout(cambiaFondoAuto, 15000);
+        setTimeout(cambiaFondoAuto, 30000);
     })();
 });

@@ -71,15 +71,13 @@ body{
     margin-bottom: -1px;
 }
 
-div.footer > div {
-    width: 60%;
-    margin: 20px auto;
+#mainFooter{
+    margin-top: 20px;
+    margin-bottom: 20px;
     background-color: rgba(242, 240, 237, 0.6);
+    font-size: .75em;
     border-radius: 8px;
     padding: 10px 20px 5px 20px;
-}
-div.footer > div > p{
-    font-size: .75em;
 }
 
 @font-face {
@@ -202,14 +200,16 @@ input.gsc-search-button {
 /*Lo mas seguro es que deba ir en  el css de especies*/
 div#contenedor_mapa > div.embed-responsive {
     background-color: #f7f7f7;
-    padding-left: 6px;
     padding-top: 6px;
-    margin-right: -12px;
+    margin-left: -6px;
+    margin-right: -6px;
 }
 div#contenedor_mapa{
-    padding-right: 6px;
+    margin-bottom: 10px;
 }
-
+div#contenedor_mapa h6{
+    margin: 3px 6px 0 0;
+}
 div#map{
     border-radius: 5px;
 }
