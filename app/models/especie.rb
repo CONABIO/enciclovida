@@ -221,13 +221,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def exporta_redis
     return unless ad = adicional
-    return unless ic = ad.icono
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+
+    if ic = ad.icono
+      data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    else
+      data << "\"nombre_icono\":\"\", \"icono\":\"\", \"color\":\"\", "
+    end
+
     data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
@@ -255,7 +260,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def asigna_nombre_comun
     if adicional
       # Por si no se quiere sobre-escribir el nombre comun principal
-      #return {:cambio => false} if adicional.nombre_comun_principal.present?
+      return {:cambio => false} if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
       {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
     else
@@ -269,6 +274,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     ad = Adicional.new
     ad.especie_id = id
     ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+    ad
+  end
+
+  # Pone el grupo iconico en la tabla adicionales
+  def crea_con_grupo_iconico(id)
+    ad = Adicional.new
+    ad.especie_id = self.id
+    ad.icono_id = id
     ad
   end
 

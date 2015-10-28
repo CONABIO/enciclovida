@@ -3,7 +3,7 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Exporta todas los nombres comunes principales que no son de catalogos, a redis:
+Exporta todas los nombres comunes principales que no son de catalogos (Naturalista y los que entran por web), a redis:
 Se almacenara el .json en db/redis
 
 *** Este script podria correrse cada 15 dias junto con informacion_naturalista.rb
@@ -27,8 +27,8 @@ def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
   Adicional.where('nombre_comun_principal IS NOT NULL').find_each do |adicional|
-    puts "#{adicional.id}-#{adicional.nombre_comun_principal}" if OPTS[:debug]
     next unless taxon = adicional.especie
+    puts "#{taxon.id}-#{taxon.nombre_cientifico}-#{adicional.id}-#{adicional.nombre_comun_principal}" if OPTS[:debug]
 
     # Guardo en memoria el nombre comun principal original
     nom_com_prin_original = adicional.nombre_comun_principal

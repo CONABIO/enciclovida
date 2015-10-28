@@ -331,7 +331,7 @@ class Validacion < ActiveRecord::Base
     end
 
     h = hash
-    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'])
+    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       taxon = asigna_categorias_correspondientes(taxon.first)
@@ -350,7 +350,7 @@ class Validacion < ActiveRecord::Base
 
     else
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = hash['nombre_cientifico'].split(' ')
+      nombres = hash['nombre_cientifico'].strip.split(' ')
 
       taxon = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
@@ -366,7 +366,7 @@ class Validacion < ActiveRecord::Base
       elsif taxon.present? && taxon.length > 1
         return busca_recursivamente(taxon, hash)
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
-        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'], limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].strip, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
@@ -375,7 +375,7 @@ class Validacion < ActiveRecord::Base
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(hash['nombre_cientifico'].downcase, taxon.nombre_cientifico.limpiar.downcase)
+            distancia = Levenshtein.distance(hash['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.strip.limpiar.downcase)
 
             if distancia == 0  # Es exactamente el mismo taxon
               t = asigna_categorias_correspondientes(taxon)
