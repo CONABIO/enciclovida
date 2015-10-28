@@ -202,14 +202,16 @@ input.gsc-search-button {
 /*Lo mas seguro es que deba ir en  el css de especies*/
 div#contenedor_mapa > div.embed-responsive {
     background-color: #f7f7f7;
-    padding-left: 6px;
     padding-top: 6px;
-    margin-right: -12px;
+    margin-left: -6px;
+    margin-right: -6px;
 }
 div#contenedor_mapa{
-    padding-right: 6px;
+    margin-bottom: 10px;
 }
-
+div#contenedor_mapa h6{
+    margin: 3px 6px 0 0;
+}
 div#map{
     border-radius: 5px;
 }
