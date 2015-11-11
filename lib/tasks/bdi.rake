@@ -30,7 +30,7 @@ namespace :bdi do
   @renombre.each do |k,v| @exiv2 << " -g #{k}" end # Bloque para llenar las opciones del exiv2
 
   desc "TODO"
-  task actualizaTabla: :environment do
+  task deleteNotFound: :environment do
     a=Time.now
     m = Metadato.all.find_each do |x|
       next if File.exist?(x.path)
@@ -44,7 +44,7 @@ namespace :bdi do
   end
 
   desc "TODO"
-  task actualiza_delayed: [:environment, :actualizaTabla] do
+  task actualizaTabla_delayed: [:environment, :actualizaTabla] do
   end
 
   desc "TODO"
