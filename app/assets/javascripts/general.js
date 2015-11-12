@@ -163,16 +163,15 @@ $(document).ready(function () {
         mouseX = e.pageX;
         mouseY = e.pageY;
     });
-    $('*').mouseenter(function () {
+
+    $('.img-panel').mouseenter(function () {
         if ($(this).attr('title') != undefined) {
             $('#hoverTooltip').text($(this).attr('title'));
             $('#hoverTooltip').css({'display': 'block', 'top': mouseY, 'left': mouseX});
         }
-        //console.log($(this).attr('title'))
-    })
-    $('*').mouseleave(function () {
-        //$('#hoverTooltip').text($(this).attr('title'));
+    });
+
+    $('.img-panel').mouseleave(function () {
         $('#hoverTooltip').css({'display':'none'});
-        //console.log($(this).attr('title'))
-    })
+    });
 });
