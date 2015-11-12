@@ -219,8 +219,11 @@ dt{
 #NOM059,#IUCN,#CITES,#TipoDistribucion,#Ambiente{
   padding-left: 15px;
   padding-right: 0px;
+  min-height: 80px;
 }
-
+#more-info > div.btn-group > a > img{
+  width: 20px;  
+}
 
 /*los stilos a continuación deben ir en busquedas.css*/
 .bar_reino{
