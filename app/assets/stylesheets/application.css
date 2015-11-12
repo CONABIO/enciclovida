@@ -61,7 +61,7 @@ body{
     margin: 15px auto 0 auto;
 }
 #brandBar div > a > img {
-    max-height: 80px;
+    /*max-height: 80px;*/
 }
 #brandBar > div > div > a {
     font-size: .8em;
