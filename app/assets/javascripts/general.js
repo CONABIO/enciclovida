@@ -155,3 +155,24 @@ $(document).ready(function () {
         setTimeout(cambiaFondoAuto, 30000);
     })();
 });
+
+$(document).ready(function () {
+    var mouseX;
+    var mouseY;
+    $(document).mousemove( function(e) {
+        mouseX = e.pageX;
+        mouseY = e.pageY;
+    });
+    $('*').mouseenter(function () {
+        if ($(this).attr('title') != undefined) {
+            $('#hoverTooltip').text($(this).attr('title'));
+            $('#hoverTooltip').css({'display': 'block', 'top': mouseY, 'left': mouseX});
+        }
+        //console.log($(this).attr('title'))
+    })
+    $('*').mouseleave(function () {
+        //$('#hoverTooltip').text($(this).attr('title'));
+        $('#hoverTooltip').css({'display':'none'});
+        //console.log($(this).attr('title'))
+    })
+});
