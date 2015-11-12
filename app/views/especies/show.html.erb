@@ -315,9 +315,9 @@
   <div id="pestañas" class="panel">
     <% if I18n.locale.to_s == 'es-cientifico' %>
         <ul class="nav nav-tabs" data-tabs="tabs">
-          <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-          <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-          <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+          <li id="conabio_info_li" class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+          <li id="arbol_taxonomico_li" ><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+          <%= "<li id=\"description_li\"><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
         </ul>
         <div id="conabio_info" class="tab-pane panel-body">
           <%= render :partial => 'info' %>
@@ -335,12 +335,12 @@
     <% else %>
         <ul class="nav nav-tabs" data-tabs="tabs">
           <% if @especie.species_or_lower? %>
-              <li class="active"><a href="#description"><span>Fichas</span></a></li>
-              <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+              <li id="description_li" class="active"><a href="#description"><span>Fichas</span></a></li>
+              <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
           <% else %>
-              <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+              <li id="arbol_taxonomico_li" class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
           <% end %>
-          <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+          <li id="conabio_info_li" ><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
         </ul>
 
 
