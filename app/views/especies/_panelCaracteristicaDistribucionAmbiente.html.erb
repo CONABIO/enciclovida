@@ -39,32 +39,32 @@
 <div class="col-xs-12 col-sm-5 col-md-5 col-lg-2 text-center" id="more-info">
   <div class="btn-group" role="group" aria-label="...">
 	 <% if I18n.locale.to_s == 'es-cientifico' %>
-	      <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs">
+	      <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-sm">
 	        <img alt="Ir a los catálogos de CONABIO" src="/assets/app/icoCatalogo.png">
 	        <small>Catálogos CONABIO</small>
 	      </a>
-	      <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs">
+	      <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-sm">
 	        <small><%= t :arreglo_taxonomico %></small>
 	        <img alt="Ir al arreglo taxonómico" src="/assets/app/icoClasificacion.png">
 	      </a>
 	      <% if @especie.species_or_lower? %>
-	          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs">
+	          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-sm">
 	            <img alt="Ir a las fichas" src="/assets/app/icoFicha.png">
 	            <small>Fichas</small>
 	         </a>
 	      <% end %>
 	  <% else %>
 	          <% if @especie.species_or_lower? %>
-	          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs">
+	          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-sm">
 	            <img alt="Ir a las fichas" src="/assets/app/icoFicha.png">
 	            <small>Fichas</small>
 	         </a>
 	      <% end %>
-	          <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs">
+	          <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-sm">
 	            <img alt="Ir al arreglo taxonómico" src="/assets/app/icoClasificacion.png">
 	            <small><%= t :arreglo_taxonomico %></small>
 	          </a>
-	          <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs">
+	          <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-sm">
 	            <img alt="Ir a los catálogos de CONABIO" src="/assets/app/icoCatalogo.png">
 	            <small>Catálogos CONABIO</small>
 	         </a>
