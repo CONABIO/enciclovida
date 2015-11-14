@@ -93,16 +93,16 @@
       <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-user" aria-hidden="true" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
-                <span class="btn btn-default btn-basica glyphicon glyphicon-education" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
+                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-user btn-title" aria-hidden="true" title="Buscar por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default btn-basica glyphicon glyphicon-education btn-title" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Buscar por <%= t(:nombre_cientifico)%>"></span>
             </span>
           <%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
           <span class="input-group-btn">
-            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
+            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas btn-title", :title=>'Buscar' %>
             </span>
         </div>
         <div class="irBusquedaAvanzada">
-            <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada <span class='glyphicon glyphicon-option-horizontal' aria-hidden='true' style='display: block'></span>".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class => 'btn btn-default' %>
+            <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada <span class='glyphicon glyphicon-option-horizontal' aria-hidden='true' style='display: block'></span>".html_safe, avanzada_url, :class => 'btn btn-default' %>
 
         </div>
       </div>
@@ -117,16 +117,16 @@
       <div class="form-group">
         <div class="input-group">
             <span class="input-group-btn">
-                <span class="btn btn-default btn-basica glyphicon glyphicon-user" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Búsqueda por <%= t(:nombre_comun) %>"></span>
-                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-education" aria-hidden="true" title="Búsqueda por <%= t(:nombre_cientifico)%>"></span>
+                <span class="btn btn-default btn-basica glyphicon glyphicon-user btn-title" aria-hidden="true" onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');" title="Buscar por <%= t(:nombre_comun) %>"></span>
+                <span class="btn btn-default btn-basica-activa glyphicon glyphicon-education btn-title" aria-hidden="true" title="Buscar por <%= t(:nombre_cientifico)%>"></span>
             </span>
           <%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
           <span class="input-group-btn">
-            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas", :title=>'Buscar' %>
+            <%= button_tag "".html_safe, data: { disable_with: 'Procesando...' },:class => "glyphicon glyphicon-search btn btn-success busquedas btn-title", :title=>'Buscar' %>
           </span>
         </div>
         <div class="irBusquedaAvanzada">
-          <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada <span class='glyphicon glyphicon-option-horizontal' aria-hidden='true' style='display: block'></span>".html_safe, avanzada_url, :title=>'Búsqueda Avanzada', :class => 'btn btn-default' %>
+          <%= link_to "<span class='glyphicon glyphicon-option-vertical' aria-hidden='true'></span> Búsqueda avanzada <span class='glyphicon glyphicon-option-horizontal' aria-hidden='true' style='display: block'></span>".html_safe, avanzada_url, :class => 'btn btn-default' %>
         </div>
       </div>
   <% end %>
