@@ -6,7 +6,7 @@
             <%= (params[:action]=='resultados' ? 'Tu última <strong>búsqueda avanzada</strong> se realizó con los siguientes filtros (click para desplegar): ' : '<strong>  Búsqueda avanzada.</strong> Selecciona un ícono o una combinación de íconos y presiona buscar.').html_safe %>
           <span class="caret"></span></h5>
         </div>
-        <div class="panel-body" id="panelFiltros" style="display: <%= params[:action]=='resultados' ? 'none' : 'block' %>;">
+        <div class="panel-body text-center" id="panelFiltros" style="display: <%= params[:action]=='resultados' ? 'none' : 'block' %>;">
           <% if I18n.locale.to_s == 'es-cientifico' %>
               <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
           <% else %>
