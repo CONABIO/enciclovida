@@ -71,7 +71,7 @@
         if ($._data(campo, "events") == undefined)
         {        //para que no se repita n-veces la busqueda
             $(campo).soulmate({
-                url:            "http://<%= IP %>:<%= PORT %>/sm/search",
+                url:            "http://<%= IP %>:<%= PORT %>sm/search",
                 types:          types,
                 renderCallback: render,
                 selectCallback: select,
