@@ -102,7 +102,7 @@ module EspeciesHelper
         clase = Icono::IR[-1] if Icono::IR.include?(ic.taxon_icono)
         clase = Icono::IA[-1] if Icono::IA.include?(ic.taxon_icono)
         clase = Icono::IP[-1] if Icono::IP.include?(ic.taxon_icono)
-        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"btn btn-default btn-xs btn-basica #{ic.icono} #{clase}\" id_icono=\"#{taxon.id}\"></span>"
+        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"btn btn-default btn-xs btn-basica #{ic.icono} btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
       else
         "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
       end
@@ -463,7 +463,7 @@ module EspeciesHelper
         id = "id#{edo.parameterize}"
         icono = t("cat_riesgo.#{edo.parameterize}.icono")
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        response[k] = response[k].to_a << button_tag((image_tag("#{CONFIG.site_url}assets/app/categorias_riesgo/#{icono}", title: nombre, class: 'img-panel', name: "edo_cons_#{edo.parameterize}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+        response[k] = response[k].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/categorias_riesgo/#{icono}", class: 'img-panel', name: "edo_cons_#{edo.parameterize}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
       end
     end
 
@@ -471,21 +471,21 @@ module EspeciesHelper
       id = "id#{tipoDist.parameterize}"
       icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag((image_tag("#{CONFIG.site_url}assets/app/tipo_distribuciones/#{icono}", title: nombre, class: 'img-panel', name: "dist_#{tipoDist}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/tipo_distribuciones/#{icono}", class: 'img-panel', name: "dist_#{tipoDist}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
     end
 
     Catalogo.ambiente_todos.each do |amb|
       id = "id#{amb.parameterize}"
       icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
       nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << button_tag((image_tag("#{CONFIG.site_url}/assets/app/ambientes/#{icono}", title: nombre, class: 'img-panel', name: "amb_#{amb}")), :class => 'btn btn-default btn-xs btn-img-panel', :disabled => '', id: id)
+      response[:ambiente] = response[:ambiente].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/ambientes/#{icono}", class: 'img-panel', name: "amb_#{amb}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
     end
 
     Catalogo::NIVELES_PRIORITARIAS.each do |prio|
       id = "id#{prio.parameterize}"
       icono = t("prioritaria.#{prio.parameterize}.icono", :default => '')
       nombre = t("prioritaria.#{prio.parameterize}.nombre", :default => '')
-      response[:prioritaria] = response[:prioritaria].to_a << button_tag((image_tag("#{CONFIG.site_url}/assets/app/prioritarias/#{prio.downcase}.png", title: nombre, class: "img-panel", name: "prio_#{prio}")), :class => "btn btn-default btn-xs btn-img-panel", :disabled => '', id: id)
+      response[:prioritaria] = response[:prioritaria].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/prioritarias/#{prio.downcase}.png", class: "img-panel", name: "prio_#{prio}"), title: nombre, :class => "btn btn-default btn-xs btn-img-panel btn-title", :disabled => '', id: id)
     end
 
     response
