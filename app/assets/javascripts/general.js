@@ -157,22 +157,8 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    var mouseX;
-    var mouseY;
-    $(document).mousemove( function(e) {
-        mouseX = e.pageX;
-        mouseY = e.pageY;
+    $('.btn-title').each(function () {
+        $(this).attr('tooltip-title', $(this).attr('title'));
+        $(this).removeAttr('title');
     });
-    $('*').mouseenter(function () {
-        if ($(this).attr('title') != undefined) {
-            $('#hoverTooltip').text($(this).attr('title'));
-            $('#hoverTooltip').css({'display': 'block', 'top': mouseY, 'left': mouseX});
-        }
-        //console.log($(this).attr('title'))
-    })
-    $('*').mouseleave(function () {
-        //$('#hoverTooltip').text($(this).attr('title'));
-        $('#hoverTooltip').css({'display':'none'});
-        //console.log($(this).attr('title'))
-    })
 });
