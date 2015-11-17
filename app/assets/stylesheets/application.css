@@ -239,3 +239,9 @@ div#map{
     background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
     background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
 }
+#acercaDe dt{
+    white-space: normal;
+}
+#acercaDe dd{
+    line-height: 180%;
+}
