@@ -1,32 +1,33 @@
 <% content_for(:title) do %>
     <%= @titulo=CONFIG.site_name %>
 <% end %>
-<% content_for(:ribbon) do %>
-<% end %>
 <% content_for(:extracss) do %>
     <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
 <% end %>
-<div style="color: white;
-		font-weight: bold;
-		font-size: .7em;
-		padding: 2px 0px 2px 15px;
-		position: fixed;
-		z-index: -1;
-		background-image: linear-gradient(to right, rgba(255, 147, 30, 0.75) 40%, #ff931e 100%);
-		top: 0;
-		left: 0" >
-  Catálogos actualizados 09/15
-  <div style="width: 13px;
-		  height: 13px;
-		  float: right;
-		  transform: rotate(45deg);
-		  margin-left: 4px;
-		  margin-right: -7px;
-		  margin-top: 0px;
-		  z-index: 10;
-		  border-left: 6px solid #ff931e;
-		  border-bottom: 6px solid #ff931e;" onclick="$(this).hide();"></div>
-</div>
+<% content_for(:ribbon) do %>
+    <div style="color: white;
+		    font-weight: bold;
+		    font-size: .7em;
+		    padding: 2px 0px 2px 15px;
+		    position: fixed;
+		    z-index: -1;
+		    background-image: linear-gradient(to right, rgba(255, 147, 30, 0.75) 40%, #ff931e 100%);
+		    top: 0;
+		    left: 0" >
+      Catálogos actualizados 09/15
+      <div style="width: 13px;
+		      height: 13px;
+		      float: right;
+		      transform: rotate(45deg);
+		      margin-left: 4px;
+		      margin-right: -7px;
+		      margin-top: 0px;
+		      z-index: 10;
+		      border-left: 6px solid #ff931e;
+		      border-bottom: 6px solid #ff931e;" onclick="$(this).hide();"></div>
+    </div>
+<% end %>
+
 <%= form_tag '/especies/destruye_seleccionados' %>
 <% if notice.present? %>
     <div class="alert alert-warning" role="alert"><%= notice %></div>

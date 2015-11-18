@@ -60,15 +60,12 @@ body{
 #brandBar > div:nth-child(2) { /*menú arriba main*/
     margin: 15px auto 0 auto;
 }
-#brandBar div > a > img {
-    /*max-height: 80px;*/
-}
-#brandBar > div > div > a {
+#brandBar div.btn-group  a {
     font-size: .8em;
-    font-weight: bold;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     margin-bottom: -1px;
+    z-index: 0;
 }
 
 #mainFooter{
