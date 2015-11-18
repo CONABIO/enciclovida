@@ -46,12 +46,12 @@
 
   <div class="row text-right">
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+      <%= link_to 'Acerca de', inicio_acerca_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% if I18n.locale.to_s == 'es-cientifico' %>
           <%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% else %>
           <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% end %>
-      <%= link_to 'Acerca de', inicio_acerca_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
       <% if usuario_signed_in? %>
           <% if I18n.locale.to_s == 'es-cientifico' %>
               <%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
