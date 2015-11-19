@@ -46,32 +46,44 @@
 
   <div class="row text-right">
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
-      <%= link_to 'Acerca de', inicio_acerca_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
-      <% if I18n.locale.to_s == 'es-cientifico' %>
-          <%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
-      <% else %>
-          <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-success btn-sm', :role => 'button' %>
-      <% end %>
-      <% if usuario_signed_in? %>
-          <% if I18n.locale.to_s == 'es-cientifico' %>
-              <%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
-              <%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
-          <% end %>
-
-          <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
-
-
-          <%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe}, :class => 'btn btn-success btn-sm', :role => 'button' %>
-
-      <% else %>
-          <% if I18n.locale.to_s == 'es-cientifico' %>
-              <%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
-          <% end %>
-      <% end %>
+      <div class="btn-group" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+          <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-success btn-sm dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
+          <ul class="dropdown-menu">
+            <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
+            <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
+            <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
+            <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
+          </ul>
+        </div>
+        <% if usuario_signed_in? %>
+            <% if I18n.locale.to_s == 'es-cientifico' %>
+                <%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
+                <%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
+            <% end %>
+            <div class="btn-group" role="group">
+              <%= link_to "#{current_usuario.nombre} #{current_usuario.apellido}  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-success btn-sm dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
+                <li><%= link_to "Cerrar sesión (#{current_usuario.usuario})".html_safe, destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
+              </ul>
+            </div>
+        <% else %>
+            <% if I18n.locale.to_s == 'es-cientifico' %>
+                <%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-success btn-sm', :role => 'button' %>
+            <% end %>
+        <% end %>
+      </div>
+      <div class="btn-group" role="group" aria-label="...">
+        <% if I18n.locale.to_s == 'es-cientifico' %>
+            <%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-default btn-sm', :role => 'button' %>
+        <% else %>
+            <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-default btn-sm', :role => 'button' %>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
-
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">

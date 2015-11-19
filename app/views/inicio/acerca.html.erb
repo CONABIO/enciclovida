@@ -5,15 +5,18 @@
             $('#pestañas > .nav li').removeClass("active");
             $(this).parent().addClass("active");
         });
+	    <% if params['tab'].present? %>
+	    $('#<%= params['tab']%>_li > a').trigger('click');
+	    <% end %>
     });
 </script>
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="acercaDe">
   <div id="pestañas" class="panel">
     <ul class="nav nav-tabs" data-tabs="tabs">
-      <li class="active"><a href="#queEs"><span>¿Qué es?</span></a></li>
-      <li><a href="#dosVistas"><span>Dos vistas</span></a></li>
-      <li><a href="#usos"><span>Usos</span></a></li>
-      <li><a href="#advertencias"><span>Advertencias</span></a></li>
+      <li id="queEs_li" class="active"><a href="#queEs"><span>¿Qué es?</span></a></li>
+      <li id="dosVistas_li"><a href="#dosVistas"><span>Dos vistas</span></a></li>
+      <li id="usos_li"><a href="#usos"><span>Usos</span></a></li>
+      <li id="advertencias_li"><a href="#advertencias"><span>Advertencias</span></a></li>
     </ul>
     <div class="panel">
       <div id="queEs" class="tab-pane panel-body"><%= render partial: 'queEs' %></div>

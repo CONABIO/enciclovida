@@ -60,15 +60,14 @@ body{
 #brandBar > div:nth-child(2) { /*menú arriba main*/
     margin: 15px auto 0 auto;
 }
-#brandBar div > a > img {
-    /*max-height: 80px;*/
-}
-#brandBar > div > div > a {
+#brandBar div.btn-group  a {
     font-size: .8em;
-    font-weight: bold;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
     margin-bottom: -1px;
+    z-index: 0;
 }
 
 #mainFooter{
@@ -76,7 +75,7 @@ body{
     margin-bottom: 20px;
     background-color: rgba(242, 240, 237, 0.6);
     font-size: .75em;
-    border-radius: 8px;
+    border-radius: 1px;
     padding: 10px 20px 5px 20px;
 }
 
