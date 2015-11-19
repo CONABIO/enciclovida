@@ -145,14 +145,14 @@ $(document).ready(function () {
         url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
         //console.log(url);
         $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 0)'}, 1750, function () {
+            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0.1)'}, 1500, function () {
                 setTimeout(function () {
-                    $('#img-fondo').animate({backgroundColor: 'rgba(40,40,40, 1)'}, 1750);}, 26500);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, .9)'}, 1500);}, 177000);
             });
             return url;
         });
         fondo = ((fondo >= 16) ? 1 : fondo+1);//ya q puede darse el caso de q aumente mientras se da click
-        setTimeout(cambiaFondoAuto, 30000);
+        setTimeout(cambiaFondoAuto, 180000);
     })();
 });
 
