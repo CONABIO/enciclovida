@@ -60,12 +60,10 @@ body{
 #brandBar > div:nth-child(2) { /*menú arriba main*/
     margin: 15px auto 0 auto;
 }
-#brandBar div.btn-group  a {
+#brandBar div.btn-group a{
     font-size: .8em;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
     margin-bottom: -1px;
     z-index: 0;
 }
@@ -182,7 +180,7 @@ input.gsc-search-button {
 }
 
 .irBusquedaAvanzada {
-    margin: -25px 0px 0px 78px;
+    margin: -24px 0px 0px 78px;
 }
 .irBusquedaAvanzada:hover {
     margin-top: -4px;
@@ -190,7 +188,7 @@ input.gsc-search-button {
 }
 .irBusquedaAvanzada > a {
     font-weight: bold;
-    font-size: 85%;
+    font-size: .8em;
 }
 .irBusquedaAvanzada:hover > a > span:nth-child(2) {
     display: none !important;
@@ -210,7 +208,7 @@ div#contenedor_mapa h6{
     margin: 3px 6px 0 0;
 }
 div#map{
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 .btn-title:hover {

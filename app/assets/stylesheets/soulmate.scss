@@ -63,7 +63,7 @@ html {
 
 #nombre_comun, #nombre_cientifico,#nombre_comun_1, #nombre_cientifico_1 {
   //border: 1px solid #999;
-  color: #545C5F;
+  color: #500000;
   font-family: $helvetica;
   //font-size: 20px;
   //font-size: 14px;
@@ -73,7 +73,8 @@ html {
   //padding: 2px 2px 1px;
   //width: $inputWidth;
   //width: 200px;
-  @include border-radius(4px);
+  //@include border-radius(2px);
+  top: 1px;
   
   &:focus{ 
 //    outline: none; 
@@ -105,7 +106,7 @@ html {
   width: $soulmateWidth;
   max-height: $soulmateWidth; //Para que sea un cuadrado
   z-index: 50;
-  @include border-radius(4px);
+  @include border-radius(2px);
   @include box-shadow(0, 4px, 10px, rgba(0,0,0,.2));
     
   .soulmate-type-container {
