@@ -74,7 +74,7 @@ class ValidacionesController < ApplicationController
           file.write(params[:batch].read)
         end
 
-        validacion.delay(priority: NOTIFICATION_PRIORITY).valida_batch(path) if validacion.save
+        validacion.delay(priority: USER_PRIORITY, queue: 'validaciones').valida_batch(path) if validacion.save
       end
     end
   end
@@ -128,7 +128,7 @@ class ValidacionesController < ApplicationController
         if cc[:faltan].any?
           @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
         else
-          validacion.delay(priority: USER_PRIORITY).valida_campos(path.to_s, cc[:asociacion]) if validacion.save
+          validacion.delay(priority: USER_PRIORITY, queue: 'validaciones').valida_campos(path.to_s, cc[:asociacion]) if validacion.save
         end
       end  # Fin errores empty
     end  # Fin del tipo de archivo
