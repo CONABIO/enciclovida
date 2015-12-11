@@ -6,7 +6,7 @@ module CacheServices
     #bi_service
     foto_principal_service
     nombre_comun_principal_service
-    snib_service
+    #snib_service  # De momento hasta que Everardo actualize su servicio
 
     if ns[:valido]
       naturalista_observaciones_service(ns[:proveedor])
@@ -38,6 +38,7 @@ module CacheServices
 
   # Se tuvo que separar, para correr las observaciones al final cuando ya se tiene la foto y los nombres comunes
   def naturalista_observaciones_service(proveedor)
+    puts "\t\tGenerando las observaicones de NaturaLista"
     # Para las nuevas observaciones
     proveedor.kml_naturalista
     return unless proveedor.naturalista_kml.present?
@@ -46,6 +47,7 @@ module CacheServices
   end
 
   def snib_service
+    puts "\t\tGenerando los registros del SNIB"
     if p = proveedor
       p.kml
 
@@ -58,6 +60,7 @@ module CacheServices
   end
 
   def foto_principal_service
+    puts "\t\tGenerando la foto principal"
     adicional = asigna_foto
 
     if adicional[:cambio]
@@ -68,6 +71,7 @@ module CacheServices
   end
 
   def nombre_comun_principal_service
+    puts "\t\tGenerando el nombre común principal"
     adicional = asigna_nombre_comun
 
     if adicional[:cambio]

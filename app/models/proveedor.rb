@@ -69,8 +69,16 @@ class Proveedor < ActiveRecord::Base
   #Guarda el kml asociado al taxon
   def kml
     return [] unless snib_id.present?
-    response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}", :timeout => 1000, :open_timeout => 1000
-    return [] unless response.present?
+
+    # Catch the response
+    begin
+      response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}", :timeout => 5, :open_timeout => 5
+      return [] unless response.present?
+    rescue => e
+      puts "\t\t#{e.response}"
+      return []
+    end
+
     data = JSON.parse(response)
     colectas = data['colectas']
     return [] unless colectas.count > 0

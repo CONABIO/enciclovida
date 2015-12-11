@@ -351,7 +351,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def delayed_job_service
     if !existe_cache?
       escribe_cache
-      delay(run_at: 8.hours.from_now, queue: 'cache_services').cache_services
+      delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
     end
   end
 end
