@@ -16,6 +16,8 @@ module CacheServices
   end
 
   def naturalista_service
+    puts "\t\tGenerando la información de NaturaLista"
+
     if p = proveedor
       p.info_naturalista
     else
