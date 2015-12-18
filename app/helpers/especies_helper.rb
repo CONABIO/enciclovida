@@ -278,7 +278,7 @@ module EspeciesHelper
       # Separa por niveles la distribucion
         case niveles
           when '100'
-            distribucion[niveles].push('<b>En todo el territorio nacional</b>')
+            distribucion[niveles].push('<b>Presente en México</b>')
           when '110'
             distribucion[niveles].push('<b>Estatal</b>') if distribucion[niveles].empty?
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
