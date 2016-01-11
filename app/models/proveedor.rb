@@ -206,7 +206,7 @@ class Proveedor < ActiveRecord::Base
 
       begin
         response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-        data = JSON.parse(response)
+        data = JSON.parse(response.limpia_sql)
       rescue
         return nil
       end
@@ -214,7 +214,7 @@ class Proveedor < ActiveRecord::Base
       puts "\t\t#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
       begin
         response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
-        data_todos = JSON.parse(response)
+        data_todos = JSON.parse(response.limpia_sql)
         data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
       rescue
         return nil
@@ -250,7 +250,7 @@ class Proveedor < ActiveRecord::Base
         rest_client = RestClient.get "#{url}&page=#{i}"
       end
 
-      response_obs = JSON.parse(rest_client)
+      response_obs = JSON.parse(rest_client.limpia_sql)
       break unless response_obs.present?
 
       puts "\t\t#{url}&page=#{i}"
