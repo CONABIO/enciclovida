@@ -14,6 +14,13 @@ GIT
     flickraw (0.9.8)
 
 GIT
+  remote: git://github.com/rails-sqlserver/tiny_tds.git
+  revision: 54bcd699fdf1454023fc846995c1dfee2f387277
+  specs:
+    tiny_tds (0.9.5.beta.10)
+      mini_portile2 (~> 2.0)
+
+GIT
   remote: git://github.com/rails/activerecord-session_store.git
   revision: e879bf087eb684452aaddb734efa20b95588b141
   specs:
@@ -162,6 +169,7 @@ GEM
     mail (2.6.1)
       mime-types (>= 1.16, < 3)
     mime-types (1.25.1)
+    mini_portile2 (2.1.0)
     minitest (4.7.5)
     multi_json (1.10.1)
     mysql2 (0.3.17)
@@ -241,7 +249,6 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
-    tiny_tds (0.6.2)
     trollop (2.0)
     turbolinks (2.2.2)
       coffee-rails
@@ -308,9 +315,12 @@ DEPENDENCIES
   seed_dump
   soulmate
   therubyracer
-  tiny_tds
+  tiny_tds!
   trollop
   turbolinks
   uglifier (>= 1.3.0)
   wash_out
   wicked_pdf
+
+BUNDLED WITH
+   1.10.6
