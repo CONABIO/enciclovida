@@ -24,9 +24,9 @@ end
 def hace_magia
   n=1
   relacion = dame_relacion_naturalista
-  puts "Termine jalar cosos de la BD, tarde: "+(Time.now-@start).to_s+" segundos =S: "
+  puts "Jalando cosos de la BD: "+(Time.now-@start).to_s+ " =S: "
 
-  File.open('eval_eco_optimo_vertebrados.txt', "a+") do |f|
+  File.open('eval_eco_optimo_vertebrados_observaciones.txt', "a+") do |f|
 
     f.puts '"Nombre de la ssp Naturalista (taxon[name])"'+"\t"+
                '"Nombre válido de la spp con base en Catálogos de Autoridades Taxonómicas"'+"\t"+
@@ -43,19 +43,42 @@ def hace_magia
     relacion.find_each do |p|
       x = Especie.select("especies.id", :nombre_cientifico, :categoria_taxonomica_id, :nombre_categoria_taxonomica, "concat(nivel1,nivel2,nivel3,nivel4) as orden").categoria_taxonomica_join.where("especies.id in (#{p.ancestry_ascendente_obligatorio.gsub('/', ',')})").where("categorias_taxonomicas.nombre_categoria_taxonomica in ('género','clase')").order("orden")
 
-      print "Escribiendo linea: #{n}... "
+      print "Escribiendo taxón num: #{n} (#{p.id}) ... con "
+      m=1
+      eval(p.naturalista_obs).flatten.each do |h|
 
-      f.puts eval(p.naturalista_obs).flatten[0]["taxon"]["name"].inspect+"\t"+
-                 p.nombre_cientifico.inspect+"\t"+
-                 p.catalogo_id.inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["latitude"].inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["longitude"].inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["quality_grade"].inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["num_identification_agreements"].inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["num_identification_disagreements"].inspect+"\t"+
-                 eval(p.naturalista_obs).flatten[0]["captive"].inspect+"\t"+
-                 x[0]["nombre_cientifico"].inspect+"\t"+
-                 x[1]["nombre_cientifico"].inspect
+        print " #{m}, "
+
+        #print "--- #{h.length}"
+        #h = h.length==1 ? h.first : h
+
+
+
+        f.puts (h["taxon"] ? h["taxon"]["name"] : (h["species_guess"] ? h["species_guess"] : p.nombre_cientifico)).inspect+"\t"+
+                   p.nombre_cientifico.inspect+"\t"+
+                   p.catalogo_id.inspect+"\t"+
+                   h["latitude"].inspect+"\t"+
+                   h["longitude"].inspect+"\t"+
+                   h["quality_grade"].inspect+"\t"+
+                   h["num_identification_agreements"].inspect+"\t"+
+                   h["num_identification_disagreements"].inspect+"\t"+
+                   h["captive"].inspect+"\t"+
+                   x[0]["nombre_cientifico"].inspect+"\t"+
+                   x[1]["nombre_cientifico"].inspect
+        m=m+1
+      end
+      print "observaciones totales."
+      # f.puts eval(p.naturalista_obs).flatten[0]["taxon"]["name"].inspect+"\t"+
+      #            p.nombre_cientifico.inspect+"\t"+
+      #            p.catalogo_id.inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["latitude"].inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["longitude"].inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["quality_grade"].inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["num_identification_agreements"].inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["num_identification_disagreements"].inspect+"\t"+
+      #            eval(p.naturalista_obs).flatten[0]["captive"].inspect+"\t"+
+      #            x[0]["nombre_cientifico"].inspect+"\t"+
+      #            x[1]["nombre_cientifico"].inspect
 
       puts "  done :D"
       n=n+1
