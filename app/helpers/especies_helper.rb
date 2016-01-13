@@ -363,7 +363,6 @@ module EspeciesHelper
         end
       else   # En esta no los pongo en lista
         if taxon.estatus == 2                                              # Valido
-          puts taxSinonimo.nombre_cientifico
           estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
           estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
