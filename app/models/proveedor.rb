@@ -5,7 +5,7 @@ class Proveedor < ActiveRecord::Base
 
   # Saca los nombres comunes del campo naturalista_info
   def nombres_comunes
-    datos = eval(naturalista_info)
+    datos = eval(naturalista_info.decodifica64)
     datos = datos.first if datos.is_a?(Array)
     return [] unless datos['taxon_names'].present?
     nombres_comunes_faltan = []
@@ -32,7 +32,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   def fotos(usuario)
-    datos = eval(naturalista_info)
+    datos = eval(naturalista_info.decodifica64)
     datos = datos.first if datos.is_a?(Array)
     return [] unless datos['taxon_photos'].present?
     return [] if usuario.blank?
@@ -136,7 +136,7 @@ class Proveedor < ActiveRecord::Base
   # Guarda el kml de naturalista asociado al taxon
   def kml_naturalista
     return [] unless naturalista_obs.present?
-    obs = eval(naturalista_obs)
+    obs = eval(naturalista_obs.decodifica64)
     return [] unless obs.count > 0
     cadenas = []
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
@@ -223,7 +223,7 @@ class Proveedor < ActiveRecord::Base
 
     return nil unless data.present?
     self.naturalista_id = data['id']
-    self.naturalista_info = "#{data}"     #solo para actualizar el json
+    self.naturalista_info = "#{data}".codifica64     #solo para actualizar el json
 
     # Solo para especies o inferiores
     return unless especie.species_or_lower?
@@ -237,7 +237,12 @@ class Proveedor < ActiveRecord::Base
     #url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}"
 
     # Para obtener los resultados totales y armar el paginado
-    rest_client = RestClient.get "#{url}&page=1"
+    begin
+      rest_client = RestClient.get "#{url}&page=1"
+    rescue
+      return nil
+    end
+
     resultados = rest_client.headers[:x_total_entries].to_i
     return nil if resultados == 0
     cociente = resultados/200
@@ -247,7 +252,11 @@ class Proveedor < ActiveRecord::Base
     # Loop de maximo 200,000 registros para NaturaLista (suficientes)
     for i in 1..cociente do
       if i > 1
-        rest_client = RestClient.get "#{url}&page=#{i}"
+        begin
+          rest_client = RestClient.get "#{url}&page=#{i}"
+        rescue
+          return nil
+        end
       end
 
       response_obs = JSON.parse(rest_client.limpia_sql)
@@ -257,7 +266,7 @@ class Proveedor < ActiveRecord::Base
       data+= response_obs
     end
 
-    self.naturalista_obs = "#{data}" if data.present?
+    self.naturalista_obs = "#{data}".codifica64 if data.present?
     puts "\t\t#{data.count} observaciones"
   end
 
@@ -288,7 +297,7 @@ class Proveedor < ActiveRecord::Base
     exact_data = Proveedor.comprueba_nombre(taxon.nombre_cientifico, data)
 
     return nil unless exact_data.present?
-    proveedor = Proveedor.new(:especie_id => taxon.id, :naturalista_id => exact_data['id'], :naturalista_info => "#{exact_data}")
+    proveedor = Proveedor.new(:especie_id => taxon.id, :naturalista_id => exact_data['id'], :naturalista_info => "#{exact_data}".codifica64)
     return proveedor unless taxon.species_or_lower?
     proveedor.obs_naturalista
     proveedor

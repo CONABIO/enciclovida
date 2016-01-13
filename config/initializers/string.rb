@@ -29,7 +29,16 @@ class String
 
   # Escapa la comilla simple por dos comillas simples, para que SQL Server no marque error
   def limpia_sql
-    self.gsub("'", "''").force_encoding(Encoding::ISO_8859_1).encode('utf-8')
+    self.gsub("'", "''")
+  end
+
+  def codifica64
+    Base64.encode64(self)
+  end
+
+  def decodifica64
+    decoded = Base64.decode64(self)
+    decoded.force_encoding('UTF-8')
   end
 
   # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
