@@ -117,7 +117,7 @@ class BusquedasController < ApplicationController
           else
 
             if @taxones.empty?
-              ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+              ids=FUZZY_NOM_CIEN_BIOS.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
 
               if ids.present?
                 @taxones = Especie.none
@@ -130,7 +130,10 @@ class BusquedasController < ApplicationController
                   @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                   if distancia < 3
+                    taxon[:distancia]= distancia
+                    puts taxon.inspect
                     @taxones <<= taxon
+
                   else
                     next
                   end
@@ -142,6 +145,11 @@ class BusquedasController < ApplicationController
             @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
+          if params[:arbol].present? && params[:arbol].to_i == 1 && !@taxones.empty?
+            puts '------------------------------------2'
+
+            render 'busquedas/checklists.json.erb'
+          end
 
           if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
@@ -149,11 +157,14 @@ class BusquedasController < ApplicationController
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
+          elsif @taxones.empty? && params[:arbol].present? && params[:arbol].to_i == 1
+              render :text => '{"Tu búsqueda no dio ningun resultado."}'
           elsif @taxones.empty?
             redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
 
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
+
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad

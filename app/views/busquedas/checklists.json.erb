@@ -1,0 +1,11 @@
+<% content_for(:title) do %>
+<%= @titulo='Listado de verificación' %>
+<% end %>
+<% if notice.present? %>
+<%= notice %>
+		<%= 'lolololo' %>
+<% end %>
+<%= 'lolololo2' %>
+<% @taxones.each do |taxon| %>
+<%= taxon.inspect.html_safe %>
+<% end %>
