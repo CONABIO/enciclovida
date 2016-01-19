@@ -100,11 +100,11 @@ class BusquedasController < ApplicationController
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
 
         when 'nombre_cientifico'
+          arbol = params[:arbol].present? && params[:arbol].to_i == 1
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
 
-          sql = "Especie.datos_basicos.
-            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
-            order('nombre_cientifico ASC')"
+          #if arbol
+          sql = "Especie.datos_basicos.caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").order('nombre_cientifico ASC')"
 
           consulta = eval(sql).to_sql
           totales = eval(sql).count
@@ -117,12 +117,11 @@ class BusquedasController < ApplicationController
           else
 
             if @taxones.empty?
-              ids=FUZZY_NOM_CIEN_BIOS.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+              ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
 
               if ids.present?
                 @taxones = Especie.none
-                taxones=Especie.datos_basicos.
-                    caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
+                taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
 
                 taxones.each do |taxon|
                   # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
@@ -131,7 +130,6 @@ class BusquedasController < ApplicationController
 
                   if distancia < 3
                     taxon[:distancia]= distancia
-                    puts taxon.inspect
                     @taxones <<= taxon
 
                   else
@@ -145,10 +143,18 @@ class BusquedasController < ApplicationController
             @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
-          if params[:arbol].present? && params[:arbol].to_i == 1 && !@taxones.empty?
-            puts '------------------------------------2'
+          if !@taxones.empty? && arbol
+            @arboles = []
+            #taxones = @taxones
+            #a=1
+            @taxones.each do | taxon|
+              arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+              #x=taxon.try("distancia")
+              @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0})
+              #@arboles << @taxones
+            end
 
-            render 'busquedas/checklists.json.erb'
+            render 'busquedas/arbol.json.erb'
           end
 
           if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
@@ -157,7 +163,7 @@ class BusquedasController < ApplicationController
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
-          elsif @taxones.empty? && params[:arbol].present? && params[:arbol].to_i == 1
+          elsif @taxones.empty? && arbol
               render :text => '{"Tu búsqueda no dio ningun resultado."}'
           elsif @taxones.empty?
             redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
@@ -271,7 +277,7 @@ class BusquedasController < ApplicationController
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
                 @taxones = Busqueda.por_arbol(busqueda)
-                checklists
+                checklist
               else
                 query = eval(busqueda).distinct.to_sql
                 consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
@@ -287,7 +293,7 @@ class BusquedasController < ApplicationController
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
                 @taxones = Busqueda.por_arbol(busqueda, true)
-                checklists(true)
+                checklist(true)
               end
               @taxones = Especie.find_by_sql(@taxones)
 
@@ -338,7 +344,7 @@ class BusquedasController < ApplicationController
     end
   end
 
-  def checklists(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
+  def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
@@ -349,6 +355,7 @@ class BusquedasController < ApplicationController
           padres[p.to_i]=''
         end
       end
+      #Aquí entro al query sin filtros (a pesar de que mi búsqueda fue CON filtros) pq ya tengo todos los papás, ahora necesito sus datos y ordenarlos por campo arbol
       @taxones = Especie.datos_arbol_sin_filtros.where("especies.id in (#{padres.keys.join(',')})").order('arbol')
     end
   end
