@@ -44,7 +44,7 @@ class EspeciesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        #@especie.delayed_job_service
+        @especie.delayed_job_service
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if @especie.species_or_lower?

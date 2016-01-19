@@ -278,7 +278,7 @@ module EspeciesHelper
       # Separa por niveles la distribucion
         case niveles
           when '100'
-            distribucion[niveles].push('<b>En todo el territorio nacional</b>')
+            distribucion[niveles].push('<b>Presente en México</b>')
           when '110'
             distribucion[niveles].push('<b>Estatal</b>') if distribucion[niveles].empty?
             distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
@@ -363,7 +363,6 @@ module EspeciesHelper
         end
       else   # En esta no los pongo en lista
         if taxon.estatus == 2                                              # Valido
-          #puts taxSinonimo.nombre_cientifico
           estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
         elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
           estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)

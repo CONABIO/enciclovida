@@ -41,7 +41,7 @@ gem 'savon', '2.4.0'  # para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # extrae las tuplas de un modelo o de toda la base
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
-gem 'tiny_tds'#, github: 'rails-sqlserver/tiny_tds'
+gem 'tiny_tds', github: 'rails-sqlserver/tiny_tds'
 gem 'turbolinks'  # hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier', '>= 1.3.0'

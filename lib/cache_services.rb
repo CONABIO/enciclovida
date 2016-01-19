@@ -6,7 +6,7 @@ module CacheServices
     #bi_service
     foto_principal_service
     nombre_comun_principal_service
-    snib_service
+    #snib_service  # De momento hasta que Everardo actualize su servicio
 
     if ns[:valido]
       naturalista_observaciones_service(ns[:proveedor])
@@ -16,6 +16,8 @@ module CacheServices
   end
 
   def naturalista_service
+    puts "\t\tGenerando la información de NaturaLista"
+
     if p = proveedor
       p.info_naturalista
     else
@@ -38,6 +40,7 @@ module CacheServices
 
   # Se tuvo que separar, para correr las observaciones al final cuando ya se tiene la foto y los nombres comunes
   def naturalista_observaciones_service(proveedor)
+    puts "\t\tGenerando las observaicones de NaturaLista"
     # Para las nuevas observaciones
     proveedor.kml_naturalista
     return unless proveedor.naturalista_kml.present?
@@ -46,6 +49,7 @@ module CacheServices
   end
 
   def snib_service
+    puts "\t\tGenerando los registros del SNIB"
     if p = proveedor
       p.kml
 
@@ -58,6 +62,7 @@ module CacheServices
   end
 
   def foto_principal_service
+    puts "\t\tGenerando la foto principal"
     adicional = asigna_foto
 
     if adicional[:cambio]
@@ -68,6 +73,7 @@ module CacheServices
   end
 
   def nombre_comun_principal_service
+    puts "\t\tGenerando el nombre común principal"
     adicional = asigna_nombre_comun
 
     if adicional[:cambio]
@@ -99,7 +105,7 @@ module CacheServices
 
   # Los servicios no se actualizaran en menos de un dia
   def escribe_cache
-    Rails.cache.write("cache_service_#{id}", true, :expires_in => 2.day)
+    Rails.cache.write("cache_service_#{id}", true, :expires_in => 1.week)
   end
 
   def existe_cache?
