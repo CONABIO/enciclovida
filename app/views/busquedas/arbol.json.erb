@@ -1,0 +1,4 @@
+<% content_for(:title) do %>
+<%= @titulo='Taxonomía de:' %>
+<% end %>
+<%= @arboles.to_json.html_safe %>
