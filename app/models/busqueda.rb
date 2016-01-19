@@ -45,8 +45,6 @@ class Busqueda
 
   def self.por_arbol(busqueda, sin_filtros=false)
     if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
-      #sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, icono, nombre_icono")'
-      puts ('---'+busqueda)
       busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
       busq = busq.sub(/\.where\(\"CONCAT.+/,'')
       busq << ".order('arbol')"

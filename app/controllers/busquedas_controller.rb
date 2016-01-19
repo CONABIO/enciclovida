@@ -163,8 +163,8 @@ class BusquedasController < ApplicationController
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
-          elsif @taxones.empty? && arbol
-              render :text => '{"Tu búsqueda no dio ningun resultado."}'
+          elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
+              render :text => '[]'
           elsif @taxones.empty?
             redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
