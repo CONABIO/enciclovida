@@ -145,15 +145,15 @@ class BusquedasController < ApplicationController
 
           if !@taxones.empty? && arbol
             @arboles = []
-            #taxones = @taxones
-            #a=1
             @taxones.each do | taxon|
+              #Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
+              nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
+              #Jalo unicamente los ancestros del taxón en cuestión
               arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
-              #x=taxon.try("distancia")
-              @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0})
-              #@arboles << @taxones
-            end
 
+              #Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
+              @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
+            end
             render 'busquedas/arbol.json.erb'
           end
 
@@ -349,7 +349,6 @@ class BusquedasController < ApplicationController
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
       padres = {}
-      #@taxones.map {|taxon| taxon.arbol.split('/').each {|p| @padres[p.to_i]=''}}
       @taxones.each do |taxon|
         taxon.arbol.split('/').each do |p|
           padres[p.to_i]=''
