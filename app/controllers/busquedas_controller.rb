@@ -101,7 +101,9 @@ class BusquedasController < ApplicationController
 
         when 'nombre_cientifico'
           arbol = params[:arbol].present? && params[:arbol].to_i == 1
-          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
+
+          #Si pido arbol, entonces a estatus pegale nil para que abajito ponga ('1,2')
+          estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
 
           #if arbol
           sql = "Especie.datos_basicos.caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").order('nombre_cientifico ASC')"
