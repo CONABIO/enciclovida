@@ -101,6 +101,9 @@
     background-color: rgba(242, 240, 237, 0.85);
     border-radius: 1px;
     /*border: 1px solid rgba(58, 175, 66, 0.3);*/
+    -webkit-box-shadow: 13px 13px 20px 0px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow:    13px 13px 20px 0px rgba(50, 50, 50, 0.5);
+    box-shadow:         13px 13px 20px 0px rgba(50, 50, 50, 0.5);
 }
 @media (min-width: 872px) {
   .main {
