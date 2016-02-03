@@ -14,13 +14,10 @@
 
 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-md-push-7 col-lg-push-7">
   <p class="text-center">
-  <span style="font-size: 2.3em; font-weight: bolder; color: #691F14 ! important;"><%= CONFIG.site_name %></span> integra información de <span style="font-size: 1.8em; font-weight: bolder; color: #503E01 ! important;">especies</span><br>que viven en <span style="font-size: 1.8em; font-weight: bolder; color: #724629 ! important;">México</span>.</p>
+  <span style="font-size: 2.3em; font-weight: bolder; color: #691F14 !important;"><%= CONFIG.site_name %></span> integra información de <span style="font-size: 1.8em; font-weight: bolder; color: #503E01 ! important;">especies</span><br>que viven en <span style="font-size: 1.8em; font-weight: bolder; color: #724629 ! important;">México</span>.</p>
   <br><br>
   <p>Comentarios y sugerencias generales a: <br />
-	<script type="text/javascript">
-	  co = ["ob.mx","lovida@","mailt","con","o:encic","abio.g"]
-	</script>
-	<a href="#" onclick="$(this).attr('href',co[2]+co[4]+co[1]+co[3]+co[5]+co[0]);" target="_blank">
+	<a href="#" onclick="$(this).attr('href',co.join('').split('').reverse().join(''));" target="_blank">
 	  <span class="glyphicon glyphicon-envelope"></span>
 	  <span id="img-correo">
 		<span></span><span></span><span></span><span></span>

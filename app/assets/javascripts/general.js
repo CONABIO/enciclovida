@@ -162,3 +162,5 @@ $(document).ready(function () {
         $(this).removeAttr('title');
     });
 });
+//Variable para ofuscar correo
+var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
