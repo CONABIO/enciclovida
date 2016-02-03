@@ -247,3 +247,22 @@ div#map{
 #advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
     background-color: #e4cdb3;
 }
+.img-correo{
+    position: relative;
+    width: 14.5em;
+    height: 1.2em;
+    display: inline-block;
+}
+.img-correo > span{
+    height: 125%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.img-correo > span:nth-child(1){background-image: url("/assets/app/enciclovida_correo_d.svg");}
+.img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo_g.svg");}
+.img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo_p.svg");}
+.img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo_z.svg");}
