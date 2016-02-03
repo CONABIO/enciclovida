@@ -6,10 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
-$(document).ready(function()
-{
-    open = function(event, ui)
-    {
+$(document).ready(function(){
+    open = function(event, ui){
         var $input = $(event.target),
             $results = $input.autocomplete("widget"),
             top = $results.position().top,
@@ -18,10 +16,9 @@ $(document).ready(function()
             newTop = top - height - inputHeight;
 
         $results.css("top", newTop + "px");
-    }
+    };
 
-    despliegaOcontrae = function(id)
-    {
+    despliegaOcontrae = function(id){
         var sufijo = id.substring(5);
         //Verifica que el nodo que se le dio clic este vacio
         if ($("#nodo_" + sufijo + " li").length > 0)
@@ -41,60 +38,58 @@ $(document).ready(function()
                 });
         }
         return false;
-    }
+    };
 
-    $.fn.loadingShades = function(e, options)
-    {
-        options = options || {}
+    $.fn.loadingShades = function(e, options){
+        options = options || {};
         if (e && e == 'close') {
             $(this).shades(e, options)
         } else {
             var txt = e || 'Loading...',
                 cssClass = options.cssClass || 'bigloading',
-                msg = '<div class="loadingShadesMsg"><span class="loading '+cssClass+' status inlineblock">'+txt+'</span></div>'
+                msg = '<div class="loadingShadesMsg"><span class="loading '+cssClass+' status inlineblock">'+txt+'</span></div>';
             options = $.extend(true, options, {
                 css: {'background-color': 'white'},
                 content: msg
-            })
-            $(this).shades('open', options)
-            var status = $('.shades .loading.status', this)
+            });
+            $(this).shades('open', options);
+            var status = $('.shades .loading.status', this);
             status.css({
                 position: 'absolute',
                 top: options.top || '50%',
                 left: options.left || '50%',
                 marginTop: (-1 * status.outerHeight() / 2) + 'px',
                 marginLeft: (-1 * status.outerWidth() / 2) + 'px'
-            })
+            });
         }
-    }
+    };
 
-    $.fn.shades = function(e, options)
-    {
-        options = options || {}
-        elt = this[0]
+    $.fn.shades = function(e, options){
+        options = options || {};
+        elt = this[0];
         switch (e) {
             case 'close':
-                $(elt).find('.shades:last').hide()
+                $(elt).find('.shades:last').hide();
                 break;
             case 'remove':
-                $(elt).find('.shades:last').remove()
+                $(elt).find('.shades:last').remove();
                 break;
             default:
                 var shades = $(elt).find('.shades:last')[0] || $('<div class="shades"></div>'),
                     underlay = $('<div class="underlay"></div>'),
-                    overlay = $('<div class="overlay"></div>').html(options.content)
-                $(shades).html('').append(underlay, overlay)
+                    overlay = $('<div class="overlay"></div>').html(options.content);
+                $(shades).html('').append(underlay, overlay);
                 if (options.css) { $(underlay).css(options.css) }
                 if (elt != document.body) {
-                    $(elt).css('position', 'relative')
-                    $(shades).css('position', 'absolute')
+                    $(elt).css('position', 'relative');
+                    $(shades).css('position', 'absolute');
                     $(underlay).css('position', 'absolute')
                 }
-                $(elt).append(shades)
-                $(shades).show()
+                $(elt).append(shades);
+                $(shades).show();
                 break;
         }
-    }
+    };
 
     $.fn.centerDialog = function()
     {
@@ -103,14 +98,15 @@ $(document).ready(function()
         } else {
             var newHeight = $(this).height() + 100
         }
-        var maxHeight = $(window).height() * 0.8
-        if (newHeight > maxHeight) { newHeight = maxHeight };
-        $(this).dialog('option', 'height', newHeight)
-        $(this).dialog('option', 'position', {my: 'center', at: 'center', of: $(window)})
-    }
+        var maxHeight = $(window).height() * 0.8;
+        if (newHeight > maxHeight){
+            newHeight = maxHeight
+        }
+        $(this).dialog('option', 'height', newHeight);
+        $(this).dialog('option', 'position', {my: 'center', at: 'center', of: $(window)});
+    };
 
-    cambia_locale = function(locale)
-    {
+    cambia_locale = function(locale){
         $.ajax(
             {
                 url: "/usuarios/cambia_locale",
@@ -118,8 +114,7 @@ $(document).ready(function()
                 data: {
                     locale: locale
                 }
-            }).done(function()
-            {
+            }).done(function(){
                 location.reload(true);
                 return false;
             });
@@ -137,16 +132,14 @@ var fondo = 1;
 cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
     url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
-    //console.log(url);
     $('body').css('background-image',url);
 };
-$(document).ready(function () {
+$(document).ready(function (){
     (function cambiaFondoAuto(){
         url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
-        //console.log(url);
-        $('body').css('backgroundImage', function () {
-            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0.1)'}, 1500, function () {
-                setTimeout(function () {
+        $('body').css('backgroundImage', function(){
+            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0.1)'}, 1500, function(){
+                setTimeout(function(){
                     $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, .9)'}, 1500);}, 177000);
             });
             return url;
@@ -156,8 +149,8 @@ $(document).ready(function () {
     })();
 });
 
-$(document).ready(function () {
-    $('.btn-title').each(function () {
+$(document).ready(function(){
+    $('.btn-title').each(function(){
         $(this).attr('tooltip-title', $(this).attr('title'));
         $(this).removeAttr('title');
     });
