@@ -54,8 +54,12 @@ body{
     z-index: -1;
 }
 
-#brandBar{
+#brandBar {
+
+}
+#brandBar .row:nth-child(1){
     padding-top: 10px;
+    background-color: rgba(51, 51, 51, 0.45);
 }
 #brandBar > div:nth-child(2) { /*menú arriba main*/
     margin: 15px auto 0 auto;
@@ -247,3 +251,22 @@ div#map{
 #advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
     background-color: #e4cdb3;
 }
+.img-correo{
+    position: relative;
+    width: 14.5em;
+    height: 1.2em;
+    display: inline-block;
+}
+.img-correo > span{
+    height: 125%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.img-correo > span:nth-child(1){background-image: url("/assets/app/enciclovida_correo/d.svg");}
+.img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
+.img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
+.img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
