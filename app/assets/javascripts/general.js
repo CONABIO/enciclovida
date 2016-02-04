@@ -138,9 +138,9 @@ $(document).ready(function (){
     (function cambiaFondoAuto(){
         url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
         $('body').css('backgroundImage', function(){
-            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0.1)'}, 1500, function(){
+            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0)'}, 1500, function(){
                 setTimeout(function(){
-                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, .9)'}, 1500);}, 177000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 1)'}, 1500);}, 177000);
             });
             return url;
         });
