@@ -67,7 +67,13 @@ body{
 #brandBar .btn-group a{
     font-size: .75em;
     z-index: 0;
-    margin-left: 3px;
+    margin-right: -3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-width: 0 0 0 1px;
+    border-color: rgba(0, 0, 0, 0.35);
+    border-style: solid;
+    border-bottom-left-radius: .5em;
 }
 
 #mainFooter{
