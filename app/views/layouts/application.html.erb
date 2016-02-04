@@ -56,12 +56,15 @@
 				<li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
 			  </ul>
 			</div>
+		  </div>
 		<% else %>
 			<% if I18n.locale.to_s == 'es-cientifico' %>
+			  <div class="btn-group" role="group" aria-label="...">
 				<%= link_to 'Inicia sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-success btn-xs', :role => 'button' %>
+			  </div>
 			<% end %>
 		<% end %>
-	  </div>
+
 	  <div class="btn-group" role="group" aria-label="...">
 		<% if I18n.locale.to_s == 'es-cientifico' %>
 			<%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn btn-warning btn-xs', :role => 'button' %>
