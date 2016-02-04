@@ -55,14 +55,15 @@ body{
 }
 
 #brandBar {
+    background-color: rgba(51, 51, 51, 0.75);
+}
+#brandBar .row:nth-child(2){
+    padding-top: 10px;
+    padding-bottom: 10px;
 
 }
-#brandBar .row:nth-child(1){
-    padding-top: 10px;
-    background-color: rgba(51, 51, 51, 0.45);
-}
-#brandBar > div:nth-child(2) { /*menú arriba main*/
-    margin: 15px auto 0 auto;
+#brandBar > div:nth-child(1) { /*menú arriba main*/
+    margin: -3px auto 0 auto;
 }
 #brandBar div.btn-group a{
     font-size: .8em;
