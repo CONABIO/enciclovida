@@ -57,8 +57,7 @@ body{
     background-color: rgba(51, 51, 51, 0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 25px;
     font-size: .75em;
 }
 #brandBar > div.row:nth-child(2) > div ul.nav a{
@@ -72,15 +71,6 @@ body{
 #brandBar .btn-group > a{
     font-size: .80em;
     margin-left: 2px;
-    /*padding-right: 10px;*/
-    /*padding-left: 10px;*/
-    /*padding-top: 10px;*/
-    /*top: -10px;*/
-    /*border-width: 0 1px 0 1px;*/
-    /*border-color: rgba(0, 0, 0, 0.35);*/
-    /*border-style: solid;*/
-    /*border-bottom-left-radius: .3em;*/
-    /*border-bottom-right-radius: .3em;*/
 }
 
 #mainFooter{
@@ -251,6 +241,7 @@ div#map{
     background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
     background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
 }
+/*para los iconitos de la busqueda básica*/
 #brandBar .btn-title[tooltip-title]:hover:after {
     left: initial;
     right: 50%;

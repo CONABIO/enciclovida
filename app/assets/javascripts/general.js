@@ -157,3 +157,19 @@ $(document).ready(function(){
 });
 //Variable para ofuscar correo
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
+
+//Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
+$(document).ready(function(){
+    if ($('body').width() < 992){
+        $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+    }else{
+        $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+    }
+    $(window).resize(function(){
+        if ($('body').width() < 992){
+            $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+        }else{
+            $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+        }
+    });
+});
