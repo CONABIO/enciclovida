@@ -61,6 +61,10 @@ body{
     margin-bottom: 20px;
     font-size: .75em;
 }
+#brandBar > div.row:nth-child(2) > div ul.nav a{
+    font-weight: bolder;
+    text-shadow: 2px 2px 6px #999;
+}
 #brandBar > div:nth-child(1) { /*menú arriba main*/
     margin: 0px auto 0px auto;
 }
@@ -246,6 +250,11 @@ div#map{
     background-image: -moz-linear-gradient(top, #eeeeee, #fafafa);
     background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
     background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
+}
+#brandBar .btn-title[tooltip-title]:hover:after {
+    left: initial;
+    right: 50%;
+    top: 95%;
 }
 #acercaDe dt, #acercaDe dd{
     white-space: normal;
