@@ -138,9 +138,9 @@ $(document).ready(function (){
     (function cambiaFondoAuto(){
         url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
         $('body').css('backgroundImage', function(){
-            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0.1)'}, 1500, function(){
+            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0)'}, 1500, function(){
                 setTimeout(function(){
-                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, .9)'}, 1500);}, 177000);
+                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 1)'}, 1500);}, 177000);
             });
             return url;
         });
@@ -157,3 +157,19 @@ $(document).ready(function(){
 });
 //Variable para ofuscar correo
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
+
+//Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
+$(document).ready(function(){
+    if ($('body').width() < 992){
+        $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+    }else{
+        $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+    }
+    $(window).resize(function(){
+        if ($('body').width() < 992){
+            $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+        }else{
+            $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+        }
+    });
+});
