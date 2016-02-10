@@ -321,6 +321,3 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   wash_out
   wicked_pdf
-
-BUNDLED WITH
-   1.10.6
