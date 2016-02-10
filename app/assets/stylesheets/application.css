@@ -40,7 +40,6 @@
 body{
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-image: url("app/fondos/01.jpg");
     background-size: cover;
 }
 
@@ -54,18 +53,24 @@ body{
     z-index: -1;
 }
 
-#brandBar{
-    padding-top: 10px;
+#brandBar {
+    background-color: rgba(51, 51, 51, 0.75);
 }
-#brandBar > div:nth-child(2) { /*menú arriba main*/
-    margin: 15px auto 0 auto;
+#brandBar > div.row:nth-child(2) > div{
+    margin-top: 25px;
+    font-size: .75em;
 }
-#brandBar div.btn-group a{
-    font-size: .8em;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    margin-bottom: -1px;
-    z-index: 0;
+#brandBar > div.row:nth-child(2) > div ul.nav a{
+    font-weight: bolder;
+    text-shadow: 2px 2px 6px #999;
+}
+#brandBar > div:nth-child(1) { /*menú arriba main*/
+    margin: 0px auto 0px auto;
+}
+
+#brandBar .btn-group > a{
+    font-size: .80em;
+    margin-left: 2px;
 }
 
 #mainFooter{
@@ -236,6 +241,12 @@ div#map{
     background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
     background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
 }
+/*para los iconitos de la busqueda básica*/
+#brandBar .btn-title[tooltip-title]:hover:after {
+    left: initial;
+    right: 50%;
+    top: 95%;
+}
 #acercaDe dt, #acercaDe dd{
     white-space: normal;
     line-height: 180%;
@@ -247,3 +258,22 @@ div#map{
 #advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
     background-color: #e4cdb3;
 }
+.img-correo{
+    position: relative;
+    width: 14.5em;
+    height: 1.2em;
+    display: inline-block;
+}
+.img-correo > span{
+    height: 125%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.img-correo > span:nth-child(1){background-image: url("/assets/app/enciclovida_correo/d.svg");}
+.img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
+.img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
+.img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
