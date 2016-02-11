@@ -678,6 +678,7 @@ class Validacion < ActiveRecord::Base
 
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
+      validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
 
     else  # Asociacion vacia, solo el error
       validacion_interna_hash['SCAT_Reino_valido'] = nil
@@ -705,6 +706,7 @@ class Validacion < ActiveRecord::Base
       validacion_interna_hash['SCAT_Distribucion'] = nil
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = nil
       validacion_interna_hash['SCAT_Fuente'] = nil
+      validacion_interna_hash['ENCICLOVIDA'] = nil
     end
 
     validacion_interna_hash
