@@ -61,8 +61,17 @@ body{
     font-size: .75em;
 }
 #brandBar > div.row:nth-child(2) > div ul.nav a{
-    font-weight: bolder;
     text-shadow: 2px 2px 6px #999;
+    margin-right: 0px;
+    color: #bababa;
+}
+#brandBar > div.row:nth-child(2) > div ul.nav li{
+    background-color: rgba(62, 62, 62, 0.60);
+    margin-right: 2px;
+}
+#brandBar > div.row:nth-child(2) > div ul.nav li:hover a, #brandBar > div.row:nth-child(2) li.active a{
+    color: #444444!important;
+    font-weight: bolder;
 }
 #brandBar > div:nth-child(1) { /*menú arriba main*/
     margin: 0px auto 0px auto;
