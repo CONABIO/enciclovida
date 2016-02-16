@@ -57,8 +57,9 @@ body{
     background-color: rgba(51, 51, 51, 0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
-    margin-top: 25px;
+    margin-top: 10px;
     font-size: .75em;
+    margin-bottom: 20px;
 }
 #brandBar > div.row:nth-child(2) > div ul.nav a{
     text-shadow: 2px 2px 6px #999;
