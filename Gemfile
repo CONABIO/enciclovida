@@ -28,6 +28,7 @@ gem 'mysql2'
 gem 'nokogiri', '1.5.11'  # hacer un parse con xml
 gem 'pg'
 gem 'rack-contrib'
+gem 'rack-google-analytics'
 gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'  # autocompleta las busquedas
 gem 'rake', '10.4.2'

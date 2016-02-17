@@ -46,10 +46,13 @@ module Buscador
     config.autoload_paths += %W(#{config.root}/lib)
     #config.sass.preferred_syntax=:sass
 
-    #cambia en nombre de la tabla por default
+    # Cambia en nombre de la tabla por default
     ActiveRecord::SessionStore::Session.table_name = 'sessions'
 
-    #devise
+    # Devise
     config.action_mailer.default_url_options = { host: IP, port: PORT }
+
+    # Google analytics
+    config.middleware.use Rack::GoogleAnalytics, :tracker => CONFIG.google_analytics.tracker_id, :domain => CONFIG.google_analytics.domain_name
   end
 end
