@@ -15,9 +15,9 @@ GIT
 
 GIT
   remote: git://github.com/rails-sqlserver/tiny_tds.git
-  revision: 54bcd699fdf1454023fc846995c1dfee2f387277
+  revision: 8f5c35710346d02eeac76f7891cf5adad853c09c
   specs:
-    tiny_tds (0.9.5.beta.10)
+    tiny_tds (0.9.5.rc.2)
       mini_portile2 (~> 2.0)
 
 GIT
@@ -266,8 +266,7 @@ GEM
       nokogiri (>= 1.4.0)
     wash_out (0.9.0)
       nori (>= 2.0.0)
-    wicked_pdf (0.11.0)
-      rails
+    wicked_pdf (1.0.4)
 
 PLATFORMS
   ruby
@@ -320,7 +319,7 @@ DEPENDENCIES
   turbolinks
   uglifier (>= 1.3.0)
   wash_out
-  wicked_pdf
+  wicked_pdf (>= 1.0.4)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
