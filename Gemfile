@@ -46,7 +46,7 @@ gem 'turbolinks'  # hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
-gem 'wicked_pdf', '>= 1.0.4'
+gem 'wicked_pdf'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
