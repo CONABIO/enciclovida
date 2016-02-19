@@ -305,7 +305,7 @@
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
           <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% else %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
+          <%= button_tag(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </div>
   </div>
