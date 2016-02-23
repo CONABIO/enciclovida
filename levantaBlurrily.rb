@@ -1,0 +1,1 @@
+Blurrily::Server.new(:host => IP, :directory=> './db/blurrily').start if (require 'blurrily/server.rb')
