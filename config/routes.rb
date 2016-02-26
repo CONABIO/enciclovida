@@ -131,7 +131,7 @@ Buscador::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'especies#index'
+  root 'inicio#index'
 
   # Example of regular route:
   post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => 'new'
