@@ -72,6 +72,10 @@ base: &base
     public_key: 99999999999999999999999999999999999999999
     private_key: 99999999999999999999999999999999999999999
 
+  google_analytics:
+    tracker_id: UA-999999-9
+    domain_name: yoursite.org
+
 ###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation

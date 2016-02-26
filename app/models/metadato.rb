@@ -5,10 +5,12 @@ class Metadato < ActiveRecord::Base
   has_many :metadato_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'metadato_id', :dependent => :destroy
 
   def valida_object_name
-# Quita las siguientes cadenas: sp.$ | sp. | ssp. | sp$ | spp$ | sp..$ | spp..$
+# Quita las siguientes cadenas: sp.$ | sp. | ssp. | sp$ | ssp$ | sp..$ | ssp..$
     object = []
+
+    # Lo separo por comas porque puede haber mas de una especie
     object_name.split(',').each do |obj|
-      object << obj.squeeze('.').gsub(/( spp.$)|( spp. )|( sp[p.]$)|( sp[p.] )|( sp$)|( sp )/, ' subesp. ').squeeze(' ').strip
+      object << obj.squeeze('.').gsub(/( ssp.$)|( ssp. )|( ssp.)|( ss[p.]$)|( ss[p.] )|( sp$)|( sp )/, ' subsp. ').squeeze(' ').strip
     end
     self.object_name=object.join(',')
   end

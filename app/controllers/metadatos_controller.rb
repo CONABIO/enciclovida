@@ -29,16 +29,11 @@ class MetadatosController < ApplicationController
   # POST /metadatos
   # POST /metadatos.json
   def create
-    #@metadato = Metadato.new(metadato_params)
     @metadato = Metadato.find_or_create_by_path(metadato_params)
 
       if @metadato.save!(metadato_params)
-        #format.html { redirect_to @metadato, notice: 'Metadato was successfully created.' }
-        #format.json { render action: 'show', status: :created, location: @metadato }
-        render inline: "<%= 'OK' %>"
+        render text: 'OK'
       else
-        #format.html { render action: 'new' }
-        #format.json { render json: @metadato.errors, status: :unprocessable_entity }
         render nothing: true
       end
   end

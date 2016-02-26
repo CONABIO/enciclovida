@@ -11,11 +11,13 @@ class Especie < ActiveRecord::Base
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
-                :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_grado, :x_infraclase,
+                :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
-                :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie  # Para que en el excel sea mas facil la consulta
+                :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
+                :x_distancia
+
 
   has_one :proveedor
   has_one :adicional
@@ -78,6 +80,11 @@ class Especie < ActiveRecord::Base
   #Select para el Checklist (por_arbol)
   scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono, iconos.color_icono, iconos.taxon_icono").categoria_taxonomica_join.adicional_join.icono_join }
   scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join.icono_join }
+  #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
+  scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
+  scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus").categoria_taxonomica_join }
+  #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
+  scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
 
 
   CON_REGION = [19, 50]
@@ -221,13 +228,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def exporta_redis
     return unless ad = adicional
-    return unless ic = ad.icono
 
     data = ''
     data << "{\"id\":#{id},"
     data << "\"term\":\"#{nombre_cientifico}\","
     data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
-    data <<  "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+
+    if ic = ad.icono
+      data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    else
+      data << "\"nombre_icono\":\"\", \"icono\":\"\", \"color\":\"\", "
+    end
+
     data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
     data << "}\n"
   end
@@ -255,14 +267,13 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def asigna_nombre_comun
     if adicional
       # Por si no se quiere sobre-escribir el nombre comun principal
-      #return {:cambio => false} if adicional.nombre_comun_principal.present?
+      return {:cambio => false} if adicional.nombre_comun_principal.present?
       adicional.pon_nombre_comun_principal
+      {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
     else
       ad = crea_con_nombre_comun
-      return {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
+      {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
     end
-
-    {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
   end
 
   # Pone el nombre comun principal en la tabla adicionales
@@ -270,6 +281,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     ad = Adicional.new
     ad.especie_id = id
     ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+    ad
+  end
+
+  # Pone el grupo iconico en la tabla adicionales
+  def crea_con_grupo_iconico(id)
+    ad = Adicional.new
+    ad.especie_id = self.id
+    ad.icono_id = id
     ad
   end
 
@@ -339,7 +358,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def delayed_job_service
     if !existe_cache?
       escribe_cache
-      delay(run_at: 8.hours.from_now).cache_services
+      delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
     end
   end
 end

@@ -32,6 +32,15 @@ class String
     self.gsub("'", "''")
   end
 
+  def codifica64
+    Base64.encode64(self)
+  end
+
+  def decodifica64
+    decoded = Base64.decode64(self)
+    decoded.force_encoding('UTF-8')
+  end
+
   # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
   def humanizar?
     # Verifica solo con el primer caracter

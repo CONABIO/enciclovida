@@ -331,7 +331,7 @@ class Validacion < ActiveRecord::Base
     end
 
     h = hash
-    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'])
+    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       taxon = asigna_categorias_correspondientes(taxon.first)
@@ -350,7 +350,7 @@ class Validacion < ActiveRecord::Base
 
     else
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = hash['nombre_cientifico'].split(' ')
+      nombres = hash['nombre_cientifico'].strip.split(' ')
 
       taxon = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
@@ -366,7 +366,7 @@ class Validacion < ActiveRecord::Base
       elsif taxon.present? && taxon.length > 1
         return busca_recursivamente(taxon, hash)
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
-        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'], limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].strip, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
@@ -375,7 +375,7 @@ class Validacion < ActiveRecord::Base
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(hash['nombre_cientifico'].downcase, taxon.nombre_cientifico.limpiar.downcase)
+            distancia = Levenshtein.distance(hash['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.strip.limpiar.downcase)
 
             if distancia == 0  # Es exactamente el mismo taxon
               t = asigna_categorias_correspondientes(taxon)
@@ -668,8 +668,8 @@ class Validacion < ActiveRecord::Base
 
       # Para el tipo de distribucion
       tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
-      if tipos_distribuciones.any? || taxon.invasora.present?
-        tipos_distribuciones << 'invasora' if taxon.invasora.present?
+
+      if tipos_distribuciones.any?
         taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
         validacion_interna_hash['SCAT_Distribucion'] = taxon.x_tipo_distribucion
       else
@@ -678,6 +678,7 @@ class Validacion < ActiveRecord::Base
 
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
+      validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
 
     else  # Asociacion vacia, solo el error
       validacion_interna_hash['SCAT_Reino_valido'] = nil
@@ -705,6 +706,7 @@ class Validacion < ActiveRecord::Base
       validacion_interna_hash['SCAT_Distribucion'] = nil
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = nil
       validacion_interna_hash['SCAT_Fuente'] = nil
+      validacion_interna_hash['ENCICLOVIDA'] = nil
     end
 
     validacion_interna_hash

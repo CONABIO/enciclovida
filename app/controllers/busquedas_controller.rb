@@ -20,7 +20,7 @@ class BusquedasController < ApplicationController
                       when 'dist'
                         v.map{|x| 'dist_'+x.parameterize}
                       when 'prioritaria'
-                        ['campo_'+k]
+                        v.map{|x| 'prior_'+x.parameterize}
                       else
                         next
                     end
@@ -100,11 +100,13 @@ class BusquedasController < ApplicationController
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
 
         when 'nombre_cientifico'
-          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
+          arbol = params[:arbol].present? && params[:arbol].to_i == 1
 
-          sql = "Especie.datos_basicos.
-            caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").
-            order('nombre_cientifico ASC')"
+          #Si pido arbol, entonces a estatus pegale nil para que abajito ponga ('1,2')
+          estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
+
+          #if arbol
+          sql = "Especie.datos_basicos.caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").order('nombre_cientifico ASC')"
 
           consulta = eval(sql).to_sql
           totales = eval(sql).count
@@ -121,8 +123,7 @@ class BusquedasController < ApplicationController
 
               if ids.present?
                 @taxones = Especie.none
-                taxones=Especie.datos_basicos.
-                    caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
+                taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
 
                 taxones.each do |taxon|
                   # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
@@ -130,7 +131,9 @@ class BusquedasController < ApplicationController
                   @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
                   if distancia < 3
+                    taxon[:distancia]= distancia
                     @taxones <<= taxon
+
                   else
                     next
                   end
@@ -142,6 +145,19 @@ class BusquedasController < ApplicationController
             @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
+          if !@taxones.empty? && arbol
+            @arboles = []
+            @taxones.each do | taxon|
+              #Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
+              nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
+              #Jalo unicamente los ancestros del taxón en cuestión
+              arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+
+              #Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
+              @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
+            end
+            render 'busquedas/arbol.json.erb'
+          end
 
           if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
@@ -149,11 +165,14 @@ class BusquedasController < ApplicationController
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
+          elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
+              render :text => '[]'
           elsif @taxones.empty?
             redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
           end
 
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
+
 
         when 'avanzada'
           #Es necesario hacer un index con estos campos para aumentar la velocidad
@@ -260,7 +279,7 @@ class BusquedasController < ApplicationController
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
                 @taxones = Busqueda.por_arbol(busqueda)
-                checklists
+                checklist
               else
                 query = eval(busqueda).distinct.to_sql
                 consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
@@ -276,7 +295,7 @@ class BusquedasController < ApplicationController
 
               if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
                 @taxones = Busqueda.por_arbol(busqueda, true)
-                checklists(true)
+                checklist(true)
               end
               @taxones = Especie.find_by_sql(@taxones)
 
@@ -327,17 +346,17 @@ class BusquedasController < ApplicationController
     end
   end
 
-  def checklists(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
+  def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
       padres = {}
-      #@taxones.map {|taxon| taxon.arbol.split('/').each {|p| @padres[p.to_i]=''}}
       @taxones.each do |taxon|
         taxon.arbol.split('/').each do |p|
           padres[p.to_i]=''
         end
       end
+      #Aquí entro al query sin filtros (a pesar de que mi búsqueda fue CON filtros) pq ya tengo todos los papás, ahora necesito sus datos y ordenarlos por campo arbol
       @taxones = Especie.datos_arbol_sin_filtros.where("especies.id in (#{padres.keys.join(',')})").order('arbol')
     end
   end

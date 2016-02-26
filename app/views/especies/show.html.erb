@@ -234,27 +234,24 @@
 <% end %>
 
 <div class="row">
+  <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+    <h3>
+      <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
+      <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
+      <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+    </h3>
+  </div>
+  <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
+    <div class="leaf bg-success text-success" id="conSugerencia">
+      <p>¿Algún <%= link_to('comentario <span class="glyphicon glyphicon-send" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id)) %> acerca de este taxón? </p>
+    </div>
     <% if @con_naturalista %>
-        <div class="leaf" id="conNaturalista">
-                <%= image_tag('app/naturalista_ic.png') %>
-                <div class="text-center text-primary">
-                  <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un </p> <%= link_to(image_tag('app/naturalista.png', :class => 'img-thumbnail'), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank) %>
-                </div>
-
+        <div class="leaf bg-warning text-primary text-center" id="conNaturalista">
+          <%= image_tag('app/naturalista_ic.png') %>
+          <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(image_tag('app/naturalista.png', :class => ''), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-link') %></p>
         </div>
     <% end %>
-    <div class="leaf text-primary" id="conSugerencia">
-        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-        <div class="text-center">
-          <p>¿Tienes alguna duda, sugerencia ó corrección acerca de este taxón?</p><%= link_to('Comentar <span class="glyphicon glyphicon-send text-primary" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id), :class => 'btn btn-default') %>
-        </div>
-    </div>
-    <h2>
-        <%= "#{tituloNombreCientifico(@especie, :show => true).gsub(' )',')')}".html_safe %>
-        <%# image_tag('app/prioritaria.png', title: 'Prioritaria', alt: 'Prioritaria') if @especie.species_or_lower? && @especie.prioritaria.present? %>
-        <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
-        <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
-    </h2>
+  </div>
 </div>
 
 <div class="row">
@@ -273,7 +270,7 @@
 
 <div class="row">
     <% if @photos.any? %>
-        <% col1 = (geo && geo.count > 0) ? 'col-xs-5 col-sm-5 col-md-5 col-lg-5' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+        <% col1 = (geo && geo.count > 0) ? 'col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
         <div class="<%=col1%>" id="contenedor_fotos">
 
           <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
@@ -286,7 +283,7 @@
     <% end %>
 
     <% if geo && geo.count > 0 %>
-        <% col2 = @photos.any? ? 'col-xs-7 col-sm-7 col-md-7 col-lg-7' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+        <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
         <div class="<%=col2%>" id="contenedor_mapa">
           <div class="embed-responsive embed-responsive-4by3">
             <div id="map"></div>
@@ -308,7 +305,7 @@
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
           <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
       <% else %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "#{especie_path(@especie)}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
+          <%= button_tag(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </div>
   </div>
@@ -318,9 +315,10 @@
   <div id="pestañas" class="panel">
     <% if I18n.locale.to_s == 'es-cientifico' %>
         <ul class="nav nav-tabs" data-tabs="tabs">
-          <li class="active"><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
-          <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
-          <%= "<li><a href=\"#description\"><span>Fichas</span></a></li>".html_safe if @especie.species_or_lower? %>
+          <li id="conabio_info_li" class="active"><a href="#conabio_info"><img src="/assets/app/icoCatalogo.png"><strong> Catálogos</strong></a></li>
+          <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+          <% if @especie.species_or_lower? %><li id="description_li"><a href="#description"><img src ="/assets/app/icoFicha.png"><strong>  Ficha</strong></a><% end %>
+
         </ul>
         <div id="conabio_info" class="tab-pane panel-body">
           <%= render :partial => 'info' %>
@@ -338,14 +336,15 @@
     <% else %>
         <ul class="nav nav-tabs" data-tabs="tabs">
           <% if @especie.species_or_lower? %>
-              <li class="active"><a href="#description"><span>Fichas</span></a></li>
-              <li><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+              <li id="description_li" class="active"><a href="#description"><img src ="/assets/app/icoFicha.png"><strong>  Ficha</strong></a>
+              </li>
+              <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
           <% else %>
-              <li class="active"><a href="#arbol_taxonomico"><span><%= t :arreglo_taxonomico %></span></a></li>
+              <li id="arbol_taxonomico_li" class="active"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
           <% end %>
-          <li><a href="#conabio_info"><span>Catálogos de CONABIO</span></a></li>
+          <li id="conabio_info_li" ><a href="#conabio_info"><img src="/assets/app/icoCatalogo.png"><strong> Catálogos</strong></a></li>
         </ul>
-
+        <small><a href="#brandBar" class="pull-right"><strong>Subir </strong><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></a></small>
 
         <% if @especie.species_or_lower? %>
             <div id="description" class="tab-pane panel-body">

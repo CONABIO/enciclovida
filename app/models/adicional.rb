@@ -9,8 +9,8 @@ class Adicional < ActiveRecord::Base
 
   # El valido de catalogos
   def nombre_comun_principal_catalogos
-    con_espaniol = false
     self.nombre_comun_principal = nil
+    con_espaniol = false
 
     # Verifica el nombre en catalogos
     especie.nombres_comunes.each do |nc|
@@ -29,6 +29,7 @@ class Adicional < ActiveRecord::Base
     return unless prov = especie.proveedor
     return unless prov.naturalista_info.present?
 
+    self.nombre_comun_principal = nil
     datos = eval(prov.naturalista_info)
     datos = datos.first if datos.is_a?(Array)
     default_name = datos['default_name']

@@ -28,6 +28,7 @@ gem 'mysql2'
 gem 'nokogiri', '1.5.11'  # hacer un parse con xml
 gem 'pg'
 gem 'rack-contrib'
+gem 'rack-google-analytics'
 gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'rails3-jquery-autocomplete', github: 'calonso-conabio/rails3-jquery-autocomplete', branch: 'master'  # autocompleta las busquedas
 gem 'rake', '10.4.2'
@@ -41,7 +42,7 @@ gem 'savon', '2.4.0'  # para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # extrae las tuplas de un modelo o de toda la base
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
-gem 'tiny_tds'#, github: 'rails-sqlserver/tiny_tds'
+gem 'tiny_tds', github: 'rails-sqlserver/tiny_tds'
 gem 'turbolinks'  # hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier', '>= 1.3.0'

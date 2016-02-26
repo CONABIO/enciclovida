@@ -45,8 +45,6 @@ class Busqueda
 
   def self.por_arbol(busqueda, sin_filtros=false)
     if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
-      #sql = 'select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, icono, nombre_icono")'
-      puts ('---'+busqueda)
       busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
       busq = busq.sub(/\.where\(\"CONCAT.+/,'')
       busq << ".order('arbol')"
@@ -75,7 +73,7 @@ class Busqueda
         if ad = taxon.adicional
           ad.icono_id = id
         else
-          ad = taxon.crea_con_grupo_iconico(grupo)
+          ad = taxon.crea_con_grupo_iconico(id)
         end
 
       else  # Los grupos y reinos menos animalia y plantae
@@ -84,7 +82,6 @@ class Busqueda
 
         # Itero sobre los descendientes
         descendientes.each do |descendiente|
-
           begin
             taxon_desc = Especie.find(descendiente)
           rescue
@@ -104,13 +101,12 @@ class Busqueda
           if ad = taxon_desc.adicional
             ad.icono_id = id
           else
-            ad = taxon_desc.crea_con_grupo_iconico(grupo)
+            ad = taxon_desc.crea_con_grupo_iconico(id)
           end
 
           # Guarda el record
-          if ad.changed?
-            ad.save
-          end
+          ad.save if ad.changed?
+
         end  # Cierra el each de descendientes
       end
 
@@ -118,20 +114,8 @@ class Busqueda
       next unless ad.present?
 
       # Guarda el record
-      if ad.changed?
-        ad.save
-      end
+      ad.save if ad.changed?
 
     end  # Cierra el iterador de grupos
   end
-
-  # Pone el grupo iconico en la tabla adicionales
-  def crea_con_grupo_iconico(id)
-    ad = Adicional.new
-    ad.especie_id = self.id
-    ad.icono_id = id
-    ad
-  end
-
-
 end
