@@ -214,6 +214,9 @@ class EspeciesController < ApplicationController
     @accion = to_boolean(params[:accion]) if params[:accion].present?
   end
 
+  def arbol_inicial
+  end
+
   def edit_photos
     @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
   end
