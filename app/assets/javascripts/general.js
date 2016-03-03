@@ -14,6 +14,7 @@ $(document).ready(function(){
         if ($("#nodo_" + sufijo + " li").length > 0)
         {
             $("#nodo_" + sufijo + " li").remove();
+            $('#span_' + sufijo).toggleClass('glyphicon-plus');$('#span_' + sufijo).toggleClass('glyphicon-minus');
         } else {
             $.ajax(
                 {
@@ -24,6 +25,7 @@ $(document).ready(function(){
                     }
                 }).done(function(nodo)
                 {
+                    $('#span_' + sufijo).toggleClass('glyphicon-plus');$('#span_' + sufijo).toggleClass('glyphicon-minus');
                     return $("#nodo_" + sufijo).append(nodo);
                 });
         }
