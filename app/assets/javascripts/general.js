@@ -8,13 +8,19 @@
 
 $(document).ready(function(){
 
-    despliegaOcontrae = function(id){
+    despliegaOcontrae = function(id)
+    {
         var sufijo = id.substring(5);
-        //Verifica que el nodo que se le dio clic este vacio
+
         if ($("#nodo_" + sufijo + " li").length > 0)
         {
+            var minus = $('#span_' + sufijo).hasClass("glyphicon-minus");
+
+            if (minus)
+                $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+
             $("#nodo_" + sufijo + " li").remove();
-            $('#span_' + sufijo).toggleClass('glyphicon-plus');$('#span_' + sufijo).toggleClass('glyphicon-minus');
+
         } else {
             $.ajax(
                 {
@@ -22,12 +28,15 @@ $(document).ready(function(){
                     data: {
                         id: sufijo,
                         accion: true
-                    }
-                }).done(function(nodo)
-                {
-                    $('#span_' + sufijo).toggleClass('glyphicon-plus');$('#span_' + sufijo).toggleClass('glyphicon-minus');
-                    return $("#nodo_" + sufijo).append(nodo);
-                });
+                        }
+                    }).done(function(nodo)
+                    {
+                        var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
+
+                        if (plus)
+                            $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
+                        return $("#nodo_" + sufijo).append(nodo);
+                    });
         }
         return false;
     };
