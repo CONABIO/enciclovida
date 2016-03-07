@@ -5,6 +5,5 @@
 <h3><%= @titulo %></h3>
 
 <p><b>Puedes navegar dando clic en <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> para expandir</b></p>
-<div id='vista_arbol'>
-  <%= arbolTaxonomico(@especie).html_safe %>
-</div>
+
+<%= render :partial => 'arbol' %>
