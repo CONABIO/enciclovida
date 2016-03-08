@@ -209,12 +209,17 @@ class EspeciesController < ApplicationController
     end
   end
 
-  #Despliega o contrae o muestra el arbol de un inicio
+  # Despliega o contrae o muestra el arbol de un inicio
   def arbol
-    @accion = to_boolean(params[:accion]) if params[:accion].present?
+    @despliega_o_contrae = to_boolean(params[:accion]) if params[:accion].present?
+    nodos_arbol
   end
 
+  # Muestra el arbol en una sola pagina
   def arbol_inicial
+    @especie = nil
+    @despliega_o_contrae = false
+    nodos_arbol
   end
 
   def edit_photos
@@ -331,6 +336,80 @@ class EspeciesController < ApplicationController
     )
   end
 
+  def nodos_arbol
+    if @despliega_o_contrae  # Si es para desplegar o contraer
+      nodo = ''
+      if I18n.locale.to_s == 'es-cientifico'
+        @taxones = Especie.datos_basicos.
+            caso_rango_valores('especies.id', @especie.child_ids.join(',')).order(:nombre_cientifico)
+            #.each do |children|
+          #nodo+= enlacesDelArbol(children, true)
+        #end
+
+      else # Solo las categorias taxonomicas obligatorias
+        @taxones = Especie.none
+        # Quito las categorias que no pertecene a la estructura del taxon (Division o Phylum)
+        cat_obl = if @especie.ancestry_ascendente_directo.include?('1000001') || @especie.id == 1000001
+                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'división'}.compact
+                  else
+                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'phylum'}.compact
+                  end
+
+        index_cat = cat_obl.index(@especie.categoria_taxonomica.nombre_categoria_taxonomica)
+        return @taxones if index_cat.nil?  # Si no encontro la categoria
+        return @taxones if index_cat == cat_obl.length - 1 # Si es la ultima categoria
+        index_cat+= 1
+
+        ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/#{@especie.id}"
+
+        @taxones = Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}%'").caso_status('2').
+            caso_sensitivo('nombre_categoria_taxonomica',cat_obl[index_cat]).order(:nombre_cientifico)
+                       #.each do |children|
+          #nodo+= enlacesDelArbol(children, true)
+        #end
+      end
+
+    else # Si es para cuando se despliega la pagina
+      if @especie.nil?  # Si es el index
+        arbolCompleto = ''
+        @taxones = Especie.datos_basicos.where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0')
+        @arbol_inicial = true  # Quiere decir que es el arbol solo con los 5 reinos
+                       #.each do |t|
+          #arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
+        #end
+        # Pone los reinos en una lista separada cada uno
+        #arbolCompleto
+
+      else # Si es cualquier otro taxon
+        tags = ''
+        arbolCompleto = "<ul class=\"nodo_mayor\">"
+        contadorNodos = 0
+
+        if I18n.locale.to_s == 'es-cientifico'
+          @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+              caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
+              #.each do |ancestro|
+            #arbolCompleto << enlacesDelArbol(ancestro)
+            #contadorNodos+= 1
+          #end
+        else  # Solo las categorias taxonomicas obligatorias
+          @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+              caso_rango_valores('especies.id', @especie.path_ids.join(',')).
+              caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
+              order('nivel')
+                         #.each do |ancestro|
+            #arbolCompleto << enlacesDelArbol(ancestro)
+            #contadorNodos+= 1
+          #end
+        end
+
+        @arbol_inicial = false  # Quiere decir que es el arbol de algun taxon en particular
+
+        #contadorNodos.times {tags << '</li></ul>'}
+        #arbolCompleto + tags + '</ul>'
+      end
+    end
+  end
 
   def retrieve_photos
     #[retrieve_remote_photos, retrieve_local_photos].flatten.compact

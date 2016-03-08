@@ -1,3 +1,11 @@
 <div id='vista_arbol'>
-  <%= arbolTaxonomico(@especie, @accion).html_safe %>
+  <%= @taxones.inspect %>|
+  <%= @despliega_o_contrae.inspect %>|
+  <%= @arbol_inicial.inspect %>
+
+  <% if @taxones.length > 0 %>
+  <% if @despliega_o_contrae %>
+
+  <% end %>
+  <% end %>
 </div>

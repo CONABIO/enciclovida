@@ -127,13 +127,23 @@ module EspeciesHelper
     end
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
-
+=begin
   def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
     nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
     nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
     nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
     #Deja los nodos abiertos para que esten anidados (si conClick es falso)
     conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
+  end
+=end
+
+  def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
+    nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
+    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
+    nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
+    nodos
+    #Deja los nodos abiertos para que esten anidados (si conClick es falso)
+    #conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
   end
 
   def arbolTaxonomico(taxon, accion=false)
