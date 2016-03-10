@@ -92,7 +92,9 @@
 
     $(document).ready(function()
     {
+        $("#arbol_taxonomico").load("/especies/arbol?id=" + TAXON.id);
         $('#pestañas').tabs(); // Inicia los tabs
+
         $('#pestañas > .nav a').click(function(){
             $('#pestañas > .nav li').removeClass("active");
             $(this).parent().addClass("active");

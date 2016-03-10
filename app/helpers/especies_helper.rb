@@ -127,91 +127,13 @@ module EspeciesHelper
     end
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
-=begin
-  def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
+
+  def hojasDelArbol(taxon, params={})
     nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
     nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
     nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
-    #Deja los nodos abiertos para que esten anidados (si conClick es falso)
-    conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
-  end
-=end
 
-  def enlacesDelArbol(taxon, conClick=nil)     #cuando carga la pagina
-    nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => "$('#span_#{taxon.id}').toggleClass('glyphicon-plus');$('#span_#{taxon.id}').toggleClass('glyphicon-minus');return despliegaOcontrae(this.id);")}"
-    nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
-    nodos
-    #Deja los nodos abiertos para que esten anidados (si conClick es falso)
-    #conClick.present? ? "<ul>#{nodos}</li></ul>" : "<ul>#{nodos}"
-  end
-
-  def arbolTaxonomico(taxon, accion=false)
-    if accion  # Si es para desplegar o contraer
-      nodo = ''
-      if I18n.locale.to_s == 'es-cientifico'
-        Especie.datos_basicos.
-            caso_rango_valores('especies.id', taxon.child_ids.join(',')).order(:nombre_cientifico).each do |children|
-          nodo+= enlacesDelArbol(children, true)
-        end
-
-      else # Solo las categorias taxonomicas obligatorias
-        # Quito las categorias que no pertecene a la estructura del taxon (Division o Phylum)
-        cat_obl = if taxon.ancestry_ascendente_directo.include?('1000001') || taxon.id == 1000001
-                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'división'}.compact
-                  else
-                    CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| c if c != 'phylum'}.compact
-                  end
-
-
-        index_cat = cat_obl.index(taxon.categoria_taxonomica.nombre_categoria_taxonomica)
-        return '' if index_cat.nil?  # Si no encontro la categoria
-        return '' if index_cat == cat_obl.length - 1 # Si es la ultima categoria
-        index_cat+= 1
-
-        ancestry = taxon.is_root? ? taxon.id : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}"
-
-        Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}%'").caso_status('2').
-            caso_sensitivo('nombre_categoria_taxonomica',cat_obl[index_cat]).order(:nombre_cientifico).each do |children|
-          nodo+= enlacesDelArbol(children, true)
-        end
-      end
-      nodo
-
-    else # Si es para cuando se despliega la pagina
-      if taxon.nil?  # Si es el index
-        arbolCompleto = ''
-        Especie.datos_basicos.where('nivel1=1 AND nivel2=0 AND nivel3=0 AND nivel4=0').each do |t|
-          arbolCompleto << "<ul class=\"nodo_mayor\">" + enlacesDelArbol(t) + '</li></ul></ul>'
-        end
-        # Pone los reinos en una lista separada cada uno
-        arbolCompleto
-
-      else # Si es cualquier otro taxon
-        tags = ''
-        arbolCompleto = "<ul class=\"nodo_mayor\">"
-        contadorNodos = 0
-
-        if I18n.locale.to_s == 'es-cientifico'
-          Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-              caso_rango_valores('especies.id', taxon.path_ids.join(',')).order('nivel').each do |ancestro|
-            arbolCompleto << enlacesDelArbol(ancestro)
-            contadorNodos+= 1
-          end
-        else  # Solo las categorias taxonomicas obligatorias
-          Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-              caso_rango_valores('especies.id', taxon.path_ids.join(',')).
-              caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
-              order('nivel').each do |ancestro|
-            arbolCompleto << enlacesDelArbol(ancestro)
-            contadorNodos+= 1
-          end
-        end
-
-        contadorNodos.times {tags << '</li></ul>'}
-        arbolCompleto + tags + '</ul>'
-      end
-    end
+    nodos << '</li>' if params[:arbol_inicial]
   end
 
   def accionesEnlaces(modelo, accion, index=false)
