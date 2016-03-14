@@ -49,9 +49,11 @@
     });
 
     function update() {
+        console.log(root);
         var nodes = flatten(root),
                 links = d3.layout.tree().links(nodes);
 
+        console.log(nodes);
         // Restart the force layout.
         force
                 .nodes(nodes)
@@ -77,7 +79,7 @@
                 .call(force.drag);
 
         nodeEnter.append("circle")
-                .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; });
+                .attr("r", 10);
 
         nodeEnter.append("text")
                 .attr("dy", ".35em")
@@ -109,7 +111,6 @@
             d._children = d.children;
             d.children = null;
         } else {
-            console.log(d._children[0])
             d.children = d._children;
             d._children = null;
         }
@@ -121,9 +122,17 @@
         var nodes = [], i = 0;
 
         function recurse(node) {
-            if (node.children) node.children.forEach(recurse);
-            if (!node.id) node.id = ++i;
-            nodes.push(node);
+            //node.id = ++i;
+            if (node.children)
+            {
+                node.children.forEach(recurse);
+              //  console.log(node)
+            }
+            //if (node.name == "flare") {
+                if (!node.id) node.id = ++i;
+                nodes.push(node);
+
+            //}
         }
 
         recurse(root);

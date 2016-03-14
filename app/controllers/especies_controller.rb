@@ -3,7 +3,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
-  before_action :only => [:arbol] do
+  before_action :only => [:arbol, :arbol_inicial, :json_d3] do
     set_especie(true)
   end
 
@@ -13,7 +13,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -217,9 +217,16 @@ class EspeciesController < ApplicationController
 
   # Muestra el arbol en una sola pagina
   def arbol_inicial
-    @especie = nil
-    @despliega_o_contrae = false
-    nodos_arbol
+    #@especie = nil
+    #@despliega_o_contrae = false
+    #nodos_arbol
+
+    nodos_arbol_json_d3
+  end
+
+  # JSON que se ocupara para desplegar los datos en D3
+  def json_d3
+    render :text => "salio"
   end
 
   def edit_photos

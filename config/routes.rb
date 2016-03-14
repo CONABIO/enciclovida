@@ -64,6 +64,7 @@ Buscador::Application.routes.draw do
       get :kmz
       get :kmz_naturalista
       get :cache_services
+      get ':id/json_d3' => 'especies#json_d3'
     end
   end
 
