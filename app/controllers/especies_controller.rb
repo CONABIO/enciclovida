@@ -226,7 +226,27 @@ class EspeciesController < ApplicationController
 
   # JSON que se ocupara para desplegar los datos en D3
   def json_d3
-    render :text => "salio"
+    children_array = []
+
+    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.reverse.join(','))
+                  .order('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) DESC')
+
+    taxones.each_with_index do |t, i|
+      children_hash = {}
+
+      children_hash[:name] = t.nombre_cientifico
+      children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
+
+      if i+1 != 1  # Si es taxon mas bajo no tiene hijos
+        children_hash[:children] = [children_array[i-1]]
+      end
+
+      # Acumula el resultado del json anterior una posicion antes de la actual
+      children_array << children_hash
+    end
+
+    # La ultima posicion es la mas actual
+    render :json => children_array.last.to_json
   end
 
   def edit_photos
@@ -415,6 +435,13 @@ class EspeciesController < ApplicationController
         #contadorNodos.times {tags << '</li></ul>'}
         #arbolCompleto + tags + '</ul>'
       end
+    end
+  end
+
+  def nodo_recursivo(nodo, nodo_previo)
+    nodos[:name] = t.nombre_cientifico
+    if i+1 < taxones_long
+      nodos[:children] = []
     end
   end
 
