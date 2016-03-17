@@ -1,5 +1,10 @@
 <style>
 
+    body {
+        overflow:hidden;
+        margin:0;
+    }
+
     .node circle {
         cursor: pointer;
         fill: #ccc;
@@ -16,6 +21,8 @@
     line.link {
         stroke: #000;
         stroke-width: 1.5px;
+        fill: green;
+        stroke-dasharray: 0,2 1;
     }
 
 </style>
@@ -23,14 +30,14 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-    var width = 960,
-            height = 500,
+    var width = window.innerWidth,
+            height = window.innerHeight,
             root;
 
     var force = d3.layout.force()
             .linkDistance(80)
-            .charge(-180)
-            .gravity(.005)
+            .charge(-120)
+            .gravity(.05)
             .size([width, height])
             .on("tick", tick);
 
@@ -38,10 +45,16 @@
             .attr("width", width)
             .attr("height", height);
 
+    var min_zoom = 0.1;
+    var max_zoom = 7;
+    var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
+
+    svg.style("cursor","move");
+
     var link = svg.selectAll(".link"),
             node = svg.selectAll(".node");
 
-    d3.json("/graph.json", function(error, json) {
+    d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
         if (error) throw error;
 
         root = json;
@@ -77,6 +90,15 @@
                 .attr("class", "node")
                 .on("click", click)
                 .call(force.drag);
+
+        nodeEnter.on("dblclick.zoom", function(d) { d3.event.stopPropagation();
+            var dcx = (window.innerWidth/2-d.x*zoom.scale());
+            var dcy = (window.innerHeight/2-d.y*zoom.scale());
+            zoom.translate([dcx,dcy]);
+            node.attr("transform", "translate("+ dcx + "," + dcy  + ")scale(" + zoom.scale() + ")");
+
+
+        });
 
         nodeEnter.append("circle")
                 .attr("r", 10);
