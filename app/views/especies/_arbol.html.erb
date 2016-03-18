@@ -1,10 +1,5 @@
 <style>
 
-    body {
-        overflow:hidden;
-        margin:0;
-    }
-
     .node circle {
         cursor: pointer;
         fill: #ccc;
@@ -21,8 +16,6 @@
     line.link {
         stroke: #000;
         stroke-width: 1.5px;
-        fill: green;
-        stroke-dasharray: 0,2 1;
     }
 
 </style>
@@ -30,29 +23,29 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-    var width = window.innerWidth,
-            height = window.innerHeight,
+    var min_zoom = 0.1;
+    var max_zoom = 7;
+    var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
+
+    var width = 900,
+            height = 500,
             root;
 
     var force = d3.layout.force()
             .linkDistance(80)
-            .charge(-120)
+            .charge(-300)
             .gravity(.05)
             .size([width, height])
             .on("tick", tick);
 
     var svg = d3.select(".main").append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+            .style("cursor","move");
 
-    var min_zoom = 0.1;
-    var max_zoom = 7;
-    var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
-
-    svg.style("cursor","move");
-
-    var link = svg.selectAll(".link"),
-            node = svg.selectAll(".node");
+    var g = svg.append("g");
+    var link = g.selectAll(".link");
+    var node = g.selectAll(".node");
 
     d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
         if (error) throw error;
@@ -61,12 +54,20 @@
         update();
     });
 
+    zoom.on("zoom", function() {
+        g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    });
+
+    svg.call(zoom);
+
+    resize();
+
     function update() {
-        console.log(root);
+        //console.log(root);
         var nodes = flatten(root),
                 links = d3.layout.tree().links(nodes);
 
-        console.log(nodes);
+        //console.log(nodes);
         // Restart the force layout.
         force
                 .nodes(nodes)
@@ -89,16 +90,7 @@
         var nodeEnter = node.enter().append("g")
                 .attr("class", "node")
                 .on("click", click)
-                .call(force.drag);
-
-        nodeEnter.on("dblclick.zoom", function(d) { d3.event.stopPropagation();
-            var dcx = (window.innerWidth/2-d.x*zoom.scale());
-            var dcy = (window.innerHeight/2-d.y*zoom.scale());
-            zoom.translate([dcx,dcy]);
-            node.attr("transform", "translate("+ dcx + "," + dcy  + ")scale(" + zoom.scale() + ")");
-
-
-        });
+                .call(force.drag().on("dragstart", dragstart));
 
         nodeEnter.append("circle")
                 .attr("r", 10);
@@ -112,12 +104,12 @@
     }
 
     function tick() {
+        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
         link.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
-
-        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
     }
 
     function color(d) {
@@ -159,6 +151,20 @@
 
         recurse(root);
         return nodes;
+    }
+
+    function resize() {
+        var w = 900, h = 500;
+        svg.attr("width", w).attr("height", h);
+
+        force.size([force.size()[0]+(w-width)/zoom.scale(),force.size()[1]+(h-height)/zoom.scale()]).resume();
+        width = w;
+        height = h;
+    }
+
+    function dragstart(d) {
+        d3.event.sourceEvent.stopPropagation();
+        d3.select(this).classed("fixed", d.fixed = true);
     }
 
 </script>
