@@ -15,12 +15,12 @@ class Adicional < ActiveRecord::Base
     # Verifica el nombre en catalogos
     especie.nombres_comunes.each do |nc|
       if !con_espaniol && nc.lengua == 'Español'
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc
         con_espaniol = true
       elsif !con_espaniol && nc.lengua == 'Inglés'
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc
       elsif !con_espaniol
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc
       end
     end
   end
@@ -42,7 +42,7 @@ class Adicional < ActiveRecord::Base
     lexicon = I18n.transliterate(default_name['lexicon']).gsub(' ','_').downcase
     return unless LENGUAS_ACEPTADAS.include?(lexicon)
     nombre_comun_principal = default_name['name']
-    self.nombre_comun_principal = nombre_comun_principal.humanizar
+    self.nombre_comun_principal = nombre_comun_principal
   end
 
   def pon_nombre_comun_principal

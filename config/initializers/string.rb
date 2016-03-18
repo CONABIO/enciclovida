@@ -41,12 +41,16 @@ class String
     decoded.force_encoding('UTF-8')
   end
 
+  def capitalize_first_char
+    self.sub(/^(.)/) { $1.mb_chars.capitalize }
+  end
+
   # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
   def humanizar?
     # Verifica solo con el primer caracter
     original = self
-    primera_capital = self[0,1].capitalize << self[1..-1]
-    original == primera_capital ? self : self.humanizar
+    primera_en_mayuscula = self.capitalize_first_char
+    original == primera_en_mayuscula ? self : self.humanizar
   end
 end
 
