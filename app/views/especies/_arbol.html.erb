@@ -48,6 +48,7 @@
     var node = g.selectAll(".node");
 
     d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
+        console.log(json);
         if (error) throw error;
 
         root = json;
@@ -120,6 +121,7 @@
 
     // Toggle children on click.
     function click(d) {
+        console.log(d.id);
         if (d3.event.defaultPrevented) return; // ignore drag
         if (d.children) {
             d._children = d.children;
@@ -164,7 +166,7 @@
 
     function dragstart(d) {
         d3.event.sourceEvent.stopPropagation();
-        d3.select(this).classed("fixed", d.fixed = true);
+        //d3.select(this).classed("fixed", d.fixed = true);
     }
 
 </script>

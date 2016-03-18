@@ -3,7 +3,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
-  before_action :only => [:arbol, :arbol_inicial, :json_d3] do
+  before_action :only => [:arbol, :arbol_inicial, :json_d3, :nodo_json_d3] do
     set_especie(true)
   end
 
@@ -13,7 +13,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3, :nodo_json_d3]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -230,6 +230,11 @@ class EspeciesController < ApplicationController
     render :json => json_d3.to_json
   end
 
+  # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
+  def nodo_json_d3
+
+  end
+
   def edit_photos
     @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
   end
@@ -428,6 +433,7 @@ class EspeciesController < ApplicationController
     taxones.each_with_index do |t, i|
       children_hash = {}
 
+      children_hash[:id] = t.id
       children_hash[:name] = t.nombre_cientifico
       children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
 
