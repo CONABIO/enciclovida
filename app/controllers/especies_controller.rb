@@ -433,7 +433,7 @@ class EspeciesController < ApplicationController
     taxones.each_with_index do |t, i|
       children_hash = {}
 
-      children_hash[:id] = t.id
+      children_hash[:especie_id] = t.id
       children_hash[:name] = t.nombre_cientifico
       children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
 

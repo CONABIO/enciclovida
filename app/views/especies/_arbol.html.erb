@@ -23,6 +23,7 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
+  var leaft = false;
     var min_zoom = 0.1;
     var max_zoom = 7;
     var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
@@ -48,7 +49,7 @@
     var node = g.selectAll(".node");
 
     d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
-        console.log(json);
+        //console.log(json);
         if (error) throw error;
 
         root = json;
@@ -121,14 +122,28 @@
 
     // Toggle children on click.
     function click(d) {
-        console.log(d.id);
         if (d3.event.defaultPrevented) return; // ignore drag
-        if (d.children) {
-            d._children = d.children;
+
+        if (d.children)
+        {
             d.children = null;
+            leaft = false;
         } else {
-            d.children = d._children;
-            d._children = null;
+            leaft = true;
+            d.children = [];
+            var obj1 = {};
+            var obj2 = {};
+
+            obj1.especie_id = 99999;
+            obj1.name = "Panthera onca9";
+            obj1.nombre_categoria_taxonomica = "especie9";
+
+            obj2.especie_id = 88888;
+            obj2.name = "Panthera onca8";
+            obj2.nombre_categoria_taxonomica = "especie8";
+
+            d.children.push(obj1);
+            d.children.push(obj2);
         }
         update();
     }
@@ -138,17 +153,13 @@
         var nodes = [], i = 0;
 
         function recurse(node) {
-            //node.id = ++i;
-            if (node.children)
-            {
-                node.children.forEach(recurse);
-              //  console.log(node)
-            }
-            //if (node.name == "flare") {
-                if (!node.id) node.id = ++i;
-                nodes.push(node);
+            if (node.children) node.children.forEach(recurse);
 
-            //}
+            if (leaft) node.id = ++i;
+            else
+                if (!node.id) node.id = ++i;
+
+            nodes.push(node);
         }
 
         recurse(root);
