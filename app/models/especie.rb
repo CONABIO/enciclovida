@@ -85,6 +85,7 @@ class Especie < ActiveRecord::Base
   scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
+  scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
 
 
   CON_REGION = [19, 50]

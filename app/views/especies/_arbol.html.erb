@@ -34,8 +34,8 @@
 
     var force = d3.layout.force()
             .linkDistance(80)
-            .charge(-300)
-            .gravity(.05)
+            .charge(-900)
+            .gravity(.1)
             .size([width, height])
             .on("tick", tick);
 
@@ -128,24 +128,23 @@
         {
             d.children = null;
             leaft = false;
+            console.log("con hijos");
+            update();
         } else {
-            leaft = true;
-            d.children = [];
-            var obj1 = {};
-            var obj2 = {};
 
-            obj1.especie_id = 99999;
-            obj1.name = "Panthera onca9";
-            obj1.nombre_categoria_taxonomica = "especie9";
-
-            obj2.especie_id = 88888;
-            obj2.name = "Panthera onca8";
-            obj2.nombre_categoria_taxonomica = "especie8";
-
-            d.children.push(obj1);
-            d.children.push(obj2);
+            $.ajax({
+                type: 'GET',
+                url: "/especies/" + d.especie_id + "/nodo_json_d3",
+                dataType: "json"
+            }).done(function(data) {
+                    if (data.length > 0)
+                    {
+                        leaft = true;
+                        d.children = data;
+                        update();
+                    }
+            });
         }
-        update();
     }
 
     // Returns a list of all nodes under the root.

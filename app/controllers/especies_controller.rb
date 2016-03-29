@@ -225,14 +225,26 @@ class EspeciesController < ApplicationController
   # JSON que se ocupara para desplegar los datos en D3
   def json_d3
     json_d3 = genera_obj_d3
-
-    # La ultima posicion es la mas actual
     render :json => json_d3.to_json
   end
 
   # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
   def nodo_json_d3
+    children_array = []
+    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
 
+    taxones.each_with_index do |t, i|
+      children_hash = {}
+
+      children_hash[:especie_id] = t.id
+      children_hash[:name] = t.nombre_cientifico
+      children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
+
+      # Acumula el resultado del json anterior una posicion antes de la actual
+      children_array << children_hash
+    end
+
+    render :json => children_array.to_json
   end
 
   def edit_photos
@@ -427,8 +439,7 @@ class EspeciesController < ApplicationController
   def genera_obj_d3
     children_array = []
 
-    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.reverse.join(','))
-                  .order('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) DESC')
+    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
 
     taxones.each_with_index do |t, i|
       children_hash = {}
