@@ -102,9 +102,9 @@ module EspeciesHelper
         clase = Icono::IR[-1] if Icono::IR.include?(ic.taxon_icono)
         clase = Icono::IA[-1] if Icono::IA.include?(ic.taxon_icono)
         clase = Icono::IP[-1] if Icono::IP.include?(ic.taxon_icono)
-        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"btn btn-default btn-xs btn-basica #{ic.icono} btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
+        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"#{ic.icono[5..-1]}-ev-icon btn btn-default btn-xs btn-basica btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
       else
-        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono[5..-1]}-ev-icon\"></i>"
       end
     end
   end
