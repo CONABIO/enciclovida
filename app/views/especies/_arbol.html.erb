@@ -8,7 +8,7 @@
     }
 
     .node text {
-        font: 10px sans-serif;
+        font: 12px sans-serif;
         pointer-events: none;
         text-anchor: middle;
     }
@@ -33,8 +33,8 @@
             root;
 
     var force = d3.layout.force()
-            .linkDistance(80)
-            .charge(-900)
+            .linkDistance(150)
+            .charge(-1000)
             .gravity(.1)
             .size([width, height])
             .on("tick", tick);
@@ -49,7 +49,6 @@
     var node = g.selectAll(".node");
 
     d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
-        //console.log(json);
         if (error) throw error;
 
         root = json;
@@ -65,11 +64,9 @@
     resize();
 
     function update() {
-        //console.log(root);
         var nodes = flatten(root),
                 links = d3.layout.tree().links(nodes);
 
-        //console.log(nodes);
         // Restart the force layout.
         force
                 .nodes(nodes)
@@ -99,7 +96,12 @@
 
         nodeEnter.append("text")
                 .attr("dy", ".35em")
-                .text(function(d) { return d.name; });
+                .attr("x", function(d) { // una regla de 3 para calcular donde se ubica el texto
+                    var text = d.nombre_categoria_taxonomica + " " +d.name;
+                    var text_length = text.length;
+                    return (60*text_length)/14;
+                })
+                .text(function(d) { return d.nombre_categoria_taxonomica + " " +d.name; });
 
         node.select("circle")
                 .style("fill", color);
@@ -128,7 +130,6 @@
         {
             d.children = null;
             leaft = false;
-            console.log("con hijos");
             update();
         } else {
 
@@ -176,7 +177,7 @@
 
     function dragstart(d) {
         d3.event.sourceEvent.stopPropagation();
-        //d3.select(this).classed("fixed", d.fixed = true);
+        d3.select(this).classed("fixed", d.fixed = true);
     }
 
 </script>
