@@ -21,11 +21,11 @@
  *= require listas
  *= require soulmate
  *= require webservices
- *= require fontello
- *= require fontello-codes
- *= require fontello-embedded
- *= require fontello-ie7
- *= require fontello-ie7-codes
+ *= //require fontello
+ *= //require fontello-codes
+ *= //require fontello-embedded
+ *= //require fontello-ie7
+ *= //require fontello-ie7-codes
  *= require scrolling
  * require jquery-ui
  *= require comentarios
@@ -287,3 +287,5 @@ div#map{
 .img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
 .img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
 .img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
+
+@import 'enciclovida_font_icons';
