@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git://github.com/rails-sqlserver/tiny_tds.git
-  revision: b5d68758a0a08255c8d1a3e73c95fec7e904e8e6
+  revision: 82edfd552aa259ab373d482f0fb2994d8ebd80a1
   specs:
     tiny_tds (0.9.5.rc.3)
       mini_portile2 (~> 2.0)
@@ -100,6 +100,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (4.0.2)
+    autoprefixer-rails (6.3.5)
+      execjs
     axlsx (2.0.1)
       htmlentities (~> 4.3.1)
       nokogiri (>= 1.4.1)
@@ -112,6 +114,9 @@ GEM
       activesupport
       eventmachine
       json
+    bootstrap-sass (3.3.5)
+      autoprefixer-rails (>= 5.0.0.1)
+      sass (>= 3.2.19)
     builder (3.1.4)
     carrierwave (0.10.0)
       activemodel (>= 3.2.0)
@@ -286,6 +291,7 @@ DEPENDENCIES
   ancestry!
   axlsx_rails
   blurrily (= 0.2.1)
+  bootstrap-sass
   carrierwave
   cocoon (= 1.2.0)
   coffee-rails (~> 4.0.0)
@@ -329,6 +335,3 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   wash_out
   wicked_pdf
-
-BUNDLED WITH
-   1.11.2
