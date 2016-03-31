@@ -9,33 +9,21 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= //require_tree .
- *= require bootstrap.css
- *= require bootstrap-theme.css
  *= require dashboard
- *= //require sticky-footer
- *= //require bootstrap.css.map
- *= //require bootstrap-theme.css.map
  *= require especies
  *= require flickr_photos
  *= require listas
  *= require soulmate
  *= require webservices
- *= //require fontello
- *= //require fontello-codes
- *= //require fontello-embedded
- *= //require fontello-ie7
- *= //require fontello-ie7-codes
  *= require scrolling
- * require jquery-ui
  *= require comentarios
  */
 
-/*
-* require jquery-ui
-* require jquery-ui.structure
-* require dataTables/src/demo_table_jui
-*/
+@import 'enciclovida_font_icons';
+// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
 
 body{
     background-repeat: no-repeat;
@@ -53,6 +41,7 @@ body{
     z-index: -1;
 }
 
+/*Brandbar es loa plequita negra al inicio de cada página*/
 #brandBar {
     background-color: rgba(51, 51, 51, 0.75);
 }
@@ -287,5 +276,3 @@ div#map{
 .img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
 .img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
 .img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
-
-@import 'enciclovida_font_icons';
