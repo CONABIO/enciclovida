@@ -53,7 +53,10 @@ class EspeciesController < ApplicationController
           end
         end
       end
-      format.json { render json: @especie.to_json }
+      format.json do
+        @especie[:fotos] = @especie.photos
+        render json: @especie.to_json
+      end
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
 
