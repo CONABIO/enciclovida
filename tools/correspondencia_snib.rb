@@ -39,10 +39,41 @@ def write_file(line)
       proveedor = Proveedor.new(:especie_id => taxon.first.id, :snib_id => spid, :snib_reino => reino)
     end
 
-    #if proveedor.changed?
+    if proveedor.changed?
       puts "\tEncontro cambios"
-      @bitacora.puts "#{genero},#{especie},#{spid},#{taxon.first.id}" #if proveedor.save
-    #end
+      @bitacora.puts "#{genero},#{especie},#{spid},#{taxon.first.id}" if proveedor.save
+    end
+
+  elsif taxon.count > 1
+    puts "\tEncontro más de uno" if OPTS[:debug]
+    existia_especie = false;
+
+    taxon.each do |t|
+      categoria = t.categoria_taxonomica.nombre_categoria_taxonomica.downcase
+
+      if categoria == 'especie'
+        if proveedor = t.proveedor
+          proveedor.snib_id = spid
+          proveedor.snib_reino = reino
+        else
+          proveedor = Proveedor.new(:especie_id => t.id, :snib_id => spid, :snib_reino => reino)
+        end
+
+        if proveedor.changed?
+          puts "\tEncontro cambios"
+          @bitacora.puts "#{genero},#{especie},#{spid},#{t.id}" if proveedor.save
+        end
+
+        existia_especie = true;
+        break
+      end
+    end
+
+    if !existia_especie
+      puts "\t\tNinguno coincidio" if OPTS[:debug]
+      @bitacora_no_encontro.puts "#{genero},#{especie},#{@filename},Revisar"
+    end
+
   else
     puts "\tNO encontro" if OPTS[:debug]
     @bitacora_no_encontro.puts "#{genero},#{especie},#{@filename}"
