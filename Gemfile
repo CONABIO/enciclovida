@@ -6,7 +6,7 @@ gem 'activerecord-sqlserver-adapter', git: 'https://github.com/calonso-conabio/a
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'axlsx_rails'  # Gema para exportar en excel
 gem 'blurrily', '0.2.1'  #fuzzy match
-gem 'bootstrap-sass'
+gem 'bootstrap-sass', '~> 3.3.6'
 gem 'carrierwave'  # form file upload
 gem 'cocoon', '=1.2.0'  # anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.0.0'
