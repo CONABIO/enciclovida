@@ -1,6 +1,7 @@
 namespace :bdi do
 
-  @rutaBDI = Dir.new('/fotosBDI/Toda la Base del BI/')
+  #@rutaBDI = Dir.new('/fotosBDI/Toda la Base del BI/')
+  @rutaBDI = Dir.new('/')
   @url = "#{CONFIG.site_url}:4000/metadatos" # Bastante probable q no la deba ocupar, en caso de q así fuese, llama al dummy ws de ca
   @rutaFotos = 'metadato' # IDEM as above, accion a la cual ir en el mini ws dummy
   @workingDir = "/home/ggonzalez/" # IDEM as above, dir donde se leían los archivos de fotos
