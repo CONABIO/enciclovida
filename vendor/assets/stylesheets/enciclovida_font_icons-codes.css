@@ -58,7 +58,7 @@
 .nom_a-ev-icon:before { content: '\e838'; } /* '' */
 .biomex-ev-icon:before { content: '\e839'; } /* '' */
 .conabio-ev-icon:before { content: '\e83a'; } /* '' */
-.archive-ev-icon:before { content: '\e83b'; } /* '' */
+.enciclovida_correo-ev-icon:before { content: '\e83b'; } /* '' */
 .flow-tree-ev-icon:before { content: '\e83c'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83d'; } /* '' */
 .file-pdf-ev-icon:before { content: '\e83e'; } /* '' */
@@ -66,3 +66,4 @@
 .doc-text-ev-icon:before { content: '\e840'; } /* '' */
 .spin3-ev-icon:before { content: '\e841'; } /* '' */
 .spin6-ev-icon:before { content: '\e842'; } /* '' */
+.archive-ev-icon:before { content: '\e843'; } /* '' */
