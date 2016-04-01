@@ -8,6 +8,13 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  */
+
+// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+@import "bootstrap-sprockets";
+@import "custom_bootstrap";
+@import "bootstrap";
+@import "bootstrap/theme";
+
 @import 'dashboard';
 @import 'especies';
 @import 'flickr_photos';
@@ -16,11 +23,6 @@
 @import 'webservices';
 @import 'scrolling';
 @import 'comentarios';
-
-// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
-@import "bootstrap-sprockets";
-@import "bootstrap";
-@import "bootstrap/theme";
 
 @import 'enciclovida_font_icons';
 
