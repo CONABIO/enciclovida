@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?63149457');
-  src: font-url('enciclovida_font_icons.eot?63149457#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?63149457') format('woff2'),
-       font-url('enciclovida_font_icons.woff?63149457') format('woff'),
-       font-url('enciclovida_font_icons.ttf?63149457') format('truetype'),
-       font-url('enciclovida_font_icons.svg?63149457#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?11915865');
+  src: font-url('enciclovida_font_icons.eot?11915865#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?11915865') format('woff2'),
+       font-url('enciclovida_font_icons.woff?11915865') format('woff'),
+       font-url('enciclovida_font_icons.ttf?11915865') format('truetype'),
+       font-url('enciclovida_font_icons.svg?11915865#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?63149457#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?11915865#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -84,34 +84,34 @@
 .hongos-ev-icon:before { content: '\e81a'; } /* '' */
 .bacterias-ev-icon:before { content: '\e81b'; } /* '' */
 .arquea-ev-icon:before { content: '\e81c'; } /* '' */
-.prioritarias_medio-ev-icon:before { content: '\e81d'; } /* '' */
-.prioritarias_bajo-ev-icon:before { content: '\e81e'; } /* '' */
-.prioritarias_alto-ev-icon:before { content: '\e81f'; } /* '' */
-.prioritarias_1-ev-icon:before { content: '\e820'; } /* '' */
-.nom_pr-ev-icon:before { content: '\e821'; } /* '' */
-.nom_pr_2-ev-icon:before { content: '\e822'; } /* '' */
-.nom_p-ev-icon:before { content: '\e823'; } /* '' */
-.nom_p_2-ev-icon:before { content: '\e824'; } /* '' */
-.nom_e-ev-icon:before { content: '\e825'; } /* '' */
-.nom_e_2-ev-icon:before { content: '\e826'; } /* '' */
-.ambiente_dulceacuicola-ev-icon:before { content: '\e827'; } /* '' */
-.ambiente_marino-ev-icon:before { content: '\e828'; } /* '' */
-.ambiente_salobre-ev-icon:before { content: '\e829'; } /* '' */
-.ambiente_terrestre-ev-icon:before { content: '\e82a'; } /* '' */
-.cites_i-ev-icon:before { content: '\e82b'; } /* '' */
-.cites_ii-ev-icon:before { content: '\e82c'; } /* '' */
-.cites_iii-ev-icon:before { content: '\e82d'; } /* '' */
-.distribucion_endemica-ev-icon:before { content: '\e82e'; } /* '' */
-.distribucion_introducida-ev-icon:before { content: '\e82f'; } /* '' */
-.distribucion_nativa_2-ev-icon:before { content: '\e830'; } /* '' */
-.distribucion_nativa-ev-icon:before { content: '\e831'; } /* '' */
-.iucn_cr-ev-icon:before { content: '\e832'; } /* '' */
-.iucn_en-ev-icon:before { content: '\e833'; } /* '' */
-.iucn_ew-ev-icon:before { content: '\e834'; } /* '' */
-.iucn_ex-ev-icon:before { content: '\e835'; } /* '' */
-.iucn_vu-ev-icon:before { content: '\e836'; } /* '' */
-.nom_a_2-ev-icon:before { content: '\e837'; } /* '' */
-.nom_a-ev-icon:before { content: '\e838'; } /* '' */
+.sujeta-a-proteccion-especial-pr-ev-icon:before { content: '\e81d'; } /* '' */
+.sujeta-a-proteccion-especial-pr-2-ev-icon:before { content: '\e81e'; } /* '' */
+.amenazada-a-ev-icon:before { content: '\e81f'; } /* '' */
+.amenazada-a-2-ev-icon:before { content: '\e820'; } /* '' */
+.en-peligro-de-extincion-p-ev-icon:before { content: '\e821'; } /* '' */
+.en-peligro-de-extincion-p-2-ev-icon:before { content: '\e822'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before { content: '\e823'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-2-ev-icon:before { content: '\e824'; } /* '' */
+.vulnerable-vu-ev-icon:before { content: '\e825'; } /* '' */
+.en-peligro-en-ev-icon:before { content: '\e826'; } /* '' */
+.en-peligro-critico-cr-ev-icon:before { content: '\e827'; } /* '' */
+.extinto-en-estado-silvestre-ew-ev-icon:before { content: '\e828'; } /* '' */
+.extinto-ex-ev-icon:before { content: '\e829'; } /* '' */
+.apendice-i-ev-icon:before { content: '\e82a'; } /* '' */
+.apendice-ii-ev-icon:before { content: '\e82b'; } /* '' */
+.apendice-iii-ev-icon:before { content: '\e82c'; } /* '' */
+.endemica-ev-icon:before { content: '\e82d'; } /* '' */
+.nativa-ev-icon:before { content: '\e82e'; } /* '' */
+.nativa-2-ev-icon:before { content: '\e82f'; } /* '' */
+.introducida-ev-icon:before { content: '\e830'; } /* '' */
+.prioritarias-ev-icon:before { content: '\e831'; } /* '' */
+.prioritarias-bajo-ev-icon:before { content: '\e832'; } /* '' */
+.prioritarias-medio-ev-icon:before { content: '\e833'; } /* '' */
+.prioritarias-alto-ev-icon:before { content: '\e834'; } /* '' */
+.dulceacuicola-ev-icon:before { content: '\e835'; } /* '' */
+.marino-ev-icon:before { content: '\e836'; } /* '' */
+.salobre-ev-icon:before { content: '\e837'; } /* '' */
+.terrestre-ev-icon:before { content: '\e838'; } /* '' */
 .biomex-ev-icon:before { content: '\e839'; } /* '' */
 .conabio-ev-icon:before { content: '\e83a'; } /* '' */
 .enciclovida_correo-ev-icon:before { content: '\e83b'; } /* '' */
