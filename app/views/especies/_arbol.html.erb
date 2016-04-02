@@ -9,13 +9,25 @@
 
     .node text {
         font: 12px sans-serif;
-        pointer-events: none;
         text-anchor: middle;
+        text-baseline:middle;
     }
 
     line.link {
         stroke: #000;
         stroke-width: 1.5px;
+    }
+
+    .node a  {
+        color: pink;
+        font: 12px sans-serif;
+        fill: navy;
+        pointer-events: ;
+    }
+
+    .node text a:hover, text a:active {
+        text-decoration: underline;
+        fill:darkred;
     }
 
 </style>
@@ -42,7 +54,8 @@
     var svg = d3.select(".main").append("svg")
             .attr("width", width)
             .attr("height", height)
-            .style("cursor","move");
+            .style("cursor","move")
+            .style("border", "1px solid black");;
 
     var g = svg.append("g");
     var link = g.selectAll(".link");
@@ -88,7 +101,6 @@
 
         var nodeEnter = node.enter().append("g")
                 .attr("class", "node")
-                .on("click", click)
                 .call(force.drag().on("dragstart", dragstart));
 
         nodeEnter.append("circle")
@@ -101,10 +113,22 @@
                     var text_length = text.length;
                     return (60*text_length)/14;
                 })
-                .text(function(d) { return d.nombre_categoria_taxonomica + " " +d.name; });
+                .text(function(d) { return d.nombre_categoria_taxonomica + " " + d.name;});
+
+        var texto_link = nodeEnter.append("text")
+                .attr("y", -20)
+                .attr("dy", ".35em")
+                .attr("class", "especies_inferiores_url");
+
+        texto_link.append("a")
+                .attr("xlink:href", function(d){return d.especies_inferiores_url;})
+                .text(function(d) { return d.especies_inferiores_conteo; })
+                .attr("target", "_blank")
+                .attr("class", "especies_inferiores_url");
 
         node.select("circle")
-                .style("fill", color);
+                .style("fill", color)
+                .on("click", click);
     }
 
     function tick() {

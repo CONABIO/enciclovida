@@ -70,7 +70,7 @@ class Especie < ActiveRecord::Base
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
+  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad, ancestry_ascendente_directo,
         adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
         iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico

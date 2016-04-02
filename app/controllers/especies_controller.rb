@@ -443,6 +443,22 @@ class EspeciesController < ApplicationController
 
     taxones.each_with_index do |t, i|
       children_hash = {}
+      categoria = t.categoria_taxonomica.nivel1
+
+      # Se muestra el numero de especies o inferiores de genero hacia arriba
+      if categoria < 6
+        ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
+        especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+            where('nivel1=7').categoria_taxonomica_join.count
+
+        children_hash[:especies_inferiores_conteo] = especies_o_inferiores
+
+        # URL para ver las especies o inferiores
+        url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
+        children_hash[:especies_inferiores_url] = url
+      else
+        children_hash[:especies_inferiores_conteo] = 0
+      end
 
       children_hash[:especie_id] = t.id
       children_hash[:name] = t.nombre_cientifico
