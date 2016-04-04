@@ -127,21 +127,18 @@
                     ctx.font = "12px sans-serif";
                     var text_length = ctx.measureText(text).width;
 
-                    console.log((60*text_length)/84);
-                    return (60*text_length)/84;
+                    return (60*text_length)/100;
                 })
                 .text(function(d) { return d.nombre_categoria_taxonomica + " " + d.name;});
 
         var texto_link = nodeEnter.append("text")
                 .attr("y", -20)
-                .attr("dy", ".35em")
-                .attr("class", "especies_inferiores_url");
+                .attr("dy", ".35em");
 
         texto_link.append("a")
                 .attr("xlink:href", function(d){return d.especies_inferiores_url;})
-                .text(function(d) { return d.especies_inferiores_conteo; })
-                .attr("target", "_blank")
-                .attr("class", "especies_inferiores_url");
+                .text(function(d) { return d.especies_inferiores_conteo == 0 ? '' : d.especies_inferiores_conteo; })
+                .attr("target", "_blank");
 
         node.select("circle")
                 .style("fill", color)
