@@ -22,12 +22,21 @@
         color: pink;
         font: 12px sans-serif;
         fill: navy;
-        pointer-events: ;
     }
 
     .node text a:hover, text a:active {
         text-decoration: underline;
         fill:darkred;
+    }
+
+    .svg-container {
+        width: 100%;
+        /*padding-top: 400px; /* aspect ratio */
+        height: 700px;
+    }
+    .svg-content-responsive {
+        top: 10px;
+        left: 0;
     }
 
 </style>
@@ -52,10 +61,13 @@
             .on("tick", tick);
 
     var svg = d3.select(".main").append("svg")
-            .attr("width", width)
-            .attr("height", height)
             .style("cursor","move")
-            .style("border", "1px solid black");;
+            .style("border", "2px solid black")
+            // Para la responsividad
+            .classed("svg-container", true)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 -50 1200 100")
+            .classed("svg-content-responsive", true);
 
     var g = svg.append("g");
     var link = g.selectAll(".link");
@@ -73,8 +85,6 @@
     });
 
     svg.call(zoom);
-
-    resize();
 
     function update() {
         var nodes = flatten(root),
@@ -110,8 +120,15 @@
                 .attr("dy", ".35em")
                 .attr("x", function(d) { // una regla de 3 para calcular donde se ubica el texto
                     var text = d.nombre_categoria_taxonomica + " " +d.name;
-                    var text_length = text.length;
-                    return (60*text_length)/14;
+
+                    // Calcula los pixeles de la cadena para una mejor aproximacion
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext("2d");
+                    ctx.font = "12px sans-serif";
+                    var text_length = ctx.measureText(text).width;
+
+                    console.log((60*text_length)/84);
+                    return (60*text_length)/84;
                 })
                 .text(function(d) { return d.nombre_categoria_taxonomica + " " + d.name;});
 
@@ -191,7 +208,8 @@
     }
 
     function resize() {
-        var w = 900, h = 500;
+        console.log($('#clasificacion_d3').width());
+        var w = $('#clasificacion_d3').width(), h = window.innerHeight;
         svg.attr("width", w).attr("height", h);
 
         force.size([force.size()[0]+(w-width)/zoom.scale(),force.size()[1]+(h-height)/zoom.scale()]).resume();
