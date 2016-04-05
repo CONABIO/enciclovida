@@ -36,7 +36,9 @@
   <%= dameStatus(@especie).html_safe %>
 </div>
 
-<%= ponCaracteristicaDistribucionAmbienteJS(true)[:ambiente_pdf].first.html_safe %>
+<% dameCaracteristicaDistribucionAmbienteJS(@especie).each do |c| %>
+        <span class = '<%= c %>-ev-icon'><%= c %></span>
+<% end %>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
