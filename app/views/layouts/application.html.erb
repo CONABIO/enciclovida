@@ -71,12 +71,12 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 text-right">
+    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 text-right">
       <%= link_to image_tag('/assets/app/enciclovida.svg', :alt => 'Brand', :style => 'width: 14em; vertical-align: baseline;'), especie_index_path, :class => 'pull-left'  %>
       <%= link_to "<i class ='biomex-ev-icon'></i>".html_safe, 'http://www.biodiversidad.gob.mx', :target => :_blank, :class => ''%>
       <%= link_to "<i class ='conabio-ev-icon'></i>".html_safe, 'http://www.conabio.gob.mx', :target => :_blank, :class => '' %>
     </div>
-    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-5 col-lg-5 col-sm-offset-1 col-md-offset-0 text-center">
+    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-0 ">
       <%= render :template => 'busquedas/basica' %>
     </div>
   </div>
