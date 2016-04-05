@@ -303,9 +303,9 @@
       <% end %>
       <!-- # Parche para mostrar el PDF de Dalbergia -->
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= link_to(("Descargar versión: <i class ='file-pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-link btn-sm') %>
+          <%= link_to(("Descargar versión: <i class ='pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-link btn-sm') %>
       <% else %>
-          <%= button_tag(("Descargar versión: <i class ='file-pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-sm btn-link', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <%= button_tag(("Descargar versión: <i class ='pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-sm btn-link', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </div>
   </div>
