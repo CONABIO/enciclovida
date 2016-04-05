@@ -210,16 +210,11 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   float: right;
 }
 
-.btn-img-panel > img{
- width: 2em !important;
-}
-.img-panel{
-  width: 2.5em;
+.panel-disabled i:first-child{
+  color: #888888;
 }
 #NOM059,#IUCN,#CITES,#TipoDistribucion,#Ambiente{
-  padding-left: 15px;
-  padding-right: 0px;
-  min-height: 80px;
+
 }
 #more-info > div > a  img{
   height: 15px;
@@ -253,7 +248,7 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
   color: #333333 !important;
 }
 
-.checkbox i {
+.checkbox i, #panelCaracteristicaDistribucionAmbiente i{
   font-size: 1.8em;
 }
 .checkbox span{
@@ -280,5 +275,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .tipoDist{color: #f7b234;}
 .tipoDist-2{color: #595926;}
 .prioritarias{color: #ff931e;}
-.prioritarias-ev-icon{color: #0f151a;}
+.nom-2, .prioritarias-ev-icon, .panel-disabled .tipoDist-2{color: #555555;}
+.marino-ev-icon{color: #255E54;}
+.dulceacuicola-ev-icon{color: #58867B;}
+.salobre-ev-icon{color: #81B49B;}
+.terrestre-ev-icon{color: #777442;}
 .nom-2, .tipoDist-2, .prioritarias-ev-icon{margin-left: -1.4em;}

@@ -453,49 +453,51 @@ module EspeciesHelper
     response.flatten.uniq
   end
 
-  def ponCaracteristicaDistribucionAmbienteJS(pdf=false)
+  def ponCaracteristicaDistribucionAmbienteJS
     response = {}
+    def creaSpan(nombre, id, name, icono)
+      "<span title = '#{nombre}' class = 'btn-title panel-disabled' id = #{id} name = '#{name}'>#{icono}</span>"
+    end
 
-    #Si solicito un PDF entonces solo pregunto por el ambiente e imprimo texto, no el iconito
-    if pdf
-      Catalogo.ambiente_todos.each do |amb|
-        id = "id#{amb.parameterize}"
-        nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-        response[:ambiente_pdf] = response[:ambiente].to_a << button_tag(nombre, title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-    else
-      Catalogo.nom_cites_iucn_todos.each do |k, valores|
-        valores.each do |edo|
-          next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
-          id = "id#{edo.parameterize}"
-          icono = t("cat_riesgo.#{edo.parameterize}.icono")
-          nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-          response[k] = response[k].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/categorias_riesgo/#{icono}", class: 'img-panel', name: "edo_cons_#{edo.parameterize}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-        end
-      end
-
-      TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-        id = "id#{tipoDist.parameterize}"
-        icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
-        nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-        response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/tipo_distribuciones/#{icono}", class: 'img-panel', name: "dist_#{tipoDist}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-
-      Catalogo.ambiente_todos.each do |amb|
-        id = "id#{amb.parameterize}"
-        icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
-        nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-        response[:ambiente] = response[:ambiente].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/ambientes/#{icono}", class: 'img-panel', name: "amb_#{amb}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-
-      Catalogo::NIVELES_PRIORITARIAS.each do |prio|
-        id = "id#{prio.parameterize}"
-        icono = t("prioritaria.#{prio.parameterize}.icono", :default => '')
-        nombre = t("prioritaria.#{prio.parameterize}.nombre", :default => '')
-        response[:prioritaria] = response[:prioritaria].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/prioritarias/#{prio.downcase}.png", class: "img-panel", name: "prio_#{prio}"), title: nombre, :class => "btn btn-default btn-xs btn-img-panel btn-title", :disabled => '', id: id)
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      valores.each do |edo|
+        next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
+        id = "id#{edo.parameterize}"
+        nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
+        name = "edo_cons_#{edo.parameterize}"
+        icono  = "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
+        icono << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
+        response[k]  = response[k].to_a << creaSpan(nombre, id, name, icono)
       end
     end
-    response
+
+    TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+      id = "id#{tipoDist.parameterize}"
+      nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
+      name = "dist_#{tipoDist}"
+      icono =  "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
+      icono << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
+
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, id, name, icono)
+    end
+
+    Catalogo.ambiente_todos.each do |amb|
+      id = "id#{amb.parameterize}"
+      icono =  "<i class = 'ambiente #{amb.parameterize}-ev-icon'></i>"
+      name = "amb_#{amb}"
+      nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
+      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, id, name, icono)
+    end
+
+    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
+      id = "id#{prior.parameterize}"
+      icono =  "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
+      icono << "<i class = 'prioritarias-ev-icon'></i>"
+      name = "prio_#{prior}"
+      nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
+      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)
+    end
+   response
   end
 
  def dameEspecieBibliografia(taxon)
