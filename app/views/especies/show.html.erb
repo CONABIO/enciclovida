@@ -297,15 +297,15 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
     <div class="btn-group pull-right" role="group" aria-label="...">
       <% if geo && geo.count > 0 %>
-          <%= link_to(("Mapa de distribución: "+image_tag('app/kmz.png', :alt => :KMZ, :style => 'height: 24px;')).html_safe, geo['geoserver_kmz'], :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') if geo['geoserver_kmz'] %>
-          <%= link_to(("Registros del SNIB: "+image_tag('app/kml.png', :alt => 'Registros de museos, colectas y proyectos de CONABIO (SNIB)', :style => 'height: 24px;')).html_safe, geo['snib_kml'], :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') if geo['snib_kml'] %>
-          <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png', :alt => :KML, :style => 'height: 22px;')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding: 4px;', :class => 'btn btn-default btn-link btn-sm') if geo['naturalista_kml'] %>
+          <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['geoserver_kmz'] %>
+          <%= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
+          <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding-top: 13px;', :class => 'btn btn-sm btn-link') if geo['naturalista_kml'] %>
       <% end %>
       <!-- # Parche para mostrar el PDF de Dalbergia -->
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= link_to(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm') %>
+          <%= link_to(("Descargar versión: <i class ='file-pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-link btn-sm') %>
       <% else %>
-          <%= button_tag(("Descargar versión: "+image_tag('app/pdf.png', :alt => :PDF, :style => 'height: 24px;')).html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-default btn-link btn-sm', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <%= button_tag(("Descargar versión: <i class ='file-pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-sm btn-link', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </div>
   </div>
