@@ -233,15 +233,15 @@ class EspeciesController < ApplicationController
     children_array = []
     taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
 
-    taxones.each_with_index do |t, i|
+    taxones.each do |t|
       children_hash = {}
       categoria = t.categoria_taxonomica.nivel1
 
       # Se muestra el numero de especies o inferiores de genero hacia arriba
-      if categoria < 7
+      if categoria < 6
         ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
         especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-            where('nivel1=7').categoria_taxonomica_join.count
+            where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
 
         children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
@@ -461,12 +461,11 @@ class EspeciesController < ApplicationController
       children_hash = {}
       categoria = t.categoria_taxonomica.nivel1
 
-      Rails.logger.info("---#{categoria}")
       # Se muestra el numero de especies o inferiores de genero hacia arriba
-      if categoria < 7
+      if categoria < 6
         ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
         especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-            where('nivel1=7').categoria_taxonomica_join.count
+            where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
 
         children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
