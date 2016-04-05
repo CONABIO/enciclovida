@@ -6,9 +6,8 @@
 </script>
 
 <% botones = ponCaracteristicaDistribucionAmbienteJS %>
-
-<div class="panel panel-default" id="panelCaracteristicaDistribucionAmbientePt">
-  <div class="panel-heading" onclick="$('#panelCaracteristicaDistribucionAmbiente').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCaracteristicaDistribucionAmbientePt').toggleClass('dropup')});">
+<div class="panel panel-default col-xs-12 col-sm-7 col-md-8 col-lg-8" id="panelCaracteristicaDistribucionAmbientePt">
+  <div class="panel-heading" onclick="$('#panelCaracteristicaDistribucionAmbiente').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelCaracteristicaDistribucionAmbientePt').toggleClass('dropup col-sm-7 col-md-8 col-lg-8 col-sm-12 col-md-12 col-lg-12')});$('#more-info').toggleClass('hidden')">
     <h5><strong>Categorías de riesgo, comercio internacional, ambiente, tipo de distribución:</strong>
       <span class="caret"></span></h5>
   </div>
@@ -43,37 +42,31 @@
     </div>
   </div>
 </div>
-
-
-
-
-<div class="col-xs-12 col-sm-5 col-md-5 col-lg-6 text-center" id="more-info">
-  <div class="" role="group" aria-label="...">
-    <h6><strong>Navegar hacia: </strong></h6>
-    <% if I18n.locale.to_s == 'es-cientifico' %>
-        <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a los catálogos de CONABIO">
-          <img src="/assets/app/icoCatalogo.png"><strong>Catálogos</strong>
-        </a>
-        <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir al arreglo taxonómico">
-          <img src="/assets/app/icoClasificacion.png"><strong><%= t :arreglo_taxonomico %></strong>
-        </a>
-        <% if @especie.species_or_lower? %>
-            <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a las ficha del taxón">
-              <img src ="/assets/app/icoFicha.png"><strong>Ficha</strong>
-            </a>
-        <% end %>
-    <% else %>
-        <% if @especie.species_or_lower? %>
-            <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a las ficha del taxón">
-              <img src ="/assets/app/icoFicha.png"><strong>Ficha</strong>
-            </a>
-        <% end %>
-        <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir al arreglo taxonómico">
-          <img src="/assets/app/icoClasificacion.png"><strong><%= t :arreglo_taxonomico %></strong>
-        </a>
-        <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a los catálogos de CONABIO">
-          <img src="/assets/app/icoCatalogo.png"><strong>Catálogos</strong>
-        </a>
-    <% end %>
-  </div>
+<div class="col-xs-12 col-sm-5 col-md-4 col-lg-4 text-right" id="more-info">
+  <h6><strong>Navegar hacia: </strong></h6>
+  <% if I18n.locale.to_s == 'es-cientifico' %>
+      <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a los catálogos de CONABIO">
+        <strong><i class="archive-ev-icon"></i>Catálogos</strong>
+      </a>
+      <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir al arreglo taxonómico">
+        <strong><i class="flow-cascade-ev-icon"></i><%= t :arreglo_taxonomico %></strong>
+      </a>
+      <% if @especie.species_or_lower? %>
+          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a las ficha del taxón">
+            <strong><i class="newspaper-ev-icon"></i>Ficha</strong>
+          </a>
+      <% end %>
+  <% else %>
+      <% if @especie.species_or_lower? %>
+          <a href="#pestañas" onclick="$('#description_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a las ficha del taxón">
+            <strong><i class="newspaper-ev-icon"></i>Ficha</strong>
+          </a>
+      <% end %>
+      <a href="#pestañas" onclick="$('#arbol_taxonomico_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir al arreglo taxonómico">
+        <strong><i class="flow-cascade-ev-icon"></i><%= t :arreglo_taxonomico %></strong>
+      </a>
+      <a href="#pestañas" onclick="$('#conabio_info_li > a').trigger('click');" class="btn btn-link btn-xs btn-title" title="Ir a los catálogos de CONABIO">
+        <strong><i class="archive-ev-icon"></i>Catálogos</strong>        </a>
+  <% end %>
 </div>
+

@@ -315,9 +315,9 @@
   <div id="pestañas" class="panel">
     <% if I18n.locale.to_s == 'es-cientifico' %>
         <ul class="nav nav-tabs" data-tabs="tabs">
-          <li id="conabio_info_li" class="active"><a href="#conabio_info"><img src="/assets/app/icoCatalogo.png"><strong> Catálogos</strong></a></li>
-          <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
-          <% if @especie.species_or_lower? %><li id="description_li"><a href="#description"><img src ="/assets/app/icoFicha.png"><strong>  Ficha</strong></a><% end %>
+          <li id="conabio_info_li" class="active"><a href="#conabio_info"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
+          <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+          <% if @especie.species_or_lower? %><li id="description_li"><a href="#description"><i class="newspaper-ev-icon"></i><strong>  Ficha</strong></a><% end %>
 
         </ul>
         <div id="conabio_info" class="tab-pane panel-body">
@@ -336,13 +336,13 @@
     <% else %>
         <ul class="nav nav-tabs" data-tabs="tabs">
           <% if @especie.species_or_lower? %>
-              <li id="description_li" class="active"><a href="#description"><img src ="/assets/app/icoFicha.png"><strong>  Ficha</strong></a>
+              <li id="description_li" class="active"><a href="#description"><i class="newspaper-ev-icon"></i><strong>  Ficha</strong></a>
               </li>
-              <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+              <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
           <% else %>
-              <li id="arbol_taxonomico_li" class="active"><a href="#arbol_taxonomico"><img src="/assets/app/icoClasificacion.png"><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+              <li id="arbol_taxonomico_li" class="active"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
           <% end %>
-          <li id="conabio_info_li" ><a href="#conabio_info"><img src="/assets/app/icoCatalogo.png"><strong> Catálogos</strong></a></li>
+          <li id="conabio_info_li" ><a href="#conabio_info"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
         </ul>
         <small><a href="#brandBar" class="pull-right"><strong>Subir </strong><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></a></small>
 
