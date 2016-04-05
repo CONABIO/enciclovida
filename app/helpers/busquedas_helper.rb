@@ -40,13 +40,10 @@ module BusquedasHelper
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       checkBoxes << "<h6><strong>#{t(k)}</strong><h6>"
       valores.each do |edo|
-        puts "---------------------- "+edo.parameterize
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('edo_cons[]', edo, false, :id => "edo_cons_#{edo.parameterize}")
-        checkBoxes << "<span title = '#{t('cat_riesgo.' << edo.parameterize << '.nombre')}' class = 'btn btn-default btn-xs btn-basica btn-title'>"
-        #checkBoxes << "<span title = '#{edo}' class = 'btn btn-default btn-xs btn-basica btn-title'>"
-        #checkBoxes << image_tag('app/categorias_riesgo/' << t('cat_riesgo.' << edo.parameterize << '.icono'), class: 'img-panel', name: "edo_cons_#{edo.parameterize}")
+        checkBoxes << "<span title = '#{t('cat_riesgo.' << edo.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
         checkBoxes << "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
         checkBoxes << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
         checkBoxes << "</span>"
@@ -64,7 +61,7 @@ module BusquedasHelper
         next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
-        checkBoxes << "<span title = '#{t('distribucion.' << tipoDist.gsub(' ', '_'))}' class='btn btn-default btn-xs btn-basica btn-title'>#{t('distribucion.' << tipoDist.gsub(' ', '_'))}</span>"
+        checkBoxes << "<span title = '#{t('distribucion.' << tipoDist.gsub(' ', '_'))}' class='btn btn-xs btn-basica '>#{t('distribucion.' << tipoDist.gsub(' ', '_'))}</span>"
         checkBoxes << "</label>"
       end
     else
@@ -72,10 +69,9 @@ module BusquedasHelper
         #puts '---------------------- '+tipoDist.parameterize
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
-        checkBoxes << "<span title = '#{t('tipo_distribucion.' << tipoDist.parameterize << '.nombre')}' class = 'btn btn-default btn-xs btn-basica btn-title'>"
-        #checkBoxes << image_tag('app/tipo_distribuciones/' << t("tipo_distribucion.#{tipoDist.parameterize}.icono"), class: 'img-panel', name: "dist_#{tipoDist}")
+        checkBoxes << "<span title = '#{t('tipo_distribucion.' << tipoDist.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
         checkBoxes << "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
-        checkBoxes << "<i class = 'tipoDist #{tipoDist.parameterize}-2-ev-icon'></i>"
+        checkBoxes << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
 
@@ -91,7 +87,7 @@ module BusquedasHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label> #{check_box_tag('estatus[]', e.first, false, :class => '')} <span class = 'btn btn-default btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
+                      else "<label> #{check_box_tag('estatus[]', e.first, false, :class => '')} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
     checkBoxes.html_safe
@@ -104,7 +100,7 @@ module BusquedasHelper
     Catalogo::NIVELES_PRIORITARIAS.each do |prior|
       checkBoxes << '<label>'
       checkBoxes << check_box_tag('prioritaria[]', prior, false, :id => "prior_#{prior.parameterize}")
-      checkBoxes << "<span title = '#{t('prioritaria.' << prior.parameterize << '.nombre')}' class = 'btn btn-default btn-xs btn-basica btn-title' >"
+      checkBoxes << "<span title = '#{t('prioritaria.' << prior.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title' >"
       #checkBoxes << image_tag("app/prioritarias/#{prior.downcase}.png", class: 'img-panel')
       checkBoxes << "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
       checkBoxes << "<i class = 'prioritarias-ev-icon'></i>"
