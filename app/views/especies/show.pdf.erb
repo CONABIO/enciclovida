@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></title>
 
-  <%= wicked_pdf_stylesheet_link_tag 'bootstrap' %>
+  <%= wicked_pdf_stylesheet_link_tag 'application' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
 
@@ -37,7 +37,7 @@
 </div>
 
 <% dameCaracteristicaDistribucionAmbienteJS(@especie).each do |c| %>
-        <span class = '<%= c %>-ev-icon'><%= c %></span>
+        <i class = '<%= c %>-ev-icon'></i>
 <% end %>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
