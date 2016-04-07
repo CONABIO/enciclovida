@@ -262,9 +262,16 @@ div#map{
   width: 10em !important;
   text-decoration: underline;
 }
-.biomex-ev-icon:before, .conabio-ev-icon:before{
+.biomex-ev-icon:before, .conabio-ev-icon:before, .enciclo-ev-icon:before, .vida-ev-icon:before{
   width: 2.5em !important;
   font-size: 4.5em;
-  color: #eaeaea;
-  margin: 0 15px;
+  color: #fdfdfd;
+  margin: 0;
+}
+.enciclo-ev-icon:before{
+  color: #fdfdfd;
+}
+.vida-ev-icon:before{
+  color: #889b45;
+  margin-left: -2.5em;
 }
