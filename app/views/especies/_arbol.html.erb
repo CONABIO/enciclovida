@@ -128,7 +128,7 @@
                     ctx.font = "12px sans-serif";
                     var text_length = ctx.measureText(text).width;
 
-                    return (60*text_length)/100;
+                    return (60*text_length)/120 + d.radius_size;
                 });
 
         taxon_link.append("a")
@@ -137,7 +137,7 @@
                 .attr("target", "_blank");
 
         var conteo_link = nodeEnter.append("text")
-                .attr("y", -20)
+                .attr("y", function(d) {return -10 - d.radius_size})
                 .attr("dy", ".35em");
 
         conteo_link.append("a")
