@@ -453,6 +453,10 @@ class EspeciesController < ApplicationController
     children_hash = {}
     categoria = t.categoria_taxonomica.nivel1
 
+    radius_min_size = 5
+    radius_size = radius_min_size
+    children_hash[:radius_size] = radius_size
+
     # Se muestra el numero de especies o inferiores de genero hacia arriba
     if categoria < 6
       ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
@@ -464,6 +468,37 @@ class EspeciesController < ApplicationController
       # URL para ver las especies o inferiores
       url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
       children_hash[:especies_inferiores_url] = url
+
+      #  Radio de los nodos para un mejor manejo hacia D3
+      if especies_o_inferiores > 0
+
+        #  Radios varian de 60 a 40
+        if especies_o_inferiores >= 10000
+          size_per_radium_unit = (especies_o_inferiores-10000)/20
+          radius_size = ((especies_o_inferiores-10000)/size_per_radium_unit) + 40
+
+        elsif especies_o_inferiores >= 1000 && especies_o_inferiores <= 9999  # Radios varian de 40 a 30
+          radius_per_range = ((especies_o_inferiores)*10)/9999
+          radius_size = radius_per_range + 30
+
+        elsif especies_o_inferiores >= 100 && especies_o_inferiores <= 999  # Radios varian de 30 a 20
+          radius_per_range = ((especies_o_inferiores)*10)/999
+          radius_size = radius_per_range + 20
+
+        elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 10
+
+          radius_per_range = ((especies_o_inferiores)*10)/99
+          radius_size = radius_per_range + 10
+
+        elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 10 a 5
+
+          radius_per_range = ((especies_o_inferiores)*5)/9
+          radius_size = radius_per_range + radius_min_size
+
+        end  # End if especies_inferiores_conteo > 0
+
+        children_hash[:radius_size] = radius_size
+      end
     else
       children_hash[:especies_inferiores_conteo] = 0
     end
