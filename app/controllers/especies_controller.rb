@@ -234,27 +234,7 @@ class EspeciesController < ApplicationController
     taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
 
     taxones.each do |t|
-      children_hash = {}
-      categoria = t.categoria_taxonomica.nivel1
-
-      # Se muestra el numero de especies o inferiores de genero hacia arriba
-      if categoria < 6
-        ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
-        especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-            where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
-
-        children_hash[:especies_inferiores_conteo] = especies_o_inferiores
-
-        # URL para ver las especies o inferiores
-        url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
-        children_hash[:especies_inferiores_url] = url
-      else
-        children_hash[:especies_inferiores_conteo] = 0
-      end
-
-      children_hash[:especie_id] = t.id
-      children_hash[:name] = t.nombre_cientifico
-      children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
+      children_hash = asigna_hash_d3(t)
 
       # Acumula el resultado del json anterior una posicion antes de la actual
       children_array << children_hash
@@ -453,43 +433,52 @@ class EspeciesController < ApplicationController
   end
 
   def genera_obj_d3
-    children_array = []
+    @children_array = []
 
     taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
 
     taxones.each_with_index do |t, i|
-      children_hash = {}
-      categoria = t.categoria_taxonomica.nivel1
-
-      # Se muestra el numero de especies o inferiores de genero hacia arriba
-      if categoria < 6
-        ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
-        especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-            where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
-
-        children_hash[:especies_inferiores_conteo] = especies_o_inferiores
-
-        # URL para ver las especies o inferiores
-        url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
-        children_hash[:especies_inferiores_url] = url
-      else
-        children_hash[:especies_inferiores_conteo] = 0
-      end
-
-      children_hash[:especie_id] = t.id
-      children_hash[:name] = t.nombre_cientifico
-      children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
-
-      if i+1 != 1  # Si es taxon mas bajo no tiene hijos
-        children_hash[:children] = [children_array[i-1]]
-      end
+      @i = i
+      children_hash = asigna_hash_d3(t, arbol_inicial: true)
 
       # Acumula el resultado del json anterior una posicion antes de la actual
-      children_array << children_hash
+      @children_array << children_hash
     end
 
     # Regresa el ultimo que es el mas actual
-    children_array.last
+    @children_array.last
+  end
+
+  def asigna_hash_d3(t, opts={})
+    children_hash = {}
+    categoria = t.categoria_taxonomica.nivel1
+
+    # Se muestra el numero de especies o inferiores de genero hacia arriba
+    if categoria < 6
+      ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
+      especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+          where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
+
+      children_hash[:especies_inferiores_conteo] = especies_o_inferiores
+
+      # URL para ver las especies o inferiores
+      url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
+      children_hash[:especies_inferiores_url] = url
+    else
+      children_hash[:especies_inferiores_conteo] = 0
+    end
+
+    children_hash[:especie_id] = t.id
+    children_hash[:name] = t.nombre_cientifico
+    children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
+
+    if opts[:arbol_inicial]
+      if @i+1 != 1  # Si es taxon mas bajo no tiene hijos
+        children_hash[:children] = [@children_array[@i-1]]
+      end
+    end
+
+    children_hash
   end
 
   def retrieve_photos
