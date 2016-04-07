@@ -120,20 +120,20 @@
         var taxon_link = nodeEnter.append("text")
                 .attr("dy", ".35em")
                 .attr("x", function(d) { // una regla de 3 para calcular donde se ubica el texto
-                    var text = d.nombre_categoria_taxonomica + " " +d.name;
 
                     // Calcula los pixeles de la cadena para una mejor aproximacion
                     var canvas = document.createElement('canvas');
                     var ctx = canvas.getContext("2d");
                     ctx.font = "12px sans-serif";
-                    var text_length = ctx.measureText(text).width;
+                    var text_length = ctx.measureText(d.name).width;
 
+                    // Le aumentamos la distancia del radio para que no se encime
                     return (60*text_length)/120 + d.radius_size;
                 });
 
         taxon_link.append("a")
                 .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-                .text(function(d) { return d.nombre_categoria_taxonomica + " " + d.name;})
+                .text(function(d) { return d.name;})
                 .attr("target", "_blank");
 
         var conteo_link = nodeEnter.append("text")
@@ -144,6 +144,11 @@
                 .attr("xlink:href", function(d){return d.especies_inferiores_url;})
                 .text(function(d) { return d.especies_inferiores_conteo == 0 ? '' : d.especies_inferiores_conteo; })
                 .attr("target", "_blank");
+
+        // La categoria taxonomica abreviada del taxon
+        nodeEnter.append("text")
+                .attr("dy", ".35em")
+                .text(function(d) { return d.abreviacion_categoria});
 
         node.select("circle")
                 .style("fill", color)

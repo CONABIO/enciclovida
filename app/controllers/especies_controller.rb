@@ -224,7 +224,21 @@ class EspeciesController < ApplicationController
 
   # JSON que se ocupara para desplegar los datos en D3
   def json_d3
-    json_d3 = genera_obj_d3
+    @children_array = []
+
+    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
+
+    taxones.each_with_index do |t, i|
+      @i = i
+      children_hash = asigna_hash_d3(t, arbol_inicial: true)
+
+      # Acumula el resultado del json anterior una posicion antes de la actual
+      @children_array << children_hash
+    end
+
+    # Regresa el ultimo que es el mas actual
+    json_d3 = @children_array.last
+
     render :json => json_d3.to_json
   end
 
@@ -432,23 +446,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def genera_obj_d3
-    @children_array = []
-
-    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
-
-    taxones.each_with_index do |t, i|
-      @i = i
-      children_hash = asigna_hash_d3(t, arbol_inicial: true)
-
-      # Acumula el resultado del json anterior una posicion antes de la actual
-      @children_array << children_hash
-    end
-
-    # Regresa el ultimo que es el mas actual
-    @children_array.last
-  end
-
   def asigna_hash_d3(t, opts={})
     children_hash = {}
     categoria = t.categoria_taxonomica.nivel1
@@ -505,7 +502,11 @@ class EspeciesController < ApplicationController
 
     children_hash[:especie_id] = t.id
     children_hash[:name] = t.nombre_cientifico
-    children_hash[:nombre_categoria_taxonomica] = t.nombre_categoria_taxonomica
+
+    # Pone la abreviacion de la categoria taxonomica
+    cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase
+    abreviacion_categoria = CategoriaTaxonomica::ABREVIACIONES[cat.to_sym].present? ? CategoriaTaxonomica::ABREVIACIONES[cat.to_sym] : ''
+    children_hash[:abreviacion_categoria] = abreviacion_categoria
 
     if opts[:arbol_inicial]
       if @i+1 != 1  # Si es taxon mas bajo no tiene hijos
