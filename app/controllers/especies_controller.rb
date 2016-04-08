@@ -98,9 +98,9 @@ class EspeciesController < ApplicationController
                #:save_to_file => pdf,
                #:save_only => true,
                :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-               :template => 'especies/show.pdf.erb',
+               :template => 'especies/show.pdf.erb'
                #:encoding => 'UTF-8',
-               :user_style_sheet => 'http://bios.conabio.gob.mx/assets/application.css'
+               #:user_style_sheet => 'http://colibri.conabio.gob.mx:4000/assets/application.css'
                #:print_media_type => false,
                #:disable_internal_links => false,
                #

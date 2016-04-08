@@ -10,19 +10,12 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-// require jquery-1.11.3.js
 //= require jquery
 //= require jquery-ui.js
 //= require jquery_ujs
 //= require turbolinks
-// stub photo_selectors
-// stub show
-// stub jquery.soulmate.js
-// stub gmaps
-// stub mapas_dinamicos
-// require_tree .
 //= require adicional.js
-//= require bootstrap.js
+//= require bootstrap-sprockets
 //= require comentarios.js
 //= require i18n.min.js
 //= require jquery.imagesloaded.min.js

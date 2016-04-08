@@ -7,35 +7,24 @@
  *
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- *= //require_tree .
- *= require bootstrap.css
- *= require bootstrap-theme.css
- *= require dashboard
- *= //require sticky-footer
- *= //require bootstrap.css.map
- *= //require bootstrap-theme.css.map
- *= require especies
- *= require flickr_photos
- *= require listas
- *= require soulmate
- *= require webservices
- *= require fontello
- *= require fontello-codes
- *= require fontello-embedded
- *= require fontello-ie7
- *= require fontello-ie7-codes
- *= require scrolling
- * require jquery-ui
- *= require comentarios
  */
 
-/*
-* require jquery-ui
-* require jquery-ui.structure
-* require dataTables/src/demo_table_jui
-*/
+// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+@import "bootstrap-sprockets";
+@import "custom_bootstrap";
+@import "bootstrap";
+@import "bootstrap/theme";
+
+@import 'dashboard';
+@import 'especies';
+@import 'flickr_photos';
+@import 'listas';
+@import 'soulmate';
+@import 'webservices';
+@import 'scrolling';
+@import 'comentarios';
+
+@import 'enciclovida_font_icons';
 
 body{
     background-repeat: no-repeat;
@@ -53,6 +42,7 @@ body{
     z-index: -1;
 }
 
+/*Brandbar es loa plequita negra al inicio de cada página*/
 #brandBar {
     background-color: rgba(51, 51, 51, 0.75);
 }
@@ -94,21 +84,21 @@ body{
 
 @font-face {
     font-family: 'texgyreadventorregular';
-    src: url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
-         url('../fonts/texgyreadventor-regular-webfont.eot'),
-         url('../fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/texgyreadventor-regular-webfont.woff') format('woff'),
-         url('../fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
+    src: url('/fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
+         url('/fonts/texgyreadventor-regular-webfont.eot'),
+         url('/fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/texgyreadventor-regular-webfont.woff') format('woff'),
+         url('/fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'opensans';
-    src: url('../fonts/opensans-regular-webfont.ttf') format('truetype'),
-    url('../fonts/opensans-regular-webfont.eot'),
-    url('../fonts/opensans-regular-webfont.woff') format('woff'),
-    url('../fonts/opensans-regular-webfont.svg') format('svg');
+    src: url('/fonts/opensans-regular-webfont.ttf') format('truetype'),
+    url('/fonts/opensans-regular-webfont.eot'),
+    url('/fonts/opensans-regular-webfont.woff') format('woff'),
+    url('/fonts/opensans-regular-webfont.svg') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -268,22 +258,20 @@ div#map{
 #advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
     background-color: #e4cdb3;
 }
-.img-correo{
-    position: relative;
-    width: 14.5em;
-    height: 1.2em;
-    display: inline-block;
+.enciclovida_correo-ev-icon:before{
+  width: 10em !important;
+  text-decoration: underline;
 }
-.img-correo > span{
-    height: 125%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-size: contain;
-    background-repeat: no-repeat;
+.biomex-ev-icon:before, .conabio-ev-icon:before, .enciclo-ev-icon:before, .vida-ev-icon:before{
+  width: 2.5em !important;
+  font-size: 4.5em;
+  color: #fdfdfd;
+  margin: 0;
 }
-.img-correo > span:nth-child(1){background-image: url("/assets/app/enciclovida_correo/d.svg");}
-.img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
-.img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
-.img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
+.enciclo-ev-icon:before{
+  color: #fdfdfd;
+}
+.vida-ev-icon:before{
+  color: #889b45;
+  margin-left: -2.5em;
+}
