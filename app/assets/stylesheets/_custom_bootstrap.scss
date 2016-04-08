@@ -1,0 +1,55 @@
+/* El procedimiento para migrar del custom bootstrap  (http://getbootstrap.com/customize/)
+ * a Sass. hasta el momento es manual.
+ * el script hallado en https://github.com/twbs/bootstrap-sass/blob/master/tasks/converter/less_conversion.rb
+ * no funcionara en este caso ya que se basa en el repo de bootstrap oficial o alguno de sus commits,
+ * basicamente lo que hice es jalarme el json de la última modificación:
+ *************************************************************************************************************
+ https://gist.github.com/anonymous/00b3ef0a356828d08cb44cdcc91f3336 (VERSIÓN CON LOS CAMBIOS MÁS RECIENTES AL 31/03/2016)
+ *************************************************************************************************************
+ * (modificar en http://getbootstrap.com/customize/?id=00b3ef0a356828d08cb44cdcc91f3336)
+ * jalarme un config.json de un bootstrap sin modificar
+ * correrles un diff config_original.json config_custom.json
+ * (también podría funcionar un common -13 config_original.json config_custom.json pero hay que revisar el orden de las lineas)
+ * y hacer las sustituciones de sintaxis a mano
+ * @ -> $, ,\n -> ;\n, \n" -> 'n, etc, etc.
+ * Particularmente en esta personalización, revisar que las variables se resuelvan al estar previamente definidas (ACOMODO RESOLV)
+ * Puede ser que se pueda automatizar un poco este proceso con alguna gemita o una tarea o un simple script de bash
+ * pero no es pendiente urgente para antes del 18/04/16, y puede que bootstrap 4 salga antes de mediados de este año
+ * ATTE: Furby del 31/03/2016
+*/
+    $gray-base: #111;
+    $brand-primary: #800000;
+    $brand-success: #A0C11F;
+    $brand-info: #ffe500;
+    $brand-warning: #ea9028;
+    $brand-danger: #C77878;
+    $font-family-sans-serif: "opensans", "Helvetica", Arial, "texgyreadventorregular";
+    $font-family-serif: "Times New Roman", serif;
+    $border-radius-base: 2px;
+    $border-radius-large: 3px;
+    $border-radius-small: 1px;
+    $table-bg-accent: #e9e9e9;
+    $grid-gutter-width: 20px;
+    $nav-link-padding: 8px 12px;
+    $nav-link-hover-bg: #f7f7f7;
+    $nav-tabs-link-hover-border-color: #ddd;
+    $nav-tabs-active-link-hover-bg: #f7f7f7;
+    $nav-tabs-justified-active-link-border-color: #ddd;
+    $nav-pills-border-radius: $border-radius-base+1;
+    $nav-pills-active-link-hover-bg: #f7f7f7;
+    $nav-pills-active-link-hover-color: lighten($gray-base, 33.5%);
+/*INICIO ACOMODO RESOLV*/
+    $state-success-bg: lighten(desaturate($brand-success, 35%),26%);
+    $state-success-text: saturate(darken($state-success-bg, 46%),30%);
+
+    $state-info-bg: lighten(desaturate($brand-info, 35%),26%);
+    $state-info-text: saturate(darken($state-info-bg, 46%),30%);
+
+    $state-warning-bg: lighten(desaturate($brand-warning, 35%),26%);
+    $state-warning-text: saturate(darken($state-warning-bg, 46%),30%);
+
+    $state-danger-bg: lighten(desaturate($brand-danger, 35%),26%);
+    $state-danger-text: saturate(darken($state-danger-bg, 46%),30%);
+/*FIN ACOMODO*/
+    $panel-bg: #f2f0ed;
+    $panel-heading-padding: 1px 12px;
