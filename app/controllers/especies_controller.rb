@@ -227,10 +227,12 @@ class EspeciesController < ApplicationController
     @children_array = []
 
     if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
+      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+          where(estatus: 2).order_por_categoria('DESC')
     else
       taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).
-          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").order_por_categoria('DESC')
+          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+          where(estatus: 2).order_por_categoria('DESC')
     end
 
     taxones.each_with_index do |t, i|
@@ -252,14 +254,16 @@ class EspeciesController < ApplicationController
     children_array = []
 
     if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
+      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).
+          where(estatus: 2).order_por_categoria('DESC')
     else
       nivel_categoria = @especie.categoria_taxonomica.nivel1
       ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
 
       taxones = Especie.select_basico.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
           where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-          where("nivel1=#{nivel_categoria + 1}")
+          where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
+          where(estatus: 2)
     end
 
     taxones.each do |t|
@@ -465,7 +469,7 @@ class EspeciesController < ApplicationController
     children_hash = {}
     categoria = t.categoria_taxonomica.nivel1
 
-    radius_min_size = 5
+    radius_min_size = 8
     radius_size = radius_min_size
     children_hash[:radius_size] = radius_size
 
@@ -497,12 +501,12 @@ class EspeciesController < ApplicationController
           radius_per_range = ((especies_o_inferiores)*10)/999
           radius_size = radius_per_range + 20
 
-        elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 10
+        elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 13
 
-          radius_per_range = ((especies_o_inferiores)*10)/99
-          radius_size = radius_per_range + 10
+          radius_per_range = ((especies_o_inferiores)*7)/99
+          radius_size = radius_per_range + 13
 
-        elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 10 a 5
+        elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 13 a 8
 
           radius_per_range = ((especies_o_inferiores)*5)/9
           radius_size = radius_per_range + radius_min_size
