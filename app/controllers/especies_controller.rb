@@ -226,7 +226,12 @@ class EspeciesController < ApplicationController
   def json_d3
     @children_array = []
 
-    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
+    if I18n.locale.to_s == 'es-cientifico'
+      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).order_por_categoria('DESC')
+    else
+      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").order_por_categoria('DESC')
+    end
 
     taxones.each_with_index do |t, i|
       @i = i
@@ -245,7 +250,17 @@ class EspeciesController < ApplicationController
   # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
   def nodo_json_d3
     children_array = []
-    taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
+
+    if I18n.locale.to_s == 'es-cientifico'
+      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).order_por_categoria('DESC')
+    else
+      nivel_categoria = @especie.categoria_taxonomica.nivel1
+      ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
+
+      taxones = Especie.select_basico.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+          where("nivel1=#{nivel_categoria + 1}")
+    end
 
     taxones.each do |t|
       children_hash = asigna_hash_d3(t)
