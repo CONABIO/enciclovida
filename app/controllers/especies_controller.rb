@@ -469,6 +469,14 @@ class EspeciesController < ApplicationController
     children_hash = {}
     categoria = t.categoria_taxonomica.nivel1
 
+    if categoria == 7
+      children_hash[:color] = '#748c17';
+    elsif categoria == 1
+      children_hash[:color] = '#c27113'
+    else
+      children_hash[:color] = '#C6DBEF'
+    end
+
     radius_min_size = 8
     radius_size = radius_min_size
     children_hash[:radius_size] = radius_size
@@ -477,7 +485,7 @@ class EspeciesController < ApplicationController
     if categoria < 6
       ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
       especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-          where(estatus: 2).where('nivel1=7').categoria_taxonomica_join.count
+          where(estatus: 2).where('nivel1=7 AND nivel3=0 AND nivel4=0').categoria_taxonomica_join.count
 
       children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
