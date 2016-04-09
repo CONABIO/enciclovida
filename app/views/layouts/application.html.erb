@@ -35,7 +35,7 @@
 
 		<% if usuario_signed_in? %>
 			<% if I18n.locale.to_s == 'es-cientifico' %>
-				<%= link_to "Listas de #{t(:taxon_plural)}", listas_path %>
+				<%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
 				<%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
 			<% end %>
 			<div class="btn-group" role="group">
