@@ -140,11 +140,11 @@ cambiaFondo = function(){
 $(document).ready(function (){
     var bgrotater = setInterval(function() {
         if (fondo==16) fondo=0;
-        $('#img-fondo').animate({opacity: 0}, 1000, function(){
+        $('#img-fondo').animate({opacity: 0}, 1500, function(){
             $("#img-fondo").css("background-image", "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
-        }).animate({opacity: 1}, 1000);
+        }).animate({opacity: 1}, 1500);
         fondo++;
-    }, 6000);
+    }, 30000);
 });
 
 $(document).ready(function(){
