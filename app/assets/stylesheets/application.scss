@@ -27,24 +27,26 @@
 @import 'enciclovida_font_icons';
 
 body{
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
+  background-color: #333333;
 }
 
 #img-fondo {
-    position: absolute;
-    min-width: 100%;
-    min-height: 100%;
-    top: 0;
-    left: 0;
-    background-color: transparent;
-    z-index: -1;
+  position: fixed;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-image: url("fondos/01.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
 }
 
-/*Brandbar es loa plequita negra al inicio de cada página*/
+/*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
-    background-color: rgba(51, 51, 51, 0.75);
+  background-color: rgba(51, 51, 51, 0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
     margin-top: 10px;
@@ -259,6 +261,7 @@ div#map{
     background-color: #e4cdb3;
 }
 .enciclovida_correo-ev-icon:before{
+  font-size: large;
   width: 10em !important;
   text-decoration: underline;
 }
