@@ -23,8 +23,9 @@
   <%= yield :extrajs %>
 </head>
 <body>
-<div id="img-fondo">
-</div>
+
+<div id="img-fondo"></div>
+
 <%= yield :ribbon %>
 <div id="brandBar" class="container-fluid">
 
@@ -34,7 +35,7 @@
 
 		<% if usuario_signed_in? %>
 			<% if I18n.locale.to_s == 'es-cientifico' %>
-				<%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
+				<%= link_to "Listas de #{t(:taxon_plural)}", listas_path %>
 				<%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
 			<% end %>
 			<div class="btn-group" role="group">
@@ -80,8 +81,9 @@
       <%= render :template => 'busquedas/basica' %>
     </div>
   </div>
-
 </div>
+
+
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
@@ -108,7 +110,7 @@
 		</a>
 		| Plano de ubicación <span onclick="cambiaFondo();">CONABIO</span> con
         <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
-        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank">PDF </a>
+        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank"><i class="file-pdf-ev-icon"></i></a>
       </p>
     </div>
   </div>
@@ -116,10 +118,8 @@
 
 <%= bitacora.html_safe if bitacora.present? %>
 <%= yield :extrajs_carrusel %>
-
 <% if Rails.env == 'production'  %>
     <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
 <% end %>
-
 </body>
 </html>
