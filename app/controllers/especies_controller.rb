@@ -490,7 +490,7 @@ class EspeciesController < ApplicationController
       children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
       # URL para ver las especies o inferiores
-      url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100"
+      url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100&estatus[]=2"
       children_hash[:especies_inferiores_url] = url
 
       #  Radio de los nodos para un mejor manejo hacia D3
@@ -528,7 +528,8 @@ class EspeciesController < ApplicationController
     end
 
     children_hash[:especie_id] = t.id
-    children_hash[:name] = t.nombre_cientifico
+    children_hash[:nombre_cientifico] = t.nombre_cientifico
+    children_hash[:nombre_comun] = t.nombre_comun_principal
 
     # Pone la abreviacion de la categoria taxonomica
     cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase
