@@ -68,12 +68,13 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :categoria_conteo_join, -> { joins('LEFT JOIN categorias_conteo ON categorias_conteo.especie_id=especies.id') }
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad, ancestry_ascendente_directo,
+  scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
         adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies

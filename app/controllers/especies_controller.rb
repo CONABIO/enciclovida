@@ -227,10 +227,12 @@ class EspeciesController < ApplicationController
     @children_array = []
 
     if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
           where(estatus: 2).order_por_categoria('DESC')
     else
-      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
           where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
           where(estatus: 2).order_por_categoria('DESC')
     end
@@ -254,13 +256,15 @@ class EspeciesController < ApplicationController
     children_array = []
 
     if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico.datos_basicos.caso_rango_valores('especies.id',@especie.child_ids.join(',')).
+      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.child_ids.join(',')).
           where(estatus: 2).order_por_categoria('DESC')
     else
       nivel_categoria = @especie.categoria_taxonomica.nivel1
       ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
 
-      taxones = Especie.select_basico.datos_basicos.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
           where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
           where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
           where(estatus: 2)
@@ -467,7 +471,7 @@ class EspeciesController < ApplicationController
 
   def asigna_hash_d3(t, opts={})
     children_hash = {}
-    categoria = t.categoria_taxonomica.nivel1
+    categoria = t.nivel1
 
     if categoria == 7
       children_hash[:color] = '#748c17';
@@ -482,11 +486,12 @@ class EspeciesController < ApplicationController
     children_hash[:radius_size] = radius_size
 
     # Se muestra el numero de especies o inferiores de genero hacia arriba
-    if categoria < 6
-      ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
-      especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-          where(estatus: 2).where('nivel1=7 AND nivel3=0 AND nivel4=0').categoria_taxonomica_join.count
+    #if categoria < 6
+      #ancestry = t.is_root? ? "#{t.id}/%" : "#{t.ancestry_ascendente_directo}/#{t.id}/%"
+      #especies_o_inferiores = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+      #    where(estatus: 2).where('nivel1=7 AND nivel3=0 AND nivel4=0').categoria_taxonomica_join.count
 
+      especies_o_inferiores = t.conteo.present? ? t.conteo : 0
       children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
       # URL para ver las especies o inferiores
@@ -523,9 +528,9 @@ class EspeciesController < ApplicationController
 
         children_hash[:radius_size] = radius_size
       end
-    else
-      children_hash[:especies_inferiores_conteo] = 0
-    end
+    #else
+    #  children_hash[:especies_inferiores_conteo] = 0
+    #end
 
     children_hash[:especie_id] = t.id
     children_hash[:nombre_cientifico] = t.nombre_cientifico
