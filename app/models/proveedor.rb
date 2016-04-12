@@ -53,7 +53,7 @@ class Proveedor < ActiveRecord::Base
       fotos_naturalista.each do |photo|
         if photo.new_record?
           if photo.save
-            taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
+            taxon_photo = TaxonPhoto.new(especie_id: taxon.id, photo_id: photo.id)
             taxon_photo.save
           end
         elsif photo.changed?
