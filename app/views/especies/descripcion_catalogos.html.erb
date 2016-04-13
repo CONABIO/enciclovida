@@ -1,0 +1,59 @@
+<% regNomBib=dameRegionesNombresBibliografia(@especie) %>
+
+<table>
+  <tr>
+    <td width="40%" valign="top">
+      <fieldset>
+        <legend class="leyenda">Información del taxón</legend>
+
+        <p>
+          <strong>Estatus taxonómico:</strong>
+          <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
+        </p>
+
+        <%= dameStatus(@especie, :tab_catalogos => true).html_safe %>
+        <%= dameCaracteristica(@especie, :tab_catalogos => true).html_safe %>
+        <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
+        <%= "<p><strong>Tipo de distribución:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
+
+        <% if @especie.cita_nomenclatural.present? %>
+            <p>
+              <strong>Cita nomenclatural:</strong>
+              <%= @especie.cita_nomenclatural %>
+            </p>
+        <% end %>
+
+        <p>
+          <strong>Fuente de la información:</strong>
+          <%= @especie.sis_clas_cat_dicc %>
+        </p>
+
+        <% if @especie.anotacion.present? %>
+            <p>
+              <strong>Anotación:</strong>
+              <%= @especie.anotacion %>
+            </p>
+        <% end %>
+
+        <p>
+          <%= dameEspecieBibliografia(@especie).html_safe %>
+        </p>
+
+        <p>
+          <strong>Identificador único:</strong>
+          <%= @especie.catalogo_id %>
+        </p>
+
+        <p>
+          <strong>Fecha de modificación:</strong>
+          <%= @especie.updated_at %>
+        </p>
+      </fieldset>
+    </td>
+
+    <td width="60%" valign="top">
+      <%= dameTaxonesInferiores(@especie).html_safe %>
+      <%= "<fieldset><legend class='leyenda'>Distribución reportada en literatura:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
+    </td>
+  </tr>
+</table>

@@ -2,7 +2,7 @@ class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
+                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos]
   before_action :only => [:arbol] do
     set_especie(true)
   end
@@ -13,7 +13,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -290,6 +290,8 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def descripcion_catalogos
+  end
 
   private
 
