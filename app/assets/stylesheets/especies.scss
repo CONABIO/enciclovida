@@ -213,14 +213,17 @@ ul.nodo_mayor > ul > .links_arbol a:not(.sub_link_taxon){
 .panel-disabled i:first-child{
   color: #888888;
 }
-#NOM059,#IUCN,#CITES,#TipoDistribucion,#Ambiente{
-
+#panelCaracteristicaDistribucionAmbiente{
+  border-width:0px 2px 2px 2px;
+  border-style: solid;
+  border-color: #C2C583;
+  display: none;
+  position: absolute;
+  z-index: 1;
+  background-color: rgba(247,247,247,.95);
+  padding: 2em;
+  width: 100%;
 }
-#more-info > div > a  img{
-  height: 15px;
-  padding: 0px 2px;
-}
-
 /*los stilos a continuación deben ir en busquedas.css*/
 .bar_reino{
   background-image: linear-gradient(to bottom, #c8ecff 0%, #ffffff 85%);
