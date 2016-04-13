@@ -25,8 +25,10 @@ def nom_com_principal
     adicional = taxon.asigna_nombre_comun
 
     if adicional[:cambio]
-      puts "\t#{adicional[:adicional].nombre_comun_principal}"
+      puts "\tCAMBIO: #{adicional[:adicional].nombre_comun_principal}"
       adicional[:adicional].save
+    else
+      puts "\tSIN CAMBIOS: #{adicional[:adicional].nombre_comun_principal}"
     end
   end
 end
