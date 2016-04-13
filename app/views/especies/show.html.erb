@@ -103,7 +103,6 @@
                 $(idPestaña).load(pestaña);
             }
         });
-        //$('#pestañas > div').addClass("panel-body");
 
         // Inicia los proveedores de fotos
         $('#edit_photos_dialog').dialog({
@@ -277,69 +276,31 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="pestañas" class="panel">
-          <ul class="nav nav-tabs" data-tabs="tabs">
-            <li id="fym_li" class="active"><a href="#fym" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong>.</strong></a></li>
-            <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
-            <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
-            <% if @especie.species_or_lower? %><li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Ficha</strong></a><% end %>
-          </ul>
+      <ul class="nav nav-tabs" data-tabs="tabs">
+        <li id="fym_li" class="active"><a href="#fym" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong>.</strong></a></li>
+        <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
+        <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+        <% if @especie.species_or_lower? %><li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Ficha</strong></a><% end %>
+      </ul>
 
-          <div id="fym" class="tab-pane panel-body">
-            <% if @photos.any? %>
-                <% col1 = (geo && geo.count > 0) ? 'col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-                <div class="<%=col1%>" id="contenedor_fotos">
-
-                  <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
-                  <% if usuario_signed_in? %>
-                      <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-                      <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-                  <% end %>
-
-                </div>
-            <% end %>
-
-            <% if geo && geo.count > 0 %>
-                <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-                <div class="<%=col2%>" id="contenedor_mapa">
-                  <div class="embed-responsive embed-responsive-4by3">
-                    <div id="map"></div>
-                    <h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
-                  </div>
-                </div>
-            <% end %>
-
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
-              <div class="btn-group pull-right" role="group" aria-label="...">
-                <% if geo && geo.count > 0 %>
-                    <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['geoserver_kmz'] %>
-                    <%= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
-                    <%= link_to(("Observaciones de: "+image_tag('app/naturalista.png')).html_safe, geo['naturalista_kml'], :target => :_blank, :style => 'padding-top: 13px;', :class => 'btn btn-sm btn-link') if geo['naturalista_kml'] %>
-                <% end %>
-                <!-- # Parche para mostrar el PDF de Dalbergia -->
-                <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-                    <%= link_to(("Descargar versión: <i class ='pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, "http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf", :target => :_blank, :style => 'padding: 3px;', :class => 'btn btn-link btn-sm') %>
-                <% else %>
-                    <%= button_tag(("Descargar versión: <i class ='pdf-ev-icon' style = 'font-size: 2em;'></i>").html_safe, :type => :button, :style => 'padding: 3px;', :class => 'btn btn-sm btn-link', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
-                <% end %>
-              </div>
-            </div>
-
-          </div>
+      <div id="fym" class="tab-pane panel-body">
+        <%= render :partial => 'fym', :locals => { :geo => geo }  %>
+      </div>
 
 
-          <div id="descripcion_catalogos" class="tab-pane panel-body">
-            <%# render :partial => 'info' %>
-          </div>
+      <div id="descripcion_catalogos" class="tab-pane panel-body">
+        <%# render :partial => 'info' %>
+      </div>
 
-          <div id="arbol_taxonomico" class="tab-pane panel-body">
-            <%= render :partial => 'arbol' %>
-          </div>
+      <div id="arbol_taxonomico" class="tab-pane panel-body">
+        <%= render :partial => 'arbol' %>
+      </div>
 
-          <% if @especie.species_or_lower? %>
-              <div id="describe" class="tab-pane panel-body">
-                <%# render :partial => 'description' %>
-              </div>
-          <% end %>
-          </div>
+      <div id="describe" class="tab-pane panel-body">
+        <%# if @especie.species_or_lower? #este no deberia ser necesario ya q se carga asyncrono%>
+        <%# end %>
+      </div>
+
+    </div>
   </div>
 </div>
