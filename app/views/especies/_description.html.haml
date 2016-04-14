@@ -11,7 +11,7 @@
         Descripción de:
     .col-xs-3
       - if @describer
-        = select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control"
+        = select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control", :onchange => 'getDescription("/especies/'+@especie.id.to_s+'/describe?from="+$(this).val())';
         - if page_url = @describer.page_url(@especie)
           .col-xs-12{:class => "text-center"}
             = link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => 'externallink ui', :target => :_blank
