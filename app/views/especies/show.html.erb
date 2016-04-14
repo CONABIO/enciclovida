@@ -12,87 +12,75 @@
     var TAXON = <%=raw taxon %>;
     var SPECIES_OR_LOWER = <%=raw species_or_lower %>;
 
-    if (SPECIES_OR_LOWER)
-    {
+    if (SPECIES_OR_LOWER){
         // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
         var RUTAS_KMZ = eval(<%=raw geodatos %>);
 
-        if (RUTAS_KMZ != undefined)
-        {
+        if (RUTAS_KMZ != undefined){
             var CUANTOS_KMZ = Object.keys(RUTAS_KMZ).length;
 
             if (CUANTOS_KMZ > 0) {
                 var MAPAS = new Array();
 
-                if (RUTAS_KMZ.geoserver_kmz != undefined) {
+                if (RUTAS_KMZ.geoserver_kmz != undefined){
                     MAPAS[0] = new Array();
                     MAPAS[0][0] = RUTAS_KMZ.geoserver_kmz
                     MAPAS[0][1] = " Mapa de distribución potencial (CONABIO)"
                 }
 
-                if (RUTAS_KMZ.snib_kmz != undefined) {
+                if (RUTAS_KMZ.snib_kmz != undefined){
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.snib_kmz
-                    MAPAS[CUANTOS][1] = " <img src='/assets/app/placemarks/rojo.png'/> Registros de museos, colectas y proyectos de CONABIO (SNIB)"
+                    MAPAS[CUANTOS][1] = "<i class='prioritarias-alto-ev-icon' style='color: #ff6464; font-size: smaller;'></i>Registros de museos, colectas y proyectos de CONABIO (SNIB)"
                 }
 
-                if (RUTAS_KMZ.naturalista_kmz != undefined) {
+                if (RUTAS_KMZ.naturalista_kmz != undefined){
                     var CUANTOS = Object.keys(MAPAS).length;
                     MAPAS[CUANTOS] = new Array();
                     MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
-                    MAPAS[CUANTOS][1] = " Observaciones de <img src='/assets/app/naturalista.png' width='70'/>" +
-                    "<p><img src='/assets/app/placemarks/verde.png'/> Grado de investigación <br>" +
-                    "<img src='/assets/app/placemarks/amarillo.png'/> Grado casual</p>"
+                    MAPAS[CUANTOS][1] = "<strong>Observaciones de </strong><i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>"+
+                    "<i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i><br>" +
+                    "<i class='prioritarias-alto-ev-icon' style='color: #96fd96; font-size: smaller; margin-left: 10px;'></i> Grado de investigación <br>" +
+                    "<i class='prioritarias-alto-ev-icon' style='color: #FDFD98; font-size: smaller; margin-left: 10px;'></i> Grado casual"
                 }
             }
         }
     }
 
-    info = function()
-    {
+    info = function(){
         $('#ficha-div').slideUp();
         $('#info-div').slideDown();
         return false;
-    }
+    };
 
-    ficha = function()
-    {
+    ficha = function(){
         $('#info-div').slideUp();
         $('#ficha-div').slideDown();
         return false;
-    }
+    };
 
-    muestraBibliografiaNombres = function(ident)
-    {
+    muestraBibliografiaNombres = function(ident){
         var id=ident.split('_')[2];
         $("#biblio_"+id).dialog();
         return false;
-    }
+    };
 
-    getDescription = function(url)
-    {
+    getDescription = function(url){
         $.ajax({
             url: url,
             method: 'get',
-            beforeSend: function() {
-                $('.taxon_description').loadingShades()
-            },
             success: function(data, status) {
                 $('.taxon_description').replaceWith(data);
-                $('.taxon_description select').change(function() {
-                    getDescription('/especies/'+TAXON.id+'/describe?from='+$(this).val())
-                })
             },
             error: function(request, status, error) {
-                $('.taxon_description').loadingShades('close')
+                $('.taxon_description').loadingShades('close');
             }
         })
-    }
+    };
 
-    $(document).ready(function()
-    {
-        $('#pestañas').tabs(); // Inicia los tabs
+    $(document).ready(function(){
+        $('#pestañas').tabs(); // Inicia las pestañas
         $('#pestañas > .nav a').click(function(){
             $('#pestañas > .nav li').removeClass("active");
             $(this).parent().addClass("active");
@@ -111,8 +99,8 @@
             autoOpen: false,
             width: 700,
             open: function( event, ui ) {
-                $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'})
-                $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function() {
+                $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'});
+                $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function(){
                     var photoSelectorOptions = {
                         defaultQuery: TAXON.nombre_cientifico,
                         skipLocal: true,
@@ -167,15 +155,11 @@
             }
         });
 
-        if (SPECIES_OR_LOWER)
-        {
-            getDescription('/especies/'+TAXON.id+'/describe'); // Inicia las fihas
-
-            if (CUANTOS_KMZ > 0)
-            {
+        if (SPECIES_OR_LOWER){
+            if (CUANTOS_KMZ > 0){
                 dimensionesIniciales();
-                // Inicia el mapa
 
+                // Inicia el mapa
                 for (var i = 0; i < MAPAS.length; i++) {
                     infoWindow = new google.maps.InfoWindow({});
                     MAPAS[i][2] = function (direccion) {
@@ -196,11 +180,10 @@
                                         infoWindow.maxWidth = 2;
                                     } else {
                                         infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 0px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.infoWindowHtml + "</div>");
-                                    }
-                                    ;
+                                    };
                                     infoWindow.setPosition(point.latLng);
                                     infoWindow.open(map.map);
-                                    $(function () {
+                                    $(function (){
                                         $("#balloon div").removeAttr("style");
                                         $("dl").addClass('dl-horizontal');
                                     });
@@ -220,7 +203,6 @@
                 });
             }
         }
-
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -255,8 +237,8 @@
     </div>
     <% if @con_naturalista %>
         <div class="leaf bg-warning text-primary text-center" id="conNaturalista">
-          <%= image_tag('app/naturalista_ic.png') %>
-          <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(image_tag('app/naturalista.png', :class => ''), "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-link') %></p>
+          <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>
+          <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(("<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-link') %></p>
         </div>
     <% end %>
   </div>
@@ -267,40 +249,48 @@
   </div>
 </div>
 
-<% if (@especie.species_or_lower?) %>
+<% if (species_or_lower) %>
     <div class="row" style="padding: 20px 0;">
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
     </div>
 <% end %>
 
-<div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div id="pestañas" class="panel">
-      <ul class="nav nav-tabs" data-tabs="tabs">
-        <li id="fym_li" class="active"><a href="#fym" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong>.</strong></a></li>
-        <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
-        <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
-        <% if @especie.species_or_lower? %><li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Ficha</strong></a><% end %>
-      </ul>
 
-      <div id="fym" class="tab-pane panel-body">
-        <%= render :partial => 'fym', :locals => { :geo => geo }  %>
-      </div>
+<div id="pestañas" class="panel row">
+  <ul class="nav nav-tabs" data-tabs="tabs">
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Geodatos e imágenes</strong></a></li>
+    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Catálogos</strong></a></li>
+    <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico" class="noLoad"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
+    <li class="pull-right">
+      <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
+      <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
+          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+      <% else %>
+          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
+      <% end %>
+    </li>
+  </ul>
+  <% if I18n.locale.to_s != 'es-cientifico' %>
+      <script type="application/javascript">
+        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
+        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
+      </script>
+  <% end %>
 
+  <div id="geodata_e_imagen" class="tab-pane panel-body">
+    <%= render :partial => 'geodata_e_imagen', :locals => { :geo => geo }  %>
+  </div>
 
-      <div id="descripcion_catalogos" class="tab-pane panel-body">
-        <%# render :partial => 'info' %>
-      </div>
+  <div id="descripcion_catalogos" class="tab-pane panel-body">
+    <p class="text-center"><i class="spin6-ev-icon" style="font-size: 5em; color: #800000;"></i><br /><h3 style="color: #800000;">Cargando...</h3></p>
+  </div>
 
-      <div id="arbol_taxonomico" class="tab-pane panel-body">
-        <%= render :partial => 'arbol' %>
-      </div>
+  <div id="describe" class="tab-pane panel-body">
+    <p class="text-center"><i class="spin6-ev-icon" style="font-size: 5em; color: #800000;"></i><br /><h3 style="color: #800000;">Cargando...</h3></p>
+  </div>
 
-      <div id="describe" class="tab-pane panel-body">
-        <%# if @especie.species_or_lower? #este no deberia ser necesario ya q se carga asyncrono%>
-        <%# end %>
-      </div>
-
-    </div>
+  <div id="arbol_taxonomico" class="tab-pane panel-body">
+    <%= render :partial => 'arbol' %>
   </div>
 </div>
