@@ -334,17 +334,17 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye
-  def nom_com_prin(humanizar = true)
+  def nom_com_prin(primera_mayus = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?
-        humanizar ? self.nombre_comun_principal.humanizar? : self.nombre_comun_principal
+        primera_mayus ? self.nombre_comun_principal.primera_en_mayuscula : self.nombre_comun_principal
       else
         ''
       end
     else
       if adicional
         if adicional.nombre_comun_principal.present?
-          humanizar ? adicional.nombre_comun_principal.humanizar? : adicional.nombre_comun_principal
+          primera_mayus ? adicional.nombre_comun_principal.primera_en_mayuscula : adicional.nombre_comun_principal
         else
           ''
         end

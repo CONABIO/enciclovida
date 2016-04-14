@@ -1,5 +1,10 @@
 <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+
+    function firstToUpperCase( str ) {
+        return str.substr(0, 1).toUpperCase() + str.substr(1);
+    }
+
     soulmate_asigna = function(event)
     {
         var campo = document.getElementById(event.target.id);
@@ -12,7 +17,7 @@
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
 
                 var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
-                '<b>' + term + '</b> (' + data.nombre_cientifico + ')';
+                '<b>' + firstToUpperCase(term) + '</b> (' + data.nombre_cientifico + ')';
 
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
             };
@@ -45,7 +50,7 @@
                 if (I18n.locale == 'es-cientifico')
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else
-                    var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : data.nombre_comun + ' (<b>' + term + '</b>)';
+                    var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : firstToUpperCase(data.nombre_comun) + ' (<b>' + term + '</b>)';
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
                 //return data.icono + nombres;
             };

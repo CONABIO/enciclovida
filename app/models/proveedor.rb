@@ -53,7 +53,7 @@ class Proveedor < ActiveRecord::Base
       fotos_naturalista.each do |photo|
         if photo.new_record?
           if photo.save
-            taxon_photo = TaxonPhoto.new(:especie_id => taxon.id, :photo_id => photo.id)
+            taxon_photo = TaxonPhoto.new(especie_id: taxon.id, photo_id: photo.id)
             taxon_photo.save
           end
         elsif photo.changed?
@@ -215,7 +215,7 @@ class Proveedor < ActiveRecord::Base
       begin
         response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
         data_todos = JSON.parse(response.limpia_sql)
-        data = Proveedor.comprueba_nombre(especie.nombre_cientifico, data_todos)
+        data = Proveedor.comprueba_nombre(especie, data_todos)
       rescue
         return nil
       end
@@ -292,12 +292,14 @@ class Proveedor < ActiveRecord::Base
   end
 
   def self.crea_info_naturalista(taxon)
-    response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
-    data = JSON.parse(response)
-    exact_data = Proveedor.comprueba_nombre(taxon.nombre_cientifico, data)
+    puts "\t\t#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+
+    response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(taxon.nombre_cientifico.limpiar.limpia)}"
+    data = JSON.parse(response.limpia_sql)
+    exact_data = Proveedor.comprueba_nombre(taxon, data)
 
     return nil unless exact_data.present?
-    proveedor = Proveedor.new(:especie_id => taxon.id, :naturalista_id => exact_data['id'], :naturalista_info => "#{exact_data}".codifica64)
+    proveedor = Proveedor.new(especie_id: taxon.id, naturalista_id: exact_data['id'], naturalista_info: "#{exact_data}".codifica64)
     return proveedor unless taxon.species_or_lower?
     proveedor.obs_naturalista
     proveedor
@@ -305,11 +307,22 @@ class Proveedor < ActiveRecord::Base
 
   def self.comprueba_nombre(taxon, data)
     return nil if data.count == 0
+
     data.each do |d|
       if d['name'] == taxon
-        return d
+        reino_naturalista = d['ancestry'].split('/')[1].to_i
+        next unless reino_naturalista.present?
+
+        reino_enciclovida = taxon.is_root? ? taxon.id : taxon.ancestry_ascendente_directo.split('/').first
+
+        # Aseguramos que el taxon aparte de coincidir en el nombre coincida en el reino por lo menos, asi evitamos homonimos
+        return d if reino_naturalista == 1 && reino_enciclovida == 1000001  # Animales
+        return d if reino_naturalista == 47126 && reino_enciclovida == 6000002  # Plantas
+        return d if reino_naturalista == 47170 && reino_enciclovida == 3000004  # Hongos
+
       end
     end
+
     nil
   end
 

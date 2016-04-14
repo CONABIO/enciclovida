@@ -42,7 +42,7 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe
+            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
@@ -59,7 +59,7 @@ module EspeciesHelper
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
+            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}".html_safe
@@ -227,9 +227,9 @@ module EspeciesHelper
   def dameNomComunes(taxon)
     nombres_comunes = ''
     if I18n.locale.to_s == 'es-cientifico'
-      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     end
 
     # Agrupa los nombres por su lengua
@@ -308,10 +308,10 @@ module EspeciesHelper
       # Parte de los nombres comunes con la bibliografia
       e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
         # Si ya estaba ese nombre comun, me lo salto
-        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}")
-        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}"
+        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}")
+        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}"
 
-        nomBib = "#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
+        nomBib = "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula} (#{nombre.nombre_comun.lengua.downcase})"
         nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
           nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
 <div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"

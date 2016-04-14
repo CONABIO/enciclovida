@@ -10,7 +10,7 @@
         <% if nombres_comunes.include?(@adicional.nombre_comun_principal) %>
 
             <%= f.select :select_nom_comun, @nombres_comunes << %w(Otro Otro),
-                         :selected => @adicional.nombre_comun_principal.humanizar,
+                         :selected => @adicional.nombre_comun_principal.primera_en_mayuscula,
                          :prompt => '---Selecciona---' %>
 
             <p>
