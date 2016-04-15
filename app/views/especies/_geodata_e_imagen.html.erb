@@ -28,3 +28,9 @@
 
 <% end %>
 
+<% if !(@photos.any? && geo && geo.count > 0) %>
+    <p class="text-center">
+    <h4 style="color: #800000;">Lo sentimos, pero no contamos con una imagen o geodato para:</h4>
+    <h3><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></h3>
+    </p>
+<% end %>
