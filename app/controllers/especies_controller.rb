@@ -25,13 +25,7 @@ class EspeciesController < ApplicationController
   # GET /especies
   # GET /especies.json
   def index
-    #@especies = Especie.limit(100)
-    #respond_to do |format|
-    #  format.html
-      #format.xlsx {
-      #  send_data @especies.to_xlsx.to_stream.read, :filename => 'especies.xlsx', :type => 'application/vnd.openxmlformates-officedocument.spreadsheetml.sheet'
-      #}
-    #end
+    redirect_to root_path
   end
 
   # GET /especies/1

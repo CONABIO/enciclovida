@@ -1,2 +1,36 @@
-<h1>Inicio#index</h1>
-<p>Find me in app/views/inicio/index.html.erb</p>
+<% content_for(:title) do %>
+    <%= @titulo=CONFIG.site_name %>
+<% end %>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag    "index", media: "all", "data-turbolinks-track" => true %>
+<% end %>
+<% content_for(:ribbon) do %>
+<% end %>
+
+<%= form_tag '/especies/destruye_seleccionados' %>
+<% if notice.present? %>
+    <div class="alert alert-warning" role="alert"><%= notice %></div>
+<% end %>
+
+<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-md-push-7 col-lg-push-7">
+  <p class="text-center">
+    <span style="font-size: 2.3em; font-weight: bolder; color: #691F14 !important;"><%= CONFIG.site_name %></span> integra información de <span style="font-size: 1.8em; font-weight: bolder; color: #503E01 ! important;">especies</span><br>que viven en <span style="font-size: 1.8em; font-weight: bolder; color: #724629 ! important;">México</span>.</p>
+  <br><br>
+  <p class="text-center">Comentarios y sugerencias generales a: <br />
+    <a href="#" onclick="$(this).attr('href',co.join('').split('').reverse().join(''));" target="_blank">
+      <span class="glyphicon glyphicon-envelope"></span>
+      <span class="enciclovida_correo-ev-icon"></span>
+    </a>
+  </p>
+  <div class="well text-center text-primary">Búsquedas geográficas en el Geoportal <strong>¡Próximamente!</strong></div>
+  <p class="text-center"><img src="assets/portada/imgPortada.png" class="img-responsive" style="width: 100%; max-width: 680px;"></p>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-md-pull-5 col-lg-pull-5">
+  <img src="assets/portada/bosqueEncabezado.png" class="img-responsive" style="width: 100%;">
+  <% if I18n.locale.to_s == 'es-cientifico' %>
+      <legend>Arreglo taxonómico</legend>
+  <% else %>
+      <legend>Clasificación</legend>
+  <% end %>
+  <%= render 'especies/arbol' %>
+</div>
