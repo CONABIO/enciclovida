@@ -6,16 +6,16 @@
 </script>
 
 <% botones = ponCaracteristicaDistribucionAmbienteJS %>
-<div class="text-right" onclick="$('#panelCaracteristicaDistribucionAmbiente').toggle({duration: 600, easing: 'easeOutBounce'}, $('.dropdown').toggleClass('glyphicon-chevron-down glyphicon-chevron-up'));">
-  <p class="btn btn-sm btn-success">
-    <strong>Características de riesgo y conservación, ambiente y tipo de distribución </strong>
-    <span class="dropdown glyphicon glyphicon-chevron-down"></span>
+<div class="text-left" onclick="$(this).children('p').toggleClass('btn-block',{duration: 450, easing: 'easeOutBounce'});$('#panelCaracteristicaDistribucionAmbiente').toggle({duration: 400, easing: 'easeOutBounce'}, $('.dropdown').toggleClass('glyphicon-chevron-down glyphicon-chevron-up'));">
+  <p class="btn btn-sm bg-success text-primary">
+    <strong>Características de riesgo y conservación, ambiente y tipo de distribución</strong>
+    <span style="margin: 2px 0 0 5px;" class="dropdown glyphicon glyphicon-chevron-down pull-right"></span>
   </p>
 
 </div>
 
 
-<div class="text-center" id="panelCaracteristicaDistribucionAmbiente">
+<div class="text-center panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 text-center" id="NOM059">
     <h6><strong><%= link_to "Categoría nacional de riesgo", 'http://www.biodiversidad.gob.mx/especies/catRiesMexico.html' %></strong><br /><small><%=t(:nom)%></small></h6>
     <%= botones[:nom].join("\n").html_safe %>
