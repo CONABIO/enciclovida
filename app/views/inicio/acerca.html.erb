@@ -10,19 +10,17 @@
 	    <% end %>
     });
 </script>
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="acercaDe">
-  <div id="pestañas" class="panel">
+  <div id="pestañas" class="panel row acercaDe">
     <ul class="nav nav-tabs" data-tabs="tabs">
       <li id="queEs_li" class="active"><a href="#queEs"><span>¿Qué es?</span></a></li>
       <li id="dosVistas_li"><a href="#dosVistas"><span>Dos vistas</span></a></li>
       <li id="usos_li"><a href="#usos"><span>Usos</span></a></li>
       <li id="advertencias_li"><a href="#advertencias"><span>Advertencias</span></a></li>
     </ul>
-    <div class="panel">
       <div id="queEs" class="tab-pane panel-body"><%= render partial: 'queEs' %></div>
       <div id="dosVistas" class="tab-pane panel-body"><%= render partial: 'dosVistas' %></div>
       <div id="usos" class="tab-pane panel-body"><%= render partial: 'usos' %></div>
       <div id="advertencias" class="tab-pane panel-body"><%= render partial: 'advertencias' %></div>
-    </div>
   </div>
-</div>
+
+

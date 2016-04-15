@@ -265,11 +265,8 @@ div#map{
     line-height: 180%;
 }
 
-#acercaDe dd:nth-of-type(odd), #acercaDe dt:nth-of-type(even){
+.acercaDe dd:nth-of-type(odd), .acercaDe dt:nth-of-type(even){
     background-color: #e9e9e9;
-}
-#advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
-    background-color: #e4cdb3;
 }
 .enciclovida_correo-ev-icon:before{
   font-size: large;
