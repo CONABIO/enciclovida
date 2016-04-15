@@ -308,6 +308,7 @@ es-cientifico:
       two_words_connector: ! ' y '
       words_connector: ! ', '
   taxon: taxón
+  del_taxon: del taxón
   taxon_plural: taxones
   time:
     am: am

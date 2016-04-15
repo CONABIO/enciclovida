@@ -477,6 +477,7 @@ es:
       two_words_connector: ! ' y '
       words_connector: ! ', '
   taxon: especie o grupo
+  del_taxon: de la especie o grupo
   taxon_plural: especies o grupos
   time:
     am: am
