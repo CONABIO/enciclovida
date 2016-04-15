@@ -6,10 +6,10 @@
 </script>
 
 <% botones = ponCaracteristicaDistribucionAmbienteJS %>
-<div class="text-left" onclick="$('#panelCaracteristicaDistribucionAmbiente').toggle({duration: 250, easing: 'easeOutCubic'}, $('.dropdown').toggleClass('glyphicon-chevron-down glyphicon-chevron-up'));" style="width: 90%;">
-  <p class="btn btn-xs btn-block btn-default">
-    <strong class="text-primary">Características de riesgo y conservación, ambiente y tipo de distribución </strong>
-    <span class="text-primary dropdown glyphicon glyphicon-chevron-down"></span>
+<div class="text-right" onclick="$('#panelCaracteristicaDistribucionAmbiente').toggle({duration: 600, easing: 'easeOutBounce'}, $('.dropdown').toggleClass('glyphicon-chevron-down glyphicon-chevron-up'));">
+  <p class="btn btn-sm btn-success">
+    <strong>Características de riesgo y conservación, ambiente y tipo de distribución </strong>
+    <span class="dropdown glyphicon glyphicon-chevron-down"></span>
   </p>
 
 </div>
@@ -32,13 +32,13 @@
     <h6><strong><%= link_to "Prioritarias para la conservación", 'http://dof.gob.mx/nota_detalle.php?codigo=5334865&fecha=05/03/2014' %></strong><br /><small>SEMARNAT 2014</small></h6>
     <%= botones[:prioritaria].join("\n").html_safe %>
   </div>
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 text-center" id="Ambiente">
-    <h6><strong>Ambiente</strong></h6>
-    <%= botones[:ambiente].join("\n").html_safe %>
-  </div>
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 text-center" id="TipoDistribucion">
     <h6><strong>Tipo de distribución: </strong></h6>
     <%= botones[:tipoDistribucion].join("\n").html_safe %>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 text-center" id="Ambiente">
+    <h6><strong>Ambiente</strong></h6>
+    <%= botones[:ambiente].join("\n").html_safe %>
   </div>
 </div>
 
