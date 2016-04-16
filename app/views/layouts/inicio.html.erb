@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
+      xmlns:fb="http://www.facebook.com/2008/fbml"
+      xmlns:og="http://ogp.me/ns#">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
+  <%= favicon_link_tag 'app/favicon.ico' %>
+  <%= stylesheet_link_tag "inicio", media: "all", "data-turbolinks-track" => true %>
+
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <script type="text/javascript" data-turbolinks-track="true">
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
+  </script>
+
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
+
+  <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
+</head>
+
+
+
+<body id="page-top" class="index">
+<!-- Aquí va la navegación -->
+<div id="brandBar" class="navbar-fixed-top container-fluid">
+  <div class="row text-right">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0">
+      <div class="btn-group" role="group" aria-label="...">
+
+        <% if usuario_signed_in? %>
+            <% if I18n.locale.to_s == 'es-cientifico' %>
+                <%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
+                <%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
+            <% end %>
+            <div class="btn-group" role="group">
+              <%= link_to "#{current_usuario.usuario} <span class='caret'></span>".html_safe, '#', :class => 'btn btn-xs text-success bg-success dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
+                <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
+              </ul>
+            </div>
+        <% else %>
+            <% if I18n.locale.to_s == 'es-cientifico' %>
+                <%= link_to 'Iniciar sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
+            <% end %>
+        <% end %>
+
+        <div class="btn-group" role="group">
+          <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-xs text-success bg-success dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
+          <ul class="dropdown-menu">
+            <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
+            <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
+            <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
+            <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
+          </ul>
+        </div>
+
+        <% if I18n.locale.to_s == 'es-cientifico' %>
+            <%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn text-danger bg-warning btn-sm', :role => 'button' %>
+        <% else %>
+            <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn text-danger bg-warning btn-sm', :role => 'button' %>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 text-right">
+      <%= link_to "<i class ='enciclo-ev-icon'></i><i class ='vida-ev-icon'></i>".html_safe, root_path, :class => 'pull-left'  %>
+    </div>
+    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-0 ">
+      <%= render :template => 'busquedas/basica' %>
+    </div>
+  </div>
+</div>
+<!-- Header (Aqui colocar el video) -->
+<header>
+  <div class="container-fluid">
+    <div class="intro-video">
+      <video autoplay loop poster="assets/portada/video-cover.jpg" id="bgvid">
+        <source src="/video/vid_enciclovida.webm" type="video/webm"></source>
+        <!--source src="/video/vid_enciclovida.mp4" type="video/mp4"></source-->
+        <!--source src="/video/vid_enciclovida.ogg" type="video/mp4"></source-->
+      </video>
+    </div>
+  </div>
+</header>
+
+<!-- About -->
+<section id="about">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-9 text-left">
+        <h2>EncicloVida</h2>
+        <p>Es una plataforma digital para conocer a las especies de plantas, hongos y animales de México. EncicloVida integra información que la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO) ha reunido a través del Sistema Nacional de Información sobre Biodiversidad (SNIB).</p> <p>En EncicloVida puedes encontrar los nombres de las especies en espa&ntilde;ol y en lenguas indígenas, nombres científicos, fotografías, mapas y registros de ocurrencia, información sobre las categorías de riesgo de México y del mundo. También se identifican las especies con requerimientos especiales para el comercio internacional y las especies seleccionadas como prioritarias por el gobierno mexicano.</p> <p>La descripción de las especies, su distribución y hábitat, alimentación, comportamiento y  reproducción, proviene de distintas fuentes proviene de CONABIO, Encyclopedia of Life (EOL) y Wikipedia y se actualizan periódicamente. Conoce nuestras <a href="http://www.biodiversidad.gob.mx/planeta/redes/index.html" target="_blank">redes de información.</a></p>
+        <a href="http://www.enciclovida.mx/inicio/acerca?tab=queEs" target="_self" class="boton">Acerca de</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8  col-lg-offset-4">
+        <img src="assets/portada/img_aboutespecies.png" alt="especies">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How to -->
+<section id="howto">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>Cómo usar EncicloVida</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-12 steps">
+        <img src="assets/portada/img_howto01.png" alt="buscar">
+        <p>Encuentra una especie usando nuestro buscador</p>
+      </div>
+
+      <div class="col-md-4 col-sm-12 steps" alt="arbol">
+        <img src="assets/portada/img_howto02.png">
+        <p>También puedes utilizar el árbol taxonómico para explorar</p>
+      </div>
+
+      <div class="col-md-4 col-sm-12 steps" alt="ficha">
+        <img src="assets/portada/img_howto03.png">
+        <p>Abre la ficha de una especie y conoce todo acerca de ella</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Content -->
+<section id="content">
+  <div class="container-fluid">
+    <div class="col-lg-6 col-lg-offset-0 col-sm-6 col-sm-offset-3">
+      <h2><%= (I18n.locale.to_s == 'es-cientifico') ? "Arreglo taxonómico" : "Clasificación"%></h2>
+      <%= render 'especies/arbol' %>
+    </div>
+    <div class="col-lg-6 col-lg-offset-0 col-sm-6 col-sm-offset-3">
+      <h2>Especies destacadas</h2>
+      <table class="tabla-especiesdestacadas" width="100%" cellpadding="0" cellspacing="0" align="center" valign="center">
+        <tr>
+          <td align="center"><a href="#"><img class="img-responsive" src="assets/portada/img_ed_07.jpg" alt="especie 1"></a></td>
+          <td align="center"><a href="#"><img src="assets/portada/img_ed_02.jpg" class="img-responsive" alt="especie 2"></a></td>
+          <td align="center"><a href="#"><img src="assets/portada/img_ed_05.jpg" class="img-responsive" alt="especie 3"></a></td>
+        </tr>
+        <tr>
+          <td align="center"><a href="#"><img src="assets/portada/img_ed_04.jpg" class="img-responsive" alt="especie 1"></a></td>
+          <td align="center"><a href="#"><img src="assets/portada/img_ed_06.jpg" class="img-responsive" alt="especie 2"></a></td>
+          <td align="center"><a href="#"><img src="assets/portada/img_ed_01.jpg" class="img-responsive" alt="especie 3"></a></td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Partners -->
+<aside class="partners">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="list-inline">
+          <li><a href="http://eol.org/" target="_blank"><img src="assets/portada/img_logo_eol.svg" width="85" alt=""></a></li>
+          <li><a href="https://es.wikipedia.org" target="_blank"><img src="assets/portada/img_logo_wikipedia.svg" width="65" alt=""></a></li>
+          <li><a href="http://www.gbif.org/" target="_blank"><img src="assets/portada/img_logo_gbif.svg" width="65" alt=""></a></li>
+          <li><a href="https://www.google.com.mx/maps" target="_blank"><img src="assets/portada/img_logo_gmaps.svg" width="75" alt=""></a></li>
+          <li><a href="https://www.cites.org/" target="_blank"><img src="assets/portada/img_logo_cites.svg" width="85" alt=""></a></li>
+          <li><a href="http://www.iucn.org/" target="_blank"><img src="assets/portada/img_logo_uicn.svg" width="65" alt=""></a></li>
+          <li><a href="http://www.iucnredlist.org/" target="_blank"><img src="assets/portada/img_logo_redlist.svg" width="75" alt=""></a></li>
+          <li><a href="http://www.latam.discovery.com/mexico/" target="_blank"><img src="assets/portada/img_logo_discovery.svg" width="130" alt=""></a></li>
+          <li><a href="http://www.naturalista.mx/" target="_blank"><img src="assets/portada/img_logo_naturalista.svg" width="130" alt=""></a></li>
+          <li><a href="http://www.gob.mx/semarnat/" target="_blank"><img src="assets/portada/img_logo_semarnat.svg" width="130" alt=""></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</aside>
+
+
+<!-- Footer social -->
+<footer class="social">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 logo-footer">
+        <ul class="list-inline">
+          <li><%= link_to "<i class ='biomex-ev-icon'></i>".html_safe, 'http://www.biodiversidad.gob.mx', :target => :_blank, :alt => 'Biodiversidad Mexicana', :height => '40' %></li>
+          <li><%= link_to "<i class ='conabio-ev-icon'></i>".html_safe, 'http://www.gob.mx/conabio', :target => :_blank, :alt => 'CONABIO', :height => '40' %></li>
+        </ul>
+      </div>
+      <div class="col-md-5 col-md-offset-3">
+        <ul class="list-inline social-buttons">
+          <li><a href="https://twitter.com/conabio" target="_blank"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="https://www.facebook.com/conabio" target="_blank"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="https://www.youtube.com/user/biodiversidadmexico" target="_blank"><i class="fa fa-youtube"></i></a></li>
+          <li><a href="https://vimeo.com/conabio" target="_blank"><i class="fa fa-vimeo"></i></a></li>
+          <li><a href="https://soundcloud.com/conabio" target="_blank"><i class="fa fa-soundcloud"></i></a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<!-- Footer dirección -->
+<footer class="legal navbar-fixed-bottom">
+  <div class="container-fluid">
+    <div class="col-md-12 text-center">
+      <p>
+        Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, Del. Tlalpan, C.P. 14010, México, CDMX | Tel. (55) 5004-5000 <br />
+        Comentarios y sugerencias generales a:
+        <a href="#" onclick="$(this).attr('href',co.join('').split('').reverse().join(''));" target="_blank">
+          <span class="glyphicon glyphicon-envelope"></span>
+          <span class="enciclovida_correo-ev-icon"></span>
+        </a>
+        | Plano de ubicación CONABIO con
+        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
+        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank"><i class="file-pdf-ev-icon"></i></a>
+      </p>
+    </div>
+  </div>
+</footer>
+<%= bitacora.html_safe if bitacora.present? %>
+<% if Rails.env == 'production'  %>
+    <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
+<% end %>
+</body>
+</html>

@@ -1,0 +1,281 @@
+/*!
+ * Start Bootstrap - Agency Bootstrap Theme (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+body{
+    overflow-x: hidden;
+    font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+p{
+    font-size: 16px;
+    line-height: 130%;
+    font-weight:300;
+}
+
+a, a:hover, a:focus, a:active, a.active{
+    outline: 0;
+}
+
+a{
+    color: #104C5B;
+}
+
+a:hover, a:focus, a:active, a.active{
+    color: #0E3A44;
+    text-decoration:none;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 700;
+}
+
+.img-centered{
+    margin: 0 auto;
+}
+
+
+header{
+    text-align: center;
+    color: #fff;
+    background-attachment: scroll;
+    background-image:url("portada/video-cover.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+header .intro-video{
+    padding-top: 100px;
+    padding-bottom: 100px;
+    margin-bottom: 25px;
+    font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 22px;
+}
+
+header .intro-video img{
+    height:100px;
+    margin-top:50px;
+}
+
+video#bgvid{
+    display: none;
+}
+
+@media(min-width:768px){
+
+    header{
+        background:none;
+    }
+
+    video#bgvid{
+        display:block;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+        -ms-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        background: url("portada/video-cover.jpg");
+        background-size: cover;
+    }
+
+    header .intro-video{
+        padding-top: 425px;
+        padding-bottom: 400px;
+        margin-bottom: 25px;
+        font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 40px;
+        font-style: italic;
+        line-height: 40px;
+    }
+
+    header .intro-video img{
+        height:200px;
+        margin-top:0;
+    }
+}
+
+section{
+    padding: 40px 0;
+}
+
+
+#about{
+    background-color:#829E3D;
+    color:#fff;
+    padding-bottom:0;
+}
+
+#about a{
+    font-weight:500;
+}
+
+#about a:hover{
+    color:#0E3A44;
+}
+
+#about a.boton{
+    display:block;
+    background-color:#104C5B;
+    color:#fff;
+    width:110px;
+    padding:8px 0;
+    margin-top:30px;
+    text-align:center;
+    font-size:16px;
+    font-weight:700;
+
+}
+
+#about a.boton:hover{
+    background-color:#0E3A44;
+    color:#DCDCDC;
+}
+
+#howto{
+    background-color:#fff;
+    color:#333333;
+}
+
+#howto h2{
+    color:#829E3D;
+}
+
+@media(min-width:768px){
+    #howto h2{
+        text-align:left;
+    }
+}
+
+#howto .steps{
+    text-align:center;
+    padding:50px 0 0 0;
+}
+
+#howto .steps p{
+    font-weight:700;
+    padding:25px 30px;
+}
+
+#content{
+    background-color:#F2ECD6;
+    text-align:left;
+}
+
+#content h2{
+    padding-bottom:20px;
+    color:#60332F;
+}
+
+.tabla-especiesdestacadas td{
+    padding:10px 0;
+
+}
+
+aside.partners{
+    background-color:#fff;
+}
+
+aside.partners div{
+    padding-left:0;
+}
+
+aside.partners img{
+    margin: 50px auto;
+}
+
+.partners ul{
+    align-content:center;
+    text-align:center;
+    margin:0;
+    padding:0;
+}
+
+.partners li{
+    padding:0 10px;
+}
+
+
+footer{
+    padding: 25px 0;
+    text-align: center;
+}
+
+footer.social{
+    background-color:#104C5B;
+}
+
+footer.legal{
+    background-color: rgba(51, 51, 51, 0.75);
+}
+
+footer.legal p{
+    font-size:12px;
+    color:#fff;
+
+}
+
+footer.legal a{
+    color:#829E3D;
+}
+
+
+ul.social-buttons{
+    margin: 40px 0 0 0;
+}
+
+ul.social-buttons li a{
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    font-size: 20px;
+    line-height: 40px;
+    outline: 0;
+    color: #104C5B;
+    background-color: #fff;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    transition: all .3s;
+}
+
+ul.social-buttons li a:hover,
+ul.social-buttons li a:focus,
+ul.social-buttons li a:active{
+    background-color: #829e3d;
+}
+
+
+.logo-footer img{
+    padding:0 20px;
+}
+
+@media(min-width:991px){
+    ul.social-buttons{
+        margin:0 !important;
+        padding:0 0 0 100px !important;
+    }
+    .logo-footer{
+        text-align:left;
+        padding-left:0px !important;
+        margin-left:0 !important;
+    }
+
+    .logo-footer img{
+        padding:0 20px 0 0;
+    }
+}
