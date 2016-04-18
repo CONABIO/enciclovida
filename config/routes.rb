@@ -64,6 +64,7 @@ Buscador::Application.routes.draw do
       get :kmz
       get :kmz_naturalista
       get :cache_services
+      get :geodatos
     end
   end
 

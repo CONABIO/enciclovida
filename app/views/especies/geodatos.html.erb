@@ -1,6 +1,8 @@
-<% content_for(:extrajs) do %>
-    <!--script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="public/javascripts/jquery-ui/jquery-ui.js"></script-->
+<%# content_for(:extrajs) do %>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <%= javascript_include_tag "jquery-ui", "data-turbolinks-track" => true %>
+    <!--script src="public/javascripts/jquery-ui/jquery-ui.js"></script-->
 
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
@@ -19,24 +21,26 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js"></script>
 
-    <%= javascript_include_tag "geodatos/geodatos_todos.js", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
 
     <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-<% end %>
+<%# end %>
 
-<% content_for(:extracss) do %>
+<%# content_for(:extracss) do %>
 
-    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 
     <!--link rel="stylesheet" href="public/stylesheets/smoothness/jquery-ui.css"-->
+    <%= stylesheet_link_tag "jquery-ui", "data-turbolinks-track" => true %>
+
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 
-    <%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
+    <%= stylesheet_link_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
 
     <style>
         body {
@@ -50,7 +54,7 @@
         }
     </style>
 
-<% end %>
+<%# end %>
 
 <div id="main_container" class="container-fluid">
 

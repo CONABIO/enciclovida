@@ -1,6 +1,6 @@
-@import "toastr";
-@import "geodatos";
-@import "style";
-@import "easy-button";
-@import "MarkerCluster";
-@import "MarkerCluster.Default";
+@import "toastr.scss";
+@import "geodatos.scss";
+@import "style.scss";
+@import "easy-button.scss";
+@import "MarkerCluster.scss";
+@import "MarkerCluster.Default.scss";

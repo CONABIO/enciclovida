@@ -13,7 +13,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos, :geodatos]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -285,6 +285,10 @@ class EspeciesController < ApplicationController
   end
 
   def descripcion_catalogos
+  end
+
+  # Carga el mapa con geodatos en la ficha
+  def geodatos
   end
 
   private
