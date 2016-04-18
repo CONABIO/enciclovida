@@ -7,54 +7,47 @@
  *
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- *= //require_tree .
- *= require bootstrap.css
- *= require bootstrap-theme.css
- *= require dashboard
- *= //require sticky-footer
- *= //require bootstrap.css.map
- *= //require bootstrap-theme.css.map
- *= require especies
- *= require flickr_photos
- *= require listas
- *= require soulmate
- *= require webservices
- *= require fontello
- *= require fontello-codes
- *= require fontello-embedded
- *= require fontello-ie7
- *= require fontello-ie7-codes
- *= require scrolling
- * require jquery-ui
- *= require comentarios
  */
 
-/*
-* require jquery-ui
-* require jquery-ui.structure
-* require dataTables/src/demo_table_jui
-*/
+// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+@import "bootstrap-sprockets";
+@import "custom_bootstrap";
+@import "bootstrap";
+@import "bootstrap/theme";
+
+@import 'dashboard';
+@import 'especies';
+@import 'flickr_photos';
+@import 'listas';
+@import 'soulmate';
+@import 'webservices';
+@import 'scrolling';
+@import 'comentarios';
+
+@import 'enciclovida_font_icons';
+@import "animation";
 
 body{
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
+  background-color: #333333;
 }
 
 #img-fondo {
-    position: absolute;
-    min-width: 100%;
-    min-height: 100%;
-    top: 0;
-    left: 0;
-    background-color: transparent;
-    z-index: -1;
+  position: fixed;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-image: url("fondos/01.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
 }
 
+/*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
-    background-color: rgba(51, 51, 51, 0.75);
+  background-color: rgba(51, 51, 51, 0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
     margin-top: 10px;
@@ -94,21 +87,21 @@ body{
 
 @font-face {
     font-family: 'texgyreadventorregular';
-    src: url('../fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
-         url('../fonts/texgyreadventor-regular-webfont.eot'),
-         url('../fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/texgyreadventor-regular-webfont.woff') format('woff'),
-         url('../fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
+    src: url('/fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
+         url('/fonts/texgyreadventor-regular-webfont.eot'),
+         url('/fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/texgyreadventor-regular-webfont.woff') format('woff'),
+         url('/fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'opensans';
-    src: url('../fonts/opensans-regular-webfont.ttf') format('truetype'),
-    url('../fonts/opensans-regular-webfont.eot'),
-    url('../fonts/opensans-regular-webfont.woff') format('woff'),
-    url('../fonts/opensans-regular-webfont.svg') format('svg');
+    src: url('/fonts/opensans-regular-webfont.ttf') format('truetype'),
+    url('/fonts/opensans-regular-webfont.eot'),
+    url('/fonts/opensans-regular-webfont.woff') format('woff'),
+    url('/fonts/opensans-regular-webfont.svg') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -186,12 +179,21 @@ input.gsc-search-button {
     background-color: #c0c0c0;
 }
 
+#pestañas{
+  background-color: transparent;
+}
+
+.panel .nav-tabs > li:not(.active) > a {
+  border: 1px solid #d3d3d3;
+  color: #777777;
+  background-color: rgba(247, 247, 247, 0.5);
+}
+
 #pestañas div.panel-body{
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #dddddd;
-    border-left: 1px solid #dddddd;
-    border-right: 1px solid #dddddd;
-    padding: 2.5em;
+  background-color: #f7f7f7;
+  border: 1px solid #b3b3b3;
+  padding: 1.5em;
+  margin-top: -1px;
 }
 
 .irBusquedaAvanzada {
@@ -223,7 +225,8 @@ div#contenedor_mapa h6{
     margin: 3px 6px 0 0;
 }
 div#map{
-    border-radius: 3px;
+  border-radius: 3px;
+  color: #333333;
 }
 
 .btn-title:hover {
@@ -262,28 +265,30 @@ div#map{
     line-height: 180%;
 }
 
-#acercaDe dd:nth-of-type(odd), #acercaDe dt:nth-of-type(even){
+.acercaDe dd:nth-of-type(odd), .acercaDe dt:nth-of-type(even){
     background-color: #e9e9e9;
 }
-#advertencias dd:nth-of-type(odd), #advertencias dt:nth-of-type(even){
-    background-color: #e4cdb3;
+.enciclovida_correo-ev-icon:before{
+  font-size: large;
+  width: 10em !important;
+  text-decoration: underline;
 }
-.img-correo{
-    position: relative;
-    width: 14.5em;
-    height: 1.2em;
-    display: inline-block;
+.biomex-ev-icon:before, .conabio-ev-icon:before, .enciclo-ev-icon:before, .vida-ev-icon:before{
+  width: 2.5em !important;
+  font-size: 4.5em;
+  color: #fdfdfd;
+  margin: 0;
 }
-.img-correo > span{
-    height: 125%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-size: contain;
-    background-repeat: no-repeat;
+.enciclo-ev-icon:before{
+  color: #fdfdfd;
 }
-.img-correo > span:nth-child(1){background-image: url("/assets/app/enciclovida_correo/d.svg");}
-.img-correo > span:nth-child(2){background-image: url("/assets/app/enciclovida_correo/g.svg");}
-.img-correo > span:nth-child(3){background-image: url("/assets/app/enciclovida_correo/p.svg");}
-.img-correo > span:nth-child(4){background-image: url("/assets/app/enciclovida_correo/z.svg");}
+.vida-ev-icon:before{
+  color: #889b45;
+  margin-left: -2.5em;
+}
+.naturalista-2-ev-icon{margin-left: -1.39em;}
+.naturalista-3-ev-icon{margin-left: -.4em;}
+.naturalista-4-ev-icon{margin-left: 1.2em;}
+.naturalista-2-ev-icon,.naturalista-3-ev-icon{color: #975324;}
+.naturalista-ev-icon,.naturalista-4-ev-icon{color: #727732;}
+.naturalista-ev-icon, .naturalista-2-ev-icon, .naturalista-3-ev-icon, .naturalista-4-ev-icon{font-size: 1.5em;}

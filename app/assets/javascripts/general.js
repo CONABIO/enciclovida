@@ -129,25 +129,22 @@ cambiaSidebar = function(){
     $('#filtros > div').toggleClass('hidden');
 };
 
-var fondo = 1;
+var fondo = 2;
 cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
-    url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
-    $('body').css('background-image',url);
+    url = "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
+    $('#img-fondo').css('background-image',url);
 };
+
+
 $(document).ready(function (){
-    (function cambiaFondoAuto(){
-        url = "url(\"/assets/app/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
-        $('body').css('backgroundImage', function(){
-            $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 0)'}, 1500, function(){
-                setTimeout(function(){
-                    $('#img-fondo').animate({backgroundColor: 'rgba(179,179,179, 1)'}, 1500);}, 177000);
-            });
-            return url;
-        });
-        fondo = ((fondo >= 16) ? 1 : fondo+1);//ya q puede darse el caso de q aumente mientras se da click
-        setTimeout(cambiaFondoAuto, 180000);
-    })();
+    var bgrotater = setInterval(function() {
+        if (fondo==16) fondo=0;
+        $('#img-fondo').animate({opacity: 0}, 1500, function(){
+            $("#img-fondo").css("background-image", "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
+        }).animate({opacity: 1}, 1500);
+        fondo++;
+    }, 30000);
 });
 
 $(document).ready(function(){

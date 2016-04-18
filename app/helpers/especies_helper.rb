@@ -42,7 +42,7 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe
+            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
@@ -59,7 +59,7 @@ module EspeciesHelper
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.humanizar, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
+            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
                 "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}".html_safe
@@ -90,7 +90,7 @@ module EspeciesHelper
     begin  # Es un record con joins
       ic = taxon if taxon.taxon_icono.present?
     rescue
-      ic = taxon.adicional.icono.present? ? taxon.adicional.icono : nil
+      ic = (taxon.adicional.present? && taxon.adicional.icono.present?) ? taxon.adicional.icono : nil
     end
 
     font_size = params[:font_size].present? ? params[:font_size] : '35'
@@ -102,9 +102,9 @@ module EspeciesHelper
         clase = Icono::IR[-1] if Icono::IR.include?(ic.taxon_icono)
         clase = Icono::IA[-1] if Icono::IA.include?(ic.taxon_icono)
         clase = Icono::IP[-1] if Icono::IP.include?(ic.taxon_icono)
-        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"btn btn-default btn-xs btn-basica #{ic.icono} btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
+        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"#{ic.icono[5..-1]}-ev-icon btn btn-xs btn-basica btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
       else
-        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono}\"></i>"
+        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono[5..-1]}-ev-icon\"></i>"
       end
     end
   end
@@ -159,9 +159,9 @@ module EspeciesHelper
   def dameNomComunes(taxon)
     nombres_comunes = ''
     if I18n.locale.to_s == 'es-cientifico'
-      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.humanizar}}.uniq
+      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     end
 
     # Agrupa los nombres por su lengua
@@ -240,10 +240,10 @@ module EspeciesHelper
       # Parte de los nombres comunes con la bibliografia
       e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
         # Si ya estaba ese nombre comun, me lo salto
-        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}")
-        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.humanizar}-#{nombre.nombre_comun.lengua.downcase}"
+        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}")
+        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}"
 
-        nomBib = "#{nombre.nombre_comun.nombre_comun.humanizar} (#{nombre.nombre_comun.lengua.downcase})"
+        nomBib = "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula} (#{nombre.nombre_comun.lengua.downcase})"
         nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
           nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
 <div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"
@@ -385,49 +385,51 @@ module EspeciesHelper
     response.flatten.uniq
   end
 
-  def ponCaracteristicaDistribucionAmbienteJS(pdf=false)
+  def ponCaracteristicaDistribucionAmbienteJS
     response = {}
+    def creaSpan(nombre, id, name, icono)
+      "<span title = '#{nombre}' class = 'btn-title panel-disabled' id = #{id} name = '#{name}'>#{icono}</span>"
+    end
 
-    #Si solicito un PDF entonces solo pregunto por el ambiente e imprimo texto, no el iconito
-    if pdf
-      Catalogo.ambiente_todos.each do |amb|
-        id = "id#{amb.parameterize}"
-        nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-        response[:ambiente_pdf] = response[:ambiente].to_a << button_tag(nombre, title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-    else
-      Catalogo.nom_cites_iucn_todos.each do |k, valores|
-        valores.each do |edo|
-          next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
-          id = "id#{edo.parameterize}"
-          icono = t("cat_riesgo.#{edo.parameterize}.icono")
-          nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-          response[k] = response[k].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/categorias_riesgo/#{icono}", class: 'img-panel', name: "edo_cons_#{edo.parameterize}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-        end
-      end
-
-      TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-        id = "id#{tipoDist.parameterize}"
-        icono = t("tipo_distribucion.#{tipoDist.parameterize}.icono", :default => '')
-        nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-        response[:tipoDistribucion] = response[:tipoDistribucion].to_a << button_tag(image_tag("#{CONFIG.site_url}assets/app/tipo_distribuciones/#{icono}", class: 'img-panel', name: "dist_#{tipoDist}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-
-      Catalogo.ambiente_todos.each do |amb|
-        id = "id#{amb.parameterize}"
-        icono = t("ambiente.#{amb.parameterize}.icono", :default => '')
-        nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-        response[:ambiente] = response[:ambiente].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/ambientes/#{icono}", class: 'img-panel', name: "amb_#{amb}"), title: nombre, :class => 'btn btn-default btn-xs btn-img-panel btn-title', :disabled => '', id: id)
-      end
-
-      Catalogo::NIVELES_PRIORITARIAS.each do |prio|
-        id = "id#{prio.parameterize}"
-        icono = t("prioritaria.#{prio.parameterize}.icono", :default => '')
-        nombre = t("prioritaria.#{prio.parameterize}.nombre", :default => '')
-        response[:prioritaria] = response[:prioritaria].to_a << button_tag(image_tag("#{CONFIG.site_url}/assets/app/prioritarias/#{prio.downcase}.png", class: "img-panel", name: "prio_#{prio}"), title: nombre, :class => "btn btn-default btn-xs btn-img-panel btn-title", :disabled => '', id: id)
+    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+      valores.each do |edo|
+        next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
+        id = "id#{edo.parameterize}"
+        nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
+        name = "edo_cons_#{edo.parameterize}"
+        icono  = "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
+        icono << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
+        response[k]  = response[k].to_a << creaSpan(nombre, id, name, icono)
       end
     end
-    response
+
+    TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+      id = "id#{tipoDist.parameterize}"
+      nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
+      name = "dist_#{tipoDist}"
+      icono =  "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
+      icono << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
+
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, id, name, icono)
+    end
+
+    Catalogo.ambiente_todos.each do |amb|
+      id = "id#{amb.parameterize}"
+      icono =  "<i class = 'ambiente #{amb.parameterize}-ev-icon'></i>"
+      name = "amb_#{amb}"
+      nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
+      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, id, name, icono)
+    end
+
+    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
+      id = "id#{prior.parameterize}"
+      icono =  "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
+      icono << "<i class = 'prioritarias-ev-icon'></i>"
+      name = "prio_#{prior}"
+      nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
+      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)
+    end
+   response
   end
 
  def dameEspecieBibliografia(taxon)

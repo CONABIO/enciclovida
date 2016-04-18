@@ -15,12 +15,12 @@ class Adicional < ActiveRecord::Base
     # Verifica el nombre en catalogos
     especie.nombres_comunes.each do |nc|
       if !con_espaniol && nc.lengua == 'Español'
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc.nombre_comun
         con_espaniol = true
       elsif !con_espaniol && nc.lengua == 'Inglés'
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc.nombre_comun
       elsif !con_espaniol
-        self.nombre_comun_principal = nc.nombre_comun.humanizar
+        self.nombre_comun_principal = nc.nombre_comun
       end
     end
   end
@@ -30,7 +30,7 @@ class Adicional < ActiveRecord::Base
     return unless prov.naturalista_info.present?
 
     self.nombre_comun_principal = nil
-    datos = eval(prov.naturalista_info)
+    datos = eval(prov.naturalista_info.decodifica64)
     datos = datos.first if datos.is_a?(Array)
     default_name = datos['default_name']
 
@@ -42,17 +42,21 @@ class Adicional < ActiveRecord::Base
     lexicon = I18n.transliterate(default_name['lexicon']).gsub(' ','_').downcase
     return unless LENGUAS_ACEPTADAS.include?(lexicon)
     nombre_comun_principal = default_name['name']
-    self.nombre_comun_principal = nombre_comun_principal.humanizar
+    self.nombre_comun_principal = nombre_comun_principal
   end
 
   def pon_nombre_comun_principal
+    nombre_comun_principal_original = nombre_comun_principal
+    self.nombre_comun_principal = nil
+
     nombre_comun_principal_naturalista
 
     # Si no tiene nombre comun NaturaLista pongo el de catalogos
     if nombre_comun_principal.blank?
       nombre_comun_principal_catalogos
     else
-      self.nombre_comun_principal
+      self.nombre_comun_principal = nombre_comun_principal_original
+      #nil
     end
   end
 

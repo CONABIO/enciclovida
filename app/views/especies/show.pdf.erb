@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
   <title><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></title>
 
-  <%= wicked_pdf_stylesheet_link_tag 'bootstrap' %>
+  <%= wicked_pdf_stylesheet_link_tag 'application' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
 
@@ -19,7 +19,7 @@
 
 </head>
 
-<body>
+<body style="background-color: #FFFFFF;">
 
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
@@ -36,7 +36,9 @@
   <%= dameStatus(@especie).html_safe %>
 </div>
 
-<%= ponCaracteristicaDistribucionAmbienteJS(true)[:ambiente_pdf].first.html_safe %>
+<% dameCaracteristicaDistribucionAmbienteJS(@especie).each do |c| %>
+        <i class = '<%= c %>-ev-icon'></i>
+<% end %>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>

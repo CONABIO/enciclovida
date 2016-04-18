@@ -23,8 +23,9 @@
   <%= yield :extrajs %>
 </head>
 <body>
-<div id="img-fondo">
-</div>
+
+<div id="img-fondo"></div>
+
 <%= yield :ribbon %>
 <div id="brandBar" class="container-fluid">
 
@@ -71,23 +72,17 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1">
-      <div class="col-xs-5 col-sm-4 col-md-4 col-lg-5">
-        <%= link_to image_tag('/assets/app/enciclovida.svg', :alt => 'Brand', :class => 'img-responsive', :style => 'padding: 0; width: 100% \9;'), root_path %>
-      </div>
-      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3 col-xs-offset-0 col-sm-offset-3 col-md-offset-3 col-lg-offset-2">
-        <%= link_to image_tag('/assets/app/biomex.svg', :alt => 'Brand', :class => 'img-responsive', :style => 'padding: 0; width: 100% \9;'), 'http://www.biodiversidad.gob.mx', :target => :_blank %>
-      </div>
-      <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
-        <%= link_to image_tag('/assets/app/conabio.svg', :alt => 'Brand', :class => 'img-responsive', :style => 'padding: 0; width: 100% \9;'), 'http://www.conabio.gob.mx', :target => :_blank %>
-      </div>
+    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 text-right">
+      <%= link_to "<i class ='enciclo-ev-icon'></i><i class ='vida-ev-icon'></i>".html_safe, root_path, :class => 'pull-left'  %>
+      <%= link_to "<i class ='biomex-ev-icon'></i>".html_safe, 'http://www.biodiversidad.gob.mx', :target => :_blank, :class => ''%>
+      <%= link_to "<i class ='conabio-ev-icon'></i>".html_safe, 'http://www.conabio.gob.mx', :target => :_blank, :class => '' %>
     </div>
-    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0 col-lg-offset-0" >
+    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-0 ">
       <%= render :template => 'busquedas/basica' %>
     </div>
   </div>
-
 </div>
+
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
@@ -110,13 +105,11 @@
 		Comentarios y sugerencias generales a:
 		<a href="#" onclick="$(this).attr('href',co.join('').split('').reverse().join(''));" target="_blank">
 		  <span class="glyphicon glyphicon-envelope"></span>
-		  <span class="img-correo">
-			<span></span><span></span><span></span><span></span>
-		  </span>
+		  <span class="enciclovida_correo-ev-icon"></span>
 		</a>
 		| Plano de ubicación <span onclick="cambiaFondo();">CONABIO</span> con
         <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
-        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank">PDF </a>
+        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank"><i class="file-pdf-ev-icon"></i></a>
       </p>
     </div>
   </div>
@@ -124,10 +117,8 @@
 
 <%= bitacora.html_safe if bitacora.present? %>
 <%= yield :extrajs_carrusel %>
-
 <% if Rails.env == 'production'  %>
     <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
 <% end %>
-
 </body>
 </html>

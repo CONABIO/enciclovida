@@ -42,7 +42,7 @@
 #conNaturalista:hover > p{
     display: block;
 }
-#conNaturalista:hover > img, #conNaturalista > p{
+#conNaturalista:hover  > i, #conNaturalista > p{
     display: none;
 }
 #conNaturalista{

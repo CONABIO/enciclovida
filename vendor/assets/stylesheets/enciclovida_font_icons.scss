@@ -1,0 +1,142 @@
+@font-face {
+  font-family: 'enciclovida_font_icons';
+  src: font-url('enciclovida_font_icons.eot?60814475');
+  src: font-url('enciclovida_font_icons.eot?60814475#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?60814475') format('woff2'),
+       font-url('enciclovida_font_icons.woff?60814475') format('woff'),
+       font-url('enciclovida_font_icons.ttf?60814475') format('truetype'),
+       font-url('enciclovida_font_icons.svg?60814475#enciclovida_font_icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'enciclovida_font_icons';
+    src: font-url('enciclovida_font_icons.svg?60814475#enciclovida_font_icons') format('svg');
+  }
+}
+*/
+ 
+ [class$="-ev-icon"]:before, [class*="-ev-icon "]:before {
+  font-family: "enciclovida_font_icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.aves-ev-icon:before { content: '\e800'; } /* '' */
+.reptil-ev-icon:before { content: '\e801'; } /* '' */
+.anfibio-ev-icon:before { content: '\e802'; } /* '' */
+.peces-ev-icon:before { content: '\e803'; } /* '' */
+.lampreas-ev-icon:before { content: '\e804'; } /* '' */
+.mixines-ev-icon:before { content: '\e805'; } /* '' */
+.animales-ev-icon:before { content: '\e806'; } /* '' */
+.mamifero-ev-icon:before { content: '\e807'; } /* '' */
+.tiburon_raya-ev-icon:before { content: '\e808'; } /* '' */
+.medusasc-ev-icon:before { content: '\e809'; } /* '' */
+.arana-ev-icon:before { content: '\e80a'; } /* '' */
+.ciempies-ev-icon:before { content: '\e80b'; } /* '' */
+.lombrices-ev-icon:before { content: '\e80c'; } /* '' */
+.insectos-ev-icon:before { content: '\e80d'; } /* '' */
+.porifera-ev-icon:before { content: '\e80e'; } /* '' */
+.estrellamar-ev-icon:before { content: '\e80f'; } /* '' */
+.caracol-ev-icon:before { content: '\e810'; } /* '' */
+.crustaceo-ev-icon:before { content: '\e811'; } /* '' */
+.plantas-ev-icon:before { content: '\e812'; } /* '' */
+.musgo-ev-icon:before { content: '\e813'; } /* '' */
+.helecho-ev-icon:before { content: '\e814'; } /* '' */
+.cicada-ev-icon:before { content: '\e815'; } /* '' */
+.canutillos-ev-icon:before { content: '\e816'; } /* '' */
+.pastos_palmeras-ev-icon:before { content: '\e817'; } /* '' */
+.pino-ev-icon:before { content: '\e818'; } /* '' */
+.magnolias-ev-icon:before { content: '\e819'; } /* '' */
+.hongos-ev-icon:before { content: '\e81a'; } /* '' */
+.bacterias-ev-icon:before { content: '\e81b'; } /* '' */
+.arquea-ev-icon:before { content: '\e81c'; } /* '' */
+.sujeta-a-proteccion-especial-pr-ev-icon:before { content: '\e81d'; } /* '' */
+.sujeta-a-proteccion-especial-pr-2-ev-icon:before { content: '\e81e'; } /* '' */
+.amenazada-a-ev-icon:before { content: '\e81f'; } /* '' */
+.amenazada-a-2-ev-icon:before { content: '\e820'; } /* '' */
+.en-peligro-de-extincion-p-ev-icon:before { content: '\e821'; } /* '' */
+.en-peligro-de-extincion-p-2-ev-icon:before { content: '\e822'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before { content: '\e823'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-2-ev-icon:before { content: '\e824'; } /* '' */
+.no-evaluado-ne-ev-icon:before { content: '\e825'; } /* '' */
+.datos-insuficientes-dd-ev-icon:before { content: '\e826'; } /* '' */
+.riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before { content: '\e827'; } /* '' */
+.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before { content: '\e828'; } /* '' */
+.vulnerable-vu-ev-icon:before { content: '\e829'; } /* '' */
+.en-peligro-en-ev-icon:before { content: '\e82a'; } /* '' */
+.en-peligro-critico-cr-ev-icon:before { content: '\e82b'; } /* '' */
+.extinto-en-estado-silvestre-ew-ev-icon:before { content: '\e82c'; } /* '' */
+.extinto-ex-ev-icon:before { content: '\e82d'; } /* '' */
+.apendice-i-ev-icon:before { content: '\e82e'; } /* '' */
+.apendice-ii-ev-icon:before { content: '\e82f'; } /* '' */
+.apendice-iii-ev-icon:before { content: '\e830'; } /* '' */
+.endemica-ev-icon:before { content: '\e831'; } /* '' */
+.endemica-2-ev-icon:before { content: '\e832'; } /* '' */
+.nativa-ev-icon:before { content: '\e833'; } /* '' */
+.nativa-2-ev-icon:before { content: '\e834'; } /* '' */
+.introducida-ev-icon:before { content: '\e835'; } /* '' */
+.introducida-2-ev-icon:before { content: '\e836'; } /* '' */
+.prioritarias-ev-icon:before { content: '\e837'; } /* '' */
+.prioritarias-alto-ev-icon:before { content: '\e838'; } /* '' */
+.prioritarias-medio-ev-icon:before { content: '\e839'; } /* '' */
+.prioritarias-bajo-ev-icon:before { content: '\e83a'; } /* '' */
+.dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
+.newspaper-ev-icon:before { content: '\e83c'; } /* '' */
+.flow-tree-ev-icon:before { content: '\e83d'; } /* '' */
+.doc-text-ev-icon:before { content: '\e83e'; } /* '' */
+.sitemap-ev-icon:before { content: '\e83f'; } /* '' */
+.file-pdf-ev-icon:before { content: '\e840'; } /* '' */
+.spin3-ev-icon:before { content: '\e841'; } /* '' */
+.spin6-ev-icon:before { content: '\e842'; } /* '' */
+.archive-ev-icon:before { content: '\e843'; } /* '' */
+.marino-ev-icon:before { content: '\e844'; } /* '' */
+.salobre-ev-icon:before { content: '\e845'; } /* '' */
+.terrestre-ev-icon:before { content: '\e846'; } /* '' */
+.naturalista-ev-icon:before { content: '\e847'; } /* '' */
+.conabio-ev-icon:before { content: '\e848'; } /* '' */
+.enciclovida_correo-ev-icon:before { content: '\e849'; } /* '' */
+.kml-ev-icon:before { content: '\e84a'; } /* '' */
+.spin4-ev-icon:before { content: '\e84b'; } /* '' */
+.flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
+.kmz-ev-icon:before { content: '\e84d'; } /* '' */
+.pdf-ev-icon:before { content: '\e84e'; } /* '' */
+.enciclo-ev-icon:before { content: '\e84f'; } /* '' */
+.vida-ev-icon:before { content: '\e850'; } /* '' */
+.naturalista-2-ev-icon:before { content: '\e851'; } /* '' */
+.biomex-ev-icon:before { content: '\e852'; } /* '' */
+.naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
+.naturalista-4-ev-icon:before { content: '\e854'; } /* '' */

@@ -2,7 +2,7 @@ class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas]
+                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos]
   before_action :only => [:arbol, :arbol_inicial, :json_d3, :nodo_json_d3] do
     set_especie(true)
   end
@@ -13,7 +13,7 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3, :nodo_json_d3]
+  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3, :nodo_json_d3, :descripcion_catalogos]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -24,8 +24,9 @@ class EspeciesController < ApplicationController
 
   # GET /especies
   # GET /especies.json
-  #def index
-  #end
+  def index
+    redirect_to root_path
+  end
 
   # GET /especies/1
   # GET /especies/1.json
@@ -46,7 +47,10 @@ class EspeciesController < ApplicationController
           end
         end
       end
-      format.json { render json: @especie.to_json }
+      format.json do
+        @especie[:fotos] = @especie.photos
+        render json: @especie.to_json
+      end
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
 
@@ -91,9 +95,9 @@ class EspeciesController < ApplicationController
                #:save_to_file => pdf,
                #:save_only => true,
                :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-               :template => 'especies/show.pdf.erb',
+               :template => 'especies/show.pdf.erb'
                #:encoding => 'UTF-8',
-               :user_style_sheet => 'http://bios.conabio.gob.mx/assets/application.css'
+               #:user_style_sheet => 'http://colibri.conabio.gob.mx:4000/assets/application.css'
                #:print_media_type => false,
                #:disable_internal_links => false,
                #
@@ -346,6 +350,8 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def descripcion_catalogos
+  end
 
   private
 

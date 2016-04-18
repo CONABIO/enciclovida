@@ -1,9 +1,4 @@
 class String
-  # Pone en mayusculas o minusculas los acentos
-  def humanizar
-    self.humanize.mb_chars.capitalize.to_s
-  end
-
   # Quita simbolos raros y quita los terminos con punto que estan abajo de especies y subgenero
   def limpiar(ssp = false)
     return self unless self.present?
@@ -41,12 +36,8 @@ class String
     decoded.force_encoding('UTF-8')
   end
 
-  # Define si se necesita capitalizar o ya viene con mayusculas y minusculas, para no sobreescribir
-  def humanizar?
-    # Verifica solo con el primer caracter
-    original = self
-    primera_capital = self[0,1].capitalize << self[1..-1]
-    original == primera_capital ? self : self.humanizar
+  def primera_en_mayuscula
+    self.sub(/^(.)/) { $1.mb_chars.capitalize }
   end
 end
 

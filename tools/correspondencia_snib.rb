@@ -5,8 +5,9 @@ OPTS = Trollop::options do
   banner <<-EOS
 Exporta los ID'S dados los nombres de los taxones de la base de everardo.
 
-*** Se corre cada determinado timpo por si los taxones cambiaron
-*** Crear la carpeta tools/correspondencia_snib/ y dentro poner la carpeta con unicamente los .csv a correr
+*** Se corre cada determinado timpo por si los taxones cambiaron, es conveniente borrar los campos snib_id y snib_reino antes de meter nuevos
+*** Crear la carpeta tools/correspondencia_snib/ y dentro poner la carpeta con unicamente los .csv a correr,
+    cada linea debe tener: [genero, especie, spid] y el archivo se debe tener el nombre del reino correspondiente.
 
 Usage:
 
@@ -23,11 +24,11 @@ def write_file(line)
   genero = l[0]
   especie = l[1]
   spid = l[2]
-  reino = @filename[0..-5].downcase
+  reino = @filename.downcase
 
   puts "Busqueda: ^#{genero} #{especie}$" if OPTS[:debug]
   #hace la comparacion por si es vacio especie
-  taxon = Especie.where(:nombre_cientifico => especie == '\"\"' ? genero: "#{genero} #{especie}")
+  taxon = Especie.where("nombre_cientifico LIKE '#{genero} % #{especie}' OR nombre_cientifico='#{genero} #{especie}'")
 
   if taxon.first && taxon.count == 1
     puts "\tEncontro" if OPTS[:debug]
@@ -39,12 +40,43 @@ def write_file(line)
     end
 
     if proveedor.changed?
-      puts 'entre'
+      puts "\tEncontro cambios"
       @bitacora.puts "#{genero},#{especie},#{spid},#{taxon.first.id}" if proveedor.save
     end
+
+  elsif taxon.count > 1
+    puts "\tEncontro más de uno" if OPTS[:debug]
+    existia_especie = false;
+
+    taxon.each do |t|
+      categoria = t.categoria_taxonomica.nombre_categoria_taxonomica.downcase
+
+      if categoria == 'especie'
+        if proveedor = t.proveedor
+          proveedor.snib_id = spid
+          proveedor.snib_reino = reino
+        else
+          proveedor = Proveedor.new(:especie_id => t.id, :snib_id => spid, :snib_reino => reino)
+        end
+
+        if proveedor.changed?
+          puts "\tEncontro cambios"
+          @bitacora.puts "#{genero},#{especie},#{spid},#{t.id}" if proveedor.save
+        end
+
+        existia_especie = true;
+        break
+      end
+    end
+
+    if !existia_especie
+      puts "\t\tNinguno coincidio" if OPTS[:debug]
+      @bitacora_no_encontro.puts "#{genero},#{especie},#{@filename},Revisar"
+    end
+
   else
     puts "\tNO encontro" if OPTS[:debug]
-    @bitacora_no_encontro.puts "#{genero},#{especie},#{@csv}"
+    @bitacora_no_encontro.puts "#{genero},#{especie},#{@filename}"
   end
 end
 
@@ -66,7 +98,6 @@ def bitacoras(file, no_encontro)
 end
 
 def read_file(filename)
-  @filename = filename.split('/')[3]
   f = File.open(filename, 'r').read
   f.each_line do |line|
     write_file(Limpia.cadena(line))
@@ -84,14 +115,14 @@ path = "tools/correspondencia_snib/#{name}"
 log_path = "tools/bitacoras/correspondencia_snib/#{Time.now.strftime("%Y%m%d%H%M%S")}-#{name}/"
 no_encontro = "#{log_path}no_encontro.csv"
 
-Dir["#{path}/*.csv"].map{ |arch| arch.split('/').last }.each do |csv|
-  @csv = csv
-  @file = log_path + csv
-  puts "Ruta archivo: #{path}/#{csv}" if OPTS[:debug]
+Dir["#{path}/*"].map{ |arch| arch.split('/').last }.each do |f|
+  @filename = f
+  @file = log_path + f
+  puts "Ruta archivo: #{path}/#{f}" if OPTS[:debug]
   puts "Ruta bitacora: #{@file}" if OPTS[:debug]
   creando_carpeta log_path
   bitacoras @file, no_encontro
-  read_file "#{path}/#{csv}"
+  read_file "#{path}/#{f}"
 end
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
