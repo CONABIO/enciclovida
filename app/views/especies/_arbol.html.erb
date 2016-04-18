@@ -1,6 +1,6 @@
 <style>
 
-    .node circle {
+    .node circle, .g_sym {
         cursor: pointer;
         fill: #ccc;
         stroke: #000;
@@ -75,6 +75,135 @@
             .attr("preserveAspectRatio", "xMinYMin meet")
             .attr("viewBox", "0 -50 1200 100")
             .classed("svg-content-responsive", true);
+
+
+
+    var node_sym_reino = svg.append("g").append("circle")
+            .attr("class", "g_sym")
+            .attr("r", 10);
+
+    node_sym_reino.style("fill", "#c27113" )
+            .attr("cx", 20)
+            .attr("cy", 0);
+
+    svg.append("text")
+            .attr("dy", ".35em")
+            .text("R").attr("x",17).attr("y",0);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("Reino").attr("x",35).attr("y",0);
+
+
+
+    var node_sym_phylum = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_phylum.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 40);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("P").attr("x",17).attr("y",40);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("phylum").attr("x",35).attr("y",40);
+
+
+
+    var node_sym_division = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_division.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 80);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("D").attr("x",17).attr("y",80);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("división").attr("x",35).attr("y",80);
+
+
+
+    var node_sym_clase = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_clase.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 120);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("C").attr("x",17).attr("y",120);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("clase").attr("x",35).attr("y",120);
+
+
+
+    var node_sym_orden = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_orden.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 160);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("O").attr("x",17).attr("y",160);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("orden").attr("x",35).attr("y",160);
+
+
+
+    var node_sym_familia = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_familia.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 200);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("F").attr("x",17).attr("y",200);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("familia").attr("x",35).attr("y",200);
+
+
+
+    var node_sym_genero = svg.append("g").append("circle")
+          .attr("class", "g_sym")
+          .attr("r", 10);
+
+    node_sym_genero.style("fill", "#C6DBEF" )
+          .attr("cx", 20)
+          .attr("cy", 240);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("G").attr("x",17).attr("y",240);
+
+    svg.append("text")
+          .attr("dy", ".35em")
+          .text("género").attr("x",35).attr("y",240);
+
+
+
 
     var g = svg.append("g");
     var link = g.selectAll(".link");
