@@ -2,8 +2,8 @@ class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos]
-  before_action :only => [:arbol, :arbol_inicial, :json_d3, :nodo_json_d3] do
+                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos, :arbol]
+  before_action :only => [:arbol_inicial, :json_d3, :nodo_json_d3] do
     set_especie(true)
   end
 
@@ -215,8 +215,13 @@ class EspeciesController < ApplicationController
 
   # Despliega o contrae o muestra el arbol de un inicio
   def arbol
-    @despliega_o_contrae = to_boolean(params[:accion]) if params[:accion].present?
-    nodos_arbol
+    if I18n.locale.to_s == 'es-cientifico'
+      @despliega_o_contrae = to_boolean(params[:accion]) if params[:accion].present?
+      nodos_arbol
+      render :partial => 'arbol_identado'
+    else
+      render :partial => 'arbol_nodo'
+    end
   end
 
   # Muestra el arbol en una sola pagina

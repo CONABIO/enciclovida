@@ -58,7 +58,7 @@ Buscador::Application.routes.draw do
 
     collection do
       post :update_photos, :as => :update_photos_for
-      get :arbol
+      get ':id/arbol' => 'especies#arbol'
       get :error
       get :datos_principales
       get :kmz
