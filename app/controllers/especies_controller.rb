@@ -3,7 +3,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos]
-  before_action :only => [:arbol, :arbol_inicial, :json_d3, :nodo_json_d3] do
+  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado, :hojas_arbol_identado] do
     set_especie(true)
   end
 
@@ -13,7 +13,8 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :json_d3, :nodo_json_d3, :descripcion_catalogos]
+  layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado, :hojas_arbol_identado]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -217,7 +218,7 @@ class EspeciesController < ApplicationController
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
       @despliega_o_contrae = to_boolean(params[:accion]) if params[:accion].present?
-      nodos_arbol
+      obj_arbol_identado
       render :partial => 'arbol_identado'
     else
       render :partial => 'arbol_nodo'
@@ -232,7 +233,7 @@ class EspeciesController < ApplicationController
   end
 
   # JSON que se ocupara para desplegar los datos en D3
-  def json_d3
+  def arbol_nodo
     @children_array = []
 
     taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
@@ -242,7 +243,7 @@ class EspeciesController < ApplicationController
 
     taxones.each_with_index do |t, i|
       @i = i
-      children_hash = asigna_hash_d3(t, arbol_inicial: true)
+      children_hash = hash_arbol_nodo(t, arbol_inicial: true)
 
       # Acumula el resultado del json anterior una posicion antes de la actual
       @children_array << children_hash
@@ -255,7 +256,7 @@ class EspeciesController < ApplicationController
   end
 
   # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
-  def nodo_json_d3
+  def hojas_arbol_nodo
     children_array = []
 
     nivel_categoria = @especie.categoria_taxonomica.nivel1
@@ -268,13 +269,23 @@ class EspeciesController < ApplicationController
     where(estatus: 2)
 
     taxones.each do |t|
-      children_hash = asigna_hash_d3(t)
+      children_hash = hash_arbol_nodo(t)
 
       # Acumula el resultado del json anterior una posicion antes de la actual
       children_array << children_hash
     end
 
     render :json => children_array.to_json
+  end
+
+  def arbol_identado
+    obj_arbol_identado
+    render :partial => 'arbol_identado'
+  end
+
+  def hojas_arbol_identado
+    obj_arbol_identado
+    render :partial => 'arbol_identado'
   end
 
   def edit_photos
@@ -393,7 +404,7 @@ class EspeciesController < ApplicationController
     )
   end
 
-  def nodos_arbol
+  def obj_arbol_identado
     if @despliega_o_contrae  # Si es para desplegar o contraer
       nodo = ''
       if I18n.locale.to_s == 'es-cientifico'
@@ -468,7 +479,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def asigna_hash_d3(t, opts={})
+  def hash_arbol_nodo(t, opts={})
     children_hash = {}
     categoria = t.nivel1
 

@@ -98,7 +98,7 @@
     var link = g.selectAll(".link");
     var node = g.selectAll(".node");
 
-    d3.json("/especies/<%= @especie.id %>/json_d3", function(error, json) {
+    d3.json("/especies/<%= @especie.id %>/arbol_nodo", function(error, json) {
         if (error) throw error;
 
         root = json;
@@ -279,7 +279,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: "/especies/" + d.especie_id + "/nodo_json_d3",
+                url: "/especies/" + d.especie_id + "/hojas_arbol_nodo",
                 dataType: "json"
             }).done(function(data) {
                 if (data.length > 0)
