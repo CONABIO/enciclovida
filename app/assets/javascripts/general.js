@@ -24,7 +24,7 @@ $(document).ready(function(){
         } else {
             $.ajax(
                 {
-                    url: "/especies/arbol",
+                    url: "/especies/" + sufijo + "/hojas_arbol_identado",
                     data: {
                         id: sufijo,
                         accion: true

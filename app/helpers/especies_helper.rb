@@ -128,12 +128,13 @@ module EspeciesHelper
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  def hojasDelArbol(taxon, params={})
+  def construye_arbol(taxon, params={})
     nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '', :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
+    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+                        :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
     nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
 
-    nodos << '</li>' if params[:arbol_inicial]
+    nodos << '</li>' if params[:son_hojas]
   end
 
   def accionesEnlaces(modelo, accion, index=false)
