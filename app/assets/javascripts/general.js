@@ -22,19 +22,18 @@ $(document).ready(function(){
             $("#nodo_" + sufijo + " li").remove();
 
         } else {
+            var origin_id = window.location.pathname.split('/')[2];
+
             $.ajax(
                 {
-                    url: "/especies/" + sufijo + "/hojas_arbol_identado",
-                    data: {
-                        id: sufijo,
-                        accion: true
-                        }
+                    url: "/especies/" + sufijo + "/hojas_arbol_identado?origin_id=" + origin_id
                     }).done(function(nodo)
                     {
                         var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
 
                         if (plus)
                             $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
+
                         return $("#nodo_" + sufijo).append(nodo);
                     });
         }

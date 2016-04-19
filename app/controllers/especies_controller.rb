@@ -271,8 +271,19 @@ class EspeciesController < ApplicationController
   end
 
   def hojas_arbol_identado
-    @taxones = Especie.datos_basicos.
-        caso_rango_valores('especies.id', @especie.child_ids.join(',')).order(:nombre_cientifico)
+    hijos = @especie.child_ids
+
+    # Quita el propio ID del taxon para que no se repita cuando se despliegan en el arbol
+    taxon_orig = Especie.find(params[:origin_id])
+    taxon_orig_ancestros = taxon_orig.path_ids
+    hijos.delete_if {|h| taxon_orig_ancestros.include?(h) }
+
+    if hijos.any?
+      @taxones = Especie.datos_basicos.
+          caso_rango_valores('especies.id', hijos.join(',')).order(:nombre_cientifico)
+    else
+      @taxones = Especie.none
+    end
 
     @despliega_o_contrae = true
     render :partial => 'arbol_identado'
