@@ -1,3 +1,5 @@
+<div id="arbol_taxonomico_li"></div>
+
 <style>
 
     .node circle, .g_sym {
@@ -84,7 +86,7 @@
             .size([width, height])
             .on("tick", tick);
 
-    var svg = d3.select(".main").append("svg")
+    var svg = d3.select("#arbol_taxonomico_li").append("svg")
             .style("cursor","move")
             .style("border", "2px solid black")
         // Para la responsividad
@@ -118,7 +120,7 @@
     var width = 200;
     var height = 500;
 
-    var svg = d3.select(".main").append("svg")
+    var svg = d3.select("#arbol_taxonomico_li").append("svg")
             .style("border", "2px solid black")
         // Para la responsividad
             .classed("svg-container_sym", true)
@@ -207,56 +209,40 @@
                 .style("fill", function(d) {return d.color;} )
                 .on("click", click);
 
-        if (I18n.locale == 'es')
-        {
+        var scientific_name_link = nodeEnter.append("text")
+                .attr("dy", ".35em")
+                .attr("x", function(d) {
+                    // Le aumentamos la distancia del radio para que no se encime
+                    return size_in_pixels(d, true);
+                })
+                .attr("y", function(d) {
+                    if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return 0;
+                    else return 8;
+                });
 
-            var scientific_name_link = nodeEnter.append("text")
-                    .attr("dy", ".35em")
-                    .attr("x", function(d) {
-                        // Le aumentamos la distancia del radio para que no se encime
-                        return size_in_pixels(d, true);
-                    })
-                    .attr("y", function(d) {
-                        if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return 0;
-                        else return 8;
-                    });
+        scientific_name_link.append("a")
+                .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
+                .text(function(d) { return d.nombre_cientifico;})
+                .attr("target", "_blank");
 
-            scientific_name_link.append("a")
-                    .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-                    .text(function(d) { return d.nombre_cientifico;})
-                    .attr("target", "_blank");
+        var common_name_link = nodeEnter.append("text")
+                .attr("dy", ".35em")
+                .attr("x", function(d) {
+                    // Le aumentamos la distancia del radio para que no se encime
+                    return size_in_pixels(d, false);
+                })
+                .attr("y", function(d) {
+                    if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return 0;
+                    else return -8;
+                });
 
-            var common_name_link = nodeEnter.append("text")
-                    .attr("dy", ".35em")
-                    .attr("x", function(d) {
-                        // Le aumentamos la distancia del radio para que no se encime
-                        return size_in_pixels(d, false);
-                    })
-                    .attr("y", function(d) {
-                        if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return 0;
-                        else return -8;
-                    });
-
-            common_name_link.append("a")
-                    .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-                    .text(function(d) {
-                        if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return '';
-                        else return d.nombre_comun;
-                    })
-                    .attr("target", "_blank");
-        } else {
-            var taxon_link = nodeEnter.append("text")
-                    .attr("dy", ".35em")
-                    .attr("x", function(d) {
-                        // Le aumentamos la distancia del radio para que no se encime
-                        return size_in_pixels(d, true);
-                    });
-
-            taxon_link.append("a")
-                    .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-                    .text(function(d) { return d.nombre_cientifico;})
-                    .attr("target", "_blank");
-        }
+        common_name_link.append("a")
+                .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
+                .text(function(d) {
+                    if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return '';
+                    else return d.nombre_comun;
+                })
+                .attr("target", "_blank");
     }
 
     function size_in_pixels (d, scientific_name) {

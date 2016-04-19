@@ -235,16 +235,10 @@ class EspeciesController < ApplicationController
   def json_d3
     @children_array = []
 
-    if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
-          where(estatus: 2).order_por_categoria('DESC')
-    else
-      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
-          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-          where(estatus: 2).order_por_categoria('DESC')
-    end
+    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+        where(estatus: 2).order_por_categoria('DESC')
 
     taxones.each_with_index do |t, i|
       @i = i
@@ -264,20 +258,14 @@ class EspeciesController < ApplicationController
   def nodo_json_d3
     children_array = []
 
-    if I18n.locale.to_s == 'es-cientifico'
-      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.child_ids.join(',')).
-          where(estatus: 2).order_por_categoria('DESC')
-    else
-      nivel_categoria = @especie.categoria_taxonomica.nivel1
-      ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
+    nivel_categoria = @especie.categoria_taxonomica.nivel1
+    ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
 
-      taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-          categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-          where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-          where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
-          where(estatus: 2)
-    end
+    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+        where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
+    where(estatus: 2)
 
     taxones.each do |t|
       children_hash = asigna_hash_d3(t)
