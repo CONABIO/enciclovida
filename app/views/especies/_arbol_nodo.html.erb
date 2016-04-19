@@ -65,7 +65,6 @@
 
 </style>
 
-<script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
     // svg del arbol
@@ -86,7 +85,7 @@
             .size([width, height])
             .on("tick", tick);
 
-    var svg = d3.select("#arbol_taxonomico_li").append("svg")
+    var svg = d3.select("#arbol").append("svg")
             .style("cursor","move")
             .style("border", "2px solid black")
         // Para la responsividad
@@ -120,7 +119,7 @@
     var width = 200;
     var height = 500;
 
-    var svg = d3.select("#arbol_taxonomico_li").append("svg")
+    var svg = d3.select("#arbol").append("svg")
             .style("border", "2px solid black")
         // Para la responsividad
             .classed("svg-container_sym", true)
@@ -287,7 +286,6 @@
                 {
                     leaft = true;
                     d.children = data;
-                    console.log(data);
                     update();
                 }
             });
@@ -341,4 +339,6 @@
                 .attr("dy", ".35em")
                 .text(array[1]).attr("x",35).attr("y",40*index+20).attr("class", "sym_text");
     }
+
+
 </script>
