@@ -3,199 +3,369 @@
 @import "bootstrap";
 @import "bootstrap/theme";
 
-@import "agency";
-@import "font-awesome";
+/*@import "font-awesome";*/
 
-@import 'especies';
+/*@import 'especies';*/
 @import 'soulmate';
 
 @import 'enciclovida_font_icons';
 @import "animation";
 
-/*Brandbar es la plequita negra al inicio de cada página*/
-#brandBar {
-  background-color: rgba(51, 51, 51, 0.75);
+@import "general";
+
+body {
+  overflow-x: hidden;
 }
-#brandBar > div.row:nth-child(2) > div{
-  margin-top: 10px;
-  font-size: .75em;
-  margin-bottom: 20px;
-}
-#brandBar > div.row:nth-child(2) > div ul.nav a{
-  text-shadow: 2px 2px 6px #999;
-  margin-right: 0px;
-  color: #bababa;
-}
-#brandBar > div.row:nth-child(2) > div ul.nav li{
-  background-color: rgba(62, 62, 62, 0.60);
-  margin-right: 2px;
-}
-#brandBar > div.row:nth-child(2) > div ul.nav li:hover a, #brandBar > div.row:nth-child(2) li.active a{
-  color: #444444!important;
-  font-weight: bolder;
-}
-#brandBar > div:nth-child(1) { /*menú arriba main*/
-  margin: 0px auto 0px auto;
+/*
+a {
+  color: #104C5B;
 }
 
-#brandBar .btn-group > a{
-  font-size: .80em;
-  margin-left: 2px;
+a:hover,
+a:focus,
+a:active,
+a.active {
+  color: #0E3A44;
+  text-decoration:none;
+}
+*/
+.img-centered {
+  margin: 0 auto;
+}
+header {
+  text-align: center;
+  background-attachment: scroll;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
 }
 
-@font-face {
-  font-family: 'texgyreadventorregular';
-  src: url('/fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
-  url('/fonts/texgyreadventor-regular-webfont.eot'),
-  url('/fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
-  url('/fonts/texgyreadventor-regular-webfont.woff') format('woff'),
-  url('/fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
-  font-weight: normal;
-  font-style: normal;
+header .intro-video img{
+  /*height:100px;
+  margin-top:50px;*/
 }
 
-@font-face {
-  font-family: 'opensans';
-  src: url('/fonts/opensans-regular-webfont.ttf') format('truetype'),
-  url('/fonts/opensans-regular-webfont.eot'),
-  url('/fonts/opensans-regular-webfont.woff') format('woff'),
-  url('/fonts/opensans-regular-webfont.svg') format('svg');
-  font-weight: normal;
-  font-style: normal;
+video#bgvid {
+  /*display: none;*/
 }
 
-#notice, .enlaces_acciones, #bitacora, .notice {
+@media(min-width:768px) {
+
+  header {
+/*    background: gray;*/
+  }
+
+/*  video#bgvid {
+    display:block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: url(../img/video-cover.jpg);
+    background-size: cover;
+  }
+
+  header .intro-video {
+    padding-top: 625px;
+    padding-bottom: 100px;
+    margin-bottom: 25px;
+    font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 40px;
+    font-style: italic;
+    line-height: 40px;
+  }
+
+  header .intro-video img {
+    height:200px;
+    margin-top:0;
+  }
+*/
+
+  .btn-circle {
+    visibility:visible !important;
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    padding: 10px 0;
+    /*border: none;*/
+    border-radius: 50%!important;
+    font-size: 40px;
+    /*line-height:60px;*/
+    color: #f7f7f7;
+    /*background: 0;*/
+    -webkit-transition: background .3s ease-in-out;
+    -moz-transition: background .3s ease-in-out;
+    transition: background .3s ease-in-out;
+  }
+
+  .btn-circle:hover,
+  .btn-circle:focus {
+    outline: 0;
+    color: #f7f7f7;
+    background-color: rgba(255,255,255,.3);
+  }
+
+  .btn-circle span.animated {
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s;
+    -moz-transition-property: -moz-transform;
+    -moz-transition-duration: 1s;
+  }
+
+  .btn-circle:hover span.animated {
+    -webkit-animation-name: pulse;
+    -moz-animation-name: pulse;
+    -webkit-animation-duration: 1.5s;
+    -moz-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+  }
+
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  100% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.btn-circle {
+  visibility:hidden;
+
+}
+
+
+section {
+  padding: 40px 0;
+}
+
+#about, #acercaDe {
+  background-color:#829E3D;
+  /*color:#fff;*/
+  padding-bottom:0;
+  font-size: 16px;
+  line-height: 130%;
+  font-weight:300;
+}
+
+#about a {
+  /*font-weight:500;*/
+}
+
+#about a:hover {
+  /*color:#0E3A44;*/
+}
+
+#about a.boton {
+  /*display:block;
+  background-color:#104C5B;
+  color:#fff;
+  width:110px;
+  padding:8px 0;
+  margin-top:30px;
+  text-align:center;
+  font-size:16px;
+  font-weight:700;*/
+
+}
+
+#about a.boton:hover {
+  /*background-color:#0E3A44;
+  color:#DCDCDC;*/
+}
+
+#howto {
+  background-color:#fff;
+/*  color:#333333;*/
+}
+
+#howto h2{
+  /*color:#829E3D;*/
+}
+
+@media(min-width:768px) {
+  #howto h2 {
+    text-align:left;
+  }
+}
+
+#howto .steps {
+  text-align:center;
+  padding:50px 0 0 0;
+}
+
+#howto .steps p {
+  font-weight:700;
+  padding:25px 30px;
+}
+
+#content {
+  background-color:#F2ECD6;
+  text-align:left;
+}
+
+#content h2 {
+  padding-bottom:20px;
+  color:#60332F;
+}
+
+.tabla-especiesdestacadas td {
+  padding:10px 0;
+
+}
+
+
+div.promo-evida {
+  margin:0;
+  padding:0;
+  height:300px;
+  width:100%;
+
+}
+
+@media(min-width:768px) {
+  div.promo-evida {
+    height:310px;
+    padding-top:10px;
+  }
+
+
+}
+
+aside.partners {
+  background-color:#fff;
+}
+
+aside.partners div {
+  padding-left:0;
+}
+
+aside.partners a{
+  margin: 35px auto;
+  background-image: url("/assets/portada/logos-todos.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  display: block;
+}
+
+.partners ul {
+  align-content:center;
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+
+.partners li {
+  padding: 0 5px;
+}
+
+#logo_discovery{
+  background-position-x: 0px;
+  width: 140px;
+}
+#logo_eol{background-position-x: -135px;width: 95px;}
+#logo_wikipedia{background-position-x: -225px;width: 75px;}
+#logo_gbif{background-position-x: -295px;width: 75px;}
+#logo_gmaps{background-position-x: -365px;width: 85px;}
+#logo_cites{background-position-x: -445px;width: 95px;}
+#logo_iucn{background-position-x: -535px;width: 75px;}
+#logo_redlist{background-position-x: -605px;width: 85px;}
+#logo_naturalista{background-position-x: -685px;width: 140px;}
+#logo_semarnat{background-position-x: -820px;width: 135px;}
+
+
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400);
+body {
+  /*background: #000;*/
+}
+a {
+  /*color: #ff0;*/
+}
+.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+}
+/*.cover .hi {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-family: 'Roboto Slab', serif;
+  font-size: 24px;
+  line-height: 26px;
   text-align: center;
 }
-.notice {
-  color: green;
-}
-
-.readmore {
-  font-weight: bold;
-  white-space: nowrap;
-  color: #039;
-}
-
-.readmore:after {
-  content: '\0020 \00BB';
-}
-
-.dialog {width:250px; height: 50px;}
-
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
-.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-#nombre_cientifico2 { font-size: 14px; padding: 3px; border: 1px solid #CCC; display: block; margin: 20px 0; }
-
-.link_azul:link {color: #0000ff; text-decoration:none; }
-.link_azul:active {color-background: #0000ff; text-decoration: none; }
-.link_azul:visited {color: #0000ff; text-decoration: none; }
-.link_azul:hover {background-color: #ffffff; text-decoration: none; }
-
-
-input.gsc-input {
-  border-color: #666666;
-}
-
-input.gsc-search-button {
-  border-color: #666666;
-  background-color: #c0c0c0;
-}
-
-#pestañas{
-  background-color: transparent;
-}
-
-.panel .nav-tabs > li:not(.active) > a {
-  border: 1px solid #d3d3d3;
-  color: #777777;
-  background-color: rgba(247, 247, 247, 0.5);
-}
-
-#pestañas div.panel-body{
-  background-color: #f7f7f7;
-  border: 1px solid #b3b3b3;
-  padding: 1.5em;
-  margin-top: -1px;
-}
-
-.irBusquedaAvanzada {
-  margin: -24px 0px 0px 78px;
-}
-.irBusquedaAvanzada:hover {
-  margin-top: -4px;
-  margin-bottom: -9px;
-}
-.irBusquedaAvanzada > a {
-  font-weight: bold;
-  font-size: .8em;
-}
-.irBusquedaAvanzada:hover > a > span:nth-child(2) {
-  display: none !important;
-}
-
-.btn-title:hover {
-  position: relative;
-}
-.btn-title[tooltip-title]:hover:after {
-  content: attr(tooltip-title);
-  font-size: small;
-  padding: 1px 4px;
-  color: #800000;
-  position: absolute;
-  left: 50%;
-  top: 95%;
-  white-space: nowrap;
-  z-index: 9999;
-  -moz-border-radius: 1px;
-  -webkit-border-radius: 1px;
-  border-radius: 1px;
-  -moz-box-shadow: 0px 0px 2px #030303;
-  -webkit-box-shadow: 0px 0px 2px #030303;
-  box-shadow: 0px 0px 2px #030303;
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #fafafa));
-  background-image: -webkit-linear-gradient(top, #eeeeee, #fafafa);
-  background-image: -moz-linear-gradient(top, #eeeeee, #fafafa);
-  background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
-  background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
-}
-/*para los iconitos de la busqueda básica*/
-#brandBar .btn-title[tooltip-title]:hover:after {
-  left: initial;
-  right: 50%;
-  top: 95%;
-}
-#acercaDe dt, #acercaDe dd{
-  white-space: normal;
-  line-height: 180%;
-}
-
-.acercaDe dd:nth-of-type(odd), .acercaDe dt:nth-of-type(even){
-  background-color: #e9e9e9;
-}
-.enciclovida_correo-ev-icon:before{
-  font-size: large;
-  width: 10em !important;
+.cover .hi span {
+  cursor: pointer;
   text-decoration: underline;
+}*/
+.tv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-.biomex-ev-icon:before, .conabio-ev-icon:before, .enciclo-ev-icon:before, .vida-ev-icon:before{
-  width: 2.5em !important;
-  font-size: 4.5em;
-  color: #fdfdfd;
-  margin: 0;
+.tv .screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  margin: auto;
+  opacity: 0;
+  transition: opacity 0s;
 }
-.enciclo-ev-icon:before{
-  color: #fdfdfd;
+.tv .screen.active {
+  opacity: 1;
 }
-.vida-ev-icon:before{
-  color: #889b45;
-  margin-left: -2.5em;
-}
-.naturalista-2-ev-icon{margin-left: -1.39em;}
-.naturalista-3-ev-icon{margin-left: -.4em;}
-.naturalista-4-ev-icon{margin-left: 1.2em;}
-.naturalista-2-ev-icon,.naturalista-3-ev-icon{color: #975324;}
-.naturalista-ev-icon,.naturalista-4-ev-icon{color: #727732;}
-.naturalista-ev-icon, .naturalista-2-ev-icon, .naturalista-3-ev-icon, .naturalista-4-ev-icon{font-size: 1.5em;}
