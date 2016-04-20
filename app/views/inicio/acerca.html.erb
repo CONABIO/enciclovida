@@ -1,3 +1,28 @@
+<!-- Header (BrandBar)-->
+<%= render :partial => 'shared/brandBar' %>
+
+<section id="acercaDe">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1 text-left">
+        <div id="pestañas" class="panel row acercaDe">
+          <ul class="nav nav-tabs" data-tabs="tabs">
+            <li id="queEs_li" class="active"><a href="#queEs"><span>¿Qué es?</span></a></li>
+            <li id="dosVistas_li"><a href="#dosVistas"><span>Dos vistas</span></a></li>
+            <li id="usos_li"><a href="#usos"><span>Usos</span></a></li>
+            <li id="advertencias_li"><a href="#advertencias"><span>Advertencias</span></a></li>
+          </ul>
+          <div id="queEs" class="tab-pane panel-body"><%= render partial: 'queEs' %></div>
+          <div id="dosVistas" class="tab-pane panel-body"><%= render partial: 'dosVistas' %></div>
+          <div id="usos" class="tab-pane panel-body"><%= render partial: 'usos' %></div>
+          <div id="advertencias" class="tab-pane panel-body"><%= render partial: 'advertencias' %></div>
+        </div>
+        <img class="img-responsive" src="/assets/portada/bosqueEncabezado.png" alt="especies">
+      </div>
+    </div>
+
+  </div>
+</section>
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     $(document).ready(function() {
         $('#pestañas').tabs(); // Inicia los tabs
@@ -5,22 +30,8 @@
             $('#pestañas > .nav li').removeClass("active");
             $(this).parent().addClass("active");
         });
-	    <% if params['tab'].present? %>
-	    $('#<%= params['tab']%>_li > a').trigger('click');
-	    <% end %>
+        <% if params['tab'].present? %>
+        $('#<%= params['tab']%>_li > a').trigger('click');
+        <% end %>
     });
 </script>
-  <div id="pestañas" class="panel row acercaDe">
-    <ul class="nav nav-tabs" data-tabs="tabs">
-      <li id="queEs_li" class="active"><a href="#queEs"><span>¿Qué es?</span></a></li>
-      <li id="dosVistas_li"><a href="#dosVistas"><span>Dos vistas</span></a></li>
-      <li id="usos_li"><a href="#usos"><span>Usos</span></a></li>
-      <li id="advertencias_li"><a href="#advertencias"><span>Advertencias</span></a></li>
-    </ul>
-      <div id="queEs" class="tab-pane panel-body"><%= render partial: 'queEs' %></div>
-      <div id="dosVistas" class="tab-pane panel-body"><%= render partial: 'dosVistas' %></div>
-      <div id="usos" class="tab-pane panel-body"><%= render partial: 'usos' %></div>
-      <div id="advertencias" class="tab-pane panel-body"><%= render partial: 'advertencias' %></div>
-  </div>
-
-
