@@ -258,7 +258,7 @@ class EspeciesController < ApplicationController
         categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
         where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
         where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
-    where(estatus: 2)
+        where(estatus: 2)
 
     taxones.each do |t|
       children_hash = hash_arbol_nodo(t)
@@ -429,8 +429,15 @@ class EspeciesController < ApplicationController
     especies_o_inferiores = t.conteo.present? ? t.conteo : 0
     children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
+    # Decide si es phylum o division (solo reino plantae)
+    nivel_especie = if t.root_id == 6000002
+                      "7000"
+                    else
+                      "7100"
+                    end
+
     # URL para ver las especies o inferiores
-    url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=>%3D&cat=7100&estatus[]=2"
+    url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
     children_hash[:especies_inferiores_url] = url
 
     #  Radio de los nodos para un mejor manejo hacia D3
