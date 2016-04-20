@@ -15,6 +15,18 @@ class CategoriaTaxonomica < ActiveRecord::Base
   # Reinos
   CATEGORIAS_REINOS = %w(animalia plantae protoctista fungi prokaryotae)
 
+  # Abreviaciones de las categorias taxonomicas
+  ABREVIACIONES = {
+      reino: 'R',
+      division: 'D',
+      phylum: 'P',
+      clase: 'C',
+      orden: 'O',
+      familia: 'F',
+      genero: 'G',
+      especie: 'E'
+  }
+
   CATEGORIAS_DIVISION = {
       1 => {
           0 => 'Reino',
