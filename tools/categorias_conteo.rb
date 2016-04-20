@@ -22,7 +22,7 @@ def conteo
   Especie.find_each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
 
-    ancestry = taxon.is_root? ? "#{taxon.id}/%" : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}/%"
+    ancestry = taxon.is_root? ? "#{taxon.id}/%" : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}%"
     conteo = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
         where(estatus: 2).where(@where_niveles.join(' AND ')).categoria_taxonomica_join.count
 
