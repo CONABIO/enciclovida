@@ -35,9 +35,13 @@
         stroke-width: 1.5px;
     }
 
-    .node a  {
-        color: pink;
+    .link_common_name  {
         font: 12px sans-serif;
+        fill: navy;
+    }
+
+    .link_scientific_name  {
+        font: 10px sans-serif;
         fill: navy;
     }
 
@@ -196,7 +200,7 @@
         conteo_link.append("a")
                 .attr("xlink:href", function(d){return d.especies_inferiores_url;})
                 .text(function(d) { return d.especies_inferiores_conteo == 0 ? '' : d.especies_inferiores_conteo; })
-                .attr("target", "_blank");
+                .attr("class", "link_common_name").attr("target", "_blank");
 
         // La categoria taxonomica abreviada del taxon
         nodeEnter.append("text")
@@ -208,6 +212,7 @@
                 .style("fill", function(d) {return d.color;} )
                 .on("click", click);
 
+        // Nombre cientifico
         var scientific_name_link = nodeEnter.append("text")
                 .attr("dy", ".35em")
                 .attr("x", function(d) {
@@ -221,8 +226,8 @@
 
         scientific_name_link.append("a")
                 .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-                .text(function(d) { return d.nombre_cientifico;})
-                .attr("target", "_blank");
+                .text(function(d) { return "(" + d.nombre_cientifico + ")";})
+                .attr("class", "link_scientific_name");
 
         var common_name_link = nodeEnter.append("text")
                 .attr("dy", ".35em")
@@ -240,8 +245,7 @@
                 .text(function(d) {
                     if (d.nombre_comun == undefined || d.nombre_comun.length == 0) return '';
                     else return d.nombre_comun;
-                })
-                .attr("target", "_blank");
+                });
     }
 
     function size_in_pixels (d, scientific_name) {
