@@ -21,6 +21,7 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
+  has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => 'especie_id', :dependent => :destroy
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
@@ -67,12 +68,13 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
   scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :categoria_conteo_join, -> { joins('LEFT JOIN categorias_conteo ON categorias_conteo.especie_id=especies.id') }
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, -> { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
+  scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
         adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica') }
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies
@@ -85,6 +87,7 @@ class Especie < ActiveRecord::Base
   scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
+  scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
 
 
   CON_REGION = [19, 50]
