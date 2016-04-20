@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?60814475');
-  src: font-url('enciclovida_font_icons.eot?60814475#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?60814475') format('woff2'),
-       font-url('enciclovida_font_icons.woff?60814475') format('woff'),
-       font-url('enciclovida_font_icons.ttf?60814475') format('truetype'),
-       font-url('enciclovida_font_icons.svg?60814475#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?78873983');
+  src: font-url('enciclovida_font_icons.eot?78873983#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?78873983') format('woff2'),
+       font-url('enciclovida_font_icons.woff?78873983') format('woff'),
+       font-url('enciclovida_font_icons.ttf?78873983') format('truetype'),
+       font-url('enciclovida_font_icons.svg?78873983#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?60814475#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?78873983#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -140,3 +140,11 @@
 .biomex-ev-icon:before { content: '\e852'; } /* '' */
 .naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
 .naturalista-4-ev-icon:before { content: '\e854'; } /* '' */
+.picture-ev-icon:before { content: '\e855'; } /* '' */
+.cites-ev-icon:before { content: '\e856'; } /* '' */
+.vimeo-ev-icon:before { content: '\e857'; } /* '' */
+.youtube-ev-icon:before { content: '\e858'; } /* '' */
+.facebook-1-ev-icon:before { content: '\e859'; } /* '' */
+.soundcloud-ev-icon:before { content: '\e85a'; } /* '' */
+.twitter-1-ev-icon:before { content: '\e85b'; } /* '' */
+.semarnat-ev-icon:before { content: '\e85c'; } /* '' */
