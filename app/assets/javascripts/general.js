@@ -8,39 +8,6 @@
 
 $(document).ready(function(){
 
-    despliegaOcontrae = function(id)
-    {
-        var sufijo = id.substring(5);
-
-        if ($("#nodo_" + sufijo + " li").length > 0)
-        {
-            var minus = $('#span_' + sufijo).hasClass("glyphicon-minus");
-
-            if (minus)
-                $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
-
-            $("#nodo_" + sufijo + " li").remove();
-
-        } else {
-            $.ajax(
-                {
-                    url: "/especies/arbol",
-                    data: {
-                        id: sufijo,
-                        accion: true
-                        }
-                    }).done(function(nodo)
-                    {
-                        var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
-
-                        if (plus)
-                            $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
-                        return $("#nodo_" + sufijo).append(nodo);
-                    });
-        }
-        return false;
-    };
-
     $.fn.loadingShades = function(e, options){
         options = options || {};
         if (e && e == 'close') {
