@@ -27,93 +27,32 @@
 <div id="img-fondo"></div>
 
 <%= yield :ribbon %>
-<div id="brandBar" class="container-fluid">
-  <div class="row text-right">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0">
-	  <div class="btn-group" role="group" aria-label="...">
 
-		<% if usuario_signed_in? %>
-			<% if I18n.locale.to_s == 'es-cientifico' %>
-				<%# link_to "Listas de #{t(:taxon_plural)}", listas_path %>
-				<%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
-			<% end %>
-			<div class="btn-group" role="group">
-			  <%= link_to "#{current_usuario.usuario} <span class='caret'></span>".html_safe, '#', :class => 'btn btn-xs text-success bg-success dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
-			  <ul class="dropdown-menu">
-				<li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
-				<li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
-			  </ul>
-			</div>
-		<% else %>
-			<% if I18n.locale.to_s == 'es-cientifico' %>
-				<%= link_to 'Iniciar sesión'.html_safe, new_usuario_session_path, :class => 'btn btn-xs text-success bg-success', :role => 'button' %>
-			<% end %>
-		<% end %>
+<header>
+  <%= render :partial => 'shared/brandBar' %>
+</header>
 
-		<div class="btn-group" role="group">
-		  <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-xs text-success bg-success dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
-		  <ul class="dropdown-menu">
-			<li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
-			<li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-			<li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-			<li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
-		  </ul>
-		</div>
-
-		<% if I18n.locale.to_s == 'es-cientifico' %>
-			<%= link_to 'Cambiar a vista general', nil, :name => :es, :onClick => 'return cambia_locale(this.name);', :class => 'btn text-danger bg-warning btn-sm', :role => 'button' %>
-		<% else %>
-			<%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn text-danger bg-warning btn-sm', :role => 'button' %>
-		<% end %>
-
-	  </div>
-	</div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-1 text-right">
-      <%= link_to "<i class ='enciclo-ev-icon'></i><i class ='vida-ev-icon'></i>".html_safe, root_path, :class => 'pull-left'  %>
-      <%= link_to "<i class ='biomex-ev-icon'></i>".html_safe, 'http://www.biodiversidad.gob.mx', :target => :_blank, :class => ''%>
-      <%= link_to "<i class ='conabio-ev-icon'></i>".html_safe, 'http://www.conabio.gob.mx', :target => :_blank, :class => '' %>
-    </div>
-    <div id="busqueda_basica" class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-sm-offset-1 col-md-offset-0 col-lg-offset-0 ">
-      <%= render :template => 'busquedas/basica' %>
-    </div>
-  </div>
-</div>
-
-
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
-      <div class="row main">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <%= yield %>
+<section id="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+        <div class="row main">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= yield %>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
-  <div class="row">
-    <div class="col-xs-10 col-sm-8 col-md-8 col-lg-6 col-xs-offset-1 col-sm-offset-2 col-md-offset-2 col-lg-offset-3" id="mainFooter">
-      <p class="text-center">
-        Liga Periférico - Insurgentes Sur, Núm. 4903, Col. Parques del Pedregal, Del. Tlalpan, C.P. 14010, México,
-        D.F. | Tel. (55) 5004-5000
-      </p>
+</section>
 
-      <p class="text-center">
-		Comentarios y sugerencias generales a:
-		<a href="#" onclick="$(this).attr('href',co.join('').split('').reverse().join(''));" target="_blank">
-		  <span class="glyphicon glyphicon-envelope"></span>
-		  <span class="enciclovida_correo-ev-icon"></span>
-		</a>
-		| Plano de ubicación <span onclick="cambiaFondo();">CONABIO</span> con
-        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.php" target=_blank>Google maps</a> y
-        <a href="http://www.biodiversidad.gob.mx/menusup/mapa_conabio.pdf" target="_blank"><i class="file-pdf-ev-icon"></i></a>
-      </p>
-    </div>
-  </div>
-</div>
+<footer class="social">
+  <%= render :partial => 'shared/footer_social' %>
+</footer>
+
+<footer class="legal">
+<%= render :partial => 'shared/footer_legal' %>
+</footer>
 
 <%= bitacora.html_safe if bitacora.present? %>
 <%= yield :extrajs_carrusel %>
