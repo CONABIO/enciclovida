@@ -58,12 +58,17 @@ Buscador::Application.routes.draw do
 
     collection do
       post :update_photos, :as => :update_photos_for
-      get :arbol
+      get ':id/arbol' => 'especies#arbol'
       get :error
       get :datos_principales
       get :kmz
       get :kmz_naturalista
       get :cache_services
+      get ':id/geoportal' => 'especies#geoportal'
+      get ':id/geodatos' => 'especies#geodatos'
+      get ':id/arbol_nodo' => 'especies#arbol_nodo'
+      get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
+      get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
     end
   end
 
@@ -108,6 +113,7 @@ Buscador::Application.routes.draw do
 
   match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get
+  get 'explora_por_clasificacion' => 'especies#arbol_inicial'
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 

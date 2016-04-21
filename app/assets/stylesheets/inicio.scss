@@ -1,0 +1,371 @@
+@import "bootstrap-sprockets";
+@import "custom_bootstrap";
+@import "bootstrap";
+@import "bootstrap/theme";
+
+/*@import "font-awesome";*/
+
+/*@import 'especies';*/
+@import 'soulmate';
+
+@import 'enciclovida_font_icons';
+@import "animation";
+
+@import "general";
+
+body {
+  overflow-x: hidden;
+}
+/*
+a {
+  color: #104C5B;
+}
+
+a:hover,
+a:focus,
+a:active,
+a.active {
+  color: #0E3A44;
+  text-decoration:none;
+}
+*/
+.img-centered {
+  margin: 0 auto;
+}
+header {
+  text-align: left;
+  background-attachment: scroll;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+header .intro-video img{
+  /*height:100px;
+  margin-top:50px;*/
+}
+
+video#bgvid {
+  /*display: none;*/
+}
+
+@media(min-width:768px) {
+
+  header {
+/*    background: gray;*/
+  }
+
+/*  video#bgvid {
+    display:block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: url(../img/video-cover.jpg);
+    background-size: cover;
+  }
+
+  header .intro-video {
+    padding-top: 625px;
+    padding-bottom: 100px;
+    margin-bottom: 25px;
+    font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 40px;
+    font-style: italic;
+    line-height: 40px;
+  }
+
+  header .intro-video img {
+    height:200px;
+    margin-top:0;
+  }
+*/
+
+  .btn-circle {
+    visibility:visible !important;
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    padding: 10px 0;
+    /*border: none;*/
+    border-radius: 50%!important;
+    font-size: 40px;
+    /*line-height:60px;*/
+    color: #f7f7f7;
+    /*background: 0;*/
+    -webkit-transition: background .3s ease-in-out;
+    -moz-transition: background .3s ease-in-out;
+    transition: background .3s ease-in-out;
+  }
+
+  .btn-circle:hover,
+  .btn-circle:focus {
+    outline: 0;
+    color: #f7f7f7;
+    background-color: rgba(255,255,255,.3);
+  }
+
+  .btn-circle span.animated {
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s;
+    -moz-transition-property: -moz-transform;
+    -moz-transition-duration: 1s;
+  }
+
+  .btn-circle:hover span.animated {
+    -webkit-animation-name: pulse;
+    -moz-animation-name: pulse;
+    -webkit-animation-duration: 1.5s;
+    -moz-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+  }
+
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+
+  100% {
+    -moz-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.btn-circle {
+  visibility:hidden;
+
+}
+
+
+section {
+  padding: 40px 0;
+}
+
+#about, #acercaDe {
+  background-color:#829E3D;
+  /*color:#fff;*/
+  padding-bottom:0;
+  font-size: 16px;
+  line-height: 130%;
+  font-weight:300;
+}
+
+#about a {
+  /*font-weight:500;*/
+}
+
+#about a:hover {
+  /*color:#0E3A44;*/
+}
+
+#about a.boton {
+  /*display:block;
+  background-color:#104C5B;
+  color:#fff;
+  width:110px;
+  padding:8px 0;
+  margin-top:30px;
+  text-align:center;
+  font-size:16px;
+  font-weight:700;*/
+
+}
+
+#about a.boton:hover {
+  /*background-color:#0E3A44;
+  color:#DCDCDC;*/
+}
+
+#howto {
+  background-color:#fff;
+/*  color:#333333;*/
+}
+
+#howto h2{
+  /*color:#829E3D;*/
+}
+
+@media(min-width:768px) {
+  #howto h2 {
+    text-align:left;
+  }
+}
+
+#howto .steps {
+  text-align:center;
+  padding:50px 0 0 0;
+}
+
+#howto .steps p {
+  font-weight:700;
+  padding:25px 30px;
+}
+
+#content {
+  background-color:#F2ECD6;
+  text-align:left;
+}
+
+#content h2 {
+  padding-bottom:20px;
+  color:#60332F;
+}
+
+.tabla-especiesdestacadas td {
+  padding:10px 0;
+
+}
+
+
+div.promo-evida {
+  margin:0;
+  padding:0;
+  height:300px;
+  width:100%;
+
+}
+
+@media(min-width:768px) {
+  div.promo-evida {
+    height:310px;
+    padding-top:10px;
+  }
+
+
+}
+
+aside.partners {
+  background-color:#fff;
+}
+
+aside.partners div {
+  padding-left:0;
+}
+
+aside.partners a{
+  margin: 35px auto;
+  background-image: url("/assets/portada/logos-todos.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100px;
+  display: block;
+}
+
+.partners ul {
+  align-content:center;
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+
+.partners li {
+  padding: 0 5px;
+}
+
+#logo_discovery{
+  background-position-x: 0px;
+  width: 140px;
+}
+#logo_eol{background-position-x: -135px;width: 95px;}
+#logo_wikipedia{background-position-x: -225px;width: 75px;}
+#logo_gbif{background-position-x: -295px;width: 75px;}
+#logo_gmaps{background-position-x: -365px;width: 85px;}
+#logo_cites{background-position-x: -445px;width: 95px;}
+#logo_iucn{background-position-x: -535px;width: 75px;}
+#logo_redlist{background-position-x: -605px;width: 85px;}
+#logo_naturalista{background-position-x: -685px;width: 140px;}
+#logo_semarnat{background-position-x: -820px;width: 135px;}
+
+
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400);
+body {
+  /*background: #000;*/
+}
+a {
+  /*color: #ff0;*/
+}
+.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+}
+/*.cover .hi {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-family: 'Roboto Slab', serif;
+  font-size: 24px;
+  line-height: 26px;
+  text-align: center;
+}
+.cover .hi span {
+  cursor: pointer;
+  text-decoration: underline;
+}*/
+.tv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.tv .screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  margin: auto;
+  opacity: 0;
+  transition: opacity 0s;
+}
+.tv .screen.active {
+  opacity: 1;
+}

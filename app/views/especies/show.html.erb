@@ -1,6 +1,7 @@
 <% content_for(:extrajs) do %>
-    <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false' charset='utf-8' data-turbolinks-track='true'></script>
+    <script src='https://maps.googleapis.com/maps/api/js?v=3.exp' charset='utf-8' data-turbolinks-track='true'></script>
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+    <script src="http://d3js.org/d3.v3.min.js" data-turbolinks-track='true'></script>
 <% end %>
 
 <% taxon = @especie.to_json %>
@@ -79,8 +80,43 @@
         })
     };
 
-    $(document).ready(function(){
-        $('#pestañas').tabs(); // Inicia las pestañas
+    despliegaOcontrae = function(id)
+    {
+        var sufijo = id.substring(5);
+
+        if ($("#nodo_" + sufijo + " li").length > 0)
+        {
+            var minus = $('#span_' + sufijo).hasClass("glyphicon-minus");
+
+            if (minus)
+                $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+
+            $("#nodo_" + sufijo + " li").remove();
+
+        } else {
+            var origin_id = window.location.pathname.split('/')[2];
+
+            $.ajax(
+                    {
+                        url: "/especies/" + sufijo + "/hojas_arbol_identado?origin_id=" + origin_id
+                    }).done(function(nodo)
+                    {
+                        var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
+
+                        if (plus)
+                            $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
+
+                        return $("#nodo_" + sufijo).append(nodo);
+                    });
+        }
+        return false;
+    };
+
+    $(document).ready(function()
+    {
+        //$("#arbol_taxonomico").load("/especies/arbol?id=" + TAXON.id);
+        $('#pestañas').tabs(); // Inicia los tabs
+
         $('#pestañas > .nav a').click(function(){
             $('#pestañas > .nav li').removeClass("active");
             $(this).parent().addClass("active");
@@ -201,6 +237,11 @@
                         google.maps.event.trigger(map.map, 'resize');
                     });
                 });
+                $('#geodata_e_imagen_li > a').click(function(){
+                    redimensionaGmaps(function(){
+                        google.maps.event.trigger(map.map, 'resize');
+                    });
+                });
             }
         }
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
@@ -212,6 +253,7 @@
     });
 </script>
 
+
 <% if notice.present? %>
     <div class="row alert alert-success" role="alert"><%= notice %></div>
 <% end %>
@@ -219,8 +261,6 @@
 <% content_for(:title) do %>
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
-
-
 
 
 <div class="row">
@@ -258,9 +298,9 @@
 
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Geodatos e imágenes</strong></a></li>
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Mapa e imágenes</strong></a></li>
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
-    <li id="arbol_taxonomico_li"><a href="#arbol_taxonomico" class="noLoad"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
+    <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
@@ -296,7 +336,6 @@
     </p>
   </div>
 
-  <div id="arbol_taxonomico" class="tab-pane panel-body">
-    <%= render :partial => 'arbol' %>
+  <div id="arbol" class="tab-pane panel-body">
   </div>
 </div>

@@ -2,8 +2,9 @@ class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas, :descripcion_catalogos]
-  before_action :only => [:arbol] do
+                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
+                                     :descripcion_catalogos, :geodatos, :geoportal]
+  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
 
@@ -13,7 +14,8 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, :only => [:describe, :arbol, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos]
+  layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :geodatos, :geoportal]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -213,9 +215,79 @@ class EspeciesController < ApplicationController
     end
   end
 
-  #Despliega o contrae o muestra el arbol de un inicio
+  # Despliega el arbol
   def arbol
-    @accion = to_boolean(params[:accion]) if params[:accion].present?
+    if I18n.locale.to_s == 'es-cientifico'
+      obj_arbol_identado
+      render :partial => 'arbol_identado'
+    else
+      render :partial => 'arbol_nodo'
+    end
+  end
+
+  # JSON que se ocupara para desplegar los datos en D3
+  def arbol_nodo
+    @children_array = []
+
+    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
+        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+        where(estatus: 2).order_por_categoria('DESC')
+
+    taxones.each_with_index do |t, i|
+      @i = i
+      children_hash = hash_arbol_nodo(t, arbol_inicial: true)
+
+      # Acumula el resultado del json anterior una posicion antes de la actual
+      @children_array << children_hash
+    end
+
+    # Regresa el ultimo que es el mas actual
+    json_d3 = @children_array.last
+
+    render :json => json_d3.to_json
+  end
+
+  # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
+  def hojas_arbol_nodo
+    children_array = []
+
+    nivel_categoria = @especie.categoria_taxonomica.nivel1
+    ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
+
+    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
+        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
+        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
+        where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
+        where(estatus: 2)
+
+    taxones.each do |t|
+      children_hash = hash_arbol_nodo(t)
+
+      # Acumula el resultado del json anterior una posicion antes de la actual
+      children_array << children_hash
+    end
+
+    render :json => children_array.to_json
+  end
+
+  def hojas_arbol_identado
+    hijos = @especie.child_ids
+
+    # Quita el propio ID del taxon para que no se repita cuando se despliegan en el arbol
+    taxon_orig = Especie.find(params[:origin_id])
+    taxon_orig_ancestros = taxon_orig.path_ids
+    hijos.delete_if {|h| taxon_orig_ancestros.include?(h) }
+
+    if hijos.any?
+      @taxones = Especie.datos_basicos.
+          caso_rango_valores('especies.id', hijos.join(',')).order(:nombre_cientifico)
+    else
+      @taxones = Especie.none
+    end
+
+    @despliega_o_contrae = true
+    render :partial => 'arbol_identado'
   end
 
   def edit_photos
@@ -287,6 +359,33 @@ class EspeciesController < ApplicationController
   def descripcion_catalogos
   end
 
+  # Carga el mapa con geodatos en la ficha
+  def geodatos
+  end
+
+  # Hace la peticion al servicio del geoportal (Everardo)
+  def geoportal
+    if p = @especie.proveedor
+      if p.snib_id.present? && p.snib_reino.present?
+        # Catch the response
+        begin
+          response = RestClient.get "#{CONFIG.geoportal_url}&rd=#{p.snib_reino}&id=#{p.snib_id}", :timeout => 10, :open_timeout => 10
+          render json: [] unless response.present?
+        rescue => e
+          render json: []
+        end
+
+        render json: response
+
+      else
+        render json: []
+      end
+    else
+      render json: []
+    end
+
+  end
+
   private
 
   def set_especie(arbol = false)
@@ -334,6 +433,89 @@ class EspeciesController < ApplicationController
     )
   end
 
+  def obj_arbol_identado
+    @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+        caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
+  end
+
+  def hash_arbol_nodo(t, opts={})
+    children_hash = {}
+    categoria = t.nivel1
+
+    if categoria == 7
+      children_hash[:color] = '#748c17';
+    elsif categoria == 1
+      children_hash[:color] = '#c27113'
+    else
+      children_hash[:color] = '#C6DBEF'
+    end
+
+    radius_min_size = 8
+    radius_size = radius_min_size
+    children_hash[:radius_size] = radius_size
+
+    especies_o_inferiores = t.conteo.present? ? t.conteo : 0
+    children_hash[:especies_inferiores_conteo] = especies_o_inferiores
+
+    # Decide si es phylum o division (solo reino plantae)
+    nivel_especie = if t.root_id == 6000002
+                      "7000"
+                    else
+                      "7100"
+                    end
+
+    # URL para ver las especies o inferiores
+    url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
+    children_hash[:especies_inferiores_url] = url
+
+    #  Radio de los nodos para un mejor manejo hacia D3
+    if especies_o_inferiores > 0
+
+      #  Radios varian de 60 a 40
+      if especies_o_inferiores >= 10000
+        size_per_radium_unit = (especies_o_inferiores-10000)/20
+        radius_size = ((especies_o_inferiores-10000)/size_per_radium_unit) + 40
+
+      elsif especies_o_inferiores >= 1000 && especies_o_inferiores <= 9999  # Radios varian de 40 a 30
+        radius_per_range = ((especies_o_inferiores)*10)/9999
+        radius_size = radius_per_range + 30
+
+      elsif especies_o_inferiores >= 100 && especies_o_inferiores <= 999  # Radios varian de 30 a 20
+        radius_per_range = ((especies_o_inferiores)*10)/999
+        radius_size = radius_per_range + 20
+
+      elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 13
+
+        radius_per_range = ((especies_o_inferiores)*7)/99
+        radius_size = radius_per_range + 13
+
+      elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 13 a 8
+
+        radius_per_range = ((especies_o_inferiores)*5)/9
+        radius_size = radius_per_range + radius_min_size
+
+      end  # End if especies_inferiores_conteo > 0
+
+      children_hash[:radius_size] = radius_size
+    end
+
+    children_hash[:especie_id] = t.id
+    children_hash[:nombre_cientifico] = t.nombre_cientifico
+    children_hash[:nombre_comun] = t.nombre_comun_principal
+
+    # Pone la abreviacion de la categoria taxonomica
+    cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase
+    abreviacion_categoria = CategoriaTaxonomica::ABREVIACIONES[cat.to_sym].present? ? CategoriaTaxonomica::ABREVIACIONES[cat.to_sym] : ''
+    children_hash[:abreviacion_categoria] = abreviacion_categoria
+
+    if opts[:arbol_inicial]
+      if @i+1 != 1  # Si es taxon mas bajo no tiene hijos
+        children_hash[:children] = [@children_array[@i-1]]
+      end
+    end
+
+    children_hash
+  end
 
   def retrieve_photos
     #[retrieve_remote_photos, retrieve_local_photos].flatten.compact

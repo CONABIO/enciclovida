@@ -8,39 +8,6 @@
 
 $(document).ready(function(){
 
-    despliegaOcontrae = function(id)
-    {
-        var sufijo = id.substring(5);
-
-        if ($("#nodo_" + sufijo + " li").length > 0)
-        {
-            var minus = $('#span_' + sufijo).hasClass("glyphicon-minus");
-
-            if (minus)
-                $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
-
-            $("#nodo_" + sufijo + " li").remove();
-
-        } else {
-            $.ajax(
-                {
-                    url: "/especies/arbol",
-                    data: {
-                        id: sufijo,
-                        accion: true
-                        }
-                    }).done(function(nodo)
-                    {
-                        var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
-
-                        if (plus)
-                            $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
-                        return $("#nodo_" + sufijo).append(nodo);
-                    });
-        }
-        return false;
-    };
-
     $.fn.loadingShades = function(e, options){
         options = options || {};
         if (e && e == 'close') {
@@ -158,16 +125,20 @@ var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 //Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
 $(document).ready(function(){
-    if ($('body').width() < 992){
+    if (window.innerWidth < 992){
         $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+        $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
     }else{
         $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+        $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
     }
     $(window).resize(function(){
-        if ($('body').width() < 992){
+        if (window.innerWidth < 992){
             $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+            $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
         }else{
             $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+            $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
         }
     });
 });
