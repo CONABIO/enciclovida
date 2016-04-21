@@ -124,6 +124,7 @@ $(document).ready(function(){
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 //Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
+//Tambien para deshacer lo pestañoso de as pestañas, IDEM 210416
 $(document).ready(function(){
     if (window.innerWidth < 992){
         $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
