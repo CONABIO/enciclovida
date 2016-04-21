@@ -71,13 +71,13 @@
 .salobre-ev-icon:before { content: '\e845'; } /* '' */
 .terrestre-ev-icon:before { content: '\e846'; } /* '' */
 .naturalista-ev-icon:before { content: '\e847'; } /* '' */
-.conabio-ev-icon:before { content: '\e848'; } /* '' */
+.pdf-ev-icon:before { content: '\e848'; } /* '' */
 .enciclovida_correo-ev-icon:before { content: '\e849'; } /* '' */
 .kml-ev-icon:before { content: '\e84a'; } /* '' */
 .spin4-ev-icon:before { content: '\e84b'; } /* '' */
 .flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
 .kmz-ev-icon:before { content: '\e84d'; } /* '' */
-.pdf-ev-icon:before { content: '\e84e'; } /* '' */
+.conabio-ev-icon:before { content: '\e84e'; } /* '' */
 .enciclo-ev-icon:before { content: '\e84f'; } /* '' */
 .vida-ev-icon:before { content: '\e850'; } /* '' */
 .naturalista-2-ev-icon:before { content: '\e851'; } /* '' */
@@ -92,3 +92,5 @@
 .soundcloud-ev-icon:before { content: '\e85a'; } /* '' */
 .twitter-1-ev-icon:before { content: '\e85b'; } /* '' */
 .semarnat-ev-icon:before { content: '\e85c'; } /* '' */
+.conabio_blanco-ev-icon:before { content: '\e85d'; } /* '' */
+.instagram-ev-icon:before { content: '\e85e'; } /* '' */
