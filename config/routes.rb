@@ -6,9 +6,7 @@ Buscador::Application.routes.draw do
   get "inicio/comentarios"
   get "inicio/index"
   get "inicio/acerca"
-  get "inicio/terminos"
-  get "inicio/ayuda"
-  get "inicio/creditos"
+  get "inicio/error"
 
   get 'avanzada', to: "busquedas#avanzada", as: :avanzada
   get 'resultados', to: "busquedas#resultados", as: :resultados
