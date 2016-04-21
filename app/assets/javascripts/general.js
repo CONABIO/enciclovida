@@ -125,16 +125,20 @@ var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 //Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
 $(document).ready(function(){
-    if ($('body').width() < 992){
+    if (window.innerWidth < 992){
         $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+        $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
     }else{
         $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+        $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
     }
     $(window).resize(function(){
-        if ($('body').width() < 992){
+        if (window.innerWidth < 992){
             $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
+            $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
         }else{
             $('#b_cientifico .input-group, #b_comun .input-group').removeClass('input-group-lg');
+            $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
         }
     });
 });
