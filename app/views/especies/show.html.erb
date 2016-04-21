@@ -191,7 +191,7 @@
         });
 
         if (SPECIES_OR_LOWER){
-            if (CUANTOS_KMZ > 0){
+            /*if (CUANTOS_KMZ > 0){
                 dimensionesIniciales();
 
                 // Inicia el mapa
@@ -236,13 +236,14 @@
                         google.maps.event.trigger(map.map, 'resize');
                     });
                 });
+            }
                 $('#geodata_e_imagen_li > a').click(function(){
                     redimensionaGmaps(function(){
                         google.maps.event.trigger(map.map, 'resize');
                     });
-                });
+                });*/
             }
-        }
+
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {

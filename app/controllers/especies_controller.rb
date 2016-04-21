@@ -457,11 +457,13 @@ class EspeciesController < ApplicationController
     especies_o_inferiores = t.conteo.present? ? t.conteo : 0
     children_hash[:especies_inferiores_conteo] = especies_o_inferiores
 
-    # Decide si es phylum o division (solo reino plantae)
-    nivel_especie = if t.root_id == 6000002
-                      "7000"
+    # Decide si es phylum o division (solo reino animalia)
+    nivel_especie = if t.root_id == 1000001
+                      children_hash[:es_phylum] = '1'
+                      '7100'
                     else
-                      "7100"
+                      children_hash[:es_phylum] = '0'
+                      '7000'
                     end
 
     # URL para ver las especies o inferiores

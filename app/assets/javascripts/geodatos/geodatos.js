@@ -238,22 +238,22 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, specie_target.label);
     }
 
-    var kmlLayer = new L.KML("/assets/example.kml", {async: true});
+    /*var kmlLayer = new L.KML("/assets/example.kml", {async: true});
     kmlLayer.on("loaded", function(e) {
         map.fitBounds(e.target.getBounds());
     });
-    map.addLayer(kmlLayer);
+    map.addLayer(kmlLayer);*/
 
     //layer_control.addOverlay(markersLayer, "algo mas");
 
 
 
 
-    var busca_especie = function(){
-
+    var busca_especie = function()
+    {
         $.ajax({
-            url: "/especies/6040309/geoportal",
-            //url: "/especies/" + TAXON + "/geoportal",
+            //url: "/especies/6040309/geoportal",
+            url: "/especies/" + TAXON.id + "/geoportal",
             dataType : "json",
             beforeSend: function(xhr){
                 xhr.setRequestHeader('X-Test-Header', 'test-value');
@@ -299,7 +299,7 @@ $(document).ready(function(){
         });  // termina ajax
     };
 
-    //busca_especie();
+    busca_especie();
 
     /*
      $("#send_email_csv").click(function(e){

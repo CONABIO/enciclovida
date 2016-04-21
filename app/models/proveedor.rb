@@ -25,7 +25,7 @@ class Proveedor < ActiveRecord::Base
       if nom_comunes.present?
         next if nom_comunes.include?(nombre)
       end
-      nombres_comunes_faltan << "#{especie.catalogo_id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica},http://naturalista.conabio.gob.mx/taxa/#{naturalista_id}"
+      nombres_comunes_faltan << "#{especie.catalogo_id},\"#{datos_nombres['name']}\",#{lengua},#{especie.nombre_cientifico},#{especie.categoria_taxonomica.nombre_categoria_taxonomica},#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
     end
 
     nombres_comunes_faltan
@@ -338,7 +338,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"normalPlacemark\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>http://bios.conabio.gob.mx/assets/app/placemarks/rojo.png</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/rojo.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -350,7 +350,7 @@ class Proveedor < ActiveRecord::Base
       kml << "<![CDATA[\n"
       kml << "<div>\n"
       kml << "<h4>\n"
-      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{nombre}</a>\n"
+      kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
       kml << "</h4>\n"
       kml << "<dl>\n"
 
@@ -406,7 +406,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"Placemark_cientifico\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>http://bios.conabio.gob.mx/assets/app/placemarks/verde.png</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/verde.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -415,7 +415,7 @@ class Proveedor < ActiveRecord::Base
     kml << "<Style id=\"Placemark_casual\">\n"
     kml << "<IconStyle>\n"
     kml << "<Icon>\n"
-    kml << "<href>http://bios.conabio.gob.mx/assets/app/placemarks/amarillo.png</href>\n"
+    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/amarillo.png</href>\n"
     kml << "</Icon>\n"
     kml << "</IconStyle>\n"
     kml << "</Style>\n"
@@ -431,7 +431,7 @@ class Proveedor < ActiveRecord::Base
       kml << "<![CDATA[\n"
       kml << "<div>\n"
       kml << "<h4>\n"
-      kml << "<a href=\"http://bios.conabio.gob.mx/especies/#{especie.id}\">#{valor}</a>\n"
+      kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{valor}</a>\n"
       kml << "</h4>\n"
 
       cad.keys.sort.each do |k|
