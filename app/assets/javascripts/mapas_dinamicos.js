@@ -96,9 +96,10 @@ function anadeControlFullScreen()
                     document.getElementById("map").style.height="100%";
                     document.getElementById("map").style.width="100%";
                 }	else{
-                    document.getElementById("map").style.position="relative"
+                    document.getElementById("map").style.position="relative";
                     document.getElementById("map").style.height="450px";
                     document.getElementById("map").style.width="450px";
+                    redimensionaGmaps(function(){google.maps.event.trigger(map.map, 'resize');});
                 }
                 google.maps.event.trigger(map.map, 'resize');
             }

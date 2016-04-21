@@ -237,6 +237,11 @@
                         google.maps.event.trigger(map.map, 'resize');
                     });
                 });
+                $('#geodata_e_imagen_li > a').click(function(){
+                    redimensionaGmaps(function(){
+                        google.maps.event.trigger(map.map, 'resize');
+                    });
+                });
             }
         }
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
