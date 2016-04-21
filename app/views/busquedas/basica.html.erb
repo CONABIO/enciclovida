@@ -115,7 +115,7 @@
 		<%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil%>
 		<div class="input-group-btn">
 		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-		  <%= link_to "<span class='glyphicon glyphicon-cog' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
+		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
 		</div>
 	  </div>
 	</div>
@@ -149,7 +149,7 @@
 		<%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
 		<div class="input-group-btn">
 		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-		  <%= link_to "<span class='glyphicon glyphicon-cog' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
+		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
 		</div>
 	  </div>
 	</div>

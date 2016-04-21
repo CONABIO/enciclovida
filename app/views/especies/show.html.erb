@@ -114,7 +114,6 @@
 
     $(document).ready(function()
     {
-        //$("#arbol_taxonomico").load("/especies/arbol?id=" + TAXON.id);
         $('#pestañas').tabs(); // Inicia los tabs
 
         $('#pestañas > .nav a').click(function(){
@@ -237,8 +236,14 @@
                         google.maps.event.trigger(map.map, 'resize');
                     });
                 });
-            }*/
-        }
+            }
+                $('#geodata_e_imagen_li > a').click(function(){
+                    redimensionaGmaps(function(){
+                        google.maps.event.trigger(map.map, 'resize');
+                    });
+                });*/
+            }
+
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
@@ -293,7 +298,7 @@
 
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Geodatos e imágenes</strong></a></li>
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Mapa e imágenes</strong></a></li>
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
@@ -305,6 +310,12 @@
           <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </li>
+
+    <li class="pull-right">
+      <%= button_tag(("Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default btn-title', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )", :title=>"Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)") %>
+    </li>
+
+
   </ul>
   <% if I18n.locale.to_s != 'es-cientifico' %>
       <script type="application/javascript">

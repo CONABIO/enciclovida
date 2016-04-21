@@ -94,7 +94,7 @@ class BusquedasController < ApplicationController
             # El scrolling acaba
             render text: ''
           elsif @taxones.empty?
-            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
+            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
           end
 
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
@@ -168,7 +168,7 @@ class BusquedasController < ApplicationController
           elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
               render :text => '[]'
           elsif @taxones.empty?
-            redirect_to :root, :notice => 'Tu búsqueda no dio ningun resultado.'
+            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
           end
 
         # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
@@ -340,7 +340,7 @@ class BusquedasController < ApplicationController
 
         else  # Default switch
           respond_to do |format|
-            format.html { redirect_to :root, :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
+            format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
           end
       end  # Fin switch
     end

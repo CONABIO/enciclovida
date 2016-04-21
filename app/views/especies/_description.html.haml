@@ -25,5 +25,5 @@
         =t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico
   - else
     - if @describer.describer_name.downcase.include?('wikipedia')
-      <div id="section_SpokenWikipedia" class="infobox sisterproject plainlinks"><strong>NOTA:</strong> La clasificación taxonómica de Wikpedia puede diferir de la que se considera en CONABIO</div>	
+      <div id="section_SpokenWikipedia" class="infobox sisterproject plainlinks bg-warning"><strong>NOTA:</strong> La clasificación taxonómica de Wikpedia puede diferir de la que se considera en CONABIO</div>
     =raw @description

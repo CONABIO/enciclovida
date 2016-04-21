@@ -20,10 +20,10 @@
 $gray-base: #111;
 $brand-primary: #800000;
 $brand-success: #A0C11F;
-$brand-info: #ffe500;
+$brand-info: #104C5B;
 $brand-warning: #ea9028;
 $brand-danger: #C77878;
-$font-family-sans-serif: "opensans", "Helvetica", Arial, "texgyreadventorregular";
+$font-family-sans-serif: opensans, 'texgyreadventorregular', "Helvetica", Arial;
 $font-family-serif: "Times New Roman", serif;
 $border-radius-base: 2px;
 $border-radius-large: 3px;
@@ -42,11 +42,12 @@ $nav-pills-border-radius: $border-radius-base+1;
 $nav-pills-active-link-hover-bg: #f7f7f7;
 $nav-pills-active-link-hover-color: lighten($gray-base, 33.5%);
 /*INICIO ACOMODO RESOLV*/
-$state-success-bg: lighten(desaturate($brand-success, 35%),26%);
-$state-success-text: saturate(darken($state-success-bg, 46%),30%);
+$state-success-bg: lighten(desaturate($brand-success, 40%),26%);
+$state-success-text: #505F2E;
 
 $state-info-bg: lighten(desaturate($brand-info, 35%),26%);
-$state-info-text: saturate(darken($state-info-bg, 46%),30%);
+/*$state-info-text: #f7f7f7;*/
+$state-info-text: lighten(desaturate($state-info-bg, 10%),40%);
 
 $state-warning-bg: lighten(desaturate($brand-warning, 35%),26%);
 $state-warning-text: saturate(darken($state-warning-bg, 46%),30%);

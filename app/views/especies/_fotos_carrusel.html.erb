@@ -7,8 +7,10 @@
 
 <div id="foto-carrusel" class="text-center">
   <%= link_to image_tag(@photos[0].best_photo, :id=>'foto-carrusel-interna', :class=>'img-responsive'), @photos[0].native_page_url, :target => :_blank, :class => 'enlace-atribucion' %>
-  <small class="text-left" id='foto-atribucion'>  <%= @photos[0].attribution %></small>
+  <p><small class="text-left" id='foto-atribucion'>  <%= @photos[0].attribution %></small>
+  <small>Las imágenes de Flickr pueden pertenecer a especies que no se encuentran en México</small></p>
 </div>
+
 
 <div id="carrusel" class="frame">
   <div class="slidee">
