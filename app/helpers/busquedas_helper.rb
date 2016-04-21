@@ -20,7 +20,7 @@ module BusquedasHelper
 
       # Para dejar el espacio despues de los reinos
       if columnas == 6
-        radios << '<br>'
+        radios << '<br \>'*3
         columnas = 7
       end
       radios << "<label>"

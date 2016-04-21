@@ -10,7 +10,7 @@
   <meta name="author" content="">
 
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
-  <%= favicon_link_tag 'app/favicon.ico' %>
+  <%= favicon_link_tag '/favicon.ico' %>
   <%= stylesheet_link_tag "inicio", media: "all", "data-turbolinks-track" => true %>
 
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
@@ -32,7 +32,9 @@
 
 
 <body id="page-top" class="index">
-
+<header style="background-image:url('/assets/portada/img_portada_video.png');">
+  <%= render :partial => 'shared/brandBar' %>
+</header>
 
 <%= yield %>
 
