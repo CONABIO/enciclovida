@@ -23,13 +23,29 @@ img#foto-carrusel-interna{
     min-height: 100px;
 }
 #foto-atribucion{
+    font-size: .75em;
+    display: block;
+    border-radius: 3px;
+    opacity: .8;
+    color: #F7F7F7;
+}
+#foto-atribucion + small{
     font-size: .65em;
     display: block;
     border-radius: 3px;
     opacity: .6;
+    color: #e3e3e3;
+}
+@media(min-width:1380px) {
+    #foto-atribucion{
+        color: #333333;
+    }
+    #foto-atribucion + small{
+        color: #e00000;
+    }
 }
 /*De momento los siguientes estilos no se ocupan, sin embargo,
-no borrar por si llegasen a hacer falta*/
+    no borrar por si llegasen a hacer falta*/
 div#foto-carrusel-interna{
     background-size: contain;
     background-repeat: no-repeat;
