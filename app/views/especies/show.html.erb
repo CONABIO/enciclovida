@@ -311,7 +311,7 @@
     </li>
 
     <li class="pull-right">
-      <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )") %>
+      <%= button_tag(("Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default btn-title', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )", :title=>"Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)") %>
     </li>
 
 
