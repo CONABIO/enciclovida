@@ -169,17 +169,17 @@ footer.legal a {
   font-size: 3em;
   color: #f7f7f7;
 }
-.enciclo-ev-icon:before, .vida-ev-icon:before{
-  width: 2.5em !important;
+.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_blanco-ev-icon:before{
+  width: 2em !important;
   font-size: 6em;
   margin: 0;
 }
-.enciclo-ev-icon:before{
+.enciclo-ev-icon:before, .conabio_blanco-ev-icon:before{
   color: #fdfdfd;
 }
 .vida-ev-icon:before{
   color: #889b45;
-  margin-left: -2.5em;
+  margin-left: -2em;
 }
 
 
@@ -235,10 +235,15 @@ ul.social-buttons li a:active {
 #pestañas{
   background-color: transparent;
 }
-.panel .nav-tabs > li:not(.active) > a {
+.panel .nav-tabs > li:not(.active) > a, .panel .nav-stacked > li:not(.active) > a  {
   border: 1px solid #d3d3d3;
   color: #777777;
   background-color: rgba(247, 247, 247, 0.5);
+}
+.panel .nav-stacked > li.active > a {
+  border: 1px solid #b3b3b3;
+  color: #800000;
+  background-color: #f7f7f7;
 }
 #pestañas div.panel-body{
   background-color: #f7f7f7;
