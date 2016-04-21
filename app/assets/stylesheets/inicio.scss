@@ -95,7 +95,7 @@ header {
 section {
   padding: 40px 0;
 }
-#about, #acercaDe {
+#about {
   background-color:#829E3D;
   padding-bottom:0;
   font-size: 16px;
@@ -134,7 +134,7 @@ section {
   padding:25px 30px;
 }
 
-#content {
+#content, #acercaDe {
   background-color:#F2ECD6;
   text-align:left;
 }
@@ -201,14 +201,8 @@ aside.partners a{
 #logo_naturalista{background-position-x: -685px;width: 140px;}
 #logo_semarnat{background-position-x: -820px;width: 135px;}
 
-
+/*Estilos del video como background de youtube*/
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400);
-body {
-  /*background: #000;*/
-}
-a {
-  /*color: #ff0;*/
-}
 .cover {
   position: absolute;
   top: 0;
@@ -217,21 +211,6 @@ a {
   width: 100%;
   height: 100%;
 }
-/*.cover .hi {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-family: 'Roboto Slab', serif;
-  font-size: 24px;
-  line-height: 26px;
-  text-align: center;
-}
-.cover .hi span {
-  cursor: pointer;
-  text-decoration: underline;
-}*/
 .tv {
   position: fixed;
   top: 0;
