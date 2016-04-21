@@ -114,7 +114,6 @@
 
     $(document).ready(function()
     {
-        //$("#arbol_taxonomico").load("/especies/arbol?id=" + TAXON.id);
         $('#pestañas').tabs(); // Inicia los tabs
 
         $('#pestañas > .nav a').click(function(){
@@ -310,6 +309,12 @@
           <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% end %>
     </li>
+
+    <li class="pull-right">
+      <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )") %>
+    </li>
+
+
   </ul>
   <% if I18n.locale.to_s != 'es-cientifico' %>
       <script type="application/javascript">
