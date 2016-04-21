@@ -64,8 +64,17 @@ svg.append("text")
     .text("Simbología").attr("x",17).attr("y",-25);
 
 // Los circulos
-var symbol = [['R', 'Reino'],['P', 'phylum'],['D', 'división'],['C', 'clase'],
-    ['O', 'orden'],['F', 'familia'],['G', 'género'],['E', 'especie']];
+//console.log(TAXON.ancestry_ascendente_directo);
+if (TAXON.ancestry_ascendente_directo == '') var reino = TAXON.id;
+else var reino = TAXON.ancestry_ascendente_directo.split("/")[0];
+
+
+if (reino == "1000001")
+    var symbol = [['R', 'Reino'],['P', 'phylum'],['C', 'clase'],
+        ['O', 'orden'],['F', 'familia'],['G', 'género'],['E', 'especie']];
+else
+    var symbol = [['R', 'Reino'],['D', 'división'],['C', 'clase'],
+        ['O', 'orden'],['F', 'familia'],['G', 'género'],['E', 'especie']];
 
 symbol.forEach(function(array, index) {
     symbology(svg, array, index)
@@ -82,12 +91,22 @@ circle_symbol.style("fill", "#C6DBEF")
 
 svg.append("text")
     .attr("dy", ".35em")
-    .text("57").attr("x",13).attr("y",40*9).attr("class", "sym_text_small");
+    .text("#").attr("x",16).attr("y",40*9).attr("class", "sym_text_small");
 
 svg.append("text")
     .attr("dy", ".35em")
     .attr("font", "9px sans-serif")
-    .text("57 especies").attr("x",10).attr("y",40*9+43).attr("class", "sym_text");
+    .text("# aproximado").attr("x",10).attr("y",40*9+43).attr("class", "sym_text");
+
+svg.append("text")
+    .attr("dy", ".35em")
+    .attr("font", "9px sans-serif")
+    .text("de especies").attr("x",10).attr("y",40*9+63).attr("class", "sym_text");
+
+svg.append("text")
+    .attr("dy", ".35em")
+    .attr("font", "9px sans-serif")
+    .text("en México").attr("x",10).attr("y",40*9+83).attr("class", "sym_text");
 
 
 function update() {
