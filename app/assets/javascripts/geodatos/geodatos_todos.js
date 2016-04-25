@@ -1,4 +1,3 @@
-//= require "geodatos/prueba.js"
 //= require "geodatos/leaflet.markercluster-src.js"
 //= require "geodatos/jstree.min.js"
 //= require "geodatos/KML.js"
