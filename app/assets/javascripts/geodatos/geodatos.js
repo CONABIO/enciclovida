@@ -256,7 +256,6 @@ $(document).ready(function(){
                 xhr.setRequestHeader("Accept","text/json");
             },
             success : function (d){
-
                 allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)

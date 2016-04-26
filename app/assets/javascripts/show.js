@@ -1,3 +1,3 @@
 //= require photo_selectors
-//= require gmaps
-//= require mapas_dinamicos
+// require gmaps
+// require mapas_dinamicos
