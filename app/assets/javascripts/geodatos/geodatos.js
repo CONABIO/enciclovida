@@ -1,17 +1,32 @@
 $(document).ready(function(){
 
-    var url_geoserver = "http://geoportal.conabio.gob.mx:80/geoserver/cnb/wms?";
-    var workspace = "cnb";
     var specie_target;
-
     var sdata;
     var geojsonFeature = [];
     var allowedPoints = d3.map([]);
 
-    var geojsonMarkerOptions = {
+    var geojsonMarkerGeoportalOptions = {
         radius: 5,
-        fillColor: "#4F9F37",
-        color: "#488336",
+        fillColor: "#ff0000",
+        color: "white",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.6
+    };
+
+    var geojsonMarkerNaturaListaInvOptions = {
+        radius: 5,
+        fillColor: "#0b9c31",
+        color: "white",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.6
+    };
+
+    var geojsonMarkerNaturaListaCasualOptions = {
+        radius: 5,
+        fillColor: "#FFFF00",
+        color: "white",
         weight: 2,
         opacity: 1,
         fillOpacity: 0.6
@@ -22,40 +37,8 @@ $(document).ready(function(){
         'className' : 'custom'
     };
 
-    /***************************************************************** map styles */
-
-    var geojsonStyleDefault = {
-        radius: 7,
-        fillColor: "#E2E613",
-        color: "#ACAE36",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.6
-    };
-
-    var geojsonHighlightStyle = {
-        radius: 7,
-        fillColor: "#16EEDC",
-        color: "#36AEA4",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.6
-    };
-
-    var geojsonMouseOverStyle = {
-        radius: 7,
-        fillColor: "#CED122",
-        color: "#8C8E3A",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.6
-    };
 
     /***************************************************************** Layer creation */
-
-    mapquestLink = '<a href="http://www.mapquest.com//">MapQuest</a>';
-    mapquestPic = '<img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
-
 
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
 
@@ -99,19 +82,7 @@ $(document).ready(function(){
         ]
     });
 
-    map.scrollWheelZoom.disable();
-    document.getElementById("tbl_hist").style.display = "none";
-    document.getElementById("dShape").style.display = "none";
-
-    toastr.options = {
-        "debug": false,
-        "positionClass": "toast-bottom-left",
-        "onclick": null,
-        "fadeIn": 300,
-        "fadeOut": 1000,
-        "timeOut": 3000,
-        "extendedTimeOut": 1000
-    };
+    //map.scrollWheelZoom.disable();
 
     /***************************************************************** switch map */
 
@@ -155,13 +126,12 @@ $(document).ready(function(){
                 configureStyleMap(sdata);
 
             }
-            else{
+            else {
 
                 console.log("cambia mapa por frecuencia");
                 $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
                 sdata['qtype'] = "getMapScoreCelda";
                 configureStyleMap(sdata);
-
             }
 
         }catch(e){
@@ -172,10 +142,6 @@ $(document).ready(function(){
 
     var switchMap = new L.Control.Command();
     map.addControl(switchMap);
-
-    /***************************************************************** sidebar */
-
-// var sidebar = L.control.sidebar('sidebar').addTo(map);
 
     /***************************************************************** layer switcher */
 
@@ -193,61 +159,40 @@ $(document).ready(function(){
 
     /***************************************************************** aditional controls */
 
-    map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
-
-        if (type === 'marker') {
-            layer.bindPopup('A popup!');
-        }
-
-        drawnItems.addLayer(layer);
-    });
-
-    map.on('draw:edited', function (e) {
-        var layers = e.layers;
-        var countOfEditedLayers = 0;
-        layers.eachLayer(function(layer) {
-            countOfEditedLayers++;
-        });
-        console.log("Edited " + countOfEditedLayers + " layers");
-    });
-
     function addPointLayer()
     {
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true });
+        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal'});
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerOptions);
+                return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
             },
             onEachFeature: function (feature, layer) {
-                coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2)
+                coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
+                var p_content = popup_content(feature);
                 layer.bindPopup(feature.properties.specie+"<br/>"+coordinates,customOptions);
             }
-
         });
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        // there is an error with great amount of points ex: zea mays
-        // map.fitBounds(markersLayer.getBounds());
         layer_control.addOverlay(markersLayer, specie_target.label);
     }
 
-    var kmlLayer = new L.KML("http://enciclovida.mx/kmz/6031028/observaciones.kml", {async: true});
-    kmlLayer.on("loaded", function(e) {
-        map.fitBounds(e.target.getBounds());
-    });
+    var kmlLayer = new L.KML("/assets/observaciones.kml", {async: true});
     map.addLayer(kmlLayer);
 
-    layer_control.addOverlay(kmlLayer, "algo mas");
+    layer_control.addOverlay(kmlLayer, "Registros de NaturaLista");
 
 
 
+    function popup_content(feature)
+    {
+        
+    }
 
     var busca_especie = function()
     {
