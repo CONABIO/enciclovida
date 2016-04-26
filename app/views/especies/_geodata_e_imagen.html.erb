@@ -40,11 +40,7 @@
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
         <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 
-        <!--link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css"-->
-
         <%= stylesheet_link_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
-
     <% end %>
 
     <script>
@@ -52,15 +48,17 @@
           var hei = $('#contenedor_mapa').height()-30;
           console.log(hei+'px;');
 
-          $('#leaflet_map').load("/especies/" + TAXON.id + "/geodatos", function (){
+ //         $('#leaflet_map').load("/especies/" + TAXON.id + "/geodatos", function (){
               $('#map').css('height', hei);
               $('#map').css('margin-top', -25);
-          });
+ //         });
 
-          $('#contenedor_mapa').re
+//          $('#contenedor_mapa').re
       });
 
     </script>
+
+    <%= render partial: 'geodatos' %>
 
 
     <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>

@@ -238,13 +238,13 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, specie_target.label);
     }
 
-    /*var kmlLayer = new L.KML("/assets/example.kml", {async: true});
+    var kmlLayer = new L.KML("http://enciclovida.mx/kmz/6031028/observaciones.kml", {async: true});
     kmlLayer.on("loaded", function(e) {
         map.fitBounds(e.target.getBounds());
     });
-    map.addLayer(kmlLayer);*/
+    map.addLayer(kmlLayer);
 
-    //layer_control.addOverlay(markersLayer, "algo mas");
+    layer_control.addOverlay(kmlLayer, "algo mas");
 
 
 
