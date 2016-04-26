@@ -3,6 +3,7 @@
     <div class="<%=col1%>" id="contenedor_fotos">
 
       <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
+
       <% if usuario_signed_in? %>
           <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
           <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
@@ -12,63 +13,15 @@
 <% end %>
 
 <% if geo && geo.count > 0 %>
-    <% content_for(:extrajs) do %>
-        <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" data-turbolinks-track="true"></script>
-        <script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js" data-turbolinks-track="true"></script>
-
-        <script src="http://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
-        <script src="http://d3js.org/colorbrewer.v1.min.js" data-turbolinks-track="true"></script>
-        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js" data-turbolinks-track="true"></script>
-
-        <script src="http://www.amcharts.com/lib/3/amcharts.js" data-turbolinks-track="true"></script>
-        <script src="http://www.amcharts.com/lib/3/serial.js" data-turbolinks-track="true"></script>
-        <script src="http://www.amcharts.com/lib/3/themes/light.js" data-turbolinks-track="true"></script>
-
-        <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" data-turbolinks-track="true"></script>
-
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js" data-turbolinks-track="true"></script>
-        <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js" data-turbolinks-track="true"></script>
-        <script type="text/javascript" data-turbolinks-track="true">
-        </script>
-
-    <% end %>
-
-    <% content_for(:extracss) do %>
-        <link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-        <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
-
-        <%= stylesheet_link_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
-    <% end %>
-
-    <script>
-      $(document).ready(function(){
-          var hei = $('#contenedor_mapa').height()-30;
-          console.log(hei+'px;');
-
- //         $('#leaflet_map').load("/especies/" + TAXON.id + "/geodatos", function (){
-              $('#map').css('height', hei);
-              $('#map').css('margin-top', -25);
- //         });
-
-//          $('#contenedor_mapa').re
-      });
-
-    </script>
-
-    <%= render partial: 'geodatos' %>
 
 
     <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
     <div class="<%=col2%>" id="contenedor_mapa">
       <div class="embed-responsive embed-responsive-4by3">
-        <div id="leaflet_map"></div>
+        <%= render partial: 'geodatos' %>
         <h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
       </div>
     </div>
-
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
       <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['geoserver_kmz'] %>
       <%= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
@@ -77,7 +30,7 @@
 
 <% end %>
 
-<% if !(@photos.any? || geo) %>
+<% if !(@photos.any? || geo.any?) %>
     <p class="text-center">
     <h4 style="color: #800000;">Lo sentimos, pero no contamos con una imagen o geodato para:</h4>
     <h3><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></h3>
