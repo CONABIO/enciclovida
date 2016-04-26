@@ -3,7 +3,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :geoportal]
+                                     :descripcion_catalogos, :geoportal, :naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -15,7 +15,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :geoportal]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :geoportal, :naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -379,7 +379,23 @@ class EspeciesController < ApplicationController
     else
       render json: []
     end
+  end
 
+  # Devuelve las observaciones denaturalista para hacer el parsen en geojson
+  def naturalista
+    if p = @especie.proveedor
+      if p.naturalista_obs.present?
+        naturalista_obs = eval(p.naturalista_obs.decodifica64)
+        render json: [] unless naturalista_obs.count > 0
+
+        render json: naturalista_obs.to_json
+
+      else
+        render json: []
+      end
+    else
+      render json: []
+    end
   end
 
   private
