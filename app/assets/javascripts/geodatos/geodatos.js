@@ -193,7 +193,7 @@ $(document).ready(function(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        console.log(geojsonFeature)
+        //console.log(geojsonFeature);
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista'});
 
         species_layer = L.geoJson(geojsonFeature, {
@@ -209,7 +209,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Observaciones de NaturaLista");
+        layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
     /*var kmlLayer = new L.KML("/assets/observaciones.kml", {async: true});
@@ -324,96 +324,6 @@ $(document).ready(function(){
 
     geojson_naturalista();
     geojson_geoportal();
-
-    /*
-     $("#send_email_csv").click(function(e){
-
-     // console.log($("#email_address"));
-     console.log($("#email_address")[0].validity["valid"]);
-
-     if($("#email_address")[0].validity["valid"]){
-
-     email = $("#email_address").val();
-     console.log(email);
-
-
-     tdata["download"] = true;
-     tdata["mail"] = email;
-     console.log(tdata);
-
-     $.ajax({
-     url : url_trabajo,
-     type : 'post',
-     data : tdata,
-     success : function (d){
-
-     console.log(d);
-     $('#modalMail').modal('hide');
-     toastr.success("Archivo enviado por correo electrónico");
-
-     },
-     error: function( jqXHR ,  textStatus,  errorThrown ){
-
-     console.log("error: " + textStatus);
-     $('#modalMail').modal('hide');
-     toastr.error("Error al enviar el archivo");
-
-     }
-     });
-
-
-     }
-     else{
-     alert("Correo invalido")
-     }
-
-     });
-
-
-     $("#send_email_shp").click(function(e){
-
-     // console.log($("#email_address"));
-     console.log($("#email_address_shp")[0].validity["valid"]);
-
-     if($("#email_address_shp")[0].validity["valid"]){
-
-     email = $("#email_address_shp").val();
-     console.log(email);
-
-
-     sdata["download"] = true;
-     sdata["ftype"] = "shp";
-     sdata["mail"] = email;
-     console.log(sdata);
-
-     $.ajax({
-     url : url_trabajo,
-     type : 'post',
-     data : sdata,
-     success : function (d){
-
-     console.log(d);
-     $('#modalMailShape').modal('hide');
-     toastr.success("Archivo enviado por correo electrónico");
-
-     },
-     error: function( jqXHR ,  textStatus,  errorThrown ){
-
-     console.log("error: " + textStatus);
-     $('#modalMailShape').modal('hide');
-     toastr.error("Error al enviar el archivo");
-
-     }
-     });
-
-
-     }
-     else{
-     alert("Correo invalido")
-     }
-
-     });
-
-     */
+    
 });
 
