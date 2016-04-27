@@ -11,6 +11,7 @@
 
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw taxon %>;
+    var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
     var SPECIES_OR_LOWER = <%=raw species_or_lower %>;
 
     if (SPECIES_OR_LOWER){

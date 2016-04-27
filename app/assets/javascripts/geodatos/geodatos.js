@@ -87,70 +87,6 @@ $(document).ready(function(){
         ]
     });
 
-    //map.scrollWheelZoom.disable();
-
-    /***************************************************************** switch map */
-
-    //L.Control.Command = L.Control.extend({
-    //    options: {
-    //        position: 'bottomleft'
-    //    },
-    //
-    //    onAdd: function (map) {
-    //        var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
-    //        L.DomEvent
-    //            .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
-    //            .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
-    //            .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
-    //
-    //        var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
-    //        controlUI.title = 'Ordena mapa por decil';
-    //        controlUI.id = "changeMapButton"
-    //        return controlDiv;
-    //    }
-    //});
-
-    /* Al parecer loq eu se encuentra a continuación no es necesario ya que no se añaden opciones especiales que requieran extender la interfaz (not UI) */
-    //L.control.command = function (options) {
-    //    return new L.Control.Command(options);
-    //};
-
-    //function chengeMapByDecil(){
-    //
-    //    try{
-    //        //verifica si sdata ya tiene valores asignados
-    //        sdata.length;
-    //
-    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
-    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
-    //
-    //        if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
-    //
-    //            console.log("cambia mapa por decil");
-    //            $("#changeMapButton").prop('title', 'Ordena mapa por decil');
-    //            sdata['qtype'] = "getMapScoreCeldaDecil";
-    //            configureStyleMap(sdata);
-    //
-    //        }
-    //        else {
-    //
-    //            console.log("cambia mapa por frecuencia");
-    //            $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
-    //            sdata['qtype'] = "getMapScoreCelda";
-    //            configureStyleMap(sdata);
-    //        }
-    //
-    //    }catch(e){
-    //        console.log("sdata sin asignar");
-    //    }
-    //
-    //}
-
-    //var switchMap = new L.Control.Command();
-    //map.addControl(switchMap);
-
-    /***************************************************************** layer switcher */
-
     var baseMaps = {
         "Open Street Maps": OSM_layer,
         "Vista de Satélite": GSM_layer,
@@ -218,12 +154,11 @@ $(document).ready(function(){
 
     layer_control.addOverlay(kmlLayer, "Registros de NaturaLista");*/
 
-
-
     function content_geoportal(feature)
     {
         var contenido = "";
 
+        contenido += "<h4>" + name() + "</h4>";
         contenido += "<dt>Localidad: </dt><dd>" + feature.localidad + "</dd>";
         contenido += "<dt>Municipio: </dt><dd>" + feature.municipiomapa + "</dd>";
         contenido += "<dt>Estado: </dt><dd>" + feature.estadomapa + "</dd>";
@@ -241,16 +176,34 @@ $(document).ready(function(){
     {
         var contenido = "";
 
-        if (feature.photos.length > 0)
-            contenido += "<dt>Atribución: </dt><dd>" + feature.photos[0].attribution + "</dd>";
+        contenido += "<h4>" + name() + "</h4>";
 
-        contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";
+        if (feature.photos.length > 0)
+        {
+            contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + feature.photos[0].thumb_url + "'/></div>"
+            contenido += "<dt>Atribución: </dt><dd>" + feature.photos[0].attribution + "</dd>";
+        }
+
+        /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
         contenido += "<dt>Fecha: </dt><dd>" + feature.observed_on + "</dd>";
-        contenido += "<dt>¿Es un organismo silvestre / naturalizado?: </dt><dd>" + feature.captive + "</dd>";
-        contenido += "<dt>Grado de calidad: </dt><dd>" + feature.quality_grade + "</dd>";
-        contenido += "<dt>URL NaturaLista: </dt><dd>" + feature.uri + "</dd>";
+        contenido += "<dt>¿silvestre / naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
+        contenido += "<dt>Grado de calidad: </dt><dd>" + I18n.t('quality_grade.' + feature.quality_grade) + "</dd>";
+        contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ feature.uri +"' target='_blank'>ver la observación</a></dd>";
 
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+    }
+
+    function name()
+    {
+        if (I18n.locale == 'es')
+        {
+            if (NOMBRE_COMUN_PRINCIPAL.length > 0)
+                return NOMBRE_COMUN_PRINCIPAL + " <a href='/especies/" + TAXON.id + "'><i>(" + TAXON.nombre_cientifico + ")</i></a>";
+            else
+                return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+        } else {
+            return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+        }
     }
 
     var geojson_geoportal = function()
@@ -325,6 +278,7 @@ $(document).ready(function(){
 
     geojson_naturalista();
     geojson_geoportal();
+    name();
 
 });
 

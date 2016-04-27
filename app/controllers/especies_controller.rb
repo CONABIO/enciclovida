@@ -42,6 +42,10 @@ class EspeciesController < ApplicationController
       format.html do
         @especie.delayed_job_service
 
+        if adicional = @especie.adicional
+          @nombre_comun_principal = adicional.nombre_comun_principal
+        end
+
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if @especie.species_or_lower?
           if proveedor = @especie.proveedor
