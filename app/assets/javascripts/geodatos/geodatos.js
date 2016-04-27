@@ -74,8 +74,8 @@ $(document).ready(function(){
 
 
     /***************************************************************** map switcher */
-
-    var map = L.map('map', {
+    /* Quite var, para poder tener acceso a la variable fuera del scope*/
+    map = L.map('map', {
         center: [23.79162789, -102.04376221],
         zoom: 5,
         layers: [
@@ -91,62 +91,63 @@ $(document).ready(function(){
 
     /***************************************************************** switch map */
 
-    L.Control.Command = L.Control.extend({
-        options: {
-            position: 'bottomleft'
-        },
+    //L.Control.Command = L.Control.extend({
+    //    options: {
+    //        position: 'bottomleft'
+    //    },
+    //
+    //    onAdd: function (map) {
+    //        var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
+    //        L.DomEvent
+    //            .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
+    //            .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
+    //            .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
+    //
+    //        var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
+    //        controlUI.title = 'Ordena mapa por decil';
+    //        controlUI.id = "changeMapButton"
+    //        return controlDiv;
+    //    }
+    //});
 
-        onAdd: function (map) {
-            var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
-            L.DomEvent
-                .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
-                .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
-                .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
+    /* Al parecer loq eu se encuentra a continuación no es necesario ya que no se añaden opciones especiales que requieran extender la interfaz (not UI) */
+    //L.control.command = function (options) {
+    //    return new L.Control.Command(options);
+    //};
 
-            var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
-            controlUI.title = 'Ordena mapa por decil';
-            controlUI.id = "changeMapButton"
-            return controlDiv;
-        }
-    });
+    //function chengeMapByDecil(){
+    //
+    //    try{
+    //        //verifica si sdata ya tiene valores asignados
+    //        sdata.length;
+    //
+    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
+    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
+    //
+    //        if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
+    //
+    //            console.log("cambia mapa por decil");
+    //            $("#changeMapButton").prop('title', 'Ordena mapa por decil');
+    //            sdata['qtype'] = "getMapScoreCeldaDecil";
+    //            configureStyleMap(sdata);
+    //
+    //        }
+    //        else {
+    //
+    //            console.log("cambia mapa por frecuencia");
+    //            $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
+    //            sdata['qtype'] = "getMapScoreCelda";
+    //            configureStyleMap(sdata);
+    //        }
+    //
+    //    }catch(e){
+    //        console.log("sdata sin asignar");
+    //    }
+    //
+    //}
 
-    L.control.command = function (options) {
-        return new L.Control.Command(options);
-    };
-
-    function chengeMapByDecil(){
-
-        try{
-            //verifica si sdata ya tiene valores asignados
-            sdata.length;
-
-            $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
-            $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
-
-            if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
-
-                console.log("cambia mapa por decil");
-                $("#changeMapButton").prop('title', 'Ordena mapa por decil');
-                sdata['qtype'] = "getMapScoreCeldaDecil";
-                configureStyleMap(sdata);
-
-            }
-            else {
-
-                console.log("cambia mapa por frecuencia");
-                $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
-                sdata['qtype'] = "getMapScoreCelda";
-                configureStyleMap(sdata);
-            }
-
-        }catch(e){
-            console.log("sdata sin asignar");
-        }
-
-    }
-
-    var switchMap = new L.Control.Command();
-    map.addControl(switchMap);
+    //var switchMap = new L.Control.Command();
+    //map.addControl(switchMap);
 
     /***************************************************************** layer switcher */
 
@@ -161,7 +162,7 @@ $(document).ready(function(){
         //"Malla": grid_wms
     };
 
-    var layer_control = L.control.layers(baseMaps,overlayMaps).addTo(map);
+    var layer_control = L.control.layers(baseMaps).addTo(map);
 
     /***************************************************************** aditional controls */
 
@@ -324,6 +325,6 @@ $(document).ready(function(){
 
     geojson_naturalista();
     geojson_geoportal();
-    
+
 });
 
