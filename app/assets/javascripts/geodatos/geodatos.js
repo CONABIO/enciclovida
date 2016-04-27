@@ -53,7 +53,11 @@ $(document).ready(function(){
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3']
     });
-
+    // Google Hybrid
+    var GHM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
     var drawnItems = new L.FeatureGroup();
 
     var milliseconds = new Date().getTime();
@@ -70,14 +74,15 @@ $(document).ready(function(){
 
 
     /***************************************************************** map switcher */
-
-    var map = L.map('map', {
-        center: [23.5, -99],
+    /* Quite var, para poder tener acceso a la variable fuera del scope*/
+    map = L.map('map', {
+        center: [23.79162789, -102.04376221],
         zoom: 5,
         layers: [
             OSM_layer,
             GSM_layer,
-            GTM_layer
+            GTM_layer,
+            GHM_layer
             //, grid_wms  // Grid de la reja
         ]
     });
@@ -86,76 +91,78 @@ $(document).ready(function(){
 
     /***************************************************************** switch map */
 
-    L.Control.Command = L.Control.extend({
-        options: {
-            position: 'bottomleft'
-        },
+    //L.Control.Command = L.Control.extend({
+    //    options: {
+    //        position: 'bottomleft'
+    //    },
+    //
+    //    onAdd: function (map) {
+    //        var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
+    //        L.DomEvent
+    //            .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
+    //            .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
+    //            .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
+    //
+    //        var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
+    //        controlUI.title = 'Ordena mapa por decil';
+    //        controlUI.id = "changeMapButton"
+    //        return controlDiv;
+    //    }
+    //});
 
-        onAdd: function (map) {
-            var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
-            L.DomEvent
-                .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
-                .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
-                .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
+    /* Al parecer loq eu se encuentra a continuación no es necesario ya que no se añaden opciones especiales que requieran extender la interfaz (not UI) */
+    //L.control.command = function (options) {
+    //    return new L.Control.Command(options);
+    //};
 
-            var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
-            controlUI.title = 'Ordena mapa por decil';
-            controlUI.id = "changeMapButton"
-            return controlDiv;
-        }
-    });
+    //function chengeMapByDecil(){
+    //
+    //    try{
+    //        //verifica si sdata ya tiene valores asignados
+    //        sdata.length;
+    //
+    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
+    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
+    //
+    //        if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
+    //
+    //            console.log("cambia mapa por decil");
+    //            $("#changeMapButton").prop('title', 'Ordena mapa por decil');
+    //            sdata['qtype'] = "getMapScoreCeldaDecil";
+    //            configureStyleMap(sdata);
+    //
+    //        }
+    //        else {
+    //
+    //            console.log("cambia mapa por frecuencia");
+    //            $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
+    //            sdata['qtype'] = "getMapScoreCelda";
+    //            configureStyleMap(sdata);
+    //        }
+    //
+    //    }catch(e){
+    //        console.log("sdata sin asignar");
+    //    }
+    //
+    //}
 
-    L.control.command = function (options) {
-        return new L.Control.Command(options);
-    };
-
-    function chengeMapByDecil(){
-
-        try{
-            //verifica si sdata ya tiene valores asignados
-            sdata.length;
-
-            $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
-            $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
-
-            if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
-
-                console.log("cambia mapa por decil");
-                $("#changeMapButton").prop('title', 'Ordena mapa por decil');
-                sdata['qtype'] = "getMapScoreCeldaDecil";
-                configureStyleMap(sdata);
-
-            }
-            else {
-
-                console.log("cambia mapa por frecuencia");
-                $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
-                sdata['qtype'] = "getMapScoreCelda";
-                configureStyleMap(sdata);
-            }
-
-        }catch(e){
-            console.log("sdata sin asignar");
-        }
-
-    }
-
-    var switchMap = new L.Control.Command();
-    map.addControl(switchMap);
+    //var switchMap = new L.Control.Command();
+    //map.addControl(switchMap);
 
     /***************************************************************** layer switcher */
 
     var baseMaps = {
         "Open Street Maps": OSM_layer,
         "Vista de Satélite": GSM_layer,
-        "Vista de terreno": GTM_layer
+        "Vista de terreno": GTM_layer,
+        "Vista Híbrida": GHM_layer
     };
 
     var overlayMaps = {
         //"Malla": grid_wms
     };
 
-    var layer_control = L.control.layers(baseMaps,overlayMaps).addTo(map);
+    var layer_control = L.control.layers(baseMaps).addTo(map);
 
     /***************************************************************** aditional controls */
 
@@ -187,7 +194,7 @@ $(document).ready(function(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        console.log(geojsonFeature)
+        //console.log(geojsonFeature);
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista'});
 
         species_layer = L.geoJson(geojsonFeature, {
@@ -203,7 +210,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Observaciones de NaturaLista");
+        layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
     /*var kmlLayer = new L.KML("/assets/observaciones.kml", {async: true});
@@ -319,95 +326,5 @@ $(document).ready(function(){
     geojson_naturalista();
     geojson_geoportal();
 
-    /*
-     $("#send_email_csv").click(function(e){
-
-     // console.log($("#email_address"));
-     console.log($("#email_address")[0].validity["valid"]);
-
-     if($("#email_address")[0].validity["valid"]){
-
-     email = $("#email_address").val();
-     console.log(email);
-
-
-     tdata["download"] = true;
-     tdata["mail"] = email;
-     console.log(tdata);
-
-     $.ajax({
-     url : url_trabajo,
-     type : 'post',
-     data : tdata,
-     success : function (d){
-
-     console.log(d);
-     $('#modalMail').modal('hide');
-     toastr.success("Archivo enviado por correo electrónico");
-
-     },
-     error: function( jqXHR ,  textStatus,  errorThrown ){
-
-     console.log("error: " + textStatus);
-     $('#modalMail').modal('hide');
-     toastr.error("Error al enviar el archivo");
-
-     }
-     });
-
-
-     }
-     else{
-     alert("Correo invalido")
-     }
-
-     });
-
-
-     $("#send_email_shp").click(function(e){
-
-     // console.log($("#email_address"));
-     console.log($("#email_address_shp")[0].validity["valid"]);
-
-     if($("#email_address_shp")[0].validity["valid"]){
-
-     email = $("#email_address_shp").val();
-     console.log(email);
-
-
-     sdata["download"] = true;
-     sdata["ftype"] = "shp";
-     sdata["mail"] = email;
-     console.log(sdata);
-
-     $.ajax({
-     url : url_trabajo,
-     type : 'post',
-     data : sdata,
-     success : function (d){
-
-     console.log(d);
-     $('#modalMailShape').modal('hide');
-     toastr.success("Archivo enviado por correo electrónico");
-
-     },
-     error: function( jqXHR ,  textStatus,  errorThrown ){
-
-     console.log("error: " + textStatus);
-     $('#modalMailShape').modal('hide');
-     toastr.error("Error al enviar el archivo");
-
-     }
-     });
-
-
-     }
-     else{
-     alert("Correo invalido")
-     }
-
-     });
-
-     */
 });
 
