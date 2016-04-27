@@ -53,7 +53,11 @@ $(document).ready(function(){
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3']
     });
-
+    // Google Hybrid
+    var GHM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
     var drawnItems = new L.FeatureGroup();
 
     var milliseconds = new Date().getTime();
@@ -72,12 +76,13 @@ $(document).ready(function(){
     /***************************************************************** map switcher */
 
     var map = L.map('map', {
-        center: [23.5, -99],
+        center: [23.79162789, -102.04376221],
         zoom: 5,
         layers: [
             OSM_layer,
             GSM_layer,
-            GTM_layer
+            GTM_layer,
+            GHM_layer
             //, grid_wms  // Grid de la reja
         ]
     });
@@ -148,7 +153,8 @@ $(document).ready(function(){
     var baseMaps = {
         "Open Street Maps": OSM_layer,
         "Vista de Satélite": GSM_layer,
-        "Vista de terreno": GTM_layer
+        "Vista de terreno": GTM_layer,
+        "Vista Híbrida": GHM_layer
     };
 
     var overlayMaps = {
