@@ -1,5 +1,5 @@
 <% if @photos.any? %>
-    <% col1 = (geo && geo.count > 0) ? 'col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
+    <% col1 = (@geo.present?) ? 'col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
     <div class="<%=col1%>" id="contenedor_fotos">
 
       <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
@@ -12,9 +12,7 @@
     </div>
 <% end %>
 
-<% if geo && geo.count > 0 %>
-
-
+<% if @geo.present? %>
     <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
     <div class="<%=col2%>" id="contenedor_mapa">
       <div class="embed-responsive embed-responsive-4by3">
@@ -23,14 +21,13 @@
       </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['geoserver_kmz'] %>
-      <%= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
-      <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if geo['naturalista_kml'] %>
+      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_url_descarga].present? %>
+      <%#= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
+      <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, @geo[:naturalista_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if @geo[:naturalista_url_descarga].present? %>
     </div>
-
 <% end %>
 
-<% if !(@photos.any? || geo.any?) %>
+<% if !(@photos.any? || @geo.present?) %>
     <p class="text-center">
     <h4 style="color: #800000;">Lo sentimos, pero no contamos con una imagen o geodato para:</h4>
     <h3><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></h3>

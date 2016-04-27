@@ -4,50 +4,15 @@
     <script src="http://d3js.org/d3.v3.min.js" data-turbolinks-track='true'></script>
 <% end %>
 
-<% taxon = @especie.to_json %>
-<% species_or_lower = @especie.species_or_lower? %>
-<% geodatos = @especie.proveedor.try(:geodatos) if species_or_lower %>
-<% geo = JSON.parse(geodatos) if geodatos %>
-
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
-    var TAXON = <%=raw taxon %>;
+    var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
-    var SPECIES_OR_LOWER = <%=raw species_or_lower %>;
+    var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
+    var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
 
     if (SPECIES_OR_LOWER){
         // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
-        var RUTAS_KMZ = eval(<%=raw geodatos %>);
 
-        if (RUTAS_KMZ != undefined){
-            var CUANTOS_KMZ = Object.keys(RUTAS_KMZ).length;
-
-            if (CUANTOS_KMZ > 0) {
-                var MAPAS = new Array();
-
-                if (RUTAS_KMZ.geoserver_kmz != undefined){
-                    MAPAS[0] = new Array();
-                    MAPAS[0][0] = RUTAS_KMZ.geoserver_kmz
-                    MAPAS[0][1] = " Mapa de distribución potencial (CONABIO)"
-                }
-
-                /*if (RUTAS_KMZ.snib_kmz != undefined){
-                    var CUANTOS = Object.keys(MAPAS).length;
-                    MAPAS[CUANTOS] = new Array();
-                    MAPAS[CUANTOS][0] = RUTAS_KMZ.snib_kmz
-                    MAPAS[CUANTOS][1] = "<i class='prioritarias-alto-ev-icon' style='color: #ff6464; font-size: smaller;'></i>Registros de museos, colectas y proyectos de CONABIO (SNIB)"
-                }*/
-
-                if (RUTAS_KMZ.naturalista_kmz != undefined){
-                    var CUANTOS = Object.keys(MAPAS).length;
-                    MAPAS[CUANTOS] = new Array();
-                    MAPAS[CUANTOS][0] = RUTAS_KMZ.naturalista_kmz
-                    MAPAS[CUANTOS][1] = "<strong>Observaciones de </strong><i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>"+
-                    "<i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i><br>" +
-                    "<i class='prioritarias-alto-ev-icon' style='color: #96fd96; font-size: smaller; margin-left: 10px;'></i> Grado de investigación <br>" +
-                    "<i class='prioritarias-alto-ev-icon' style='color: #FDFD98; font-size: smaller; margin-left: 10px;'></i> Grado casual"
-                }
-            }
-        }
     }
 
     info = function(){
@@ -290,7 +255,7 @@
   </div>
 </div>
 
-<% if (species_or_lower) %>
+<% if (@species_or_lower) %>
     <div class="row" style="padding: 5px 0 15px 0;">
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
     </div>
@@ -302,7 +267,7 @@
     <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><span class="glyphicon glyphicon-modal-window"></span><strong> Mapa e imágenes</strong></a></li>
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
-    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
+    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
@@ -326,7 +291,7 @@
   <% end %>
 
   <div id="geodata_e_imagen" class="tab-pane panel-body">
-    <%= render :partial => 'geodata_e_imagen', :locals => { :geo => geo, :titulo => @titulo }  %>
+    <%= render :partial => 'geodata_e_imagen' %>
   </div>
 
   <div id="descripcion_catalogos" class="tab-pane panel-body">

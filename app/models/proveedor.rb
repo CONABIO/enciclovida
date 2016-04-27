@@ -271,25 +271,26 @@ class Proveedor < ActiveRecord::Base
   end
 
   def geodatos
-    ruta_snib_kmz = Rails.root.join('public', 'kmz', especie.id.to_s, 'registros.kmz')
-    ruta_snib_kml = Rails.root.join('public', 'kmz', especie.id.to_s, 'registros.kml')
-    ruta_naturalista_kmz = Rails.root.join('public', 'kmz', especie.id.to_s, 'observaciones.kmz')
-    ruta_naturalista_kml = Rails.root.join('public', 'kmz', especie.id.to_s, 'observaciones.kml')
-
-    rutas = Hash.new
-    ruta_absoluta = "#{CONFIG.servidor}/#{especie.id.to_s}"
-    rutas[:snib_kml] = "#{ruta_absoluta}/registros.kml" if File.exist?(ruta_snib_kml)
-    rutas[:snib_kmz] = "#{ruta_absoluta}/registros.kmz" if File.exist?(ruta_snib_kmz)
-    rutas[:naturalista_kml] = "#{ruta_absoluta}/observaciones.kml" if File.exist?(ruta_naturalista_kml)
-    rutas[:naturalista_kmz] = "#{ruta_absoluta}/observaciones.kmz" if File.exist?(ruta_naturalista_kmz)
+    geodatos = {}
+    geodatos[:cuales] = []
 
     if geoserver_info.present?
       info = JSON.parse(geoserver_info)
-      rutas[:geoserver_kmz] = "#{CONFIG.geoserver_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      Rails.logger.info "---#{rutas[:geoserver_kmz]}"
+
+      geodatos[:cuales] << 'geoserver'
+      geodatos[:geoserver_url] = "#{CONFIG.geoserver_url}&format=kml&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
+      geodatos[:geoserver_url_descarga] = "#{CONFIG.geoserver_url}&format=kmz&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
     end
 
-    rutas.to_json
+    geodatos[:cuales] << 'geoportal' if snib_id.present?
+
+    if naturalista_obs.present?
+      naturalista_path = Rails.root.join('public', 'kmz', especie_id.to_s, 'observaciones.kmz')
+      geodatos[:cuales] << 'naturalista'
+      geodatos[:naturalista_url_descarga] = "/#{especie_id}/observaciones.kmz" if File.exist?(naturalista_path)
+    end
+
+    geodatos
   end
 
   def self.crea_info_naturalista(taxon)
