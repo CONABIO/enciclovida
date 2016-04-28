@@ -151,60 +151,6 @@
             }
         });
 
-        if (SPECIES_OR_LOWER){
-            /*if (CUANTOS_KMZ > 0){
-                dimensionesIniciales();
-
-                // Inicia el mapa
-                for (var i = 0; i < MAPAS.length; i++) {
-                    infoWindow = new google.maps.InfoWindow({});
-                    MAPAS[i][2] = function (direccion) {
-                        return map.loadFromKML({
-                            url: direccion,
-                            preserveViewport: true,
-                            suppressInfoWindows: true,
-                            events: {
-                                click: function (point) {
-                                    anchoInfo = function () {
-                                        return parseInt($("#map").width() / 5) * 4;
-                                    };
-                                    altoInfo = function () {
-                                        return parseInt($("#map").height() / 10) * 9;
-                                    };
-                                    if (point.featureData.infoWindowHtml.indexOf('$[description]') > -1) {
-                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 0px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.name + "</div>");
-                                        infoWindow.maxWidth = 2;
-                                    } else {
-                                        infoWindow.setContent("<div id='balloon'  style='overflow: auto; cursor: default; clear: both; position: relative; border: 0px solid rgb(204, 204, 204); border-radius: 10px; padding: 10px; max-width: " + anchoInfo() + "px; max-height: " + altoInfo() + "px; background-color: rgb(255, 255, 255);  border-radius: 2em;'>" + point.featureData.infoWindowHtml + "</div>");
-                                    };
-                                    infoWindow.setPosition(point.latLng);
-                                    infoWindow.open(map.map);
-                                    $(function (){
-                                        $("#balloon div").removeAttr("style");
-                                        $("dl").addClass('dl-horizontal');
-                                    });
-                                }
-                            }
-                        });
-                    }
-                }
-
-                anadeControlFullScreen();
-                anadeControlCapas();
-
-                $(window).resize(function(){
-                    redimensionaGmaps(function(){
-                        google.maps.event.trigger(map.map, 'resize');
-                    });
-                });
-            }
-                $('#geodata_e_imagen_li > a').click(function(){
-                    redimensionaGmaps(function(){
-                        google.maps.event.trigger(map.map, 'resize');
-                    });
-                });*/
-            }
-
         <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
         //$('#photos_loading_status').show()
         /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {

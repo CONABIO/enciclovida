@@ -208,7 +208,7 @@ $(document).ready(function(){
     {
         $.ajax({
             url: GEO.geoportal_url,
-            //url: "http://colibri.conabio.gob.mx:9000/snib?qtype=getSpecies&rd=plantae&id=31345",
+            //url: "http://colibri.conabio.gob.mx:9000/snib?qtype=getSpecies&rd=plantae&taxlevel=genero&taxvalue=zea",
             dataType : "json",
             success : function (d){
                 allowedPoints = d3.map([]);
