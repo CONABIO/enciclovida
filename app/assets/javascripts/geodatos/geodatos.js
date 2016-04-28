@@ -62,95 +62,24 @@ $(document).ready(function(){
 
     var milliseconds = new Date().getTime();
 
-    /*var grid_wms = L.tileLayer.betterWms(url, {
-        layers: espacio_capa,
-        crossDomain: true,
-        transparent: true,
-        format: 'image/png'
-    });*/
-
     var species_layer;
     var markersLayer;
-
 
     /***************************************************************** map switcher */
     /* Quite var, para poder tener acceso a la variable fuera del scope*/
     map = L.map('map', {
         center: [23.79162789, -102.04376221],
         zoom: 5,
+        //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
             OSM_layer,
             GSM_layer,
             GTM_layer,
             GHM_layer
-            //, grid_wms  // Grid de la reja
         ]
     });
 
-    //map.scrollWheelZoom.disable();
-
-    /***************************************************************** switch map */
-
-    //L.Control.Command = L.Control.extend({
-    //    options: {
-    //        position: 'bottomleft'
-    //    },
-    //
-    //    onAdd: function (map) {
-    //        var controlDiv = L.DomUtil.create('div', 'leaflet-control-command ');
-    //        L.DomEvent
-    //            .addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
-    //            .addListener(controlDiv, 'click', L.DomEvent.preventDefault)
-    //            .addListener(controlDiv, 'click', function () { chengeMapByDecil(); });
-    //
-    //        var controlUI = L.DomUtil.create('div', 'leaflet-control-command-interior glyphicon glyphicon-triangle-right', controlDiv);
-    //        controlUI.title = 'Ordena mapa por decil';
-    //        controlUI.id = "changeMapButton"
-    //        return controlDiv;
-    //    }
-    //});
-
-    /* Al parecer loq eu se encuentra a continuación no es necesario ya que no se añaden opciones especiales que requieran extender la interfaz (not UI) */
-    //L.control.command = function (options) {
-    //    return new L.Control.Command(options);
-    //};
-
-    //function chengeMapByDecil(){
-    //
-    //    try{
-    //        //verifica si sdata ya tiene valores asignados
-    //        sdata.length;
-    //
-    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-right");
-    //        $("#changeMapButton").toggleClass("glyphicon glyphicon-triangle-left");
-    //
-    //        if(document.getElementById("changeMapButton").classList.contains("glyphicon-triangle-right")){
-    //
-    //            console.log("cambia mapa por decil");
-    //            $("#changeMapButton").prop('title', 'Ordena mapa por decil');
-    //            sdata['qtype'] = "getMapScoreCeldaDecil";
-    //            configureStyleMap(sdata);
-    //
-    //        }
-    //        else {
-    //
-    //            console.log("cambia mapa por frecuencia");
-    //            $("#changeMapButton").prop('title', 'Ordena mapa por frecuencia');
-    //            sdata['qtype'] = "getMapScoreCelda";
-    //            configureStyleMap(sdata);
-    //        }
-    //
-    //    }catch(e){
-    //        console.log("sdata sin asignar");
-    //    }
-    //
-    //}
-
-    //var switchMap = new L.Control.Command();
-    //map.addControl(switchMap);
-
     /***************************************************************** layer switcher */
-
     var baseMaps = {
         "Open Street Maps": OSM_layer,
         "Vista de Satélite": GSM_layer,
@@ -165,9 +94,7 @@ $(document).ready(function(){
     var layer_control = L.control.layers(baseMaps).addTo(map);
 
     /***************************************************************** aditional controls */
-
-    function addPointLayerGeoportal()
-    {
+    function addPointLayerGeoportal(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
@@ -189,8 +116,7 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, "Registros de museos, colectas y proyectos de CONABIO (SNIB)");
     }
 
-    function addPointLayerNaturaLista()
-    {
+    function addPointLayerNaturaLista(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
@@ -200,6 +126,8 @@ $(document).ready(function(){
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                //para cuando tenga tiempo, poner el ícono como DEBE de ser!!!
+                //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
             onEachFeature: function (feature, layer) {
                 coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
@@ -213,15 +141,7 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
-    /*var kmlLayer = new L.KML("/assets/observaciones.kml", {async: true});
-    map.addLayer(kmlLayer);
-
-    layer_control.addOverlay(kmlLayer, "Registros de NaturaLista");*/
-
-
-
-    function content_geoportal(feature)
-    {
+    function content_geoportal(feature){
         var contenido = "";
 
         contenido += "<dt>Localidad: </dt><dd>" + feature.localidad + "</dd>";
@@ -237,8 +157,7 @@ $(document).ready(function(){
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
     }
 
-    function content_naturalista(feature)
-    {
+    function content_naturalista(feature){
         var contenido = "";
 
         if (feature.photos.length > 0)
@@ -288,8 +207,7 @@ $(document).ready(function(){
     };
 
 
-    var geojson_naturalista = function()
-    {
+    var geojson_naturalista = function(){
         $.ajax({
             url: "/especies/" + TAXON.id + "/naturalista",
             dataType : "json",
@@ -300,8 +218,7 @@ $(document).ready(function(){
             success : function (d){
                 allowedPoints = d3.map([]);
 
-                for(i=0;i<d.length;i++)
-                {
+                for(i=0;i<d.length;i++){
                     //var item_id_json = JSON.parse(d[i]);
                     item_id = d[i].longitude + "," + d[i].latitude;
 
@@ -312,7 +229,6 @@ $(document).ready(function(){
                         "geometry"  : {coordinates: [parseFloat(d[i].longitude), parseFloat(d[i].latitude)], type: "Point"}
                     });
                 }
-
                 addPointLayerNaturaLista();
             },
             error: function( jqXHR ,  textStatus,  errorThrown ){
