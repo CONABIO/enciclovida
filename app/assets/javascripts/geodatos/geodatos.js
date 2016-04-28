@@ -79,6 +79,7 @@ $(document).ready(function(){
         ]
     });
 
+
     /***************************************************************** layer switcher */
     var baseMaps = {
         "Open Street Maps": OSM_layer,
@@ -120,7 +121,6 @@ $(document).ready(function(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        //console.log(geojsonFeature);
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista'});
 
         species_layer = L.geoJson(geojsonFeature, {
@@ -144,6 +144,7 @@ $(document).ready(function(){
     function content_geoportal(feature){
         var contenido = "";
 
+        contenido += "<h4>" + name() + "</h4>";
         contenido += "<dt>Localidad: </dt><dd>" + feature.localidad + "</dd>";
         contenido += "<dt>Municipio: </dt><dd>" + feature.municipiomapa + "</dd>";
         contenido += "<dt>Estado: </dt><dd>" + feature.estadomapa + "</dd>";
@@ -160,16 +161,34 @@ $(document).ready(function(){
     function content_naturalista(feature){
         var contenido = "";
 
-        if (feature.photos.length > 0)
-            contenido += "<dt>Atribución: </dt><dd>" + feature.photos[0].attribution + "</dd>";
+        contenido += "<h4>" + name() + "</h4>";
 
-        contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";
+        if (feature.photos.length > 0)
+        {
+            contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + feature.photos[0].thumb_url + "'/></div>"
+            contenido += "<dt>Atribución: </dt><dd>" + feature.photos[0].attribution + "</dd>";
+        }
+
+        /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
         contenido += "<dt>Fecha: </dt><dd>" + feature.observed_on + "</dd>";
-        contenido += "<dt>¿Es un organismo silvestre / naturalizado?: </dt><dd>" + feature.captive + "</dd>";
-        contenido += "<dt>Grado de calidad: </dt><dd>" + feature.quality_grade + "</dd>";
-        contenido += "<dt>URL NaturaLista: </dt><dd>" + feature.uri + "</dd>";
+        contenido += "<dt>¿silvestre / naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
+        contenido += "<dt>Grado de calidad: </dt><dd>" + I18n.t('quality_grade.' + feature.quality_grade) + "</dd>";
+        contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ feature.uri +"' target='_blank'>ver la observación</a></dd>";
 
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+    }
+
+    function name()
+    {
+        if (I18n.locale == 'es')
+        {
+            if (NOMBRE_COMUN_PRINCIPAL.length > 0)
+                return NOMBRE_COMUN_PRINCIPAL + " <a href='/especies/" + TAXON.id + "'><i>(" + TAXON.nombre_cientifico + ")</i></a>";
+            else
+                return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+        } else {
+            return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+        }
     }
 
     var geojson_geoportal = function()
@@ -238,9 +257,8 @@ $(document).ready(function(){
             }
         });  // termina ajax
     };
-
     geojson_naturalista();
     geojson_geoportal();
-
+    name();
 });
 
