@@ -12,23 +12,19 @@
 <%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
 
 
-<div id="map">
-  <!--div class="link_shape">
-    <button id="dShape" type="button" title="Descarga mapa (.shp)" class="btn btn-primary glyphicon glyphicon-download-alt" data-toggle="modal" data-target="#modalMailShape"></button>
-  </div-->
-</div>
-<!--div class="row-fluid row_panel" id="tbl_hist"></div-->
+<div id="map"></div>
 
 <script>
     $('#map').css('height', $('#contenedor_mapa').height() - 30);
     $(document).ready(function() {
+        map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
         $(window).resize(function () {
             $('#map').css('height', $('#contenedor_mapa').height() - 30);
             map.invalidateSize(true);
         });
         $('#geodata_e_imagen_li > a').click(function () {
             $('#map').css('height', $('#contenedor_mapa').height() - 30);
-            map.invalidateSize(true);
+            map.invalidateSize(true).fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
         });
     });
 </script>
