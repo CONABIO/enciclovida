@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-    var specie_target;
-    var sdata;
     var geojsonFeature = [];
     var allowedPoints = d3.map([]);
 
@@ -148,12 +146,12 @@ $(document).ready(function(){
         map.addLayer(markersLayer);
         layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
-
-    /*var kmlLayer = new L.KML("/assets/observaciones.kml", {async: true});
+/*
+    var kmlLayer = new L.KML("/assets/cnb-canlupusgw.kml", {async: true});
     map.addLayer(kmlLayer);
 
-    layer_control.addOverlay(kmlLayer, "Registros de NaturaLista");*/
-
+    layer_control.addOverlay(kmlLayer, "Distribución potencial (CONABIO)");
+*/
     function content_geoportal(feature)
     {
         var contenido = "";
@@ -209,12 +207,9 @@ $(document).ready(function(){
     var geojson_geoportal = function()
     {
         $.ajax({
-            url: "/especies/" + TAXON.id + "/geoportal",
+            url: GEO.geoportal_url,
+            //url: "http://colibri.conabio.gob.mx:9000/snib?qtype=getSpecies&rd=plantae&id=31345",
             dataType : "json",
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X-Test-Header', 'test-value');
-                xhr.setRequestHeader("Accept","text/json");
-            },
             success : function (d){
                 allowedPoints = d3.map([]);
 
@@ -276,9 +271,9 @@ $(document).ready(function(){
         });  // termina ajax
     };
 
-    geojson_naturalista();
-    geojson_geoportal();
-    name();
+
+    if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
+    if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
 
 });
 

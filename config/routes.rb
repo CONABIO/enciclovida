@@ -62,7 +62,6 @@ Buscador::Application.routes.draw do
       get :kmz
       get :kmz_naturalista
       get :cache_services
-      get ':id/geoportal' => 'especies#geoportal'
       get ':id/naturalista' => 'especies#naturalista'
       get ':id/arbol_nodo' => 'especies#arbol_nodo'
       get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'

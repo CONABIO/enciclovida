@@ -10,11 +10,6 @@
     var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
     var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
 
-    if (SPECIES_OR_LOWER){
-        // Nos fijamos que si va a desplegar el mapa por lo menos tenga un kmz asociado
-
-    }
-
     info = function(){
         $('#ficha-div').slideUp();
         $('#info-div').slideDown();
@@ -260,7 +255,6 @@
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
     </div>
 <% end %>
-
 
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
