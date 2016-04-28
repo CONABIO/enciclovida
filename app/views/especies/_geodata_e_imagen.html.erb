@@ -19,12 +19,12 @@
     <div class="<%=col2%>" id="contenedor_mapa">
       <div class="embed-responsive embed-responsive-4by3">
         <%= render partial: 'geodatos' %>
-        <h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6>
+        <!--h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6-->
       </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
       <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['geoserver_kmz'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['geoserver_kmz'] %>
-      <%= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
+      <%# link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
       <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, geo['naturalista_kml'], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if geo['naturalista_kml'] %>
     </div>
 
