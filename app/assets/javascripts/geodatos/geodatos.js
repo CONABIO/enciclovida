@@ -60,31 +60,25 @@ $(document).ready(function(){
 
     var milliseconds = new Date().getTime();
 
-    /*var grid_wms = L.tileLayer.betterWms(url, {
-        layers: espacio_capa,
-        crossDomain: true,
-        transparent: true,
-        format: 'image/png'
-    });*/
-
     var species_layer;
     var markersLayer;
-
 
     /***************************************************************** map switcher */
     /* Quite var, para poder tener acceso a la variable fuera del scope*/
     map = L.map('map', {
         center: [23.79162789, -102.04376221],
         zoom: 5,
+        //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
             OSM_layer,
             GSM_layer,
             GTM_layer,
             GHM_layer
-            //, grid_wms  // Grid de la reja
         ]
     });
 
+
+    /***************************************************************** layer switcher */
     var baseMaps = {
         "Open Street Maps": OSM_layer,
         "Vista de Satélite": GSM_layer,
@@ -99,9 +93,7 @@ $(document).ready(function(){
     var layer_control = L.control.layers(baseMaps).addTo(map);
 
     /***************************************************************** aditional controls */
-
-    function addPointLayerGeoportal()
-    {
+    function addPointLayerGeoportal(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
@@ -123,17 +115,17 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, "Registros de museos, colectas y proyectos de CONABIO (SNIB)");
     }
 
-    function addPointLayerNaturaLista()
-    {
+    function addPointLayerNaturaLista(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        //console.log(geojsonFeature);
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista'});
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                //para cuando tenga tiempo, poner el ícono como DEBE de ser!!!
+                //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
             onEachFeature: function (feature, layer) {
                 coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
@@ -146,14 +138,15 @@ $(document).ready(function(){
         map.addLayer(markersLayer);
         layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
+
 /*
     var kmlLayer = new L.KML("/assets/cnb-canlupusgw.kml", {async: true});
     map.addLayer(kmlLayer);
 
     layer_control.addOverlay(kmlLayer, "Distribución potencial (CONABIO)");
 */
-    function content_geoportal(feature)
-    {
+
+    function content_geoportal(feature){
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
@@ -170,8 +163,7 @@ $(document).ready(function(){
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
     }
 
-    function content_naturalista(feature)
-    {
+    function content_naturalista(feature){
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
@@ -236,8 +228,7 @@ $(document).ready(function(){
     };
 
 
-    var geojson_naturalista = function()
-    {
+    var geojson_naturalista = function(){
         $.ajax({
             url: "/especies/" + TAXON.id + "/naturalista",
             dataType : "json",
@@ -248,8 +239,7 @@ $(document).ready(function(){
             success : function (d){
                 allowedPoints = d3.map([]);
 
-                for(i=0;i<d.length;i++)
-                {
+                for(i=0;i<d.length;i++){
                     //var item_id_json = JSON.parse(d[i]);
                     item_id = d[i].longitude + "," + d[i].latitude;
 
@@ -260,7 +250,6 @@ $(document).ready(function(){
                         "geometry"  : {coordinates: [parseFloat(d[i].longitude), parseFloat(d[i].latitude)], type: "Point"}
                     });
                 }
-
                 addPointLayerNaturaLista();
             },
             error: function( jqXHR ,  textStatus,  errorThrown ){
@@ -270,7 +259,6 @@ $(document).ready(function(){
             }
         });  // termina ajax
     };
-
 
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
     if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
