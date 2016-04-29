@@ -29,3 +29,4 @@
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require autocomplete-rails
+//= require "i18n/translations"

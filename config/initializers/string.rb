@@ -32,6 +32,7 @@ class String
   end
 
   def decodifica64
+    return self.force_encoding('UTF-8') if self[0..1] != 'W3'
     decoded = Base64.decode64(self)
     decoded.force_encoding('UTF-8')
   end
