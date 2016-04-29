@@ -195,7 +195,7 @@ aside.partners div {
 
 aside.partners a{
   margin: 35px auto;
-  background-image: url("/assets/portada/logos-todos.png");
+  background-image: url("/assets/portada/img_partners.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100px;
@@ -217,12 +217,12 @@ aside.partners a{
 #logo_eol{background-position-x: -135px;width: 95px;}
 #logo_wikipedia{background-position-x: -225px;width: 75px;}
 #logo_gbif{background-position-x: -295px;width: 75px;}
-#logo_gmaps{background-position-x: -365px;width: 85px;}
-#logo_cites{background-position-x: -445px;width: 95px;}
-#logo_iucn{background-position-x: -535px;width: 75px;}
-#logo_redlist{background-position-x: -605px;width: 85px;}
-#logo_naturalista{background-position-x: -685px;width: 140px;}
-#logo_semarnat{background-position-x: -820px;width: 135px;}
+#logo_leaflet{background-position-x: -365px;width: 135px;}
+#logo_cites{background-position-x: -495px;width: 95px;}
+#logo_iucn{background-position-x: -585px;width: 75px;}
+#logo_redlist{background-position-x: -655px;width: 85px;}
+#logo_naturalista{background-position-x: -735px;width: 140px;}
+#logo_semarnat{background-position-x: -870px;width: 135px;}
 
 /*Estilos del video como background de youtube*/
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400);
