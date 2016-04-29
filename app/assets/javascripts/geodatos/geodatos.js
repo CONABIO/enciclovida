@@ -160,6 +160,11 @@ $(document).ready(function(){
         contenido += "<dt>Institución: </dt><dd>" + feature.institucion + "</dd>";
         contenido += "<dt>País de la colección: </dt><dd>" + feature.paiscoleccion + "</dd>";
 
+        if (feature.proyecto.length > 0 && feature.urlproyecto.length > 0)
+            contenido += "<dt>Proyecto: </dt><dd><a href='" + feature.urlproyecto + "' target='_blank'>" + feature.proyecto + "</a></dd>";
+
+        contenido += "<dt>Más información: </dt><dd><a href='http://" + feature.urlejemplar + "' target='_blank'>consultar</a></dd>";
+
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
     }
 
