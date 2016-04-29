@@ -35,16 +35,9 @@ $(document).ready(function(){
         'className' : 'custom'
     };
 
-
     /***************************************************************** Layer creation */
-
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
 
-    // Google satellite map layer
-    var GSM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&labels=true',{
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
-    });
 
     // Google terrain map layer
     var GTM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
@@ -71,7 +64,6 @@ $(document).ready(function(){
         //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
             OSM_layer,
-            GSM_layer,
             GTM_layer,
             GHM_layer
         ]
@@ -81,13 +73,8 @@ $(document).ready(function(){
     /***************************************************************** layer switcher */
     var baseMaps = {
         "Open Street Maps": OSM_layer,
-        "Vista de Satélite": GSM_layer,
         "Vista de terreno": GTM_layer,
         "Vista Híbrida": GHM_layer
-    };
-
-    var overlayMaps = {
-        //"Malla": grid_wms
     };
 
     var layer_control = L.control.layers(baseMaps).addTo(map);
@@ -112,7 +99,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Registros de museos, colectas y proyectos de CONABIO (SNIB)");
+        layer_control.addOverlay(markersLayer, "<i>" + allowedPoints.size() + "</i> registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)");
     }
 
     function addPointLayerNaturaLista(){
@@ -123,7 +110,11 @@ $(document).ready(function(){
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                // Para cuando es una observacion casual o de investigacion
+                if (feature.properties.d.quality_grade == 'research')
+                    return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                else
+                    return L.circleMarker(latlng, geojsonMarkerNaturaListaCasualOptions);
                 //para cuando tenga tiempo, poner el ícono como DEBE de ser!!!
                 //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
@@ -136,7 +127,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
+        layer_control.addOverlay(markersLayer, "<i>" + allowedPoints.size() + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
 /*
