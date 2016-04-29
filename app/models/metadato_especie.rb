@@ -5,6 +5,9 @@ class MetadatoEspecie < ActiveRecord::Base
   belongs_to :metadato
 
   def fotos_bi(usuario_id)
+    # Por algun caso extraño por si se borro a mano la foto
+    return unless metadato
+
     return if ConabioPhoto.find_by_native_photo_id(metadato.id.to_s)
     taxon = especie
 
