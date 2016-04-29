@@ -49,10 +49,16 @@
 
                 if (I18n.locale == 'es-cientifico')
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
-                else
+                else {
                     var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : firstToUpperCase(data.nombre_comun) + ' (<b>' + term + '</b>)';
+                    /*if (data.foto.length == 0) var foto_url = '/assets/app/vacio.png';
+                    else var foto_url = data.foto;
+
+                    var foto = "<img class='img-responsive-thumbnail' width='50px' height='50px' src='" + foto_url + "'/>";*/
+                }
+
+                //return foto + " " + nombres;
                 return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
-                //return data.icono + nombres;
             };
             var select = function(term, data, type)
             {
