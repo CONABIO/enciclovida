@@ -1,3 +1,5 @@
+#!/bin/env ruby
+# encoding: utf-8
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
@@ -374,7 +376,8 @@ class EspeciesController < ApplicationController
   def naturalista
     if p = @especie.proveedor
       if p.naturalista_obs.present?
-        naturalista_obs = eval(p.naturalista_obs.decodifica64)
+
+        naturalista_obs = eval(p.naturalista_obs.force_encoding("UTF-8").decodifica64)
         render json: [] unless naturalista_obs.count > 0
 
         render json: naturalista_obs.to_json
