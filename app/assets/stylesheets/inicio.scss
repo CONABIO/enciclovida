@@ -161,6 +161,29 @@ div.promo-evida {
     padding-top:10px;
   }
 }
+#participa {
+	background-color:#464e54;
+	}
+#participa h2{
+	color:#FFCC00;
+	}
+#participa a {
+	color:#FFCC00;
+	}		
+@media(min-width:768px) {
+	 #participa h2 {
+		 text-align:left;
+		 }
+	}	
+#participa .steps {
+	text-align:center;
+	padding:0;
+	color:#fff;
+	}	
+#participa .steps p {
+	font-weight:300;
+	padding:20px 30px;
+	}
 
 aside.partners {
   background-color:#fff;
