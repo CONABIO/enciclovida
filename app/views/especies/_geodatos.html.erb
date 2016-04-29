@@ -1,0 +1,30 @@
+<% content_for(:extrajs) do %>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js" data-turbolinks-track="true"></script>
+<% end %>
+
+<% content_for(:extracss) do %>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
+
+    <%= stylesheet_link_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
+<% end %>
+
+<%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
+
+
+<div id="map"></div>
+
+<script>
+    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    $(document).ready(function() {
+        map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
+        $(window).resize(function () {
+            $('#map').css('height', $('#contenedor_mapa').height() - 30);
+            map.invalidateSize(true);
+        });
+        $('#geodata_e_imagen_li > a').click(function () {
+            $('#map').css('height', $('#contenedor_mapa').height() - 30);
+            map.invalidateSize(true).fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
+        });
+    });
+</script>

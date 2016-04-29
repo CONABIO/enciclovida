@@ -300,6 +300,7 @@ es-cientifico:
   quality_grade:
     casual: casual
     research: investigación
+    needs_id: casual
   sinonimo: sinónimo
   solo_taxones: solo taxones
   support:

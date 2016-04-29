@@ -684,7 +684,7 @@
         _defaultIconCreateFunction: function (cluster) {
             var childCount = cluster.getChildCount();
 
-            var c = ' marker-cluster-';
+            var c = ' marker-cluster-' + this.which_layer + '-';
             if (childCount < 10) {
                 c += 'small';
             } else if (childCount < 100) {

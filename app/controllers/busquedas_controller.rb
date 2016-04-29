@@ -161,7 +161,7 @@ class BusquedasController < ApplicationController
 
           if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-            render :partial => 'especies/_resultados'
+            render :partial => 'busquedas/_resultados'
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
