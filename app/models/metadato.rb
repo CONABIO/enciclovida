@@ -21,6 +21,9 @@ class Metadato < ActiveRecord::Base
       next if MetadatoEspecie.where(:especie_id => taxon, :metadato_id => self).first
       me = MetadatoEspecie.new(:especie_id => taxon.id, :metadato_id => id)
       me.save
+
+      usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first.id
+      me.fotos_bi(usuario.id)
     end
   end
 end

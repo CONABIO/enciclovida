@@ -230,21 +230,36 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   def exporta_redis
-    return unless ad = adicional
+    datos = {}
+    datos['data'] = {}
 
-    data = ''
-    data << "{\"id\":#{id},"
-    data << "\"term\":\"#{nombre_cientifico}\","
-    data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
+    datos['id'] = id
+    datos['term'] = nombre_cientifico.limpia
 
-    if ic = ad.icono
-      data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    if ad = adicional
+      if ad.foto_principal.present?
+        datos['data']['foto'] = ad.foto_principal.limpia
+      else
+        datos['data']['foto'] = ''
+      end
+
+      if ad.nombre_comun_principal.present?
+        datos['data']['nombre_comun'] = ad.nombre_comun_principal.limpia
+      else
+        datos['data']['nombre_comun'] = ''
+      end
+
     else
-      data << "\"nombre_icono\":\"\", \"icono\":\"\", \"color\":\"\", "
+      datos['data']['nombre_comun'] = ''
+      datos['data']['foto'] = ''
     end
 
-    data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
-    data << "}\n"
+    datos['data']['id'] = id
+    datos['data']['estatus'] = estatus == 2 ? 'válido' : 'sinónimo'
+    datos['data']['autoridad'] = nombre_autoridad.limpia
+
+    # Para mandar el json como string al archivo
+    datos.to_json.to_s
   end
 
   def cat_tax_asociadas
