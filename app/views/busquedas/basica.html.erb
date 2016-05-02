@@ -16,10 +16,18 @@
             {
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
 
-                var nombres = I18n.locale == 'es-cientifico' ? '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>' :
-                '<b>' + firstToUpperCase(term) + '</b> (' + data.nombre_cientifico + ')';
+                if (I18n.locale == 'es-cientifico')
+                    var nombres = '<b>' + term + '</b><br>' + data.nombre_cientifico + ' <i>' + data.autoridad + '</i>';
+                else {
+                    var nombres = '<b>' + firstToUpperCase(term) + '</b> (' + data.nombre_cientifico + ')';
 
-                return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
+                    if (data.foto.length == 0) var foto_url = '/assets/app/vacio.png';
+                    else var foto_url = data.foto;
+
+                    var foto = "<img class='img-responsive-thumbnail' width='50px' height='50px' src='" + foto_url + "'/>";
+                }
+
+                return foto + " " + nombres;
             };
             var select = function(term, data, type)
             {
@@ -51,14 +59,14 @@
                     var nombres = '<b>' + term + '</b> <i>' + data.autoridad + '</i>';
                 else {
                     var nombres = data.nombre_comun.length == 0 ? '<b>' + term + '</b>' : firstToUpperCase(data.nombre_comun) + ' (<b>' + term + '</b>)';
-                    /*if (data.foto.length == 0) var foto_url = '/assets/app/vacio.png';
+
+                    if (data.foto.length == 0) var foto_url = '/assets/app/vacio.png';
                     else var foto_url = data.foto;
 
-                    var foto = "<img class='img-responsive-thumbnail' width='50px' height='50px' src='" + foto_url + "'/>";*/
+                    var foto = "<img class='img-responsive-thumbnail' width='50px' height='50px' src='" + foto_url + "'/>";
                 }
 
-                //return foto + " " + nombres;
-                return "<i title='"+data.nombre_icono+"' style='color:" + data.color + ";font-size:35px;' class='" + data.icono + "'></i>" + nombres;
+                return foto + " " + nombres;
             };
             var select = function(term, data, type)
             {

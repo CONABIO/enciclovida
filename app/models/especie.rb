@@ -255,7 +255,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     datos['data']['id'] = id
-    datos['data']['estatus'] = estatus == 2 ? 'válido' : 'sinónimo'
+    datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
     datos['data']['autoridad'] = nombre_autoridad.limpia
 
     # Para mandar el json como string al archivo
