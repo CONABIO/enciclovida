@@ -63,7 +63,6 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.taxon_ico
       end
 
     else
-      datos['data']['nombre_comun'] = ''
       datos['data']['foto'] = ''
     end
 
