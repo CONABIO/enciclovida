@@ -110,7 +110,7 @@ module EspeciesHelper
   end
 
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
-    enlaces = "<table id=\"enlaces_taxonomicos\"><tr><td>"
+    enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
     taxa.ancestor_ids.push(taxa.id).each do |ancestro|
       if taxa.id == ancestro
@@ -453,7 +453,5 @@ module EspeciesHelper
     # el id de NombreComun
     n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
     n.html_safe
-
-    # Solo te pega esta línea
   end
 end
