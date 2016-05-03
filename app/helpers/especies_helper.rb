@@ -174,24 +174,6 @@ module EspeciesHelper
     nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
-  def dameDistribucion(taxon)
-    dist = []
-
-    taxon.especies_regiones.distinct.each do |reg|
-      next unless distribucion = reg.tipo_distribucion
-      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      icono = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono", :default => '')
-      nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
-      dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
-    end
-
-    #if taxon.invasora.present?
-    #  dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
-    #end
-
-    dist.any? ? dist.uniq.join(' - ') : ''
-  end
-
   def dameRegionesNombresBibliografia(especie)
     distribuciones = ''
     nombresComunes=  ''
@@ -372,18 +354,9 @@ module EspeciesHelper
   def dameCaracteristicaDistribucionAmbienteJS(taxon)
     response = []
     response << taxon.nom_cites_iucn_ambiente_prioritaria
+    response << taxon.tipo_distribucion
 
-    taxon.especies_regiones.distinct.each do |reg|
-      next unless distribucion = reg.tipo_distribucion
-      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      response << distribucion.descripcion.parameterize
-    end
-
-    # if taxon.invasora.present?
-    #   response[:distribucion] << 'idinvasora'
-    # end
-
-    response.flatten.uniq
+    response.flatten
   end
 
   def ponCaracteristicaDistribucionAmbienteJS

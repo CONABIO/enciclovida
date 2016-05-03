@@ -46,7 +46,6 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.taxon_ico
   end
 
   def exporta_redis(taxon)
-
     datos = {}
     datos['data'] = {}
 
@@ -71,8 +70,21 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.taxon_ico
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[taxon.estatus]
     datos['data']['autoridad'] = taxon.nombre_autoridad.limpia
 
+    # Caracteristicas de riesgo y conservacion, ambiente y distribucion
+    cons_amb_dist = []
+    cons_amb_dist << taxon.nom_cites_iucn_ambiente_prioritaria
+    cons_amb_dist << taxon.tipo_distribucion
+    datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
+
+    # Para saber cuantas fotos tiene
+    datos['data']['fotos'] = taxon.photos.count
+
+    # Para saber si tiene algun mapa
+    if p = taxon.proveedor
+      datos['data']['geodatos'] = p.geodatos[:cuales]
+    end
+
     # Para mandar el json como string al archivo
     datos.to_json.to_s
-
   end
 end
