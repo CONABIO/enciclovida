@@ -27,6 +27,7 @@ end
 def batches
   puts 'Procesando los nombres comunes...' if OPTS[:debug]
   NombreComun.find_each do |nombre_comun|
+  #NombreComun.limit(100).each do |nombre_comun|
     puts "#{nombre_comun.id}-#{nombre_comun.nombre_comun}" if OPTS[:debug]
 
     nombre_comun.especies.distinct.each do |taxon|

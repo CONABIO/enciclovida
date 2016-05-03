@@ -27,6 +27,7 @@ def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
   Adicional.where('nombre_comun_principal IS NOT NULL').find_each do |adicional|
+  #Adicional.where('nombre_comun_principal IS NOT NULL').limit(100).each do |adicional|
     next unless taxon = adicional.especie
     puts "#{taxon.id}-#{taxon.nombre_cientifico}-#{adicional.id}-#{adicional.nombre_comun_principal}" if OPTS[:debug]
 

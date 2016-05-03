@@ -269,7 +269,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data']['id'] = id
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
     datos['data']['autoridad'] = nombre_autoridad.limpia
-=begin
+
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
     cons_amb_dist << nom_cites_iucn_ambiente_prioritaria
@@ -283,7 +283,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     if p = proveedor
       datos['data']['geodatos'] = p.geodatos[:cuales]
     end
-=end
+
     # Para mandar el json como string al archivo
     datos.to_json.to_s
   end

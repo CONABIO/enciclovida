@@ -27,8 +27,8 @@ end
 def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
-  #Especie.find_each do |taxon|
-  Especie.limit(100).each do |taxon|
+  Especie.find_each do |taxon|
+  #Especie.limit(100).each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     data = taxon.exporta_redis
 
