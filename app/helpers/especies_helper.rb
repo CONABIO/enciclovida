@@ -453,5 +453,7 @@ module EspeciesHelper
     # el id de NombreComun
     n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
     n.html_safe
+
+    # Solo te pega esta línea
   end
 end
