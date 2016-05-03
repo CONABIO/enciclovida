@@ -27,6 +27,7 @@ def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
   Adicional.where('nombre_comun_principal IS NOT NULL').find_each do |adicional|
+  #Adicional.where('nombre_comun_principal IS NOT NULL').limit(100).each do |adicional|
     next unless taxon = adicional.especie
     puts "#{taxon.id}-#{taxon.nombre_cientifico}-#{adicional.id}-#{adicional.nombre_comun_principal}" if OPTS[:debug]
 
@@ -35,8 +36,9 @@ def batches
     # Veo cual nom_com_prin le corresponde segun catalogos
     adicional.nombre_comun_principal_catalogos
 
-    # Si coincide quiere decir que ese nombre ya esta en redis
-    next if adicional.nombre_comun_principal == nom_com_prin_original
+    # Si coincide quiere decir que ese nombre ya esta en redis, lo ponemos en minusculas y sin acentos para que no esten duplicados los nombres
+
+    next if I18n.transliterate(adicional.nombre_comun_principal.present? ? adicional.nombre_comun_principal : '') == I18n.transliterate(nom_com_prin_original)
     # Asigna de nuevo el valor original
     adicional.nombre_comun_principal = nom_com_prin_original
 

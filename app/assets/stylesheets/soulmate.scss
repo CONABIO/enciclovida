@@ -130,7 +130,6 @@ html {
     cursor: pointer;
     font-weight: 500;
     font-size: 13px;
-    //padding: 5px 0 6px 12px;   //para reducir el espacio de las celdas
     text-decoration: none;
 
     &.focus{
@@ -141,8 +140,7 @@ html {
       position: relative;
       text-shadow: 0 1px 1px #32629b;
       z-index: 1;
-      @include box-shadow(0, 1px, 2px , rgba(0,0,0,0.3));
-      @include vertical-gradient(#545454, #444444);
+      background-color: #ea9028;
     }
   }
   
@@ -154,13 +152,25 @@ html {
     letter-spacing: 0.5px;
     margin-right: $suggestionWidth;
     padding: 10px 1px 0 5px;
-    text-align: right;
+    text-align: left;
     text-transform: capitalize;
     vertical-align: top;
     @include border-radius(5px);
     @include clearfix();
   }
   
+}
+
+#soulmate_1 h5, #soulmate_2 h5, #soulmate_3 h5, #soulmate_4 h5 {
+  margin-bottom: 0px;
+}
+#soulmate_1 li, #soulmate_2 li, #soulmate_3 li, #soulmate_4 li {
+  padding-bottom: 4em;
+}
+
+#soulmate_1 span, #soulmate_2 span, #soulmate_3 span, #soulmate_4 span, #soulmate_1 img, #soulmate_2 img, #soulmate_3 img, #soulmate_4 img {
+  margin-right: 10px;
+  font-size: 6em;
 }
 
 #footer {

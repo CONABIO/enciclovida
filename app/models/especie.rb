@@ -142,6 +142,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     response.uniq
   end
 
+  def tipo_distribucion
+    response = []
+
+    tipos_distribuciones.uniq.each do |distribucion|
+      next if distribucion.descripcion.parameterize == 'original'  # Quitamos el tipo de dist. original
+
+      response << distribucion.descripcion.parameterize
+    end
+
+    response.uniq
+  end
+
   # Override assignment method provided by has_many to ensure that all
   # callbacks on photos and taxon_photos get called, including after_destroy
   def photos=(new_photos)
@@ -255,8 +267,22 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     datos['data']['id'] = id
-    datos['data']['estatus'] = estatus == 2 ? 'válido' : 'sinónimo'
+    datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
     datos['data']['autoridad'] = nombre_autoridad.limpia
+
+    # Caracteristicas de riesgo y conservacion, ambiente y distribucion
+    cons_amb_dist = []
+    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria
+    cons_amb_dist << tipo_distribucion
+    datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
+
+    # Para saber cuantas fotos tiene
+    datos['data'][:fotos] = photos.count
+
+    # Para saber si tiene algun mapa
+    if p = proveedor
+      datos['data']['geodatos'] = p.geodatos[:cuales]
+    end
 
     # Para mandar el json como string al archivo
     datos.to_json.to_s
