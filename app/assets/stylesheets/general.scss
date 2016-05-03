@@ -140,17 +140,19 @@ footer.legal p {
   color: #f7f7f7;
 }
 .enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_blanco-ev-icon:before{
-  width: 2em !important;
-  font-size: 6em;
   margin: 0;
+  font-size: 6em;
+  width: 2em !important;
 }
-.enciclo-ev-icon:before, .conabio_blanco-ev-icon:before{
+.ev1-ev-icon:before, .ev2-ev-icon:before {font-size: 5.5em; float: left;}
+.enciclo-ev-icon:before, .conabio_blanco-ev-icon:before, .ev1-ev-icon:before{
   color: #fdfdfd;
 }
-.vida-ev-icon:before{
+.vida-ev-icon:before, .ev2-ev-icon:before{
   color: #889b45;
-  margin-left: -2em;
 }
+.vida-ev-icon:before{margin-left: -2em;}
+.ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
   display: block;
