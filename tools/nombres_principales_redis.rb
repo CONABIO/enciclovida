@@ -31,16 +31,11 @@ def batches
     next unless taxon = adicional.especie
     puts "#{taxon.id}-#{taxon.nombre_cientifico}-#{adicional.id}-#{adicional.nombre_comun_principal}" if OPTS[:debug]
 
-    # Guardo en memoria el nombre comun principal original
-    nom_com_prin_original = adicional.nombre_comun_principal
-    # Veo cual nom_com_prin le corresponde segun catalogos
-    adicional.nombre_comun_principal_catalogos
-
-    # Si coincide quiere decir que ese nombre ya esta en redis, lo ponemos en minusculas y sin acentos para que no esten duplicados los nombres
-
-    next if I18n.transliterate(adicional.nombre_comun_principal.present? ? adicional.nombre_comun_principal.downcase : '') == I18n.transliterate(nom_com_prin_original.downcase)
-    # Asigna de nuevo el valor original
-    adicional.nombre_comun_principal = nom_com_prin_original
+    # Los nombres comunes de catalogos, los comparamos para no repetir
+    nombres_comunes = taxon.nombres_comunes.map{|nc| I18n.transliterate(nc.nombre_comun.downcase)}
+    if nombres_comunes.any?
+      next if nombres_comunes.include?(I18n.transliterate(adicional.nombre_comun_principal.downcase))
+    end
 
     json_cien = taxon.exporta_redis
     json_com = adicional.exporta_nom_comun_a_redis
