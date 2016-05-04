@@ -3,6 +3,9 @@ $(document).ready(function(){
     var geojsonFeature = [];
     var allowedPoints = d3.map([]);
 
+    var geoportal_count = 0;
+    var naturalista_count = 0;
+
     var geojsonMarkerGeoportalOptions = {
         radius: 5,
         fillColor: "#ff0000",
@@ -99,7 +102,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "<i>" + allowedPoints.size() + "</i> registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)");
+        layer_control.addOverlay(markersLayer, "<i>" + geoportal_count + "</i> registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)");
     }
 
     function addPointLayerNaturaLista(){
@@ -127,7 +130,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "<i>" + allowedPoints.size() + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
+        layer_control.addOverlay(markersLayer, "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
 /*
@@ -199,6 +202,7 @@ $(document).ready(function(){
             //url: "http://colibri.conabio.gob.mx:9000/snib?qtype=getSpecies&rd=plantae&taxlevel=genero&taxvalue=zea",
             dataType : "json",
             success : function (d){
+                geoportal_count = d.length;
                 allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)
@@ -233,6 +237,7 @@ $(document).ready(function(){
                 xhr.setRequestHeader("Accept","text/json");
             },
             success : function (d){
+                naturalista_count = d.length;
                 allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++){
