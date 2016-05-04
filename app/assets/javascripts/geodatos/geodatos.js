@@ -207,7 +207,7 @@ $(document).ready(function(){
 
                 for(i=0;i<d.length;i++)
                 {
-                    item_id = JSON.parse(d[i].json_geom).coordinates.toString();
+                    item_id = 'geoportal-' + i.toString();
 
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
@@ -240,9 +240,9 @@ $(document).ready(function(){
                 naturalista_count = d.length;
                 allowedPoints = d3.map([]);
 
-                for(i=0;i<d.length;i++){
-                    //var item_id_json = JSON.parse(d[i]);
-                    item_id = d[i].longitude + "," + d[i].latitude;
+                for(i=0;i<d.length;i++)
+                {
+                    item_id = 'naturalista-' + i.toString();
 
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
