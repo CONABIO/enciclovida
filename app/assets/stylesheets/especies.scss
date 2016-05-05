@@ -282,18 +282,69 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #b3b3b3;}
 .iucn{color: #de2302;}
 .no-evaluado-ne-ev-icon, .datos-insuficientes-dd-ev-icon{color: #dc7e72;}
-.cites{color: #095417;}
+.cites, .apendice-i-ev-icon,.apendice-ii-ev-icon,.apendice-iii-ev-icon{color: #095417;}
 .tipoDist{color: #f7b234;}
-.tipoDist-2{color: #595926;}
-.prioritarias{color: #ff931e;}
-.nom-2, .prioritarias-ev-icon, .panel-disabled .tipoDist-2{color: #555555;}
+.prioritarias-ev-icon, .panel-disabled {color: #555555;}
 .marino-ev-icon{color: #255E54;}
 .dulceacuicola-ev-icon{color: #58867B;}
 .salobre-ev-icon{color: #81B49B;}
 .terrestre-ev-icon{color: #777442;}
-.nom-2, .tipoDist-2, .prioritarias-ev-icon{margin-left: -1.4em;}
+.nom-2, .tipoDist-2, {margin-left: -1.4em;}
 
-.bhl_mx_2-ev-icon:before{
-  font-size: 26px;
-  margin-top: -7px;
+[class$="-ev-icon"]:after, [class*="-ev-icon "]:after{
+  font-family: "enciclovida_font_icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
 }
+
+.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e81e'; }
+.amenazada-a-ev-icon:after { content: '\e820'; }
+.en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824'; }
+.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #555555; margin-left: -1.2em;}
+
+.endemica-ev-icon:after { content: '\e832'; }
+.nativa-ev-icon:after { content: '\e834'; }
+.introducida-ev-icon:after { content: '\e836'; }
+.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .introducida-ev-icon:after {color: #595926; margin-left: -1.2em;}
+
+.prioritarias{color: #ff931e;}
+.prioritarias:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+
+.ev1-ev-icon:before { content: '\e84f'; } /* '' */
+.vida-ev-icon:before { content: '\e850'; } /* '' */
+/*.naturalista-ev-icon:after { margin-left: -1.4em; content: '\e851'; } /* '' */
+.naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
+.naturalista-4-ev-icon:before { content: '\e854'; }
+.enciclo-ev-icon:before { content: '\e860'; } /* '' */
+
+

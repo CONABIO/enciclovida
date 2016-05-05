@@ -144,11 +144,12 @@ footer.legal p {
   font-size: 6em;
   width: 2em !important;
 }
-.ev1-ev-icon:before, .ev2-ev-icon:before {font-size: 5.5em; float: left;}
+.ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; } 
+.ev1-ev-icon:before, .ev1-ev-icon:after{font-size: 5.5em;}
 .enciclo-ev-icon:before, .conabio_blanco-ev-icon:before, .ev1-ev-icon:before{
   color: #fdfdfd;
 }
-.vida-ev-icon:before, .ev2-ev-icon:before{
+.vida-ev-icon:before, .ev1-ev-icon:after{
   color: #889b45;
 }
 .vida-ev-icon:before{margin-left: -2em;}
