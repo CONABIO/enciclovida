@@ -15,7 +15,7 @@
             var render = function(term, data, type, index, id, foto)
             {
                 event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
-
+                console.log(data);
                 if (I18n.locale == 'es-cientifico')
                 {
                     var nombres = '<h5> ' + term + '</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i>';
@@ -25,13 +25,17 @@
                     var nombres = '<h5>'+firstToUpperCase(term)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
                     if (data.foto.length == 0)
-                        var foto = '<span class="glyphicon glyphicon-leaf pull-left"></span>';
+                        var foto = '<i class="ev1-ev-icon pull-left"></i>';
                     else {
                         var foto_url = data.foto;
-                        var foto = "<img class='img-responsive pull-left' src='" + foto_url + "'/>";
+                        var foto = "<img class='img-thumbnail img-responsive pull-left' src='" + foto_url + "'/>";
                     }
-
-                    return foto + " " + nombres;
+                    iconos = ""
+                    ev = '-ev-icon'
+                    $.each(data.cons_amb_dist, function(i, val){
+                        iconos = iconos + "<i class='" + val + ev +"'></i>"
+                    });
+                    return foto + " " + nombres + "<h5>" + iconos +"</h5>";
                 }
             };
             var select = function(term, data, type)
