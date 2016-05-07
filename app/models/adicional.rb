@@ -69,7 +69,9 @@ class Adicional < ActiveRecord::Base
 
     # Se unio estos identificadores para hacerlos unicos en la base de redis
     datos['id'] = "#{id}#{especie_id}".to_i
-    datos['term'] = nombre_comun_principal.limpia
+
+    # Para poder buscar con o sin acentos en redis
+    datos['term'] = I18n.transliterate(nombre_comun_principal.limpia)
 
     if foto_principal.present?
       datos['data']['foto'] = foto_principal.limpia
@@ -79,6 +81,7 @@ class Adicional < ActiveRecord::Base
 
     datos['data']['id'] = especie_id
     datos['data']['nombre_cientifico'] = taxon.nombre_cientifico
+    datos['data']['nombre_comun'] = nombre_comun_principal.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[taxon.estatus]
     datos['data']['autoridad'] = taxon.nombre_autoridad.limpia
 

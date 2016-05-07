@@ -246,7 +246,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data'] = {}
 
     datos['id'] = id
-    datos['term'] = nombre_cientifico.limpia
+
+    # Para poder buscar con o sin acentos en redis
+    datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
 
     if ad = adicional
       if ad.foto_principal.present?
@@ -267,6 +269,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     datos['data']['id'] = id
+    datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
     datos['data']['autoridad'] = nombre_autoridad.limpia
 

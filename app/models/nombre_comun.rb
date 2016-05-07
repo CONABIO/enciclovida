@@ -51,7 +51,9 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.taxon_ico
 
     # Se unio estos identificadores para hacerlos unicos en la base de redis
     datos['id'] = "#{id}#{taxon.id}000".to_i
-    datos['term'] = nombre_comun.limpia
+
+    # Para poder buscar con o sin acentos en redis
+    datos['term'] = I18n.transliterate(nombre_comun.limpia)
 
 
     if ad = taxon.adicional
@@ -67,6 +69,7 @@ adicionales.foto_principal, adicionales.nombre_comun_principal, iconos.taxon_ico
 
     datos['data']['id'] = taxon.id
     datos['data']['nombre_cientifico'] = taxon.nombre_cientifico
+    datos['data']['nombre_comun'] = nombre_comun.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[taxon.estatus]
     datos['data']['autoridad'] = taxon.nombre_autoridad.limpia
 
