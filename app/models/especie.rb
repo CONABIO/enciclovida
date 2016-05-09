@@ -149,7 +149,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       next if distribucion.descripcion.parameterize == 'original'  # Quitamos el tipo de dist. original
 
       if distribucion.descripcion.parameterize.downcase == 'no-endemica'
-        response << t("tipo_distribucion.#{distribucion.descripcion.parameterize.downcase}.nombre").downcase
+        response << I18n.t("tipo_distribucion.#{distribucion.descripcion.parameterize.downcase}.nombre").downcase
       end
 
       response << distribucion.descripcion.parameterize
