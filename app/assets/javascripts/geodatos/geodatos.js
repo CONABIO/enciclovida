@@ -133,12 +133,18 @@ $(document).ready(function(){
         layer_control.addOverlay(markersLayer, "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
     }
 
-/*
-    var kmlLayer = new L.KML("/assets/cnb-canlupusgw.kml", {async: true});
-    map.addLayer(kmlLayer);
+    function wms_distribucion_potencial() {
+        var distribucion_potencial = L.tileLayer.wms(GEO.geoserver_url, {
+            layers: GEO.geoserver_layer,
+            format: 'image/png',
+            transparent: true,
+            opacity:.5,
+            maxZoom: 20
+        });
 
-    layer_control.addOverlay(kmlLayer, "Distribución potencial (CONABIO)");
-*/
+        map.addLayer(distribucion_potencial);
+        layer_control.addOverlay(distribucion_potencial, "Distribución potencial (CONABIO)");
+    }
 
     function content_geoportal(feature){
         var contenido = "";
@@ -242,7 +248,7 @@ $(document).ready(function(){
 
                 for(i=0;i<d.length;i++)
                 {
-                    item_id = 'naturalista-' + i.toString();
+                    item_id = '-' + i.toString();
 
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
@@ -263,6 +269,6 @@ $(document).ready(function(){
 
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
     if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
-
+    if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
 });
 

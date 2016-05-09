@@ -278,8 +278,9 @@ class Proveedor < ActiveRecord::Base
       info = JSON.parse(geoserver_info)
 
       geodatos[:cuales] << 'geoserver'
-      geodatos[:geoserver_url] = "#{CONFIG.geoserver_url}&format=kml&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      geodatos[:geoserver_url_descarga] = "#{CONFIG.geoserver_url}&format=kmz&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
+      geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
+      geodatos[:geoserver_descarga_url] = "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
+      geodatos[:geoserver_layer] = info['layers']
     end
 
     if snib_id.present?
