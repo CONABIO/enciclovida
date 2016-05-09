@@ -776,48 +776,6 @@
     },
     {
       "search": [
-        "prioritarias_alto"
-      ],
-      "svg": {
-        "width": 1000,
-        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62Z"
-      },
-      "selected": true,
-      "src": "custom_icons",
-      "code": 59448,
-      "css": "prioritarias-alto",
-      "uid": "b171fe9eaf405d538e17fca7b6399266"
-    },
-    {
-      "search": [
-        "prioritarias_medio"
-      ],
-      "svg": {
-        "width": 1000,
-        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62ZM500 155C690 155 845 310 845 500H155C155 310 310 155 500 155Z"
-      },
-      "selected": true,
-      "src": "custom_icons",
-      "code": 59449,
-      "css": "prioritarias-medio",
-      "uid": "409bb6720895759c68351a165b0f346f"
-    },
-    {
-      "search": [
-        "prioritarias_bajo"
-      ],
-      "svg": {
-        "width": 1000,
-        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62ZM500 155C690 155 845 310 845 500 845 587 813 670 755 735H245C115 592 125 375 265 245 330 187 413 155 500 155Z"
-      },
-      "selected": true,
-      "src": "custom_icons",
-      "code": 59450,
-      "css": "prioritarias-bajo",
-      "uid": "c7f6dcf1c56049834bff74b7c9c66ee2"
-    },
-    {
-      "search": [
         "ambiente_dulceacuicola"
       ],
       "svg": {
@@ -1227,6 +1185,60 @@
       "code": 59489,
       "css": "ev2",
       "uid": "c418af73a665c00f051bc6cdf9cc581c"
+    },
+    {
+      "search": [
+        "alto"
+      ],
+      "svg": {
+        "width": 1000,
+        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62Z"
+      },
+      "selected": true,
+      "src": "custom_icons",
+      "code": 59448,
+      "css": "alto",
+      "uid": "b171fe9eaf405d538e17fca7b6399266"
+    },
+    {
+      "search": [
+        "medio"
+      ],
+      "svg": {
+        "width": 1000,
+        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62ZM500 155C690 155 845 310 845 500H155C155 310 310 155 500 155Z"
+      },
+      "selected": true,
+      "src": "custom_icons",
+      "code": 59449,
+      "css": "medio",
+      "uid": "409bb6720895759c68351a165b0f346f"
+    },
+    {
+      "search": [
+        "bajo"
+      ],
+      "svg": {
+        "width": 1000,
+        "path": "M500 62C258 62 63 257 63 500S258 938 500 938 938 742 938 500C938 257 743 62 500 62ZM500 155C690 155 845 310 845 500 845 587 813 670 755 735H245C115 592 125 375 265 245 330 187 413 155 500 155Z"
+      },
+      "selected": true,
+      "src": "custom_icons",
+      "code": 59450,
+      "css": "bajo",
+      "uid": "c7f6dcf1c56049834bff74b7c9c66ee2"
+    },
+    {
+      "src": "entypo",
+      "code": 59490,
+      "css": "map",
+      "uid": "64f5a50cf7ac972a56a9a511acb5d28e"
+    },
+    {
+      "src": "linecons",
+      "code": 59492,
+      "css": "globe-2",
+      "uid": "1e89103762be72b0720eda0468e62b90"
     }
   ],
   "ascent": 850,

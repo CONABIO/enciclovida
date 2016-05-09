@@ -55,9 +55,9 @@
 .introducida-ev-icon:before { content: '\e835'; } /* '' */
 .introducida-2-ev-icon:before { content: '\e836'; } /* '' */
 .prioritarias-ev-icon:before { content: '\e837'; } /* '' */
-.prioritarias-alto-ev-icon:before { content: '\e838'; } /* '' */
-.prioritarias-medio-ev-icon:before { content: '\e839'; } /* '' */
-.prioritarias-bajo-ev-icon:before { content: '\e83a'; } /* '' */
+.alto-ev-icon:before { content: '\e838'; } /* '' */
+.medio-ev-icon:before { content: '\e839'; } /* '' */
+.bajo-ev-icon:before { content: '\e83a'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83c'; } /* '' */
 .flow-tree-ev-icon:before { content: '\e83d'; } /* '' */
@@ -97,3 +97,5 @@
 .globe-ev-icon:before { content: '\e85f'; } /* '' */
 .enciclo-ev-icon:before { content: '\e860'; } /* '' */
 .ev2-ev-icon:before { content: '\e861'; } /* '' */
+.map-ev-icon:before { content: '\e862'; } /* '' */
+.globe-2-ev-icon:before { content: '\e864'; } /* '' */
