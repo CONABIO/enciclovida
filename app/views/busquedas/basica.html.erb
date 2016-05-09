@@ -18,11 +18,11 @@
 
                 if (I18n.locale == 'es-cientifico')
                 {
-                    var nombres = '<h5> ' + term + '</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i>';
+                    var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i>';
                     return nombres;
 
                 } else {
-                    var nombres = '<h5>'+firstToUpperCase(term)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+                    var nombres = '<h5>'+firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
                     if (data.foto.length == 0)
                         var foto = '<span class="glyphicon glyphicon-leaf pull-left"></span>';
@@ -62,13 +62,14 @@
 
                 if (I18n.locale == 'es-cientifico')
                 {
-                    var nombres = '<h5><a href="" class="not-active">' + term + '</a> <i>' + data.autoridad + '</i></h5>';
+                    var nombres = '<h5><a href="" class="not-active">' + data.nombre_cientifico + '</a> <i>' + data.autoridad + '</i></h5>';
                     return nombres;
 
                 } else {
 
                     var nombres = data.nombre_comun.length == 0 ?
-                        '<a href="" class="not-active">' + term +'</a>' : '<h5>' + firstToUpperCase(data.nombre_comun) + '</h5><a href="" class="not-active">' + term +'</a>';
+                        '<a href="" class="not-active">' + data.nombre_cientifico +'</a>' :
+                    '<h5>' + firstToUpperCase(data.nombre_comun) + '</h5><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
                     if (data.foto.length == 0)
                         var foto = '<span class="glyphicon glyphicon-leaf pull-left"></span>';
