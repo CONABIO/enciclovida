@@ -371,8 +371,7 @@ module EspeciesHelper
         id = "id#{edo.parameterize}"
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
         name = "edo_cons_#{edo.parameterize}"
-        icono  = "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
-        icono << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
+        icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
         response[k]  = response[k].to_a << creaSpan(nombre, id, name, icono)
       end
     end
@@ -381,8 +380,7 @@ module EspeciesHelper
       id = "id#{tipoDist.parameterize}"
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       name = "dist_#{tipoDist}"
-      icono =  "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
-      icono << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
+      icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
 
       response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, id, name, icono)
     end
@@ -397,8 +395,7 @@ module EspeciesHelper
 
     Catalogo::NIVELES_PRIORITARIAS.each do |prior|
       id = "id#{prior.parameterize}"
-      icono =  "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
-      icono << "<i class = 'prioritarias-ev-icon'></i>"
+      icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
       name = "prio_#{prior}"
       nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
       response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)
