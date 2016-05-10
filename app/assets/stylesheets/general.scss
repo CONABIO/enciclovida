@@ -215,8 +215,8 @@ ul.social-buttons li a:active {
 /*Termina NOM-059*/
 
 /* IUCN*/
-.iucn, .no-evaluado-ne-ev-icon:before,.datos-insuficientes-dd-ev-icon:before,.riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before,.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
-.no-evaluado-ne-ev-icon, .datos-insuficientes-dd-ev-icon{color: #dc7e72;}
+.iucn, .riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before,.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
+.no-evaluado-ne-ev-icon:before, .datos-insuficientes-dd-ev-icon:before{color: #dc7e72;}
 /* Termina IUCN*/
 
 /* cites */
@@ -243,24 +243,20 @@ ul.social-buttons li a:active {
 .terrestre-ev-icon{color: #777442;}
 /* Termina ambiente */
 
-.panel-disabled {color: #555555;}
-
-.ev1-ev-icon:before { content: '\e84f'; } /* '' */
-.vida-ev-icon:before { content: '\e850'; } /* '' */
-.naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
+.ev1-ev-icon:before { content: '\e84f'; }
+.vida-ev-icon:before { content: '\e850'; }
+.naturalista-3-ev-icon:before { content: '\e853'; }
 .naturalista-4-ev-icon:before { content: '\e854'; }
-.enciclo-ev-icon:before { content: '\e860'; } /* '' */
+.enciclo-ev-icon:before { content: '\e860'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
 
-
-[class$="-ev-icon"]:after, [class*="-ev-icon "]:after{
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .introducida-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
   speak: none;
-
   display: inline-block;
   text-decoration: inherit;
   width: 1em;
@@ -269,10 +265,6 @@ ul.social-buttons li a:active {
   font-variant: normal;
   text-transform: none;
   line-height: 1em;
-  /* Animation center compensation - margins should be symmetric */
-  /* remove if not needed */
-  /*margin-left: .2em;*/
-  /* Font smoothing. That was taken from TWBS */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
