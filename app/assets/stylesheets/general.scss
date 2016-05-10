@@ -215,8 +215,8 @@ ul.social-buttons li a:active {
 /*Termina NOM-059*/
 
 /* IUCN*/
-.iucn, .no-evaluado-ne-ev-icon:before,.datos-insuficientes-dd-ev-icon:before,.riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before,.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
-.no-evaluado-ne-ev-icon, .datos-insuficientes-dd-ev-icon{color: #dc7e72;}
+.iucn, .riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before,.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
+.no-evaluado-ne-ev-icon:before, .datos-insuficientes-dd-ev-icon:before{color: #dc7e72;}
 /* Termina IUCN*/
 
 /* cites */
@@ -242,8 +242,6 @@ ul.social-buttons li a:active {
 .salobre-ev-icon{color: #81B49B;}
 .terrestre-ev-icon{color: #777442;}
 /* Termina ambiente */
-
-.panel-disabled {color: #555555;}
 
 .ev1-ev-icon:before { content: '\e84f'; } /* '' */
 .vida-ev-icon:before { content: '\e850'; } /* '' */
