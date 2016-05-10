@@ -28,7 +28,7 @@
                     var iconos = ""
                     var ev = '-ev-icon'
                     $.each(data.cons_amb_dist, function(i, val){
-                        if (val == 'exotica'){return true}
+                        if (val == 'exotica' || val == 'no-endemica'){return true}
                         iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
                     });
                     if (data.geodatos.length > 0){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
@@ -71,7 +71,7 @@
                     var iconos = ""
                     var ev = '-ev-icon'
                     $.each(data.cons_amb_dist, function(i, val){
-                        if (val == 'exotica'){return true}
+                        if (val == 'exotica' || val == 'no-endemica'){return true}
                         iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
                     });
                     if (data.geodatos =! undefined){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
