@@ -349,15 +349,17 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
     foto_p = ''
 
-    if fotos = photos.where("photos.type != 'ConabioPhoto'")
+    fotos = photos.where("photos.type != 'ConabioPhoto'")
+
+    if fotos.any?
       fotos.each do |f|
         if f.square_url.present?
           foto_p = f.square_url
           break
         end
       end
-    elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
-      fotos.each do |f|
+    else
+      photos.where("photos.type = 'ConabioPhoto'").each do |f|
         if f.square_url.present?
           foto_p = f.square_url
           break
