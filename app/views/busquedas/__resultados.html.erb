@@ -1,4 +1,3 @@
-<%# columnas=0 %>
 <% @taxones.each do |taxon| %>
 
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -11,13 +10,12 @@
               <%= tituloNombreCientifico(taxon, :link => true, :con_icono => false).html_safe %>
 
           <% else %>
-              <i class="ev1-ev-icon"></i> <i class="ev2-ev-icon"></i>
+              <i class="ev1-ev-icon" style="font-size: 4.5em;"></i>
               <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true, :font_size => 85)}</span>".html_safe %>
           <% end %>
       <% else %>
           <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
       <% end %>
     </div>
-    <%# columnas+=1 %>
 <% end %>
 
