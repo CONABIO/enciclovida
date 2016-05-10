@@ -30,7 +30,7 @@ body{
 }
 #brandBar > div.row:nth-child(2) > div{
   margin-top: 10px;
-  font-size: .75em;
+  /*font-size: .75em;*/
   margin-bottom: 20px;
 }
 #brandBar > div.row:nth-child(2) > div ul.nav a{
@@ -140,17 +140,19 @@ footer.legal p {
   color: #f7f7f7;
 }
 .enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_blanco-ev-icon:before{
-  width: 2em !important;
-  font-size: 6em;
   margin: 0;
+  font-size: 4.5em;
+  width: 2em !important;
 }
+.ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
 .enciclo-ev-icon:before, .conabio_blanco-ev-icon:before{
   color: #fdfdfd;
 }
 .vida-ev-icon:before{
   color: #889b45;
-  margin-left: -2em;
 }
+.vida-ev-icon:before{margin-left: -2em;}
+.ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
   display: block;
@@ -192,4 +194,85 @@ ul.social-buttons li a:active {
   border: 1px solid #b3b3b3;
   padding: 1.5em;
   margin-top: -1px;
+}
+
+
+
+/* NOM-059*/
+.sujeta-a-proteccion-especial-pr-ev-icon {color: #f6b134;}
+.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e81e'; }
+
+.amenazada-a-ev-icon {color: #ef8934;}
+.amenazada-a-ev-icon:after { content: '\e820'; }
+
+.en-peligro-de-extincion-p-ev-icon {color: #e10019;}
+.en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
+
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #b3b3b3;}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824'; }
+
+.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #555555; margin-left: -1.2em;}
+/*Termina NOM-059*/
+
+/* IUCN*/
+.iucn, .no-evaluado-ne-ev-icon:before,.datos-insuficientes-dd-ev-icon:before,.riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before,.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
+.no-evaluado-ne-ev-icon, .datos-insuficientes-dd-ev-icon{color: #dc7e72;}
+/* Termina IUCN*/
+
+/* cites */
+.cites, .apendice-i-ev-icon,.apendice-ii-ev-icon,.apendice-iii-ev-icon{color: #095417;}
+/* Termina cites */
+
+/* tipo distribucion */
+.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .introducida-ev-icon:before{color: #f7b234;}
+.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .introducida-ev-icon:after {color: #595926; margin-left: -1.2em;}
+.endemica-ev-icon:after { content: '\e832'; }
+.nativa-ev-icon:after { content: '\e834'; }
+.introducida-ev-icon:after { content: '\e836'; }
+/* Termina tipo distribucion */
+
+/* prioritarias */
+.alto-ev-icon, .medio-ev-icon, .bajo-ev-icon{color: #ff931e;}
+.alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+/* termina prioritarias */
+
+/* ambiente */
+.marino-ev-icon{color: #255E54;}
+.dulceacuicola-ev-icon{color: #58867B;}
+.salobre-ev-icon{color: #81B49B;}
+.terrestre-ev-icon{color: #777442;}
+/* Termina ambiente */
+
+.panel-disabled {color: #555555;}
+
+.ev1-ev-icon:before { content: '\e84f'; } /* '' */
+.vida-ev-icon:before { content: '\e850'; } /* '' */
+.naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
+.naturalista-4-ev-icon:before { content: '\e854'; }
+.enciclo-ev-icon:before { content: '\e860'; } /* '' */
+
+.soulmate_icons i {font-size: 18px; margin: 0 3px;}
+
+
+
+[class$="-ev-icon"]:after, [class*="-ev-icon "]:after{
+  font-family: "enciclovida_font_icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  /*margin-left: .2em;*/
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
