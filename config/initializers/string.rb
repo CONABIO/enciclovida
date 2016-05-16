@@ -32,7 +32,8 @@ class String
   end
 
   def decodifica64
-    return self.force_encoding('UTF-8') if self[0..1] != 'W3'
+    # Retorna directo el json si es diferente a estos inicios de cadena codificados
+    return self.force_encoding('UTF-8') if self[0..1] != 'W3' && self[0..1] != 'ey'
     decoded = Base64.decode64(self)
     decoded.force_encoding('UTF-8')
   end
