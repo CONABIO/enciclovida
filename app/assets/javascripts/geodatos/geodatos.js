@@ -205,7 +205,6 @@ $(document).ready(function(){
     {
         $.ajax({
             url: GEO.geoportal_url,
-            //url: "http://colibri.conabio.gob.mx:9000/snib?qtype=getSpecies&rd=plantae&taxlevel=genero&taxvalue=zea",
             dataType : "json",
             success : function (d){
                 geoportal_count = d.length;
@@ -215,7 +214,6 @@ $(document).ready(function(){
                 {
                     item_id = 'geoportal-' + i.toString();
 
-                    // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},

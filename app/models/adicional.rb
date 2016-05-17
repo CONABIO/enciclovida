@@ -56,7 +56,6 @@ class Adicional < ActiveRecord::Base
       nombre_comun_principal_catalogos
     else
       self.nombre_comun_principal = nombre_comun_principal_original
-      #nil
     end
   end
 
