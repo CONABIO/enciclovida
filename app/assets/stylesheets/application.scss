@@ -99,3 +99,25 @@ div#map{
   pointer-events: none;
   cursor: default;
 }
+
+.imagen_resultados {
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: block;
+  height: 175px;
+  margin: 5px -5px;
+  background-position: 50% 25%;
+  border: 1px solid #e7e7e7;
+  text-align: center;
+}
+.imagen_resultados h5{
+  background-color: rgba(234, 234, 234, 0.8);
+  margin: 0;
+}
+.imagen_resultados .ev1-ev-icon {
+  font-size: 5em;
+  color: #777777;
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}

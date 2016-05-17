@@ -32,7 +32,7 @@ settings = {
 
                 $this=$("#resultados" + settings.nivel);
                 $('#loading-bar' + settings.nivel).remove();
-                $this.append("<div class='loading-bar' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
+                $this.append("<div class='loading-bar col-xs-12 col-sm-12 col-md-12 col-lg-12' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
 
 				$.get(settings.url, {
 						
