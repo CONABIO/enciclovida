@@ -1,8 +1,9 @@
-<%= form_tag aniade_taxones_seleccionados_listas_path, :method => :post do %>
-    <p class="notice">
-      <%= @coincidencias if @coincidencias.present? && @taxones.length > 0 %>
-    </p>
-
+<%# form_tag aniade_taxones_seleccionados_listas_path, :method => :post do %>
+    <%# if @coincidencias.present? && @taxones.length > 0 %>
+        <!--p class="notice"-->
+          <%# @coincidencias %>
+        <!--/p-->
+    <%# end %>
     <%# if I18n.locale.to_s == 'es-cientifico' %>
         <!--div style="width: 100%; float:left;">
           <p>
@@ -12,19 +13,15 @@
         </div-->
     <%# end %>
 
-    <div style="width: 100%; float:left;">
+    <%= render :partial => 'busquedas/_resultados' %>
 
-      <%= render :partial => 'busquedas/_resultados' %>
+    <% if @taxones.length == 0 %>
+        <p class="enlaces_acciones">
+          <em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>
+        </p>
+    <% end %>
 
-      <p class="enlaces_acciones">
-        <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-      </p>
+    <div id="datos_principales"></div>
 
-      <div id="datos_principales"></div>
-    </div>
-
-    <p>
     <div id="resultados<%= params[:solo_categoria] || '' %>"></div>
-    </p>
-
-<% end %>
+<%# end %>
