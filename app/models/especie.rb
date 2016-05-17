@@ -332,7 +332,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def crea_con_nombre_comun
     ad = Adicional.new
     ad.especie_id = id
-    ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+
+    ad.pon_nombre_comun_principal
     ad
   end
 
