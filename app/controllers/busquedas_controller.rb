@@ -346,6 +346,53 @@ class BusquedasController < ApplicationController
     end
   end
 
+  # Servicio que por medio del nombre comun extrae todos los nombres comunes asociados al taxon (servicio para alejandro molina)
+  def nombres_comunes
+    select = "NombreComun.datos_basicos(['nombres_comunes.id'])"
+    select_count = 'NombreComun.datos_count'
+
+    if params[:exact].present? && params[:exact].to_i == 1
+      condiciones = ".caso_sensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
+                where('especies.id IS NOT NULL')"
+    else
+      condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
+                where('especies.id IS NOT NULL')"
+    end
+
+    sql = select << condiciones + ".distinct.order('nombre_comun ASC')"
+    sql_count = select_count << condiciones
+
+    query = eval(sql).to_sql
+    consulta = Bases.distinct_limpio query
+    totales = eval(sql_count)[0].cuantos
+
+    @data = {}
+    @data[:termino] = params[:q]
+    @data[:numero_resultados] = totales
+    @data[:resultados] = []
+
+    if totales > 0
+      consulta << ' ORDER BY nombre_comun ASC'
+      nombres_comunes = NombreComun.find_by_sql(consulta)
+
+      # Para no repetir los taxones
+      especie_ids = []
+
+      nombres_comunes.each do |nombre_comun|
+        nombre_comun.especies.each do |especie|
+
+          next if especie_ids.include?(especie.id)
+          especie_ids << especie.id
+          nombres = especie.nombres_comunes.map(&:nombre_comun)
+          @data[:resultados] << {nombre_comun_coincidio: nombre_comun.nombre_comun, taxon: especie.nombre_cientifico, nombres_comunes: nombres}
+        end
+      end
+
+    end
+
+    render json: @data.to_json
+  end
+
   def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
