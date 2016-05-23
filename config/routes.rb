@@ -3,6 +3,8 @@ Buscador::Application.routes.draw do
   get "busquedas/basica"
   get "busquedas/avanzada"
   get "busquedas/resultados"
+  get "busquedas/nombres_comunes"
+
   get "inicio/comentarios"
   get "inicio/index"
   get "inicio/acerca"
