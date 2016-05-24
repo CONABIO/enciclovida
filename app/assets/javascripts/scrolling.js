@@ -23,7 +23,7 @@ settings = {
 		// For each so that we keep chainability.
 		return this.each(function() {
 
-            if(settings.scroll == true) initmessage = 'Baja para cargar o da clic aquí';
+            if(settings.scroll == true) initmessage = 'Cargando... Por favor, espera <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
             else initmessage = 'Click for more';
 			
 			function getData() {
