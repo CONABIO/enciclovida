@@ -30,7 +30,7 @@ module BusquedasHelper
       radios << '<br>' if columnas%6 == 0
       columnas+=1
     end
-    "<div style='text-align: ;'>#{radios}</div>"
+    "<div>#{radios}</div>"
   end
 
   #Filtros para "Categorías de riesgo y comercio internacional"

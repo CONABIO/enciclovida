@@ -19,9 +19,8 @@ class NombreComun < ActiveRecord::Base
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(adicionales=[]) { select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad,
-categoria_taxonomica_id, nombre_categoria_taxonomica,
-adicionales.foto_principal, adicionales.nombre_comun_principal,
+  scope :select_basico, ->(adicionales=[]) { select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, categoria_taxonomica_id, nombre_categoria_taxonomica,
+adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_comun_principal,
 iconos.taxon_icono, iconos.icono, iconos.nombre_icono, iconos.color_icono' +
                                                         (adicionales.any? ? ',' + adicionales.join(',') : '')) }
     #categoria_taxonomica_id, nombre_categoria_taxonomica') }

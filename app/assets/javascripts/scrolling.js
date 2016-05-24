@@ -23,7 +23,7 @@ settings = {
 		// For each so that we keep chainability.
 		return this.each(function() {
 
-            if(settings.scroll == true) initmessage = 'Baja para cargar o da clic aquí';
+            if(settings.scroll == true) initmessage = 'Cargando... Por favor, espera <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
             else initmessage = 'Click for more';
 			
 			function getData() {
@@ -32,7 +32,7 @@ settings = {
 
                 $this=$("#resultados" + settings.nivel);
                 $('#loading-bar' + settings.nivel).remove();
-                $this.append("<div class='loading-bar' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
+                $this.append("<div class='loading-bar col-xs-12 col-sm-12 col-md-12 col-lg-12' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
 
 				$.get(settings.url, {
 						
