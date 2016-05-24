@@ -397,15 +397,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         ''
       end
     else
-#      if adicional
+
+      begin
         if nombre_comun_principal.present?
           primera_mayus ? nombre_comun_principal.primera_en_mayuscula : nombre_comun_principal
         else
           ''
         end
- #     else
- #       ''
- #     end
+      rescue
+        if ad=adicional
+          if ad.nombre_comun_principal.present?
+            primera_mayus ? ad.nombre_comun_principal.primera_en_mayuscula : ad.nombre_comun_principal
+          else
+            ''
+          end
+        else
+          ''
+        end
+      end
     end
   end
 
