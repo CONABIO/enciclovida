@@ -107,8 +107,7 @@ class BusquedasController < ApplicationController
 
           #if arbol
           sql = "Especie.datos_basicos.where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_cientifico ASC')"
-          sql << ".caso_insensitivo('nombre_cientifico', #{params[:nombre_cientifico].limpia_sql})" if params[:nombre_cientifico].present?
-
+          sql << ".caso_insensitivo('nombre_cientifico', '#{params[:nombre_cientifico].limpia_sql}')" if params[:nombre_cientifico].present?
           consulta = eval(sql).to_sql
 
           consulta = Bases.distinct_limpio consulta
