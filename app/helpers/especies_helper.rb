@@ -42,7 +42,7 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} <h5>(#{ponItalicas(taxon)})</h5>".html_safe
+            "<h5>#{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))}</h5><h5>(#{ponItalicas(taxon)})</h5>".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]}<h5>#{link_to(taxon.nom_com_prin, especie_path(taxon))}</h5><h5>(#{ponItalicas(taxon)})</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
           end
