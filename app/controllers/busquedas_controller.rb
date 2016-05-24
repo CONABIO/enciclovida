@@ -106,14 +106,18 @@ class BusquedasController < ApplicationController
           estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
 
           #if arbol
-          sql = "Especie.datos_basicos.caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").order('nombre_cientifico ASC')"
+          sql = "Especie.datos_basicos.where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_cientifico ASC')"
+          sql << ".caso_insensitivo('nombre_cientifico', #{params[:nombre_cientifico].limpia_sql})" if params[:nombre_cientifico].present?
 
           consulta = eval(sql).to_sql
+
+          consulta = Bases.distinct_limpio consulta
+
           totales = eval(sql).count
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if totales > 0
-            @taxones = consulta << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = consulta << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
             @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
           else
