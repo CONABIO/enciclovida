@@ -196,7 +196,8 @@ ul.social-buttons li a:active {
   margin-top: -1px;
 }
 
-
+#panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
+.panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .introducida-ev-icon:after {color: #797979 !important;}
 
 /* NOM-059*/
 .sujeta-a-proteccion-especial-pr-ev-icon {color: #f6b134;}
@@ -208,10 +209,11 @@ ul.social-buttons li a:active {
 .en-peligro-de-extincion-p-ev-icon {color: #e10019;}
 .en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
 
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #b3b3b3;}
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824'; }
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #444444;}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824';}
 
-.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #555555; margin-left: -1.2em;}
+.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #444444; margin-left: -1.2em;}
+
 /*Termina NOM-059*/
 
 /* IUCN*/
