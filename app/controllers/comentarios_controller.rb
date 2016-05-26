@@ -70,6 +70,11 @@ class ComentariosController < ApplicationController
     end
   end
 
+  # Administracion de los comentarios
+  def admin
+    @comentarios = Comentario.all
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comentario
