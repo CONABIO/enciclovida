@@ -1,0 +1,51 @@
+<div class="table-responsive">
+  <table class="table table-hover table-sm">
+    <thead>
+    <tr>
+      <th>#ID</th>
+      <th>¿Resuelto?</th>
+      <th>Comentario</th>
+      <th><%= t :taxon %></th>
+      <th>Correo</th>
+      <th>Nombre</th>
+      <th>Fecha</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <%
+       @comentarios.each do |c|
+         if c.usuario_id.present?
+           if u = c.usuario
+             correo = u.email
+             nombre = "#{u.nombre} #{u.apellido}"
+           else
+             correo = c.correo
+             nombre = c.nombre
+           end
+         else
+           correo = c.correo
+           nombre = c.nombre
+         end
+
+         if t = c.especie
+           taxon = t.nombre_cientifico
+         else
+           taxon = "Este #{t(:taxon)} no existe"
+         end
+    %>
+
+        <tr>
+          <td><%= c.id %></td>
+          <td><%= c.resuelto == 1 ? 'Sí' : 'No' %></td>
+          <td><%= c.comentario %></td>
+          <td><%= taxon %></td>
+          <td><%= correo %></td>
+          <td><%= nombre %></td>
+          <td><%= c.created_at %></td>
+        </tr>
+    <% end %>
+
+    </tbody>
+  </table>
+</div>

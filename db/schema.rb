@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160411172823) do
+ActiveRecord::Schema.define(version: 20160525224357) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -22,9 +22,8 @@ ActiveRecord::Schema.define(version: 20160411172823) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "icono_id"
+    t.text     "fotos_principales"
   end
-
-  add_index "adicionales", ["especie_id"], name: "NonClusteredIndex-20150513-132628"
 
   create_table "bibliografias", force: true do |t|
     t.text     "observaciones"
@@ -84,13 +83,14 @@ ActiveRecord::Schema.define(version: 20160411172823) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", force: true do |t|
-    t.text     "comentario", null: false
+    t.text     "comentario",             null: false
     t.string   "correo"
     t.string   "nombre"
-    t.integer  "especie_id", null: false
+    t.integer  "especie_id",             null: false
     t.integer  "usuario_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "resuelto",   default: 0, null: false
   end
 
   create_table "delayed_jobs", force: true do |t|
@@ -109,8 +109,7 @@ ActiveRecord::Schema.define(version: 20160411172823) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
-  create_table "especies", id: false, force: true do |t|
-    t.integer  "id"
+  create_table "especies", force: true do |t|
     t.string   "nombre",                          limit: 100, null: false
     t.integer  "estatus",                         limit: 2,   null: false
     t.string   "fuente",                          limit: 30,  null: false
@@ -128,8 +127,11 @@ ActiveRecord::Schema.define(version: 20160411172823) do
     t.string   "ancestry_ascendente_obligatorio"
     t.string   "catalogo_id",                     limit: 20
     t.string   "nombre_cientifico"
-    t.integer  "oldId"
   end
+
+  add_index "especies", ["ancestry_ascendente_directo"], name: "index_ancestry_ascendente_directo_especies"
+  add_index "especies", ["categoria_taxonomica_id"], name: "index_categoria_taxonomica_id_especies"
+  add_index "especies", ["nombre_cientifico"], name: "index_nombre_cientifico_especies"
 
   create_table "especies_bibliografias", primary_key: "especie_id", force: true do |t|
     t.integer  "bibliografia_id", null: false
@@ -151,6 +153,16 @@ ActiveRecord::Schema.define(version: 20160411172823) do
     t.string   "observaciones"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "especies_estatuses_bibliografias", id: false, force: true do |t|
+    t.integer  "especie_id1"
+    t.integer  "especie_id2"
+    t.integer  "estatus_id",      null: false
+    t.integer  "bibliografia_id"
+    t.string   "observaciones"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "especies_regiones", primary_key: "especie_id", force: true do |t|
