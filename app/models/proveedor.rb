@@ -278,11 +278,16 @@ class Proveedor < ActiveRecord::Base
       info = JSON.parse(geoserver_info)
 
       geodatos[:cuales] << 'geoserver'
-      geodatos[:geoserver_url] = "#{CONFIG.geoserver_url}&format=kml&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      geodatos[:geoserver_url_descarga] = "#{CONFIG.geoserver_url}&format=kmz&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
+      geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
+      geodatos[:geoserver_descarga_url] = "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
+      geodatos[:geoserver_layer] = info['layers']
     end
 
-    geodatos[:cuales] << 'geoportal' if snib_id.present?
+    if snib_id.present?
+      geodatos[:cuales] << 'geoportal'
+      geodatos[:geoportal_url] = "#{CONFIG.geoportal_url}&rd=#{snib_reino}&id=#{snib_id}"
+      #geodatos[:geoportal_url_descarga] = nil
+    end
 
     if naturalista_obs.present?
       naturalista_path = Rails.root.join('public', 'kmz', especie_id.to_s, 'observaciones.kmz')

@@ -115,8 +115,6 @@ class Photo < ActiveRecord::Base
       native_realname
     elsif !native_username.blank?
       native_username
-    elsif usuario
-      "#{usuario.nombre} #{usuario.apellido}" || usuario.usuario
     else
       I18n.t('copyright.anonymous')
     end

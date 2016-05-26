@@ -1,20 +1,29 @@
-<% columnas=0 %>
-<% @taxones.each do |taxon| %>
+<% if I18n.locale.to_s != 'es-cientifico' %>
+    <% @taxones.each do |taxon| %>
+        <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none;">
 
-    <div style="width: 50%; float:<%= columnas%2 == 0 ? 'left' : 'right' %>;">
-      <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none;">
-
-      <% if I18n.locale.to_s != 'es-cientifico' %>
-          <% if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
-              <%= image_tag(taxon.foto_principal, :alt => taxon.nombre_cientifico, :style => 'width:85px;height:85px;', :class => 'img-thumbnail') %>
-              <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true, :con_icono => false)}</span>".html_safe %>
-          <% else %>
-              <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true, :font_size => 85)}</span>".html_safe %>
+        <% if taxon.foto_principal.present? && taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica)) %>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+              <div class="imagen_resultados" style="background-image: url('<%= taxon.fotos_principales.split('|')[2] %>');" >
+                <%= tituloNombreCientifico(taxon, :link => true, :con_icono => false).html_safe %>
+              </div>
+            </div>
+        <% else %>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
+              <div class="imagen_resultados">
+                <%= tituloNombreCientifico(taxon, :link => true, :con_icono => false).html_safe %>
+                <i class="ev1-ev-icon"></i>
+              </div>
+            </div>
           <% end %>
-      <% else %>
-          <%= "<span class='datos_busqueda-#{taxon.id}'>#{tituloNombreCientifico(taxon, :link => true)}</span>".html_safe %>
-      <% end %>
-    </div>
-    <% columnas+=1 %>
+    <% end %>
+<% else %>
+    <% @taxones.each do |taxon| %>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+          <span class='datos_busqueda-<%= taxon.id %>'>
+            <%= tituloNombreCientifico(taxon, :link => true) %>
+          </span>
+        </div>
+    <% end %>
 <% end %>
 

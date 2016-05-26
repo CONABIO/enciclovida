@@ -7,7 +7,7 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
-                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal,
+                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal, :x_fotos_principales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
@@ -73,7 +73,7 @@ class Especie < ActiveRecord::Base
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
-        adicionales.nombre_comun_principal, adicionales.foto_principal, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
+        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
         iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
@@ -138,6 +138,23 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         response << prio.parameterize
       end
     end  #Fin each
+
+    response.uniq
+  end
+
+  def tipo_distribucion
+    response = []
+
+    tipos_distribuciones.uniq.each do |distribucion|
+      next if distribucion.descripcion.parameterize == 'original'  # Quitamos el tipo de dist. original
+
+      if distribucion.descripcion.parameterize.downcase == 'no-endemica'
+        response << I18n.t("tipo_distribucion.#{distribucion.descripcion.parameterize.downcase}.nombre").downcase
+      else
+        response << distribucion.descripcion.parameterize
+      end
+
+    end
 
     response.uniq
   end
@@ -230,21 +247,53 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   def exporta_redis
-    return unless ad = adicional
+    datos = {}
+    datos['data'] = {}
 
-    data = ''
-    data << "{\"id\":#{id},"
-    data << "\"term\":\"#{nombre_cientifico}\","
-    data << "\"data\":{\"nombre_comun\":\"#{ad.nombre_comun_principal.try(:limpia)}\", "
+    datos['id'] = id
 
-    if ic = ad.icono
-      data << "\"nombre_icono\":\"#{ic.nombre_icono}\", \"icono\":\"#{ic.icono}\", \"color\":\"#{ic.color_icono}\", "
+    # Para poder buscar con o sin acentos en redis
+    datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
+
+    if ad = adicional
+      if ad.foto_principal.present?
+        datos['data']['foto'] = ad.foto_principal.limpia
+      else
+        datos['data']['foto'] = ''
+      end
+
+      if ad.nombre_comun_principal.present?
+        datos['data']['nombre_comun'] = ad.nombre_comun_principal.limpia
+      else
+        datos['data']['nombre_comun'] = ''
+      end
+
     else
-      data << "\"nombre_icono\":\"\", \"icono\":\"\", \"color\":\"\", "
+      datos['data']['nombre_comun'] = ''
+      datos['data']['foto'] = ''
     end
 
-    data << "\"autoridad\":\"#{nombre_autoridad.limpia}\", \"id\":#{id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[estatus]}\"}"
-    data << "}\n"
+    datos['data']['id'] = id
+    datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
+    datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
+    datos['data']['autoridad'] = nombre_autoridad.limpia
+
+    # Caracteristicas de riesgo y conservacion, ambiente y distribucion
+    cons_amb_dist = []
+    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria
+    cons_amb_dist << tipo_distribucion
+    datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
+
+    # Para saber cuantas fotos tiene
+    datos['data'][:fotos] = photos.count
+
+    # Para saber si tiene algun mapa
+    if p = proveedor
+      datos['data']['geodatos'] = p.geodatos[:cuales]
+    end
+
+    # Para mandar el json como string al archivo
+    datos.to_json.to_s
   end
 
   def cat_tax_asociadas
@@ -283,7 +332,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def crea_con_nombre_comun
     ad = Adicional.new
     ad.especie_id = id
-    ad.nombre_comun_principal = ad.pon_nombre_comun_principal
+
+    ad.pon_nombre_comun_principal
     ad
   end
 
@@ -300,15 +350,17 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
     foto_p = ''
 
-    if fotos = photos.where("photos.type != 'ConabioPhoto'")
+    fotos = photos.where("photos.type != 'ConabioPhoto'")
+
+    if fotos.any?
       fotos.each do |f|
         if f.square_url.present?
           foto_p = f.square_url
           break
         end
       end
-    elsif fotos= photos.where("photos.type = 'ConabioPhoto'")
-      fotos.each do |f|
+    else
+      photos.where("photos.type = 'ConabioPhoto'").each do |f|
         if f.square_url.present?
           foto_p = f.square_url
           break
@@ -345,14 +397,23 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         ''
       end
     else
-      if adicional
-        if adicional.nombre_comun_principal.present?
-          primera_mayus ? adicional.nombre_comun_principal.primera_en_mayuscula : adicional.nombre_comun_principal
+
+      begin
+        if nombre_comun_principal.present?
+          primera_mayus ? nombre_comun_principal.primera_en_mayuscula : nombre_comun_principal
         else
           ''
         end
-      else
-        ''
+      rescue
+        if ad=adicional
+          if ad.nombre_comun_principal.present?
+            primera_mayus ? ad.nombre_comun_principal.primera_en_mayuscula : ad.nombre_comun_principal
+          else
+            ''
+          end
+        else
+          ''
+        end
       end
     end
   end

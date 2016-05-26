@@ -1,9 +1,11 @@
+#!/bin/env ruby
+# encoding: utf-8
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :geoportal, :naturalista]
+                                     :descripcion_catalogos, :naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -15,7 +17,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :geoportal, :naturalista]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -370,33 +372,12 @@ class EspeciesController < ApplicationController
   def descripcion_catalogos
   end
 
-  # Hace la peticion al servicio del geoportal (Everardo)
-  def geoportal
-    if p = @especie.proveedor
-      if p.snib_id.present? && p.snib_reino.present?
-        # Catch the response
-        begin
-          response = RestClient.get "#{CONFIG.geoportal_url}&rd=#{p.snib_reino}&id=#{p.snib_id}", :timeout => 10, :open_timeout => 10
-          render json: [] unless response.present?
-        rescue => e
-          render json: []
-        end
-
-        render json: response
-
-      else
-        render json: []
-      end
-    else
-      render json: []
-    end
-  end
-
   # Devuelve las observaciones denaturalista para hacer el parsen en geojson
   def naturalista
     if p = @especie.proveedor
       if p.naturalista_obs.present?
-        naturalista_obs = eval(p.naturalista_obs.decodifica64)
+
+        naturalista_obs = eval(p.naturalista_obs.force_encoding("UTF-8").decodifica64)
         render json: [] unless naturalista_obs.count > 0
 
         render json: naturalista_obs.to_json

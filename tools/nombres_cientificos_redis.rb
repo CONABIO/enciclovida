@@ -28,11 +28,12 @@ def batches
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
   Especie.find_each do |taxon|
+  #Especie.limit(100).each do |taxon|
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     data = taxon.exporta_redis
 
     File.open("#{@path}/nom_cien_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
-      f.puts(data) if data.present?
+      f.puts(data)
     end
   end
 end

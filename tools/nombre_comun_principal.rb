@@ -28,7 +28,7 @@ def nom_com_principal
       puts "\tCAMBIO: #{adicional[:adicional].nombre_comun_principal}"
       adicional[:adicional].save
     else
-      puts "\tSIN CAMBIOS: #{adicional[:adicional].nombre_comun_principal}"
+      puts "\tSIN CAMBIOS"
     end
   end
 end

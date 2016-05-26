@@ -30,7 +30,7 @@ module BusquedasHelper
       radios << '<br>' if columnas%6 == 0
       columnas+=1
     end
-    "<div style='text-align: ;'>#{radios}</div>"
+    "<div>#{radios}</div>"
   end
 
   #Filtros para "Categorías de riesgo y comercio internacional"
@@ -44,8 +44,7 @@ module BusquedasHelper
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('edo_cons[]', edo, false, :id => "edo_cons_#{edo.parameterize}")
         checkBoxes << "<span title = '#{t('cat_riesgo.' << edo.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
-        checkBoxes << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
+        checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
@@ -70,8 +69,7 @@ module BusquedasHelper
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
         checkBoxes << "<span title = '#{t('tipo_distribucion.' << tipoDist.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
-        checkBoxes << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
+        checkBoxes << "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
 
@@ -102,8 +100,7 @@ module BusquedasHelper
       checkBoxes << check_box_tag('prioritaria[]', prior, false, :id => "prior_#{prior.parameterize}")
       checkBoxes << "<span title = '#{t('prioritaria.' << prior.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title' >"
       #checkBoxes << image_tag("app/prioritarias/#{prior.downcase}.png", class: 'img-panel')
-      checkBoxes << "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
-      checkBoxes << "<i class = 'prioritarias-ev-icon'></i>"
+      checkBoxes << "<i class = '#{prior.parameterize}-ev-icon'></i>"
       checkBoxes << '</span>'
       checkBoxes << '</label>'
     end

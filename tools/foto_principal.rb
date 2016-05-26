@@ -22,7 +22,7 @@ def foto_principal
     adicional = taxon.asigna_foto
 
     if adicional[:cambio]
-      puts "\t#{adicional[:adicional].foto_principal}"
+      puts "CAMBIO: \t#{adicional[:adicional].foto_principal}"
       adicional[:adicional].save
     end
   end

@@ -10,7 +10,7 @@ module Bases
           'especies_bibliografias' => 'RelNombreBiblio', #*
           'especies_catalogos' => 'RelNombreCatalogo',
           'especies_estatuses' => 'Nombre_Relacion',
-          #'especies_estatuses_bibliografias' => 'RelacionBibliografia',
+          'especies_estatuses_bibliografias' => 'RelacionBibliografia',
           'especies_regiones' => 'RelNombreRegion',
           'estatuses' => 'Tipo_Relacion',
           'nombres_comunes' => 'Nomcomun',

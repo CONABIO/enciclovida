@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_url_descarga].present? %>
+      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_descarga_url], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_descarga_url].present? %>
       <%#= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
       <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, @geo[:naturalista_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if @geo[:naturalista_url_descarga].present? %>
     </div>

@@ -10,12 +10,12 @@ module EspeciesHelper
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nombre_comun} (#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{taxon.nombre_comun} (#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{ponItalicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -24,12 +24,12 @@ module EspeciesHelper
           "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nombre_comun} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especie_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
+            "#{taxon.nombre_comun} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especie_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]})".html_safe
           else
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+            "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
         elsif params[:show]
-          "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
+          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -42,14 +42,13 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe
+            "<h5>#{taxon.nombre_comun.primera_en_mayuscula}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>".html_safe
           else
-            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{ponItalicas(taxon)})".html_safe :
-                "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon,true)}".html_safe
+            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]}<h5>#{taxon.nom_com_prin}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
           end
         elsif params[:show]
           taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{ponItalicas(taxon)})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{ponItalicas(taxon)}".html_safe
+              "#{ponItalicas(taxon)}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -59,14 +58,14 @@ module EspeciesHelper
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nombre_comun.primera_en_mayuscula, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe
+            "<h5>#{taxon.nombre_comun.primera_en_mayuscula}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica}#{link_to(taxon.nombre_cientifico, especie_path(taxon))}</h5>".html_safe
           else
-            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{link_to(taxon.nom_com_prin, especie_path(taxon))} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
-                "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}".html_safe
+            taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} <h5>#{taxon.nom_com_prin}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}</h5>".html_safe :
+                "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especie_path(taxon))}".html_safe
           end
         elsif params[:show]
-          taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
-              "#{ponIcono(taxon, params) if params[:con_icono]} #{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
+          taxon.nom_com_prin.present? ? "#{taxon.nom_com_prin} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
+              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         else
           'Ocurrio un error en el título'.html_safe
         end
@@ -172,24 +171,6 @@ module EspeciesHelper
       nombres_comunes << "#{agrupa_nombres[k].join(', ')} <small>(#{k})</small> / "
     end
     nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
-  end
-
-  def dameDistribucion(taxon)
-    dist = []
-
-    taxon.especies_regiones.distinct.each do |reg|
-      next unless distribucion = reg.tipo_distribucion
-      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      icono = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.icono", :default => '')
-      nombre = t("tipo_distribucion.#{distribucion.descripcion.parameterize}.nombre")
-      dist << (icono.present? ? image_tag('app/tipo_distribuciones/' << icono, title: nombre) : nombre)
-    end
-
-    #if taxon.invasora.present?
-    #  dist << image_tag('app/tipo_distribuciones/invasora.png', title: 'Invasora')
-    #end
-
-    dist.any? ? dist.uniq.join(' - ') : ''
   end
 
   def dameRegionesNombresBibliografia(especie)
@@ -372,18 +353,9 @@ module EspeciesHelper
   def dameCaracteristicaDistribucionAmbienteJS(taxon)
     response = []
     response << taxon.nom_cites_iucn_ambiente_prioritaria
+    response << taxon.tipo_distribucion
 
-    taxon.especies_regiones.distinct.each do |reg|
-      next unless distribucion = reg.tipo_distribucion
-      next if distribucion.descripcion == 'Original'  # Quitamos el tipo de dist. original
-      response << distribucion.descripcion.parameterize
-    end
-
-    # if taxon.invasora.present?
-    #   response[:distribucion] << 'idinvasora'
-    # end
-
-    response.flatten.uniq
+    response.flatten
   end
 
   def ponCaracteristicaDistribucionAmbienteJS
@@ -398,8 +370,7 @@ module EspeciesHelper
         id = "id#{edo.parameterize}"
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
         name = "edo_cons_#{edo.parameterize}"
-        icono  = "<i class = '#{k} #{edo.parameterize}-ev-icon'></i>"
-        icono << "<i class = '#{k}-2 #{edo.parameterize}-2-ev-icon'></i>" if (k.to_s=="nom")
+        icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
         response[k]  = response[k].to_a << creaSpan(nombre, id, name, icono)
       end
     end
@@ -408,8 +379,7 @@ module EspeciesHelper
       id = "id#{tipoDist.parameterize}"
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       name = "dist_#{tipoDist}"
-      icono =  "<i class = 'tipoDist #{tipoDist.parameterize}-ev-icon'></i>"
-      icono << "<i class = 'tipoDist-2 #{tipoDist.parameterize}-2-ev-icon'></i>"
+      icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
 
       response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, id, name, icono)
     end
@@ -424,8 +394,7 @@ module EspeciesHelper
 
     Catalogo::NIVELES_PRIORITARIAS.each do |prior|
       id = "id#{prior.parameterize}"
-      icono =  "<i class = 'prioritarias prioritarias-#{prior.parameterize}-ev-icon'></i>"
-      icono << "<i class = 'prioritarias-ev-icon'></i>"
+      icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
       name = "prio_#{prior}"
       nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
       response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)

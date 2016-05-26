@@ -56,28 +56,50 @@ class Adicional < ActiveRecord::Base
       nombre_comun_principal_catalogos
     else
       self.nombre_comun_principal = nombre_comun_principal_original
-      #nil
     end
   end
 
   # Repito el metodo porque el otro, parte del modelo NombreComun, estos nombres son puestos
   # sin relacion a catalogos
   def exporta_nom_comun_a_redis
-    data = ''
-    data << "{\"id\":#{id}#{especie_id},"  #el ID de nombres_comunes no es unico (varios IDS repetidos)
-    data << "\"term\":\"#{nombre_comun_principal.limpia}\","
-    data << "\"data\":{\"nombre_cientifico\":\"#{especie.nombre_cientifico}\", "
+    taxon = especie
+    datos = {}
+    datos['data'] = {}
 
-    if icono
-      data << "\"nombre_icono\":\"#{icono.nombre_icono}\", \"icono\":\"#{icono.icono}\", \"color\":\"#{icono.color_icono}\", "
+    # Se unio estos identificadores para hacerlos unicos en la base de redis
+    datos['id'] = "#{id}#{especie_id}".to_i
+
+    # Para poder buscar con o sin acentos en redis
+    datos['term'] = I18n.transliterate(nombre_comun_principal.limpia)
+
+    if foto_principal.present?
+      datos['data']['foto'] = foto_principal.limpia
     else
-      data << "\"nombre_icono\":\"sin_icono\", \"icono\":\"icono\", \"color\":\"color_icono\", "
+      datos['data']['foto'] = ''
     end
 
-    # Para diferenciar el campo que no saldra en el autocompletado de la vista avanzada
-    data << "\"basica\":1, "
-    data << "\"autoridad\":\"#{especie.nombre_autoridad.limpia}\", \"id\":#{especie.id}, \"estatus\":\"#{Especie::ESTATUS_VALOR[especie.estatus]}\"}"
-    data << "}\n"
+    datos['data']['id'] = especie_id
+    datos['data']['nombre_cientifico'] = taxon.nombre_cientifico
+    datos['data']['nombre_comun'] = nombre_comun_principal.limpia
+    datos['data']['estatus'] = Especie::ESTATUS_VALOR[taxon.estatus]
+    datos['data']['autoridad'] = taxon.nombre_autoridad.limpia
+
+    # Caracteristicas de riesgo y conservacion, ambiente y distribucion
+    cons_amb_dist = []
+    cons_amb_dist << taxon.nom_cites_iucn_ambiente_prioritaria
+    cons_amb_dist << taxon.tipo_distribucion
+    datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
+
+    # Para saber cuantas fotos tiene
+    datos['data']['fotos'] = taxon.photos.count
+
+    # Para saber si tiene algun mapa
+    if p = taxon.proveedor
+      datos['data']['geodatos'] = p.geodatos[:cuales]
+    end
+
+    # Para mandar el json como string al archivo
+    datos.to_json.to_s
   end
 
   # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico

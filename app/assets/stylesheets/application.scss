@@ -93,3 +93,31 @@ div#map{
 .naturalista-2-ev-icon,.naturalista-3-ev-icon{color: #975324;}
 .naturalista-ev-icon,.naturalista-4-ev-icon{color: #727732;}
 .naturalista-ev-icon, .naturalista-2-ev-icon, .naturalista-3-ev-icon, .naturalista-4-ev-icon{font-size: 1.5em;}
+
+
+.not-active {
+  pointer-events: none;
+  cursor: default;
+}
+
+.imagen_resultados {
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: block;
+  height: 175px;
+  margin: 5px -5px;
+  background-position: 50% 20%;
+  border: 1px solid #e7e7e7;
+  text-align: center;
+}
+.imagen_resultados h5{
+  background-color: rgba(234, 234, 234, 0.8);
+  margin: 0;
+}
+.imagen_resultados .ev1-ev-icon {
+  font-size: 5em;
+  color: #D4E4D7;
+  position: absolute;
+  bottom: 10px;
+  right: 35%;
+}

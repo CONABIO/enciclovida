@@ -1,9 +1,10 @@
 $(document).ready(function(){
 
-    var specie_target;
-    var sdata;
     var geojsonFeature = [];
     var allowedPoints = d3.map([]);
+
+    var geoportal_count = 0;
+    var naturalista_count = 0;
 
     var geojsonMarkerGeoportalOptions = {
         radius: 5,
@@ -37,16 +38,9 @@ $(document).ready(function(){
         'className' : 'custom'
     };
 
-
     /***************************************************************** Layer creation */
-
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
 
-    // Google satellite map layer
-    var GSM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&labels=true',{
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
-    });
 
     // Google terrain map layer
     var GTM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
@@ -73,7 +67,6 @@ $(document).ready(function(){
         //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
             OSM_layer,
-            GSM_layer,
             GTM_layer,
             GHM_layer
         ]
@@ -83,13 +76,8 @@ $(document).ready(function(){
     /***************************************************************** layer switcher */
     var baseMaps = {
         "Open Street Maps": OSM_layer,
-        "Vista de Satélite": GSM_layer,
         "Vista de terreno": GTM_layer,
         "Vista Híbrida": GHM_layer
-    };
-
-    var overlayMaps = {
-        //"Malla": grid_wms
     };
 
     var layer_control = L.control.layers(baseMaps).addTo(map);
@@ -114,7 +102,7 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Registros de museos, colectas y proyectos de CONABIO (SNIB)");
+        layer_control.addOverlay(markersLayer, "<i>" + geoportal_count + "</i> registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)");
     }
 
     function addPointLayerNaturaLista(){
@@ -125,7 +113,11 @@ $(document).ready(function(){
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                // Para cuando es una observacion casual o de investigacion
+                if (feature.properties.d.quality_grade == 'research')
+                    return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                else
+                    return L.circleMarker(latlng, geojsonMarkerNaturaListaCasualOptions);
                 //para cuando tenga tiempo, poner el ícono como DEBE de ser!!!
                 //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
@@ -138,7 +130,20 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "Observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
+        layer_control.addOverlay(markersLayer, "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
+    }
+
+    function wms_distribucion_potencial() {
+        var distribucion_potencial = L.tileLayer.wms(GEO.geoserver_url, {
+            layers: GEO.geoserver_layer,
+            format: 'image/png',
+            transparent: true,
+            opacity:.5,
+            maxZoom: 20
+        });
+
+        map.addLayer(distribucion_potencial);
+        layer_control.addOverlay(distribucion_potencial, "Distribución potencial (CONABIO)");
     }
 
     function content_geoportal(feature){
@@ -154,6 +159,11 @@ $(document).ready(function(){
         contenido += "<dt>Colección: </dt><dd>" + feature.coleccion + "</dd>";
         contenido += "<dt>Institución: </dt><dd>" + feature.institucion + "</dd>";
         contenido += "<dt>País de la colección: </dt><dd>" + feature.paiscoleccion + "</dd>";
+
+        if (feature.proyecto.length > 0 && feature.urlproyecto.length > 0)
+            contenido += "<dt>Proyecto: </dt><dd><a href='" + feature.urlproyecto + "' target='_blank'>" + feature.proyecto + "</a></dd>";
+
+        contenido += "<dt>Más información: </dt><dd><a href='http://" + feature.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
     }
@@ -194,20 +204,16 @@ $(document).ready(function(){
     var geojson_geoportal = function()
     {
         $.ajax({
-            url: "/especies/" + TAXON.id + "/geoportal",
+            url: GEO.geoportal_url,
             dataType : "json",
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X-Test-Header', 'test-value');
-                xhr.setRequestHeader("Accept","text/json");
-            },
             success : function (d){
+                geoportal_count = d.length;
                 allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)
                 {
-                    item_id = JSON.parse(d[i].json_geom).coordinates.toString();
+                    item_id = 'geoportal-' + i.toString();
 
-                    // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},
@@ -235,11 +241,12 @@ $(document).ready(function(){
                 xhr.setRequestHeader("Accept","text/json");
             },
             success : function (d){
+                naturalista_count = d.length;
                 allowedPoints = d3.map([]);
 
-                for(i=0;i<d.length;i++){
-                    //var item_id_json = JSON.parse(d[i]);
-                    item_id = d[i].longitude + "," + d[i].latitude;
+                for(i=0;i<d.length;i++)
+                {
+                    item_id = '-' + i.toString();
 
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
@@ -257,8 +264,9 @@ $(document).ready(function(){
             }
         });  // termina ajax
     };
-    geojson_naturalista();
-    geojson_geoportal();
-    name();
+
+    if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
+    if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
+    if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
 });
 

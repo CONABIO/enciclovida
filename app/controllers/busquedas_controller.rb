@@ -89,7 +89,7 @@ class BusquedasController < ApplicationController
 
           if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-            render :partial => 'especies/_resultados'
+            render :partial => 'busquedas/_resultados'
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
             # El scrolling acaba
             render text: ''
@@ -106,14 +106,17 @@ class BusquedasController < ApplicationController
           estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
 
           #if arbol
-          sql = "Especie.datos_basicos.caso_insensitivo('nombre_cientifico', \"#{params[:nombre_cientifico].limpia_sql}\").where(\"estatus IN (#{estatus ||= '2, 1'})\").order('nombre_cientifico ASC')"
-
+          sql = "Especie.datos_basicos.where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_cientifico ASC')"
+          sql << ".caso_insensitivo('nombre_cientifico', '#{params[:nombre_cientifico].limpia_sql}')" if params[:nombre_cientifico].present?
           consulta = eval(sql).to_sql
+
+          consulta = Bases.distinct_limpio consulta
+
           totales = eval(sql).count
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
 
           if totales > 0
-            @taxones = consulta << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = consulta << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
             @taxones = Especie.find_by_sql(@taxones)
             @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
           else
@@ -344,6 +347,53 @@ class BusquedasController < ApplicationController
           end
       end  # Fin switch
     end
+  end
+
+  # Servicio que por medio del nombre comun extrae todos los nombres comunes asociados al taxon (servicio para alejandro molina)
+  def nombres_comunes
+    select = "NombreComun.datos_basicos(['nombres_comunes.id'])"
+    select_count = 'NombreComun.datos_count'
+
+    if params[:exact].present? && params[:exact].to_i == 1
+      condiciones = ".caso_sensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
+                where('especies.id IS NOT NULL')"
+    else
+      condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
+                where('especies.id IS NOT NULL')"
+    end
+
+    sql = select << condiciones + ".distinct.order('nombre_comun ASC')"
+    sql_count = select_count << condiciones
+
+    query = eval(sql).to_sql
+    consulta = Bases.distinct_limpio query
+    totales = eval(sql_count)[0].cuantos
+
+    @data = {}
+    @data[:termino] = params[:q]
+    @data[:numero_resultados] = totales
+    @data[:resultados] = []
+
+    if totales > 0
+      consulta << ' ORDER BY nombre_comun ASC'
+      nombres_comunes = NombreComun.find_by_sql(consulta)
+
+      # Para no repetir los taxones
+      especie_ids = []
+
+      nombres_comunes.each do |nombre_comun|
+        nombre_comun.especies.each do |especie|
+
+          next if especie_ids.include?(especie.id)
+          especie_ids << especie.id
+          nombres = especie.nombres_comunes.map(&:nombre_comun)
+          @data[:resultados] << {nombre_comun_coincidio: nombre_comun.nombre_comun, taxon: especie.nombre_cientifico, nombres_comunes: nombres}
+        end
+      end
+
+    end
+
+    render json: @data.to_json
   end
 
   def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
