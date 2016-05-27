@@ -1,48 +1,53 @@
+<table class="table table-hover table-striped table-condensed table-bordered">
+  <thead>
+  <tr>
+    <th>#Id</th>
+    <th>Comentario</th>
+    <th><%= t :taxon %></th>
+    <th>Nombre - Correo</th>
+    <th>Fecha</th>
+    <th>Estatus</th>
+    <th></th>
+  </tr>
+  </thead>
 
-  <table class="table table-hover table-striped table-condensed table-bordered">
-    <thead>
-    <tr>
-      <th>#Id</th>
-      <th>Comentario</th>
-      <th><%= t :taxon %></th>
-      <th>Nombre - Correo</th>
-      <th>Fecha</th>
-      <th>Estatus</th>
-    </tr>
-    </thead>
-
-    <tbody style="font-size: .85em;">
-    <%
-       @comentarios.each do |c|
-         if c.usuario_id.present?
-           if u = c.usuario
-             correo = u.email
-             nombre = "#{u.nombre} #{u.apellido}"
-           else
-             correo = c.correo
-             nombre = c.nombre
-           end
+  <tbody style="font-size: .85em;">
+  <%
+     @comentarios.each do |c|
+       if c.usuario_id.present?
+         if u = c.usuario
+           correo = u.email
+           nombre = "#{u.nombre} #{u.apellido}"
          else
            correo = c.correo
            nombre = c.nombre
          end
+       else
+         correo = c.correo
+         nombre = c.nombre
+       end
 
-         if t = c.especie
-           taxon = t.nombre_cientifico
-         else
-           taxon = "Este #{t(:taxon)} no existe"
-         end
-    %>
+       if t = c.especie
+         taxon = t.nombre_cientifico
+       else
+         taxon = "Este #{t(:taxon)} no existe"
+       end
+  %>
 
-        <tr>
-          <td><%= c.id %></td>
-          <td><%= c.comentario %></td>
-          <td><%= link_to taxon, "/especies/#{c.especie_id}" %></td>
-          <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %></td>
-          <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-          <td class="text-center"><span class="glyphicon glyphicon-<%= c.resuelto == 1 ? "ok" : "alert" %>" title="<%= c.resuelto == 1 ? "Resuelto" : "Pendiente" %>" style="color: <%= c.resuelto == 1 ? "#889b45" : "#ea9028" %>;"></span></td>
-        </tr>
-    <% end %>
+      <tr>
+        <td><%= c.id %></td>
+        <td><%= c.comentario %></td>
+        <td><%= link_to taxon, "/especies/#{c.especie_id}" %></td>
+        <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %></td>
+        <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
+        <td class="text-center">
+          <span class="glyphicon glyphicon-<%= c.resuelto == 1 ? "ok" : "alert" %>" title="<%= c.resuelto == 1 ? "Resuelto" : "Pendiente" %>"
+                style="color: <%= c.resuelto == 1 ? "#889b45" : "#ea9028" %>;" id="span_resuelto_<%= c.id %>">
+          </span>
+        </td>
+        <td><%= check_box_tag 'comentario[resuelto]', c.resuelto == 1 ? '1' : '0', c.resuelto == 1 ? true : false, id: "resuelto_#{c.id}" %></td>
+      </tr>
+  <% end %>
 
-    </tbody>
-  </table>
+  </tbody>
+</table>

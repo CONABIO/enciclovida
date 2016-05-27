@@ -1,12 +1,13 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:new, :create, :update, :destroy]
-  before_action :set_comentario, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_usuario!, :only => [:index, :show, :update, :destroy]
-  before_action :only => [:index, :show, :update, :destroy] do
+  skip_before_filter :set_locale, only: [:new, :create, :update, :destroy, :update_admin]
+  before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin]
+  before_action :authenticate_usuario!, :except => [:new, :create]
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
 
+  layout false, only:[:update_admin]
 
   # GET /comentarios
   # GET /comentarios.json
@@ -75,6 +76,16 @@ class ComentariosController < ApplicationController
     @comentarios = Comentario.all
   end
 
+  def update_admin
+    @comentario.resuelto = params[:resuelto]
+
+    if @comentario.save
+      render text: '1'
+    else
+      render text: '0'
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comentario
@@ -83,7 +94,6 @@ class ComentariosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comentario_params
-      #params[:comentario]
-      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre)
+      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :resuelto)
     end
 end
