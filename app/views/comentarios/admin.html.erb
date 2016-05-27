@@ -2,12 +2,11 @@
   <table class="table table-hover table-striped table-condensed table-bordered">
     <thead>
     <tr>
-      <th>#Id</th>
+      <th>Estatus</th>
       <th>Comentario</th>
       <th><%= t :taxon %></th>
       <th>Nombre - Correo</th>
       <th>Fecha</th>
-      <th>Estatus</th>
     </tr>
     </thead>
 
@@ -35,12 +34,11 @@
     %>
 
         <tr>
-          <td><%= c.id %></td>
-          <td><%= c.comentario %></td>
+          <td class="text-center"><span class="glyphicon glyphicon-<%= c.resuelto == 1 ? "ok" : "alert" %>" title="<%= c.resuelto == 1 ? "Resuelto" : "Pendiente" %>" style="color: <%= c.resuelto == 1 ? "#889b45" : "#ea9028" %>;"></span></td>
+          <td title="Id del comentario: <%= c.id %>"><%= c.comentario %></td>
           <td><%= link_to taxon, "/especies/#{c.especie_id}" %></td>
           <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %></td>
           <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-          <td class="text-center"><span class="glyphicon glyphicon-<%= c.resuelto == 1 ? "ok" : "alert" %>" title="<%= c.resuelto == 1 ? "Resuelto" : "Pendiente" %>" style="color: <%= c.resuelto == 1 ? "#889b45" : "#ea9028" %>;"></span></td>
         </tr>
     <% end %>
 
