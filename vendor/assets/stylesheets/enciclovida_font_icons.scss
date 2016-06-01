@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?52488787');
-  src: font-url('enciclovida_font_icons.eot?52488787#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?52488787') format('woff2'),
-       font-url('enciclovida_font_icons.woff?52488787') format('woff'),
-       font-url('enciclovida_font_icons.ttf?52488787') format('truetype'),
-       font-url('enciclovida_font_icons.svg?52488787#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?60274460');
+  src: font-url('enciclovida_font_icons.eot?60274460#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?60274460') format('woff2'),
+       font-url('enciclovida_font_icons.woff?60274460') format('woff'),
+       font-url('enciclovida_font_icons.ttf?60274460') format('truetype'),
+       font-url('enciclovida_font_icons.svg?60274460#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?52488787#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?60274460#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -136,7 +136,7 @@
 .conabio-ev-icon:before { content: '\e84e'; } /* '' */
 .ev1-ev-icon:before { content: '\e84f'; } /* '' */
 .vida-ev-icon:before { content: '\e850'; } /* '' */
-.naturalista-2-ev-icon:before { content: '\e851'; } /* '' */
+.bone-ev-icon:before { content: '\e851'; } /* '' */
 .biomex-ev-icon:before { content: '\e852'; } /* '' */
 .naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
 .naturalista-4-ev-icon:before { content: '\e854'; } /* '' */
@@ -154,4 +154,6 @@
 .enciclo-ev-icon:before { content: '\e860'; } /* '' */
 .ev2-ev-icon:before { content: '\e861'; } /* '' */
 .map-ev-icon:before { content: '\e862'; } /* '' */
+.feather-ev-icon:before { content: '\e863'; } /* '' */
 .globe-2-ev-icon:before { content: '\e864'; } /* '' */
+.naturalista-2-ev-icon:before { content: '\e865'; } /* '' */
