@@ -4,9 +4,9 @@
     <th>Estatus</th>
     <th>Comentario</th>
     <th><%= t :taxon %></th>
-    <th>Nombre - Correo</th>
-    <th>Fecha</th>
+    <th>Nombre / correo / fecha</th>
     <th></th>
+    <th>Eliminar</th>
   </tr>
   </thead>
 
@@ -41,10 +41,11 @@
           </span>
         </td>
         <td><%= c.comentario %></td>
-        <td><%= link_to taxon, "/especies/#{c.especie_id}" %></td>
-        <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %></td>
-        <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
+        <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
+        <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
         <td><%= check_box_tag 'comentario[resuelto]', c.resuelto == 1 ? '1' : '0', c.resuelto == 1 ? true : false, id: "resuelto_#{c.id}" %></td>
+        <td><%= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, "/especies/#{c.especie_id}/comentarios/#{c.id}", method: :delete,
+                        onclick: "return confirm('¿Deseas eliminar este comentario? Este cambio es irreversible')" , class: "btn btn-sm btn-link eliminar_comentario" %></td>
       </tr>
   <% end %>
 

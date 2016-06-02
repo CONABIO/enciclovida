@@ -64,16 +64,19 @@ class ComentariosController < ApplicationController
   # DELETE /comentarios/1
   # DELETE /comentarios/1.json
   def destroy
-    @comentario.destroy
-    respond_to do |format|
-      format.html { redirect_to comentarios_path }
-      format.json { head :no_content }
+    @comentario.resuelto = 3
+
+    if @comentario.save
+      render text: '1'
+    else
+      render text: '0'
     end
   end
 
   # Administracion de los comentarios
   def admin
-    @comentarios = Comentario.all
+    # Resuelto = 3 quiere decir oculto a la vista
+    @comentarios = Comentario.where('resuelto != 3')
   end
 
   def update_admin

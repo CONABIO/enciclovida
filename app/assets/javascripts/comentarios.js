@@ -57,4 +57,9 @@ $(document).ready(function(){
 
         });
     });
+
+    $(document).on('click', "[class^='eliminar_']", function(){
+        console.log('aqui');
+        return false;
+    });
 });
