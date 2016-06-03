@@ -15,6 +15,9 @@ Buscador::Application.routes.draw do
   get 'checklist', to: "busquedas#checklist", as: :checklist
   get 'cat_tax_asociadas', to: "busquedas#cat_tax_asociadas", as: :cat_tax_asociadas
 
+  get 'comentarios/administracion' => 'comentarios#admin', as: :admin
+  post 'comentarios/:id/update_admin' => 'comentarios#update_admin'
+
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
