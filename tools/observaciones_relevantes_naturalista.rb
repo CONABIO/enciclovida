@@ -18,8 +18,8 @@ end
 
 def observaciones
   observaciones_json = []
-  observaciones_id = [3353824,3326375,3189075,1093705,3351887,2887811,1157949,3209930,2100921,3239543,
-                      1668557,2642697,2856031,274209,2618546,1933212,844238,421602,880355,2109113]
+  observaciones_id = [3353824,3326375,3189075,1093705]#,3351887,2887811,1157949,3209930,2100921,3239543,
+                      #1668557,2642697,2856031,274209,2618546,1933212,844238,421602,880355,2109113]
 
   observaciones_id.each do |id|
     url = "http://naturalista.conabio.gob.mx/observations/#{id}.json"
@@ -58,7 +58,7 @@ def observaciones
 
   end
 
-  @bitacora.puts observaciones_json.to_json.to_s
+  @bitacora.puts "var HOMEPAGE_DATA = {\"observations\":" << observaciones_json.to_json.to_s << '}'
 end
 
 def creando_carpeta(path)
@@ -78,7 +78,7 @@ start_time = Time.now
 
 log_path = 'tools/bitacoras/observaciones_relevantes_naturalista'
 creando_carpeta(log_path)
-bitacora("#{log_path}/#{Time.now.strftime("%Y%m%d%H%M%S")}.json")
+bitacora("#{log_path}/#{Time.now.strftime("%Y%m%d%H%M%S")}.js")
 observaciones
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
