@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160525224357) do
+ActiveRecord::Schema.define(version: 20160607172725) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -83,14 +83,18 @@ ActiveRecord::Schema.define(version: 20160525224357) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", force: true do |t|
-    t.text     "comentario",             null: false
+    t.text     "comentario",                        null: false
     t.string   "correo"
     t.string   "nombre"
-    t.integer  "especie_id",             null: false
+    t.integer  "especie_id",                        null: false
     t.integer  "usuario_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "resuelto",   default: 0, null: false
+    t.integer  "estatus",               default: 0, null: false
+    t.string   "ancestry"
+    t.integer  "especie_comentario_id"
+    t.datetime "fecha_estatus"
+    t.integer  "usuario_id2"
   end
 
   create_table "delayed_jobs", force: true do |t|
