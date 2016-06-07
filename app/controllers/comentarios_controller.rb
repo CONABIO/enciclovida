@@ -50,14 +50,12 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
-    respond_to do |format|
-      if @comentario.update(comentario_params)
-        format.html { redirect_to @comentario, notice: 'Comentario was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @comentario.errors, status: :unprocessable_entity }
-      end
+    @comentario.estatus = params[:estatus]
+
+    if @comentario.save
+      render json: {estatus: 1}.to_json
+    else
+      render json: {estatus: 0}.to_json
     end
   end
 
@@ -75,19 +73,10 @@ class ComentariosController < ApplicationController
 
   # Administracion de los comentarios
   def admin
-    # Resuelto = 3 quiere decir oculto a la vista
+    # estatus = 3 quiere decir oculto a la vista
     @comentarios = Comentario.where('estatus != 3')
   end
 
-  def update_admin
-    @comentario.estatus = params[:estatus]
-
-    if @comentario.save
-      render text: '1'
-    else
-      render text: '0'
-    end
-  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

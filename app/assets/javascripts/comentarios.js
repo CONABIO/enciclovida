@@ -30,19 +30,22 @@ $(document).ready(function(){
 
     $(document).on('change', "[id^='estatus_']", function()
     {
+        var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('id').split("_")[1];
 
         // Cambiamos el valor del checkbox de acuerdo a lo que escogio
         $(this).val($(this).val() == "1" ? "0" : "1");
 
         $.ajax({
-            url: "/comentarios/" + comentario_id + "/update_admin",
+            url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
             type: 'POST',
+            method: 'PUT',
+            dataType: "json",
             data: {estatus: $(this).val()}
 
-        }).done(function(html) {
+        }).done(function(resp) {
 
-            if (html == '1')
+            if (resp.estatus == 1)
             {
                 // Quiere decir que cambio a estatus=1
                 if ($('#estatus_'+comentario_id).val() == '1')
