@@ -76,11 +76,11 @@ class ComentariosController < ApplicationController
   # Administracion de los comentarios
   def admin
     # Resuelto = 3 quiere decir oculto a la vista
-    @comentarios = Comentario.where('resuelto != 3')
+    @comentarios = Comentario.where('estatus != 3')
   end
 
   def update_admin
-    @comentario.resuelto = params[:resuelto]
+    @comentario.estatus = params[:estatus]
 
     if @comentario.save
       render text: '1'
@@ -97,6 +97,6 @@ class ComentariosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comentario_params
-      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :resuelto)
+      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus)
     end
 end
