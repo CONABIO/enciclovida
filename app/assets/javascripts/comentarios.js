@@ -38,7 +38,6 @@ $(document).ready(function(){
 
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
-            type: 'POST',
             method: 'PUT',
             dataType: "json",
             data: {estatus: $(this).val()}
