@@ -7,4 +7,5 @@ class Comentario < ActiveRecord::Base
   validates :comentario, :presence => true
   validates :especie_id, :presence => true
 
+  has_ancestry
 end

@@ -1,5 +1,5 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:new, :create, :update, :destroy, :update_admin]
+  skip_before_filter :set_locale, only: [:show, :new, :create, :update, :destroy, :update_admin]
   before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin]
   before_action :authenticate_usuario!, :except => [:new, :create]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin] do
@@ -7,7 +7,7 @@ class ComentariosController < ApplicationController
     render :_error unless permiso
   end
 
-  layout false, only:[:update_admin]
+  layout false, only:[:update, :show]
 
   # GET /comentarios
   # GET /comentarios.json
@@ -17,7 +17,29 @@ class ComentariosController < ApplicationController
 
   # GET /comentarios/1
   # GET /comentarios/1.json
+  # Despliega el historial del comentario, solo estatus 1,2
   def show
+    root = @comentario.is_root? ? @comentario : @comentario.root
+    cuantos = root.descendants.count
+
+    if cuantos > 0
+      resp = root.descendants.map{ |c|
+
+        if usuario = c.usuario
+          nombre = "#{usuario.nombre} #{usuario.apellido}"
+          correo = usuario.email
+        else
+          nombre = c.nombre
+          correo = c.correo
+        end
+
+        { id: c.id, especie_id: c.especie_id, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus }
+      }
+
+      render json: {estatus:1, cuantos: cuantos, resp: resp}.to_json
+    else
+      render json: {estatus:1, cuantos: cuantos}.to_json
+    end
   end
 
   # GET /comentarios/new
@@ -79,13 +101,13 @@ class ComentariosController < ApplicationController
 
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_comentario
-      @comentario = Comentario.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_comentario
+    @comentario = Comentario.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def comentario_params
-      params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def comentario_params
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus)
+  end
 end
