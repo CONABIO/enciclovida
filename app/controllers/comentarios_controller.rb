@@ -97,6 +97,10 @@ class ComentariosController < ApplicationController
   def admin
     # estatus = 3 quiere decir oculto a la vista
     @comentarios = Comentario.where('estatus != 3')
+
+    @comentarios.each do |c|
+      c.cuantos = c.descendants.count
+    end
   end
 
 

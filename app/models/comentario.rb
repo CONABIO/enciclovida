@@ -8,4 +8,8 @@ class Comentario < ActiveRecord::Base
   validates :especie_id, :presence => true
 
   has_ancestry
+
+  # Atributo para tener la cuenta de los comentarios del historial
+  attr_reader :cuantos
+  attr_writer :cuantos
 end

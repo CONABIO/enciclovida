@@ -40,7 +40,12 @@
                 style="color: <%= c.estatus == 1 ? '#889b45' : '#ea9028' %>;" id="span_estatus_<%= c.id %>">
           </span>
         </td>
-        <td><%= c.comentario %></td>
+        <td><%= c.comentario %>
+          <p>
+            <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
+                        class: 'historial', comentario_id: c.id, especie_id: c.especie_id) if c.cuantos == 0 %>
+          </p>
+        </td>
         <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
         <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
         <td><%= check_box_tag 'comentario[estatus]', c.estatus == 1 ? '1' : '0', c.estatus == 1 ? true : false, id: "estatus_#{c.id}", especie_id: c.especie_id %></td>

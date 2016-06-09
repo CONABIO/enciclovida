@@ -60,6 +60,24 @@ $(document).ready(function(){
         });
     });
 
+    $(document).on('click', ".historial", function()
+    {
+        $.ajax({
+            url: "/especies/" + $(this).attr('especie_id') + "/comentarios/" + $(this).attr('comentario_id'),
+            method: 'GET',
+            dataType: "json"
+
+        }).done(function(resp) {
+
+            if (resp.estatus == 1)
+            {
+                console.log(resp)
+            }
+        });
+
+        return false;
+    });
+
     $(document).on('click', "[class^='eliminar_']", function(){
         console.log('aqui');
         return false;
