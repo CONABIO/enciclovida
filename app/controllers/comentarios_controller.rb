@@ -19,11 +19,10 @@ class ComentariosController < ApplicationController
   # GET /comentarios/1.json
   # Despliega el historial del comentario, solo estatus 1,2
   def show
-    root = @comentario.is_root? ? @comentario : @comentario.root
-    cuantos = root.descendants.count
+    cuantos = @comentario.descendants.count
 
     if cuantos > 0
-      resp = root.descendants.map{ |c|
+      resp = @comentario.descendants.map{ |c|
 
         if usuario = c.usuario
           nombre = "#{usuario.nombre} #{usuario.apellido}"
@@ -33,13 +32,25 @@ class ComentariosController < ApplicationController
           correo = c.correo
         end
 
-        { id: c.id, especie_id: c.especie_id, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus }
+        { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus }
       }
 
-      render json: {estatus:1, cuantos: cuantos, resp: resp}.to_json
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
+
     else
-      render json: {estatus:1, cuantos: cuantos}.to_json
+      @comentarios = {estatus:1, cuantos: cuantos}
     end
+
+    # Para crear el form del un comentario al final del historial de comentarios
+    @especie_id = params[:especie_id]
+    @comentario = Comentario.new(especie_id: @especie_id)
+    @comentario.usuario_id = current_usuario.id
+
+    # Estatus 2 quiere decir que es parte del historial de un comentario
+    @comentario.estatus = 2
+
+    # Para no poner la caseta de verificacion
+    @con_verificacion = false
   end
 
   # GET /comentarios/new

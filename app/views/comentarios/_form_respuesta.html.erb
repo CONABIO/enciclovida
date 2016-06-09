@@ -1,0 +1,27 @@
+<div id="error_mensaje"></div>
+<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", class: 'form-inline') do |f| %>
+
+    <% if @comentario.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@comentario.errors.count, 'error') %> no permitió que el comentario fuese enviado:</h2>
+
+          <ul>
+            <% @comentario.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div>
+      <%= f.label :comentario, 'Responder' %>
+      <%= f.text_area :comentario, class: 'form-control' %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit :Enviar, id: 'comentario_submit' %>
+    </div>
+
+    <%= recaptcha_tags(:hl => 'es-419') if @con_verificacion %>
+<% end %>
+

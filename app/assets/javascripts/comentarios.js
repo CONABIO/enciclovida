@@ -62,17 +62,17 @@ $(document).ready(function(){
 
     $(document).on('click', ".historial", function()
     {
+        var especie_id = $(this).attr('especie_id');
+        var comentario_id = $(this).attr('comentario_id');
+
         $.ajax({
-            url: "/especies/" + $(this).attr('especie_id') + "/comentarios/" + $(this).attr('comentario_id'),
-            method: 'GET',
-            dataType: "json"
+            url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
+            method: 'GET'
 
-        }).done(function(resp) {
+        }).done(function(html) {
+            $('#historial_' + comentario_id).append(html);
+            var link_historial = $( "a[comentario_id='"+ comentario_id +"']").attr('especie_id');
 
-            if (resp.estatus == 1)
-            {
-                console.log(resp)
-            }
         });
 
         return false;

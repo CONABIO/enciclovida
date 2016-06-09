@@ -1,4 +1,7 @@
-<p id="notice"><%= notice %></p>
+<% if @comentarios[:cuantos] > 0 %>
+    <% @comentarios[:resp].each do |c| %>
+        <%= c[:comentario] %>
+    <% end %>
+<% end %>
 
-<%= link_to 'Edit', edit_comentario_path(@comentario) %> |
-<%= link_to 'Back', comentarios_path %>
+<%= render 'form_respuesta' %>
