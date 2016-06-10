@@ -227,7 +227,7 @@ class BusquedasController < ApplicationController
 
           #Parte del estatus
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
-          condiciones << ".caso_rango_valores('estatus', #{estatus})" if params[:estatus].present?
+          condiciones << ".caso_rango_valores('estatus', #{estatus})" if params[:estatus].present? || I18n.locale.to_s == 'es'
 
           #Parte del tipo de ditribucion
           if params[:dist].present?
