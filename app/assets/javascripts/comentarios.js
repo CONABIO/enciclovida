@@ -70,10 +70,23 @@ $(document).ready(function(){
             method: 'GET'
 
         }).done(function(html) {
-            $('#historial_' + comentario_id).append(html);
-            var link_historial = $( "a[comentario_id='"+ comentario_id +"']").attr('especie_id');
-
+            $('#historial_' + comentario_id).empty().append(html).slideDown();
+            var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
+            link_historial.hide();
+            $('#ocultar_' + comentario_id).slideDown();
         });
+
+        return false;
+    });
+
+    $(document).on('click', "[id^='ocultar_']", function()
+    {
+        var comentario_id = $(this).attr('id').split("_")[1];
+        var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
+
+        $('#historial_' + comentario_id).hide();
+        $('#ocultar_' + comentario_id).hide();
+        link_historial.slideDown();
 
         return false;
     });
