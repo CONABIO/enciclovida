@@ -3,6 +3,7 @@ class Comentario < ActiveRecord::Base
 
   belongs_to :especie
   belongs_to :usuario
+  belongs_to :categoria_comentario, :class_name => 'CategoriaComentario', :foreign_key => 'categoria_comentario_id', :dependent => :destroy
 
   validates :comentario, :presence => true
   validates :especie_id, :presence => true
