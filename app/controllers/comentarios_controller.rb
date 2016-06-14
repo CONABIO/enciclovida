@@ -103,7 +103,7 @@ class ComentariosController < ApplicationController
         # Para evitar el google captcha a los usuarios administradores
       else
         if @comentario.save
-          format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+          format.html { redirect_to admin_path, notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
         else
           format.html { render action: 'new' }
         end
