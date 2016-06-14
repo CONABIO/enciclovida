@@ -14,7 +14,8 @@ class Comentario < ActiveRecord::Base
   attr_writer :cuantos
 
   # Para evitar el google captcha a los usuarios administradores
-  attr_accessor :con_verificacion
+  attr_reader :con_verificacion
+  attr_writer :con_verificacion
 
   before_save :id_a_base_32
 

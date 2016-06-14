@@ -1,5 +1,5 @@
 <div id="error_mensaje"></div>
-<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", class: 'form-inline') do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", class: 'form-inline') do |f| %>
 
     <% if @comentario.errors.any? %>
         <div id="error_explanation">
@@ -22,8 +22,13 @@
       <%= f.submit :Enviar, id: 'comentario_submit' %>
     </div>
 
-    <%= recaptcha_tags(:hl => 'es-419') if @con_verificacion %>
+    <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion %>
 
-    <%= f.hidden_field :con_verificacion, value: @con_verificacion ? '1' : '0' %>
+    <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
+    <%= f.hidden_field :estatus, value: @comentario.estatus %>
+    <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
+    <%= f.hidden_field(:nombre, value: @comentario.nombre) if @comentario.nombre.present? %>
+    <%= f.hidden_field(:correo, value: @comentario.correo) if @comentario.correo.present? %>
+    <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) if @comentario.usuario_id.present? %>
 <% end %>
 

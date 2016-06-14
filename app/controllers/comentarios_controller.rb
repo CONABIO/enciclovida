@@ -41,8 +41,20 @@ class ComentariosController < ApplicationController
       @comentarios = {estatus:1, cuantos: cuantos}
     end
 
+    # Para saber el ancestry antes de sobreescribir a @comentario
+    ancestry = if @comentario.is_root?
+                             @comentario.id
+                           else
+                             "#{@comentario.ancestry}/#{@comentario.id}"
+                           end
+
+    nombre = @comentario.nombre
+    correo = @comentario.correo
+    usuario_id = @comentario.usuario_id
+
+    especie_id = @comentario.especie_id
+
     # Para crear el form del un comentario al final del historial de comentarios
-    @especie_id = params[:especie_id]
     @comentario = Comentario.new(especie_id: @especie_id)
     @comentario.usuario_id = current_usuario.id
 
@@ -50,7 +62,18 @@ class ComentariosController < ApplicationController
     @comentario.estatus = 2
 
     # Para no poner la caseta de verificacion
-    @con_verificacion = false
+    @comentario.con_verificacion = false
+
+    # Asigna el ancestry
+    @comentario.ancestry = ancestry
+
+    # Datos personales
+    @comentario.nombre = nombre
+    @comentario.correo = correo
+    @comentario.usuario_id = usuario_id
+
+    # Asigna la especie
+    @comentario.especie_id = especie_id
   end
 
   # GET /comentarios/new
@@ -131,6 +154,7 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :con_verificacion)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus,
+                                       :ancestry, :con_verificacion, :especie_id)
   end
 end
