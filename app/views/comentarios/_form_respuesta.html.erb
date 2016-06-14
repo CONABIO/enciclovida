@@ -23,5 +23,7 @@
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @con_verificacion %>
+
+    <%= f.hidden_field :con_verificacion, value: @con_verificacion ? '1' : '0' %>
 <% end %>
 

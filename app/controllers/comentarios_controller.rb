@@ -70,12 +70,20 @@ class ComentariosController < ApplicationController
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
 
     respond_to do |format|
-      if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
-        format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
-        format.json { render action: 'show', status: :created, location: @comentario }
+      if params[:con_verificacion].present? && params[:con_verificacion] == '1'
+        if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
+          format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+        else
+          format.html { render action: 'new' }
+        end
+
+        # Para evitar el google captcha a los usuarios administradores
       else
-        format.html { render action: 'new' }
-        format.json { render json: @comentario.errors, status: :unprocessable_entity }
+        if @comentario.save
+          format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+        else
+          format.html { render action: 'new' }
+        end
       end
     end
   end
@@ -123,6 +131,6 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :con_verificacion)
   end
 end
