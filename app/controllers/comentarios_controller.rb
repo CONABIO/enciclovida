@@ -138,7 +138,7 @@ class ComentariosController < ApplicationController
   # Administracion de los comentarios
   def admin
     # estatus = 3 quiere decir oculto a la vista
-    @comentarios = Comentario.where('estatus != 3')
+    @comentarios = Comentario.where('estatus != 3').order('created_at ASC, estatus ASC')
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
@@ -154,7 +154,7 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus,
-                                       :ancestry, :con_verificacion, :especie_id)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry,
+                                       :con_verificacion, :especie_id, :categoria_comentario_id)
   end
 end
