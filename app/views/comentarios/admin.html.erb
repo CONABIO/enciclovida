@@ -2,6 +2,8 @@
   <thead>
   <tr>
     <th>Estatus</th>
+    <th><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
+                       prompt: '- - - Selecciona un tipo de comentario - - -' %></th>
     <th>Comentario</th>
     <th><%= t :taxon %></th>
     <th>Nombre / correo / fecha</th>
@@ -39,6 +41,10 @@
           <span class="glyphicon glyphicon-<%= c.estatus == 1 ? 'ok' : 'alert' %>" title="<%= c.estatus == 1 ? 'Resuelto' : 'Pendiente' %>"
                 style="color: <%= c.estatus == 1 ? '#889b45' : '#ea9028' %>;" id="span_estatus_<%= c.id %>">
           </span>
+        </td>
+        <td>
+          <% cat = c.categoria_comentario.categoria_ancestro %>
+          <p><strong><%= cat[0] %></strong></p><%= cat[1] %>
         </td>
         <td><%= c.comentario %>
           <p>

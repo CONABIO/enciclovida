@@ -8,15 +8,23 @@ class CategoriaComentario < ActiveRecord::Base
 
     CategoriaComentario.all.each do |cc|
       next unless cc.is_root?
-      nested_options = []
+      grouped_options = []
 
-      descendientes = cc.descendants.map(&:nombre)
-      nested_options << cc.nombre
-      nested_options << descendientes if descendientes.any?
+      descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
+      grouped_options << cc.nombre
+      grouped_options << descendientes if descendientes.any?
 
-      options << nested_options
+      options << grouped_options
     end
 
     options
+  end
+
+  def categoria_ancestro
+    if is_root?
+      nombre
+    else
+      path.map(&:nombre)
+    end
   end
 end
