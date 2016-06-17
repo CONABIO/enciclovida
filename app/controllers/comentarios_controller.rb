@@ -137,8 +137,21 @@ class ComentariosController < ApplicationController
 
   # Administracion de los comentarios
   def admin
-    # estatus = 3 quiere decir oculto a la vista
-    @comentarios = Comentario.where('estatus != 3').order('created_at ASC, estatus ASC')
+    if params[:comentario].present?
+      params = comentario_params
+      consulta = 'Comentario'
+
+      Rails.logger.info "---#{comentario_params}"
+
+      if params[:categoria_comentario_id].present?
+        consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
+      end
+
+      @comentarios = eval(consulta).where('estatus != 3').order('created_at ASC, estatus ASC')
+    else
+      # estatus = 3 quiere decir oculto a la vista
+      @comentarios = Comentario.where('estatus != 3').order('created_at ASC, estatus ASC')
+    end
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
