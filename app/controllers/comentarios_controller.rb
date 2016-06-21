@@ -162,6 +162,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
+      c.completa_nombre_correo_especie
     end
   end
 
