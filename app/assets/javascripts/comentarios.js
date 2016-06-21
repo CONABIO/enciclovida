@@ -103,7 +103,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $(document).on('change', "#filtro_categoria_comentario_id", function()
+    $(document).on('change', "[id^='filtro_']", function()
     {
         window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
     });

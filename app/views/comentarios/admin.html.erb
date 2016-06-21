@@ -5,21 +5,20 @@
       <thead>
       <tr>
         <th>
-          <%= select_tag 'comentario[categoria_comentario_id]', options_for_select(Comentario.options_for_select),
-                           id: 'filtro_estatus', prompt: '- - - Estatus - - -' %>
+          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select),
+                         id: 'filtro_estatus', prompt: '- - - Estatus - - -' %>
 
           <a href="#" data-toggle="popover" data-content="Público: Muestra el comentario como una advertencia, en la ficha del taxón" onclick="return false;">
             <i class="glyphicon glyphicon-info-sign"></i>
           </a>
         </th>
-        <th><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
-                           id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %></th>
+        <th>
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
+                         id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %>
+        </th>
         <th>Comentario</th>
         <th>
           <%= t :taxon %>
-          <a>
-            <i class="glyphicon glyphicon-chevron-up"></i>
-          </a>
         </th>
         <th>Nombre <br /> correo <br /> fecha <a><i class="glyphicon glyphicon-chevron-up"></i></a></th>
         <th>¿Quién y cuando?
@@ -27,7 +26,6 @@
             <i class="glyphicon glyphicon-info-sign"></i>
           </a>
         </th>
-        <!--th>Eliminar</th-->
       </tr>
       </thead>
   <% end %>
@@ -75,9 +73,14 @@
         </td>
         <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
         <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-        <td></td>
-        <!--td><%#= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, "/especies/#{c.especie_id}/comentarios/#{c.id}", method: :delete,
-                        onclick: "return confirm('¿Deseas eliminar este comentario? Este cambio es irreversible')" , class: "btn btn-sm btn-link eliminar_comentario" %></td-->
+        <td>
+          <% if u = c.usuario_id2 %>
+              <p>
+                <%= "#{u.nombre} #{u.apellido}" %>
+              </p>
+              <%= c.fecha_estatus %>
+          <% end %>
+        </td>
       </tr>
   <% end %>
 

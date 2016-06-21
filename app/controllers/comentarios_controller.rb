@@ -141,10 +141,16 @@ class ComentariosController < ApplicationController
       params = comentario_params
       consulta = 'Comentario'
 
-      Rails.logger.info "---#{comentario_params}"
-
       if params[:categoria_comentario_id].present?
         consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
+      end
+
+      if params[:estatus].present?
+        consulta << ".where(estatus: #{params[:estatus].to_i})"
+      end
+
+      if params[:created_at].present?
+        consulta << ".order('created_at #{params[:created_at]}')"
       end
 
       @comentarios = eval(consulta).where('estatus != 3').order('created_at ASC, estatus ASC')
@@ -168,6 +174,6 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry,
-                                       :con_verificacion, :especie_id, :categoria_comentario_id)
+                                       :con_verificacion, :especie_id, :categoria_comentario_id, :created_at)
   end
 end
