@@ -114,7 +114,8 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
-    @comentario.estatus = params[:estatus]
+    @comentario.estatus = params[:estatus] if params[:estatus].present?
+    @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
     if @comentario.save
       render json: {estatus: 1}.to_json
@@ -153,10 +154,10 @@ class ComentariosController < ApplicationController
         consulta << ".order('created_at #{params[:created_at]}')"
       end
 
-      @comentarios = eval(consulta).where('estatus != 3').order('created_at ASC, estatus ASC')
+      @comentarios = eval(consulta).where('estatus < 4').order('estatus ASC, created_at ASC')
     else
       # estatus = 3 quiere decir oculto a la vista
-      @comentarios = Comentario.where('estatus != 3').order('created_at ASC, estatus ASC')
+      @comentarios = Comentario.where('estatus < 4').order('estatus ASC, created_at ASC')
     end
 
     @comentarios.each do |c|

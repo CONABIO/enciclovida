@@ -41,13 +41,11 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('change', "[id^='estatus_']", function()
+    $(document).on('change', ".comentario_estatus", function()
     {
         var especie_id = $(this).attr('especie_id');
-        var comentario_id = $(this).attr('id').split("_")[1];
-
-        // Cambiamos el valor del checkbox de acuerdo a lo que escogio
-        $(this).val($(this).val() == "1" ? "0" : "1");
+        var comentario_id = $(this).attr('comentario_id');
+        var div_estatus = $('#comentario_estatus_div_' + comentario_id);
 
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
@@ -59,15 +57,74 @@ $(document).ready(function(){
 
             if (resp.estatus == 1)
             {
-                // Quiere decir que cambio a estatus=1
-                if ($('#estatus_'+comentario_id).val() == '1')
+                div_estatus.removeClass("alert-danger");
+
+                if (!div_estatus.hasClass("alert-success"))
                 {
-                    $('#span_estatus_' + comentario_id).removeClass('glyphicon-alert').addClass('glyphicon-ok');
-                    $('#span_estatus_' + comentario_id).css('color','#889b45');
-                } else {
-                    $('#span_estatus_' + comentario_id).removeClass('glyphicon-ok').addClass('glyphicon-alert');
-                    $('#span_estatus_' + comentario_id).css('color','#ea9028');
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
                 }
+
+            } else {
+                div_estatus.removeClass("alert-success");
+
+                if (!div_estatus.hasClass("alert-danger"))
+                {
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar").slideDown();
+                }
+            }
+        }).fail(function() {
+            div_estatus.removeClass("alert-success");
+
+            if (!div_estatus.hasClass("alert-danger"))
+            {
+                $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar");
+            }
+        });
+    });
+
+    $(document).on('change', ".comentario_categoria_comentario_id", function()
+    {
+        var especie_id = $(this).attr('especie_id');
+        var comentario_id = $(this).attr('comentario_id');
+        var div_estatus = $('#comentario_categoria_comentario_id_div_' + comentario_id);
+
+        $.ajax({
+            url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
+            method: 'PUT',
+            dataType: "json",
+            data: {categoria_comentario_id: $(this).val()}
+
+        }).done(function(resp) {
+
+            if (resp.estatus == 1)
+            {
+                div_estatus.removeClass("alert-danger");
+
+                if (!div_estatus.hasClass("alert-success"))
+                {
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
+                }
+
+            } else {
+                div_estatus.removeClass("alert-success");
+
+                if (!div_estatus.hasClass("alert-danger"))
+                {
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar").slideDown();
+                }
+            }
+        }).fail(function() {
+            div_estatus.removeClass("alert-success");
+
+            if (!div_estatus.hasClass("alert-danger"))
+            {
+                $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar");
             }
         });
     });
@@ -106,11 +163,6 @@ $(document).ready(function(){
     $(document).on('change', "[id^='filtro_']", function()
     {
         window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
-    });
-
-    $(document).on('click', "[class^='eliminar_']", function(){
-        console.log('aqui');
-        return false;
     });
 
     $('[data-toggle="popover"]').popover();
