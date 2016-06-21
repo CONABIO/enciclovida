@@ -4,13 +4,29 @@
   <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
       <thead>
       <tr>
-        <th>Estatus</th>
+        <th>
+          <%= select_tag 'comentario[categoria_comentario_id]', options_for_select(Comentario.options_for_select),
+                           id: 'filtro_estatus', prompt: '- - - Estatus - - -' %>
+
+          <a href="#" data-toggle="popover" data-content="Público: Muestra el comentario como una advertencia, en la ficha del taxón" onclick="return false;">
+            <i class="glyphicon glyphicon-info-sign"></i>
+          </a>
+        </th>
         <th><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
                            id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %></th>
         <th>Comentario</th>
-        <th><%= t :taxon %></th>
-        <th>Nombre / correo / fecha</th>
-        <th></th>
+        <th>
+          <%= t :taxon %>
+          <a>
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </a>
+        </th>
+        <th>Nombre <br /> correo <br /> fecha <a><i class="glyphicon glyphicon-chevron-up"></i></a></th>
+        <th>¿Quién y cuando?
+          <a href="#" data-toggle="popover" data-content="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" onclick="return false;">
+            <i class="glyphicon glyphicon-info-sign"></i>
+          </a>
+        </th>
         <!--th>Eliminar</th-->
       </tr>
       </thead>
@@ -42,14 +58,12 @@
 
       <tr>
         <td class="text-center">
-          <span class="glyphicon glyphicon-<%= c.estatus == 1 ? 'ok' : 'alert' %>" title="<%= c.estatus == 1 ? 'Resuelto' : 'Pendiente' %>"
-                style="color: <%= c.estatus == 1 ? '#889b45' : '#ea9028' %>;" id="span_estatus_<%= c.id %>">
-          </span>
-          <p><%= check_box_tag 'comentario[estatus]', c.estatus == 1 ? '1' : '0', c.estatus == 1 ? true : false, id: "estatus_#{c.id}", especie_id: c.especie_id %></p>
+          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
+                         class: 'comentario_estatus', comentario_id: c.id %>
         </td>
         <td>
-          <% cat = c.categoria_comentario.categoria_ancestro %>
-          <p><strong><%= cat[0] %></strong></p><%= cat[1] %>
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options, c.categoria_comentario_id),
+                         class: 'comentario_categoria_comentario_id' %>
         </td>
         <td><%= c.comentario %>
           <p>
@@ -61,7 +75,7 @@
         </td>
         <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
         <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-        <td><%= check_box_tag 'comentario[estatus]', c.estatus == 1 ? '1' : '0', c.estatus == 1 ? true : false, id: "estatus_#{c.id}", especie_id: c.especie_id %></td>
+        <td></td>
         <!--td><%#= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, "/especies/#{c.especie_id}/comentarios/#{c.id}", method: :delete,
                         onclick: "return confirm('¿Deseas eliminar este comentario? Este cambio es irreversible')" , class: "btn btn-sm btn-link eliminar_comentario" %></td-->
       </tr>

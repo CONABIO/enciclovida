@@ -3,6 +3,19 @@ function es_correo(email) {
     return regex.test(email);
 }
 
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
 $(document).ready(function(){
     $('#comentario_submit').click(function(){
         if ($('#comentario_correo').val() != undefined && $('#comentario_correo').val() == '')
@@ -56,7 +69,6 @@ $(document).ready(function(){
                     $('#span_estatus_' + comentario_id).css('color','#ea9028');
                 }
             }
-
         });
     });
 
@@ -100,4 +112,6 @@ $(document).ready(function(){
         console.log('aqui');
         return false;
     });
+
+    $('[data-toggle="popover"]').popover();
 });
