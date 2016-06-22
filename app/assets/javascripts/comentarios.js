@@ -16,6 +16,17 @@ function getUrlVars()
     return vars;
 }
 
+function asigna_valores_select()
+{
+    var params = getUrlVars();
+
+    if (params["comentario%5Bestatus%5D"] != undefined)
+        $('#filtro_estatus').val(params["comentario%5Bestatus%5D"]);
+
+    if (params["comentario%5Bcategoria_comentario_id%5D"] != undefined)
+        $('#filtro_categoria_comentario_id').val(params["comentario%5Bcategoria_comentario_id%5D"]);
+}
+
 $(document).ready(function(){
     $('#comentario_submit').click(function(){
         if ($('#comentario_correo').val() != undefined && $('#comentario_correo').val() == '')
@@ -165,5 +176,13 @@ $(document).ready(function(){
         window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
     });
 
+    $(document).on('click', "#filtro_created_at", function()
+    {
+        console.log($(this > i).attr('class'));
+        return false;
+
+    });
+
     $('[data-toggle="popover"]').popover();
+    asigna_valores_select();
 });

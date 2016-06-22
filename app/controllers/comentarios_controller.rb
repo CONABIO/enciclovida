@@ -150,11 +150,13 @@ class ComentariosController < ApplicationController
         consulta << ".where(estatus: #{params[:estatus].to_i})"
       end
 
+      # Para ordenar por created_at
       if params[:created_at].present?
-        consulta << ".order('created_at #{params[:created_at]}')"
+        @comentarios = eval(consulta).where('estatus < 4').order("created_at #{params[:created_at]}")
+      else
+        @comentarios = eval(consulta).where('estatus < 4').order('estatus ASC, created_at ASC')
       end
 
-      @comentarios = eval(consulta).where('estatus < 4').order('estatus ASC, created_at ASC')
     else
       # estatus = 3 quiere decir oculto a la vista
       @comentarios = Comentario.where('estatus < 4').order('estatus ASC, created_at ASC')

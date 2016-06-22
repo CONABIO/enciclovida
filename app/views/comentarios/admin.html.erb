@@ -20,7 +20,10 @@
         <th>
           <%= t :taxon %>
         </th>
-        <th>Fecha <a><i class="glyphicon glyphicon-chevron-up"></i></a></th>
+        <th>
+          Fecha <a href="<%= admin_path %>" id="filtro_created_at"><i class="glyphicon glyphicon-chevron-up"></i></a>
+          <%= hidden_field_tag 'comentario[created_at]' %>
+        </th>
         <th>¿Quién y cuando?
           <a href="#" data-toggle="popover" data-content="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" onclick="return false;">
             <i class="glyphicon glyphicon-info-sign"></i>
@@ -31,29 +34,8 @@
   <% end %>
 
   <tbody style="font-size: .85em;">
-  <%
-     @comentarios.each do |c|
-       if c.usuario_id.present?
-         if u = c.usuario
-           correo = u.email
-           nombre = "#{u.nombre} #{u.apellido}"
 
-         else
-           correo = c.correo
-           nombre = c.nombre
-         end
-       else
-         correo = c.correo
-         nombre = c.nombre
-       end
-
-       if t = c.especie
-         taxon = t.nombre_cientifico
-       else
-         taxon = "Este #{t(:taxon)} no existe"
-       end
-  %>
-
+  <% @comentarios.each do |c| %>
       <tr>
         <td class="text-center">
           <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
@@ -65,7 +47,8 @@
                          class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
           <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
         </td>
-        <td><%= c.comentario %>
+        <td>
+          <%= c.comentario %>
           <p>
             <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
           </p>
