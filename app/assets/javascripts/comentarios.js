@@ -25,6 +25,16 @@ function asigna_valores_select()
 
     if (params["comentario%5Bcategoria_comentario_id%5D"] != undefined)
         $('#filtro_categoria_comentario_id').val(params["comentario%5Bcategoria_comentario_id%5D"]);
+
+    if (params["comentario%5Bcreated_at%5D"] != undefined)
+    {
+        if (params["comentario%5Bcreated_at%5D"] == "ASC")
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-down").addClass("glyphicon-chevron-up");
+        if (params["comentario%5Bcreated_at%5D"] == "DESC")
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-up").addClass("glyphicon-chevron-down");
+
+        $('#comentario_created_at').val(params["comentario%5Bcreated_at%5D"]);
+    }
 }
 
 $(document).ready(function(){
@@ -178,9 +188,23 @@ $(document).ready(function(){
 
     $(document).on('click', "#filtro_created_at", function()
     {
-        console.log($(this > i).attr('class'));
-        return false;
+        if ($('#filtro_created_at > i').hasClass("glyphicon-sort"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
+            $('#comentario_created_at').val('ASC');
 
+        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-up"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+            $('#comentario_created_at').val('DESC');
+
+        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-down"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+            $('#comentario_created_at').val('ASC');
+        }
+
+        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
     });
 
     $('[data-toggle="popover"]').popover();
