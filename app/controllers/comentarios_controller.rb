@@ -114,7 +114,12 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
-    @comentario.estatus = params[:estatus] if params[:estatus].present?
+    if params[:estatus].present?
+      @comentario.estatus = params[:estatus]
+      @comentario.usuario_id2 = current_usuario.id
+      @comentario.fecha_estatus = Time.now
+    end
+
     @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
     if @comentario.save
@@ -158,7 +163,7 @@ class ComentariosController < ApplicationController
       end
 
     else
-      # estatus = 3 quiere decir oculto a la vista
+      # estatus > 3 quiere decir oculto a la vista
       @comentarios = Comentario.where('estatus < 4').order('estatus ASC, created_at ASC')
     end
 

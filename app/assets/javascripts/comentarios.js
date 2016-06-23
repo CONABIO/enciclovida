@@ -64,6 +64,16 @@ $(document).ready(function(){
 
     $(document).on('change', ".comentario_estatus", function()
     {
+        var estatus = $(this).val();
+
+        if (estatus == 5)
+        {
+            var r = confirm("¿Estás seguro de eliminar este comentario? Ya no será visible desde el panel de administración");
+
+            if (r != true)
+                return false;
+        }
+
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
         var div_estatus = $('#comentario_estatus_div_' + comentario_id);
@@ -72,18 +82,22 @@ $(document).ready(function(){
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
             method: 'PUT',
             dataType: "json",
-            data: {estatus: $(this).val()}
+            data: {estatus: estatus}
 
         }).done(function(resp) {
 
             if (resp.estatus == 1)
             {
-                div_estatus.removeClass("alert-danger");
+                if (estatus == 5)
+                    $('#renglon_' + comentario_id).remove();
+                else {
+                    div_estatus.removeClass("alert-danger");
 
-                if (!div_estatus.hasClass("alert-success"))
-                {
-                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
-                    $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
+                    if (!div_estatus.hasClass("alert-success"))
+                    {
+                        $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
+                        $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
+                    }
                 }
 
             } else {

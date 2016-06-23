@@ -36,10 +36,11 @@
   <tbody style="font-size: .85em;">
 
   <% @comentarios.each do |c| %>
-      <tr>
+      <tr id="renglon_<%= c.id %>">
         <td class="text-center">
           <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
-                         class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id %>
+                         class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id
+          %>
           <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
         </td>
         <td>
@@ -62,11 +63,12 @@
         <td><%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %></td>
         <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
         <td>
-          <% if u = c.usuario_id2 %>
+          <% if c.usuario_id2 %>
+              <% u = Usuario.find(c.usuario_id2) %>
               <p>
                 <%= "#{u.nombre} #{u.apellido}" %>
               </p>
-              <%= c.fecha_estatus %>
+              <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
           <% end %>
         </td>
       </tr>
