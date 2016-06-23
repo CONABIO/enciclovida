@@ -2,12 +2,12 @@ class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :new, :create, :update, :destroy, :update_admin]
   before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin]
   before_action :authenticate_usuario!, :except => [:new, :create]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin] do
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :dame_correo] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
 
-  layout false, only:[:update, :show]
+  layout false, only:[:update, :show, :dame_correo]
 
   # GET /comentarios
   # GET /comentarios.json
@@ -145,6 +145,24 @@ class ComentariosController < ApplicationController
     end
   end
 
+  #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
+  # en el formato de la tabla comentarios para tener un front-end adminsitrable
+  def extrae_comentarios_generales
+    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/inbox"
+
+    response = JSON.parse(RestClient.get address, {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+
+    #render inline: response.to_s
+    render 'comentarios/generales', :locals => {:response => response}
+  end
+
+  def dame_correo
+    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
+    puts address
+    response = RestClient.get address, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
+
+    render text: response.to_s
+  end
 
   private
   # Use callbacks to share common setup or constraints between actions.
