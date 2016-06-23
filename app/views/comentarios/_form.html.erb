@@ -28,6 +28,11 @@
     <% end %>
 
     <div>
+      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?' %>
+      <%= f.select :categoria_comentario_id, CategoriaComentario.grouped_options, include_blank: '---Elige una opción---',class: 'form-control' %>
+    </div>
+
+    <div>
       <%= f.label :comentario %>
       <%= f.text_area :comentario, class: 'form-control' %>
     </div>

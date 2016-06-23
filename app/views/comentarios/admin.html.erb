@@ -1,46 +1,58 @@
+<%= link_to 'Limpiar filtros', admin_path %>
+
 <table class="table table-hover table-striped table-condensed table-bordered">
-  <thead>
-  <tr>
-    <th>Estatus</th>
-    <th>Comentario</th>
-    <th><%= t :taxon %></th>
-    <th>Nombre / correo / fecha</th>
-    <th></th>
-    <!--th>Eliminar</th-->
-  </tr>
-  </thead>
+  <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
+      <thead>
+      <tr>
+        <th>
+          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select),
+                         id: 'filtro_estatus', prompt: '- - - Estatus - - -' %>
+
+          <a href="#" data-toggle="popover" data-content="Público: Muestra el comentario como una advertencia, en la ficha del taxón" onclick="return false;">
+            <i class="glyphicon glyphicon-info-sign"></i>
+          </a>
+        </th>
+        <th>
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
+                         id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %>
+        </th>
+        <th>Comentario</th>
+        <th>
+          <%= t :taxon %>
+        </th>
+        <th>
+          Fecha <a href="<%= admin_path %>" id="filtro_created_at"><i class="glyphicon glyphicon-sort"></i></a>
+          <%= hidden_field_tag 'comentario[created_at]' %>
+        </th>
+        <th>¿Quién y cuando?
+          <a href="#" data-toggle="popover" data-content="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" onclick="return false;">
+            <i class="glyphicon glyphicon-info-sign"></i>
+          </a>
+        </th>
+      </tr>
+      </thead>
+  <% end %>
 
   <tbody style="font-size: .85em;">
-  <%
-     @comentarios.each do |c|
-       if c.usuario_id.present?
-         if u = c.usuario
-           correo = u.email
-           nombre = "#{u.nombre} #{u.apellido}"
 
-         else
-           correo = c.correo
-           nombre = c.nombre
-         end
-       else
-         correo = c.correo
-         nombre = c.nombre
-       end
-
-       if t = c.especie
-         taxon = t.nombre_cientifico
-       else
-         taxon = "Este #{t(:taxon)} no existe"
-       end
-  %>
-
-      <tr>
+  <% @comentarios.each do |c| %>
+      <tr id="renglon_<%= c.id %>">
         <td class="text-center">
-          <span class="glyphicon glyphicon-<%= c.estatus == 1 ? 'ok' : 'alert' %>" title="<%= c.estatus == 1 ? 'Resuelto' : 'Pendiente' %>"
-                style="color: <%= c.estatus == 1 ? '#889b45' : '#ea9028' %>;" id="span_estatus_<%= c.id %>">
-          </span>
+          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
+                         class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id
+          %>
+          <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
         </td>
-        <td><%= c.comentario %>
+        <td>
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options, c.categoria_comentario_id),
+                         class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
+          <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
+        </td>
+        <td>
+          <%= c.comentario %>
+          <p>
+            <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
+          </p>
           <p>
             <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
                         class: 'historial', comentario_id: c.id, especie_id: c.especie_id) if c.cuantos > 0 %>
@@ -48,11 +60,17 @@
           </p>
           <div id="historial_<%= c.id %>"></div>
         </td>
-        <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
-        <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-        <td><%= check_box_tag 'comentario[estatus]', c.estatus == 1 ? '1' : '0', c.estatus == 1 ? true : false, id: "estatus_#{c.id}", especie_id: c.especie_id %></td>
-        <!--td><%#= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, "/especies/#{c.especie_id}/comentarios/#{c.id}", method: :delete,
-                        onclick: "return confirm('¿Deseas eliminar este comentario? Este cambio es irreversible')" , class: "btn btn-sm btn-link eliminar_comentario" %></td-->
+        <td><%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %></td>
+        <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
+        <td>
+          <% if c.usuario_id2 %>
+              <% u = Usuario.find(c.usuario_id2) %>
+              <p>
+                <%= "#{u.nombre} #{u.apellido}" %>
+              </p>
+              <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
+          <% end %>
+        </td>
       </tr>
   <% end %>
 

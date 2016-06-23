@@ -114,7 +114,13 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
-    @comentario.estatus = params[:estatus]
+    if params[:estatus].present?
+      @comentario.estatus = params[:estatus]
+      @comentario.usuario_id2 = current_usuario.id
+      @comentario.fecha_estatus = Time.now
+    end
+
+    @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
     if @comentario.save
       render json: {estatus: 1}.to_json
@@ -137,11 +143,33 @@ class ComentariosController < ApplicationController
 
   # Administracion de los comentarios
   def admin
-    # estatus = 3 quiere decir oculto a la vista
-    @comentarios = Comentario.where('estatus != 3')
+    if params[:comentario].present?
+      params = comentario_params
+      consulta = 'Comentario'
+
+      if params[:categoria_comentario_id].present?
+        consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
+      end
+
+      if params[:estatus].present?
+        consulta << ".where(estatus: #{params[:estatus].to_i})"
+      end
+
+      # Para ordenar por created_at
+      if params[:created_at].present?
+        @comentarios = eval(consulta).where('estatus < 4').order("created_at #{params[:created_at]}")
+      else
+        @comentarios = eval(consulta).where('estatus < 4').order('estatus ASC, created_at ASC')
+      end
+
+    else
+      # estatus > 3 quiere decir oculto a la vista
+      @comentarios = Comentario.where('estatus < 4').order('estatus ASC, created_at ASC')
+    end
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
+      c.completa_nombre_correo_especie
     end
   end
 
@@ -172,7 +200,7 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus,
-                                       :ancestry, :con_verificacion, :especie_id)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry,
+                                       :con_verificacion, :especie_id, :categoria_comentario_id, :created_at)
   end
 end

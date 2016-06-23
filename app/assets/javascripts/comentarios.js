@@ -3,6 +3,40 @@ function es_correo(email) {
     return regex.test(email);
 }
 
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+function asigna_valores_select()
+{
+    var params = getUrlVars();
+
+    if (params["comentario%5Bestatus%5D"] != undefined)
+        $('#filtro_estatus').val(params["comentario%5Bestatus%5D"]);
+
+    if (params["comentario%5Bcategoria_comentario_id%5D"] != undefined)
+        $('#filtro_categoria_comentario_id').val(params["comentario%5Bcategoria_comentario_id%5D"]);
+
+    if (params["comentario%5Bcreated_at%5D"] != undefined)
+    {
+        if (params["comentario%5Bcreated_at%5D"] == "ASC")
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-down").addClass("glyphicon-chevron-up");
+        if (params["comentario%5Bcreated_at%5D"] == "DESC")
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-up").addClass("glyphicon-chevron-down");
+
+        $('#comentario_created_at').val(params["comentario%5Bcreated_at%5D"]);
+    }
+}
+
 $(document).ready(function(){
     $('#comentario_submit').click(function(){
         if ($('#comentario_correo').val() != undefined && $('#comentario_correo').val() == '')
@@ -28,35 +62,105 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('change', "[id^='estatus_']", function()
+    $(document).on('change', ".comentario_estatus", function()
     {
-        var especie_id = $(this).attr('especie_id');
-        var comentario_id = $(this).attr('id').split("_")[1];
+        var estatus = $(this).val();
 
-        // Cambiamos el valor del checkbox de acuerdo a lo que escogio
-        $(this).val($(this).val() == "1" ? "0" : "1");
+        if (estatus == 5)
+        {
+            var r = confirm("¿Estás seguro de eliminar este comentario? Ya no será visible desde el panel de administración");
+
+            if (r != true)
+                return false;
+        }
+
+        var especie_id = $(this).attr('especie_id');
+        var comentario_id = $(this).attr('comentario_id');
+        var div_estatus = $('#comentario_estatus_div_' + comentario_id);
 
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
             method: 'PUT',
             dataType: "json",
-            data: {estatus: $(this).val()}
+            data: {estatus: estatus}
 
         }).done(function(resp) {
 
             if (resp.estatus == 1)
             {
-                // Quiere decir que cambio a estatus=1
-                if ($('#estatus_'+comentario_id).val() == '1')
+                if (estatus == 5)
+                    $('#renglon_' + comentario_id).remove();
+                else {
+                    div_estatus.removeClass("alert-danger");
+
+                    if (!div_estatus.hasClass("alert-success"))
+                    {
+                        $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
+                        $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
+                    }
+                }
+
+            } else {
+                div_estatus.removeClass("alert-success");
+
+                if (!div_estatus.hasClass("alert-danger"))
                 {
-                    $('#span_estatus_' + comentario_id).removeClass('glyphicon-alert').addClass('glyphicon-ok');
-                    $('#span_estatus_' + comentario_id).css('color','#889b45');
-                } else {
-                    $('#span_estatus_' + comentario_id).removeClass('glyphicon-ok').addClass('glyphicon-alert');
-                    $('#span_estatus_' + comentario_id).css('color','#ea9028');
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar").slideDown();
                 }
             }
+        }).fail(function() {
+            div_estatus.removeClass("alert-success");
 
+            if (!div_estatus.hasClass("alert-danger"))
+            {
+                $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar");
+            }
+        });
+    });
+
+    $(document).on('change', ".comentario_categoria_comentario_id", function()
+    {
+        var especie_id = $(this).attr('especie_id');
+        var comentario_id = $(this).attr('comentario_id');
+        var div_estatus = $('#comentario_categoria_comentario_id_div_' + comentario_id);
+
+        $.ajax({
+            url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
+            method: 'PUT',
+            dataType: "json",
+            data: {categoria_comentario_id: $(this).val()}
+
+        }).done(function(resp) {
+
+            if (resp.estatus == 1)
+            {
+                div_estatus.removeClass("alert-danger");
+
+                if (!div_estatus.hasClass("alert-success"))
+                {
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-success');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("¡Tu cambio fue guardado exitosamente!").slideDown();
+                }
+
+            } else {
+                div_estatus.removeClass("alert-success");
+
+                if (!div_estatus.hasClass("alert-danger"))
+                {
+                    $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                    $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar").slideDown();
+                }
+            }
+        }).fail(function() {
+            div_estatus.removeClass("alert-success");
+
+            if (!div_estatus.hasClass("alert-danger"))
+            {
+                $('#comentario_estatus_div_' + comentario_id).addClass('alert-danger');
+                $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar");
+            }
         });
     });
 
@@ -91,8 +195,32 @@ $(document).ready(function(){
         return false;
     });
 
-    $(document).on('click', "[class^='eliminar_']", function(){
-        console.log('aqui');
-        return false;
+    $(document).on('change', "[id^='filtro_']", function()
+    {
+        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
     });
+
+    $(document).on('click', "#filtro_created_at", function()
+    {
+        if ($('#filtro_created_at > i').hasClass("glyphicon-sort"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
+            $('#comentario_created_at').val('ASC');
+
+        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-up"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+            $('#comentario_created_at').val('DESC');
+
+        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-down"))
+        {
+            $('#filtro_created_at > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+            $('#comentario_created_at').val('ASC');
+        }
+
+        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
+    });
+
+    $('[data-toggle="popover"]').popover();
+    asigna_valores_select();
 });
