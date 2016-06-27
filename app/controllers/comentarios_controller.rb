@@ -79,7 +79,8 @@ class ComentariosController < ApplicationController
   # GET /comentarios/new
   def new
     @especie_id = params[:especie_id]
-    @comentario = Comentario.new(especie_id: @especie_id)
+    @comentario = Comentario.new
+    @comentario.con_verificacion = true
   end
 
   # GET /comentarios/1/edit
