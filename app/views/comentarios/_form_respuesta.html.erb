@@ -19,7 +19,7 @@
     </div>
 
     <div class="actions">
-      <%= f.submit :Enviar, id: 'comentario_submit' %>
+      <%= f.submit :Enviar, class: 'comentario_submit' %>
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion %>
@@ -31,4 +31,14 @@
     <%= f.hidden_field(:correo, value: @comentario.correo) if @comentario.correo.present? %>
     <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) if @comentario.usuario_id.present? %>
 <% end %>
+
+<script>
+    $(document).ready(function() {
+        $('.comentario_submit').click(function () {
+            if ($('#comentario_comentario').val() == '')
+                errores.push("El comentario no puede ser vacío.");
+            return false;
+        });
+    });
+</script>
 

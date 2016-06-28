@@ -22,7 +22,9 @@ class Comentario < ActiveRecord::Base
   attr_reader :nombre_cientifico
   attr_writer :nombre_cientifico
 
+  validates_presence_of :categoria_comentario_id
   before_save :id_a_base_32
+
 
 
   def self.options_for_select

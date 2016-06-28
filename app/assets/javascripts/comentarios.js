@@ -39,25 +39,30 @@ function asigna_valores_select()
 
 $(document).ready(function(){
     $('#comentario_submit').click(function(){
+        var errores = [];
+
         if ($('#comentario_correo').val() != undefined && $('#comentario_correo').val() == '')
+            errores.push("El correo no puede ser vacío.");
+
+        else if ($('#comentario_correo').val() != undefined)
         {
-            $('#error_mensaje').empty().html('El correo no puede ser vacio.');
-            return false;
-        } else if ($('#comentario_correo').val() != undefined){
             if (!es_correo($('#comentario_correo').val()))
-            {
-                $('#error_mensaje').empty().html('El correo no es válido, por favor verifica.');
-                return false;
-            }
+                errores.push("El correo no es válido, por favor verifica.");
         }
+
         if ($('#comentario_nombre').val() != undefined && $('#comentario_nombre').val() == '')
-        {
-            $('#error_mensaje').empty().html('El nombre no puede ser vacio.');
-            return false;
-        }
+            errores.push("El nombre no puede ser vacío.");
+
         if ($('#comentario_comentario').val() == '')
+            errores.push("El comentario no puede ser vacío.");
+
+        if ($('#comentario_categoria_comentario_id').val() == '')
+            errores.push("La clase de comentario no puede ser vacía.");
+
+        if (errores.length > 0)
         {
-            $('#error_mensaje').empty().html('El comentario no puede ser vacio.');
+            var msj_error = '<p>Algún error(es) no permitieron que tu comentario fuese enviado</p>'
+            $('#error_mensaje').empty().html(msj_error + '<ul><li>' + errores.join('</li><li>') + '</li></ul>');
             return false;
         }
     });

@@ -93,6 +93,8 @@ class ComentariosController < ApplicationController
     @especie_id = params[:especie_id]
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
 
+    params = comentario_params
+
     respond_to do |format|
       if params[:con_verificacion].present? && params[:con_verificacion] == '1'
         if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
