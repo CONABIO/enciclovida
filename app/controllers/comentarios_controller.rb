@@ -64,6 +64,9 @@ class ComentariosController < ApplicationController
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
 
+    # Proviene de un administrador
+    @comentario.es_admin = true
+
     # Asigna el ancestry
     @comentario.ancestry = ancestry
 
@@ -98,20 +101,30 @@ class ComentariosController < ApplicationController
     respond_to do |format|
       if params[:con_verificacion].present? && params[:con_verificacion] == '1'
         if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
-          format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+          if params[:es_admin].present? && params[:es_admin] == '1'
+            format.json {render json: {estatus: 1}.to_json}
+          else
+            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+          end
+
         else
-          format.html { render action: 'new' }
+          if params[:es_admin].present? && params[:es_admin] == '1'
+            format.json {render json: {estatus: 0}.to_json}
+          else
+            format.html { render action: 'new' }
+          end
         end
 
-        # Para evitar el google captcha a los usuarios administradores
+      # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if @comentario.save
-          format.html { redirect_to admin_path, notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+          format.json {render json: {estatus: 1}.to_json}
         else
-          format.html { render action: 'new' }
+          format.json {render json: {estatus: 0}.to_json}
         end
-      end
-    end
+
+      end  # end con_verificacion
+    end  # end tipo response
   end
 
   # PATCH/PUT /comentarios/1

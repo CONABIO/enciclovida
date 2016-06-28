@@ -18,6 +18,10 @@ class Comentario < ActiveRecord::Base
   attr_reader :con_verificacion
   attr_writer :con_verificacion
 
+  # Para saber si es un comentario de un administrador
+  attr_reader :es_admin
+  attr_writer :es_admin
+
   # Para tener la referencia al nombre de la especie
   attr_reader :nombre_cientifico
   attr_writer :nombre_cientifico

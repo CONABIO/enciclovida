@@ -38,7 +38,7 @@ function asigna_valores_select()
 }
 
 $(document).ready(function(){
-    $('#comentario_submit').click(function(){
+    $('.comentario_submit').on('click', function(){
         var errores = [];
 
         if ($('#comentario_correo').val() != undefined && $('#comentario_correo').val() == '')
