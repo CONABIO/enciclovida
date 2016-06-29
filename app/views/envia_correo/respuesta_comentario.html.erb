@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Gracias por utilizar el servicio de comentarios de EncicloVida</h1>
+<p>
+  El personal de CONABIO ha respondido a tu último comentario acerca de
+  <%= @comentario.nombre_comun %> <strong><%= @comentario.nombre_cientifico %></strong>
+</p>
+
+<p>
+  <%
+     # Es el ultimo comentario de la persona que mandó el mensaje
+     ancestros = @comentario.ancestors.where().reverse.first
+  %>
+</p>
+</body>
+</html>

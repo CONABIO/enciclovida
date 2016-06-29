@@ -118,6 +118,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if @comentario.save
+          #EnviaCorreo.respuesta_comentario(@comentario).deliver
           format.json {render json: {estatus: 1}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
