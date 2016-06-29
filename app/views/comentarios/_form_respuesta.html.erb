@@ -16,9 +16,14 @@
 
     <%= f.hidden_field :estatus, value: @comentario.estatus %>
     <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
-    <%= f.hidden_field(:nombre, value: @comentario.nombre) if @comentario.nombre.present? %>
-    <%= f.hidden_field(:correo, value: @comentario.correo) if @comentario.correo.present? %>
-    <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) if @comentario.usuario_id.present? %>
+
+    <% if @comentario.usuario_id.present? %>
+        <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) %>
+    <% else %>
+        <%= f.hidden_field(:nombre, value: @comentario.nombre) %>
+        <%= f.hidden_field(:correo, value: @comentario.correo) %>
+    <% end %>
+
 <% end %>
 
 <script>

@@ -41,25 +41,17 @@ class ComentariosController < ApplicationController
       @comentarios = {estatus:1, cuantos: cuantos}
     end
 
-    # Para saber el ancestry antes de sobreescribir a @comentario
-    ancestry = if @comentario.is_root?
-                             @comentario.id
-                           else
-                             "#{@comentario.ancestry}/#{@comentario.id}"
-                           end
+    # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
+    ultimo_comentario = @comentario.subtree_ids.reverse.first
 
-    nombre = @comentario.nombre
-    correo = @comentario.correo
-    usuario_id = @comentario.usuario_id
+    # Crea el nuevo comentario con las clases de la gema ancestry
+    @comentario = Comentario.children_of(ultimo_comentario).new
 
-    especie_id = @comentario.especie_id
-
-    # Para crear el form del un comentario al final del historial de comentarios
-    @comentario = Comentario.new(especie_id: @especie_id)
+    # El ID del administrador
     @comentario.usuario_id = current_usuario.id
 
-    # Estatus 2 quiere decir que es parte del historial de un comentario
-    @comentario.estatus = 2
+    # Estatus 6 quiere decir que es parte del historial de un comentario
+    @comentario.estatus = 6
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -70,13 +62,8 @@ class ComentariosController < ApplicationController
     # Asigna el ancestry
     @comentario.ancestry = ancestry
 
-    # Datos personales
-    @comentario.nombre = nombre
-    @comentario.correo = correo
-    @comentario.usuario_id = usuario_id
-
     # Asigna la especie
-    @comentario.especie_id = especie_id
+    @comentario.especie_id = @especie_id
   end
 
   # GET /comentarios/new
