@@ -44,6 +44,9 @@ class ComentariosController < ApplicationController
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
     ultimo_comentario = @comentario.subtree_ids.reverse.first
 
+    # Especie
+    especie_id = @comentario.especie_id
+
     # Crea el nuevo comentario con las clases de la gema ancestry
     @comentario = Comentario.children_of(ultimo_comentario).new
 
@@ -59,11 +62,8 @@ class ComentariosController < ApplicationController
     # Proviene de un administrador
     @comentario.es_admin = true
 
-    # Asigna el ancestry
-    @comentario.ancestry = ancestry
-
     # Asigna la especie
-    @comentario.especie_id = @especie_id
+    @comentario.especie_id = especie_id
   end
 
   # GET /comentarios/new
@@ -105,7 +105,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if @comentario.save
-          #EnviaCorreo.respuesta_comentario(@comentario).deliver
+          EnviaCorreo.respuesta_comentario(@comentario).deliver
           format.json {render json: {estatus: 1}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -161,14 +161,14 @@ class ComentariosController < ApplicationController
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        @comentarios = eval(consulta).where('estatus < 4').order("created_at #{params[:created_at]}")
+        @comentarios = eval(consulta).where('estatus < 5').order("created_at #{params[:created_at]}")
       else
-        @comentarios = eval(consulta).where('estatus < 4').order('estatus ASC, created_at ASC')
+        @comentarios = eval(consulta).where('estatus < 5').order('estatus ASC, created_at ASC')
       end
 
     else
-      # estatus > 3 quiere decir oculto a la vista
-      @comentarios = Comentario.where('estatus < 4').order('estatus ASC, created_at ASC')
+      # estatus =5 quiere decir oculto a la vista
+      @comentarios = Comentario.where('estatus < 5').order('estatus ASC, created_at ASC')
     end
 
     @comentarios.each do |c|
@@ -179,6 +179,7 @@ class ComentariosController < ApplicationController
 
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_comentario
     @comentario = Comentario.find(params[:id])
@@ -187,6 +188,6 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry,
-                                       :con_verificacion, :especie_id, :categoria_comentario_id, :created_at)
+                                       :con_verificacion, :es_admin, :especie_id, :categoria_comentario_id, :created_at)
   end
 end

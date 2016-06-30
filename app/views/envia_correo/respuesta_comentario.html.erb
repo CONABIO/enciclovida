@@ -11,10 +11,7 @@
 </p>
 
 <p>
-  <%
-     # Es el ultimo comentario de la persona que mandó el mensaje
-     ancestros = @comentario.ancestors.where().reverse.first
-  %>
+  <%= truncate @comentario.comentario, length: 20 %>
 </p>
 </body>
 </html>

@@ -14,7 +14,6 @@ class EnviaCorreo < Devise::Mailer
 
   def respuesta_comentario(comentario)
     @comentario.completa_nombre_correo_especie
-
-
+    mail(:to => comentario.correo, :subject => 'EncicloVida: Respuesta a comentario')
   end
 end
