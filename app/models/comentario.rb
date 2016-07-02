@@ -35,7 +35,6 @@ class Comentario < ActiveRecord::Base
   before_save :id_a_base_32
 
 
-
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
   end
@@ -47,6 +46,7 @@ class Comentario < ActiveRecord::Base
     id_base_10 = c.id.to_i(32)
     id_incremento = id_base_10 + 1
     self.id = id_incremento.to_s(32)
+    true
   end
 
   def completa_nombre_correo_especie

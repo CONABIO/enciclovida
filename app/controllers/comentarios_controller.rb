@@ -43,12 +43,19 @@ class ComentariosController < ApplicationController
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
     ultimo_comentario = @comentario.subtree_ids.reverse.first
+    comentario = Comentario.find(ultimo_comentario)
+    ancestry = if comentario.is_root?
+                 comentario.id
+               else
+                 "#{comentario.ancestry}/#{comentario.id}"
+               end
 
     # Especie
     especie_id = @comentario.especie_id
 
     # Crea el nuevo comentario con las clases de la gema ancestry
-    @comentario = Comentario.children_of(ultimo_comentario).new
+    #@comentario = Comentario.children_of(ultimo_comentario).new
+    @comentario = Comentario.new
 
     # El ID del administrador
     @comentario.usuario_id = current_usuario.id
@@ -64,6 +71,9 @@ class ComentariosController < ApplicationController
 
     # Asigna la especie
     @comentario.especie_id = especie_id
+
+    # Asigna el ancestry
+    @comentario.ancestry = ancestry
   end
 
   # GET /comentarios/new
@@ -80,8 +90,8 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
-    @especie_id = params[:especie_id]
-    @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
+    especie_id = params[:especie_id]
+    @comentario = Comentario.new(comentario_params.merge(especie_id: especie_id))
 
     params = comentario_params
 
@@ -91,7 +101,7 @@ class ComentariosController < ApplicationController
           if params[:es_admin].present? && params[:es_admin] == '1'
             format.json {render json: {estatus: 1}.to_json}
           else
-            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+            format.html { redirect_to especie_path(especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
           end
 
         else
@@ -104,8 +114,14 @@ class ComentariosController < ApplicationController
 
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
+        # Fue necesario ya que el metodo para aceptar una expresion regular en el ID aun no lo tiene la gema
+        @comentario.avoid_ancestry = true
+
+        Rails.logger.info "---#{@comentario.valid?}-#{@comentario.errors.full_messages.inspect}"
+
         if @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver
+
+          #EnviaCorreo.respuesta_comentario(@comentario).deliver
           format.json {render json: {estatus: 1}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
