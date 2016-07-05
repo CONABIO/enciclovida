@@ -38,7 +38,9 @@
             if (comentario.val() == '')
                 label.addClass('error_mensaje');
             else {
+
                 var form = $(this).parent().parent();
+                var ancestry = $(this).parent().nextAll().slice(3,4);
                 label.removeClass('error_mensaje');
 
                 $.ajax({
@@ -52,8 +54,7 @@
                     if (resp.estatus == 1)
                     {
                         historial_comentarios.append(comentario.val());
-
-
+                        ancestry.val(resp.ancestry);
                         comentario.val('');
                     } else
                         console.log('Hubo un error al guardar la respuesta');

@@ -1,13 +1,13 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:show, :new, :create, :update, :destroy, :update_admin]
-  before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin]
+  skip_before_filter :set_locale, only: [:show, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin] do
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
 
-  layout false, only:[:update, :show]
+  layout false, only:[:update, :show, :ultimo_id_comentario]
 
   # GET /comentarios
   # GET /comentarios.json
@@ -106,7 +106,7 @@ class ComentariosController < ApplicationController
       else
         if @comentario.save
           #EnviaCorreo.respuesta_comentario(@comentario).deliver
-          format.json {render json: {estatus: 1}.to_json}
+          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
         end
