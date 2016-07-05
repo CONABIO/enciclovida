@@ -42,20 +42,13 @@ class ComentariosController < ApplicationController
     end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
-    ultimo_comentario = @comentario.subtree_ids.reverse.first
-    comentario = Comentario.find(ultimo_comentario)
-    ancestry = if comentario.is_root?
-                 comentario.id
-               else
-                 "#{comentario.ancestry}/#{comentario.id}"
-               end
+    ultimo_comentario = @comentario.subtree.order('ancestry ASC').map(&:id).reverse.first
 
     # Especie
     especie_id = @comentario.especie_id
 
     # Crea el nuevo comentario con las clases de la gema ancestry
-    #@comentario = Comentario.children_of(ultimo_comentario).new
-    @comentario = Comentario.new
+    @comentario = Comentario.children_of(ultimo_comentario).new
 
     # El ID del administrador
     @comentario.usuario_id = current_usuario.id
@@ -71,9 +64,6 @@ class ComentariosController < ApplicationController
 
     # Asigna la especie
     @comentario.especie_id = especie_id
-
-    # Asigna el ancestry
-    @comentario.ancestry = ancestry
   end
 
   # GET /comentarios/new
@@ -114,13 +104,7 @@ class ComentariosController < ApplicationController
 
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
-        # Fue necesario ya que el metodo para aceptar una expresion regular en el ID aun no lo tiene la gema
-        @comentario.avoid_ancestry = true
-
-        Rails.logger.info "---#{@comentario.valid?}-#{@comentario.errors.full_messages.inspect}"
-
         if @comentario.save
-
           #EnviaCorreo.respuesta_comentario(@comentario).deliver
           format.json {render json: {estatus: 1}.to_json}
         else

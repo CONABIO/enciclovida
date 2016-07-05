@@ -8,7 +8,6 @@ class Comentario < ActiveRecord::Base
   validates :comentario, :presence => true
   validates :especie_id, :presence => true
 
-  #ANCESTRY_PATTERN = /[0-9][a-z]+/
   has_ancestry
 
   # Atributo para tener la cuenta de los comentarios del historial
@@ -46,7 +45,6 @@ class Comentario < ActiveRecord::Base
     id_base_10 = c.id.to_i(32)
     id_incremento = id_base_10 + 1
     self.id = id_incremento.to_s(32)
-    true
   end
 
   def completa_nombre_correo_especie
