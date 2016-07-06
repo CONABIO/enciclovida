@@ -15,6 +15,10 @@ class EnviaCorreo < Devise::Mailer
   def respuesta_comentario(comentario)
     @comentario = comentario
     @comentario.completa_nombre_correo_especie
+
+    comentario_root = @comentario.root
+    @created_at = comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
+
     mail(:to => @comentario.correo, :subject => 'EncicloVida: Respuesta a comentario')
   end
 end

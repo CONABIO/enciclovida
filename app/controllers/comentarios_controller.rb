@@ -1,7 +1,7 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:show, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :set_comentario, only: [:show, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :authenticate_usuario!, :except => [:new, :create]
+  skip_before_filter :set_locale, only: [:show, :show_respuesta, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  before_action :set_comentario, only: [:show, :show_respuesta, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  before_action :authenticate_usuario!, :except => [:new, :create, :show_respuesta]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
@@ -17,7 +17,7 @@ class ComentariosController < ApplicationController
 
   # GET /comentarios/1
   # GET /comentarios/1.json
-  # Despliega el historial del comentario, solo estatus 1,2
+  # Show de la vista de admins
   def show
     cuantos = @comentario.descendants.count
 
@@ -66,6 +66,50 @@ class ComentariosController < ApplicationController
     @comentario.especie_id = especie_id
   end
 
+  def show_respuesta
+    @comentario_resp = @comentario
+    cuantos = @comentario_resp.descendants.count
+
+    if cuantos > 0
+      resp = @comentario_resp.descendants.map{ |c|
+
+        c.completa_nombre_correo_especie
+        { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: c.nombre, correo: c.correo, created_at: c.created_at, estatus: c.estatus }
+      }
+
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
+
+    else
+      @comentarios = {estatus:1, cuantos: cuantos}
+    end
+
+    # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
+    ultimo_comentario = @comentario_resp.subtree.order('ancestry ASC').map(&:id).reverse.first
+
+    # Crea el nuevo comentario con las clases de la gema ancestry
+    @comentario = Comentario.children_of(ultimo_comentario).new
+
+    # Datos del usuario
+    @comentario.usuario_id = @comentario_resp.usuario_id
+    @comentario.nombre = @comentario_resp.nombre
+    @comentario.correo = @comentario_resp.correo
+    @comentario.institucion = @comentario.institucion
+
+    # Estatus 6 quiere decir que es parte del historial de un comentario
+    @comentario.estatus = 6
+
+    # Caseta de verificacion
+    @comentario.con_verificacion = true
+
+    # Proviene de un administrador
+    @comentario.es_admin = false
+
+    # Asigna la especie
+    @comentario.especie_id = @comentario_resp.especie_id
+
+    render 'show'
+  end
+
   # GET /comentarios/new
   def new
     @especie_id = params[:especie_id]
@@ -105,7 +149,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver #if Rails.env.production?
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
