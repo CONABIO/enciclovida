@@ -13,6 +13,7 @@
 
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
     <%= f.hidden_field :es_admin, value: @comentario.es_admin ? '1' : '0' %>
+    <%= f.hidden_field :es_respuesta, value: @comentario.es_respuesta ? '1' : '0' %>
 
     <%= f.hidden_field :estatus, value: @comentario.estatus %>
     <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
@@ -53,9 +54,14 @@
 
                     if (resp.estatus == 1)
                     {
-                        historial_comentarios.append(comentario.val());
-                        ancestry.val(resp.ancestry);
-                        comentario.val('');
+                        if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
+                            window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);
+                        else {
+                            historial_comentarios.append(comentario.val());
+                            ancestry.val(resp.ancestry);
+                            comentario.val('');
+                        }
+
                     } else
                         console.log('Hubo un error al guardar la respuesta');
 

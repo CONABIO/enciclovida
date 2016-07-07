@@ -22,6 +22,10 @@ class Comentario < ActiveRecord::Base
   attr_reader :es_admin
   attr_writer :es_admin
 
+  # Para saber si es una respuesta del usuario
+  attr_reader :es_respuesta
+  attr_writer :es_respuesta
+
   # Para tener la referencia al nombre de la especie
   attr_reader :nombre_cientifico
   attr_writer :nombre_cientifico
