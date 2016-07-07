@@ -56,6 +56,9 @@ class ComentariosController < ApplicationController
     # Estatus 6 quiere decir que es parte del historial de un comentario
     @comentario.estatus = 6
 
+    # Categoria comentario ID
+    @comentario.categoria_comentario_id = 26
+
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
 
@@ -104,6 +107,9 @@ class ComentariosController < ApplicationController
 
       # Estatus 6 quiere decir que es parte del historial de un comentario
       @comentario.estatus = 6
+
+      # Categoria comentario ID
+      @comentario.categoria_comentario_id = 26
 
       # Caseta de verificacion
       @comentario.con_verificacion = true
