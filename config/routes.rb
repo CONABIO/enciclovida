@@ -18,6 +18,9 @@ Buscador::Application.routes.draw do
   get 'comentarios/administracion' => 'comentarios#admin', as: :admin
   post 'comentarios/:id/update_admin' => 'comentarios#update_admin'
 
+  get 'comentarios/generales' => 'comentarios#extrae_comentarios_generales'
+  get 'comentarios/correoId' => 'comentarios#dame_correo'
+
   resources :adicionales do
     collection do
       post :actualiza_nom_comun
