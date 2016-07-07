@@ -1,7 +1,9 @@
-<% if @comentarios[:cuantos] > 0 %>
-    <% @comentarios[:resp].each do |c| %>
-        <%= c[:comentario] %>
-    <% end %>
-<% end %>
+<div class="historial_comentarios">
+  <% if @comentarios[:cuantos] > 0 %>
+      <% @comentarios[:resp].each do |c| %>
+          <%= c[:comentario] %>
+      <% end %>
+  <% end %>
+</div>
 
 <%= render 'form_respuesta' %>

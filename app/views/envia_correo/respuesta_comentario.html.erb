@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Gracias por utilizar el servicio de comentarios de EncicloVida</h1>
+<p>
+  El personal de CONABIO ha respondido a tu último comentario acerca de:
+  <br /><%= @comentario.nombre_comun %> (<strong><%= @comentario.nombre_cientifico %></strong>)
+</p>
+
+<p>
+  <%= truncate @comentario.comentario, length: 20 %>
+</p>
+
+<p>Para poder responder y darle un seguimiento a tu comentario da clic
+  <%= link_to 'aquí', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.root_id}/show_respuesta?created_at=#{@created_at}" %>.
+</p>
+</body>
+</html>

@@ -18,10 +18,23 @@ class Comentario < ActiveRecord::Base
   attr_reader :con_verificacion
   attr_writer :con_verificacion
 
+  # Para saber si es un comentario de un administrador
+  attr_reader :es_admin
+  attr_writer :es_admin
+
+  # Para saber si es una respuesta del usuario
+  attr_reader :es_respuesta
+  attr_writer :es_respuesta
+
   # Para tener la referencia al nombre de la especie
   attr_reader :nombre_cientifico
   attr_writer :nombre_cientifico
 
+  # Para tener la referencia al nombre comun de la especie
+  attr_reader :nombre_comun
+  attr_writer :nombre_comun
+
+  validates_presence_of :categoria_comentario_id
   before_save :id_a_base_32
 
 
@@ -46,6 +59,11 @@ class Comentario < ActiveRecord::Base
 
     if t = especie
       self.nombre_cientifico = t.nombre_cientifico
+
+      if a = t.adicional
+        self.nombre_comun = a.nombre_comun_principal
+      end
     end
+
   end
 end

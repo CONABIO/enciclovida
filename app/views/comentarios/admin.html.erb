@@ -54,8 +54,14 @@
             <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
           </p>
           <p>
-            <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
-                        class: 'historial', comentario_id: c.id, especie_id: c.especie_id) if c.cuantos > 0 %>
+            <% if c.cuantos > 0 %>
+                <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
+                            class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
+
+            <% else %>
+                <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
+            <% end %>
+
             <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", style: 'display: none;' %>
           </p>
           <div id="historial_<%= c.id %>"></div>
