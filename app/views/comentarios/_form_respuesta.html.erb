@@ -18,6 +18,7 @@
     <%= f.hidden_field :institucion, value: @comentario.institucion %>
     <%= f.hidden_field :estatus, value: @comentario.estatus %>
     <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
+    <%= f.hidden_field :categoria_comentario_id, value: @comentario.categoria_comentario_id %>
 
     <% if @comentario.usuario_id.present? %>
         <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) %>
