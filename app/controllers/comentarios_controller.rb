@@ -269,7 +269,7 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry,
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :created_at)
   end
 end
