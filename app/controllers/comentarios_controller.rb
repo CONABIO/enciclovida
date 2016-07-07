@@ -177,10 +177,14 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/inbox"
+    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
+    response = JSON.parse(RestClient.get address+"inbox", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
 
-    response = JSON.parse(RestClient.get address, {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+    response['m'].each do |v|
+      #RestClient.put(address+"Pendientes", RestClient.get(address+"Pendientes", {:params => {'id' => v['id'].to_s}}))
+    end
 
+    response = JSON.parse(RestClient.get address+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
     #render inline: response.to_s
     render 'comentarios/generales', :locals => {:response => response}
   end
