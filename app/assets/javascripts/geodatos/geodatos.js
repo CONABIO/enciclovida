@@ -15,6 +15,24 @@ $(document).ready(function(){
         fillOpacity: 0.6
     };
 
+    var geojsonMarkerGeoportalFosilOptions = {
+        radius: 5,
+        fillColor: "#2a2a2a",
+        color: "white",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.6
+    };
+
+    var geojsonMarkerGeoportalAveravesOptions = {
+        radius: 5,
+        fillColor: "#FFA500",
+        color: "black",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.6
+    };
+
     var geojsonMarkerNaturaListaInvOptions = {
         radius: 5,
         fillColor: "#0b9c31",
@@ -91,7 +109,20 @@ $(document).ready(function(){
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
+
+                // Para saber si es de ebird o averaves
+                var coleccion = feature.properties.d.coleccion.toLowerCase();
+                var fosil = feature.properties.d.taxonfosil;
+                var array_coleccion = coleccion.split(" ");
+                var indice_coleccion_ebird = array_coleccion.indexOf("ebird");
+                var indice_coleccion_averaves = array_coleccion.indexOf("averaves");
+
+                if (indice_coleccion_averaves >= 0 || indice_coleccion_ebird >= 0)
+                    return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
+                else if (fosil != undefined && fosil != "")
+                    return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
+                else
+                    return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
             },
             onEachFeature: function (feature, layer) {
                 coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
@@ -102,7 +133,20 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "<i>" + geoportal_count + "</i> registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)");
+
+        var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FF0000" fill-opacity="0.6"/>';
+        punto_rojo+= '<text x="20" y="13" font-family="sans-serif" font-size="10px">Registros del SNIB</text>';
+
+        var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FFA500" fill-opacity="0.6"/>';
+        punto_naranja+= '<text x="20" y="28" font-family="sans-serif" font-size="10px">Registros de AverAves</text>';
+
+        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="##2A2A2A" fill-opacity="0.6"/>';
+        punto_gris+= '<text x="20" y="43" font-family="sans-serif" font-size="10px">Registros de Fósiles</text></svg>';
+
+        layer_control.addOverlay(markersLayer,
+            "<i>" + geoportal_count + "</i> Registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)" +
+            "<p>"+punto_gris+"</p>"
+        );
     }
 
     function addPointLayerNaturaLista(){
@@ -130,7 +174,17 @@ $(document).ready(function(){
 
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
-        layer_control.addOverlay(markersLayer, "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>");
+
+        var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#0b9c31" fill-opacity="0.6"/>';
+        punto_verde+= '<text x="20" y="13" font-family="sans-serif" font-size="10px">Grado de investigación</text>';
+
+        var punto_amarillo = punto_verde + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FFFF00" fill-opacity="0.6"/>';
+        punto_amarillo+= '<text x="20" y="28" font-family="sans-serif" font-size="10px">Grado casual</text></svg>';
+
+        layer_control.addOverlay(markersLayer,
+            "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>" +
+            "<p>"+punto_amarillo+"</p>"
+        );
     }
 
     function wms_distribucion_potencial() {
