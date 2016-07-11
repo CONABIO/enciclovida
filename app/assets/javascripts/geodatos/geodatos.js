@@ -81,6 +81,7 @@ $(document).ready(function(){
     /* Quite var, para poder tener acceso a la variable fuera del scope*/
     map = L.map('map', {
         center: [23.79162789, -102.04376221],
+        fullscreenControl: true,
         zoom: 5,
         //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
@@ -89,7 +90,6 @@ $(document).ready(function(){
             GHM_layer
         ]
     });
-
 
     /***************************************************************** layer switcher */
     var baseMaps = {
@@ -322,5 +322,6 @@ $(document).ready(function(){
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
     if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
     if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
+
 });
 
