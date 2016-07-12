@@ -13,13 +13,23 @@
           <div id="dosVistas" class="tab-pane panel-body"><%= render partial: 'dosVistas' %></div>
           <div id="usos" class="tab-pane panel-body"><%= render partial: 'usos' %></div>
           <div id="advertencias" class="tab-pane panel-body"><%= render partial: 'advertencias' %></div>
+
         </div>
-        <img class="img-responsive" src="/assets/portada/bosqueEncabezado.png" alt="especies">
+
+        <img class="img-responsive pull-left" src="/assets/portada/bosqueEncabezado.png" alt="especies">
+        <blockquote class="blockquote-reverse">
+          <p style="font-size: smaller;">
+            Comisión Nacional para el Conocimiento y Uso de la Biodiversidad. 2016. EncicloVida. CONABIO. México,
+            Recuperado en <%= l(Time.now.to_date, format: :extra_long) %> de <%= link_to 'http://www.enciclovida.mx', root_path %>
+          </p>
+          <footer><cite title="Forma de citar">Cita general</cite></footer>
+        </blockquote>
+
       </div>
     </div>
-
   </div>
 </section>
+
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     $(document).ready(function() {
         $('#pestañas').tabs(); // Inicia los tabs

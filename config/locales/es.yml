@@ -130,7 +130,8 @@ es:
     - sábado
     formats:
       default: ! '%d/%m/%Y'
-      long: ! '%d de %B de %Y'
+      extra_long: ! '%d de %B de %Y'
+      long: ! '%d de %B de %y'
       short: ! '%d de %b'
     month_names:
     -
