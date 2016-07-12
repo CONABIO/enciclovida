@@ -47,7 +47,7 @@ class EspeciesController < ApplicationController
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
             geodatos = proveedor.geodatos
-            @geo = geodatos if geodatos.any?
+            @geo = geodatos if geodatos[:cuales].any?
           end
         end
 
