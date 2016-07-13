@@ -151,8 +151,10 @@ class CategoriaTaxonomica < ActiveRecord::Base
     # Estas categorias no se encuentran en las establecidas por los catalogos
     # parvorden superseccion grupo infraphylum epiclase cohorte grupo_especies raza estirpe subgrupo hiporden subterclase)
 
-    categorias = cat.map{|cat| "'#{tipo}_#{cat}'"}.uniq.join(',')
-    "[#{categorias}]"
+    categorias_com = cat.map{|cat| "'com_#{cat}'"}
+    categorias_cien = cat.map{|cat| "'cien_#{cat}'"}
 
+    categorias = categorias_com + categorias_cien
+    "[#{categorias.uniq.join(',')}]"
   end
 end

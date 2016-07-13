@@ -54,8 +54,9 @@
                 }
             }
         }
-        if (event.data.num == '2' || event.data.num == '4'){          //nombre cientifico
-            var types = eval("<%=raw CategoriaTaxonomica.categorias_redis('cien') %>");
+
+        /*if (event.data.num == '2' || event.data.num == '4'){          //nombre cientifico
+            var types = eval("<%#=raw CategoriaTaxonomica.categorias_redis('cien') %>");
             var render = function(term, data, type, index, id, foto){
                 event.data.num == '2' ? $('#id_basica_cientifico').attr('value', '') : $('#id_avanzada_cientifico').attr('value', '');
                 if (I18n.locale == 'es-cientifico'){
@@ -95,7 +96,7 @@
                     $('#id_avanzada_comun').attr('value', '');
                 }
             }
-        }
+        }*/
 
         if ($._data(campo, "events") == undefined){        //para que no se repita n-veces la busqueda
             $(campo).soulmate({
@@ -128,57 +129,9 @@
 	<div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
 	</div>
 
-	<ul class="nav nav-tabs" style="margin: 0 -9px;">
-	  <li role="presentation" class="active">
-		<a>
-		  <span class="glyphicon glyphicon-user btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_comun) %>
-		</a></li>
-	  <li role="presentation">
-		<a onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');">
-		  <span class="glyphicon glyphicon-education btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_cientifico)%>
-		</a>
-	  </li>
-	</ul>
-
 	<div class="form-group">
 	  <div class="input-group">
 		<%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil%>
-		<div class="input-group-btn">
-		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
-		</div>
-	  </div>
-	</div>
-<% end %>
-
-
-<%= form_tag busquedas_resultados_url, :method => :get, :id => :b_cientifico, :class => 'form-horizontal '+ (((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico') ? '' :'hidden') , :role => 'form' do %>
-	<%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-	<%= hidden_field_tag :busqueda, :nombre_cientifico %>
-	<%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
-	<div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
-	</div>
-
-	<ul class="nav nav-tabs" style="margin: 0 -9px;">
-	  <li role="presentation">
-		<a onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');">
-		  <span class="glyphicon glyphicon-user btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_comun) %>
-		</a>
-	  </li>
-	  <li role="presentation" class="active">
-		<a>
-		  <span class="glyphicon glyphicon-education btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_cientifico)%>
-		</a>
-	  </li>
-	</ul>
-
-	<div class="form-group">
-	  <div class="input-group">
-		<%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
 		<div class="input-group-btn">
 		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
 		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
