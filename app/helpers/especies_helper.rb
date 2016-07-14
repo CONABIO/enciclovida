@@ -42,7 +42,7 @@ module EspeciesHelper
               "#{taxon.nombre_cientifico}"
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "<h5>#{taxon.nombre_comun.primera_en_mayuscula}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>".html_safe
+            "<h5>#{taxon.nombre_comun_principal.primera_en_mayuscula}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]}<h5>#{taxon.nom_com_prin}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
           end
@@ -58,7 +58,7 @@ module EspeciesHelper
               "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
         elsif params[:link]
           if taxon.instance_of? NombreComun   #para cuando busca por nombre comun
-            "<h5>#{taxon.nombre_comun.primera_en_mayuscula}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica}#{link_to(taxon.nombre_cientifico, especie_path(taxon))}</h5>".html_safe
+            "<h5>#{taxon.nombre_comun_principal.primera_en_mayuscula}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.nombre_categoria_taxonomica}#{link_to(taxon.nombre_cientifico, especie_path(taxon))}</h5>".html_safe
           else
             taxon.nom_com_prin.present? ? "#{ponIcono(taxon, params) if params[:con_icono]} <h5>#{taxon.nom_com_prin}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}</h5>".html_safe :
                 "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especie_path(taxon))}".html_safe

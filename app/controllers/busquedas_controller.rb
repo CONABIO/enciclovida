@@ -39,34 +39,36 @@ class BusquedasController < ApplicationController
 
         when 'basica'
           # Siempre estatus valido en la vista general
-          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
+          estatus =  I18n.locale.to_s == 'es-cientifico' ? '2,1' : '2'
 
-          # Para el nombre comun
-          select = 'NombreComun.datos_basicos'
-          select_count = 'NombreComun.datos_count'
-          condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].limpia_sql}\").
-                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_comun ASC')"
-          condiciones_count = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].limpia_sql}\").
-                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus ||= '2, 1'})\")"
+          # Buscamos coincidencias para el nombre comun
+          select = "NombreComun.datos_basicos([],'FULL')"
+          select_count = "NombreComun.datos_count('FULL')"
+          condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
+                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus})\")"
+
           sql = select << condiciones
-          sql_count = select_count << condiciones_count
+          sql_count = select_count << condiciones
 
           query = eval(sql).to_sql
-          consulta = Bases.distinct_limpio query
           totales = eval(sql_count)[0].cuantos
+
           pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+          por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
           if totales > 0
-            @taxones = consulta << " ORDER BY nombre_comun ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = query << " ORDER BY especies.id ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
-            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+            @paginacion = paginacion(totales, pagina, por_pagina)
 
           else
             if @taxones.empty?
-              ids=FUZZY_NOM_COM.find(params[:nombre_comun], limit=CONFIG.limit_fuzzy)
+              ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+              ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
 
-              if ids.present?
+              if ids_comun.any? || ids_cientifico.any?
                 @taxones = NombreComun.none
+
                 taxones = NombreComun.datos_basicos.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").
                     where("estatus IN (#{estatus ||= '2, 1'})").distinct.order('nombre_comun ASC').to_sql
                 consulta = Bases.distinct_limpio(taxones) << ' ORDER BY nombre_comun ASC'
@@ -86,8 +88,33 @@ class BusquedasController < ApplicationController
               end
             end
 
+
+
+            #if @taxones.empty?
+            #  ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+
+              if ids.present?
+                @taxones = Especie.none
+                taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
+
+                taxones.each do |taxon|
+                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+                  distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
+                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+
+                  if distancia < 3
+                    taxon[:distancia]= distancia
+                    @taxones <<= taxon
+
+                  else
+                    next
+                  end
+                end
+              end
+            #end
+
             # Para que saga el total tambien con el fuzzy match
-            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any? ##CAMBIAR para resultados_controller
+            @paginacion = paginacion(@taxones.length, pagina, por_pagina) if @taxones.any?
           end
 
 
