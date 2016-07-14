@@ -28,6 +28,7 @@ class BusquedasController < ApplicationController
 
     # Por si no coincidio nada
     @taxones = Especie.none
+
     # Despliega directo el taxon, si paso id
     if params[:id].present?
       redirect_to especie_path(params[:id])
@@ -36,8 +37,11 @@ class BusquedasController < ApplicationController
       # Hace el query del tipo de busqueda
       case params[:busqueda]
 
-        when 'nombre_comun'
+        when 'basica'
+          # Siempre estatus valido en la vista general
           estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
+
+          # Para el nombre comun
           select = 'NombreComun.datos_basicos'
           select_count = 'NombreComun.datos_count'
           condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:nombre_comun].limpia_sql}\").
@@ -344,7 +348,7 @@ class BusquedasController < ApplicationController
 
         else  # Default switch
           respond_to do |format|
-            format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor intentalo de nuevo.' }
+            format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
           end
       end  # Fin switch
     end
