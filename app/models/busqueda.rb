@@ -18,6 +18,8 @@ class Busqueda
       ['superior a', '<']
   ]
 
+  #Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '1000001/8000007/8000008/8002485%' OR especies.id IN (1000001,8000007,8000008,8002485)").where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) >= '7100'").caso_rango_valores('estatus', 2)
+
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
@@ -41,6 +43,19 @@ class Busqueda
     else
       eval(busq)
     end
+  end
+
+  # Hace el conteo de los resultados por categoria en la busqueda basica
+  def self.por_categoria_basica(sql)
+    sql_dividido = sql.split('.')
+    sql_dividido[1] = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,
+nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos').especies_join.categoria_taxonomica_join.adicional_join"
+    sql_dividido << "group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
+    sql_dividido << "order('nivel')"
+
+    sql = sql_dividido.join('.')
+    query_limpio = Bases.distinct_limpio(eval(sql).to_sql)
+    query_limpio << ' ORDER BY nivel ASC'
   end
 
   def self.por_arbol(busqueda, sin_filtros=false)

@@ -47,6 +47,12 @@ class BusquedasController < ApplicationController
           condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
                 where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus})\")"
 
+          # Parte de consultar solo un TAB (categoria taxonomica)
+          if params[:solo_categoria].present?
+            condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+            select_count << '.categoria_taxonomica_join'
+          end
+
           sql = select + condiciones
           sql_count = select_count << condiciones
 
@@ -57,9 +63,12 @@ class BusquedasController < ApplicationController
           por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
           if totales > 0
-            @taxones = query << " ORDER BY especies.id ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+            @taxones = query + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
             @taxones = NombreComun.find_by_sql(@taxones)
-            @paginacion = paginacion(totales, pagina, por_pagina)
+
+            # La consulta que separa los resultados por categoria taxonomica
+            sql_por_categotia_basica = Busqueda.por_categoria_basica(sql)
+            @por_categoria = NombreComun.find_by_sql(sql_por_categotia_basica)
 
           else
             ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
@@ -77,7 +86,7 @@ class BusquedasController < ApplicationController
                 sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
               end
 
-              query = eval(sql).to_sql + ' ORDER BY especies.id ASC'
+              query = eval(sql).to_sql + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
               res = NombreComun.find_by_sql(query)
 
               ids_totales = []
@@ -99,24 +108,35 @@ class BusquedasController < ApplicationController
 
             # Para que saga el total tambien con el fuzzy match
             if @taxones.any?
-              @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-              @paginacion = paginacion(@taxones.length, pagina, por_pagina)
+              @coincidencias = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
             end
 
           end
 
+          @paginacion = paginacion(@taxones.length, pagina, por_pagina)
 
-          if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+          # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+          if params[:solo_categoria].present?
+            if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
+              render :partial => 'busquedas/_resultados'
+            elsif @taxones.empty? && params[:pagina].to_i > 1 && !@taxones.empty?
+              # Quiere decir que el paginado acabo en algun TAB que no es el default
+              render text: ''
+            else
+              # Despliega el inicio de un TAB que no sea el default
+              render :partial => 'busquedas/resultados'
+            end
+          elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
+            # Despliega el paginado del TAB que tiene todos
             render :partial => 'busquedas/_resultados'
           elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            # El scrolling acaba
+            # Quiere decir que el paginado acabo en algun TAB
             render text: ''
           elsif @taxones.empty?
-            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
+            # La busqueda no dio ningun resultado
+            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
           end
-
-        # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
+        # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb).
 
         when 'nombre_cientifico'
           arbol = params[:arbol].present? && params[:arbol].to_i == 1
