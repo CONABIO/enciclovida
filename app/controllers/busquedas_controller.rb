@@ -47,7 +47,7 @@ class BusquedasController < ApplicationController
           condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
                 where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus})\")"
 
-          sql = select << condiciones
+          sql = select + condiciones
           sql_count = select_count << condiciones
 
           query = eval(sql).to_sql
@@ -62,59 +62,47 @@ class BusquedasController < ApplicationController
             @paginacion = paginacion(totales, pagina, por_pagina)
 
           else
-            if @taxones.empty?
-              ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-              ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+            ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+            ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
 
-              if ids_comun.any? || ids_cientifico.any?
-                @taxones = NombreComun.none
+            if ids_comun.any? || ids_cientifico.any?
+              @taxones = NombreComun.none
+              sql = "NombreComun.datos_basicos(['nombre_comun'],'FULL').where(\"estatus IN (#{estatus})\")"
 
-                taxones = NombreComun.datos_basicos.caso_rango_valores('nombres_comunes.id', "#{ids.join(',')}").
-                    where("estatus IN (#{estatus ||= '2, 1'})").distinct.order('nombre_comun ASC').to_sql
-                consulta = Bases.distinct_limpio(taxones) << ' ORDER BY nombre_comun ASC'
-                res = NombreComun.find_by_sql(consulta)
+              if ids_comun.any? && ids_cientifico.any?
+                sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
+              elsif ids_comun.any?
+                sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
+              elsif ids_cientifico.any?
+                sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
+              end
 
-                res.each do |taxon|
-                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                  distancia = Levenshtein.distance(params[:nombre_comun].downcase, taxon.nombre_comun.downcase)
-                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+              query = eval(sql).to_sql + ' ORDER BY especies.id ASC'
+              res = NombreComun.find_by_sql(query)
 
-                  if distancia < 3
-                    @taxones <<= taxon
-                  else
-                    next
-                  end
+              ids_totales = []
+              res.each do |taxon|
+                # Para evitar que se repitan los taxones con los joins
+                next if ids_totales.include?(taxon.id)
+                ids_totales << taxon.id
+
+                # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+                if taxon.nombre_comun.present?
+                  distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
+                  @taxones <<= taxon if distancia < 3
                 end
+
+                distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
+                @taxones <<= taxon if distancia < 3
               end
             end
 
-
-
-            #if @taxones.empty?
-            #  ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-
-              if ids.present?
-                @taxones = Especie.none
-                taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
-
-                taxones.each do |taxon|
-                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                  distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
-                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-
-                  if distancia < 3
-                    taxon[:distancia]= distancia
-                    @taxones <<= taxon
-
-                  else
-                    next
-                  end
-                end
-              end
-            #end
-
             # Para que saga el total tambien con el fuzzy match
-            @paginacion = paginacion(@taxones.length, pagina, por_pagina) if @taxones.any?
+            if @taxones.any?
+              @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+              @paginacion = paginacion(@taxones.length, pagina, por_pagina)
+            end
+
           end
 
 
@@ -200,7 +188,7 @@ class BusquedasController < ApplicationController
             # El scrolling acaba
             render text: ''
           elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
-              render :text => '[]'
+            render :text => '[]'
           elsif @taxones.empty?
             redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
           end
