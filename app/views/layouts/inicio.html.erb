@@ -11,10 +11,16 @@
 
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
-  <%= stylesheet_link_tag "inicio", media: "all", "data-turbolinks-track" => true %>
 
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis('com') %>");
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
+
+  <%= stylesheet_link_tag "inicio", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%# javascript_include_tag "okvideo", "data-turbolinks-track" => true %>
+
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
       I18n.locale = "<%= I18n.locale %>";

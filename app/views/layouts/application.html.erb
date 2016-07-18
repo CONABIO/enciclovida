@@ -6,6 +6,13 @@
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis('com') %>");
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
+
   <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
