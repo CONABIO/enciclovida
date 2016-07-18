@@ -99,14 +99,7 @@ $(document).ready(function()
         $("#panelCategoriaTaxonomicaPt").hide();
     });
 
-    /*
-    // autocomplete para la busqueda basica
-    $(document).on('focus', '#nombre_comun', {num: "1"}, soulmate_asigna);
-    $(document).on('focus', '#nombre_cientifico', {num: "2"}, soulmate_asigna);
-    // autocomplete para la busqueda avanzada
-    $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
-    $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
-    */
+    // Asigna el soulmate a la caja nombre
     soulmate_asigna();
 });
 

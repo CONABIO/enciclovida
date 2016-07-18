@@ -138,7 +138,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('#<%= @oldparams.join(', #') %>').prop('checked', true);
-            <% if params[:id_nom_cientifico] != ''%>
+            <% if params[:id_nom_cientifico].present? %>
             cat_tax_asociadas('<%= params[:id_nom_cientifico] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
