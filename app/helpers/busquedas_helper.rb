@@ -13,7 +13,7 @@ module BusquedasHelper
   def radioGruposIconicos
     radios = ''
     columnas = 1
-    es_reino = " busqueda_atributo_radio_reino"
+
     Especie.datos_basicos.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
@@ -23,6 +23,7 @@ module BusquedasHelper
         radios << '<br \>'*3
         columnas = 7
       end
+
       radios << "<label>"
       radios << radio_button_tag(:id_nom_cientifico, taxon.id, false)
       radios << ponIcono(taxon, con_recuadro: true) #En especies_helper, al rededor de l89
@@ -30,6 +31,7 @@ module BusquedasHelper
       radios << '<br>' if columnas%6 == 0
       columnas+=1
     end
+
     "<div>#{radios}</div>"
   end
 
@@ -49,6 +51,7 @@ module BusquedasHelper
         checkBoxes << "</label>"
       end
     end
+
     checkBoxes.html_safe
   end
 
@@ -74,10 +77,11 @@ module BusquedasHelper
 
       end
     end
+
     checkBoxes.html_safe
   end
 
-  # Filtros para "Estatus taxonómico"
+  # Filtros para Estatus taxonómico
   def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes = ''
     Especie::ESTATUS.each do |e|
