@@ -33,7 +33,7 @@ module BusquedasHelper
     "<div>#{radios}</div>"
   end
 
-  # Filtros para "Categorías de riesgo y comercio internacional"
+  # Filtros para Categorías de riesgo y comercio internacional
   def checkboxEstadoConservacion
     checkBoxes=''
 
@@ -84,7 +84,7 @@ module BusquedasHelper
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label> #{check_box_tag('estatus[]', e.first, false, id: :estatus)} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
+                      else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
     checkBoxes.html_safe

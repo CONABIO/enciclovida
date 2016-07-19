@@ -136,12 +136,10 @@
 <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
     <%= render :file => 'busquedas/avanzada' %>
 
-    <%= Rails.logger.info "---#{@setParams.inspect}" %>
     <script type="text/javascript">
         $(document).ready(function(){
 
             var SET_PARAMS = <%=raw @setParams.to_json %>;
-            console.log(SET_PARAMS);
 
             // Asigna los filtros que puso en el request anterior
             if (SET_PARAMS.id != undefined)
@@ -166,14 +164,15 @@
                     $('#prior_' + valor).prop('checked', true);
                 });
             }
+            if (SET_PARAMS.estatus != undefined)
+            {
+                SET_PARAMS.estatus.forEach(function(valor){
+                    $('#estatus_' + valor).prop('checked', true);
+                });
+            }
 
-
-
-
-
-
-            <% if params[:id_nom_cientifico].present? %>
-                cat_tax_asociadas('<%= params[:id_nom_cientifico] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present?  %>
+                cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
     </script>

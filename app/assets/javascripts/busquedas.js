@@ -8,8 +8,8 @@ function firstToUpperCase( str ) {
 
 soulmate_asigna = function(tipo_busqueda)
 {
-    var render = function(term, data, type, index, id){
-
+    var render = function(term, data, type, index, id)
+    {
         if (I18n.locale == 'es-cientifico')
         {
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i>';
@@ -23,8 +23,8 @@ soulmate_asigna = function(tipo_busqueda)
                 var foto_url = data.foto;
                 var foto = "<i class='soulmate-img pull-left' style='background-    image: url(\""+foto_url+"\")';></i>";
             }
-            var iconos = ""
-            var ev = '-ev-icon'
+            var iconos = "";
+            var ev = '-ev-icon';
             $.each(data.cons_amb_dist, function(i, val){
                 if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica'){return true}
                 iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
@@ -34,7 +34,9 @@ soulmate_asigna = function(tipo_busqueda)
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos +"</h5>";
         }
     };
-    var select = function(term, data, type){
+
+    var select = function(term, data, type)
+    {
         $('#nombre').val(term);
         $('#id').attr('value', data.id);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
@@ -148,9 +150,10 @@ $(document).ready(function()
     });
 
     $(document).on('click', '#limpiar', function(){
-        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico, #nombre_comun_1, #nombre_cientifico_1").attr("value", "");
+        $("#id, #nombre").val("");
         $("#datos_cat").html("");
         $("#panelCategoriaTaxonomicaPt").hide();
+        return false;
     });
 });
 

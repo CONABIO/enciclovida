@@ -206,7 +206,7 @@ class BusquedasController < ApplicationController
                         when 'id', 'nombre'
                           @setParams[k] = v
                           #[k+'_'+v]
-                        when 'edo_cons', 'dist', 'prior'
+                        when 'edo_cons', 'dist', 'prior', 'estatus'
                           #v.map{|x| k+'_'+x.parameterize}
                           if @setParams[k].present?
                             @setParams[k] << v.map{ |x| x.parameterize if x.present?}
@@ -248,8 +248,9 @@ class BusquedasController < ApplicationController
 
       # Parte del estatus
       if I18n.locale.to_s == 'es-cientifico'
-        if params[:estatus].present?
-          condiciones << ".caso_rango_valores('estatus', #{params[:estatus].join(',')})"
+        # Si escogio uno lo pone, si escogio los dos es como no poner esta condicion
+        if params[:estatus].present? && params[:estatus].length == 1
+          condiciones << ".where('estatus=#{params[:estatus].first}')"
         end
       else  # En la busqueda general solo el valido
         condiciones << ".where('estatus=2')"
@@ -307,7 +308,7 @@ class BusquedasController < ApplicationController
         if totales > 0
           @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
 
-          if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
+          if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
             @taxones = Busqueda.por_arbol(busqueda)
             checklist
           else
