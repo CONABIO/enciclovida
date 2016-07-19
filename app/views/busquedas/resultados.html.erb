@@ -127,7 +127,7 @@
     <div class="alert alert-warning" role="alert"><%= notice %></div>
 <% end %>
 
-<% if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && (params[:id_nom_cientifico].present? || params[:id_nom_comun].present?) %>
+<% if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
     <p class="text-right">
       <%= checklist(@paginacion).html_safe %>
     </p>
@@ -135,11 +135,45 @@
 
 <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
     <%= render :file => 'busquedas/avanzada' %>
+
+    <%= Rails.logger.info "---#{@setParams.inspect}" %>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('#<%= @oldparams.join(', #') %>').prop('checked', true);
+
+            var SET_PARAMS = <%=raw @setParams.to_json %>;
+            console.log(SET_PARAMS);
+
+            // Asigna los filtros que puso en el request anterior
+            if (SET_PARAMS.id != undefined)
+                $('#id').val(SET_PARAMS.id);
+            if (SET_PARAMS.nombre != undefined)
+                $('#nombre').val(SET_PARAMS.nombre);
+            if (SET_PARAMS.dist != undefined)
+            {
+                SET_PARAMS.dist.forEach(function(valor){
+                    $('#dist_' + valor).prop('checked', true);
+                });
+            }
+            if (SET_PARAMS.edo_cons != undefined)
+            {
+                SET_PARAMS.edo_cons.forEach(function(valor){
+                    $('#edo_cons_' + valor).prop('checked', true);
+                });
+            }
+            if (SET_PARAMS.prior != undefined)
+            {
+                SET_PARAMS.prior.forEach(function(valor){
+                    $('#prior_' + valor).prop('checked', true);
+                });
+            }
+
+
+
+
+
+
             <% if params[:id_nom_cientifico].present? %>
-            cat_tax_asociadas('<%= params[:id_nom_cientifico] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+                cat_tax_asociadas('<%= params[:id_nom_cientifico] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
     </script>
@@ -163,7 +197,6 @@
         <% end %>
     <% end %>
   </ul>
-
 
   <div class="tab-pane panel-body" id="todos">
     <%= render :partial => 'busquedas/resultados' %>

@@ -196,21 +196,26 @@ class BusquedasController < ApplicationController
     elsif params[:busqueda] == 'avanzada'
 
       # Parametros para poner en los filtros y saber cual escogio
-      @oldparams = []
+      @setParams = {}
 
       params.each do |k,v|
-        @oldparams += case k
-                        when 'id_nom_cientifico'
-                          [k+'_'+v]
-                        when 'edo_cons'
-                          v.map{|x| 'edo_cons_'+x.parameterize}
-                        when 'dist'
-                          v.map{|x| 'dist_'+x.parameterize}
-                        when 'prioritaria'
-                          v.map{|x| 'prior_'+x.parameterize}
+        # Evitamos valores vacios
+        next unless v.present?
+
+        case k
+                        when 'id', 'nombre'
+                          @setParams[k] = v
+                          #[k+'_'+v]
+                        when 'edo_cons', 'dist', 'prior'
+                          #v.map{|x| k+'_'+x.parameterize}
+                          if @setParams[k].present?
+                            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+                          else
+                            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+                          end
                         else
                           next
-                      end
+                     end
       end
 
       # Es necesario hacer un index con estos campos para aumentar la velocidad
@@ -276,9 +281,9 @@ class BusquedasController < ApplicationController
       end
 
       # Para las especies prioritarias
-      if params[:prioritaria].present?
+      if params[:prior].present?
         joins << '.catalogos_join'
-        condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prioritaria].join("','")}'\")"
+        condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prior].join("','")}'\")"
         distinct = true
       end
 
