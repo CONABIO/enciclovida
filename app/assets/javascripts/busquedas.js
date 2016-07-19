@@ -6,7 +6,7 @@ function firstToUpperCase( str ) {
     return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
-soulmate_asigna = function()
+soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id){
 
@@ -21,7 +21,7 @@ soulmate_asigna = function()
                 var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
             else {
                 var foto_url = data.foto;
-                var foto = "<i class='soulmate-img pull-left' style='background-image: url(\""+foto_url+"\")';></i>";
+                var foto = "<i class='soulmate-img pull-left' style='background-    image: url(\""+foto_url+"\")';></i>";
             }
             var iconos = ""
             var ev = '-ev-icon'
@@ -37,6 +37,10 @@ soulmate_asigna = function()
     var select = function(term, data, type){
         $('#nombre').val(term);
         $('#id').attr('value', data.id);
+        $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
+
+        if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')
+            cat_tax_asociadas(data.id);  // despliega las categorias taxonomicas asociadas al taxon
 
         // Para no pasar por el controlador de busquedas, ir directo a la especie
         $('#basica').attr('action','/especies/'+data.id)
@@ -148,8 +152,5 @@ $(document).ready(function()
         $("#datos_cat").html("");
         $("#panelCategoriaTaxonomicaPt").hide();
     });
-
-    // Asigna el soulmate a la caja nombre
-    soulmate_asigna();
 });
 

@@ -10,383 +10,364 @@ class BusquedasController < ApplicationController
   end
 
   def resultados
-    @oldparams = []
-    params.each do |k,v|
-      @oldparams += case k
-                      when 'id_nom_cientifico'
-                        [k+'_'+v]
-                      when 'edo_cons'
-                        v.map{|x| 'edo_cons_'+x.parameterize}
-                      when 'dist'
-                        v.map{|x| 'dist_'+x.parameterize}
-                      when 'prioritaria'
-                        v.map{|x| 'prior_'+x.parameterize}
-                      else
-                        next
-                    end
-    end
-
     # Por si no coincidio nada
     @taxones = Especie.none
 
-    # Despliega directo el taxon, si paso id
-    if params[:id].present?
-      redirect_to especie_path(params[:id])
-    else
+    if params[:busqueda] == 'basica'
+      # Siempre estatus valido en la vista general
+      estatus =  I18n.locale.to_s == 'es-cientifico' ? '2,1' : '2'
 
-      # Hace el query del tipo de busqueda
-      case params[:busqueda]
-
-        when 'basica'
-          # Siempre estatus valido en la vista general
-          estatus =  I18n.locale.to_s == 'es-cientifico' ? '2,1' : '2'
-
-          # Buscamos coincidencias para el nombre comun
-          select = "NombreComun.datos_basicos([],'FULL')"
-          select_count = "NombreComun.datos_count('FULL')"
-          condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
+      # Buscamos coincidencias para el nombre comun
+      select = "NombreComun.datos_basicos([],'FULL')"
+      select_count = "NombreComun.datos_count('FULL')"
+      condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
                 where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus})\")"
 
-          # Parte de consultar solo un TAB (categoria taxonomica)
-          if params[:solo_categoria].present?
-            condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
-            select_count << '.categoria_taxonomica_join'
+      # Parte de consultar solo un TAB (categoria taxonomica)
+      if params[:solo_categoria].present?
+        condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+        select_count << '.categoria_taxonomica_join'
+      end
+
+      sql = select + condiciones
+      sql_count = select_count << condiciones
+
+      query = eval(sql).to_sql
+      totales = eval(sql_count)[0].cuantos
+
+      pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+      por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
+
+      if totales > 0
+        @taxones = query + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+        @taxones = NombreComun.find_by_sql(@taxones)
+
+        # La consulta que separa los resultados por categoria taxonomica
+        sql_por_categotia_basica = Busqueda.por_categoria_basica(sql)
+        @por_categoria = NombreComun.find_by_sql(sql_por_categotia_basica)
+
+      else
+        ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+        ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+
+        if ids_comun.any? || ids_cientifico.any?
+          @taxones = NombreComun.none
+          sql = "NombreComun.datos_basicos(['nombre_comun'],'FULL').where(\"estatus IN (#{estatus})\")"
+
+          if ids_comun.any? && ids_cientifico.any?
+            sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
+          elsif ids_comun.any?
+            sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
+          elsif ids_cientifico.any?
+            sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
           end
 
-          sql = select + condiciones
-          sql_count = select_count << condiciones
+          query = eval(sql).to_sql + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+          res = NombreComun.find_by_sql(query)
 
-          query = eval(sql).to_sql
-          totales = eval(sql_count)[0].cuantos
+          ids_totales = []
+          res.each do |taxon|
+            # Para evitar que se repitan los taxones con los joins
+            next if ids_totales.include?(taxon.id)
+            ids_totales << taxon.id
 
-          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-          por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
+            # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+            if taxon.nombre_comun.present?
+              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
+              @taxones <<= taxon if distancia < 3
+            end
 
-          if totales > 0
-            @taxones = query + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-            @taxones = NombreComun.find_by_sql(@taxones)
+            distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
+            @taxones <<= taxon if distancia < 3
+          end
+        end
 
-            # La consulta que separa los resultados por categoria taxonomica
-            sql_por_categotia_basica = Busqueda.por_categoria_basica(sql)
-            @por_categoria = NombreComun.find_by_sql(sql_por_categotia_basica)
+        # Para que saga el total tambien con el fuzzy match
+        if @taxones.any?
+          @coincidencias = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+        end
 
-          else
-            ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-            ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+      end
 
-            if ids_comun.any? || ids_cientifico.any?
-              @taxones = NombreComun.none
-              sql = "NombreComun.datos_basicos(['nombre_comun'],'FULL').where(\"estatus IN (#{estatus})\")"
+      @paginacion = paginacion(@taxones.length, pagina, por_pagina)
 
-              if ids_comun.any? && ids_cientifico.any?
-                sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
-              elsif ids_comun.any?
-                sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
-              elsif ids_cientifico.any?
-                sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
-              end
+      # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+      if params[:solo_categoria].present?
+        if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
+          render :partial => 'busquedas/_resultados'
+        elsif @taxones.empty? && params[:pagina].to_i > 1 && !@taxones.empty?
+          # Quiere decir que el paginado acabo en algun TAB que no es el default
+          render text: ''
+        else
+          # Despliega el inicio de un TAB que no sea el default
+          render :partial => 'busquedas/resultados'
+        end
+      elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
+        # Despliega el paginado del TAB que tiene todos
+        render :partial => 'busquedas/_resultados'
+      elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+        # Quiere decir que el paginado acabo en algun TAB
+        render text: ''
+      elsif @taxones.empty?
+        # La busqueda no dio ningun resultado
+        redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
+      end
+      # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb).
 
-              query = eval(sql).to_sql + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-              res = NombreComun.find_by_sql(query)
+=begin
+      when 'nombre_cientifico'
+        arbol = params[:arbol].present? && params[:arbol].to_i == 1
 
-              ids_totales = []
-              res.each do |taxon|
-                # Para evitar que se repitan los taxones con los joins
-                next if ids_totales.include?(taxon.id)
-                ids_totales << taxon.id
+        #Si pido arbol, entonces a estatus pegale nil para que abajito ponga ('1,2')
+        estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
 
+        #if arbol
+        sql = "Especie.datos_basicos.where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_cientifico ASC')"
+        sql << ".caso_insensitivo('nombre_cientifico', '#{params[:nombre_cientifico].limpia_sql}')" if params[:nombre_cientifico].present?
+        consulta = eval(sql).to_sql
+
+        consulta = Bases.distinct_limpio consulta
+
+        totales = eval(sql).count
+        pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+
+        if totales > 0
+          @taxones = consulta << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+          @taxones = Especie.find_by_sql(@taxones)
+          @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+        else
+
+          if @taxones.empty?
+            ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
+
+            if ids.present?
+              @taxones = Especie.none
+              taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
+
+              taxones.each do |taxon|
                 # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                if taxon.nombre_comun.present?
-                  distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
-                  @taxones <<= taxon if distancia < 3
-                end
+                distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
+                @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
 
-                distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
-                @taxones <<= taxon if distancia < 3
-              end
-            end
+                if distancia < 3
+                  taxon[:distancia]= distancia
+                  @taxones <<= taxon
 
-            # Para que saga el total tambien con el fuzzy match
-            if @taxones.any?
-              @coincidencias = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-            end
-
-          end
-
-          @paginacion = paginacion(@taxones.length, pagina, por_pagina)
-
-          # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-          if params[:solo_categoria].present?
-            if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-              render :partial => 'busquedas/_resultados'
-            elsif @taxones.empty? && params[:pagina].to_i > 1 && !@taxones.empty?
-              # Quiere decir que el paginado acabo en algun TAB que no es el default
-              render text: ''
-            else
-              # Despliega el inicio de un TAB que no sea el default
-              render :partial => 'busquedas/resultados'
-            end
-          elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
-            # Despliega el paginado del TAB que tiene todos
-            render :partial => 'busquedas/_resultados'
-          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            # Quiere decir que el paginado acabo en algun TAB
-            render text: ''
-          elsif @taxones.empty?
-            # La busqueda no dio ningun resultado
-            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
-          end
-        # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb).
-
-        when 'nombre_cientifico'
-          arbol = params[:arbol].present? && params[:arbol].to_i == 1
-
-          #Si pido arbol, entonces a estatus pegale nil para que abajito ponga ('1,2')
-          estatus = arbol ? nil : (I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2')
-
-          #if arbol
-          sql = "Especie.datos_basicos.where(\"estatus IN (#{estatus ||= '2, 1'})\").distinct.order('nombre_cientifico ASC')"
-          sql << ".caso_insensitivo('nombre_cientifico', '#{params[:nombre_cientifico].limpia_sql}')" if params[:nombre_cientifico].present?
-          consulta = eval(sql).to_sql
-
-          consulta = Bases.distinct_limpio consulta
-
-          totales = eval(sql).count
-          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-
-          if totales > 0
-            @taxones = consulta << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-            @taxones = Especie.find_by_sql(@taxones)
-            @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
-          else
-
-            if @taxones.empty?
-              ids=FUZZY_NOM_CIEN.find(params[:nombre_cientifico], limit=CONFIG.limit_fuzzy)
-
-              if ids.present?
-                @taxones = Especie.none
-                taxones = Especie.datos_basicos.caso_rango_valores('especies.id', "#{ids.join(',')}").where("estatus IN (#{estatus ||= '2, 1'})").order('nombre_cientifico ASC')
-
-                taxones.each do |taxon|
-                  # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-                  distancia = Levenshtein.distance(params[:nombre_cientifico].downcase, taxon.nombre_cientifico.limpiar.downcase)
-                  @coincidencias='¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-
-                  if distancia < 3
-                    taxon[:distancia]= distancia
-                    @taxones <<= taxon
-
-                  else
-                    next
-                  end
+                else
+                  next
                 end
               end
             end
-
-            # Para que saga el total tambien con el fuzzy match
-            @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
           end
 
-          if !@taxones.empty? && arbol
-            @arboles = []
-            @taxones.each do | taxon|
-              #Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
-              nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
-              #Jalo unicamente los ancestros del taxón en cuestión
-              arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+          # Para que saga el total tambien con el fuzzy match
+          @paginacion = paginacion(@taxones.length, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO) if @taxones.any?
+        end
 
-              #Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
-              @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
-            end
-            render 'busquedas/arbol.json.erb'
+        if !@taxones.empty? && arbol
+          @arboles = []
+          @taxones.each do | taxon|
+            #Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
+            nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
+            #Jalo unicamente los ancestros del taxón en cuestión
+            arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+
+            #Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
+            @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
           end
+          render 'busquedas/arbol.json.erb'
+        end
 
-          if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-            render :partial => 'busquedas/_resultados'
-          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            # El scrolling acaba
-            render text: ''
-          elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
-            render :text => '[]'
-          elsif @taxones.empty?
-            redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
-          end
-
-        # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
-
-
-        when 'avanzada'
-          #Es necesario hacer un index con estos campos para aumentar la velocidad
-          condiciones = []
-          joins = []
-          busqueda = 'Especie.datos_basicos'
-
-          conID = ''
-          nombre_cientifico = ''
-          distinct = false
-
-          params.each do |key, value|  #itera sobre todos los campos
-
-            if key == 'id_nom_cientifico' && value.present?
-              conID = value.to_i
-            elsif conID.blank? && key == 'id_nom_comun' && value.present?
-              conID = value.to_i
-            end
-
-            if key == 'nombre_cientifico' && value.present? && conID.blank?
-              nombre_cientifico << value.gsub("'", "''")
-              condiciones << ".caso_insensitivo('nombre_cientifico', \"#{nombre_cientifico.limpia_sql}\")"
-            end
-
-            if key == 'nombre_comun' && value.present? && conID.blank?
-              joins << '.nombres_comunes_join'
-              condiciones << ".caso_insensitivo('nombres_comunes.nombre_comun', \"#{value.limpia_sql}\")"
-            end
-          end
-
-          # Parte de la categoria taxonomica
-          if params[:cat].present? && params[:nivel].present?
-            if conID.present?                 #join a la(s) categorias taxonomicas (params)
-              taxon = Especie.find(conID)
-
-              if taxon.is_root?
-                condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
-              else
-                ancestros = taxon.ancestry_ascendente_directo
-                condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
-              end
-
-              # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-              condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
-            end
-          else       # busquedas directas
-            condiciones << ".caso_sensitivo('especies.id', '#{conID}')" if conID.present?
-          end
-
-          #Parte del estatus
-          estatus =  I18n.locale.to_s == 'es-cientifico' ?  (params[:estatus].join(',') if params[:estatus].present?) : '2'
-          condiciones << ".caso_rango_valores('estatus', #{estatus})" if params[:estatus].present? || I18n.locale.to_s == 'es'
-
-          #Parte del tipo de ditribucion
-          if params[:dist].present?
-            #######################  Quitar cuando se arregle en la base
-            if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-              condiciones << ".where('especies.invasora IS NOT NULL')"
-            elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
-              params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-              joins << '.tipo_distribucion_join'
-              condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
-              distinct = true
-            else  # Selecciono cualquiera menos invasora
-              joins << '.tipo_distribucion_join'
-              condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
-              distinct = true
-            end
-            #######################
-          end
-
-          #Parte del edo. de conservacion
-          if params[:edo_cons].present?
-            joins << '.catalogos_join'
-            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
-            distinct = true
-          end
-
-          # Para las especies prioritarias
-          if params[:prioritaria].present?
-            joins << '.catalogos_join'
-            condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prioritaria].join("','")}'\")"
-            distinct = true
-          end
-
-          # Parte de consultar solo un TAB (categoria taxonomica)
-          if params[:solo_categoria] && conID.present?
-            condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
-          end
-
-          # Quita las condiciones y los joins repetidos
-          condiciones_unicas = condiciones.uniq.join('')
-          joins_unicos = joins.uniq.join('')
-          busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
-
-          # Para sacar los resultados por categoria
-          @por_categoria = Busqueda.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
-          pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-
-          if distinct
-            totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
-
-            if totales > 0
-              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
-
-              if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-                @taxones = Busqueda.por_arbol(busqueda)
-                checklist
-              else
-                query = eval(busqueda).distinct.to_sql
-                consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-                @taxones = Especie.find_by_sql(consulta)
-              end
-            end
-          else
-            totales = eval(busqueda).count
-
-            if totales > 0
-              @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-              @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
-
-              if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
-                @taxones = Busqueda.por_arbol(busqueda, true)
-                checklist(true)
-              end
-              @taxones = Especie.find_by_sql(@taxones)
-
-            end
-          end
-
+        if !@taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
           # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-          if params[:solo_categoria].present?
-            if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-              render :partial => 'busquedas/_resultados'
-            elsif @taxones.empty?
-              render text: ''
-            else
-              render :partial => 'busquedas/resultados'
-            end
-          elsif params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-            render :partial => 'busquedas/_resultados'
-          elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-            render text: ''
-          elsif params[:checklist].present? && params[:checklist].to_i == 1
-            respond_to do |format|
-              format.html { render 'busquedas/checklists' }
-              format.pdf do  #Para imprimir el listado en PDF
-                ruta = Rails.root.join('public', 'pdfs').to_s
-                fecha = Time.now.strftime("%Y%m%d%H%M%S")
-                pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
-                FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+          render :partial => 'busquedas/_resultados'
+        elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+          # El scrolling acaba
+          render text: ''
+        elsif @taxones.empty? && arbol #La búsqueda no obtuvo resultados y se regresa un array parseable vacío
+          render :text => '[]'
+        elsif @taxones.empty?
+          redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningun resultado.'
+        end
 
-                render :pdf => 'listado_de_especies',
-                       :save_to_file => pdf,
-                       #:save_only => true,
-                       :template => 'busquedas/checklists.pdf.erb',
-                       :encoding => 'UTF-8',
-                       :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-                       :orientation => 'Landscape'
-              end
-              format.xlsx do  # Falta implementar el excel de salida
-                @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
-              end
-            end
-          end
+      # Ojo si no entro a ningun condicional desplegara el render normal de resultados.
+=end
 
-        else  # Default switch
-          respond_to do |format|
-            format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
+    elsif params[:busqueda] == 'avanzada'
+
+      # Parametros para poner en los filtros y saber cual escogio
+      @oldparams = []
+
+      params.each do |k,v|
+        @oldparams += case k
+                        when 'id_nom_cientifico'
+                          [k+'_'+v]
+                        when 'edo_cons'
+                          v.map{|x| 'edo_cons_'+x.parameterize}
+                        when 'dist'
+                          v.map{|x| 'dist_'+x.parameterize}
+                        when 'prioritaria'
+                          v.map{|x| 'prior_'+x.parameterize}
+                        else
+                          next
+                      end
+      end
+
+      # Es necesario hacer un index con estos campos para aumentar la velocidad
+      condiciones = []
+      joins = []
+      busqueda = 'Especie.datos_basicos'
+
+      conID = params[:id]
+      distinct = false
+
+      # Para hacer la condicion con el nombre_comun
+      if conID.blank? && params[:nombre].present?
+        condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
+      end
+
+      # Parte de la categoria taxonomica
+      if conID.present? && params[:cat].present? && params[:nivel].present?
+        taxon = Especie.find(conID)
+
+        if taxon.is_root?
+          condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
+        else
+          ancestros = taxon.ancestry_ascendente_directo
+          condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
+        end
+
+        # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
+        condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
+      end
+
+      # Parte del estatus
+      if I18n.locale.to_s == 'es-cientifico'
+        if params[:estatus].present?
+          condiciones << ".caso_rango_valores('estatus', #{params[:estatus].join(',')})"
+        end
+      else  # En la busqueda general solo el valido
+        condiciones << ".where('estatus=2')"
+      end
+
+      #Parte del tipo de ditribucion
+      if params[:dist].present?
+        #######################  Quitar cuando se arregle en la base
+        if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
+          condiciones << ".where('especies.invasora IS NOT NULL')"
+        elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
+          params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
+          joins << '.tipo_distribucion_join'
+          condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
+          distinct = true
+        else  # Selecciono cualquiera menos invasora
+          joins << '.tipo_distribucion_join'
+          condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+          distinct = true
+        end
+        #######################
+      end
+
+      #Parte del edo. de conservacion
+      if params[:edo_cons].present?
+        joins << '.catalogos_join'
+        condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+        distinct = true
+      end
+
+      # Para las especies prioritarias
+      if params[:prioritaria].present?
+        joins << '.catalogos_join'
+        condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prioritaria].join("','")}'\")"
+        distinct = true
+      end
+
+      # Parte de consultar solo un TAB (categoria taxonomica)
+      if params[:solo_categoria] && conID.present?
+        condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+      end
+
+      # Quita las condiciones y los joins repetidos
+      condiciones_unicas = condiciones.uniq.join('')
+      joins_unicos = joins.uniq.join('')
+      busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
+
+      # Para sacar los resultados por categoria
+      @por_categoria = Busqueda.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
+      pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+
+      if distinct
+        totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+
+        if totales > 0
+          @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+
+          if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
+            @taxones = Busqueda.por_arbol(busqueda)
+            checklist
+          else
+            query = eval(busqueda).distinct.to_sql
+            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            @taxones = Especie.find_by_sql(consulta)
           end
-      end  # Fin switch
-    end
+        end
+      else
+        totales = eval(busqueda).count
+
+        if totales > 0
+          @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+          @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+
+          if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
+            @taxones = Busqueda.por_arbol(busqueda, true)
+            checklist(true)
+          end
+          @taxones = Especie.find_by_sql(@taxones)
+
+        end
+      end
+
+      # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+      if params[:solo_categoria].present?
+        if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
+          render :partial => 'busquedas/_resultados'
+        elsif @taxones.empty?
+          render text: ''
+        else
+          render :partial => 'busquedas/resultados'
+        end
+      elsif params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
+        render :partial => 'busquedas/_resultados'
+      elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+        render text: ''
+      elsif params[:checklist].present? && params[:checklist].to_i == 1
+        respond_to do |format|
+          format.html { render 'busquedas/checklists' }
+          format.pdf do  #Para imprimir el listado en PDF
+            ruta = Rails.root.join('public', 'pdfs').to_s
+            fecha = Time.now.strftime("%Y%m%d%H%M%S")
+            pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+            FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+
+            render :pdf => 'listado_de_especies',
+                   :save_to_file => pdf,
+                   #:save_only => true,
+                   :template => 'busquedas/checklists.pdf.erb',
+                   :encoding => 'UTF-8',
+                   :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
+                   :orientation => 'Landscape'
+          end
+          format.xlsx do  # Falta implementar el excel de salida
+            @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
+          end
+        end
+      end
+
+    else  # Default switch
+      respond_to do |format|
+        format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
+      end
+    end  # Fin switch
   end
 
   # Servicio que por medio del nombre comun extrae todos los nombres comunes asociados al taxon (servicio para alejandro molina)

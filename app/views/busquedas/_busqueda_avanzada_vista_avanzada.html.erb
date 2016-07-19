@@ -1,7 +1,14 @@
+<script data-turbolinks-track="true">
+    $(document).ready(function(){
+        // Asigna el soulmate a la caja nombre
+        soulmate_asigna('avanzada');
+    });
+</script>
+
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
-    <%= hidden_field_tag :id, nil, :id => :id_avanzada_cientifico %>
+    <%= hidden_field_tag :id, nil %>
 
     <%= hidden_field_tag :busqueda, :avanzada %>
     <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
@@ -10,7 +17,8 @@
       <span class="label" style="color: #333333; font-weight: normal;">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <%= t(:nombre_comun) %>
       </span>
-      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
+                         :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
     </div>
 
     <div class="form-group">
@@ -19,6 +27,7 @@
     </div>
 
   </fieldset>
+
   <div id="panelCategoriaTaxonomicaPt" style="display: none;">
     <fieldset>
       <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
