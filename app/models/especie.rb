@@ -53,6 +53,7 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')") }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
@@ -76,7 +77,7 @@ class Especie < ActiveRecord::Base
         adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
         iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies
   scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
   #Select para el Checklist (por_arbol)

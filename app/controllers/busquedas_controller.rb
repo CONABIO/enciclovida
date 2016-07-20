@@ -14,45 +14,43 @@ class BusquedasController < ApplicationController
     @taxones = Especie.none
 
     if params[:busqueda] == 'basica'
-      # Siempre estatus valido en la vista general
-      estatus =  I18n.locale.to_s == 'es-cientifico' ? '2,1' : '2'
 
       # Buscamos coincidencias para el nombre comun
-      select = "NombreComun.datos_basicos([],'FULL')"
-      select_count = "NombreComun.datos_count('FULL')"
-      condiciones = ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\").
-                where('especies.id IS NOT NULL').where(\"estatus IN (#{estatus})\")"
+      sql = 'Especie.datos_basicos.nombres_comunes_join'
+
+      # Parte del estatus
+      if I18n.locale.to_s == 'es'
+        sql << ".where('estatus=2')"
+      end
+
+      sql << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
 
       # Parte de consultar solo un TAB (categoria taxonomica)
       if params[:solo_categoria].present?
-        condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
-        select_count << '.categoria_taxonomica_join'
+        sql << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
       end
 
-      sql = select + condiciones
-      sql_count = select_count << condiciones
-
-      query = eval(sql).to_sql
-      totales = eval(sql_count)[0].cuantos
-
+      totales = eval(sql.gsub('datos_basicos','datos_count'))[0].totales
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if totales > 0
-        @taxones = query + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-        @taxones = NombreComun.find_by_sql(@taxones)
-
-        # La consulta que separa los resultados por categoria taxonomica
-        sql_por_categotia_basica = Busqueda.por_categoria_basica(sql)
-        @por_categoria = NombreComun.find_by_sql(sql_por_categotia_basica)
+        query = eval(sql).distinct.to_sql
+        consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+        @taxones = Especie.find_by_sql(consulta)
+        @por_categoria = Busqueda.por_categoria(sql, true)
 
       else
         ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
         ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
 
         if ids_comun.any? || ids_cientifico.any?
-          @taxones = NombreComun.none
-          sql = "NombreComun.datos_basicos(['nombre_comun'],'FULL').where(\"estatus IN (#{estatus})\")"
+          sql = "Especie.datos_basicos(['nombre_comun']).nombres_comunes_join"
+
+          # Parte del estatus
+          if I18n.locale.to_s == 'es'
+            sql << ".where('estatus=2')"
+          end
 
           if ids_comun.any? && ids_cientifico.any?
             sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
@@ -62,11 +60,14 @@ class BusquedasController < ApplicationController
             sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
           end
 
-          query = eval(sql).to_sql + " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-          res = NombreComun.find_by_sql(query)
+          query = eval(sql).distinct.to_sql
+          consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+          Rails.logger.info "---#{consulta}"
+          taxones = Especie.find_by_sql(consulta)
 
           ids_totales = []
-          res.each do |taxon|
+
+          taxones.each do |taxon|
             # Para evitar que se repitan los taxones con los joins
             next if ids_totales.include?(taxon.id)
             ids_totales << taxon.id
@@ -203,19 +204,17 @@ class BusquedasController < ApplicationController
         next unless v.present?
 
         case k
-                        when 'id', 'nombre'
-                          @setParams[k] = v
-                          #[k+'_'+v]
-                        when 'edo_cons', 'dist', 'prior', 'estatus'
-                          #v.map{|x| k+'_'+x.parameterize}
-                          if @setParams[k].present?
-                            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-                          else
-                            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-                          end
-                        else
-                          next
-                     end
+          when 'id', 'nombre'
+            @setParams[k] = v
+          when 'edo_cons', 'dist', 'prior', 'estatus'
+            if @setParams[k].present?
+              @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+            else
+              @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+            end
+          else
+            next
+        end
       end
 
       # Es necesario hacer un index con estos campos para aumentar la velocidad
@@ -229,6 +228,8 @@ class BusquedasController < ApplicationController
       # Para hacer la condicion con el nombre_comun
       if conID.blank? && params[:nombre].present?
         condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
+        joins << '.nombres_comunes_join'
+        distinct = true
       end
 
       # Parte de la categoria taxonomica
