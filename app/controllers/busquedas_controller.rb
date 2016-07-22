@@ -41,7 +41,7 @@ class BusquedasController < ApplicationController
         query = eval(sql).distinct.to_sql
         consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
         @taxones = Especie.find_by_sql(consulta)
-        @por_categoria = Busqueda.por_categoria(sql, true)
+        @por_categoria = Busqueda.por_categoria(sql)
 
       else
         ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
@@ -132,40 +132,17 @@ class BusquedasController < ApplicationController
 
     elsif params[:busqueda] == 'avanzada'
 
-      # Parametros para poner en los filtros y saber cual escogio
-      @setParams = {}
-
-      params.each do |k,v|
-        # Evitamos valores vacios
-        next unless v.present?
-
-        case k
-          when 'id', 'nombre', 'por_pagina'
-            @setParams[k] = v
-          when 'edo_cons', 'dist', 'prior', 'estatus'
-            if @setParams[k].present?
-              @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-            else
-              @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-            end
-          else
-            next
-        end
-      end
-
       # Es necesario hacer un index con estos campos para aumentar la velocidad
       condiciones = []
       joins = []
       busqueda = 'Especie.datos_basicos'
 
       conID = params[:id]
-      distinct = false
 
       # Para hacer la condicion con el nombre_comun
       if conID.blank? && params[:nombre].present?
         condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
         joins << '.nombres_comunes_join'
-        distinct = true
       end
 
       # Parte de la categoria taxonomica
@@ -202,11 +179,9 @@ class BusquedasController < ApplicationController
           params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
           joins << '.tipo_distribucion_join'
           condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
-          distinct = true
         else  # Selecciono cualquiera menos invasora
           joins << '.tipo_distribucion_join'
           condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
-          distinct = true
         end
         #######################
       end
@@ -215,19 +190,18 @@ class BusquedasController < ApplicationController
       if params[:edo_cons].present?
         joins << '.catalogos_join'
         condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
-        distinct = true
       end
 
       # Para las especies prioritarias
       if params[:prior].present?
         joins << '.catalogos_join'
         condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prior].join("','")}'\")"
-        distinct = true
       end
 
-      # Parte de consultar solo un TAB (categoria taxonomica)
-      if params[:solo_categoria] && conID.present?
-        condiciones << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+      # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
+      # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
+      if params[:solo_categoria]
+        condiciones << ".caso_sensitivo('nombre_categoria_taxonomica', '#{params[:solo_categoria]}')"
       end
 
       # Quita las condiciones y los joins repetidos
@@ -236,39 +210,23 @@ class BusquedasController < ApplicationController
       busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
       # Para sacar los resultados por categoria
-      @por_categoria = Busqueda.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
+      @por_categoria = Busqueda.por_categoria(busqueda) if params[:solo_categoria].blank?
 
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-      if distinct
-        totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+      totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
-        if totales > 0
-          @paginacion = paginacion(totales, pagina, por_pagina)
+      if totales > 0
+        @paginacion = paginacion(totales, pagina, por_pagina)
 
-          if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-            @taxones = Busqueda.por_arbol(busqueda)
-            checklist
-          else
-            query = eval(busqueda).distinct.to_sql
-            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-            @taxones = Especie.find_by_sql(consulta)
-          end
-        end
-      else
-        totales = eval(busqueda).count
-
-        if totales > 0
-          @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-          @paginacion = paginacion(totales, pagina, por_pagina)
-
-          if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
-            @taxones = Busqueda.por_arbol(busqueda, true)
-            checklist(true)
-          end
-          @taxones = Especie.find_by_sql(@taxones)
-
+        if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
+          @taxones = Busqueda.por_arbol(busqueda)
+          checklist
+        else
+          query = eval(busqueda).distinct.to_sql
+          consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+          @taxones = Especie.find_by_sql(consulta)
         end
       end
 
@@ -305,6 +263,27 @@ class BusquedasController < ApplicationController
           format.xlsx do  # Falta implementar el excel de salida
             @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
           end
+        end
+      end
+
+      # Parametros para poner en los filtros y saber cual escogio
+      @setParams = {}
+
+      params.each do |k,v|
+        # Evitamos valores vacios
+        next unless v.present?
+
+        case k
+          when 'id', 'nombre', 'por_pagina'
+            @setParams[k] = v
+          when 'edo_cons', 'dist', 'prior', 'estatus'
+            if @setParams[k].present?
+              @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+            else
+              @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+            end
+          else
+            next
         end
       end
 

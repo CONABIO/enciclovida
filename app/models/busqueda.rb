@@ -18,31 +18,18 @@ class Busqueda
       ['superior a', '<']
   ]
 
-  #Especie.datos_basicos.where("ancestry_ascendente_directo LIKE '1000001/8000007/8000008/8002485%' OR especies.id IN (1000001,8000007,8000008,8002485)").where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) >= '7100'").caso_rango_valores('estatus', 2)
-
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
-    sql = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,"
-    sql << 'nombre_categoria_taxonomica,'
-
-    if distinct
-      sql << 'count(DISTINCT especies.id) as cuantos'
-    else
-      sql << 'count(CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)) as cuantos'
-    end
-    sql << "').categoria_taxonomica_join"
+    sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
+    sql << '.categoria_taxonomica_join'
 
     busq = busqueda.gsub('datos_basicos', sql)
-    busq << ".group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
+    busq << ".group('nombre_categoria_taxonomica')"
     busq << ".order('nivel')"
 
-    if distinct
-      query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
-      query_limpio << ' ORDER BY nivel ASC'
-      Especie.find_by_sql(query_limpio)
-    else
-      eval(busq)
-    end
+    query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
+    query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
+    Especie.find_by_sql(query_limpio)
   end
 
   # Hace el conteo de los resultados por categoria en la busqueda basica
@@ -59,13 +46,12 @@ nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos').especies_jo
   end
 
   def self.por_arbol(busqueda, sin_filtros=false)
-    if sin_filtros #La búsqueda que realizaste no contiene filtro alguno
+    if sin_filtros # La búsqueda que realizaste no contiene filtro alguno
       busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
       busq = busq.sub(/\.where\(\"CONCAT.+/,'')
       busq << ".order('arbol')"
       eval(busq)
     else # Las condiciones y el join son los mismos pero cambia el select, para desplegar el checklist
-      #sql = 'select("ancestry_ascendente_directo+\'/\'+cast(especies.id as nvarchar) as arbol")'[
       busq = busqueda.gsub("datos_basicos", "datos_arbol_con_filtros")
       eval(busq)
     end
