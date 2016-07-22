@@ -22,7 +22,7 @@ soulmate_asigna = function(tipo_busqueda)
                 var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
             else {
                 var foto_url = data.foto;
-                var foto = "<i class='soulmate-img pull-left' style='background-    image: url(\""+foto_url+"\")';></i>";
+                var foto = "<i class='soulmate-img pull-left' style='background-    image: url(\"" + foto_url + "\")';></i>";
             }
 
             var iconos = "";
@@ -36,7 +36,7 @@ soulmate_asigna = function(tipo_busqueda)
             if (data.geodatos != undefined){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
             if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
 
-            return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos +"</h5>";
+            return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
         }
     };
 
@@ -50,7 +50,7 @@ soulmate_asigna = function(tipo_busqueda)
             cat_tax_asociadas(data.id);  // despliega las categorias taxonomicas asociadas al taxon
 
         // Para no pasar por el controlador de busquedas, ir directo a la especie
-        $('#basica').attr('action','/especies/'+data.id)
+        $('#basica').attr('action','/especies/'+data.id);
         $('#basica').submit();
     };
 
@@ -143,16 +143,6 @@ $(document).ready(function()
 //            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
 //                $('#distribucion_nivel_3').remove();
 //        });
-
-    $(document).on('change', "#per_page", function(k)
-    {
-        var valor=$(this).val();
-        $('#'+$(this).attr('id') + ' option').removeAttr('selected');
-        $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-
-        $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
-        $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
-    });
 
     $(document).on('click', '#limpiar', function(){
         $("#id, #nombre").val("");

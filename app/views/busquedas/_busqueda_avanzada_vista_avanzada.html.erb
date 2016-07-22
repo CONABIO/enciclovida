@@ -9,9 +9,7 @@
   <fieldset>
     <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
     <%= hidden_field_tag :id, nil %>
-
     <%= hidden_field_tag :busqueda, :avanzada %>
-    <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
     <div class="form-group">
       <span class="label" style="color: #333333; font-weight: normal;">
@@ -23,7 +21,7 @@
 
     <div class="form-group">
       <span class="label" style="color: #333333; font-weight: normal;">Resultados por página</span>
-      <%= select_tag :per_page, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
     </div>
 
   </fieldset>

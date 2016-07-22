@@ -170,6 +170,9 @@
                     $('#estatus_' + valor).prop('checked', true);
                 });
             }
+            if (SET_PARAMS.por_pagina != undefined)
+                $('#por_pagina').val(SET_PARAMS.por_pagina);
+            
 
             <% if params[:id].present? && params[:nivel].present? &&params[:cat].present?  %>
                 cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');

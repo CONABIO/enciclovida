@@ -65,7 +65,6 @@ class BusquedasController < ApplicationController
 
           query = eval(sql).distinct.to_sql
           consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-          Rails.logger.info "---#{consulta}"
           taxones = Especie.find_by_sql(consulta)
 
           ids_totales = []
@@ -98,12 +97,12 @@ class BusquedasController < ApplicationController
         @arboles = []
 
         @taxones.each do | taxon|
-          #Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
+          # Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
           nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
-          #Jalo unicamente los ancestros del taxón en cuestión
+          # Jalo unicamente los ancestros del taxón en cuestión
           arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
 
-          #Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
+          # Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
           @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
         end
         render 'busquedas/arbol.json.erb'
@@ -141,7 +140,7 @@ class BusquedasController < ApplicationController
         next unless v.present?
 
         case k
-          when 'id', 'nombre'
+          when 'id', 'nombre', 'por_pagina'
             @setParams[k] = v
           when 'edo_cons', 'dist', 'prior', 'estatus'
             if @setParams[k].present?
@@ -194,7 +193,7 @@ class BusquedasController < ApplicationController
         condiciones << ".where('estatus=2')"
       end
 
-      #Parte del tipo de ditribucion
+      # Parte del tipo de ditribucion
       if params[:dist].present?
         #######################  Quitar cuando se arregle en la base
         if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
@@ -212,7 +211,7 @@ class BusquedasController < ApplicationController
         #######################
       end
 
-      #Parte del edo. de conservacion
+      # Parte del edo. de conservacion
       if params[:edo_cons].present?
         joins << '.catalogos_join'
         condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
@@ -238,20 +237,22 @@ class BusquedasController < ApplicationController
 
       # Para sacar los resultados por categoria
       @por_categoria = Busqueda.por_categoria(busqueda, distinct) if params[:solo_categoria].blank? && conID.present?
+
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+      por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if distinct
         totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
         if totales > 0
-          @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+          @paginacion = paginacion(totales, pagina, por_pagina)
 
           if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
             @taxones = Busqueda.por_arbol(busqueda)
             checklist
           else
             query = eval(busqueda).distinct.to_sql
-            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
+            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
             @taxones = Especie.find_by_sql(consulta)
           end
         end
@@ -259,8 +260,8 @@ class BusquedasController < ApplicationController
         totales = eval(busqueda).count
 
         if totales > 0
-          @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*params[:por_pagina].to_i} ROWS FETCH NEXT #{params[:por_pagina].to_i} ROWS ONLY"
-          @paginacion = paginacion(totales, pagina, params[:por_pagina] ||= Busqueda::POR_PAGINA_PREDETERMINADO)
+          @taxones = eval(busqueda).order('nombre_cientifico ASC').to_sql << " OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+          @paginacion = paginacion(totales, pagina, por_pagina)
 
           if params[:checklist]=="1" # Reviso si me pidieron una url que contien parametro checklist (Busqueda SIN FILTROS)
             @taxones = Busqueda.por_arbol(busqueda, true)
