@@ -12,9 +12,6 @@
     <%= hidden_field_tag :busqueda, :avanzada %>
 
     <div class="form-group">
-      <span class="label" style="color: #333333; font-weight: normal;">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <%= t(:nombre_comun) %>
-      </span>
       <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
                          :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
     </div>

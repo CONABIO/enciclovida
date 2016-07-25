@@ -6,6 +6,35 @@ function firstToUpperCase( str ) {
     return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
+por_nombre = function()
+{
+    $("#id").val("");
+    $("#datos_cat").html("");
+    $("#panelCategoriaTaxonomicaPt").hide();
+
+    $("[id^='id_']").each(function(){
+        $(this).prop('checked', false);
+    });
+
+    $('#por_gi').hide();
+    $('#por_nombre_fuente').hide();
+    $('#por_gi_fuente').show();
+    $('#por_nombre').slideDown();
+};
+
+por_gi = function()
+{
+    $("#id").val("");
+    $("#nombre").val('');
+    $("#datos_cat").html("");
+    $("#panelCategoriaTaxonomicaPt").hide();
+
+    $('#por_gi').slideDown();
+    $('#por_nombre_fuente').show();
+    $('#por_gi_fuente').hide();
+    $('#por_nombre').hide();
+};
+
 soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
@@ -16,13 +45,14 @@ soulmate_asigna = function(tipo_busqueda)
             return nombres;
 
         } else {
-            var nombres = '<h5>'+firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+            var nombres = '<h5>' + firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
             if (data.foto.length == 0)
                 var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
+
             else {
                 var foto_url = data.foto;
-                var foto = "<i class='soulmate-img pull-left' style='background-    image: url(\"" + foto_url + "\")';></i>";
+                var foto = "<i class='soulmate-img pull-left' style='background-image: url(\"" + foto_url + "\")';></i>";
             }
 
             var iconos = "";
@@ -48,10 +78,11 @@ soulmate_asigna = function(tipo_busqueda)
 
         if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')
             cat_tax_asociadas(data.id);  // despliega las categorias taxonomicas asociadas al taxon
-
-        // Para no pasar por el controlador de busquedas, ir directo a la especie
-        $('#basica').attr('action','/especies/'+data.id);
-        $('#basica').submit();
+        else {
+            // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
+            $('#basica').attr('action','/especies/'+data.id);
+            $('#basica').submit();
+        }
     };
 
     $('#nombre').soulmate({
@@ -101,8 +132,27 @@ $(document).ready(function()
 
     $(document).on('change', ".radio input", function()
     {
-        var id = $(this).attr('value');
-        cat_tax_asociadas(id,'','');
+        // El ID del grupo iconico
+        var id_gi = $(this).attr('value');
+        $('#id').val(id_gi);
+        cat_tax_asociadas(id_gi,'','');
+    });
+
+    $(document).on('click', '#limpiar', function(){
+        $("#id, #nombre").val("");
+        $("#datos_cat").html("");
+        $("#panelCategoriaTaxonomicaPt").hide();
+        return false;
+    });
+
+    $(document).on('click', '#por_nombre_fuente', function(){
+        por_nombre();
+        return false;
+    });
+
+    $(document).on('click', '#por_gi_fuente', function(){
+        por_gi();
+        return false;
     });
 
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
@@ -143,12 +193,5 @@ $(document).ready(function()
 //            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
 //                $('#distribucion_nivel_3').remove();
 //        });
-
-    $(document).on('click', '#limpiar', function(){
-        $("#id, #nombre").val("");
-        $("#datos_cat").html("");
-        $("#panelCategoriaTaxonomicaPt").hide();
-        return false;
-    });
 });
 

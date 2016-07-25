@@ -20,13 +20,13 @@ module BusquedasHelper
 
       # Para dejar el espacio despues de los reinos
       if columnas == 6
-        radios << '<br \>'*3
+        radios << '<br \>'*3  # neta? >.>!
         columnas = 7
       end
 
       radios << "<label>"
-      radios << radio_button_tag(:id_nom_cientifico, taxon.id, false)
-      radios << ponIcono(taxon, con_recuadro: true) #En especies_helper, al rededor de l89
+      radios << radio_button_tag('id', taxon.id, false)
+      radios << ponIcono(taxon, con_recuadro: true) # En especies_helper, al rededor de l89
       radios << "</label>"
       radios << '<br>' if columnas%6 == 0
       columnas+=1
