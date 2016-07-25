@@ -141,11 +141,16 @@
 
             var SET_PARAMS = <%=raw @setParams.to_json %>;
 
-            // Asigna los filtros que puso en el request anterior
+            // Escogio de grupo iconico
+            if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
+                $('#id_' + SET_PARAMS.id).prop('checked', true);
+            else if (SET_PARAMS.nombre != undefined) {
+                    por_nombre();
+                    $('#nombre').val(SET_PARAMS.nombre);
+            }
+
             if (SET_PARAMS.id != undefined)
                 $('#id').val(SET_PARAMS.id);
-            if (SET_PARAMS.nombre != undefined)
-                $('#nombre').val(SET_PARAMS.nombre);
             if (SET_PARAMS.por_pagina != undefined)
                 $('#por_pagina').val(SET_PARAMS.por_pagina);
             if (SET_PARAMS.dist != undefined)
