@@ -138,7 +138,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
       }
   }
 
-  def self.categorias_redis(tipo)
+  def self.categorias_redis()
     # Orden en particular de como se despliegan las categorias en redis
     cat = %w(especie subespecie variedad subvariedad forma subforma
     Reino subreino superphylum
@@ -148,13 +148,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
     familia subfamilia supertribu tribu subtribu
     genero subgenero seccion subseccion serie subserie)
 
-    # Estas categorias no se encuentran en las establecidas por los catalogos
-    # parvorden superseccion grupo infraphylum epiclase cohorte grupo_especies raza estirpe subgrupo hiporden subterclase)
-
-    categorias_com = cat.map{|cat| "'com_#{cat}'"}
-    categorias_cien = cat.map{|cat| "'cien_#{cat}'"}
-
-    categorias = categorias_com + categorias_cien
-    "[#{categorias.uniq.join(',')}]"
+    categorias = cat.map{|cat| "'#{cat}'"}
+    "[#{categorias.join(',')}]"
   end
 end
