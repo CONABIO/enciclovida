@@ -59,11 +59,11 @@ soulmate_asigna = function(tipo_busqueda)
             var ev = '-ev-icon';
 
             $.each(data.cons_amb_dist, function(i, val){
-                if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica'){return true}
+                if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica' || val =='actual'){return true}
                 iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
             });
 
-            if (data.geodatos != undefined){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
+            if (data.geodatos != undefined && data.geodatos.length > 0){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
             if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
 
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
