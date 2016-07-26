@@ -28,9 +28,10 @@ class BusquedasController < ApplicationController
 
       sql << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
 
-      # Parte de consultar solo un TAB (categoria taxonomica)
-      if params[:solo_categoria].present?
-        sql << ".caso_sensitivo('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4)', '#{params[:solo_categoria]}')"
+      # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
+      # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
+      if params[:solo_categoria]
+        sql << ".caso_sensitivo('nombre_categoria_taxonomica', '#{params[:solo_categoria]}')"
       end
 
       totales = eval(sql.gsub('datos_basicos','datos_count'))[0].totales
@@ -39,7 +40,7 @@ class BusquedasController < ApplicationController
 
       if totales > 0
         query = eval(sql).distinct.to_sql
-        consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+        consulta = query << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
         @taxones = Especie.find_by_sql(consulta)
         @por_categoria = Busqueda.por_categoria(sql)
 

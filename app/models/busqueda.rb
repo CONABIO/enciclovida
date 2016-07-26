@@ -21,7 +21,7 @@ class Busqueda
   def self.por_categoria(busqueda, distinct = false)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
-    sql << '.categoria_taxonomica_join'
+    sql << '.categoria_taxonomica_join.adicional_join'
 
     busq = busqueda.gsub('datos_basicos', sql)
     busq << ".group('nombre_categoria_taxonomica')"
