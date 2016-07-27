@@ -90,7 +90,7 @@ def load_file
 
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f="#{@path}/nom_com_#{cat}.json"
-    system_call("soulmate load #{cat} --redis=redis://#{IP}:6379/0 < #{f}") if File.exists?(f)
+    system_call("soulmate add #{cat} --redis=redis://#{IP}:6379/0 < #{f}") if File.exists?(f)
   end
 
   puts 'Cargando los nombres principales a redis...' if OPTS[:debug]
@@ -130,9 +130,9 @@ end
 start_time = Time.now
 
 @path='db/redis'     #cambiar si se desea otra ruta
-creando_carpeta
-delete_files
-batches
+#creando_carpeta
+#delete_files
+#batches
 load_file
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
