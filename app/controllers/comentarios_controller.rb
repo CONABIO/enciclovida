@@ -9,6 +9,7 @@ class ComentariosController < ApplicationController
 
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
+
   # GET /comentarios
   # GET /comentarios.json
   def index
@@ -171,7 +172,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver #if Rails.env.production?
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -245,14 +246,22 @@ class ComentariosController < ApplicationController
 
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
+
+  xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
+
+
   def extrae_comentarios_generales
     address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
-    response = JSON.parse(RestClient.get address+"inbox", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
-
+    response = JSON.parse(RestClient.get address+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+    n=1
     response['m'].each do |v|
-      #RestClient.put(address+"Pendientes", RestClient.get(address+"Pendientes", {:params => {'id' => v['id'].to_s}}))
-    end
+      print n.to_s
+      #RestClient.get("https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/?id=323")
 
+      mueve_correo RestClient.get(address, {:params => {'auth' => 'ba', 'id' => v['id']}}), "Resueltos"
+      sleep(1.0/10.0)
+      n=n+1
+    end
     response = JSON.parse(RestClient.get address+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
     #render inline: response.to_s
     render 'comentarios/generales', :locals => {:response => response}
@@ -268,6 +277,32 @@ class ComentariosController < ApplicationController
 
   private
 
+  #Se descarga el correo con REST.get, se sube a la nueva carpeta con REST.put, y se borra de la anterior con
+  def mueve_correo(correo, mbdestino)
+    xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
+    RestClient.put(xolo_url+mbdestino, correo)
+  end
+
+  def mueve_correos #carpeta entera
+
+  end
+
+  def borra_correo
+
+  end
+
+  def borra_correos #carpeta entera
+
+  end
+
+  def procesa_correo
+
+  end
+
+  def procesa_correos #carpeta entera
+
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_comentario
     @comentario = Comentario.find(params[:id])
@@ -277,5 +312,15 @@ class ComentariosController < ApplicationController
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :created_at)
+  end
+
+  def dame_correos
+    Mail.defaults do
+      retriever_method :pop3,
+                       :address    => "#{CONFIG.smtp.address}",
+                       :port       => 995,
+                       :user_name  => "#{CONFIG.smtp.user_name}",
+                       :password   => "#{CONFIG.smtp.password}"
+    end
   end
 end
