@@ -1,0 +1,11 @@
+<% response['m'].each do |v| %>
+    <div class="panel panel-default">
+      <b>From: </b><i><%= v['e'][1]['a'] %></i><br />
+      <b>Subject: </b><i><%= v['su'] %> - [<%= v['id'] %> ]</i><br />
+      <p class="class<%= v['id']%>"><b>Abstract: </b><i><%= v['fr'] %></i></p>
+      <pre class="hidden class<%= v['id']%>" id="correoId<%= v['id'] %>" style="border-radius: 1.5em; margin: 15px;">
+      </pre>
+      <button class="btn btn-xs btn-link class<%= v['id']%>", onclick="$(this).one('click', function(){$('#correoId<%= v['id'] %>').load('/comentarios/correoId?id=<%= v['id'] %>');});$('.class<%= v['id']%>').toggleClass('hidden');">Ver más...</button>
+      <button class="btn btn-xs btn-link hidden class<%= v['id']%>", onclick="$('.class<%= v['id']%>').toggleClass('hidden');">Ver menos...</button>
+    </div>
+<% end %>
