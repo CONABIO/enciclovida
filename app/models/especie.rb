@@ -435,15 +435,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Devuelve un array de todos los nombres comunes, incluyendo el nombre_principal
   def todos_los_nombres_comunes
-    nombres = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
+    nombres = nombres_comunes.map {|nc|
+      # Este condicional fue necesario para poder agrupar los nombres si la lengua es nula
+      if nc.lengua.present?
+        {nc.lengua => nc.nombre_comun.primera_en_mayuscula}
+      else
+        {'ND' => nc.nombre_comun.primera_en_mayuscula}
+      end
+    }.uniq
+
     agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
 
     # Añade el nombre comun principal
     if a = adicional
-      agrupa_nombres['AAA'] = [a.nombre_comun_principal] if a.nombre_comun_principal.present?
+      # Le asigno 'A' para que sea el primer nombre en aparecer cuando se ordenan
+      agrupa_nombres['A'] = [a.nombre_comun_principal] if a.nombre_comun_principal.present?
     end
 
-    if agrupa_nombres.any?
+    if agrupa_nombres.present? && agrupa_nombres.any?
       agrupa_nombres.sort.to_h
     else
       {}

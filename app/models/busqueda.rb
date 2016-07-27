@@ -25,7 +25,7 @@ class Busqueda
 
     busq = busqueda.gsub('datos_basicos', sql)
     busq << ".group('nombre_categoria_taxonomica')"
-    busq << ".order('nivel')"
+    busq << ".order('nombre_categoria_taxonomica')"
 
     query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
