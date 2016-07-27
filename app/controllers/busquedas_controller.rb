@@ -44,6 +44,10 @@ class BusquedasController < ApplicationController
         @taxones = Especie.find_by_sql(consulta)
         @por_categoria = Busqueda.por_categoria(sql)
 
+        @taxones.each do |t|
+          t.cual_nombre_comun_coincidio(params[:nombre])
+        end
+
       else
         ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
         ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)

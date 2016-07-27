@@ -16,8 +16,7 @@ class Especie < ActiveRecord::Base
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
                 :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
-                :x_distancia
-
+                :x_distancia, :x_nom_com_coinc
 
   has_one :proveedor
   has_one :adicional
@@ -76,7 +75,7 @@ OR LOWER(nombre_comun_principal) LIKE LOWER('%#{nombre}%')") }
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
         adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies
@@ -458,5 +457,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       {}
     end
 
+  end
+
+  # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
+  # nombre es la busqueda que realizo
+  def cual_nombre_comun_coincidio(nombre = nil)
+    return self.x_nom_com_coinc = nil unless nombres_comunes_todos.present?
+    nombres = JSON.parse(nombres_comunes_todos).values.flatten
+    return self.x_nom_com_coinc = nil unless nombres.any?
+
+    # Para hacer la comparacion en minisculas y sin acentos
+    nombre_limpio = I18n.transliterate(nombre.limpia).downcase
+
+    nombres.each do |n|
+      n_limipio = I18n.transliterate(n.limpia).downcase
+
+      if n_limipio.include?(nombre_limpio)
+        return self.x_nom_com_coinc = n
+      end
+    end
   end
 end
