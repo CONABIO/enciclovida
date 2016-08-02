@@ -62,13 +62,6 @@ ActiveRecord::Schema.define(version: 20160726201747) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
-  create_table "categorias_comentario", force: true do |t|
-    t.string   "nombre",     null: false
-    t.string   "ancestry"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "categorias_conteo", force: true do |t|
     t.integer  "especie_id",           null: false
     t.integer  "conteo",               null: false
@@ -91,19 +84,14 @@ ActiveRecord::Schema.define(version: 20160726201747) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", force: true do |t|
-    t.text     "comentario",                           null: false
+    t.text     "comentario",             null: false
     t.string   "correo"
     t.string   "nombre"
-    t.integer  "especie_id",                           null: false
+    t.integer  "especie_id",             null: false
     t.integer  "usuario_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "estatus",                 default: 1,  null: false
-    t.string   "ancestry"
-    t.datetime "fecha_estatus"
-    t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id", default: 26, null: false
-    t.string   "institucion"
+    t.integer  "resuelto",   default: 0, null: false
   end
 
   create_table "delayed_jobs", force: true do |t|

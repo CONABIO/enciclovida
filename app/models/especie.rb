@@ -16,7 +16,7 @@ class Especie < ActiveRecord::Base
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
                 :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
-                :x_distancia, :x_nom_com_coinc
+                :x_distancia, :x_nombre_comun_principal
 
   has_one :proveedor
   has_one :adicional
@@ -462,9 +462,10 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
   # nombre es la busqueda que realizo
   def cual_nombre_comun_coincidio(nombre = nil)
-    return self.x_nom_com_coinc = nil unless nombres_comunes_todos.present?
+    # nombres_comunes_todos es un alias a nombres_comunes de adicionales
+    return self.x_nombre_comun_principal = nil unless nombres_comunes_todos.present?
     nombres = JSON.parse(nombres_comunes_todos).values.flatten
-    return self.x_nom_com_coinc = nil unless nombres.any?
+    return self.x_nombre_comun_principal = nil unless nombres.any?
 
     # Para hacer la comparacion en minisculas y sin acentos
     nombre_limpio = I18n.transliterate(nombre.limpia).downcase
@@ -473,7 +474,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       n_limipio = I18n.transliterate(n.limpia).downcase
 
       if n_limipio.include?(nombre_limpio)
-        return self.x_nom_com_coinc = n
+        return self.x_nombre_comun_principal = n
       end
     end
   end

@@ -130,9 +130,9 @@ end
 start_time = Time.now
 
 @path='db/redis'     #cambiar si se desea otra ruta
-#creando_carpeta
-#delete_files
-#batches
+creando_carpeta
+delete_files
+batches
 load_file
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
