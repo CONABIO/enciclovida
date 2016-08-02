@@ -43,7 +43,7 @@ class Especie < ActiveRecord::Base
   accepts_nested_attributes_for :nombres_regiones, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :nombres_regiones_bibliografias, :reject_if => :all_blank, :allow_destroy => true
 
-  scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('%#{valor}%')") }
+  scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('#{valor}%')") }
   scope :caso_empieza_con, ->(columna, valor) { where("#{columna} LIKE '#{valor}%'") }
   scope :caso_sensitivo, ->(columna, valor) { where("#{columna}='#{valor}'") }
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
@@ -52,8 +52,10 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')
-OR LOWER(nombre_comun_principal) LIKE LOWER('%#{nombre}%')") }
+  #scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('#{nombre}%')
+  #OR LOWER(nombre_comun_principal) LIKE LOWER('#{nombre}%')") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("CONTAINS(nombre_comun, '\"#{nombre}*\"') OR CONTAINS(nombre_cientifico,'\"#{nombre}*\"')
+OR CONTAINS(nombre_comun_principal,'\"#{nombre}*\"')") }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
@@ -94,7 +96,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
-
 
   CON_REGION = [19, 50]
 
@@ -477,5 +478,91 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         return self.x_nombre_comun_principal = n
       end
     end
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.count_busqueda_basica(nombre, vista_general=false)
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    campos.each do |c|
+      subquery = " SELECT especies.id AS esp
+FROM especies
+LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+
+      if vista_general
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.busqueda_basica(nombre, vista_general=false, pagina=1, por_pagina=Busqueda::POR_PAGINA_PREDETERMINADO)
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
+ ( '
+
+    from = ") especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+
+    campos.each do |c|
+      subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+ categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+
+      if vista_general
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    select + union.join(' UNION ') + from
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.por_categoria_busqueda_basica(nombre, vista_general=false)
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    campos.each do |c|
+      subquery = "SELECT nombre_categoria_taxonomica AS nom,especies.id AS esp
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+
+      if vista_general
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    'SELECT nom AS nombre_categoria_taxonomica, count(esp) AS cuantos FROM (' + union.join(' UNION ') + ') especies GROUP BY nom ORDER BY nom ASC'
   end
 end

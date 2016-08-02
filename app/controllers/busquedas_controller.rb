@@ -34,15 +34,17 @@ class BusquedasController < ApplicationController
         sql << ".caso_sensitivo('nombre_categoria_taxonomica', '#{params[:solo_categoria]}')"
       end
 
-      totales = eval(sql.gsub('datos_basicos','datos_count'))[0].totales
+      totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre].limpia_sql, true))[0].totales
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if totales > 0
-        query = eval(sql).distinct.to_sql
-        consulta = query << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-        @taxones = Especie.find_by_sql(consulta)
-        @por_categoria = Busqueda.por_categoria(sql)
+        query = Especie.busqueda_basica(params[:nombre].limpia_sql, true, pagina, por_pagina)
+        @taxones = Especie.find_by_sql(query)
+
+        query_por_categoria = Especie.por_categoria_busqueda_basica(params[:nombre].limpia_sql, true)
+        @por_categoria = Especie.find_by_sql(query_por_categoria)
+        @paginacion = paginacion(totales, pagina, por_pagina)
 
         @taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
@@ -91,11 +93,9 @@ class BusquedasController < ApplicationController
         end
 
         # Para que saga el total tambien con el fuzzy match
-        @coincidencias = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe if @taxones.any?
-
+        @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe if @taxones.any?
+        @paginacion = paginacion(@taxones.length, pagina, por_pagina)
       end
-
-      @paginacion = paginacion(@taxones.length, pagina, por_pagina)
 
       if @taxones.any? && arbol
         # Po si requieren que se genere el checklis
