@@ -87,7 +87,14 @@ class BusquedasController < ApplicationController
           end
 
           # Para que saga el total tambien con el fuzzy match
-          @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe if @taxones.any?
+          if @taxones.any?
+            @taxones.each do |t|
+              t.cual_nombre_comun_coincidio(params[:nombre], true)
+            end
+
+            @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+          end
+
           @paginacion = paginacion(@taxones.length, pagina, por_pagina)
         end
       end

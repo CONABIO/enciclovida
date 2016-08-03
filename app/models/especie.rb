@@ -462,7 +462,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
   # nombre es la busqueda que realizo
-  def cual_nombre_comun_coincidio(nombre = nil)
+  def cual_nombre_comun_coincidio(nombre, fuzzy_match=false)
     # nombres_comunes_todos es un alias a nombres_comunes de adicionales
     return self.x_nombre_comun_principal = nil unless nombres_comunes_todos.present?
     nombres = JSON.parse(nombres_comunes_todos).values.flatten
@@ -474,8 +474,16 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     nombres.each do |n|
       n_limipio = I18n.transliterate(n.limpia).downcase
 
-      if n_limipio.include?(nombre_limpio)
-        return self.x_nombre_comun_principal = n
+      if fuzzy_match
+        distancia = Levenshtein.distance(nombre_limpio, n_limipio)
+
+        if distancia < 3
+          return self.x_nombre_comun_principal = n
+        end
+      else
+        if n_limipio.include?(nombre_limpio)
+          return self.x_nombre_comun_principal = n
+        end
       end
     end
   end
