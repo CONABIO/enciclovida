@@ -185,6 +185,12 @@
     </script>
 <% end %>
 
+<% if @fuzzy_match.present? %>
+    <div class="alert alert-success">
+        <strong><%= @fuzzy_match %></strong>
+    </div>
+<% end %>
+
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active">
