@@ -14,87 +14,82 @@ class BusquedasController < ApplicationController
     @taxones = Especie.none
 
     if params[:busqueda] == 'basica'
-
-      # Buscamos coincidencias para el nombre comun
-      sql = 'Especie.datos_basicos.nombres_comunes_join'
-
-      # Parte de mostrar el checklist de una taxon
       arbol = params[:arbol].present? && params[:arbol].to_i == 1
 
-      # Parte del estatus
-      if I18n.locale.to_s == 'es' && !arbol
-        sql << ".where('estatus=2')"
-      end
-
-      sql << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
-
-      # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
-      # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
-      if params[:solo_categoria]
-        sql << ".caso_sensitivo('nombre_categoria_taxonomica', '#{params[:solo_categoria]}')"
-      end
-
-      totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre].limpia_sql, true))[0].totales
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-      if totales > 0
-        query = Especie.busqueda_basica(params[:nombre].limpia_sql, true, pagina, por_pagina)
+      if params[:solo_categoria].present?
+        query = Especie.busqueda_basica(params[:nombre], {vista_general: true, pagina: pagina,
+                                                          por_pagina: por_pagina, solo_categoria: params[:solo_categoria]})
         @taxones = Especie.find_by_sql(query)
-
-        query_por_categoria = Especie.por_categoria_busqueda_basica(params[:nombre].limpia_sql, true)
-        @por_categoria = Especie.find_by_sql(query_por_categoria)
-        @paginacion = paginacion(totales, pagina, por_pagina)
+        #@paginacion = paginacion(totales, pagina, por_pagina)
 
         @taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
         end
 
       else
-        ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-        ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+        totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre], {vista_general: true, solo_categoria: params[:solo_categoria]}))[0].totales
 
-        if ids_comun.any? || ids_cientifico.any?
-          sql = "Especie.datos_basicos(['nombre_comun']).nombres_comunes_join"
+        if totales > 0
+          query = Especie.busqueda_basica(params[:nombre], {vista_general: true, pagina: pagina, por_pagina: por_pagina})
+          query_por_categoria = Especie.por_categoria_busqueda_basica(params[:nombre].limpia_sql, true)
+          @por_categoria = Especie.find_by_sql(query_por_categoria)
 
-          # Parte del estatus
-          if I18n.locale.to_s == 'es'
-            sql << ".where('estatus=2')"
+          @taxones = Especie.find_by_sql(query)
+          @paginacion = paginacion(totales, pagina, por_pagina)
+
+          @taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
           end
 
-          if ids_comun.any? && ids_cientifico.any?
-            sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
-          elsif ids_comun.any?
-            sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
-          elsif ids_cientifico.any?
-            sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
-          end
+        else
+          ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+          ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
 
-          query = eval(sql).distinct.to_sql
-          consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-          taxones = Especie.find_by_sql(consulta)
+          if ids_comun.any? || ids_cientifico.any?
+            sql = "Especie.datos_basicos(['nombre_comun']).nombres_comunes_join"
 
-          ids_totales = []
-
-          taxones.each do |taxon|
-            # Para evitar que se repitan los taxones con los joins
-            next if ids_totales.include?(taxon.id)
-            ids_totales << taxon.id
-
-            # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            if taxon.nombre_comun.present?
-              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
-              @taxones <<= taxon if distancia < 3
+            # Parte del estatus
+            if I18n.locale.to_s == 'es'
+              sql << ".where('estatus=2')"
             end
 
-            distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
-            @taxones <<= taxon if distancia < 3
-          end
-        end
+            if ids_comun.any? && ids_cientifico.any?
+              sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
+            elsif ids_comun.any?
+              sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
+            elsif ids_cientifico.any?
+              sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
+            end
 
-        # Para que saga el total tambien con el fuzzy match
-        @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe if @taxones.any?
-        @paginacion = paginacion(@taxones.length, pagina, por_pagina)
+            query = eval(sql).distinct.to_sql
+            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+            taxones = Especie.find_by_sql(consulta)
+
+            ids_totales = []
+
+            taxones.each do |taxon|
+              # Para evitar que se repitan los taxones con los joins
+              next if ids_totales.include?(taxon.id)
+              ids_totales << taxon.id
+
+              # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+              if taxon.nombre_comun.present?
+                distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
+                @taxones <<= taxon if distancia < 3
+              end
+
+              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
+              @taxones <<= taxon if distancia < 3
+            end
+          end
+
+          # Para que saga el total tambien con el fuzzy match
+          @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe if @taxones.any?
+          @paginacion = paginacion(@taxones.length, pagina, por_pagina)
+        end
       end
 
       if @taxones.any? && arbol
@@ -113,9 +108,9 @@ class BusquedasController < ApplicationController
         render 'busquedas/arbol.json.erb'
       elsif params[:solo_categoria].present?
         # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-        if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
+        if params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
           render :partial => 'busquedas/_resultados'
-        elsif @taxones.empty? && params[:pagina].to_i > 1 && !@taxones.empty?
+        elsif params[:pagina].to_i > 1 && @taxones.empty?
           # Quiere decir que el paginado acabo en algun TAB que no es el default
           render text: ''
         else

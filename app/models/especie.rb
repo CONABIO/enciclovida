@@ -481,7 +481,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.count_busqueda_basica(nombre, vista_general=false)
+  def self.count_busqueda_basica(nombre, opts={})
     campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
     union = []
 
@@ -492,9 +492,9 @@ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria
 LEFT JOIN adicionales ON adicionales.especie_id=especies.id
 LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
 LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
-WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
 
-      if vista_general
+      if opts[:vista_general]
         subquery << ' AND estatus=2'
       end
 
@@ -505,7 +505,7 @@ WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.busqueda_basica(nombre, vista_general=false, pagina=1, por_pagina=Busqueda::POR_PAGINA_PREDETERMINADO)
+  def self.busqueda_basica(nombre, opts={})
     campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
     union = []
 
@@ -519,7 +519,7 @@ categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nom
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
  LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
  LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+ ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
 
     campos.each do |c|
       subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
@@ -530,10 +530,14 @@ categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nom
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
  LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
  LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
 
-      if vista_general
+      if opts[:vista_general]
         subquery << ' AND estatus=2'
+      end
+
+      if opts[:solo_categoria].present?
+        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
       end
 
       union << subquery
