@@ -1,13 +1,17 @@
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
-    # Hace default el icono
-    params[:con_icono] = true if params[:con_icono].nil?
 
     nombre = if taxon.x_nombre_comun_principal.present?
                taxon.x_nombre_comun_principal
-             elsif taxon.try(:nombre_comun_principal).present?  # Es con un try porque no toda consulta le hace un join a adicionales
-               taxon.nombre_comun_principal
+             else
+               begin  # Es con un try porque no toda consulta le hace un join a adicionales
+                 taxon.nombre_comun_principal
+               rescue  # hacemos el join a adicionales
+                 if a = taxon.adicional
+                   a.nombre_comun_principal
+                 end
+               end
              end
 
     if I18n.locale.to_s == 'es-cientifico'
