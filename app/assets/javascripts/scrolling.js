@@ -25,7 +25,7 @@ settings = {
 
             if(settings.scroll == true) initmessage = 'Cargando... Por favor, espera <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
             else initmessage = 'Click for more';
-			
+
 			function getData() {
 
                 //var busy = false;
@@ -47,6 +47,7 @@ settings = {
 					// If there is no data returned, there are no more posts to be shown. Show error
 					if(data == "") { 
                         $('#loading-bar' + settings.nivel).html(settings.error);
+                        settings.busy = false;  // Parche para que cuando acabe un scrolling de un TAB, siga cargando otros
 					}
 					else {
 						
@@ -54,6 +55,7 @@ settings = {
 					    settings.offset = settings.offset+1;
                         eval("offset."+settings.cat + "=" + settings.offset);
                         $this.append(data);
+                        $('#loading-bar' + settings.nivel).remove();
 						
 						// No longer busy!	
 						settings.busy = false;
@@ -71,9 +73,10 @@ settings = {
 				// .. and the user is scrolling
 				$(window).scroll(function() {
                     var $this=$("#resultados" + settings.nivel);
+
 					// Check the user is at the bottom of the element
-					if($(window).scrollTop() + $(window).height() > $this.height() && !settings.busy) {
-						
+                    if($(window).scrollTop() + $(window).height() == $(document).height() && !settings.busy) {
+
 						// Now we are working, so busy is true
 						settings.busy = true;
 						

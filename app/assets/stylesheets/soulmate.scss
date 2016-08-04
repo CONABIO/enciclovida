@@ -42,16 +42,6 @@ $suggestionWidth: 370px;
 $inputWidth: 500px;
 $soulmateWidth: $inputWidth - 21px;
 
-html {
-  //background-color: #9fbb9d;
-  //background: url(../gray_linen_background.jpg);
-}
-
-/*body{
-  width: $inputWidth;
-  margin: 0 auto;
-}*/
-
 #logo-link {
   display: block;
   margin: 140px 0 30px;
@@ -62,61 +52,36 @@ html {
 }
 
 #nombre_comun, #nombre_cientifico,#nombre_comun_1, #nombre_cientifico_1 {
-  //border: 1px solid #999;
   color: #500000;
-  //font-family: $helvetica;
-  //font-size: 20px;
-  //font-size: 14px;
-  //letter-spacing: 0.5px;
   margin: 0;
-  //padding: 12px 12px 10px;
-  //padding: 2px 2px 1px;
-  //width: $inputWidth;
-  //width: 200px;
-  //@include border-radius(2px);
-  top: 0px;
-  
-  &:focus{ 
-//    outline: none; 
-  }
 }
-#soulmate_1, #soulmate_2 {
+
+#soulmate, #soulmate_2 {
   margin: 45px 0 0 0;
 }
+
 @media (min-width: 992px) {
-  #soulmate_1, #soulmate_2 {
+  #soulmate, #soulmate_2 {
     margin: 33px 0 0 0;
   }
 }
-#soulmate_3, #soulmate_4 {
-  margin: 0 0 0 10px;
-}
 
-#soulmate_1, #soulmate_2, #soulmate_3, #soulmate_4 {
+#soulmate, #soulmate_2, #soulmate_3, #soulmate_4 {
   background-color: rgba(242, 240, 237, .95);
-  //border-bottom: 1px solid #555;
   border-color: #66afe9;
   outline: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
   display: none;
-  //font: 12px/14px $helvetica;
   font-weight: normal;
   list-style: none;
-  //margin: 0 0 0 10px;
   padding: 0;
   position: absolute; //Solía tener absolute, pero es necesario para que escape la sección de busquedas.
-                      //EDIT: Ahora solía tener fixed, pero ya que no existe sidebar, aprece que es moemnto que regrese a absolute
-  overflow-x: hidden; //
+  overflow-x: hidden;
   overflow-y: visible; //Para que muestre los resultados completamente
-  //text-shadow: 0 0 0 white;
-  //top: 306px;
-  //width: $soulmateWidth;
   width: 100%;
   max-height: $soulmateWidth; //Para que sea un cuadrado
   z-index: 1002;
-  //@include border-radius(2px);
-  //@include box-shadow(0, 4px, 10px, rgba(0,0,0,.2));
     
   .soulmate-type-container {
     border-top: 1px solid #ddd;
@@ -130,7 +95,6 @@ html {
     float: right;
     list-style: none;
     padding: 0;
-    //width: $suggestionWidth;
     width: 80%;
     letter-spacing: 0.5px;
   }
@@ -138,71 +102,30 @@ html {
   .soulmate-suggestion {
     color: #333;
     cursor: pointer;
-    //font-weight: 500;
-    //font-size: 13px;
     text-decoration: none;
 
     &.focus{
-      //color: #666666;
-      //margin-left: -1px;
-      //margin-right: -1px;
-      //padding-left: 13px;
       position: relative;
-      //text-shadow: 1px 1px 3px #E5FFFD;
       font-weight: bold;
-      //z-index: 1;
       background-color: #9a9a9a;
     }
   }
   
   .soulmate-type {
-    //background-color: white;
-    //color: #333;
-    //font-family: $helvetica;
     font-size: 11px;
     letter-spacing: 0.5px;
-    //margin-right: $suggestionWidth;
     padding: 10px 1px 0 5px;
     text-align: left;
     text-transform: capitalize;
     vertical-align: top;
-    //@include border-radius(5px);
     @include clearfix();
   }
-  
-}
-
-#soulmate_1 h5, #soulmate_2 h5, #soulmate_3 h5, #soulmate_4 h5 {
-  //margin-bottom: 0px;
-}
- .soulmate-type-suggestions li{
-//  padding: 1em 0;
-//   min-height: 125px;
-}
-
-#soulmate_1 span, #soulmate_2 span, #soulmate_3 span, #soulmate_4 span, #soulmate_1 img, #soulmate_2 img, #soulmate_3 img, #soulmate_4 img {
-  //margin-right: 10px;
-  //font-size: 6em;
-}
-
-#footer {
-//  margin-top: 40px;
-//  font-family: $helvetica;
-//  font-size: 13px;
-//  color: #444;
-//  text-align: center;
-//  a {
-//    color: #000;
-//    text-decoration: none;
-//    &:hover {
-//      text-decoration: underline;
-//    }
-//  }
 }
 
 #panelFiltros div{
   margin-bottom: 15px;
 }
+
 #busqueda_avanzada fieldset > legend{
   margin-bottom: 5px;
 }
@@ -219,8 +142,8 @@ html {
   border-radius: 50%;
   color: #4e4e4e;
   font-size: 61px;
-  //padding: 1px;
 }
+
 .soulmate-icons i{
   background-color: #ffffff;
   font-size: 20px;

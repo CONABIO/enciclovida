@@ -1,32 +1,28 @@
+<script data-turbolinks-track="true">
+    $(document).ready(function(){
+        // Asigna el soulmate a la caja nombre
+        soulmate_asigna('avanzada');
+    });
+</script>
+
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
-    <%= hidden_field_tag :id_nom_cientifico, nil, :id => :id_avanzada_cientifico %>
-    <%= hidden_field_tag :id_nom_comun, nil, :id => :id_avanzada_comun %>
-
+    <%= hidden_field_tag :id, nil %>
     <%= hidden_field_tag :busqueda, :avanzada %>
-    <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
 
     <div class="form-group">
-      <span class="label" style="color: #333333; font-weight: normal;">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <%= t(:nombre_comun) %>
-      </span>
-      <%= text_field_tag :nombre_comun, nil, :id => :nombre_comun_1, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
-    </div>
-
-    <div class="form-group">
-      <span class="label" style="color: #333333; font-weight: normal;">
-        <span class="glyphicon glyphicon-education" aria-hidden="true"></span> <%= t(:nombre_cientifico) %>
-      </span>
-      <%= text_field_tag :nombre_cientifico, nil, :id => :nombre_cientifico_1, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_cientifico] : nil %>
+      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
+                         :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
     </div>
 
     <div class="form-group">
       <span class="label" style="color: #333333; font-weight: normal;">Resultados por página</span>
-      <%= select_tag :per_page, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => "busquedas form-control" %>
+      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
     </div>
 
   </fieldset>
+
   <div id="panelCategoriaTaxonomicaPt" style="display: none;">
     <fieldset>
       <legend><h5><strong>Categoria taxonómica</strong></h5></legend>

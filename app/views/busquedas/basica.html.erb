@@ -1,114 +1,9 @@
 <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
-<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-
-    function firstToUpperCase( str ) {
-        return str.substr(0, 1).toUpperCase() + str.substr(1);
-    }
-
-    soulmate_asigna = function(event)
-    {
-        var campo = document.getElementById(event.target.id);
-
-        if (event.data.num == '1' || event.data.num == '3'){         //nombre comun
-            var types = eval("<%=raw CategoriaTaxonomica.categorias_redis('com') %>");
-            var render = function(term, data, type, index, id, foto){
-                event.data.num == '1' ? $('#id_basica_comun').attr('value', '') : $('#id_avanzada_comun').attr('value', '');
-
-                if (I18n.locale == 'es-cientifico')
-                {
-                    var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i>';
-                    return nombres;
-                } else {
-                    var nombres = '<h5>'+firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
-
-                    if (data.foto.length == 0)
-                        var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
-                    else {
-                        var foto_url = data.foto;
-                        var foto = "<i class='soulmate-img pull-left' style='background-image: url(\""+foto_url+"\")';></i>";
-                    }
-                    var iconos = ""
-                    var ev = '-ev-icon'
-                    $.each(data.cons_amb_dist, function(i, val){
-                        if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica'){return true}
-                        iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
-                    });
-                    if (data.geodatos != undefined){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
-                    if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
-                    return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos +"</h5>";
-                }
-            };
-            var select = function(term, data, type){
-                $('#'+event.target.id).val(term);
-                $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
-                //pone el ID para mandar a la busqueda directa
-
-                if (event.data.num == '1'){
-                    $('#id_basica_comun').attr('value', data.id);
-                    $('#b_comun').submit();
-                } else {
-                    $('#id_avanzada_comun').attr('value', data.id);
-                    cat_tax_asociadas(data.id);
-                    // Quito el valor de la busqueda cientifica ya que tomo en cuenta el ultimo valor anotado
-                    $('#id_avanzada_cientifico').attr('value', '');
-                }
-            }
-        }
-        if (event.data.num == '2' || event.data.num == '4'){          //nombre cientifico
-            var types = eval("<%=raw CategoriaTaxonomica.categorias_redis('cien') %>");
-            var render = function(term, data, type, index, id, foto){
-                event.data.num == '2' ? $('#id_basica_cientifico').attr('value', '') : $('#id_avanzada_cientifico').attr('value', '');
-                if (I18n.locale == 'es-cientifico'){
-                    var nombres = '<h5><a href="" class="not-active">' + data.nombre_cientifico + '</a></h5><i>' + data.autoridad + '</i>';
-                    return nombres;
-                } else {
-
-                    var nombres = '<h5>' + (data.nombre_comun.length == 0 ? '': firstToUpperCase(data.nombre_comun)) + '</h5><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
-                    if (data.foto.length == 0)
-                        var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
-                    else {
-                        var foto_url = data.foto;
-                        var foto = "<i class='soulmate-img pull-left' style='background-image: url(\"" + foto_url + "\")';></i>";
-                    }
-                    var iconos = ""
-                    var ev = '-ev-icon'
-                    $.each(data.cons_amb_dist, function(i, val){
-                        if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica'){return true}
-                        iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
-                    });
-                    if (data.geodatos =! undefined){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
-                    if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
-                    return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos +"</h5>";
-                }
-            };
-            var select = function(term, data, type){
-                $('#'+event.target.id).val(term);
-                $('ul#soulmate_' + event.data.num).hide();    //esconde el autocomplete
-                //pone el ID para mandar a la busqueda directa
-                if (event.data.num == '2'){
-                    $('#id_basica_cientifico').attr('value', data.id);
-                    $('#b_cientifico').submit();
-                } else {
-                    $('#id_avanzada_cientifico').attr('value', data.id);
-                    cat_tax_asociadas(data.id);
-                    // Quito el valor de la busqueda cientifica ya que tomo en cuenta el ultimo valor anotado
-                    $('#id_avanzada_comun').attr('value', '');
-                }
-            }
-        }
-
-        if ($._data(campo, "events") == undefined){        //para que no se repita n-veces la busqueda
-            $(campo).soulmate({
-                url:            "http://<%= IP %>:<%= PORT %>sm/search",
-                types:          types,
-                renderCallback: render,
-                selectCallback: select,
-                minQueryLength: 2,
-                maxResults:     15,
-                num: event.data.num
-            });
-        }
-    };
+<script data-turbolinks-track="true">
+    $(document).ready(function(){
+        // Asigna el soulmate a la caja nombre
+        soulmate_asigna();
+    });
 </script>
 
 <% if I18n.locale.to_s != 'es-cientifico' %>
@@ -120,69 +15,17 @@
     </style>
 <% end %>
 
-<%= form_tag busquedas_resultados_url, :method => :get, :id => :b_comun, :class => 'form-horizontal '+ ('hidden' if ((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico')).to_s, :role => 'form' do %>
-	<%= hidden_field_tag :id, nil, :id => :id_basica_comun %>
-	<%= hidden_field_tag :busqueda, :nombre_comun %>
-	<%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_comun %>
-	<%= hidden_field_tag :valido_sinonimo_basico, 3 %>
-	<div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaComun">
-	</div>
+<%= form_tag busquedas_resultados_url, :method => :get, :id => :basica, :class => 'form-horizontal', :role => 'form' do %>
+    <%= hidden_field_tag :busqueda, :basica %>
+    <%= hidden_field_tag :id %>
 
-	<ul class="nav nav-tabs" style="margin: 0 -9px;">
-	  <li role="presentation" class="active">
-		<a>
-		  <span class="glyphicon glyphicon-user btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_comun) %>
-		</a></li>
-	  <li role="presentation">
-		<a onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');">
-		  <span class="glyphicon glyphicon-education btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_cientifico)%>
-		</a>
-	  </li>
-	</ul>
-
-	<div class="form-group">
-	  <div class="input-group">
-		<%= text_field_tag :nombre_comun, nil, :maxlength => 255, :placeholder => t(:nombre_comun), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil%>
-		<div class="input-group-btn">
-		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
-		</div>
-	  </div>
-	</div>
-<% end %>
-
-
-<%= form_tag busquedas_resultados_url, :method => :get, :id => :b_cientifico, :class => 'form-horizontal '+ (((I18n.locale.to_s == 'es-cientifico' && params[:busqueda].blank?) || params[:busqueda] == 'nombre_cientifico') ? '' :'hidden') , :role => 'form' do %>
-	<%= hidden_field_tag :id, nil, :id => :id_basica_cientifico %>
-	<%= hidden_field_tag :busqueda, :nombre_cientifico %>
-	<%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_basica_cientifico %>
-	<div class="hidden checkBoxesOcultos" id="checkBoxValidoSinonimoBasicaCientifico">
-	</div>
-
-	<ul class="nav nav-tabs" style="margin: 0 -9px;">
-	  <li role="presentation">
-		<a onclick="$('#b_comun').toggleClass('hidden');$('#b_cientifico').toggleClass('hidden');">
-		  <span class="glyphicon glyphicon-user btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_comun) %>
-		</a>
-	  </li>
-	  <li role="presentation" class="active">
-		<a>
-		  <span class="glyphicon glyphicon-education btn-title" aria-hidden="true"></span>
-		  <%= t(:nombre_cientifico)%>
-		</a>
-	  </li>
-	</ul>
-
-	<div class="form-group">
-	  <div class="input-group">
-		<%= text_field_tag :nombre_cientifico, nil, :maxlength => 255, :placeholder => t(:nombre_cientifico), :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_cientifico' ? params[:nombre_cientifico] : nil %>
-		<div class="input-group-btn">
-		  <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-		  <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
-		</div>
-	  </div>
-	</div>
+    <div class="form-group">
+      <div class="input-group">
+        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
+        <div class="input-group-btn">
+          <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
+          <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
+        </div>
+      </div>
+    </div>
 <% end %>
