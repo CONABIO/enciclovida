@@ -43,7 +43,7 @@ class Especie < ActiveRecord::Base
   accepts_nested_attributes_for :nombres_regiones, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :nombres_regiones_bibliografias, :reject_if => :all_blank, :allow_destroy => true
 
-  scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('#{valor}%')") }
+  scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('%#{valor}%')") }
   scope :caso_empieza_con, ->(columna, valor) { where("#{columna} LIKE '#{valor}%'") }
   scope :caso_sensitivo, ->(columna, valor) { where("#{columna}='#{valor}'") }
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
@@ -52,10 +52,8 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  #scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('#{nombre}%')
-  #OR LOWER(nombre_comun_principal) LIKE LOWER('#{nombre}%')") }
-  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("CONTAINS(nombre_comun, '\"#{nombre}*\"') OR CONTAINS(nombre_cientifico,'\"#{nombre}*\"')
-OR CONTAINS(nombre_comun_principal,'\"#{nombre}*\"')") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')
+  OR LOWER(nombre_comun_principal) LIKE LOWER('%#{nombre}%')") }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }

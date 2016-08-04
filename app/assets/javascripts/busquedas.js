@@ -139,10 +139,7 @@ $(document).ready(function()
     });
 
     $(document).on('click', '#limpiar', function(){
-        $("#id, #nombre").val("");
-        $("#datos_cat").html("");
-        $("#panelCategoriaTaxonomicaPt").hide();
-        return false;
+        window.location.href = "/avanzada";
     });
 
     $(document).on('click', '#por_nombre_fuente', function(){
