@@ -230,18 +230,17 @@ class BusquedasController < ApplicationController
         if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
           @taxones = Busqueda.por_arbol(busqueda)
 
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
-          end
-
           checklist
         else
           query = eval(busqueda).distinct.to_sql
           consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
           @taxones = Especie.find_by_sql(consulta)
 
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
+          # Si solo escribio un nombre
+          if conID.blank? && params[:nombre].present?
+            @taxones.each do |t|
+              t.cual_nombre_comun_coincidio(params[:nombre])
+            end
           end
         end
       end
