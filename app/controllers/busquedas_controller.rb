@@ -15,25 +15,25 @@ class BusquedasController < ApplicationController
 
     if params[:busqueda] == 'basica'
       arbol = params[:arbol].present? && params[:arbol].to_i == 1
+      vista_general = I18n.locale.to_s == 'es' ? true : false
 
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if params[:solo_categoria].present?
-        query = Especie.busqueda_basica(params[:nombre], {vista_general: true, pagina: pagina,
-                                                          por_pagina: por_pagina, solo_categoria: params[:solo_categoria]})
+        query = Especie.busqueda_basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
+                                                          solo_categoria: params[:solo_categoria]})
         @taxones = Especie.find_by_sql(query)
-        #@paginacion = paginacion(totales, pagina, por_pagina)
 
         @taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
         end
 
       else
-        totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre], {vista_general: true, solo_categoria: params[:solo_categoria]}))[0].totales
+        totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]}))[0].totales
 
         if totales > 0
-          query = Especie.busqueda_basica(params[:nombre], {vista_general: true, pagina: pagina, por_pagina: por_pagina})
+          query = Especie.busqueda_basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
           query_por_categoria = Especie.por_categoria_busqueda_basica(params[:nombre].limpia_sql, true)
           @por_categoria = Especie.find_by_sql(query_por_categoria)
 
@@ -52,7 +52,7 @@ class BusquedasController < ApplicationController
             sql = "Especie.datos_basicos(['nombre_comun']).nombres_comunes_join"
 
             # Parte del estatus
-            if I18n.locale.to_s == 'es'
+            if vista_general
               sql << ".where('estatus=2')"
             end
 
@@ -229,11 +229,20 @@ class BusquedasController < ApplicationController
 
         if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
           @taxones = Busqueda.por_arbol(busqueda)
+
+          @taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
+          end
+
           checklist
         else
           query = eval(busqueda).distinct.to_sql
           consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
           @taxones = Especie.find_by_sql(consulta)
+
+          @taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
+          end
         end
       end
 
