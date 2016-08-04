@@ -6,7 +6,9 @@ class ComentariosController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
-
+  before_action :only => [:extrae_comentarios_generales, :dame_correo, :mueve_correo] do
+  @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+  end
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
 
@@ -247,40 +249,52 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
 
-  xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
+
 
 
   def extrae_comentarios_generales
-    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
-    response = JSON.parse(RestClient.get address+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
-    n=1
-    response['m'].each do |v|
-      print n.to_s
+    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+    #n=1
+    #response['m'].each do |v|
+      #print n.to_s
       #RestClient.get("https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/?id=323")
 
-      mueve_correo RestClient.get(address, {:params => {'auth' => 'ba', 'id' => v['id']}}), "Resueltos"
-      sleep(1.0/10.0)
-      n=n+1
-    end
-    response = JSON.parse(RestClient.get address+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+      #mueve_correo RestClient.get(@xolo_url, {:params => {'auth' => 'ba', 'id' => v['id']}}), "Resueltos"
+      #sleep(1.0/10.0)
+      #n=n+1
+    #end
+    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
     #render inline: response.to_s
+
+    Mail.defaults do
+      retriever_method :imap, { :address             => CONFIG.smtp.address,
+                                #:port                => 993,
+                                :user_name           => CONFIG.smtp.user_name,
+                                :password            => CONFIG.smtp.password}
+                                #:enable_ssl          => true }
+    end
+
+    #response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, keys: ["SUBJECT", "kasdaklsa"])[0].to_s
+    response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc)
+
     render 'comentarios/generales', :locals => {:response => response}
   end
 
   def dame_correo
-    address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
-    puts address
-    response = RestClient.get address, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
+    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    #puts address
+    response = RestClient.get @xolo_url, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
 
     render text: response.to_s
   end
 
   private
 
-  #Se descarga el correo con REST.get, se sube a la nueva carpeta con REST.put, y se borra de la anterior con
+  #No importa como se le pase el correo, se sube a la nueva carpeta con REST.put, y se borra de la anterior con MAIL.find_and_delete
   def mueve_correo(correo, mbdestino)
-    xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/"
-    RestClient.put(xolo_url+mbdestino, correo)
+    #xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    RestClient.put(@xolo_url+mbdestino, correo)
   end
 
   def mueve_correos #carpeta entera
