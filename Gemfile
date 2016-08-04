@@ -51,6 +51,9 @@ gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
 gem 'wicked_pdf'
 
+gem 'mail'
+gem 'whenever', :require => false
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
