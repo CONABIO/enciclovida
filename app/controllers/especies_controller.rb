@@ -47,7 +47,7 @@ class EspeciesController < ApplicationController
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
             geodatos = proveedor.geodatos
-            @geo = geodatos if geodatos.any?
+            @geo = geodatos if geodatos[:cuales].any?
           end
         end
 
@@ -471,7 +471,7 @@ class EspeciesController < ApplicationController
                     end
 
     # URL para ver las especies o inferiores
-    url = "/busquedas/resultados?id_nom_cientifico=#{t.id}&busqueda=avanzada&por_pagina=100&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
+    url = "/busquedas/resultados?id=#{t.id}&busqueda=avanzada&por_pagina=50&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
     children_hash[:especies_inferiores_url] = url
 
     #  Radio de los nodos para un mejor manejo hacia D3

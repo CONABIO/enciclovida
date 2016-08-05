@@ -1,12 +1,37 @@
+<script data-turbolinks-track="true">
+    $(document).ready(function(){
+        // Asigna el soulmate a la caja nombre
+        soulmate_asigna('avanzada');
+    });
+</script>
+
 <div class="col-xs-12 col-sm-7 col-md-5 col-lg-4">
   <fieldset>
-    <legend><h5 class="text-primary"><strong>Búsqueda por grupo icónico:</strong></h5></legend>
-    <div class="radio">
+    <legend>
+      <h5 class="text-primary"><strong>Busca por grupo icónico <a href=""><i class="glyphicon glyphicon-chevron-down" id="por_gi_fuente" style="display: none;"></i></a></strong></h5>
+    </legend>
+
+    <div class="radio" id="por_gi">
       <%= radioGruposIconicos.html_safe %>
     </div>
     <%= hidden_field_tag :busqueda, :avanzada %>
-    <%= hidden_field_tag :por_pagina, Busqueda::POR_PAGINA_PREDETERMINADO, :id => :per_page_avanzada %>
+    <%= hidden_field_tag :id, nil %>
+
+    <legend>
+      <h5 class="text-primary"><strong>o busca por un nombre <a href=""><i class="glyphicon glyphicon-chevron-down" id="por_nombre_fuente"></i></a></strong></h5>
+    </legend>
+
+    <div class="form-group" id="por_nombre" style="display: none;">
+      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
+                         :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+    </div>
+
+    <div class="form-group">
+      <span class="label" style="color: #333333; font-weight: normal;">Resultados por página</span>
+      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+    </div>
   </fieldset>
+
   <div id="panelCategoriaTaxonomicaPt" style="display: none;">
     <fieldset>
       <legend><h5 class="text-primary"><strong>Categoria taxonómica</strong></h5></legend>

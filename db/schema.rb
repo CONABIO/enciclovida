@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160615172900) do
+ActiveRecord::Schema.define(version: 20160726201747) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20160615172900) do
     t.datetime "updated_at"
     t.integer  "icono_id"
     t.text     "fotos_principales"
+    t.text     "nombres_comunes"
   end
 
   create_table "bibliografias", force: true do |t|

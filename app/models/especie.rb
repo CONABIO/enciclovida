@@ -16,8 +16,7 @@ class Especie < ActiveRecord::Base
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
                 :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
-                :x_distancia
-
+                :x_distancia, :x_nombre_comun_principal
 
   has_one :proveedor
   has_one :adicional
@@ -53,6 +52,8 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')
+  OR LOWER(nombre_comun_principal) LIKE LOWER('%#{nombre}%')") }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
@@ -74,21 +75,25 @@ class Especie < ActiveRecord::Base
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
         adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, -> { select_basico.categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join.icono_join }
   # Datos sacar los IDs unicos de especies
   scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
   #Select para el Checklist (por_arbol)
-  scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono, iconos.color_icono, iconos.taxon_icono").categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
+ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
+categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono,
+iconos.color_icono, iconos.taxon_icono, nombres_comunes as nombres_comunes_todos").categoria_taxonomica_join.adicional_join.icono_join }
   scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join.icono_join }
   #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
   scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
-  scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus").categoria_taxonomica_join }
+  scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico,
+ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categorias_taxonomicas.nombre_categoria_taxonomica,
+nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
-
 
   CON_REGION = [19, 50]
 
@@ -424,5 +429,150 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       escribe_cache
       delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
     end
+  end
+
+  # Devuelve un array de todos los nombres comunes, incluyendo el nombre_principal
+  def todos_los_nombres_comunes
+    nombres = nombres_comunes.map {|nc|
+      # Este condicional fue necesario para poder agrupar los nombres si la lengua es nula
+      if nc.lengua.present?
+        {nc.lengua => nc.nombre_comun.primera_en_mayuscula}
+      else
+        {'ND' => nc.nombre_comun.primera_en_mayuscula}
+      end
+    }.uniq
+
+    agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
+
+    # Añade el nombre comun principal
+    if a = adicional
+      # Le asigno 'A' para que sea el primer nombre en aparecer cuando se ordenan
+      agrupa_nombres['A'] = [a.nombre_comun_principal] if a.nombre_comun_principal.present?
+    end
+
+    if agrupa_nombres.present? && agrupa_nombres.any?
+      agrupa_nombres.sort.to_h
+    else
+      {}
+    end
+
+  end
+
+  # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
+  # nombre es la busqueda que realizo
+  def cual_nombre_comun_coincidio(nombre, fuzzy_match=false)
+    # nombres_comunes_todos es un alias a nombres_comunes de adicionales
+    return self.x_nombre_comun_principal = nil unless nombres_comunes_todos.present?
+    nombres = JSON.parse(nombres_comunes_todos).values.flatten
+    return self.x_nombre_comun_principal = nil unless nombres.any?
+
+    # Para hacer la comparacion en minisculas y sin acentos
+    nombre_limpio = I18n.transliterate(nombre.limpia).downcase
+
+    nombres.each do |n|
+      n_limipio = I18n.transliterate(n.limpia).downcase
+
+      if fuzzy_match
+        distancia = Levenshtein.distance(nombre_limpio, n_limipio)
+
+        if distancia < 3
+          return self.x_nombre_comun_principal = n
+        end
+      else
+        if n_limipio.include?(nombre_limpio)
+          return self.x_nombre_comun_principal = n
+        end
+      end
+    end
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.count_busqueda_basica(nombre, opts={})
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    campos.each do |c|
+      subquery = " SELECT especies.id AS esp
+FROM especies
+LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+
+      if opts[:vista_general]
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.busqueda_basica(nombre, opts={})
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
+ ( '
+
+    from = ") especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+
+    campos.each do |c|
+      subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+ categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+
+      if opts[:vista_general]
+        subquery << ' AND estatus=2'
+      end
+
+      if opts[:solo_categoria].present?
+        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
+      end
+
+      union << subquery
+    end
+
+    select + union.join(' UNION ') + from
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.por_categoria_busqueda_basica(nombre, vista_general=false)
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    campos.each do |c|
+      subquery = "SELECT nombre_categoria_taxonomica AS nom,especies.id AS esp
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
+
+      if vista_general
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    'SELECT nom AS nombre_categoria_taxonomica, count(esp) AS cuantos FROM (' + union.join(' UNION ') + ') especies GROUP BY nom ORDER BY nom ASC'
   end
 end

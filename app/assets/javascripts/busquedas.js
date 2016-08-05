@@ -2,6 +2,98 @@
  Cuando el usuario elige un taxon en la vists avanzada, las categorias
  taxonimicas se despliegan segun las asociadas
  */
+function firstToUpperCase( str ) {
+    return str.substr(0, 1).toUpperCase() + str.substr(1);
+}
+
+por_nombre = function()
+{
+    $("#id").val("");
+    $("#datos_cat").html("");
+    $("#panelCategoriaTaxonomicaPt").hide();
+
+    $("[id^='id_']").each(function(){
+        $(this).prop('checked', false);
+    });
+
+    $('#por_gi').hide();
+    $('#por_nombre_fuente').hide();
+    $('#por_gi_fuente').show();
+    $('#por_nombre').slideDown();
+};
+
+por_gi = function()
+{
+    $("#id").val("");
+    $("#nombre").val('');
+    $("#datos_cat").html("");
+    $("#panelCategoriaTaxonomicaPt").hide();
+
+    $('#por_gi').slideDown();
+    $('#por_nombre_fuente').show();
+    $('#por_gi_fuente').hide();
+    $('#por_nombre').hide();
+};
+
+soulmate_asigna = function(tipo_busqueda)
+{
+    var render = function(term, data, type, index, id)
+    {
+        if (I18n.locale == 'es-cientifico')
+        {
+            var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
+            return nombres;
+
+        } else {
+            var nombres = '<h5>' + firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+
+            if (data.foto.length == 0)
+                var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
+
+            else {
+                var foto_url = data.foto;
+                var foto = "<i class='soulmate-img pull-left' style='background-image: url(\"" + foto_url + "\")';></i>";
+            }
+
+            var iconos = "";
+            var ev = '-ev-icon';
+
+            $.each(data.cons_amb_dist, function(i, val){
+                if (val == 'exotica' || val == 'invasora' || val == 'exotica-invasora' || val == 'no-endemica' || val =='actual'){return true}
+                iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
+            });
+
+            if (data.geodatos != undefined && data.geodatos.length > 0){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
+            if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
+
+            return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
+        }
+    };
+
+    var select = function(term, data, type)
+    {
+        $('#nombre').val(term);
+        $('#id').attr('value', data.id);
+        $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
+
+        if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')
+            cat_tax_asociadas(data.id);  // despliega las categorias taxonomicas asociadas al taxon
+        else {
+            // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
+            $('#basica').attr('action','/especies/'+data.id);
+            $('#basica').submit();
+        }
+    };
+
+    $('#nombre').soulmate({
+        url:            "http://"+ IP + ":" + PORT + "sm/search",
+        types:          TYPES,
+        renderCallback: render,
+        selectCallback: select,
+        minQueryLength: 2,
+        maxResults:     15
+    });
+};
 
 $(document).ready(function()
 {
@@ -40,8 +132,24 @@ $(document).ready(function()
 
     $(document).on('change', ".radio input", function()
     {
-        var id = $(this).attr('value');
-        cat_tax_asociadas(id,'','');
+        // El ID del grupo iconico
+        var id_gi = $(this).attr('value');
+        $('#id').val(id_gi);
+        cat_tax_asociadas(id_gi,'','');
+    });
+
+    $(document).on('click', '#limpiar', function(){
+        window.location.href = "/avanzada";
+    });
+
+    $(document).on('click', '#por_nombre_fuente', function(){
+        por_nombre();
+        return false;
+    });
+
+    $(document).on('click', '#por_gi_fuente', function(){
+        por_gi();
+        return false;
     });
 
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
@@ -82,28 +190,5 @@ $(document).ready(function()
 //            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
 //                $('#distribucion_nivel_3').remove();
 //        });
-
-    $(document).on('change', "#per_page", function(k)
-    {
-        var valor=$(this).val();
-        $('#'+$(this).attr('id') + ' option').removeAttr('selected');
-        $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-
-        $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').val($(this).val());
-        $('#per_page_basica_comun, #per_page_basica_cientifico, #per_page_avanzada').attr('value',$(this).val());
-    });
-
-    $(document).on('click', '#limpiar', function(){
-        $("#id_basica_comun, #id_avanzada_comun, #id_basica_cientifico, #id_avanzada_cientifico, #nombre_comun_1, #nombre_cientifico_1").attr("value", "");
-        $("#datos_cat").html("");
-        $("#panelCategoriaTaxonomicaPt").hide();
-    });
-
-    // autocomplete para la busqueda basica
-    $(document).on('focus', '#nombre_comun', {num: "1"}, soulmate_asigna);
-    $(document).on('focus', '#nombre_cientifico', {num: "2"}, soulmate_asigna);
-    // autocomplete para la busqueda avanzada
-    $(document).on('focus', '#nombre_comun_1', {num: "3"}, soulmate_asigna);
-    $(document).on('focus', '#nombre_cientifico_1', {num: "4"}, soulmate_asigna);
 });
 
