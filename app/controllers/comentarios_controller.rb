@@ -2,12 +2,15 @@ class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :show_respuesta, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :show_respuesta, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :show_respuesta]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :ultimo_id_comentario] do
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :dame_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
+  before_action :only => [:extrae_comentarios_generales, :dame_correo, :mueve_correo] do
+  @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+  end
+  layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
-  layout false, only:[:update, :show, :ultimo_id_comentario]
 
   # GET /comentarios
   # GET /comentarios.json
@@ -171,7 +174,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver #if Rails.env.production?
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -243,8 +246,76 @@ class ComentariosController < ApplicationController
     end
   end
 
+  #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
+  # en el formato de la tabla comentarios para tener un front-end adminsitrable
+
+
+
+
+  def extrae_comentarios_generales
+    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+    #n=1
+    #response['m'].each do |v|
+      #print n.to_s
+      #RestClient.get("https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/?id=323")
+
+      #mueve_correo RestClient.get(@xolo_url, {:params => {'auth' => 'ba', 'id' => v['id']}}), "Resueltos"
+      #sleep(1.0/10.0)
+      #n=n+1
+    #end
+    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
+    #render inline: response.to_s
+
+    Mail.defaults do
+      retriever_method :imap, { :address             => CONFIG.smtp.address,
+                                #:port                => 993,
+                                :user_name           => CONFIG.smtp.user_name,
+                                :password            => CONFIG.smtp.password}
+                                #:enable_ssl          => true }
+    end
+
+    #response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, keys: ["SUBJECT", "kasdaklsa"])[0].to_s
+    response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc)
+
+    render 'comentarios/generales', :locals => {:response => response}
+  end
+
+  def dame_correo
+    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    #puts address
+    response = RestClient.get @xolo_url, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
+
+    render text: response.to_s
+  end
 
   private
+
+  #No importa como se le pase el correo, se sube a la nueva carpeta con REST.put, y se borra de la anterior con MAIL.find_and_delete
+  def mueve_correo(correo, mbdestino)
+    #xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    RestClient.put(@xolo_url+mbdestino, correo)
+  end
+
+  def mueve_correos #carpeta entera
+
+  end
+
+  def borra_correo
+
+  end
+
+  def borra_correos #carpeta entera
+
+  end
+
+  def procesa_correo
+
+  end
+
+  def procesa_correos #carpeta entera
+
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comentario
@@ -255,5 +326,15 @@ class ComentariosController < ApplicationController
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :created_at)
+  end
+
+  def dame_correos
+    Mail.defaults do
+      retriever_method :pop3,
+                       :address    => "#{CONFIG.smtp.address}",
+                       :port       => 995,
+                       :user_name  => "#{CONFIG.smtp.user_name}",
+                       :password   => "#{CONFIG.smtp.password}"
+    end
   end
 end

@@ -1,0 +1,12 @@
+<% response.each do |m| %>
+    <div class="panel panel-default">
+      <b>From: </b><i><%= m.from.to_s %></i><br />
+      <b>Subject: </b><i><%= m.subject.to_s %> - [<%= ['id'].to_s %> ]</i><br />
+      <p class="class<%= ['id'].to_s %>"><b>Abstract: </b><i><%# v['fr'] %></i></p>
+      <pre class="class<%# v['id']%>" mid="correoId<%# v['id'] %>" style="border-radius: 1.5em; margin: 15px;">
+        <%= m.body.raw_source.html_safe %>
+      </pre>
+      <!--button class="btn btn-xs btn-link class<%# v['id']%>", onclick="$(this).one('click', function(){$('#correoId<%# v['id'] %>').load('/comentarios/correoId?id=<%# v['id'] %>');});$('.class<%# v['id']%>').toggleClass('hidden');">Ver más...</button-->
+      <!--button class="btn btn-xs btn-link hidden class<%# v['id']%>", onclick="$('.class<%# v['id']%>').toggleClass('hidden');">Ver menos...</button-->
+    </div>
+<% end %>
