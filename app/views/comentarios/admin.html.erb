@@ -13,7 +13,7 @@
           </a>
         </th>
         <th>
-          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options),
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario),
                          id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %>
         </th>
         <th>Comentario</th>
@@ -44,7 +44,7 @@
           <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
         </td>
         <td>
-          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options, c.categoria_comentario_id),
+          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id),
                          class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
           <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
         </td>
@@ -69,11 +69,8 @@
         <td><%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %></td>
         <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
         <td>
-          <% if c.usuario_id2 %>
-              <% u = Usuario.find(c.usuario_id2) %>
-              <p>
-                <%= "#{u.nombre} #{u.apellido}" %>
-              </p>
+          <% if c.usuario_id2.present? && c.u2_nombre.present? && c.fecha_estatus.present? %>
+              <p><%= c.u2_nombre %></p>
               <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
           <% end %>
         </td>

@@ -214,44 +214,42 @@ class ComentariosController < ApplicationController
     end
   end
 
-  # Administracion de los comentarios
+  # Administracion de los comentarios GET /comentarios/administracion
   def admin
     if params[:comentario].present?
       params = comentario_params
-      consulta = 'Comentario'
+      consulta = 'Comentario.datos_basicos'
 
       if params[:categoria_comentario_id].present?
         consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
       end
 
       if params[:estatus].present?
-        consulta << ".where(estatus: #{params[:estatus].to_i})"
+        consulta << ".where('comentarios.estatus=#{params[:estatus].to_i}')"
       end
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        @comentarios = eval(consulta).where('estatus < 5').order("created_at #{params[:created_at]}")
+        @comentarios = eval(consulta).where('comentarios.estatus < 5').order("created_at #{params[:created_at]}")
       else
-        @comentarios = eval(consulta).where('estatus < 5').order('estatus ASC, created_at ASC')
+        @comentarios = eval(consulta).where('comentarios.estatus < 5').order('comentarios.estatus ASC, created_at ASC')
       end
 
     else
       # estatus =5 quiere decir oculto a la vista
-      @comentarios = Comentario.where('estatus < 5').order('estatus ASC, created_at ASC')
+      @comentarios = Comentario.datos_basicos.where('comentarios.estatus < 5').order('estatus ASC, created_at ASC')
     end
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
       c.completa_nombre_correo_especie
     end
+
+    @categoria_comentario = CategoriaComentario.grouped_options
   end
 
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
-
-
-
-
   def extrae_comentarios_generales
     #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
     #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
