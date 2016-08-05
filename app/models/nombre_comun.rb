@@ -12,23 +12,22 @@ class NombreComun < ActiveRecord::Base
   scope :caso_termina_con, ->(columna, valor) { where("#{columna} LIKE '%#{valor}'") }
   scope :caso_fecha, ->(columna, valor) { where("CAST(#{columna} AS TEXT) LIKE '%#{valor}%'") }
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
-  scope :especies_join, -> { joins('LEFT JOIN nombres_regiones ON nombres_regiones.nombre_comun_id=nombres_comunes.id').
-      joins('LEFT JOIN especies ON especies.id=nombres_regiones.especie_id') }
-  scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
-  scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')") }
+  scope :especies_join, ->(join_type='LEFT') { joins("#{join_type} JOIN nombres_regiones ON nombres_regiones.nombre_comun_id=nombres_comunes.id").
+      joins("#{join_type} JOIN especies ON especies.id=nombres_regiones.especie_id") }
+  scope :categoria_taxonomica_join, ->(join_type='LEFT') { joins("#{join_type} JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id") }
+  scope :adicional_join, ->(join_type='LEFT') { joins("#{join_type} JOIN adicionales ON adicionales.especie_id=especies.id") }
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(adicionales=[]) { select('especies.id, estatus, nombre_comun, nombre_cientifico, nombre_autoridad, categoria_taxonomica_id, nombre_categoria_taxonomica,
-adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_comun_principal,
-iconos.taxon_icono, iconos.icono, iconos.nombre_icono, iconos.color_icono' +
+  scope :select_basico, ->(adicionales=[]) { select('DISTINCT especies.id, estatus, nombre_cientifico, nombre_autoridad, categoria_taxonomica_id, nombre_categoria_taxonomica,
+adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_comun_principal' +
                                                         (adicionales.any? ? ',' + adicionales.join(',') : '')) }
     #categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(adicionales=[]) { select_basico(adicionales).especies_join.categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_basicos, ->(adicionales=[], join_type='LEFT') { select_basico(adicionales).especies_join(join_type).categoria_taxonomica_join(join_type).adicional_join(join_type) }
   # Este select es para contar todas las especies partiendo del nombre comun
-  scope :datos_count, -> { select('count(DISTINCT concat(especies.id, nombre_comun)) AS cuantos').especies_join }
-
+  scope :datos_count, ->(join_type='LEFT') { select('count(DISTINCT especies.id) AS cuantos').especies_join(join_type) }
 
   def species_or_lower?(cat, con_genero = false)
     if con_genero

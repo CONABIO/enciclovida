@@ -164,7 +164,7 @@ es-cientifico:
     invasora: Invasora
     localidad_tipo: Localidad tipo
     nativa: Nativa
-    no_endemica: No endémica
+    no-endemica: No endémica
     original: Original
     semiendemica: Semiendémica
   el_taxon_no_tiene_kml: El taxón no tiene KML.
