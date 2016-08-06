@@ -216,6 +216,9 @@ class ComentariosController < ApplicationController
 
   # Administracion de los comentarios GET /comentarios/administracion
   def admin
+    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
+
     if params[:comentario].present?
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
@@ -228,24 +231,38 @@ class ComentariosController < ApplicationController
         consulta << ".where('comentarios.estatus=#{params[:estatus].to_i}')"
       end
 
+      consulta << ".where('comentarios.estatus < 5')"
+
+      # Comentarios totales
+      totales = eval(consulta).count
+
+      sql = eval(consulta).to_sql
+
       # Para ordenar por created_at
       if params[:created_at].present?
-        @comentarios = eval(consulta).where('comentarios.estatus < 5').order("created_at #{params[:created_at]}")
+        sql = sql + " ORDER BY created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
       else
-        @comentarios = eval(consulta).where('comentarios.estatus < 5').order('comentarios.estatus ASC, created_at ASC')
+        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
       end
 
     else
-      # estatus =5 quiere decir oculto a la vista
-      @comentarios = Comentario.datos_basicos.where('comentarios.estatus < 5').order('estatus ASC, created_at ASC')
+      # Comentarios totales
+      totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
+
+      # estatus = 5 quiere decir oculto a la vista
+      sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
     end
+
+    @comentarios = Comentario.find_by_sql(sql)
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_nombre_correo_especie
+      c.completa_nombre_correo
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
+    @paginacion = paginacion(totales, pagina, por_pagina)
   end
 
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base

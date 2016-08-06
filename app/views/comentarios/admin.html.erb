@@ -11,8 +11,7 @@
           <a href="#" data-toggle="popover" data-content="Público: Muestra el comentario como una advertencia, en la ficha del taxón" onclick="return false;">
             <i class="glyphicon glyphicon-info-sign"></i>
           </a>
-        </th>
-        <th>
+
           <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario),
                          id: 'filtro_categoria_comentario_id', prompt: '- - - Tipo de comentario - - -' %>
         </th>
@@ -37,13 +36,12 @@
 
   <% @comentarios.each do |c| %>
       <tr id="renglon_<%= c.id %>">
-        <td class="text-center">
+        <td>
           <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
                          class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id
           %>
           <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
-        </td>
-        <td>
+
           <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id),
                          class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
           <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
@@ -66,7 +64,17 @@
           </p>
           <div id="historial_<%= c.id %>"></div>
         </td>
-        <td><%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %></td>
+        <td>
+          <% if c.especie_id > 0 && c.nombre_cientifico.present? %>
+            <% if c.nombre_comun_principal.present? %>
+              <%= c.nombre_comun_principal %><br />
+            <% end %>
+
+            <%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %>
+          <% elsif c.categoria_comentario_id != 29 %>
+            La especie o grupo ya no existen
+          <% end %>
+        </td>
         <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
         <td>
           <% if c.usuario_id2.present? && c.u2_nombre.present? && c.fecha_estatus.present? %>

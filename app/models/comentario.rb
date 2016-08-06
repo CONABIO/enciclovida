@@ -26,14 +26,6 @@ class Comentario < ActiveRecord::Base
   attr_reader :es_respuesta
   attr_writer :es_respuesta
 
-  # Para tener la referencia al nombre de la especie
-  attr_reader :nombre_cientifico
-  attr_writer :nombre_cientifico
-
-  # Para tener la referencia al nombre comun de la especie
-  attr_reader :nombre_comun
-  attr_writer :nombre_comun
-
   validates_presence_of :categoria_comentario_id
   before_save :id_a_base_32
 
@@ -49,6 +41,7 @@ u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_
 CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   scope :datos_basicos,-> { select_basico.join_usuarios.join_usuarios2.join_especies.join_adicionales }
 
+  POR_PAGINA_PREDETERMINADO = 10
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
@@ -63,7 +56,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
     self.id = id_incremento.to_s(32)
   end
 
-  def completa_nombre_correo_especie
+  def completa_nombre_correo
     if usuario_id.present?
       self.nombre = u_nombre
       self.correo = u_email
@@ -72,8 +65,5 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
       self.nombre = self.c_nombre
       self.institucion = c_institucion
     end
-
-    self.nombre_cientifico = nombre_cientifico
-    self.nombre_comun = nombre_comun_principal
   end
 end
