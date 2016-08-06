@@ -1,12 +1,22 @@
 <% response.each do |m| %>
-    <div class="panel panel-default">
-      <b>From: </b><i><%= m.from.to_s %></i><br />
-      <b>Subject: </b><i><%= m.subject.to_s %> - [<%= ['id'].to_s %> ]</i><br />
-      <p class="class<%= ['id'].to_s %>"><b>Abstract: </b><i><%# v['fr'] %></i></p>
-      <pre class="class<%# v['id']%>" mid="correoId<%# v['id'] %>" style="border-radius: 1.5em; margin: 15px;">
-        <%= m.body.raw_source.html_safe %>
-      </pre>
-      <!--button class="btn btn-xs btn-link class<%# v['id']%>", onclick="$(this).one('click', function(){$('#correoId<%# v['id'] %>').load('/comentarios/correoId?id=<%# v['id'] %>');});$('.class<%# v['id']%>').toggleClass('hidden');">Ver más...</button-->
-      <!--button class="btn btn-xs btn-link hidden class<%# v['id']%>", onclick="$('.class<%# v['id']%>').toggleClass('hidden');">Ver menos...</button-->
+    <div class="panel panel-default comentarios-correos">
+      <b>De: </b><i><%= m.nombre %></i><br />
+      <b>Asunto: </b><i><%= Base64.decode64(m.comentario).force_encoding('UTF-8') %> - (<%= m.id %>)</i><br />
+
+      <div class="correos hidden" id="<%= m.id %>" style="border-radius: 1.5em; margin: 15px;">
+      </div>
+
+      <button class="btn btn-xs btn-link btn-correo">Ver más...</button>
+      <button class="btn btn-xs btn-link hidden btn-correo">Ver menos...</button>
     </div>
 <% end %>
+<script type="application/javascript">
+  $(document).ready(function(){
+      $('.comentarios-correos').click(function(){
+          $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
+      }).one('click', function(){
+          id=$(this).children('div.correos')[0].getAttribute('id');
+          $('#'+id).load('/comentarios/correoId?id='+id);
+      });
+  });
+</script>

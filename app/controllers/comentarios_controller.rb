@@ -8,6 +8,12 @@ class ComentariosController < ApplicationController
   end
   before_action :only => [:extrae_comentarios_generales, :dame_correo, :mueve_correo] do
   @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    Mail.defaults do
+      retriever_method :imap, { :address => CONFIG.smtp.address,
+                                :user_name => CONFIG.smtp.user_name,
+                                :password => CONFIG.smtp.password
+                            }
+    end
   end
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
@@ -267,26 +273,36 @@ class ComentariosController < ApplicationController
     #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
     #render inline: response.to_s
 
-    Mail.defaults do
-      retriever_method :imap, { :address             => CONFIG.smtp.address,
-                                #:port                => 993,
-                                :user_name           => CONFIG.smtp.user_name,
-                                :password            => CONFIG.smtp.password}
-                                #:enable_ssl          => true }
-    end
+    # Mail.defaults do
+    #   retriever_method :imap, { :address             => CONFIG.smtp.address,
+    #                             #:port                => 993,
+    #                             :user_name           => CONFIG.smtp.user_name,
+    #                             :password            => CONFIG.smtp.password}
+    #                             #:enable_ssl          => true }
+    # end
 
     #response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, keys: ["SUBJECT", "kasdaklsa"])[0].to_s
-    response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc)
+    #NOTA, CAMBIAR PENDIENTES POR INBOS Y RESUELTOS POR PENDIENTES
 
+    #Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, delete_after_find: true) { |m|
+    #  mueve_correo(m, "Resueltos")
+    #}
+    procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
+    response = Comentario.find_all_by_categoria_comentario_id(29)
     render 'comentarios/generales', :locals => {:response => response}
   end
 
   def dame_correo
     #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
     #puts address
-    response = RestClient.get @xolo_url, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
+    #response = RestClient.get @xolo_url, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
 
-    render text: response.to_s
+    #AHORA SE HARAÁ CON mail.find
+    c = Comentario.find(params[:id].to_s)
+    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
+    response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
+
+    render text: response[0].html_part.decoded
   end
 
   private
@@ -294,7 +310,7 @@ class ComentariosController < ApplicationController
   #No importa como se le pase el correo, se sube a la nueva carpeta con REST.put, y se borra de la anterior con MAIL.find_and_delete
   def mueve_correo(correo, mbdestino)
     #xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    RestClient.put(@xolo_url+mbdestino, correo)
+    RestClient.put(@xolo_url+mbdestino, correo.to_s)
   end
 
   def mueve_correos #carpeta entera
@@ -313,8 +329,26 @@ class ComentariosController < ApplicationController
 
   end
 
-  def procesa_correos #carpeta entera
+  def procesa_correos(opts={}) #carpeta entera
+    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: true, keys: opts[:search]||='ALL') { |m|
+      guarda_correo_bd(m)
+      mueve_correo(m, opts[:mbdestino])
+    }
+    #Mail.find(count: 1000, mailbox: opts[:mbdestino], order: :desc).each { |m| m.body = '' }
+  end
 
+  def guarda_correo_bd(correo)
+    comment = Comentario.new
+
+    comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
+    comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
+    comment.nombre = correo.header[:from].field.display_names[0]
+    comment.especie_id = 0
+    comment.categoria_comentario_id = 29
+    if comment.save
+      correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
+      puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.
@@ -329,12 +363,6 @@ class ComentariosController < ApplicationController
   end
 
   def dame_correos
-    Mail.defaults do
-      retriever_method :pop3,
-                       :address    => "#{CONFIG.smtp.address}",
-                       :port       => 995,
-                       :user_name  => "#{CONFIG.smtp.user_name}",
-                       :password   => "#{CONFIG.smtp.password}"
-    end
+
   end
 end
