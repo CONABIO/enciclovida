@@ -22,11 +22,9 @@
 //= require jquery.mockjax.js
 //= require jquery.scrollTo-min.js
 //= require jQuery-Autocomplete.js
-//= require scrolling.js
 //= require typeahead.js
 //= require cocoon.js
 //= require general.js
 //= require jquery.soulmate.js
 //= require busquedas.js
-//= require autocomplete-rails
 //= require "i18n/translations"
