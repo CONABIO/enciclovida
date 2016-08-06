@@ -1,0 +1,50 @@
+<% @comentarios.each do |c| %>
+    <tr id="renglon_<%= c.id %>">
+      <td>
+        <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
+                       class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id
+        %>
+        <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
+
+        <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id),
+                       class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
+        <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
+      </td>
+      <td>
+        <%= c.comentario %>
+        <p>
+          <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
+        </p>
+        <p>
+          <% if c.cuantos > 0 %>
+              <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
+                          class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
+
+          <% else %>
+              <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
+          <% end %>
+
+          <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", style: 'display: none;' %>
+        </p>
+        <div id="historial_<%= c.id %>"></div>
+      </td>
+      <td>
+        <% if c.especie_id > 0 && c.nombre_cientifico.present? %>
+            <% if c.nombre_comun_principal.present? %>
+                <%= c.nombre_comun_principal %><br />
+            <% end %>
+
+            <%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %>
+        <% elsif c.categoria_comentario_id != 29 %>
+            La especie o grupo ya no existen
+        <% end %>
+      </td>
+      <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
+      <td>
+        <% if c.usuario_id2.present? && c.u2_nombre.present? && c.fecha_estatus.present? %>
+            <p><%= c.u2_nombre %></p>
+            <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
+        <% end %>
+      </td>
+    </tr>
+<% end %>

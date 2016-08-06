@@ -216,8 +216,9 @@ class ComentariosController < ApplicationController
 
   # Administracion de los comentarios GET /comentarios/administracion
   def admin
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
+    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
+    offset = (@pagina-1)*@por_pagina
 
     if params[:comentario].present?
       params = comentario_params
@@ -234,24 +235,24 @@ class ComentariosController < ApplicationController
       consulta << ".where('comentarios.estatus < 5')"
 
       # Comentarios totales
-      totales = eval(consulta).count
+      @totales = eval(consulta).count
 
       sql = eval(consulta).to_sql
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        sql = sql + " ORDER BY created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+        sql = sql + " ORDER BY created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
       else
-        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
       end
 
     else
       # Comentarios totales
-      totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
+      @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
 
       # estatus = 5 quiere decir oculto a la vista
       sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
-      sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+      sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
 
     @comentarios = Comentario.find_by_sql(sql)
@@ -262,7 +263,13 @@ class ComentariosController < ApplicationController
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
-    @paginacion = paginacion(totales, pagina, por_pagina)
+
+    if @pagina > 1 && @comentarios.any?  # Tiene resultados el scrollling
+      render :partial => 'comentarios/admin'
+    elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
+      render text: ''
+    end
+
   end
 
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base

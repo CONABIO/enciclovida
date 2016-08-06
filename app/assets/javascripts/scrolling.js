@@ -28,15 +28,12 @@ settings = {
 
 			function getData() {
 
-                //var busy = false;
-
                 $this=$("#resultados" + settings.nivel);
                 $('#loading-bar' + settings.nivel).remove();
                 $this.append("<div class='loading-bar col-xs-12 col-sm-12 col-md-12 col-lg-12' id='loading-bar" + settings.nivel + "'>" +initmessage+'</div>');
 
 				$.get(settings.url, {
 						
-					//action        : 'scrollpagination'
 				    pagina         : settings.offset
 
 				}, function(data) {
@@ -65,7 +62,6 @@ settings = {
 					
 			}	
 			
-			//getData(); // Run function initially
             $this=$("#resultados" + settings.nivel);
 
 			// If scrolling is enabled

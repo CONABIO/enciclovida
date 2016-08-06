@@ -1,4 +1,30 @@
+<%= javascript_include_tag 'scrolling_basico', 'data-turbolinks-track' => true %>
+
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+
+    $(document).ready(function() {
+
+        $('#mas_comentarios').scrollPagination({
+            per_page: <%= @por_pagina %>, // The number of posts per scroll to be loaded
+            page    : <%= @pagina %>, // the actual page
+            error   : 'No hay mas comentarios.', // When the user reaches the end this is the message that is
+                                        // displayed. You can change this if you want.
+            delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
+                           // This is mainly for usability concerns. You can alter this as you see fit
+            scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
+                           // but will still load if the user clicks.
+        });
+    });
+
+</script>
+
 <%= link_to 'Limpiar filtros', admin_path %>
+
+<% if @totales.present? %>
+    <h4>
+      <strong><%= @totales %></strong> comentarios
+    </h4>
+<% end %>
 
 <table class="table table-hover table-striped table-condensed table-bordered">
   <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
@@ -34,56 +60,8 @@
 
   <tbody style="font-size: .85em;">
 
-  <% @comentarios.each do |c| %>
-      <tr id="renglon_<%= c.id %>">
-        <td>
-          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
-                         class: 'comentario_estatus', comentario_id: c.id, especie_id: c.especie_id
-          %>
-          <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
-
-          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id),
-                         class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
-          <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
-        </td>
-        <td>
-          <%= c.comentario %>
-          <p>
-            <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
-          </p>
-          <p>
-            <% if c.cuantos > 0 %>
-                <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
-                            class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
-
-            <% else %>
-                <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
-            <% end %>
-
-            <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", style: 'display: none;' %>
-          </p>
-          <div id="historial_<%= c.id %>"></div>
-        </td>
-        <td>
-          <% if c.especie_id > 0 && c.nombre_cientifico.present? %>
-            <% if c.nombre_comun_principal.present? %>
-              <%= c.nombre_comun_principal %><br />
-            <% end %>
-
-            <%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %>
-          <% elsif c.categoria_comentario_id != 29 %>
-            La especie o grupo ya no existen
-          <% end %>
-        </td>
-        <td><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-        <td>
-          <% if c.usuario_id2.present? && c.u2_nombre.present? && c.fecha_estatus.present? %>
-              <p><%= c.u2_nombre %></p>
-              <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
-          <% end %>
-        </td>
-      </tr>
-  <% end %>
+  <%= render :partial => 'comentarios/admin' %>
+  <div id="mas_comentarios"></div>
 
   </tbody>
 </table>
