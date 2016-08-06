@@ -46,13 +46,28 @@
         <td>
           <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(CategoriaComentario.grouped_options, c.categoria_comentario_id),
                          class: 'comentario_categoria_comentario_id', comentario_id: c.id, especie_id: c.especie_id %>
-          <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
+          <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;">
+          </div>
         </td>
         <td>
-          <%= c.comentario %>
-          <p>
-            <%= c.nombre %> <%= link_to c.correo, "mailto:#{c.correo}" %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
-          </p>
+
+          <% if c.categoria_comentario_id==29 %>
+              <div class="panel panel-default comentarios-correos">
+                <b>De: </b><i><%= c.nombre %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)</i><br />
+                <b>Asunto: </b><i><%= Base64.decode64(c.comentario).force_encoding('UTF-8')%></i><br />
+
+                <div class="correos hidden" id="<%= c.id %>" style="border-radius: 1.5em; margin: 15px;">
+                </div>
+                <button class="btn btn-xs btn-link btn-correo">Ver más...</button>
+                <button class="btn btn-xs btn-link hidden btn-correo">Ver menos...</button>
+              </div>
+          <% else %>
+              <%=  c.comentario %>
+              <p>
+                <%= c.nombre %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
+              </p>
+          <% end %>
+
           <p>
             <% if c.cuantos > 0 %>
                 <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
@@ -82,3 +97,13 @@
 
   </tbody>
 </table>
+<script type="application/javascript">
+  $(document).ready(function(){
+      $('.comentarios-correos').click(function(){
+          $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
+      }).one('click', function(){
+          id=$(this).children('div.correos')[0].getAttribute('id');
+          $('#'+id).load('/comentarios/correoId?id='+id);
+      });
+  });
+</script>
