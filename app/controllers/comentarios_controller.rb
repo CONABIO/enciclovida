@@ -241,7 +241,7 @@ class ComentariosController < ApplicationController
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        sql = sql + " ORDER BY created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+        sql = sql + " ORDER BY created_at #{params[:created_at]} OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
       else
         sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
       end
