@@ -202,7 +202,16 @@ $(document).ready(function(){
 
     $(document).on('change', "[id^='filtro_']", function()
     {
-        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
+        //window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
+
+        $.ajax({
+            url: "/comentarios/administracion",
+            method: 'GET',
+            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+
+        }).done(function(html) {
+            $('#mas_comentarios').empty().append(html);
+        });
     });
 
     $(document).on('click', "#filtro_created_at", function()

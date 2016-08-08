@@ -264,7 +264,8 @@ class ComentariosController < ApplicationController
 
     @categoria_comentario = CategoriaComentario.grouped_options
 
-    if @pagina > 1 && @comentarios.any?  # Tiene resultados el scrollling
+    if (@pagina > 1 && @comentarios.any?) || (params.present? && params[:ajax].present? && params[:ajax] == '1')
+    # Tiene resultados el scrollling o peticiones de ajax
       render :partial => 'comentarios/admin'
     elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
       render text: ''
@@ -347,7 +348,8 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :created_at)
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
+                                       :ajax, :created_at)
   end
 
   def dame_correos
