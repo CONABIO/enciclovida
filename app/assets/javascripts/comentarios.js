@@ -207,7 +207,8 @@ $(document).ready(function(){
             method: 'GET',
             data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
 
-        }).done(function(html) {
+        }).done(function(html, textStatus, XMLHttpRequest) {
+            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
             $('#mas_comentarios').empty().append(html);
         });
     });
@@ -240,29 +241,13 @@ $(document).ready(function(){
             $(obj).val('ASC');
         }
 
-/*
-        if ($('#filtro_nombre_cientifico > i').hasClass("glyphicon-sort"))
-        {
-            $('#filtro_created_at > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
-            $('#comentario_created_at').val('ASC');
-
-        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-up"))
-        {
-            $('#filtro_created_at > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-            $('#comentario_created_at').val('DESC');
-
-        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-down"))
-        {
-            $('#filtro_created_at > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-            $('#comentario_created_at').val('ASC');
-        }*/
-
         $.ajax({
             url: "/comentarios/administracion",
             method: 'GET',
             data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
 
-        }).done(function(html) {
+        }).done(function(html, XMLHttpRequest) {
+            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
             $('#mas_comentarios').empty().append(html);
         });
 

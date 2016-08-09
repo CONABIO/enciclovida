@@ -37,34 +37,31 @@
                 $('#loading-bar').remove();
                 $this.append("<div class='loading-bar col-xs-12 col-sm-12 col-md-12 col-lg-12' id='loading-bar'>" +initmessage+'</div>');
 
-				// Post data to ajax.php
-				$.get('/comentarios/administracion', {
-				    por_pagina    : $settings.per_page,
-				    pagina        : page + 1
-				}, function(data) {
+                $.ajax({
+                    url: '/comentarios/administracion',
+                    method: 'GET',
+                    data: $('#filtro_form').serialize() + '&por_pagina=' + $settings.per_page + '&pagina=' + (page + 1) + '&comentario[ajax]=1'
 
+                }).done(function(data) {
                     // Change loading bar content (it may have been altered)
                     $('#loading-bar').html(initmessage);
-						
-					// If there is no data returned, there are no more posts to be shown. Show error
-					if(data == "") {
-                        $('#loading-bar').html(settings.error);
-					}
-					else {
-						
-						// page increases
-					    page++;
 
-						// Append the data to the content div
-					   	$this.append(data);
+                    // If there is no data returned, there are no more posts to be shown. Show error
+                    if(data == "")
+                        $('#loading-bar').html(settings.error);
+                    else {
+
+                        // page increases
+                        page++;
+
+                        // Append the data to the content div
+                        $this.append(data);
                         $('#loading-bar').remove();
-						
-						// No longer busy!	
-						busy = false;
-					}	
-						
-				});
-					
+
+                        // No longer busy!
+                        busy = false;
+                    }
+                });
 			}	
 
 			// If scrolling is enabled

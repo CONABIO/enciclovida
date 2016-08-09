@@ -245,7 +245,7 @@ class ComentariosController < ApplicationController
       elsif params[:nombre_cientifico].present?
         sql = sql + " ORDER BY nombre_cientifico #{params[:nombre_cientifico]}"
       else
-        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset}"
+        sql = sql + ' ORDER BY comentarios.estatus ASC, created_at ASC'
       end
 
       sql+= " OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
@@ -267,6 +267,8 @@ class ComentariosController < ApplicationController
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
+
+    response.headers['x-total-entries'] = @totales.to_s
 
     if (@pagina > 1 && @comentarios.any?) || (params.present? && params[:ajax].present? && params[:ajax] == '1')
     # Tiene resultados el scrollling o peticiones de ajax
