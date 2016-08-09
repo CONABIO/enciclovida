@@ -43,7 +43,8 @@
         </th>
         <th>Comentario</th>
         <th>
-          <%= t :taxon %>
+          <%= t :taxon %> <a href="<%= admin_path %>" id="filtro_nombre_cientifico"><i class="glyphicon glyphicon-sort"></i></a>
+          <%= hidden_field_tag 'comentario[nombre_cientifico]' %>
         </th>
         <th>
           Fecha <a href="<%= admin_path %>" id="filtro_created_at"><i class="glyphicon glyphicon-sort"></i></a>

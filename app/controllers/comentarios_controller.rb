@@ -241,10 +241,14 @@ class ComentariosController < ApplicationController
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        sql = sql + " ORDER BY created_at #{params[:created_at]} OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+        sql = sql + " ORDER BY created_at #{params[:created_at]}"
+      elsif params[:nombre_cientifico].present?
+        sql = sql + " ORDER BY nombre_cientifico #{params[:nombre_cientifico]}"
       else
-        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+        sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset}"
       end
+
+      sql+= " OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
 
     else
       # Comentarios totales
@@ -349,7 +353,7 @@ class ComentariosController < ApplicationController
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
-                                       :ajax, :created_at)
+                                       :ajax, :nombre_cientifico, :created_at)
   end
 
   def dame_correos
