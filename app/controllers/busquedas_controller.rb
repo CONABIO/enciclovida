@@ -21,24 +21,18 @@ class BusquedasController < ApplicationController
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if params[:solo_categoria].present?
-        query = Especie.busqueda_basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
+        @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
                                                           solo_categoria: params[:solo_categoria]})
-        @taxones = Especie.find_by_sql(query)
-
         @taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
         end
 
       else
-        totales = Especie.find_by_sql(Especie.count_busqueda_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]}))[0].totales
+        @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
 
-        if totales > 0
-          query = Especie.busqueda_basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
-          query_por_categoria = Especie.por_categoria_busqueda_basica(params[:nombre].limpia_sql, true)
-          @por_categoria = Especie.find_by_sql(query_por_categoria)
-
-          @taxones = Especie.find_by_sql(query)
-          @totales = totales
+        if @totales > 0
+          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
+          @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: true, original_url: request.original_url})
 
           @taxones.each do |t|
             t.cual_nombre_comun_coincidio(params[:nombre])
@@ -117,26 +111,18 @@ class BusquedasController < ApplicationController
 
           format.json { render json: @arboles.to_json }
 
-        elsif params[:solo_categoria].present?
-          # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-          if params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
-            format.html { render :partial => 'busquedas/_resultados' }
-          elsif params[:pagina].to_i > 1 && @taxones.empty?
-            # Quiere decir que el paginado acabo en algun TAB que no es el default
-            format.html { render text: '' }
-          else
-            # Despliega el inicio de un TAB que no sea el default
-            format.html { render :partial => 'busquedas/resultados' }
-          end
-        elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
+        elsif params[:solo_categoria].present? && @taxones.any? && pagina == 1
+          # Despliega el inicio de un TAB que no sea el default
+          format.html { render :partial => 'busquedas/resultados' }
+          format.json { render json: {taxa: @taxones} }
+        elsif pagina > 1 && @taxones.any?
           # Despliega el paginado del TAB que tiene todos
           format.html { render :partial => 'busquedas/_resultados' }
-        elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+          format.json { render json: {taxa: @taxones} }
+        elsif @taxones.empty? && pagina > 1
           # Quiere decir que el paginado acabo en algun TAB
           format.html { render text: '' }
-        elsif @taxones.empty?
-          # La busqueda no dio ningun resultado
-          redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
+          format.json { render json: {taxa: []} }
         else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
           format.html { render action: 'resultados' }
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categoria: @por_categoria.present? ? @por_categoria : [] } }
@@ -213,7 +199,7 @@ class BusquedasController < ApplicationController
       # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
       # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
       if params[:solo_categoria]
-        condiciones << ".caso_sensitivo('nombre_categoria_taxonomica', '#{params[:solo_categoria]}')"
+        condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria]}' COLLATE Latin1_general_CI_AI\")"
       end
 
       # Quita las condiciones y los joins repetidos
