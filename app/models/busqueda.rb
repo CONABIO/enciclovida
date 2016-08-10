@@ -18,7 +18,7 @@ class Busqueda
       ['superior a', '<']
   ]
 
-  def self.por_categoria(busqueda, distinct = false)
+  def self.por_categoria(busqueda, original_url)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
     sql << '.categoria_taxonomica_join.adicional_join'
@@ -29,7 +29,8 @@ class Busqueda
 
     query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
-    Especie.find_by_sql(query_limpio)
+    Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
+                                               cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
   end
 
   # Hace el conteo de los resultados por categoria en la busqueda basica

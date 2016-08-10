@@ -38,7 +38,7 @@ class BusquedasController < ApplicationController
           @por_categoria = Especie.find_by_sql(query_por_categoria)
 
           @taxones = Especie.find_by_sql(query)
-          @paginacion = paginacion(totales, pagina, por_pagina)
+          @totales = totales
 
           @taxones.each do |t|
             t.cual_nombre_comun_coincidio(params[:nombre])
@@ -95,50 +95,55 @@ class BusquedasController < ApplicationController
             @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
           end
 
-          @paginacion = paginacion(@taxones.length, pagina, por_pagina)
+          @totales = @taxones.length
         end
       end
 
-      if @taxones.any? && arbol
-        # Po si requieren que se genere el checklis
-        @arboles = []
+      respond_to do |format|
 
-        @taxones.each do | taxon|
-          # Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
-          nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
-          # Jalo unicamente los ancestros del taxón en cuestión
-          arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+        if @taxones.any? && arbol
+          # Po si requieren que se genere el checklis
+          @arboles = []
 
-          # Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
-          @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
+          @taxones.each do | taxon|
+            # Primero hallo nombre comunes, mape unicamente el campo nombre_comun, le pego el nombre común principal (si tiene), saco los únicos y los ordeno alfabéticamente non-case
+            nombres_comunes = (taxon.nombres_comunes.map(&:nombre_comun) << taxon.adicional.nombre_comun_principal).uniq.sort_by{|w| [I18n.transliterate(w.downcase), w] unless !(w.present?)}
+            # Jalo unicamente los ancestros del taxón en cuestión
+            arbolito = Especie.datos_arbol_para_json.where("especies.id = (#{taxon.id})")[0].arbol.split('/').join(',')
+
+            # Género el árbol para cada uno de los ancestros recién obtenidos en la linea anterior de código ^
+            @arboles << (Especie.datos_arbol_para_json_2.where("especies.id in (#{arbolito})" ).order('arbol') << {"distancia" => taxon.try("distancia") || 0} << {"nombres_comunes" => nombres_comunes.compact} )
+          end
+
+          format.json { render json: @arboles.to_json }
+
+        elsif params[:solo_categoria].present?
+          # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+          if params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
+            format.html { render :partial => 'busquedas/_resultados' }
+          elsif params[:pagina].to_i > 1 && @taxones.empty?
+            # Quiere decir que el paginado acabo en algun TAB que no es el default
+            format.html { render text: '' }
+          else
+            # Despliega el inicio de un TAB que no sea el default
+            format.html { render :partial => 'busquedas/resultados' }
+          end
+        elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
+          # Despliega el paginado del TAB que tiene todos
+          format.html { render :partial => 'busquedas/_resultados' }
+        elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
+          # Quiere decir que el paginado acabo en algun TAB
+          format.html { render text: '' }
+        elsif @taxones.empty?
+          # La busqueda no dio ningun resultado
+          redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
+        else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
+          format.html { render action: 'resultados' }
+          format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categoria: @por_categoria.present? ? @por_categoria : [] } }
         end
-        render 'busquedas/arbol.json.erb'
-      elsif params[:solo_categoria].present?
-        # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-        if params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
-          render :partial => 'busquedas/_resultados'
-        elsif params[:pagina].to_i > 1 && @taxones.empty?
-          # Quiere decir que el paginado acabo en algun TAB que no es el default
-          render text: ''
-        else
-          # Despliega el inicio de un TAB que no sea el default
-          render :partial => 'busquedas/resultados'
-        end
-      elsif params[:pagina].present? && params[:pagina].to_i > 1 && @taxones.any?
-        # Despliega el paginado del TAB que tiene todos
-        render :partial => 'busquedas/_resultados'
-      elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-        # Quiere decir que el paginado acabo en algun TAB
-        render text: ''
-      elsif @taxones.empty?
-        # La busqueda no dio ningun resultado
-        redirect_to  '/inicio/error', :notice => 'Tu búsqueda no dio ningún resultado.'
-      end
-      # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb).
-
+      end  # end respond_to
 
     elsif params[:busqueda] == 'avanzada'
-
       # Es necesario hacer un index con estos campos para aumentar la velocidad
       condiciones = []
       joins = []
@@ -217,15 +222,14 @@ class BusquedasController < ApplicationController
       busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
       # Para sacar los resultados por categoria
-      @por_categoria = Busqueda.por_categoria(busqueda) if params[:solo_categoria].blank?
+      @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
 
       pagina = params[:pagina].present? ? params[:pagina].to_i : 1
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-      totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+      @totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
 
-      if totales > 0
-        @paginacion = paginacion(totales, pagina, por_pagina)
+      if @totales > 0
 
         if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
           @taxones = Busqueda.por_arbol(busqueda)
@@ -245,21 +249,19 @@ class BusquedasController < ApplicationController
         end
       end
 
-      # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-      if params[:solo_categoria].present?
-        if params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-          render :partial => 'busquedas/_resultados'
-        elsif @taxones.empty?
-          render text: ''
-        else
-          render :partial => 'busquedas/resultados'
-        end
-      elsif params[:pagina].present? && params[:pagina].to_i > 1 && !@taxones.empty?
-        render :partial => 'busquedas/_resultados'
-      elsif @taxones.empty? && params[:pagina].present? && params[:pagina].to_i > 1
-        render text: ''
-      elsif params[:checklist].present? && params[:checklist].to_i == 1
-        respond_to do |format|
+      respond_to do |format|
+        # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
+        if params[:solo_categoria].present? && @taxones.any? && pagina == 1
+          # Imprime el inicio de un TAB
+          format.html { render :partial => 'busquedas/resultados' }
+          format.json { render json: {taxa: @taxones} }
+        elsif pagina > 1 && @taxones.any?
+          format.html { render :partial => 'busquedas/_resultados' }
+          format.json { render json: {taxa: @taxones} }
+        elsif @taxones.empty? && pagina > 1
+          format.html { render text: '' }
+          format.json { render json: {taxa: []} }
+        elsif params[:checklist].present? && params[:checklist].to_i == 1
           format.html { render 'busquedas/checklists' }
           format.pdf do  #Para imprimir el listado en PDF
             ruta = Rails.root.join('public', 'pdfs').to_s
@@ -278,35 +280,40 @@ class BusquedasController < ApplicationController
           format.xlsx do  # Falta implementar el excel de salida
             @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
           end
-        end
-      end
+        else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
+          # Parametros para poner en los filtros y saber cual escogio
+          @setParams = {}
 
-      # Parametros para poner en los filtros y saber cual escogio
-      @setParams = {}
+          params.each do |k,v|
+            # Evitamos valores vacios
+            next unless v.present?
 
-      params.each do |k,v|
-        # Evitamos valores vacios
-        next unless v.present?
-
-        case k
-          when 'id', 'nombre', 'por_pagina'
-            @setParams[k] = v
-          when 'edo_cons', 'dist', 'prior', 'estatus'
-            if @setParams[k].present?
-              @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-            else
-              @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+            case k
+              when 'id', 'nombre', 'por_pagina'
+                @setParams[k] = v
+              when 'edo_cons', 'dist', 'prior', 'estatus'
+                if @setParams[k].present?
+                  @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+                else
+                  @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+                end
+              else
+                next
             end
-          else
-            next
+          end
+
+          format.html { render action: 'resultados' }
+          format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
         end
-      end
+
+      end  # end respond_to
 
     else  # Default switch
       respond_to do |format|
         format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
+        format.json { render json: {taxa: []} }
       end
-    end  # Fin switch
+    end  # Fin if busqueda
   end
 
   # Servicio que por medio del nombre comun extrae todos los nombres comunes asociados al taxon (servicio para alejandro molina)

@@ -74,10 +74,10 @@ class Especie < ActiveRecord::Base
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
-        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   # Datos sacar los IDs unicos de especies
   scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
   #Select para el Checklist (por_arbol)
