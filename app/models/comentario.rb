@@ -45,7 +45,8 @@ class Comentario < ActiveRecord::Base
   def id_a_base_32
     return true unless self.new_record?
 
-    c = Comentario.select('id').limit(1).order('created_at DESC').first
+    #c = Comentario.select('id').limit(1).order('created_at DESC').first
+    c= Comentario.count
     id_base_10 = c.id.to_i(32)
     id_incremento = id_base_10 + 1
     self.id = id_incremento.to_s(32)

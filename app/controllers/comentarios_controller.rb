@@ -287,7 +287,7 @@ class ComentariosController < ApplicationController
     #Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, delete_after_find: true) { |m|
     #  mueve_correo(m, "Resueltos")
     #}
-    procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
+    procesa_correos({mborigen: 'Inbox', mbdestino: 'Pendientes'})
     response = Comentario.find_all_by_categoria_comentario_id(29)
     render 'comentarios/generales', :locals => {:response => response}
   end
@@ -330,7 +330,7 @@ class ComentariosController < ApplicationController
   end
 
   def procesa_correos(opts={}) #carpeta entera
-    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: true, keys: opts[:search]||='ALL') { |m|
+    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: false, keys: opts[:search]||='ALL') { |m|
       guarda_correo_bd(m)
       mueve_correo(m, opts[:mbdestino])
     }
@@ -342,9 +342,10 @@ class ComentariosController < ApplicationController
 
     comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
-    comment.nombre = correo.header[:from].field.display_names[0]
+    comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
     comment.categoria_comentario_id = 29
+    #comment.created_at = correo.header[:date].value.to_time #FALLA por q la asignación de id es por fecha y no por autoincremental ¬¬ CORREGIR ESO#
     if comment.save
       correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
       puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
