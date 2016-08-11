@@ -30,6 +30,8 @@ class Especie < ActiveRecord::Base
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
+  has_many :bibliografias, :through => :especies_bibliografias
+  has_many :regiones, :through => :nombres_regiones
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
   has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo

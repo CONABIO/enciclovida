@@ -63,7 +63,31 @@ class EspeciesController < ApplicationController
         end
       end
       format.json do
+        @especie[:geodata] = []
+
+        if @especie.species_or_lower?
+          if proveedor = @especie.proveedor
+            geodatos = proveedor.geodatos
+            @especie[:geodata] = geodatos if geodatos[:cuales].any?
+          end
+        end
+
+        @especie[:nombre_comun_principal] = nil
+        @especie[:foto_principal] = nil
+        @especie[:nombres_comunes] = nil
+
+        if a = @especie.adicional
+          @especie[:nombre_comun_principal] = a.nombre_comun_principal
+          @especie[:foto_principal] = a.foto_principal
+          @especie[:nombres_comunes] = a.nombres_comunes
+        end
+
+        @especie[:categoria_taxonomica] = @especie.categoria_taxonomica
+        @especie[:tipo_distribucion] = @especie.tipos_distribuciones
+        @especie[:estado_conservacion] = @especie.estados_conservacion
+        @especie[:bibliografia] = @especie.bibliografias
         @especie[:fotos] = @especie.photos
+
         render json: @especie.to_json
       end
       format.kml do
