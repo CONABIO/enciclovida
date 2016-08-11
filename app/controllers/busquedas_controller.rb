@@ -93,6 +93,8 @@ class BusquedasController < ApplicationController
         end
       end
 
+      response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
+
       respond_to do |format|
 
         if @taxones.any? && arbol
@@ -234,6 +236,8 @@ class BusquedasController < ApplicationController
           end
         end
       end
+
+      response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
 
       respond_to do |format|
         # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
