@@ -114,15 +114,21 @@ class EspeciesController < ApplicationController
                         [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
                       end
 
+        if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
+          # Especifico una descripcion y esta dentro de los permitidos
+          d = TaxonDescribers.get_describer(params[:from])
+          @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
 
-        @describers.each do |d|
-          @describer = d
-          @description = begin
-            d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-          rescue OpenURI::HTTPError, Timeout::Error => e
-            nil
+        else  # No especifico una descripcion y mandara a llamar el que encuentre
+          @describers.each do |d|
+            @describer = d
+            @description = begin
+              d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
+            rescue OpenURI::HTTPError, Timeout::Error => e
+              nil
+            end
+            break unless @description.blank?
           end
-          break unless @description.blank?
         end
 
         ruta = Rails.root.join('public', 'pdfs').to_s
@@ -139,9 +145,6 @@ class EspeciesController < ApplicationController
                #:user_style_sheet => 'http://colibri.conabio.gob.mx:4000/assets/application.css'
                #:print_media_type => false,
                #:disable_internal_links => false,
-               #
-
-
       end
     end
   end
