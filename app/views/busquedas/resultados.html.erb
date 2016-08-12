@@ -127,7 +127,7 @@
     <div class="alert alert-warning" role="alert"><%= notice %></div>
 <% end %>
 
-<% if @paginacion.present? && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
+<% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
     <p class="text-right">
       <%= checklist(@paginacion).html_safe %>
     </p>
@@ -194,16 +194,16 @@
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active">
-      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @paginacion[:rango_resultados].split('de ').last if @paginacion.present? %>)</a>
+      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @totales if @totales.present? %>)</a>
     </li>
 
     <% if @por_categoria.present? && @por_categoria.length > 0 %>
         <% @por_categoria.each do |categoria| %>
             <li>
-              <a href="#<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"
-                 data-toggle="tab" id="<%= "nivel_#{categoria.nombre_categoria_taxonomica.parameterize}" %>" url="<%= request.url %>"
-                 id_div="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>">
-                <%= "#{categoria.nombre_categoria_taxonomica} (#{categoria.cuantos})" %>
+              <a href="#<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"
+                 data-toggle="tab" id="<%= "nivel_#{categoria[:nombre_categoria_taxonomica].parameterize}" %>" url="<%= request.url %>"
+                 id_div="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>">
+                <%= "#{categoria[:nombre_categoria_taxonomica]} (#{categoria[:cuantos]})" %>
               </a>
             </li>
         <% end %>
@@ -216,7 +216,7 @@
 
   <% if @por_categoria.present? && @por_categoria.length > 0 %>
       <% @por_categoria.each do |categoria| %>
-          <div class="tab-pane panel-body" id="<%= I18n.transliterate(categoria.nombre_categoria_taxonomica).downcase.gsub(' ','_') %>"></div>
+          <div class="tab-pane panel-body" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
       <% end %>
   <% end %>
 

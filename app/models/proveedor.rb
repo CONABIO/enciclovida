@@ -292,7 +292,7 @@ class Proveedor < ActiveRecord::Base
     if naturalista_obs.present?
       naturalista_path = Rails.root.join('public', 'kmz', especie_id.to_s, 'observaciones.kmz')
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_url_descarga] = "/#{especie_id}/observaciones.kmz" if File.exist?(naturalista_path)
+      geodatos[:naturalista_url_descarga] = "#{CONFIG.site_url}kmz/#{especie_id}/observaciones.kmz" if File.exist?(naturalista_path)
     end
 
     geodatos

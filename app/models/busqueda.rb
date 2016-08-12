@@ -18,7 +18,7 @@ class Busqueda
       ['superior a', '<']
   ]
 
-  def self.por_categoria(busqueda, distinct = false)
+  def self.por_categoria(busqueda, original_url)
     # Las condiciones y el join son los mismos pero cambia el select
     sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
     sql << '.categoria_taxonomica_join.adicional_join'
@@ -29,20 +29,104 @@ class Busqueda
 
     query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
-    Especie.find_by_sql(query_limpio)
+    Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
+                                               cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
   end
 
-  # Hace el conteo de los resultados por categoria en la busqueda basica
-  def self.por_categoria_basica(sql)
-    sql_dividido = sql.split('.')
-    sql_dividido[1] = "select('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) AS nivel,
-nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos').especies_join.categoria_taxonomica_join.adicional_join"
-    sql_dividido << "group('CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4), nombre_categoria_taxonomica')"
-    sql_dividido << "order('nivel')"
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.por_categoria_busqueda_basica(nombre, opts={})
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
 
-    sql = sql_dividido.join('.')
-    query_limpio = Bases.distinct_limpio(eval(sql).to_sql)
-    query_limpio << ' ORDER BY nivel ASC'
+    campos.each do |c|
+      subquery = "SELECT nombre_categoria_taxonomica AS nom,especies.id AS esp
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+
+      if opts[:vista_general]
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    query = 'SELECT nom AS nombre_categoria_taxonomica, count(esp) AS cuantos FROM (' + union.join(' UNION ') + ') especies GROUP BY nom ORDER BY nom ASC'
+
+    Especie.find_by_sql(query).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
+                                        cuantos: t.cuantos, url: "#{opts[:original_url]}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.basica(nombre, opts={})
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
+ ( '
+
+    from = ") especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+
+    campos.each do |c|
+      subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
+ adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+ categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos
+ FROM especies
+ LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+ LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+ LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+ LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+
+      if opts[:vista_general]
+        subquery << ' AND estatus=2'
+      end
+
+      if opts[:solo_categoria].present?
+        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
+      end
+
+      union << subquery
+    end
+
+    query = select + union.join(' UNION ') + from
+    Especie.find_by_sql(query)
+  end
+
+  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
+  def self.count_basica(nombre, opts={})
+    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
+    union = []
+
+    campos.each do |c|
+      subquery = " SELECT especies.id AS esp
+FROM especies
+LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
+LEFT JOIN adicionales ON adicionales.especie_id=especies.id
+LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
+LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
+WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+
+      if opts[:vista_general]
+        subquery << ' AND estatus=2'
+      end
+
+      union << subquery
+    end
+
+    query = 'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
+    res = Especie.find_by_sql(query)
+    res[0].totales
   end
 
   def self.por_arbol(busqueda, sin_filtros=false)

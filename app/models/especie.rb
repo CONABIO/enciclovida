@@ -30,6 +30,8 @@ class Especie < ActiveRecord::Base
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
+  has_many :bibliografias, :through => :especies_bibliografias
+  has_many :regiones, :through => :nombres_regiones
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
   has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
@@ -74,10 +76,10 @@ class Especie < ActiveRecord::Base
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
-        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales, iconos.taxon_icono, iconos.icono, iconos.nombre_icono,
-        iconos.color_icono, categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+        adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join.icono_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   # Datos sacar los IDs unicos de especies
   scope :datos_count, -> { select('count(DISTINCT especies.id) AS totales').categoria_taxonomica_join.adicional_join.icono_join }
   #Select para el Checklist (por_arbol)
@@ -486,93 +488,4 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.count_busqueda_basica(nombre, opts={})
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
-
-    campos.each do |c|
-      subquery = " SELECT especies.id AS esp
-FROM especies
-LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
-LEFT JOIN adicionales ON adicionales.especie_id=especies.id
-LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
-LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
-WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
-
-      if opts[:vista_general]
-        subquery << ' AND estatus=2'
-      end
-
-      union << subquery
-    end
-
-    'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
-  end
-
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.busqueda_basica(nombre, opts={})
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
-
-    select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
- adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
-categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
- ( '
-
-    from = ") especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
-
-    campos.each do |c|
-      subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
- adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
- categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos
- FROM especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
-
-      if opts[:vista_general]
-        subquery << ' AND estatus=2'
-      end
-
-      if opts[:solo_categoria].present?
-        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
-      end
-
-      union << subquery
-    end
-
-    select + union.join(' UNION ') + from
-  end
-
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.por_categoria_busqueda_basica(nombre, vista_general=false)
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
-
-    campos.each do |c|
-      subquery = "SELECT nombre_categoria_taxonomica AS nom,especies.id AS esp
- FROM especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- WHERE CONTAINS(#{c}, '\"#{nombre}*\"')"
-
-      if vista_general
-        subquery << ' AND estatus=2'
-      end
-
-      union << subquery
-    end
-
-    'SELECT nom AS nombre_categoria_taxonomica, count(esp) AS cuantos FROM (' + union.join(' UNION ') + ') especies GROUP BY nom ORDER BY nom ASC'
-  end
 end

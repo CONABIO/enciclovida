@@ -54,5 +54,8 @@ module Buscador
 
     # Google analytics
     config.middleware.use Rack::GoogleAnalytics, :tracker => CONFIG.google_analytics.tracker_id, :domain => CONFIG.google_analytics.domain_name
+
+    # Para que no escape caracteres inecesarios como "&"
+    config.active_support.escape_html_entities_in_json = false
   end
 end

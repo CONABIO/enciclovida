@@ -248,8 +248,8 @@ es:
     actual: Actual
     cuasiendemica: Cuasiendémica
     endemica: Endémica
-    introducida: Introducida
-    invasora: Invasora
+    exotica: Exótica
+    exotica-invasora: Exótica-Invasora
     localidad_tipo: Localidad tipo
     nativa: Nativa
     no-endemica: No endémica
@@ -506,12 +506,12 @@ es:
       nombre: Cuasiendémica
     semiendemica:
       nombre: Semindémica
-    introducida:
-      icono: introducida.png
-      nombre: Introducida
-    invasora:
-      icono: invasora.png
-      nombre: Invasora
+    exotica:
+      icono: exotica.png
+      nombre: Exótica
+    exotica-invasora:
+      icono: exotica-invasora.png
+      nombre: Exótica-Invasora
 
   valido_correcto: activos
   view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas con %{taxon} en <nobr>Banco de Imag&eacute;nes &raquo;</nobr>
