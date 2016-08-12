@@ -197,7 +197,7 @@ ul.social-buttons li a:active {
 }
 
 #panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
-.panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .introducida-ev-icon:after {color: #797979 !important;}
+.panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .exotica-ev-icon:after, .panel-disabled .exotica-invasora-ev-icon:after {color: #797979 !important;}
 
 /* NOM-059*/
 .sujeta-a-proteccion-especial-pr-ev-icon {color: #f6b134;}
@@ -226,11 +226,13 @@ ul.social-buttons li a:active {
 /* Termina cites */
 
 /* tipo distribucion */
-.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .introducida-ev-icon:before{color: #f7b234;}
-.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .introducida-ev-icon:after {color: #595926; margin-left: -1.2em;}
+.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}
+.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after {color: #595926; margin-left: -1.2em;}
+.exotica-invasora-ev-icon:after {color: #592626; margin-left: -1.2em;}
 .endemica-ev-icon:after { content: '\e832'; }
 .nativa-ev-icon:after { content: '\e834'; }
-.introducida-ev-icon:after { content: '\e836'; }
+.exotica-invasora-ev-icon:before { content: '\e835'; }
+.exotica-ev-icon:after, .exotica-invasora-ev-icon:after{ content: '\e836'; }
 /* Termina tipo distribucion */
 
 /* prioritarias */
@@ -254,7 +256,7 @@ ul.social-buttons li a:active {
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
 
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .introducida-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
