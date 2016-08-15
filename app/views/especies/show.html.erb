@@ -69,7 +69,11 @@
         }).one('click',function(){
             if (!Boolean($(this).hasClass('noLoad'))){
                 idPestaña = this.getAttribute('href');
-                pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
+
+                //if (idPestaña == '#comentarios')
+                //    pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','')+'_taxon';
+                //else
+                    pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
                 $(idPestaña).load(pestaña);
             }
         });
@@ -168,12 +172,6 @@
     <div class="leaf bg-success text-success" id="conSugerencia">
       <p>¿Algún <%= link_to('comentario <span class="glyphicon glyphicon-send" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id)) %> acerca de este taxón? </p>
     </div>
-    <% if @con_naturalista %>
-        <div class="leaf bg-warning text-primary text-center" id="conNaturalista">
-          <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>
-          <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(("<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-link') %></p>
-        </div>
-    <% end %>
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -194,25 +192,36 @@
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
+    <li id="comentarios_taxon_li"><a href="#comentarios_taxon"><i class="glyphicon glyphicon-envelope"></i><strong>  Comentarios / <i class="glyphicon glyphicon-flag"></i> Advertencias</strong></a></li>
+
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% else %>
-          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
+          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
       <% end %>
     </li>
 
     <li class="pull-right">
-      <%= button_tag(("Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default btn-title', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )", :title=>"Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)") %>
+      <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-sm btn-default btn-title',
+                     onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
+                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
     </li>
 
-
+    <% if @con_naturalista %>
+        <li class="pull-right">
+          <%= button_tag('Contribuye con NaturaLista', type: :button, class: 'noLoad btn btn-sm btn-default btn-title',
+                         onClick: "window.open('http://www.naturalista.mx/observations/new?taxon_id=#{@con_naturalista}',
+                     '_blank', 'status=no', 'menubar=no')", title: 'Sube tus observaciones a NaturaLista') %>
+        </li>
+    <% end %>
   </ul>
+
   <% if I18n.locale.to_s != 'es-cientifico' %>
       <script type="application/javascript">
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
+          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
+          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
       </script>
   <% end %>
 
@@ -234,6 +243,7 @@
     </p>
   </div>
 
-  <div id="arbol" class="tab-pane panel-body">
-  </div>
+  <div id="arbol" class="tab-pane panel-body"></div>
+
+  <div id="comentarios_taxon" class="tab-pane panel-body"></div>
 </div>

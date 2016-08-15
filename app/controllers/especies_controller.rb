@@ -2,10 +2,10 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios_taxon]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista]
+                                     :descripcion_catalogos, :naturalista, :comentarios_taxon]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +17,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios_taxon]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -399,7 +399,7 @@ class EspeciesController < ApplicationController
   def descripcion_catalogos
   end
 
-  # Devuelve las observaciones denaturalista para hacer el parsen en geojson
+  # Devuelve las observaciones de naturalista para hacer el parsen en geojson
   def naturalista
     if p = @especie.proveedor
       if p.naturalista_obs.present?
@@ -415,6 +415,11 @@ class EspeciesController < ApplicationController
     else
       render json: []
     end
+  end
+
+  # Muestra los comentarios relacionados a la especie
+  def comentarios_taxon
+    @comentarios = @especie.comentarios
   end
 
   private
