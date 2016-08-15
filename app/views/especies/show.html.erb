@@ -27,19 +27,6 @@
         return false;
     };
 
-    getDescription = function(url){
-        $.ajax({
-            url: url,
-            method: 'get',
-            success: function(data, status) {
-                $('.taxon_description').replaceWith(data);
-            },
-            error: function(request, status, error) {
-                $('.taxon_description').loadingShades('close');
-            }
-        })
-    };
-
     despliegaOcontrae = function(id)
     {
         var sufijo = id.substring(5);
@@ -212,7 +199,7 @@
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
           <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% else %>
-          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('#{especie_path(@especie)}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
       <% end %>
     </li>
 
