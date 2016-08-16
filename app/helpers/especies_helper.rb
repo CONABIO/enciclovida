@@ -17,7 +17,7 @@ module EspeciesHelper
              end
 
     if I18n.locale.to_s == 'es-cientifico'
-      if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
+      if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
@@ -45,7 +45,7 @@ module EspeciesHelper
 
     else   #vista general
 
-      if taxon.species_or_lower?(taxon.try(:nombre_categoria_taxonomica), true)   # Las especies llevan otro tipo de formato en nombre
+      if taxon.species_or_lower?  # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           nombre.present? ? "#{nombre} (#{taxon.nombre_cientifico})".html_safe : taxon.nombre_cientifico
         elsif params[:link]

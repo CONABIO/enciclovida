@@ -132,6 +132,7 @@ Buscador::Application.routes.draw do
   match 'flickr/photos.:format' => 'flickr#photos', :via => :get
   match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
+  get '/especies/:id/comentarios_taxon' => 'especies#comentarios_taxon'
 
   resources :photos, :only => [:show, :update, :destroy] do
     member do

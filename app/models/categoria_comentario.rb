@@ -4,20 +4,24 @@ class CategoriaComentario < ActiveRecord::Base
   has_ancestry
 
   def self.grouped_options
-    options = []
+    # Aplicando un low level caching, esta consulta es requerida simpre y casi nunca cambia
+    Rails.cache.fetch('categorias_comentario_grouped_options', expires_in: 12.hours) do
 
-    CategoriaComentario.all.each do |cc|
-      next unless cc.is_root?
-      grouped_options = []
+      options = []
 
-      descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
-      grouped_options << cc.nombre
-      grouped_options << descendientes if descendientes.any?
+      CategoriaComentario.all.each do |cc|
+        next unless cc.is_root?
+        grouped_options = []
 
-      options << grouped_options
+        descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
+        grouped_options << cc.nombre
+        grouped_options << descendientes if descendientes.any?
+
+        options << grouped_options
+      end
+
+      options
     end
-
-    options
   end
 
   def categoria_ancestro

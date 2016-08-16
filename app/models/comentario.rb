@@ -26,17 +26,22 @@ class Comentario < ActiveRecord::Base
   attr_reader :es_respuesta
   attr_writer :es_respuesta
 
-  # Para tener la referencia al nombre de la especie
-  attr_reader :nombre_cientifico
-  attr_writer :nombre_cientifico
-
-  # Para tener la referencia al nombre comun de la especie
-  attr_reader :nombre_comun
-  attr_writer :nombre_comun
-
   validates_presence_of :categoria_comentario_id
   before_save :id_a_base_32
 
+  scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
+  scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
+  scope :join_usuarios,-> { joins('LEFT JOIN usuarios u ON u.id=comentarios.usuario_id') }
+  scope :join_usuarios2,-> { joins('LEFT JOIN usuarios u2 ON u2.id=comentarios.usuario_id2') }
+  scope :select_basico,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
+comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
+comentarios.estatus, fecha_estatus, categoria_comentario_id, comentarios.institucion AS c_institucion,
+CONCAT(u.grado_academico,' ', u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
+u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
+CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
+  scope :datos_basicos,-> { select_basico.join_usuarios.join_usuarios2.join_especies.join_adicionales }
+
+  POR_PAGINA_PREDETERMINADO = 10
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
@@ -54,19 +59,23 @@ class Comentario < ActiveRecord::Base
     self.id = id_incremento_base_32
   end
 
-  def completa_nombre_correo_especie
-    if u = usuario
-      self.nombre = "#{u.nombre} #{u.apellido}"
-      self.correo = u.email
-    end
-
-    if t = especie
-      self.nombre_cientifico = t.nombre_cientifico
-
-      if a = t.adicional
-        self.nombre_comun = a.nombre_comun_principal
+  def completa_nombre_correo
+    if usuario_id.present?
+      begin
+        self.nombre = u_nombre
+        self.correo = u_email
+        self.institucion = u_institucion
+      rescue  # Para las consultas que no viene con estos campos incluidos en el join
+        u = usuario
+        self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
+        self.correo = u.email
+        self.institucion = u.institucion
+      end
+    else
+      begin
+        self.nombre = self.c_nombre
+        self.institucion = c_institucion
       end
     end
-
   end
 end

@@ -202,28 +202,56 @@ $(document).ready(function(){
 
     $(document).on('change', "[id^='filtro_']", function()
     {
-        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
+        $.ajax({
+            url: "/comentarios/administracion",
+            method: 'GET',
+            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+
+        }).done(function(html, textStatus, XMLHttpRequest) {
+            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
+            $('#mas_comentarios').empty().append(html);
+        });
     });
 
-    $(document).on('click', "#filtro_created_at", function()
+    $(document).on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()
     {
-        if ($('#filtro_created_at > i').hasClass("glyphicon-sort"))
+        if ($(this).attr("id") == "filtro_created_at")
         {
-            $('#filtro_created_at > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
-            $('#comentario_created_at').val('ASC');
+            var filtro = "#filtro_created_at";
+            var obj = "#comentario_created_at";
+        } else if ($(this).attr("id") == "filtro_nombre_cientifico") {
+            var filtro = "#filtro_nombre_cientifico";
+            var obj = "#comentario_nombre_cientifico";
+        } else
+            return false;
 
-        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-up"))
+        if ($(filtro + ' > i').hasClass("glyphicon-sort"))
         {
-            $('#filtro_created_at > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-            $('#comentario_created_at').val('DESC');
+            $(filtro + ' > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
+            $(obj).val('ASC');
 
-        } else if ($('#filtro_created_at > i').hasClass("glyphicon-chevron-down"))
+        } else if ($(filtro + ' > i').hasClass("glyphicon-chevron-up"))
         {
-            $('#filtro_created_at > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-            $('#comentario_created_at').val('ASC');
+            $(filtro + ' > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+            $(obj).val('DESC');
+
+        } else if ($(filtro + ' > i').hasClass("glyphicon-chevron-down"))
+        {
+            $(filtro + ' > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+            $(obj).val('ASC');
         }
 
-        window.location = $('#filtro_form').attr('action') + "?" + $('#filtro_form').serialize();
+        $.ajax({
+            url: "/comentarios/administracion",
+            method: 'GET',
+            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+
+        }).done(function(html, XMLHttpRequest) {
+            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
+            $('#mas_comentarios').empty().append(html);
+        });
+
+        return false;
     });
 
     $('[data-toggle="popover"]').popover();

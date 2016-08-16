@@ -92,7 +92,7 @@ class ComentariosController < ApplicationController
       if cuantos > 0
         resp = @comentario_resp.descendants.map{ |c|
 
-          c.completa_nombre_correo_especie
+          c.completa_nombre_correo
           { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: c.nombre, correo: c.correo, created_at: c.created_at, estatus: c.estatus }
         }
 
@@ -180,7 +180,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver #if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver# if Rails.env.production?
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -220,44 +220,73 @@ class ComentariosController < ApplicationController
     end
   end
 
-  # Administracion de los comentarios
+  # Administracion de los comentarios GET /comentarios/administracion
   def admin
+    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
+    offset = (@pagina-1)*@por_pagina
+
     if params[:comentario].present?
       params = comentario_params
-      consulta = 'Comentario'
+      consulta = 'Comentario.datos_basicos'
 
       if params[:categoria_comentario_id].present?
         consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
       end
 
       if params[:estatus].present?
-        consulta << ".where(estatus: #{params[:estatus].to_i})"
+        consulta << ".where('comentarios.estatus=#{params[:estatus].to_i}')"
       end
+
+      consulta << ".where('comentarios.estatus < 5')"
+
+      # Comentarios totales
+      @totales = eval(consulta).count
+
+      sql = eval(consulta).to_sql
 
       # Para ordenar por created_at
       if params[:created_at].present?
-        @comentarios = eval(consulta).where('estatus < 5').order("created_at #{params[:created_at]}")
+        sql = sql + " ORDER BY created_at #{params[:created_at]}"
+      elsif params[:nombre_cientifico].present?
+        sql = sql + " ORDER BY nombre_cientifico #{params[:nombre_cientifico]}"
       else
-        @comentarios = eval(consulta).where('estatus < 5').order('estatus ASC, created_at ASC')
+        sql = sql + ' ORDER BY comentarios.estatus ASC, created_at ASC'
       end
 
+      sql+= " OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+
     else
-      # estatus =5 quiere decir oculto a la vista
-      @comentarios = Comentario.where('estatus < 5').order('estatus ASC, created_at ASC')
+      # Comentarios totales
+      @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
+
+      # estatus = 5 quiere decir oculto a la vista
+      sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
+
+    @comentarios = Comentario.find_by_sql(sql)
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_nombre_correo_especie
+      c.completa_nombre_correo
     end
+
+    @categoria_comentario = CategoriaComentario.grouped_options
+
+    response.headers['x-total-entries'] = @totales.to_s
+
+    if (@pagina > 1 && @comentarios.any?) || (params.present? && params[:ajax].present? && params[:ajax] == '1')
+    # Tiene resultados el scrollling o peticiones de ajax
+      render :partial => 'comentarios/admin'
+    elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
+      render text: ''
+    end
+
   end
 
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
-
-
-
-
   def extrae_comentarios_generales
     #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
     #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
@@ -360,7 +389,8 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :created_at)
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
+                                       :ajax, :nombre_cientifico, :created_at)
   end
 
   def dame_correos

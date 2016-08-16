@@ -37,6 +37,7 @@ class Especie < ActiveRecord::Base
   has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
   has_many :metadatos_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'especie_id'
   has_many :metadatos, :through => :metadatos_especies#, :source => :metadato
+  has_many :comentarios, :order => 'created_at DESC', :class_name => 'Comentario', :dependent => :destroy
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
@@ -177,12 +178,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  def species_or_lower?(cat=nil, con_genero=false)
-    if con_genero
-      SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica) || BAJO_GENERO.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
-    else
-      SPECIES_OR_LOWER.include?(cat || categoria_taxonomica.nombre_categoria_taxonomica)
-    end
+  def species_or_lower?
+    SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
   #
