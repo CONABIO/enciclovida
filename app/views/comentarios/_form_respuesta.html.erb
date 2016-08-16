@@ -11,13 +11,13 @@
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion %>
 
+    <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
     <%= f.hidden_field :es_admin, value: @comentario.es_admin ? '1' : '0' %>
     <%= f.hidden_field :es_respuesta, value: @comentario.es_respuesta ? '1' : '0' %>
 
     <%= f.hidden_field :institucion, value: @comentario.institucion %>
     <%= f.hidden_field :estatus, value: @comentario.estatus %>
-    <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
     <%= f.hidden_field :categoria_comentario_id, value: @comentario.categoria_comentario_id %>
 
     <% if @comentario.usuario_id.present? %>
@@ -43,7 +43,7 @@
             else {
 
                 var form = $(this).parent().parent();
-                var ancestry = $(this).parent().nextAll().slice(3,4);
+                var ancestry = $(this).parent().nextAll().slice(0,1);
                 label.removeClass('error_mensaje');
 
                 $.ajax({
@@ -56,6 +56,7 @@
 
                     if (resp.estatus == 1)
                     {
+                        // Si la respuesta viene de un usuario
                         if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
                             window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);
                         else {
