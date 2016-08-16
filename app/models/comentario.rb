@@ -52,10 +52,13 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   def id_a_base_32
     return true unless self.new_record?
 
-    c = Comentario.select('id').limit(1).order('created_at DESC').first
-    id_base_10 = c.id.to_i(32)
-    id_incremento = id_base_10 + 1
-    self.id = id_incremento.to_s(32)
+    c = Comentario.select('idConsecutivo').limit(1).order('idConsecutivo DESC').first
+    #c= Comentario.count
+    #id_base_10 = c.id.to_i
+    id_incremento = c.idConsecutivo + 1
+    id_incremento_base_32 = id_incremento.to_s(32)
+    puts id_incremento_base_32
+    self.id = id_incremento_base_32
   end
 
   def completa_nombre_correo

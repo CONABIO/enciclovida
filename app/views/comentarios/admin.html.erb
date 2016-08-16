@@ -60,8 +60,16 @@
   <% end %>
 
   <tbody style="font-size: .85em;" id="mas_comentarios">
-
   <%= render :partial => 'comentarios/admin' %>
-
   </tbody>
 </table>
+<script type="application/javascript">
+  $(document).ready(function(){
+      $('.comentarios-correos').click(function(){
+          $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
+      }).one('click', function(){
+          id=$(this).children('div.correos')[0].getAttribute('id');
+          $('#'+id).load('/comentarios/correoId?id='+id);
+      });
+  });
+</script>
