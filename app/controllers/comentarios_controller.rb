@@ -86,7 +86,7 @@ class ComentariosController < ApplicationController
       if cuantos > 0
         resp = @comentario_resp.descendants.map{ |c|
 
-          c.completa_nombre_correo_especie
+          c.completa_nombre_correo
           { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: c.nombre, correo: c.correo, created_at: c.created_at, estatus: c.estatus }
         }
 
@@ -174,7 +174,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver #if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver# if Rails.env.production?
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}

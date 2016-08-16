@@ -58,12 +58,21 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
 
   def completa_nombre_correo
     if usuario_id.present?
-      self.nombre = u_nombre
-      self.correo = u_email
-      self.institucion = u_institucion
+      begin
+        self.nombre = u_nombre
+        self.correo = u_email
+        self.institucion = u_institucion
+      rescue  # Para las consultas que no viene con estos campos incluidos en el join
+        u = usuario
+        self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
+        self.correo = u.email
+        self.institucion = u.institucion
+      end
     else
-      self.nombre = self.c_nombre
-      self.institucion = c_institucion
+      begin
+        self.nombre = self.c_nombre
+        self.institucion = c_institucion
+      end
     end
   end
 end
