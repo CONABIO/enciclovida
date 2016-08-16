@@ -1,1 +1,23 @@
-<%= @comentarios.inspect %>
+<% if @comentarios.any? %>
+    <%- @comentarios.each do |comentario|
+      comentario.completa_nombre_correo
+    -%>
+        <p>
+          <%= comentario.comentario %> |
+          <%= comentario.nombre %> |
+          <%= comentario.created_at %> |
+
+          <%
+             respuestas = comentario.descendant_ids.length
+             if respuestas > 0
+          %>
+              <%= respuestas %> respuesta(s) <%= link_to('Ver más', nil, id: 'mas_comentarios') %>
+          <%  else %>
+              Aún no hay respuesta a este comentario
+          <% end %>
+        </p>
+    <% end %>
+
+<% else %>
+    Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, ¿deseas añadir un comentario, sugerencia o corrección?
+<% end %>
