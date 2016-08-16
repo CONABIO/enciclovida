@@ -345,7 +345,7 @@ class ComentariosController < ApplicationController
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
     comment.categoria_comentario_id = 29
-    #comment.created_at = correo.header[:date].value.to_time #FALLA por q la asignación de id es por fecha y no por autoincremental ¬¬ CORREGIR ESO#
+    comment.created_at = correo.header[:date].value.to_time #FALLA por q la asignación de id es por fecha y no por autoincremental ¬¬ CORREGIR ESO#
     if comment.save
       correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
       puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
