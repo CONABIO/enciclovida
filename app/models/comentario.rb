@@ -1,5 +1,6 @@
 class Comentario < ActiveRecord::Base
   self.table_name = :comentarios
+  self.primary_key = 'id'
 
   belongs_to :especie
   belongs_to :usuario
@@ -42,6 +43,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   scope :datos_basicos,-> { select_basico.join_usuarios.join_usuarios2.join_especies.join_adicionales }
 
   POR_PAGINA_PREDETERMINADO = 10
+  RESUELTOS = [3,4]
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]

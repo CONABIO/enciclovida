@@ -28,6 +28,10 @@ class EnviaCorreo < Devise::Mailer
     comentario_root.completa_nombre_correo
     @created_at = comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
 
-    mail(:to => comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario')
+    mail(:to => comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if Rails.env.production?
+  end
+
+  def comentario_resuelto(comentario)
+
   end
 end

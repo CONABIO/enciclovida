@@ -174,7 +174,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver# if Rails.env.production?
+          EnviaCorreo.respuesta_comentario(@comentario).deliver
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -196,6 +196,10 @@ class ComentariosController < ApplicationController
     @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
     if @comentario.save
+      #if Comentario::RESUELTOS.include?(@comentario.estatus)
+
+      #end
+
       render json: {estatus: 1}.to_json
     else
       render json: {estatus: 0}.to_json
@@ -205,7 +209,7 @@ class ComentariosController < ApplicationController
   # DELETE /comentarios/1
   # DELETE /comentarios/1.json
   def destroy
-    @comentario.resuelto = 3
+    @comentario.estatus = 5
 
     if @comentario.save
       render text: '1'
