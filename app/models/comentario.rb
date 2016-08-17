@@ -28,7 +28,7 @@ class Comentario < ActiveRecord::Base
   attr_writer :es_respuesta
 
   validates_presence_of :categoria_comentario_id
-  before_save :id_a_base_32
+  after_create :idABase32
 
   scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
   scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
@@ -49,16 +49,11 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
   end
 
-  def id_a_base_32
-    return true unless self.new_record?
-
-    c = Comentario.select('idConsecutivo').limit(1).order('idConsecutivo DESC').first
-    #c= Comentario.count
-    #id_base_10 = c.id.to_i
-    id_incremento = c.idConsecutivo + 1
-    id_incremento_base_32 = id_incremento.to_s(32)
-    puts id_incremento_base_32
-    self.id = id_incremento_base_32
+  def idABase32
+    Comentario.transaction do
+      idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
+      update_column(:id, idBase32)
+    end
   end
 
   def completa_nombre_correo
