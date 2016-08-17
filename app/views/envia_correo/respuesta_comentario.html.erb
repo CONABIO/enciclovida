@@ -8,10 +8,12 @@
 <p>
   El personal de CONABIO ha respondido a tu último comentario acerca de:
   <br />
-  <% if @nombre_comun.present? %>
-      <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
-  <% else %>
-      <strong><%= @nombre_cientifico %></strong>
+  <% if @nombre_cientifico.present? && @nombre_comun.present? %>
+      <% if @nombre_comun.present? %>
+          <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
+      <% else %>
+          <strong><%= @nombre_cientifico %></strong>
+      <% end %>
   <% end %>
 </p>
 
@@ -19,8 +21,13 @@
   <%= truncate @comentario.comentario, length: 20 %>
 </p>
 
-<p>Para poder responder y darle un seguimiento a tu comentario da clic
-  <%= link_to 'aquí', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.root_id}/show_respuesta?created_at=#{@created_at}" %>.
+<p>
+  <% if con_taxon %>
+      Para poder responder y darle un seguimiento a tu comentario da clic
+      <%= link_to 'aquí', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.root_id}/show_respuesta?created_at=#{@created_at}" %>.
+  <% else %>
+      Para más información consultar <%= link_to(CONFIG.site_url.to_s, CONFIG.site_url.to_s) %>.
+  <% end %>
 </p>
 </body>
 </html>

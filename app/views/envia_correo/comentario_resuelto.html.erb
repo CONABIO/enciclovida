@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Gracias por utilizar el servicio de comentarios de EncicloVida</h1>
+<p>
+  El personal de CONABIO ha dado por resuelto tu comentario acerca de:
+  <br />
+  <% con_taxon = @nombre_cientifico.present? %>
+  <% if con_taxon %>
+      <% if @nombre_comun.present? %>
+          <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
+      <% else %>
+          <strong><%= @nombre_cientifico %></strong>
+      <% end %>
+  <% end %>
+</p>
+
+<p>
+  <%= @comentario.comentario %>
+</p>
+
+<p>
+  <% if con_taxon %>
+    Para más información o comentarios adicionales
+    <%= link_to 'consultar en EncicloVida', "#{CONFIG.site_url}especies/#{@comentario.especie_id}" %>.
+  <% else %>
+    Para más información consultar <%= link_to(CONFIG.site_url.to_s, CONFIG.site_url.to_s) %>.
+  <% end %>
+</p>
+</body>
+</html>

@@ -13,6 +13,24 @@ class EnviaCorreo < Devise::Mailer
   end
 
   def respuesta_comentario(comentario)
+    completa_datos_comentario(comentario)
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if Rails.env.production?
+  end
+
+  def comentario_resuelto(comentario)
+    completa_datos_comentario(comentario)
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') if Rails.env.production?
+  end
+
+  def confirmacion_comentario(comentario)
+    completa_datos_comentario(comentario)
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if Rails.env.production?
+  end
+
+
+  private
+
+  def completa_datos_comentario(comentario)
     @comentario = comentario
     @comentario.completa_nombre_correo
 
@@ -24,14 +42,8 @@ class EnviaCorreo < Devise::Mailer
       end
     end
 
-    comentario_root = @comentario.root
-    comentario_root.completa_nombre_correo
-    @created_at = comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
-
-    mail(:to => comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if Rails.env.production?
-  end
-
-  def comentario_resuelto(comentario)
-
+    @comentario_root = @comentario.root
+    @comentario_root.completa_nombre_correo
+    @created_at = @comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
   end
 end
