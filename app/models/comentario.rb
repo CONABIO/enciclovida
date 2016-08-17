@@ -50,8 +50,10 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   end
 
   def idABase32
-    idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
-    update_column(:id, idBase32)
+    Comentario.transaction do
+      idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
+      update_column(:id, idBase32)
+    end
   end
 
   def completa_nombre_correo
