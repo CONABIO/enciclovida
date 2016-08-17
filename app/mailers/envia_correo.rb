@@ -32,6 +32,21 @@ class EnviaCorreo < Devise::Mailer
   end
 
   def comentario_resuelto(comentario)
+    @comentario = comentario
+    @comentario.completa_nombre_correo
 
+    if t = @comentario.especie
+      @nombre_cientifico = t.nombre_cientifico
+
+      if a = t.adicional
+        @nombre_comun = a.nombre_comun_principal
+      end
+    end
+
+    comentario_root = @comentario.root
+    comentario_root.completa_nombre_correo
+    @created_at = comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
+
+    mail(:to => comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto')# if Rails.env.production?
   end
 end

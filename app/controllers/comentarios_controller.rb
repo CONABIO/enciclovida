@@ -202,9 +202,9 @@ class ComentariosController < ApplicationController
     @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
     if @comentario.save
-      #if Comentario::RESUELTOS.include?(@comentario.estatus)
-
-      #end
+      if Comentario::RESUELTOS.include?(@comentario.estatus)
+        EnviaCorreo.comentario_resuelto(@comentario).deliver
+      end
 
       render json: {estatus: 1}.to_json
     else
