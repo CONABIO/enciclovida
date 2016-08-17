@@ -157,7 +157,7 @@ class ComentariosController < ApplicationController
 
     respond_to do |format|
       if params[:con_verificacion].present? && params[:con_verificacion] == '1'
-        if verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save
+        if (verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save) || (!Rails.env.production? && @comentario.save)
 
           if params[:es_respuesta].present? && params[:es_respuesta] == '1'
             comentario_root = @comentario.root

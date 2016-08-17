@@ -48,5 +48,5 @@
     </div>
 
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
-    <%= recaptcha_tags(:hl => 'es-419') %>
+    <%= recaptcha_tags(:hl => 'es-419') if Rails.env.production? %>
 <% end %>
