@@ -164,6 +164,7 @@ class ComentariosController < ApplicationController
             format.json {render json: {estatus: 1, comentario_id: comentario_root.id, especie_id: comentario_root.especie_id,
                                        created_at: comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')}.to_json}
           else
+            EnviaCorreo.confirmacion_comentario(@comentario).deliver
             format.html { redirect_to especie_path(especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
           end
 
@@ -201,7 +202,7 @@ class ComentariosController < ApplicationController
 
     @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
 
-    if @comentario.save
+    if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
         EnviaCorreo.comentario_resuelto(@comentario).deliver
       end
