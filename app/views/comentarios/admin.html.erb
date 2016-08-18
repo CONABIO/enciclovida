@@ -17,30 +17,10 @@
         $('#mas_comentarios').on('click', '.comentarios-correos', function() {
             $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
             id=$(this).children('div.correos')[0].getAttribute('id');
-            //Verificar si this.content tiene algo adentro, si es así, entonces no hagas load :D
-            $('#'+id).load('/comentarios/correoId?id='+id);
+            if ($('#'+id).html().trim().length==0) {
+                $('#' + id).load('/comentarios/correoId?id=' + id);
+            }
         });
-//        $('#mas_comentarios').on('click', '.comentarios-correos', function(event) {
-//
-//            console.log(this);
-//            $(this).off(event);
-//        });
-
-
-//        $('#mas_comentarios').one('click', '.comentarios-correos', function(){
-//            id=$(this).children('div.correos')[0].getAttribute('id');
-//            $('#'+id).load('/comentarios/correoId?id='+id);
-//        });
-
-
-
-//        $('.comentarios-correos').click(function(){
-//            $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
-//        }).one('click', function(){
-//            id=$(this).children('div.correos')[0].getAttribute('id');
-//            $('#'+id).load('/comentarios/correoId?id='+id);
-//        });
-
     });
 
 </script>
