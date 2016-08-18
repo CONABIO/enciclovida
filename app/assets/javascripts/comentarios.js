@@ -246,7 +246,7 @@ $(document).ready(function(){
             method: 'GET',
             data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
 
-        }).done(function(html, XMLHttpRequest) {
+        }).done(function(html, textStatus, XMLHttpRequest) {
             $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
             $('#mas_comentarios').empty().append(html);
         });
