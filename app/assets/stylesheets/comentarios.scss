@@ -6,3 +6,22 @@
   color: red;
   font-style: italic;
 }
+.comentarios th{
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+.comentarios button.btn, .comentarios a.btn{
+  padding: 3px 0px;
+}
+
+.comentarios thead tr:first-child button.btn{
+  float: right;
+  margin-top: -28px;
+  margin-right: -10px;
+}
+.comentarios thead tr:first-child select.form-control{
+  width: 93% !important;
+}
+.comentarios thead tr:first-child{
+  float: left;
+}
