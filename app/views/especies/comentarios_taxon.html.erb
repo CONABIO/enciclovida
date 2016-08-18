@@ -20,4 +20,5 @@
 
 <% else %>
     Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, ¿deseas añadir un comentario, sugerencia o corrección?
+    <%= link_to('Añadir', new_especie_comentario_path(@especie)) %>
 <% end %>

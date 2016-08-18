@@ -28,7 +28,19 @@ class Comentario < ActiveRecord::Base
   attr_writer :es_respuesta
 
   validates_presence_of :categoria_comentario_id
+  validates_presence_of :nombre if :usuario_id.blank?
+
+  before_save :valida_nombre
   after_create :idABase32
+
+  email_name_regex  = '[\w\.%\+\-]+'.freeze
+  domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
+  domain_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
+  email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
+  bad_email_message = "no tiene la estructura apropiada.".freeze
+
+  validates_format_of :correo, :with => email_regex, :message => bad_email_message
+  validates_length_of :correo, :within => 6..100
 
   scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
   scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
@@ -47,6 +59,12 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
+  end
+
+  def valida_nombre
+    return false if nombre.blank? && usuario_id.blank?
+
+    true
   end
 
   def idABase32

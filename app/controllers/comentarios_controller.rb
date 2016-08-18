@@ -139,6 +139,14 @@ class ComentariosController < ApplicationController
   # GET /comentarios/new
   def new
     @especie_id = params[:especie_id]
+
+    if @especie_id.present?
+      begin
+        @especie = Especie.find(@especie_id)
+      end
+
+    end
+
     @comentario = Comentario.new
     @comentario.con_verificacion = true
   end
@@ -150,8 +158,16 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
-    especie_id = params[:especie_id]
-    @comentario = Comentario.new(comentario_params.merge(especie_id: especie_id))
+    @especie_id = params[:especie_id]
+
+    if @especie_id.present?
+      begin
+        @especie = Especie.find(@especie_id)
+      end
+
+    end
+
+    @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
 
     params = comentario_params
 
@@ -165,7 +181,7 @@ class ComentariosController < ApplicationController
                                        created_at: comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')}.to_json}
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
-            format.html { redirect_to especie_path(especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
           end
 
         else
