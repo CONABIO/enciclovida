@@ -6,7 +6,7 @@ class ComentariosController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
-  before_action :only => [:extrae_comentarios_generales, :dame_correo, :mueve_correo] do
+  before_action :only => [:extrae_comentarios_generales, :dame_correo, :admin] do
   @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
     Mail.defaults do
       retriever_method :imap, { :address => CONFIG.smtp.address,
@@ -231,6 +231,8 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
+    procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
+
     if params[:comentario].present?
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
@@ -293,82 +295,26 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
-    #n=1
-    #response['m'].each do |v|
-      #print n.to_s
-      #RestClient.get("https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@xolo.conabio.gob.mx/home/enciclovida/?id=323")
-
-      #mueve_correo RestClient.get(@xolo_url, {:params => {'auth' => 'ba', 'id' => v['id']}}), "Resueltos"
-      #sleep(1.0/10.0)
-      #n=n+1
-    #end
-    #response = JSON.parse(RestClient.get @xolo_url+"Pendientes", {:params => {'auth' => 'ba', 'fmt' => 'json'}})
-    #render inline: response.to_s
-
-    # Mail.defaults do
-    #   retriever_method :imap, { :address             => CONFIG.smtp.address,
-    #                             #:port                => 993,
-    #                             :user_name           => CONFIG.smtp.user_name,
-    #                             :password            => CONFIG.smtp.password}
-    #                             #:enable_ssl          => true }
-    # end
-
-    #response = Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, keys: ["SUBJECT", "kasdaklsa"])[0].to_s
-    #NOTA, CAMBIAR PENDIENTES POR INBOS Y RESUELTOS POR PENDIENTES
-
-    #Mail.find(count: 1000, mailbox: "Pendientes", order: :desc, delete_after_find: true) { |m|
-    #  mueve_correo(m, "Resueltos")
-    #}
-    procesa_correos({mborigen: 'Inbox', mbdestino: 'Pendientes'})
+   #procesa_correos({mborigen: 'Inbox', mbdestino: 'Pendientes'})
+   procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
     response = Comentario.find_all_by_categoria_comentario_id(29)
     render 'comentarios/generales', :locals => {:response => response}
   end
 
   def dame_correo
-    #address = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    #puts address
-    #response = RestClient.get @xolo_url, {:params => {'id' => params[:id].to_s, 'auth' => 'ba', 'part' => '1'}}
-
-    #AHORA SE HARAÁ CON mail.find
     c = Comentario.find(params[:id].to_s)
     s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
     response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
-
     render text: response[0].html_part.decoded
   end
 
   private
 
-  #No importa como se le pase el correo, se sube a la nueva carpeta con REST.put, y se borra de la anterior con MAIL.find_and_delete
-  def mueve_correo(correo, mbdestino)
-    #xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    RestClient.put(@xolo_url+mbdestino, correo.to_s)
-  end
-
-  def mueve_correos #carpeta entera
-
-  end
-
-  def borra_correo
-
-  end
-
-  def borra_correos #carpeta entera
-
-  end
-
-  def procesa_correo
-
-  end
-
   def procesa_correos(opts={}) #carpeta entera
-    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: false, keys: opts[:search]||='ALL') { |m|
+    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: true, keys: opts[:search]||='ALL') { |m|
       guarda_correo_bd(m)
-      mueve_correo(m, opts[:mbdestino])
+      copia_correo(m, opts[:mbdestino])
     }
-    #Mail.find(count: 1000, mailbox: opts[:mbdestino], order: :desc).each { |m| m.body = '' }
   end
 
   def guarda_correo_bd(correo)
@@ -379,11 +325,16 @@ class ComentariosController < ApplicationController
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
     comment.categoria_comentario_id = 29
-    comment.created_at = correo.header[:date].value.to_time #FALLA por q la asignación de id es por fecha y no por autoincremental ¬¬ CORREGIR ESO#
+    comment.created_at = correo.header[:date].value.to_time
     if comment.save
       correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
       puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
     end
+  end
+
+  #Copia un correo en string a una carpeta dada
+  def copia_correo(correo, mbdestino)
+    RestClient.put(@xolo_url+mbdestino, correo.to_s)
   end
 
   # Use callbacks to share common setup or constraints between actions.
@@ -393,12 +344,6 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
-                                       :ajax, :nombre_cientifico, :created_at)
-  end
-
-  def dame_correos
-
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion, :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :ajax, :nombre_cientifico, :created_at)
   end
 end
