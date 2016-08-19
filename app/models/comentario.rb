@@ -27,7 +27,7 @@ class Comentario < ActiveRecord::Base
   validates_presence_of :comentario
   validates_presence_of :especie_id
   validates_presence_of :categoria_comentario_id
-  validates_presence_of :nombre, :if => "usuario_id.blank?"
+  validates_presence_of :nombre, :if => 'usuario_id.blank?'
 
   email_name_regex  = '[\w\.%\+\-]+'.freeze
   domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
@@ -35,8 +35,8 @@ class Comentario < ActiveRecord::Base
   email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
   bad_email_message = "no tiene la estructura apropiada.".freeze
 
-  validates_format_of :correo, :with => email_regex, :message => bad_email_message, :if => "usuario_id.blank?"
-  validates_length_of :correo, :within => 6..100, :if => "usuario_id.blank?"
+  validates_format_of :correo, :with => email_regex, :message => bad_email_message, :if => 'usuario_id.blank?'
+  validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'
 
   after_create :idABase32
 
@@ -57,12 +57,6 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
-  end
-
-  def valida_nombre
-    return false if nombre.blank? && usuario_id.blank?
-
-    true
   end
 
   def idABase32
