@@ -1,13 +1,9 @@
 <% @comentarios.each do |c| %>
     <tr id="renglon_<%= c.id %>">
       <td colspan="1">
-        <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus),
-                       class: 'comentario_estatus form-control input-sm', comentario_id: c.id, especie_id: c.especie_id
-        %>
+        <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus), class: 'comentario_estatus form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
         <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
-
-        <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id),
-                       class: 'comentario_categoria_comentario_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
+        <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id), class: 'comentario_categoria_comentario_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
         <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
       </td>
       <td>
@@ -29,9 +25,7 @@
         <% end %>
         <p>
           <% if c.cuantos > 0 %>
-              <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '',
-                          class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
-
+              <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
           <% else %>
               <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
           <% end %>
