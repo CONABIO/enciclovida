@@ -2,11 +2,11 @@ class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :show_respuesta, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :show_respuesta, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :show_respuesta]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :dame_correo, :ultimo_id_comentario] do
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :show_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
-  before_action :only => [:extrae_comentarios_generales, :dame_correo, :admin] do
+  before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show] do
   @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
     Mail.defaults do
       retriever_method :imap, { :address => CONFIG.smtp.address,
@@ -29,6 +29,7 @@ class ComentariosController < ApplicationController
   # Show de la vista de admins
   def show
     cuantos = @comentario.descendants.count
+    soyComentarioGral = (@comentario.categoria_comentario_id == 29)
 
     if cuantos > 0
       resp = @comentario.descendants.map{ |c|
@@ -66,7 +67,7 @@ class ComentariosController < ApplicationController
     @comentario.estatus = 6
 
     # Categoria comentario ID
-    @comentario.categoria_comentario_id = 26
+    @comentario.categoria_comentario_id = soyComentarioGral ? 29 : 26
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -158,17 +159,20 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
+    puts '+++++++++++++++++++++++++++++++++++++'+comentario_params.inspect
+    puts '+++++++++++++++++++++++++++++++++++++'+params.inspect
     @especie_id = params[:especie_id]
 
-    if @especie_id.present?
+    if @especie_id.present?  && @especie_id != '0'
       begin
-        @especie = Especie.find(@especie_id)
+        @especie = Especie.find(@especie_id) ##Para que necesitas la especie??? la ocupas en la vista?
       end
-
+    else
+      @especie = '0'
     end
 
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
-
+    puts '+++++++++++++++++++++++++++++++++++++'+@comentario.inspect
     params = comentario_params
 
     respond_to do |format|
@@ -196,8 +200,14 @@ class ComentariosController < ApplicationController
 
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
+        puts '****************'+@comentario.inspect
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          EnviaCorreo.respuesta_comentario(@comentario).deliver
+          puts '*********************'+params.inspect
+          if (params["categoria_comentario_id"] != 29)
+            EnviaCorreo.respuesta_comentario(@comentario).deliver
+          else
+            responde_correo(@comentario.ancestry.split('/')[-1], @comentario.comentario)
+          end
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
@@ -317,11 +327,8 @@ class ComentariosController < ApplicationController
     render 'comentarios/generales', :locals => {:response => response}
   end
 
-  def dame_correo
-    c = Comentario.find(params[:id].to_s)
-    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
-    response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
-    render text: response[0].html_part.decoded
+  def show_correo
+    render text: dame_correo(params[:id])[0].html_part.decoded
   end
 
   private
@@ -351,6 +358,20 @@ class ComentariosController < ApplicationController
   #Copia un correo en string a una carpeta dada
   def copia_correo(correo, mbdestino)
     RestClient.put(@xolo_url+mbdestino, correo.to_s)
+  end
+
+  def dame_correo(id)
+    c = Comentario.find(id.to_s)
+    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
+    response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
+  end
+
+  def responde_correo(id, mensaje)
+    puts '------------------'+mensaje
+    x=dame_correo(id).reply
+    puts '------------------'+x
+    x.body = mensaje
+    x.deliver
   end
 
   # Use callbacks to share common setup or constraints between actions.
