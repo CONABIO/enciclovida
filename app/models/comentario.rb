@@ -6,9 +6,6 @@ class Comentario < ActiveRecord::Base
   belongs_to :usuario
   belongs_to :categoria_comentario, :class_name => 'CategoriaComentario', :foreign_key => 'categoria_comentario_id', :dependent => :destroy
 
-  validates :comentario, :presence => true
-  validates :especie_id, :presence => true
-
   has_ancestry
 
   # Atributo para tener la cuenta de los comentarios del historial
@@ -27,11 +24,10 @@ class Comentario < ActiveRecord::Base
   attr_reader :es_respuesta
   attr_writer :es_respuesta
 
+  validates_presence_of :comentario
+  validates_presence_of :especie_id
   validates_presence_of :categoria_comentario_id
-  validates_presence_of :nombre if :usuario_id.blank?
-
-  before_save :valida_nombre
-  after_create :idABase32
+  validates_presence_of :nombre, :if => "usuario_id.blank?"
 
   email_name_regex  = '[\w\.%\+\-]+'.freeze
   domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
@@ -39,8 +35,10 @@ class Comentario < ActiveRecord::Base
   email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
   bad_email_message = "no tiene la estructura apropiada.".freeze
 
-  validates_format_of :correo, :with => email_regex, :message => bad_email_message
-  validates_length_of :correo, :within => 6..100
+  validates_format_of :correo, :with => email_regex, :message => bad_email_message, :if => "usuario_id.blank?"
+  validates_length_of :correo, :within => 6..100, :if => "usuario_id.blank?"
+
+  after_create :idABase32
 
   scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
   scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
