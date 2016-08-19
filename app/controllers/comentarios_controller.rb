@@ -80,10 +80,15 @@ class ComentariosController < ApplicationController
 
   def show_respuesta
     comentario_root = @comentario.root
+    @ficha = if params[:ficha].present?
+               params[:ficha] == '1' ? true : false
+             else
+               false
+             end
 
-    if comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at]
-      render :file => "/public/404.html", :status => 404, :layout => false
-      #redirect_to :root, notice: 'Lo sentimos esa página no existe'.html_safe
+    # Si es una respuesta de usuario o es para mostrar en la ficha
+    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at]) || !@ficha
+      render :file => '/public/404.html', :status => 404, :layout => false
     else
 
       @comentario_resp = @comentario
@@ -102,37 +107,43 @@ class ComentariosController < ApplicationController
         @comentarios = {estatus:1, cuantos: cuantos}
       end
 
-      # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
-      ultimo_comentario = @comentario_resp.subtree.order('ancestry ASC').map(&:id).reverse.first
+      # Para crear el comentario si NO es el render de la ficha
+      if @ficha
+        render 'show', layout: false
+      else
+        # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
+        ultimo_comentario = @comentario_resp.subtree.order('ancestry ASC').map(&:id).reverse.first
 
-      # Crea el nuevo comentario con las clases de la gema ancestry
-      @comentario = Comentario.children_of(ultimo_comentario).new
+        # Crea el nuevo comentario con las clases de la gema ancestry
+        @comentario = Comentario.children_of(ultimo_comentario).new
 
-      # Datos del usuario
-      @comentario.usuario_id = @comentario_resp.usuario_id
-      @comentario.nombre = @comentario_resp.nombre
-      @comentario.correo = @comentario_resp.correo
-      @comentario.institucion = @comentario.institucion
+        # Datos del usuario
+        @comentario.usuario_id = @comentario_resp.usuario_id
+        @comentario.nombre = @comentario_resp.nombre
+        @comentario.correo = @comentario_resp.correo
+        @comentario.institucion = @comentario.institucion
 
-      # Estatus 6 quiere decir que es parte del historial de un comentario
-      @comentario.estatus = 6
+        # Estatus 6 quiere decir que es parte del historial de un comentario
+        @comentario.estatus = 6
 
-      # Categoria comentario ID
-      @comentario.categoria_comentario_id = 26
+        # Categoria comentario ID
+        @comentario.categoria_comentario_id = 26
 
-      # Caseta de verificacion
-      @comentario.con_verificacion = true
+        # Caseta de verificacion
+        @comentario.con_verificacion = true
 
-      # Proviene de un administrador
-      @comentario.es_admin = false
+        # Proviene de un administrador
+        @comentario.es_admin = false
 
-      # Si es una respuesta de un usuario
-      @comentario.es_respuesta = true
+        # Si es una respuesta de un usuario
+        @comentario.es_respuesta = true
 
-      # Asigna la especie
-      @comentario.especie_id = @comentario_resp.especie_id
+        # Asigna la especie
+        @comentario.especie_id = @comentario_resp.especie_id
 
-      render 'show'
+        render 'show'
+      end
+
     end
   end
 

@@ -11,7 +11,8 @@
              respuestas = comentario.descendant_ids.length
              if respuestas > 0
           %>
-              <%= respuestas %> respuesta(s) <%= link_to('Ver más', nil, id: 'mas_comentarios') %>
+                <%= respuestas %> respuesta(s) <%= link_to('Ver más', nil, class: 'historial_ficha', comentario_id: comentario.id, especie_id: comentario.especie_id) %>
+                <div id="historial_ficha_<%= comentario.id %>" style="display: none"></div>
           <%  else %>
               Aún no hay respuesta a este comentario
           <% end %>
