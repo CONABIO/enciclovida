@@ -11,7 +11,7 @@
   text-align: center !important;
 }
 .comentarios button.btn, .comentarios a.btn{
-  padding: 3px 0px;
+  padding: 3px 0;
 }
 
 .comentarios thead tr:first-child button.btn{
@@ -24,4 +24,8 @@
 }
 .comentarios thead tr:first-child{
   float: left;
+}
+.comentarios tbody tr select.form-control{
+  //display: inline-block;
+  //width: 48%;
 }
