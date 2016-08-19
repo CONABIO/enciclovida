@@ -68,18 +68,24 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
 
   def completa_nombre_correo
     if usuario_id.present?
-      begin
+      begin  # Por si viene del scope datos_basicos y encontro el usuario
         self.nombre = u_nombre
         self.correo = u_email
         self.institucion = u_institucion
-      rescue  # Para las consultas que no viene con estos campos incluidos en el join
-        u = usuario
-        self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
-        self.correo = u.email
-        self.institucion = u.institucion
+      rescue
+        begin  # Por si no tenia usuario_id, solo les pego los campos que tambien viene del scope
+          self.nombre = self.c_nombre
+          self.institucion = c_institucion
+        rescue  # Por si era un find normalito, trato de busacr el usuario
+          u = usuario
+          self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
+          self.correo = u.email
+          self.institucion = u.institucion
+        end
       end
-    else
-      begin
+
+    else  # Por si no esta el usuario_id
+      begin  # Trato de ver si venia de un scope
         self.nombre = self.c_nombre
         self.institucion = c_institucion
       end

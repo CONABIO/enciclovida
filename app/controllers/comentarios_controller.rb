@@ -170,8 +170,6 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
-    puts '+++++++++++++++++++++++++++++++++++++'+comentario_params.inspect
-    puts '+++++++++++++++++++++++++++++++++++++'+params.inspect
     @especie_id = params[:especie_id]
 
     if @especie_id.present?  && @especie_id != '0'
@@ -183,7 +181,6 @@ class ComentariosController < ApplicationController
     end
 
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
-    puts '+++++++++++++++++++++++++++++++++++++'+@comentario.inspect
     params = comentario_params
 
     respond_to do |format|
@@ -211,13 +208,11 @@ class ComentariosController < ApplicationController
 
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
-        puts '****************'+@comentario.inspect
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          puts '*********************'+params.inspect
-          if (params["categoria_comentario_id"] != 29)
+          if (params[:categoria_comentario_id] == '29')  # Si es comentario general
+            responde_correo(@comentario.root.id, @comentario.comentario)
+          else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
-          else
-            responde_correo(@comentario.ancestry.split('/')[-1], @comentario.comentario)
           end
           format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
         else
@@ -375,14 +370,13 @@ class ComentariosController < ApplicationController
     c = Comentario.find(id.to_s)
     s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
     response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
+    response.first  # Deberia ser solo uno, cachar si es diferente de uno
   end
 
   def responde_correo(id, mensaje)
-    puts '------------------'+mensaje
-    x=dame_correo(id).reply
-    puts '------------------'+x
+    x = dame_correo(id).reply
     x.body = mensaje
-    x.deliver
+    x.deliver if Rails.env.production?
   end
 
   # Use callbacks to share common setup or constraints between actions.
