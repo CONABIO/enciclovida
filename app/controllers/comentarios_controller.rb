@@ -174,10 +174,10 @@ class ComentariosController < ApplicationController
 
     if @especie_id.present?  && @especie_id != '0'
       begin
-        @especie = Especie.find(@especie_id) ##Para que necesitas la especie??? la ocupas en la vista?
+        @especie = Especie.find(@especie_id)
       end
     else
-      @especie = '0'
+      @especie = 0
     end
 
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
@@ -334,7 +334,7 @@ class ComentariosController < ApplicationController
   end
 
   def show_correo
-    render text: dame_correo(params[:id])[0].html_part.decoded
+    render text: dame_correo(params[:id]).html_part.decoded
   end
 
   private
@@ -356,6 +356,10 @@ class ComentariosController < ApplicationController
     comment.categoria_comentario_id = 29
     comment.created_at = correo.header[:date].value.to_time
     if comment.save
+      #Justo aqui es donde hay q preguntar si el correo es respuesta, aqui se tiene que cachar
+      #HINT con los ID y el ancestry, preguntamos si existe dicho ancestry o algo similar, guardamos en xolo shalalala
+      # el punto es usar ancestry y la historia
+      # en el show de las respuestas, evaluar si conviene mostrar las respuestas o el correo actualizado en forma de blockquotes y así
       correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
       puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
     end
@@ -374,9 +378,16 @@ class ComentariosController < ApplicationController
   end
 
   def responde_correo(id, mensaje)
-    x = dame_correo(id).reply
-    x.body = mensaje
-    x.deliver if Rails.env.production?
+    c = dame_correo(id)
+    x = c.reply
+    x.html_part = Mail::Part.new do
+      content_type 'text/html; charset=UTF-8'
+      body "\r\n\r\n<div>#{mensaje}</div><br /><br /><br />\r\n\r\n"+
+               "<blockquote style='margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex'>"+
+               c.html_part.decoded.force_encoding('UTF-8')+
+               "</blockquote>"
+    end
+    x.deliver #if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx')
   end
 
   # Use callbacks to share common setup or constraints between actions.
