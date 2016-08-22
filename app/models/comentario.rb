@@ -74,7 +74,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
         self.institucion = u_institucion
       rescue
         begin  # Por si no tenia usuario_id, solo les pego los campos que tambien viene del scope
-          self.nombre = self.c_nombre
+          self.nombre = c_nombre
           self.institucion = c_institucion
         rescue  # Por si era un find normalito, trato de busacr el usuario
           u = usuario
@@ -86,8 +86,9 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
 
     else  # Por si no esta el usuario_id
       begin  # Trato de ver si venia de un scope
-        self.nombre = self.c_nombre
+        self.nombre = c_nombre
         self.institucion = c_institucion
+      rescue
       end
     end
   end
