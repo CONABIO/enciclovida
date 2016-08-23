@@ -1,27 +1,31 @@
 <%# form_tag aniade_taxones_seleccionados_listas_path, :method => :post do %>
-    <%# if @coincidencias.present? && @taxones.length > 0 %>
-        <!--p class="notice"-->
-          <%# @coincidencias %>
-        <!--/p-->
-    <%# end %>
-    <%# if I18n.locale.to_s == 'es-cientifico' %>
-        <!--div style="width: 100%; float:left;">
+<%# if @coincidencias.present? && @taxones.length > 0 %>
+<!--p class="notice"-->
+<%# @coincidencias %>
+<!--/p-->
+<%# end %>
+<%# if I18n.locale.to_s == 'es-cientifico' %>
+<!--div style="width: 100%; float:left;">
           <p>
             <%# link_to 'Exportar datos', '', :class => :link_azul, :id => :muestra_listas if @taxones.length > 0 %>
           <div id="widget_listas" style="display: none"></div>
           </p>
         </div-->
-    <%# end %>
+<%# end %>
 
-    <%= render :partial => 'busquedas/_resultados' %>
+<div class="text-right">
+  Descargar resultados: <%= link_to('<i class="glyphicon glyphicon-save">'.html_safe) %></i>
+</div>
 
-    <% if @taxones.length == 0 %>
-        <p class="enlaces_acciones">
-          <em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>
-        </p>
-    <% end %>
+<%= render :partial => 'busquedas/_resultados' %>
 
-    <div id="datos_principales"></div>
+<% if @taxones.length == 0 %>
+    <p class="enlaces_acciones">
+      <em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>
+    </p>
+<% end %>
 
-    <div id="resultados<%= params[:solo_categoria] || '' %>"></div>
+<div id="datos_principales"></div>
+
+<div id="resultados<%= params[:solo_categoria] || '' %>"></div>
 <%# end %>
