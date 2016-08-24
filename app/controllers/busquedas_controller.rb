@@ -21,21 +21,29 @@ class BusquedasController < ApplicationController
       por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
       if params[:solo_categoria].present?
-        @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
-                                                          solo_categoria: params[:solo_categoria]})
-        @taxones.each do |t|
-          t.cual_nombre_comun_coincidio(params[:nombre])
+        # Por si desea descargar el formato en excel o csv sin que haga todos los querys
+        if Lista::FORMATOS_DESCARGA.include?(params[:format])
+          @totales = 1
+        else
+          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
+                                                       solo_categoria: params[:solo_categoria]})
+          @taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
+          end
         end
 
       else
         @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
 
         if @totales > 0
-          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
-          @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: true, original_url: request.original_url})
+          # Por si desea descargar el formato en excel o csv sin que haga todos los querys
+          if !Lista::FORMATOS_DESCARGA.include?(params[:format])
+            @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
+            @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: true, original_url: request.original_url})
 
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
+            @taxones.each do |t|
+              t.cual_nombre_comun_coincidio(params[:nombre])
+            end
           end
 
         else
@@ -128,6 +136,21 @@ class BusquedasController < ApplicationController
         else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
           format.html { render action: 'resultados' }
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categoria: @por_categoria.present? ? @por_categoria : [] } }
+          format.xlsx {
+            lista = Lista.new
+            lista.columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+            lista.formato = 'xlsx'
+
+            if @taxones.present? && @taxones.any?
+              @taxones = lista.datos_descarga(@taxones)
+            elsif @totales > 0
+              @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true,
+                                                           solo_categoria: params[:solo_categoria]})
+              @taxones = lista.datos_descarga(@taxones)
+            end
+
+            render xlsx: 'resultados'
+          }
         end
       end  # end respond_to
 

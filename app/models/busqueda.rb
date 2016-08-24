@@ -70,12 +70,16 @@ class Busqueda
 categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
  ( '
 
-    from = ") especies
+    from = ') especies
  LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
  LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
  LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+ ORDER BY nombre_cientifico ASC'
+
+    if opts[:todos].blank? && opts[:pagina].present? && opts[:por_pagina].present?
+      from << " OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+    end
 
     campos.each do |c|
       subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
