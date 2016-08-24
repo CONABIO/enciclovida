@@ -127,8 +127,8 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.string   "institucion"
   end
 
-  create_table "comentarios_generales", id: false, force: true do |t|
-    t.string   "id",         limit: 10, default: "", null: false
+  create_table "comentarios_generales", force: true do |t|
+    t.string   "comentario_id", limit: 10, default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

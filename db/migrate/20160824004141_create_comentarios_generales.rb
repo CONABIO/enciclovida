@@ -1,7 +1,7 @@
 class CreateComentariosGenerales < ActiveRecord::Migration
   def change
-    create_table :comentarios_generales, :id => false do |t|
-      t.string :id, limit: 10, null: false, default: '', unique: true
+    create_table :comentarios_generales do |t|
+      t.string :comentario_id, limit: 10, null: false, default: '', unique: true
       t.timestamps
     end
   end
