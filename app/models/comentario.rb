@@ -41,6 +41,8 @@ class Comentario < ActiveRecord::Base
   validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'
 
   after_create :idABase32
+  #after_create :isGeneral
+
 
   scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
   scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
@@ -65,8 +67,10 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
       update_column(:id, idBase32)
+      ComentarioGeneral.new(comentario_id: idBase32).save if categoria_comentario_id == 29
     end
   end
+
 
   def completa_nombre_correo
     if usuario_id.present?
