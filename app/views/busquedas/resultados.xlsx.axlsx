@@ -1,11 +1,20 @@
 wb = xlsx_package.workbook
-wb.add_worksheet(name: 'Taxonomía') do |sheet|
+wb.add_worksheet(name: 'Taxa de EncicloVida') do |sheet|
 
-    sheet.add_row @taxones.first.attributes.keys
-    i = 0
+    # Para la cabecera
+    sheet.add_row @atributos
 
-    while i < @taxones.length  do
-        sheet.add_row @taxones.to_a.map(&:serializable_hash)[i].map{|k,v| v}
-        i +=1
+    @taxones.each do |t|
+        data = []
+
+        @atributos.each do |a|
+            begin
+              data << t.try(a)
+            rescue  # Por si existe algun error en la evaluacion de algun campo
+              data << '¡Hubo un error!'
+            end
+        end
+
+        sheet.add_row data
     end
 end

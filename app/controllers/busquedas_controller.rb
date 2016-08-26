@@ -51,7 +51,7 @@ class BusquedasController < ApplicationController
           ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
 
           if ids_comun.any? || ids_cientifico.any?
-            sql = "Especie.datos_basicos(['nombre_comun']).nombres_comunes_join"
+            sql = "Especie.datos_basicos(['nombre_comun', 'ancestry_ascendente_directo', 'cita_nomenclatural']).nombres_comunes_join"
 
             # Parte del estatus
             if vista_general
@@ -141,19 +141,21 @@ class BusquedasController < ApplicationController
             lista.columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
             lista.formato = 'xlsx'
 
-            # Viene del fuzzy match, por ende deben ser menos de 200
+            # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
             if @taxones.present? && @taxones.any?
+              @atributos = lista.columnas
               @taxones = lista.datos_descarga(@taxones)
               render xlsx: 'resultados'
             elsif @totales > 0
-              # Si son menos de 200 es optico para bajarlo en vivo
-              taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              @taxones = lista.datos_descarga(taxones)
-
-              if @totales <= 7
+              if @totales <= 200
+                # Si son menos de 200, es optimo para bajarlo en vivo
+                taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+                @taxones = lista.datos_descarga(taxones)
+                @atributos = lista.columnas
                 render xlsx: 'resultados'
               else  # Creamos el excel y lo mandamos por correo por medio de delay_job
-                lista.to_excel(@taxones)
+                opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+                lista.to_excel(opts)
               end
 
             end

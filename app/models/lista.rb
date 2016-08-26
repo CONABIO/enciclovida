@@ -19,10 +19,9 @@ class Lista < ActiveRecord::Base
 
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
-  COLUMNAS_DEFAULT = %w(id nombre_cientifico fuente
-                        cita_nomenclatural
-                        x_nombres_comunes x_categoria_taxonomica
-                        x_tipo_distribucion  nombre_autoridad x_estatus x_foto_principal)
+  COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
+                        x_estatus x_tipo_distribucion x_foto_principal
+                        cita_nomenclatural nombre_autoridad)
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_PROVEEDORES
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
@@ -43,16 +42,20 @@ class Lista < ActiveRecord::Base
     end
   end
 
-  def to_excel(taxones)
+  def to_excel(opts={})
+    # Para buscar y completar la informacion de los taxones
+    t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
+    taxones = lista.datos_descarga(t)
+
+    # Para crear el excel con los datos
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
     sheet.sheet_name = 'Resultados'
-    atributos = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
 
     # Para la cabecera
-    atributos.each do |a|
+    columnas.each do |a|
       sheet.add_cell(0,columna,a)
       columna+= 1
     end
@@ -60,7 +63,7 @@ class Lista < ActiveRecord::Base
     taxones.each do |t|
       columna = 0
 
-      atributos.each do |a|
+      columnas.each do |a|
         begin
           sheet.add_cell(fila,columna,t.try(a))
         rescue  # Por si existe algun error en la evaluacion de algun campo
@@ -161,10 +164,8 @@ class Lista < ActiveRecord::Base
           taxon.x_cites = cites[0].descripcion
         else
           next
-      end
-
-      taxon
-    end
+      end  # End switch
+    end  # End each cols
 
     # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
     cats = COLUMNAS_CATEGORIAS & cols
