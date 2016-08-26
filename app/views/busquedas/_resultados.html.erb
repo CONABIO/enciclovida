@@ -14,7 +14,7 @@
 <%# end %>
 
 <div class="text-right">
-  Descargar resultados: <%= link_to('<i class="glyphicon glyphicon-save">'.html_safe) %></i>
+  Descargar resultados: <button type="button" class="glyphicon glyphicon-save btn btn-sm btn-link text-success" onclick="return descarga_taxa();"></button>
 </div>
 
 <%= render :partial => 'busquedas/_resultados' %>

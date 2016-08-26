@@ -20,8 +20,8 @@ class Lista < ActiveRecord::Base
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
   COLUMNAS_DEFAULT = %w(id nombre_cientifico fuente
-                        cita_nomenclatural sis_clas_cat_dicc anotacion created_at updated_at
-                        x_nombres_comunes x_nombre_comun_principal x_categoria_taxonomica
+                        cita_nomenclatural
+                        x_nombres_comunes x_categoria_taxonomica
                         x_tipo_distribucion  nombre_autoridad x_estatus x_foto_principal)
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_PROVEEDORES
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
@@ -41,6 +41,42 @@ class Lista < ActiveRecord::Base
         csv << datos_taxon
       end
     end
+  end
+
+  def to_excel(taxones)
+    xlsx = RubyXL::Workbook.new
+    sheet = xlsx[0]
+    sheet.sheet_name = 'Resultados'
+    atributos = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
+    fila = 1  # Para no sobreescribir la cabecera
+    columna = 0
+
+    # Para la cabecera
+    atributos.each do |a|
+      sheet.add_cell(0,columna,a)
+      columna+= 1
+    end
+
+    taxones.each do |t|
+      columna = 0
+
+      atributos.each do |a|
+        begin
+          sheet.add_cell(fila,columna,t.try(a))
+        rescue  # Por si existe algun error en la evaluacion de algun campo
+          sheet.add_cell(fila,columna,'¡Hubo un error!')
+        end
+        columna+= 1
+      end
+
+      fila+= 1
+    end
+
+    # Escribe el excel en cierta ruta
+    ruta_excel = Rails.root.join('public','descargas_resultados')
+    nombre_archivo = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+    FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+    xlsx.write("#{ruta_excel}/#{nombre_archivo}.xlsx")
   end
 
   # Arma el query para mostrar el contenido de las listas
@@ -63,7 +99,6 @@ class Lista < ActiveRecord::Base
 
     taxones.each do |taxon|
       taxones_con_datos << asigna_datos(taxon)
-
     end
 
     taxones_con_datos
@@ -134,18 +169,12 @@ class Lista < ActiveRecord::Base
     # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
     cats = COLUMNAS_CATEGORIAS & cols
 
-    puts "---antes de cats"
-
     if cats.any?
-      puts "---dentro del if de cats"
       return unless taxon.ancestry_ascendente_directo.present?
       ids = taxon.ancestry_ascendente_directo.gsub('/',',')
-      puts "---encestry: #{ids.inspect}"
 
       Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
-        puts "---AQUI"
         categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
-        puts "---#{categoria.inspect}"
         next unless COLUMNAS_CATEGORIAS.include?(categoria)
         eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
       end
