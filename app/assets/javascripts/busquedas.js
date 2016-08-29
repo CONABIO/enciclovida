@@ -151,6 +151,8 @@ $(document).ready(function()
         return false;
     });
 
+
+
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()
 //        {
 //            var valor=$(this).val();
