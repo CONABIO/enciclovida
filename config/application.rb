@@ -66,8 +66,7 @@ module Buscador
                             })
       delivery_method(:smtp, :address => CONFIG.smtp.address,
                       :user_name => CONFIG.smtp.user_name,
-                      :password => CONFIG.smtp.password,
-                      :address => CONFIG.smtp.address)
+                      :password => CONFIG.smtp.password)
     end
   end
 end
