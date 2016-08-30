@@ -6,7 +6,7 @@ class ComentariosController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
-  before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show] do
+  before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
   @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
   @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
     Mail.defaults do
@@ -330,7 +330,7 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-   #procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resultados', delete: true})
+   #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
     response = Comentario.find_all_by_categoria_comentario_id(29)
     render 'comentarios/generales', :locals => {:response => response}
@@ -363,7 +363,7 @@ class ComentariosController < ApplicationController
     if es_respuesta
       inicio_id = correo.subject.to_s.index('[ID:#') + 5
       id_original = correo.subject.to_s[inicio_id..-2]
-      puts id_original
+      comment.estatus = 6
       comment.ancestry = Comentario.find(id_original).subtree_ids.join('/')
       correo_subject = correo_subject.to_s[0..inicio_id-1]
     end
@@ -384,6 +384,7 @@ class ComentariosController < ApplicationController
     c = Comentario.find(id.to_s)
     s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')}".force_encoding('ASCII-8BIT')
     s = "#{s} [ID:##{c.id}]" if c.is_root?
+    puts '----------------'+s
     response = Mail.find(count: 1000, order: :asc, mailbox: @folder[:pendientes] ,delete_after_find: false, keys: ['SUBJECT', s])
     response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
