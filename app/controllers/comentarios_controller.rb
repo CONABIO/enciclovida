@@ -6,16 +6,12 @@ class ComentariosController < ApplicationController
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
+
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
-  @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-  @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
-    Mail.defaults do
-      retriever_method :imap, { :address => CONFIG.smtp.address,
-                                :user_name => CONFIG.smtp.user_name,
-                                :password => CONFIG.smtp.password
-                            }
-    end
+    @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
   end
+
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
 
@@ -384,7 +380,6 @@ class ComentariosController < ApplicationController
     c = Comentario.find(id.to_s)
     s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')}".force_encoding('ASCII-8BIT')
     s = "#{s} [ID:##{c.id}]" if c.is_root?
-    puts '----------------'+s
     response = Mail.find(count: 1000, order: :asc, mailbox: @folder[:pendientes] ,delete_after_find: false, keys: ['SUBJECT', s])
     response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
@@ -399,6 +394,7 @@ class ComentariosController < ApplicationController
                c.html_part.decoded.force_encoding('UTF-8')+
                "</blockquote>"
     end
+
     x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx')
   end
 

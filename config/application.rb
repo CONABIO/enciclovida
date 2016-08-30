@@ -57,5 +57,17 @@ module Buscador
 
     # Para que no escape caracteres inecesarios como "&"
     config.active_support.escape_html_entities_in_json = false
+
+    # Para a configuracion del correo
+    Mail.defaults do
+      retriever_method(:imap, { :address => CONFIG.smtp.address,
+                                :user_name => CONFIG.smtp.user_name,
+                                :password => CONFIG.smtp.password
+                            })
+      delivery_method(:smtp, :address => CONFIG.smtp.address,
+                      :user_name => CONFIG.smtp.user_name,
+                      :password => CONFIG.smtp.password,
+                      :address => CONFIG.smtp.address)
+    end
   end
 end
