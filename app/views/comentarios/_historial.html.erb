@@ -1,1 +1,4 @@
-<%= c[:comentario] %>
+<blockquote class="<%= c[:identar] ? 'respuesta' : 'op bg-success' %>">
+  <%= c[:comentario] %> <br />
+  <small><%= c[:nombre] %> - <%= c[:created_at].strftime('%d/%m/%y-%H:%M') %></small>
+</blockquote>
