@@ -32,3 +32,25 @@
 .comentarios blockquote{
   font-size: 1em!important;
 }
+.historial_comentarios blockquote{
+  margin:2px .4ex 2px .4ex;
+  padding: 5px 10px;
+  border-radius: 1.5em;
+  border: 0px !important;
+}
+
+.historial_comentarios blockquote.op{
+  //border-left: 2px #ccc solid;
+  background-color: #f3f3f3;
+  //border-bottom-right-radius: 1.5em;
+  //border-top-right-radius: 1.5em;
+}
+.historial_comentarios blockquote.respuesta{
+  //border-right: 2px #ccc solid;
+  //border-bottom-left-radius: 1.5em;
+  //border-top-left-radius: 1.5em;
+  background-color: #dedede;
+  text-align: right;
+  border-left: 0px;
+  font-style: italic;
+}
