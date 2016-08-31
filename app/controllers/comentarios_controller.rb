@@ -27,25 +27,27 @@ class ComentariosController < ApplicationController
   def show
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
+    if !@comentario.general
+      if cuantos > 0
+        resp = @comentario.descendants.map{ |c|
 
-    if cuantos > 0
-      resp = @comentario.descendants.map{ |c|
+          if usuario = c.usuario
+            nombre = "#{usuario.nombre} #{usuario.apellido}"
+            correo = usuario.email
+            identa = usuario.es_admin? && (@comentario.usuario_id != c.usuario_id)
+          else
+            nombre = c.nombre
+            correo = c.correo
+          end
 
-        if usuario = c.usuario
-          nombre = "#{usuario.nombre} #{usuario.apellido}"
-          correo = usuario.email
-        else
-          nombre = c.nombre
-          correo = c.correo
-        end
+          { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus, identar: identa||=false }
+        }
 
-        { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus }
-      }
+        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
-      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
-
-    else
-      @comentarios = {estatus:1, cuantos: cuantos}
+      else
+        @comentarios = {estatus:1, cuantos: cuantos}
+      end
     end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
@@ -212,7 +214,11 @@ class ComentariosController < ApplicationController
           else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
-          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
+          if usuario=@comentario.usuario
+            nombre = usuario.nombre + usuario.apellido
+          end
+          created_at = @comentario.created_at.strftime('%d/%m/%y-%H:%M')
+          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}", nombre: nombre, created_at:  created_at ||= '' }.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
         end
