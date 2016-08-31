@@ -29,7 +29,7 @@
 
 <% if @totales.present? %>
     <h4>
-      <strong><span id="totales"><%= @totales %></span></strong> comentarios
+      <span id="totales" class="badge"><%= @totales %></span> comentarios
     </h4>
 <% end %>
 
@@ -37,17 +37,16 @@
   <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
       <thead>
       <tr>
-        <th>
+        <th colspan="5">
+          <span class="label label-warning">Filtrar por: </span>
           <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select), id: 'filtro_estatus', prompt: 'Estatus', class: 'form-control input-sm' %>
-          <button class="btn btn-link" data-toggle="popover" data-content="Público: muestra el comentario como una advertencia, en la ficha del taxón. Resuelto: se da por solucionado/finalizado el comentario del usuario." type="button"><i class="glyphicon glyphicon-info-sign text-warning"></i></button>
-        </th>
-        <th>
+          <a class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Público: muestra el comentario como una advertencia, en la ficha del taxón. <br /> Resuelto: se da por solucionado/finalizado el comentario del usuario." type="button" style="white-space: nowrap;"><i class="glyphicon glyphicon-info-sign text-warning"></i></a>
           <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario), id: 'filtro_categoria_comentario_id', prompt: 'Tipo de comentario', class: 'form-control input-sm' %>
         </th>
       </tr>
       <tr>
 
-        <th colspan="2" style="font-size: 1.5em;">Comentario</th>
+        <th colspan="2" style="font-size: 1.5em;">Comentarios</th>
         <th>
           <%= t :taxon %> <a class="btn btn-link" href="<%= admin_path %>" id="filtro_nombre_cientifico"><i class="glyphicon glyphicon-sort text-warning"></i></a>
           <%= hidden_field_tag 'comentario[nombre_cientifico]' %>

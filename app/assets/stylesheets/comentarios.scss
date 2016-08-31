@@ -6,7 +6,7 @@
   color: red;
   font-style: italic;
 }
-.comentarios th{
+.comentarios thead tr:nth-child(2) th{
   vertical-align: middle !important;
   text-align: center !important;
 }
@@ -15,18 +15,16 @@
 }
 
 .comentarios thead tr:first-child button.btn{
-  float: right;
-  margin-top: -28px;
-  margin-right: -10px;
+  //float: right;
+  //margin-top: -28px;
+  //margin-right: -10px;
 }
 .comentarios thead tr:first-child select.form-control{
-  width: 93% !important;
-}
-.comentarios thead tr:first-child{
-  float: left;
+  width: 45% !important;
+  display: inline-block;
 }
 .comentarios tbody tr select.form-control{
-  //display: inline-block;
+  //
   //width: 48%;
 }
 .comentarios blockquote{

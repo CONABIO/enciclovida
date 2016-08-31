@@ -254,6 +254,6 @@ $(document).ready(function(){
         return false;
     });
 
-    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip({html: true});
     asigna_valores_select();
 });
