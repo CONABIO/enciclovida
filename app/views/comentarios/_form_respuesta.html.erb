@@ -60,7 +60,11 @@
                         if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
                             window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);
                         else {
-                            historial_comentarios.append(comentario.val());
+                            html_blockquote='<blockquote class="respuesta">'+
+                            comentario.val()+ '<br />'+
+                            '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
+                            '</blockquote>';
+                            historial_comentarios.append(html_blockquote);
                             ancestry.val(resp.ancestry);
                             comentario.val('');
                         }
