@@ -26,6 +26,10 @@ class Comentario < ActiveRecord::Base
   attr_reader :es_respuesta
   attr_writer :es_respuesta
 
+  # Para saber si es un comentario de un administrador
+  attr_reader :es_propietario
+  attr_writer :es_propietario
+
   validates_presence_of :comentario
   validates_presence_of :especie_id
   validates_presence_of :categoria_comentario_id
@@ -71,30 +75,29 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
     end
   end
 
-
-  def completa_nombre_correo
+  # Completa el nombre, correo y de quien es el comentario (OP o respuesta)
+  def completa_info(root_usuario_id=nil)
     if usuario_id.present?
+      self.es_propietario = root_usuario_id == self.usuario_id ? true : false
+
       begin  # Por si viene del scope datos_basicos y encontro el usuario
         self.nombre = u_nombre
         self.correo = u_email
         self.institucion = u_institucion
       rescue
-        begin  # Por si no tenia usuario_id, solo les pego los campos que tambien viene del scope
-          self.nombre = c_nombre
-          self.institucion = c_institucion
-        rescue  # Por si era un find normalito, trato de busacr el usuario
-          u = usuario
-          self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
-          self.correo = u.email
-          self.institucion = u.institucion
-        end
+        u = usuario
+        self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
+        self.correo = u.email
+        self.institucion = u.institucion
       end
 
     else  # Por si no esta el usuario_id
       begin  # Trato de ver si venia de un scope
         self.nombre = c_nombre
         self.institucion = c_institucion
+        self.es_propietario = true
       rescue
+        self.es_propietario = true
       end
     end
   end

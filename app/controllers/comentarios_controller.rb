@@ -31,17 +31,8 @@ class ComentariosController < ApplicationController
     if !@comentario.general
       if cuantos > 0
         resp = @comentario.descendants.map{ |c|
-
-          if usuario = c.usuario
-            nombre = "#{usuario.nombre} #{usuario.apellido}"
-            correo = usuario.email
-            identa = usuario.es_admin? && (@comentario.usuario_id != c.usuario_id)
-          else
-            nombre = c.nombre
-            correo = c.correo
-          end
-
-          { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus, identar: identa||=false }
+          c.completa_info(@comentario.usuario_id)
+          c
         }
 
         @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
@@ -324,7 +315,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_nombre_correo
+      c.completa_info
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options

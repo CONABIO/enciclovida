@@ -19,10 +19,8 @@
             </div>
             <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
         <% else %>
-            <%=  c.comentario %>
-            <p>
-              <%= c.nombre %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)
-            </p>
+            <%= render 'historial', c: c %>
+
             <p>
               <% if c.cuantos > 0 %>
                   <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
