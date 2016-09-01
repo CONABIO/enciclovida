@@ -326,6 +326,26 @@ class BusquedasController < ApplicationController
 
           format.html { render action: 'resultados' }
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
+          format.xlsx {
+            lista = Lista.new
+            lista.columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+            lista.formato = 'xlsx'
+
+            # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
+            if @totales > 0
+              if @totales <= 200
+                # Si son menos de 200, es optimo para bajarlo en vivo
+                taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+                @taxones = lista.datos_descarga(taxones)
+                @atributos = lista.columnas
+                render xlsx: 'resultados'
+              else  # Creamos el excel y lo mandamos por correo por medio de delay_job
+                opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+                lista.to_excel(opts)
+              end
+
+            end
+          }
         end
 
       end  # end respond_to
