@@ -26,11 +26,6 @@
       <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
     </h3>
   </div>
-  <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
-    <div class="leaf bg-success text-success" id="conSugerencia">
-      <p>¿Algún <%= link_to('comentario <span class="glyphicon glyphicon-send" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id)) %> acerca de este taxón? </p>
-    </div>
-  </div>
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <%= dameNomComunes(@especie).html_safe %>
@@ -50,7 +45,7 @@
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
-    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-envelope"></i><strong>  Comentarios / <i class="glyphicon glyphicon-flag"></i> Advertencias</strong></a></li>
+    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-envelope"></i><strong>  Comentarios</strong></a></li>
 
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>

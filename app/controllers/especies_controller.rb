@@ -419,7 +419,7 @@ class EspeciesController < ApplicationController
 
   # Muestra los comentarios relacionados a la especie
   def comentarios
-    @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (2,3)').order('comentarios.created_at DESC')
+    @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (1,2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
   end
 
   private

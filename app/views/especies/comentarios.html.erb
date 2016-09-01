@@ -3,9 +3,7 @@
       comentario.completa_info
     -%>
         <p>
-          <%= comentario.comentario %> |
-          <%= comentario.nombre %> |
-          <%= comentario.created_at %> |
+          <%= render 'comentarios/historial', c: comentario %>
 
           <%
              respuestas = comentario.descendant_ids.length
