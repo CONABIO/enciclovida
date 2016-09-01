@@ -1,6 +1,6 @@
 <% if @comentarios.any? %>
     <%- @comentarios.each do |comentario|
-      comentario.completa_info
+      comentario.completa_info((comentario.usuario_id if comentario.is_root?))
     -%>
         <p>
           <%= render 'comentarios/historial', c: comentario %>

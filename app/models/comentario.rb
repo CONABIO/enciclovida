@@ -81,7 +81,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
       self.es_propietario = root_usuario_id == self.usuario_id ? true : false
 
       begin  # Por si viene del scope datos_basicos y encontro el usuario
-        self.nombre = u_nombre
+        self.nombre = u_nombre+root_usuario_id.to_s+'=='+self.usuario_id.to_s
         self.correo = u_email
         self.institucion = u_institucion
       rescue

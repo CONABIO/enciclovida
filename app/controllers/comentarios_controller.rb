@@ -307,7 +307,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_info
+      c.completa_info(c.root.usuario_id)
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
