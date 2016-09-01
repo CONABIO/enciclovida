@@ -6,7 +6,7 @@
         <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id), class: 'comentario_categoria_comentario_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
         <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
       </td>
-      <td width="55%">
+      <td width="52%">
         <% if c.general %>
             <div class="panel panel-default comentarios-correos">
               <b>De: </b><i><%= c.nombre %> (<span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span>)</i><br />
@@ -34,7 +34,7 @@
         <div id="historial_<%= c.id %>"></div>
 
       </td>
-      <td width="9%">
+      <td width="12%">
         <% if c.especie_id > 0 && c.nombre_cientifico.present? %>
             <% if c.nombre_comun_principal.present? %>
                 <%= c.nombre_comun_principal %><br />
