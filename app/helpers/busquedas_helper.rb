@@ -116,7 +116,6 @@ module BusquedasHelper
       sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
       peticion = sin_page_per_page.compact.join('&')
       peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
-      link_to('Listado para Revisión (✓)', peticion, :class => 'btn btn-info', :target => :_blank)
     else
       ''
     end

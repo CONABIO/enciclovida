@@ -151,6 +151,13 @@ $(document).ready(function()
         return false;
     });
 
+    $(document).on('click', '#boton_checklist', function(){
+        var url = $(this).attr('url');
+
+        if (url == "") return false
+        else window.open(url, '_blank');
+    });
+
 
 
 //        $(document).on('change', "[id^='distribucion_nivel_']", function()

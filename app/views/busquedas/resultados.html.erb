@@ -200,12 +200,6 @@
     <div class="alert alert-warning" role="alert"><%= notice %></div>
 <% end %>
 
-<% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
-    <p class="text-right">
-      <%= checklist({request: request.original_url, totales: @totales}).html_safe %>
-    </p>
-<% end %>
-
 <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
     <%= render :file => 'busquedas/avanzada' %>
 
@@ -288,6 +282,14 @@
         Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
       </button>
     </li>
+
+    <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
+        <li class="pull-right">
+          <button type="button" class="btn btn-sm btn-warning" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
+            Listado para Revisión (✓)
+          </button>
+        </li>
+    <% end %>
   </ul>
 
   <div class="tab-pane panel-body" id="todos">
