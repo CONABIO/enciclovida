@@ -1,6 +1,6 @@
 <% if @comentarios.any? %>
     <%- @comentarios.each do |comentario|
-      comentario.completa_nombre_correo
+      comentario.completa_info
     -%>
         <p>
           <%= comentario.comentario %> |
