@@ -14,17 +14,17 @@ class EnviaCorreo < Devise::Mailer
 
   def respuesta_comentario(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') #if Rails.env.production?
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if Rails.env.production?
   end
 
   def comentario_resuelto(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') #if Rails.env.production?
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') if Rails.env.production?
   end
 
   def confirmacion_comentario(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') #if Rails.env.production?
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if Rails.env.production?
   end
 
 
