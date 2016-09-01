@@ -17,7 +17,7 @@ Buscador::Application.routes.draw do
 
   get 'comentarios/administracion' => 'comentarios#admin', as: :admin
   post 'comentarios/:id/update_admin' => 'comentarios#update_admin'
-  get 'especies/:especie_id/comentarios/:id/show_respuesta' => 'comentarios#show_respuesta'
+  get 'especies/:especie_id/comentarios/:id/respuesta_externa' => 'comentarios#respuesta_externa'
 
   get 'comentarios/generales' => 'comentarios#extrae_comentarios_generales'
   get 'comentarios/correoId' => 'comentarios#show_correo'
@@ -132,7 +132,7 @@ Buscador::Application.routes.draw do
   match 'flickr/photos.:format' => 'flickr#photos', :via => :get
   match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
-  get '/especies/:id/comentarios_taxon' => 'especies#comentarios_taxon'
+  get '/especies/:id/comentarios' => 'especies#comentarios'
 
   resources :photos, :only => [:show, :update, :destroy] do
     member do

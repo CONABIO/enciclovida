@@ -71,7 +71,7 @@ class ComentariosController < ApplicationController
   end
 
   #Show cuando alguien externo responde a CONABIO
-  def show_respuesta
+  def respuesta_externa
     comentario_root = @comentario.root
     @ficha = if params[:ficha].present?
                params[:ficha] == '1' ? true : false

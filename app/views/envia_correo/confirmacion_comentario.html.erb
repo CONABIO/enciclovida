@@ -25,8 +25,8 @@
 <p>
   <% if con_taxon %>
       Para darle un adecuado seguimiento a tu comentario y futuras respuestas podrás consultar el siguiente
-      <%= link_to 'enlace', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/show_respuesta?created_at=#{@created_at}" %>
-      ; hasta que tu comentario haya sido resuleto.
+      <%= link_to 'enlace', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/respuesta_externa?created_at=#{@created_at}" %>
+      hasta que tu comentario haya sido solucionado/finalizado.
   <% else %>
     Para más información consultar <%= link_to(CONFIG.site_url.to_s, CONFIG.site_url.to_s) %>.
   <% end %>
