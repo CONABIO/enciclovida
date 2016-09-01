@@ -6,29 +6,35 @@
   color: red;
   font-style: italic;
 }
-.comentarios th{
+.comentarios thead tr:nth-child(2) th{
   vertical-align: middle !important;
   text-align: center !important;
 }
-.comentarios button.btn, .comentarios a.btn{
-  padding: 3px 0;
+.comentarios .btn{
+  border-radius: 1em;
 }
-
-.comentarios thead tr:first-child button.btn{
-  float: right;
-  margin-top: -28px;
-  margin-right: -10px;
-}
-.comentarios thead tr:first-child select.form-control{
-  width: 93% !important;
-}
-.comentarios thead tr:first-child{
-  float: left;
-}
-.comentarios tbody tr select.form-control{
-  //display: inline-block;
-  //width: 48%;
+.comentarios thead table th, .comentarios thead table td{
+  text-align: center;
+  vertical-align: middle;
 }
 .comentarios blockquote{
   font-size: 1em!important;
+}
+blockquote{
+  margin:2px .4ex 2px .4ex;
+  padding: 5px 10px;
+  border-radius: 1.5em;
+  border: 0px !important;
+}
+blockquote.op{
+  background-color: #f3f3f3;
+}
+blockquote.respuesta{
+  background-color: #dedede;
+  text-align: right;
+  border-left: 0px;
+  font-style: italic;
+}
+.comentarios .tooltip-inner{
+  text-align: left!important;
 }

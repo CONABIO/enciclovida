@@ -1,20 +1,17 @@
 class ComentariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:show, :show_respuesta, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :set_comentario, only: [:show, :show_respuesta, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :authenticate_usuario!, :except => [:new, :create, :show_respuesta]
+  skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :show_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
-  before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show] do
-  @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    Mail.defaults do
-      retriever_method :imap, { :address => CONFIG.smtp.address,
-                                :user_name => CONFIG.smtp.user_name,
-                                :password => CONFIG.smtp.password
-                            }
-    end
+
+  before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
+    @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
+    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
   end
+
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
 
 
@@ -29,26 +26,20 @@ class ComentariosController < ApplicationController
   # Show de la vista de admins
   def show
     cuantos = @comentario.descendants.count
-    soyComentarioGral = (@comentario.categoria_comentario_id == 29)
+    categoriaComentario = @comentario.categoria_comentario_id
 
-    if cuantos > 0
-      resp = @comentario.descendants.map{ |c|
+    if !@comentario.general
+      if cuantos > 0
+        resp = @comentario.descendants.map{ |c|
+          c.completa_info(@comentario.usuario_id)
+          c
+        }
 
-        if usuario = c.usuario
-          nombre = "#{usuario.nombre} #{usuario.apellido}"
-          correo = usuario.email
-        else
-          nombre = c.nombre
-          correo = c.correo
-        end
+        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
-        { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus }
-      }
-
-      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
-
-    else
-      @comentarios = {estatus:1, cuantos: cuantos}
+      else
+        @comentarios = {estatus:1, cuantos: cuantos}
+      end
     end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
@@ -67,7 +58,7 @@ class ComentariosController < ApplicationController
     @comentario.estatus = 6
 
     # Categoria comentario ID
-    @comentario.categoria_comentario_id = soyComentarioGral ? 29 : 26
+    @comentario.categoria_comentario_id = categoriaComentario
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -79,8 +70,10 @@ class ComentariosController < ApplicationController
     @comentario.especie_id = especie_id
   end
 
-  def show_respuesta
+  #Show cuando alguien externo responde a CONABIO
+  def respuesta_externa
     comentario_root = @comentario.root
+
     @ficha = if params[:ficha].present?
                params[:ficha] == '1' ? true : false
              else
@@ -88,18 +81,17 @@ class ComentariosController < ApplicationController
              end
 
     # Si es una respuesta de usuario o es para mostrar en la ficha
-    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at]) || !@ficha
+    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at])
       render :file => '/public/404.html', :status => 404, :layout => false
     else
 
       @comentario_resp = @comentario
-      cuantos = @comentario_resp.descendants.count
+      cuantos = comentario_root.descendant_ids.count
 
       if cuantos > 0
-        resp = @comentario_resp.descendants.map{ |c|
-
-          c.completa_nombre_correo
-          { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: c.nombre, correo: c.correo, created_at: c.created_at, estatus: c.estatus }
+        resp = @comentario.descendants.map{ |c|
+          c.completa_info(comentario_root.usuario_id)
+          c
         }
 
         @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
@@ -189,8 +181,10 @@ class ComentariosController < ApplicationController
 
           if params[:es_respuesta].present? && params[:es_respuesta] == '1'
             comentario_root = @comentario.root
-            format.json {render json: {estatus: 1, comentario_id: comentario_root.id, especie_id: comentario_root.especie_id,
-                                       created_at: comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')}.to_json}
+            @comentario.completa_info(comentario_root.usuario_id)
+
+            format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
+                                       nombre: @comentario.nombre}.to_json}
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
@@ -214,7 +208,11 @@ class ComentariosController < ApplicationController
           else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
-          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}"}.to_json}
+          if usuario=@comentario.usuario
+            nombre = usuario.nombre + usuario.apellido
+          end
+          created_at = @comentario.created_at.strftime('%d/%m/%y-%H:%M')
+          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}", nombre: nombre, created_at:  created_at ||= '' }.to_json}
         else
           format.json {render json: {estatus: 0}.to_json}
         end
@@ -263,7 +261,8 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
-    procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
+    procesa_correos({mborigen:  @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
+    #procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos', delete: true})
 
     if params[:comentario].present?
       params = comentario_params
@@ -308,7 +307,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_nombre_correo
+      c.completa_info
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
@@ -327,8 +326,8 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-   #procesa_correos({mborigen: 'Inbox', mbdestino: 'Pendientes'})
-   procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos'})
+   #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
+   procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
     response = Comentario.find_all_by_categoria_comentario_id(29)
     render 'comentarios/generales', :locals => {:response => response}
   end
@@ -340,7 +339,7 @@ class ComentariosController < ApplicationController
   private
 
   def procesa_correos(opts={}) #carpeta entera
-    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: true, keys: opts[:search]||='ALL') { |m|
+    Mail.find(count: 1000, mailbox: opts[:mborigen], order: :asc, delete_after_find: opts[:delete]||=false, keys: opts[:search]||='ALL') { |m|
       guarda_correo_bd(m)
       copia_correo(m, opts[:mbdestino])
     }
@@ -355,12 +354,19 @@ class ComentariosController < ApplicationController
     comment.especie_id = 0
     comment.categoria_comentario_id = 29
     comment.created_at = correo.header[:date].value.to_time
+
+    es_respuesta = correo.subject.to_s.include?('[ID:#')
+    if es_respuesta
+      inicio_id = correo.subject.to_s.index('[ID:#') + 5
+      id_original = correo.subject.to_s[inicio_id..-2]
+      comment.estatus = 6
+      comment.ancestry = Comentario.find(id_original).subtree_ids.join('/')
+      correo_subject = correo_subject.to_s[0..inicio_id-1]
+    end
+
     if comment.save
-      #Justo aqui es donde hay q preguntar si el correo es respuesta, aqui se tiene que cachar
-      #HINT con los ID y el ancestry, preguntamos si existe dicho ancestry o algo similar, guardamos en xolo shalalala
-      # el punto es usar ancestry y la historia
-      # en el show de las respuestas, evaluar si conviene mostrar las respuestas o el correo actualizado en forma de blockquotes y así
-      correo.subject = correo.subject.to_s + " - [Comentario con ID - (#{comment.id})]"
+
+      correo.subject = correo.subject.to_s + " [ID:##{comment.id}]" if !es_respuesta
       puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
     end
   end
@@ -372,9 +378,10 @@ class ComentariosController < ApplicationController
 
   def dame_correo(id)
     c = Comentario.find(id.to_s)
-    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')} - [Comentario con ID - (#{c.id})]".force_encoding('ASCII-8BIT')
-    response = Mail.find(count: 1000, order: :asc, mailbox: 'Resueltos' ,delete_after_find: false, keys: ['SUBJECT', s])
-    response.first  # Deberia ser solo uno, cachar si es diferente de uno
+    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')}".force_encoding('ASCII-8BIT')
+    s = "#{s} [ID:##{c.id}]" if c.is_root?
+    response = Mail.find(count: 1000, order: :asc, mailbox: @folder[:pendientes] ,delete_after_find: false, keys: ['SUBJECT', s])
+    response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
 
   def responde_correo(id, mensaje)
@@ -387,7 +394,8 @@ class ComentariosController < ApplicationController
                c.html_part.decoded.force_encoding('UTF-8')+
                "</blockquote>"
     end
-    x.deliver #if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx')
+
+    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx')
   end
 
   # Use callbacks to share common setup or constraints between actions.

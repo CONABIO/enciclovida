@@ -72,29 +72,12 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('change', '#from', function(){
-        cual_ficha = $(this).val();
-
-        $.ajax({
-            url: "/especies/"+TAXON.id+"/describe?from="+cual_ficha,
-            method: 'get',
-            success: function(data, status) {
-                $('.taxon_description').replaceWith(data);
-            },
-            error: function(request, status, error) {
-                $('.taxon_description').loadingShades('close');
-            }
-        });
-    });
-
-    $(document).ready(function(){
-        $(document).on('click', '.historial_ficha', function(){
-            var comentario_id = $(this).attr('comentario_id');
-            var especie_id = $(this).attr('especie_id');
-            $("#historial_ficha_" + comentario_id).load("/especies/"+especie_id+"/comentarios/"+comentario_id+"/show_respuesta?ficha=1");
-            $("#historial_ficha_" + comentario_id).slideDown();
-            return false;
-        });
+    $(document).on('click', '.historial_ficha', function(){
+        var comentario_id = $(this).attr('comentario_id');
+        var especie_id = $(this).attr('especie_id');
+        $("#historial_ficha_" + comentario_id).load("/especies/"+especie_id+"/comentarios/"+comentario_id+"/respuesta_externa?ficha=1");
+        $("#historial_ficha_" + comentario_id).slideDown();
+        return false;
     });
 
     $('#pestañas').tabs(); // Inicia los tabs
@@ -110,6 +93,7 @@ $(document).ready(function(){
             //    pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','')+'_taxon';
             //else
             pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
+            console.log(pestaña);
             $(idPestaña).load(pestaña);
         }
     });

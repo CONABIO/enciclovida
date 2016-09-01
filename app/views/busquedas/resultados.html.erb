@@ -202,7 +202,7 @@
 
 <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
     <p class="text-right">
-      <%= checklist(@paginacion).html_safe %>
+      <%= checklist({request: request.original_url, totales: @totales}).html_safe %>
     </p>
 <% end %>
 

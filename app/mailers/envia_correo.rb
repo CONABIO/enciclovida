@@ -32,7 +32,8 @@ class EnviaCorreo < Devise::Mailer
 
   def completa_datos_comentario(comentario)
     @comentario = comentario
-    @comentario.completa_nombre_correo
+    @comentario_root = @comentario.root
+    @comentario.completa_info(@comentario_root.usuario_id)
 
     if t = @comentario.especie
       @nombre_cientifico = t.nombre_cientifico
@@ -42,8 +43,7 @@ class EnviaCorreo < Devise::Mailer
       end
     end
 
-    @comentario_root = @comentario.root
-    @comentario_root.completa_nombre_correo
+    @comentario_root.completa_info(@comentario_root.usuario_id)
     @created_at = @comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
   end
 end

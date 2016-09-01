@@ -40,6 +40,10 @@ class Usuario < ActiveRecord::Base
     end
   end
 
+  def es_admin?
+    rol.prioridad >= 100
+  end
+
   private
   def generaContrasenia
     self.salt = self.nombre.to_s + rand.to_s

@@ -1,5 +1,6 @@
 <div class="historial_comentarios">
-  <% if @comentarios[:cuantos] > 0 %>
+  <%= puts @comentarios.inspect %>
+  <% if @comentarios.present? && @comentarios[:cuantos] > 0 %>
       <% @comentarios[:resp].each do |c| %>
           <%= render 'historial', c: c %>
       <% end %>

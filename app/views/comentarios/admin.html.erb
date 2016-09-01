@@ -25,40 +25,44 @@
 
 </script>
 
-<%= link_to 'Limpiar filtros', admin_path %>
-
 <% if @totales.present? %>
     <h4>
-      <strong><span id="totales"><%= @totales %></span></strong> comentarios
+      <span id="totales" class="badge"><%= @totales %></span> comentarios
     </h4>
 <% end %>
 
-<table class="table table-hover table-striped table-condensed table-bordered comentarios">
+<table class="table table-striped table-condensed table-bordered comentarios">
   <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
       <thead>
       <tr>
-        <th>
-          <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select), id: 'filtro_estatus', prompt: 'Estatus', class: 'form-control input-sm' %>
-          <button class="btn btn-link" data-toggle="popover" data-content="Público: Muestra el comentario como una advertencia, en la ficha del taxón" onclick="return false;"><i class="glyphicon glyphicon-info-sign text-warning"></i></button>
-        </th>
-        <th>
-          <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario), id: 'filtro_categoria_comentario_id', prompt: 'Tipo de comentario', class: 'form-control input-sm' %>
-          <button class="btn btn-link" data-toggle="popover" data-content="Descripción acerca de los tipos de comentario" onclick="return false;"><i class="glyphicon glyphicon-info-sign text-warning"></i></button>
+        <th colspan="5">
+          <table width="100%">
+            <tr>
+              <th width="10%" rowspan="2"><span class="text-success">Filtrar por: </span></th>
+              <th width="40%">Estatus <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="Público: muestra el comentario como una advertencia, en la ficha del taxón. <br /> Resuelto: se da por solucionado/finalizado el comentario del usuario." type="button"></i>
+              </th>
+              <th width="40%">Tipo de comentarios</th>
+              <th width="10%">Limpiar filtros</th>
+            </tr>
+            <tr>
+              <td><%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select), id: 'filtro_estatus', prompt: 'Estatus', class: 'form-control input-sm pull-left' %></td>
+              <td><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario), id: 'filtro_categoria_comentario_id', prompt: 'Tipo de comentario', class: 'form-control input-sm pull-right' %></td>
+              <td><%= link_to "<i class='glyphicon glyphicon-trash'></i>".html_safe, admin_path, class: "btn btn-xs btn-info", "data-toggle" => "tooltip", "data-placement" => "bottom", title: 'Borra las opciones de los menus desplegables, regresando al ordenamiento por default'%></td>
+            </tr>
+          </table>
         </th>
       </tr>
-      <tr>
-
-        <th colspan="2" style="font-size: 1.5em;">Comentario</th>
+      <th colspan="2"><strong style="font-size: larger;">Comentarios</strong></th>
         <th>
-          <%= t :taxon %> <a class="btn btn-link" href="<%= admin_path %>" id="filtro_nombre_cientifico"><i class="glyphicon glyphicon-sort text-warning"></i></a>
+          <%= t :taxon %> <button type="button" class="btn btn-xs btn-default" href="<%= admin_path %>" id="filtro_nombre_cientifico" data-toggle="tooltip" data-placement="bottom" title="Ordena alfabéticamente por nombre de especie"><i class="glyphicon glyphicon-sort text-success"></i></button>
           <%= hidden_field_tag 'comentario[nombre_cientifico]' %>
         </th>
         <th>
-          Fecha <a class="btn btn-link" href="<%= admin_path %>" id="filtro_created_at"><i class="glyphicon glyphicon-sort text-warning"></i></a>
+          Fecha <button type="button" class="btn btn-xs btn-default" href="<%= admin_path %>" id="filtro_created_at" data-toggle="tooltip" data-placement="bottom" title="Ordena cronológicamente de acuerdo a como fueron realizados"><i class="glyphicon glyphicon-sort text-success"></i></button>
           <%= hidden_field_tag 'comentario[created_at]' %>
         </th>
-        <th>¿Quién y cuando?
-          <button class="btn btn-link" data-toggle="popover" data-content="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" onclick="return false;"><i class="glyphicon glyphicon-info-sign text-warning"></i></button>
+        <th>Modificado
+          <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" type="button"></i>
         </th>
       </tr>
       </thead>
