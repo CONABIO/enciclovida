@@ -85,9 +85,9 @@ categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres
   #Select para el Checklist (por_arbol)
   scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
-categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, iconos.icono, iconos.nombre_icono,
-iconos.color_icono, iconos.taxon_icono, nombres_comunes as nombres_comunes_todos").categoria_taxonomica_join.adicional_join.icono_join }
-  scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join.icono_join }
+categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
+nombres_comunes as nombres_comunes_todos").categoria_taxonomica_join.adicional_join }
+  scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join }
   #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
   scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
   scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico,
