@@ -9,6 +9,7 @@
   El personal de CONABIO ha dado por resuelto tu comentario acerca de:
   <br />
   <% con_taxon = @nombre_cientifico.present? %>
+
   <% if con_taxon %>
       <% if @nombre_comun.present? %>
           <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)

@@ -22,7 +22,7 @@
 </p>
 
 <p>
-  <% if con_taxon %>
+  <% if @nombre_cientifico.present? %>
       Para poder responder y darle un seguimiento a tu comentario da clic
       <%= link_to 'aquí', "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.root_id}/show_respuesta?created_at=#{@created_at}" %>.
   <% else %>

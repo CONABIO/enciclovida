@@ -27,20 +27,12 @@ class ComentariosController < ApplicationController
   def show
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
+
     if !@comentario.general
       if cuantos > 0
         resp = @comentario.descendants.map{ |c|
-
-          if usuario = c.usuario
-            nombre = "#{usuario.nombre} #{usuario.apellido}"
-            correo = usuario.email
-            identa = usuario.es_admin? && (@comentario.usuario_id != c.usuario_id)
-          else
-            nombre = c.nombre
-            correo = c.correo
-          end
-
-          { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: nombre, correo: correo, created_at: c.created_at, estatus: c.estatus, identar: identa||=false }
+          c.completa_info(@comentario.usuario_id)
+          c
         }
 
         @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
@@ -88,18 +80,17 @@ class ComentariosController < ApplicationController
              end
 
     # Si es una respuesta de usuario o es para mostrar en la ficha
-    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at]) || !@ficha
+    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at])
       render :file => '/public/404.html', :status => 404, :layout => false
     else
 
       @comentario_resp = @comentario
-      cuantos = @comentario_resp.descendants.count
+      cuantos = comentario_root.descendant_ids.count
 
       if cuantos > 0
-        resp = @comentario_resp.descendants.map{ |c|
-
-          c.completa_nombre_correo
-          { id: c.id, especie_id: c.especie_id, comentario: c.comentario, nombre: c.nombre, correo: c.correo, created_at: c.created_at, estatus: c.estatus }
+        resp = @comentario.descendants.map{ |c|
+          c.completa_info(comentario_root.usuario_id)
+          c
         }
 
         @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
@@ -189,8 +180,10 @@ class ComentariosController < ApplicationController
 
           if params[:es_respuesta].present? && params[:es_respuesta] == '1'
             comentario_root = @comentario.root
-            format.json {render json: {estatus: 1, comentario_id: comentario_root.id, especie_id: comentario_root.especie_id,
-                                       created_at: comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')}.to_json}
+            @comentario.completa_nombre_correo
+
+            format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
+                                       nombre: @comentario.nombre}.to_json}
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
@@ -313,7 +306,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_nombre_correo
+      c.completa_info
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options

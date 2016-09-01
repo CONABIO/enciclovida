@@ -9,7 +9,7 @@
       <%= f.submit :Enviar, class: 'comentario_submit' %>
     </div>
 
-    <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion %>
+    <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
 
     <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
@@ -54,12 +54,13 @@
 
                 }).done(function(resp) {
 
+                    //return false;
                     if (resp.estatus == 1)
                     {
                         // Si la respuesta viene de un usuario
-                        if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
-                            window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);
-                        else {
+                        /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
+                            window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
+                       /* else {*/
                             html_blockquote='<blockquote class="respuesta">'+
                             comentario.val()+ '<br />'+
                             '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
@@ -67,7 +68,7 @@
                             historial_comentarios.append(html_blockquote);
                             ancestry.val(resp.ancestry);
                             comentario.val('');
-                        }
+                        //}
 
                     } else
                         console.log('Hubo un error al guardar la respuesta');
