@@ -10,22 +10,12 @@
   vertical-align: middle !important;
   text-align: center !important;
 }
-.comentarios button.btn, .comentarios a.btn{
-  padding: 3px 0;
+.comentarios .btn{
+  border-radius: 1em;
 }
-
-.comentarios thead tr:first-child button.btn{
-  //float: right;
-  //margin-top: -28px;
-  //margin-right: -10px;
-}
-.comentarios thead tr:first-child select.form-control{
-  width: 45% !important;
-  display: inline-block;
-}
-.comentarios tbody tr select.form-control{
-  //
-  //width: 48%;
+.comentarios thead table th, .comentarios thead table td{
+  text-align: center;
+  vertical-align: middle;
 }
 .comentarios blockquote{
   font-size: 1em!important;
@@ -36,19 +26,15 @@ blockquote{
   border-radius: 1.5em;
   border: 0px !important;
 }
-
 blockquote.op{
-  //border-left: 2px #ccc solid;
   background-color: #f3f3f3;
-  //border-bottom-right-radius: 1.5em;
-  //border-top-right-radius: 1.5em;
 }
 blockquote.respuesta{
-  //border-right: 2px #ccc solid;
-  //border-bottom-left-radius: 1.5em;
-  //border-top-left-radius: 1.5em;
   background-color: #dedede;
   text-align: right;
   border-left: 0px;
   font-style: italic;
+}
+.comentarios .tooltip-inner{
+  text-align: left!important;
 }
