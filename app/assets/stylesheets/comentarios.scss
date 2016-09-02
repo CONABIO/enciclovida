@@ -17,23 +17,41 @@
   text-align: center;
   vertical-align: middle;
 }
-.comentarios blockquote{
-  font-size: 1em!important;
+a.historial.btn{
+  float: right;
 }
-blockquote{
-  margin:2px .4ex 2px .4ex;
+a.historial.btn > span{
+  color: white;
+  background-color: #666666;
+  border-radius: 1em;
+  text-shadow: none;
+  padding: 0 5px;
+}
+.comentario-burbuja{
+  margin-top:4px;
+  margin-bottom:4px;
   padding: 5px 10px;
   border-radius: 1.5em;
+  min-width: 85%;
+  max-width: 85%;
+  font-size: 1.2;
   border: 0px !important;
 }
-blockquote.op{
-  background-color: #f3f3f3;
+.comentario-burbuja.op{
+  -webkit-box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  -moz-box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  margin-right: 15%;
 }
-blockquote.respuesta{
-  background-color: #dedede;
+.comentario-burbuja.respuesta{
+  background-color: #efefef;
   text-align: right;
   border-left: 0px;
   font-style: italic;
+  -webkit-box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  -moz-box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  margin-left: 15%;
 }
 .comentarios .tooltip-inner{
   text-align: left!important;
