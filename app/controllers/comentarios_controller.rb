@@ -365,9 +365,7 @@ class ComentariosController < ApplicationController
     end
 
     if comment.save
-
       correo.subject = correo.subject.to_s + " [ID:##{comment.id}]" if !es_respuesta
-      puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
     end
   end
 
