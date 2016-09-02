@@ -34,7 +34,7 @@ a.historial.btn > span{
   border-radius: 1.5em;
   min-width: 85%;
   max-width: 85%;
-  font-size: 1.2;
+  font-size: .95em;
   border: 0px !important;
 }
 .comentario-burbuja.op{
@@ -52,6 +52,14 @@ a.historial.btn > span{
   -moz-box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
   box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
   margin-left: 15%;
+}
+.comentarios textarea{
+  width: 99%;
+  margin: 10px 0 10px 1%;
+  border-radius: 4px;
+}
+.comentarios .comentario label{
+  margin-left: 1%;
 }
 .comentarios .tooltip-inner{
   text-align: left!important;

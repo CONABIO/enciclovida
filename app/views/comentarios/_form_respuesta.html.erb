@@ -1,12 +1,12 @@
 <%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", class: 'form-inline') do |f| %>
 
     <div class="comentario">
-      <%= f.label :comentario, 'Responder' %>
-      <%= f.text_area :comentario, class: 'form-control' %>
+      <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí" %>
+      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning sr-only' %>
     </div>
 
     <div class="actions">
-      <%= f.submit :Enviar, class: 'comentario_submit' %>
+      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success pull-right' %>
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
