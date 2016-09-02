@@ -19,17 +19,7 @@
             </div>
             <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
         <% else %>
-            <%= render 'historial', c: c %>
-
-            <p>
-              <% if c.cuantos > 0 %>
-                  <%= link_to(c.cuantos == 1 ? t('comentario.x_comentario.uno') : t('comentario.x_comentario.varios', cuantos: c.cuantos), '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
-              <% else %>
-                  <%= link_to('Responder', '', class: 'historial', comentario_id: c.id, especie_id: c.especie_id) %>
-              <% end %>
-
-              <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", style: 'display: none;' %>
-            </p>
+             <%= render 'historial', c: c %>
         <% end %>
         <div id="historial_<%= c.id %>"></div>
 

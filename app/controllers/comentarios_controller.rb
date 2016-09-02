@@ -307,7 +307,7 @@ class ComentariosController < ApplicationController
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
-      c.completa_info
+      c.completa_info(c.root.usuario_id)
     end
 
     @categoria_comentario = CategoriaComentario.grouped_options
@@ -365,9 +365,7 @@ class ComentariosController < ApplicationController
     end
 
     if comment.save
-
       correo.subject = correo.subject.to_s + " [ID:##{comment.id}]" if !es_respuesta
-      puts 'Guarde correo con subject: ' + correo.subject.to_s + ' en la BD'
     end
   end
 
