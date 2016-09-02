@@ -173,13 +173,15 @@ $(document).ready(function(){
     {
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
+        var ficha = $(this).attr('ficha');
 
         if (especie_id == undefined || comentario_id == undefined)
             return false;
 
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
-            method: 'GET'
+            method: 'GET',
+            data: {ficha: ficha}
 
         }).done(function(html) {
             $('#historial_' + comentario_id).empty().append(html).slideDown();

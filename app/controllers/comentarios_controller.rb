@@ -25,6 +25,12 @@ class ComentariosController < ApplicationController
   # GET /comentarios/1.json
   # Show de la vista de admins
   def show
+    @ficha = if params[:ficha].present?
+               params[:ficha] == '1' ? true : false
+             else
+               false
+             end
+
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
 

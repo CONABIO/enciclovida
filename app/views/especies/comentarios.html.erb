@@ -1,10 +1,12 @@
 <% if @comentarios.any? %>
     <%- @comentarios.each do |comentario| -%>
-          <%= render 'comentarios/historial', c: comentario %>
+        <%= render 'comentarios/historial', c: comentario, ficha: true %>
 
-          <% if comentario.cuantos == 0 %>
-              Aún no hay respuesta a este comentario
-          <% end %>
+        <% if comentario.cuantos == 0 %>
+            Aún no hay respuesta a este comentario
+        <% end %>
+
+        <div id="historial_<%= comentario.id %>"></div>
     <% end %>
 
 <% else %>
