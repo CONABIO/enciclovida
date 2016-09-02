@@ -1,12 +1,8 @@
 <% if @comentarios.any? %>
-    <%- @comentarios.each do |comentario|
-      comentario.completa_info((comentario.usuario_id if comentario.is_root?))
-    -%>
-        <p>
+    <%- @comentarios.each do |comentario| comentario.completa_info((comentario.usuario_id if comentario.is_root?)) -%>
           <%= render 'comentarios/historial', c: comentario %>
 
-          <%
-             respuestas = comentario.descendant_ids.length
+          <% respuestas = comentario.descendant_ids.length
              if respuestas > 0
           %>
                 <%= respuestas %> respuesta(s) <%= link_to('Ver más', nil, class: 'historial_ficha', comentario_id: comentario.id, especie_id: comentario.especie_id) %>
@@ -14,10 +10,8 @@
           <%  else %>
               Aún no hay respuesta a este comentario
           <% end %>
-        </p>
     <% end %>
 
 <% else %>
-    Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, ¿deseas añadir un comentario, sugerencia o corrección?
-    <%= link_to('Añadir', new_especie_comentario_path(@especie)) %>
+    Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, contribuye con un <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>
 <% end %>
