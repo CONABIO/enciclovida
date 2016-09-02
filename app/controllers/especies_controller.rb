@@ -420,6 +420,11 @@ class EspeciesController < ApplicationController
   # Muestra los comentarios relacionados a la especie
   def comentarios
     @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (1,2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
+
+    @comentarios.each do |c|
+      c.cuantos = c.descendants.count
+      c.completa_info((c.usuario_id if c.is_root?))
+    end
   end
 
   private

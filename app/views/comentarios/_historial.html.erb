@@ -1,4 +1,16 @@
-<blockquote class="<%= c.es_propietario ? 'op bg-success' : 'respuesta' %>">
+<% ficha ||= @ficha %>
+
+<% if c.cuantos.present? %>
+    <% if c.cuantos > 0 %>
+        <%= link_to("Ver más... <span>#{c.cuantos}</span>".html_safe, '', class: 'historial btn btn-default btn-xs', comentario_id: c.id, especie_id: c.especie_id, ficha: ficha ? '1' : '0') %>
+    <% else %>
+        <%= link_to("Responder <i class='glyphicon glyphicon-edit text-warning'></i>".html_safe, '',
+                    class: 'historial btn btn-default btn-xs text-warning', comentario_id: c.id, especie_id: c.especie_id) if !ficha %>
+    <% end %>
+    <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", class: 'historial btn btn-default btn-xs', style: 'display: none;' %>
+<% end %>
+
+<div class="comentario-burbuja <%= c.es_propietario ? 'op bg-warning' : 'respuesta' %>">
   <%= c.comentario %> <br />
   <small><%= c.nombre %> - <%= c.created_at.strftime('%d/%m/%y-%H:%M') %></small>
-</blockquote>
+</div>

@@ -88,12 +88,7 @@ $(document).ready(function(){
     }).one('click',function(){
         if (!Boolean($(this).hasClass('noLoad'))){
             idPestaña = this.getAttribute('href');
-
-            //if (idPestaña == '#comentarios')
-            //    pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','')+'_taxon';
-            //else
             pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
-            console.log(pestaña);
             $(idPestaña).load(pestaña);
         }
     });
