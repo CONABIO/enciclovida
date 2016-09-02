@@ -6,6 +6,7 @@
     <% end %>
     <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", class: 'historial btn btn-default btn-xs', style: 'display: none;' %>
 <% end %>
+
 <div class="comentario-burbuja <%= c.es_propietario ? 'op bg-warning' : 'respuesta' %>">
   <%= c.comentario %> <br />
   <small><%= c.nombre %> - <%= c.created_at.strftime('%d/%m/%y-%H:%M') %></small>

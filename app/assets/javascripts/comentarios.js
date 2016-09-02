@@ -174,6 +174,9 @@ $(document).ready(function(){
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
 
+        if (especie_id == undefined || comentario_id == undefined)
+            return false;
+
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
             method: 'GET'
@@ -196,7 +199,7 @@ $(document).ready(function(){
         $('#historial_' + comentario_id).hide();
         $('#ocultar_' + comentario_id).hide();
         link_historial.slideDown();
-
+        console.log('aqui');
         return false;
     });
 
