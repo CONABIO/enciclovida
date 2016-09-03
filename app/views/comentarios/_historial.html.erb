@@ -11,6 +11,6 @@
 <% end %>
 
 <div class="comentario-burbuja <%= c.es_propietario ? 'op bg-warning' : 'respuesta' %>">
-  <%= c.comentario %> <br />
+  <%= c.comentario.html_safe %> <br />
   <small><%= c.nombre %> - <%= c.created_at.strftime('%d/%m/%y-%H:%M') %></small>
 </div>
