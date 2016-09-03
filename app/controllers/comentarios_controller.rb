@@ -354,24 +354,27 @@ class ComentariosController < ApplicationController
   def guarda_correo_bd(correo)
     comment = Comentario.new
 
-    comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
+    tiene_id = correo.subject.to_s.include?('###[') && correo.subject.to_s.include?(']###')#correo.subject.to_s.include?('###[')
+
+    #comment.comentario= correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
+    comment.comentario = correo.html_part.decoded
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
     comment.categoria_comentario_id = 29
     comment.created_at = correo.header[:date].value.to_time
 
-    es_respuesta = correo.subject.to_s.include?('[ID:#')
-    if es_respuesta
-      inicio_id = correo.subject.to_s.index('[ID:#') + 5
-      id_original = correo.subject.to_s[inicio_id..-2]
+    if tiene_id
+      id_original = correo.subject.slice!(/###\[[[:alnum:]]+\]###/).slice!(/[[:alnum:]]+/)
+      comentario_root = Comentario.find(id_original)
       comment.estatus = 6
-      comment.ancestry = Comentario.find(id_original).subtree_ids.join('/')
-      correo_subject = correo_subject.to_s[0..inicio_id-1]
+      comment.ancestry = comentario_root.subtree_ids.join('/')
+      #correo.subject = correo.subject.to_s[0..tiene_id-1]
     end
 
     if comment.save
-      correo.subject = correo.subject.to_s + " [ID:##{comment.id}]" if !es_respuesta
+      correo.subject = correo.subject.to_s + "###[#{comment.id}]###"
+      comment.general.update_column(:subject, correo.subject.codifica64)
     end
   end
 
@@ -382,8 +385,8 @@ class ComentariosController < ApplicationController
 
   def dame_correo(id)
     c = Comentario.find(id.to_s)
-    s = "#{Base64.decode64(c.comentario).force_encoding('UTF-8')}".force_encoding('ASCII-8BIT')
-    s = "#{s} [ID:##{c.id}]" if c.is_root?
+    s = "#{Base64.decode64(c.general.subject).force_encoding('UTF-8')}".force_encoding('ASCII-8BIT')
+    #s = "#{s} [ID:##{c.id}]" if c.is_root?
     response = Mail.find(count: 1000, order: :asc, mailbox: @folder[:pendientes] ,delete_after_find: false, keys: ['SUBJECT', s])
     response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
@@ -393,8 +396,8 @@ class ComentariosController < ApplicationController
     x = c.reply
     x.html_part = Mail::Part.new do
       content_type 'text/html; charset=UTF-8'
-      body "\r\n\r\n<div>#{mensaje}</div><br /><br /><br />\r\n\r\n"+
-               "<blockquote style='margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex'>"+
+      body "\r\n\r\n<div class='comentarios-generales-actual'>#{mensaje}<br /><br /></div>\r\n\r\n"+
+               "<blockquote class='comentarios-generales-historial'>"+
                c.html_part.decoded.force_encoding('UTF-8')+
                "</blockquote>"
     end
