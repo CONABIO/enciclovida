@@ -201,7 +201,6 @@ $(document).ready(function(){
         $('#historial_' + comentario_id).hide();
         $('#ocultar_' + comentario_id).hide();
         link_historial.slideDown();
-        console.log('aqui');
         return false;
     });
 
