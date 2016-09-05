@@ -333,6 +333,9 @@ class BusquedasController < ApplicationController
 
             # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
             if @totales > 0
+              # Para saber si el correo es correcto y poder enviar la descarga
+              con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
+
               if @totales <= 200
                 # Si son menos de 200, es optimo para bajarlo en vivo
                 query = eval(busqueda).distinct.to_sql
@@ -341,13 +344,25 @@ class BusquedasController < ApplicationController
 
                 @taxones = lista.datos_descarga(taxones)
                 @atributos = lista.columnas
+
                 render xlsx: 'resultados'
+
               else  # Creamos el excel y lo mandamos por correo por medio de delay_job
-                opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-                lista.to_excel(opts)
+                if con_correo
+                  if Rails.env.production?
+                    lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+                  else
+                    lista.to_excel({busqueda: busqueda, avanzada: true})
+                  end
+
+                  render json: {estatus: 1}
+                else
+                  render json: {estatus: 0}
+                end
+
               end
 
-            end
+            end  # end totales
           }
         end
 

@@ -43,10 +43,6 @@ class Lista < ActiveRecord::Base
   end
 
   def to_excel(opts={})
-    # Para buscar y completar la informacion de los taxones
-    t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-    taxones = lista.datos_descarga(t)
-
     # Para crear el excel con los datos
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
@@ -60,7 +56,19 @@ class Lista < ActiveRecord::Base
       columna+= 1
     end
 
-    taxones.each do |t|
+    if opts[:basica]
+      # Para buscar y completar la informacion de los taxones
+      t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
+      taxones = lista.datos_descarga(t)
+
+    elsif opts[:avanzada]
+      query = eval(opts[:busqueda]).distinct.to_sql
+      consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
+      taxones = Especie.find_by_sql(consulta)
+    end
+
+    taxones.each do |taxon|
+      t = asigna_datos(taxon)
       columna = 0
 
       columnas.each do |a|
@@ -80,6 +88,10 @@ class Lista < ActiveRecord::Base
     nombre_archivo = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
     FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
     xlsx.write("#{ruta_excel}/#{nombre_archivo}.xlsx")
+
+    if opts[:correo].present? && File.exists?("#{ruta_excel}/#{nombre_archivo}.xlsx")
+      EnviaCorreo.descargar_taxa("#{CONFIG.site_url}descargas_resultados/#{nombre_archivo}.xlsx", opts[:correo]).deliver
+    end
   end
 
   # Arma el query para mostrar el contenido de las listas
