@@ -335,7 +335,10 @@ class BusquedasController < ApplicationController
             if @totales > 0
               if @totales <= 200
                 # Si son menos de 200, es optimo para bajarlo en vivo
-                taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+                query = eval(busqueda).distinct.to_sql
+                consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
+                taxones = Especie.find_by_sql(consulta)
+
                 @taxones = lista.datos_descarga(taxones)
                 @atributos = lista.columnas
                 render xlsx: 'resultados'
