@@ -2,11 +2,11 @@
 
     <div class="comentario">
       <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí" %>
-      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning sr-only' %>
+      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning' %>
     </div>
 
-    <div class="actions">
-      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success pull-right' %>
+    <div class="actions pull-right">
+      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success' %>
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
@@ -31,17 +31,21 @@
 
 <script>
     $(document).ready(function() {
+        console.log('entre1');
         $('.comentario_submit').click(function () {
+            // Busco el comentario de la forma que le corresponde (¬¬! así no!!! ggonzalez)
+            // var label = $(this).parent().prev().children().first();
+            // var comentario = $(this).parent().prev().children().last();
+            // Busco AHORA sí el comentario de forma igual de puerca, pero al menos ya se envía (¬¬ ggonzalez)
+            var label = $(this).parent().prev().children('label');
+            var comentario = $(this).parent().prev().children('textarea');
 
-            // Busco el comentario de la forma que le corresponde
-            var label = $(this).parent().prev().children().first();
-            var comentario = $(this).parent().prev().children().last();
             var historial_comentarios = $(this).parent().parent().prev();
 
-            if (comentario.val() == '')
+            if (comentario.val() == ''){
                 label.addClass('error_mensaje');
+            }
             else {
-
                 var form = $(this).parent().parent();
                 var ancestry = $(this).parent().nextAll().slice(0,1);
                 label.removeClass('error_mensaje');
@@ -53,6 +57,7 @@
                     data: form.serialize()
 
                 }).done(function(resp) {
+            console.log('entre3b done');
 
                     //return false;
                     if (resp.estatus == 1)
