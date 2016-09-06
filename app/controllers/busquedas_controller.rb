@@ -328,8 +328,11 @@ class BusquedasController < ApplicationController
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
           format.xlsx {
             lista = Lista.new
-            lista.columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+            columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+            lista.columnas = columnas.join(',')
             lista.formato = 'xlsx'
+            lista.cadena_especies = request.original_url
+            lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
 
             # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
             if @totales > 0
@@ -337,20 +340,28 @@ class BusquedasController < ApplicationController
               con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
 
               if @totales <= 200
+                # el nombre de la lista es cuando la bajo ya que no metio un correo
+                lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
                 # Si son menos de 200, es optimo para bajarlo en vivo
                 query = eval(busqueda).distinct.to_sql
                 consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
                 taxones = Especie.find_by_sql(consulta)
 
                 @taxones = lista.datos_descarga(taxones)
-                @atributos = lista.columnas
+                @atributos = columnas
 
-                render xlsx: 'resultados'
+                if Rails.env.production?  # Solo en produccion la guardo
+                  render(xlsx: 'resultados') if lista.save
+                else
+                  render xlsx: 'resultados'
+                end
 
               else  # Creamos el excel y lo mandamos por correo por medio de delay_job
                 if con_correo
                   if Rails.env.development?
-                    lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+                    # el nombre de la lista es cuando la bajo ya, y el correo
+                    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida_#{params[:correo]}"
+                    lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
                   else
                     lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
                   end

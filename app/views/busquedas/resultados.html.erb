@@ -207,8 +207,8 @@
                     return false;
                 }
             } else {
-                //$('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
                 window.location.replace(url_xlsx);
+                $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
             }
         });
     });
