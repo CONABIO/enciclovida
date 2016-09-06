@@ -30,11 +30,13 @@ class ComentariosController < ApplicationController
              else
                false
              end
+    #las lineas de acá arriba no se puede sustituir por:
+    #@ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
 
-    if !@comentario.general
+    #if !@comentario.general
       if cuantos > 0
         resp = @comentario.descendants.map{ |c|
           c.completa_info(@comentario.usuario_id)
@@ -46,7 +48,7 @@ class ComentariosController < ApplicationController
       else
         @comentarios = {estatus:1, cuantos: cuantos}
       end
-    end
+    #end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
     ultimo_comentario = @comentario.subtree.order('ancestry ASC').map(&:id).reverse.first
@@ -357,7 +359,8 @@ class ComentariosController < ApplicationController
     tiene_id = correo.subject.to_s.include?('###[') && correo.subject.to_s.include?(']###')#correo.subject.to_s.include?('###[')
 
     #comment.comentario= correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
-    comment.comentario = correo.html_part.decoded
+    comment.comentario = correo.text_part.decoded
+    #comment.comentario = correo.html_part.decoded
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
@@ -370,6 +373,9 @@ class ComentariosController < ApplicationController
       comment.estatus = 6
       comment.ancestry = comentario_root.subtree_ids.join('/')
       #correo.subject = correo.subject.to_s[0..tiene_id-1]
+      puts comment.comentario
+      inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
+      comment.comentario = comment.comentario[0..inicio_correos_viejos]
     end
 
     if comment.save
@@ -394,15 +400,22 @@ class ComentariosController < ApplicationController
   def responde_correo(id, mensaje)
     c = dame_correo(id)
     x = c.reply
-    x.html_part = Mail::Part.new do
-      content_type 'text/html; charset=UTF-8'
-      body "\r\n\r\n<div class='comentarios-generales-actual'>#{mensaje}<br /><br /></div>\r\n\r\n"+
-               "<blockquote class='comentarios-generales-historial'>"+
-               c.html_part.decoded.force_encoding('UTF-8')+
-               "</blockquote>"
+    x.text_part = Mail::Part.new do
+      content_type 'text/plain; charset=UTF-8'
+      #body "\r\n\r\n<div class='comentarios-generales-actual'>AQUI VA EL MENSAJE: \n  #{mensaje}<br /><br /></div>\r\n\r\n"+
+      #         "<blockquote class='comentarios-generales-historial'>"+
+      #         c.html_part.decoded.force_encoding('UTF-8')+
+      #         "</blockquote>"
+      body "***:: Su comentario enviado a EncicloVida ha sido contestado ::***\n\n" +
+               "\n\n" + mensaje +
+               "\n\n:: Gracias por usar nuestra plataforma.\n" +
+               "\n:: Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación." +
+               "\n:: Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo \n" +
+               "\n:: ¡Muchas Gracias!\n\n" +
+               c.text_part.decoded.force_encoding('UTF-8')
     end
 
-    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx')
+    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx' || x.to.first == 'ggonzalez@conabio.gob.mx')
   end
 
   # Use callbacks to share common setup or constraints between actions.

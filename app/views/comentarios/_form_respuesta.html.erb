@@ -2,11 +2,11 @@
 
     <div class="comentario">
       <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí" %>
-      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning sr-only' %>
+      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning' %>
     </div>
 
-    <div class="actions">
-      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success pull-right' %>
+    <div class="actions pull-right">
+      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success' %>
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
@@ -32,16 +32,16 @@
 <script>
     $(document).ready(function() {
         $('.comentario_submit').click(function () {
+            // Busco AHORA sí el comentario, si cambia el orden de las etiquetas, revisar aquí (¬¬ ggonzalez)
+            var label = $(this).parent().prev().children('label');
+            var comentario = $(this).parent().prev().children('textarea');
 
-            // Busco el comentario de la forma que le corresponde
-            var label = $(this).parent().prev().children().first();
-            var comentario = $(this).parent().prev().children().last();
             var historial_comentarios = $(this).parent().parent().prev();
 
-            if (comentario.val() == '')
+            if (comentario.val() == ''){
                 label.addClass('error_mensaje');
+            }
             else {
-
                 var form = $(this).parent().parent();
                 var ancestry = $(this).parent().nextAll().slice(0,1);
                 label.removeClass('error_mensaje');
@@ -53,6 +53,7 @@
                     data: form.serialize()
 
                 }).done(function(resp) {
+            console.log('entre3b done');
 
                     //return false;
                     if (resp.estatus == 1)
@@ -61,10 +62,10 @@
                         /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
                             window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
                        /* else {*/
-                            html_blockquote='<blockquote class="respuesta">'+
+                            html_blockquote='<div class="comentario-burbuja respuesta">'+
                             comentario.val()+ '<br />'+
                             '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
-                            '</blockquote>';
+                            '</div>';
                             historial_comentarios.append(html_blockquote);
                             ancestry.val(resp.ancestry);
                             comentario.val('');
