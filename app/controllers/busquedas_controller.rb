@@ -349,10 +349,10 @@ class BusquedasController < ApplicationController
 
               else  # Creamos el excel y lo mandamos por correo por medio de delay_job
                 if con_correo
-                  if Rails.env.production?
+                  if Rails.env.development?
                     lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
                   else
-                    lista.to_excel({busqueda: busqueda, avanzada: true})
+                    lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
                   end
 
                   render json: {estatus: 1}

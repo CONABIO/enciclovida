@@ -102,9 +102,16 @@
             }
 
             if (datos_descarga.cuantos > 200)
+            {
                 $('#boton_enviar_descarga').attr('disabled','disabled');
-            else
+                $('#correo').show();
+                $('#label_correo').show();
+
+            } else {
                 $('#boton_enviar_descarga').removeAttr('disabled');
+                $('#correo').hide();
+                $('#label_correo').hide();
+            }
 
             // Es cero ya que cuenta los espacios en el div ***
             // No mover la linea del div donde pone el tab shalalala
@@ -171,7 +178,6 @@
 
         // Para validar una ultima vez cuando paso la validacion del boton
         $(document).on('click', '#boton_enviar_descarga', function(){
-            console.log('aqui');
             var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
 
             // No datos mayores a 200
@@ -181,11 +187,27 @@
 
                 if(isValidEmailAddress(correo))
                 {
-                    window.location.replace(url_xlsx);
+                    $.ajax({
+                        url: url_xlsx + "&correo=" + correo,
+                        type: 'GET',
+                        dataType: "json"
+                    }).done(function(resp) {
+                        if (resp.estatus == 1)
+                        {
+                            $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
+                        } else {
+                            $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                        }
+
+                    }).fail(function(){
+                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    });
+
                 } else {
                     return false;
                 }
             } else {
+                //$('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
                 window.location.replace(url_xlsx);
             }
         });
@@ -317,13 +339,15 @@
           Para resultados mayores a <strong>200</strong> es necesario proporcionar un correo electrónico, al cual
           se te enviará un archivo excel (.xlsx) con la taxa correspondiente.
 
-        <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de taxa</small></p>
+          <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de taxa</small></p>
         </p>
         <div class="form-group has-feedback">
-          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label' %> <small>(Opcional si son menos de 200)</small>
-          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo', style: ('display:none;' if @totales <= 200) %>
+          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales <= 200) %>
           <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
           <span id="inputSuccess2Status" class="sr-only">(success)</span>
+
+          <span id="estatus_descargar_taxa"></span>
         </div>
 
       </div>

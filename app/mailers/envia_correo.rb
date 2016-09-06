@@ -29,7 +29,7 @@ class EnviaCorreo < Devise::Mailer
 
   def descargar_taxa(ruta, correo)
     @ruta = ruta
-    mail(:to => correo, :subject => 'EncicloVida: Descargar taxa') if Rails.env.production?
+    mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')# if Rails.env.production?
   end
 
 
