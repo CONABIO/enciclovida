@@ -31,12 +31,8 @@
 
 <script>
     $(document).ready(function() {
-        console.log('entre1');
         $('.comentario_submit').click(function () {
-            // Busco el comentario de la forma que le corresponde (¬¬! así no!!! ggonzalez)
-            // var label = $(this).parent().prev().children().first();
-            // var comentario = $(this).parent().prev().children().last();
-            // Busco AHORA sí el comentario de forma igual de puerca, pero al menos ya se envía (¬¬ ggonzalez)
+            // Busco AHORA sí el comentario, si cambia el orden de las etiquetas, revisar aquí (¬¬ ggonzalez)
             var label = $(this).parent().prev().children('label');
             var comentario = $(this).parent().prev().children('textarea');
 
@@ -66,10 +62,10 @@
                         /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
                             window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
                        /* else {*/
-                            html_blockquote='<blockquote class="respuesta">'+
+                            html_blockquote='<div class="comentario-burbuja respuesta">'+
                             comentario.val()+ '<br />'+
                             '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
-                            '</blockquote>';
+                            '</div>';
                             historial_comentarios.append(html_blockquote);
                             ancestry.val(resp.ancestry);
                             comentario.val('');
