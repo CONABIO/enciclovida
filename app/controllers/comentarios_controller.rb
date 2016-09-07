@@ -373,6 +373,21 @@ class ComentariosController < ApplicationController
       comment.estatus = 6
       comment.ancestry = comentario_root.subtree_ids.join('/')
       #correo.subject = correo.subject.to_s[0..tiene_id-1]
+      #Aqui se tiene q incluir NOKOGIRI
+      #LA IDEA ES ESTO, UNA MINI FUNCION RECURSIVA
+      #sí, lo se, es un gasto horrible de memoria, pero el caso promedio no hara mas de unas 10 iteraciones
+      #la idea es esta:
+      #revisar si el correo ya tiene una etiqueta html, de ser asi, sustituirla por alguna otra correo.html_part.decoded.gsub('html', 'oldhtml')
+      #el doc se parseara como html, pero los elementos seran xml
+      #se hace Nokogiri::HTML(correo.html_part.decoded) (previa sustitucion de la etiqueta html) y se asigna  a variable 'g'
+      # aqui se raliza un metodito local llamado tiene_texto
+      # def tiene_texto (g) {g.children[0].class=='Nokogiri::XML::Text'}
+      # y la llamada recursiva
+      # tiene_texto(g) ? g.children[0].text : tiene_texto(g.children[0])
+      #(o algo así. (si ya se q no tiene caso, base, esto se tiene que estudiar y solucionar, internet no me odies por esta aberración 101))
+      # comentarios guardados por premura de tiempo, mañana los quito
+      # g.children[1].children[0].children[0].children[0] esta linea fue la q me inspiro, NO PERDER
+      # lo siento!!
       puts comment.comentario
       inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
       comment.comentario = comment.comentario[0..inicio_correos_viejos]
