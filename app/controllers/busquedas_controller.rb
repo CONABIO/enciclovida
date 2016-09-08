@@ -277,6 +277,7 @@ class BusquedasController < ApplicationController
           # Imprime el inicio de un TAB
           format.html { render :partial => 'busquedas/resultados' }
           format.json { render json: {taxa: @taxones} }
+          format.xlsx { descargar_taxa_excel(busqueda) }
         elsif pagina > 1 && @taxones.any?
           format.html { render :partial => 'busquedas/_resultados' }
           format.json { render json: {taxa: @taxones} }
@@ -326,55 +327,7 @@ class BusquedasController < ApplicationController
 
           format.html { render action: 'resultados' }
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
-          format.xlsx {
-            lista = Lista.new
-            columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
-            lista.columnas = columnas.join(',')
-            lista.formato = 'xlsx'
-            lista.cadena_especies = request.original_url
-            lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
-
-            # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
-            if @totales > 0
-              # Para saber si el correo es correcto y poder enviar la descarga
-              con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
-
-              if @totales <= 200
-                # el nombre de la lista es cuando la bajo ya que no metio un correo
-                lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-                # Si son menos de 200, es optimo para bajarlo en vivo
-                query = eval(busqueda).distinct.to_sql
-                consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-                taxones = Especie.find_by_sql(consulta)
-
-                @taxones = lista.datos_descarga(taxones)
-                @atributos = columnas
-
-                if Rails.env.production?  # Solo en produccion la guardo
-                  render(xlsx: 'resultados') if lista.save
-                else
-                  render xlsx: 'resultados'
-                end
-
-              else  # Creamos el excel y lo mandamos por correo por medio de delay_job
-                if con_correo
-                  if Rails.env.development?
-                    # el nombre de la lista es cuando la bajo ya, y el correo
-                    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida_#{params[:correo]}"
-                    lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
-                  else
-                    lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
-                  end
-
-                  render json: {estatus: 1}
-                else
-                  render json: {estatus: 0}
-                end
-
-              end
-
-            end  # end totales
-          }
+          format.xlsx { descargar_taxa_excel(busqueda) }
         end
 
       end  # end respond_to
@@ -463,18 +416,56 @@ class BusquedasController < ApplicationController
   def tabs
   end
 
-  def tipoDeBusqueda(tipo, columna, valor)
-    case tipo.to_i
-      when 1
-        "caso_insensitivo('#{columna}', '#{valor}')"
-      when 2
-        "caso_empieza_con('#{columna}', '#{valor}')"
-      when 3
-        "caso_sensitivo('#{columna}', '#{valor}')"
-      when 4
-        "caso_termina_con('#{columna}', '#{valor}')"
-      when 5
-        "caso_rango_valores('#{columna}', \"#{valor}\")"
-    end
+
+  private
+
+  def descargar_taxa_excel(busqueda)
+    lista = Lista.new
+    columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+    lista.columnas = columnas.join(',')
+    lista.formato = 'xlsx'
+    lista.cadena_especies = request.original_url
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+
+    # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
+    if @totales > 0
+      # Para saber si el correo es correcto y poder enviar la descarga
+      con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
+
+      if @totales <= 200
+        # el nombre de la lista es cuando la bajo ya que no metio un correo
+        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+        # Si son menos de 200, es optimo para bajarlo en vivo
+        query = eval(busqueda).distinct.to_sql
+        consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
+        taxones = Especie.find_by_sql(consulta)
+
+        @taxones = lista.datos_descarga(taxones)
+        @atributos = columnas
+
+        if Rails.env.production?  # Solo en produccion la guardo
+          render(xlsx: 'resultados') if lista.save
+        else
+          render xlsx: 'resultados'
+        end
+
+      else  # Creamos el excel y lo mandamos por correo por medio de delay_job
+        if con_correo
+          if Rails.env.production?
+            # el nombre de la lista es cuando la bajo y el correo
+            lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+            lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
+          else
+            lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+          end
+
+          render json: {estatus: 1}
+        else
+          render json: {estatus: 0}
+        end
+
+      end
+
+    end  # end totales
   end
 end

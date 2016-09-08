@@ -50,6 +50,11 @@ class Lista < ActiveRecord::Base
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
 
+    # Por si es un string
+    if columnas.is_a?(String)
+      self.columnas = columnas.split(',')
+    end
+
     # Para la cabecera
     columnas.each do |a|
       sheet.add_cell(0,columna,a)
