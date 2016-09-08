@@ -358,9 +358,7 @@ class ComentariosController < ApplicationController
 
     tiene_id = correo.subject.to_s.include?('###[') && correo.subject.to_s.include?(']###')#correo.subject.to_s.include?('###[')
 
-    #comment.comentario= correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
-    comment.comentario = correo.text_part.decoded
-    #comment.comentario = correo.html_part.decoded
+
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
@@ -388,15 +386,68 @@ class ComentariosController < ApplicationController
       # comentarios guardados por premura de tiempo, mañana los quito
       # g.children[1].children[0].children[0].children[0] esta linea fue la q me inspiro, NO PERDER
       # lo siento!!
-      puts comment.comentario
-      inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
-      comment.comentario = comment.comentario[0..inicio_correos_viejos]
+
+      comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
+
+      #inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
+      #comment.comentario = comment.comentario[0..inicio_correos_viejos]
+
+    else
+      #comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
+      #comment.comentario = correo.text_part.decoded
+      comment.comentario = correo.html_part.decoded
     end
 
     if comment.save
       correo.subject = correo.subject.to_s + "###[#{comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
     end
+  end
+=begin
+  def dame_primer_texto html
+    puts '-inicio'+html.name
+    if (html.name == 'text')
+      puts '_soy texto: '+html.text
+      html.text
+    elsif html.children.length > 0
+      puts 'entre long > 0'
+      html.children.each do |g|
+        puts 'iteracion each: '+g.to_s
+        return dame_primer_texto g if (dame_primer_texto g) != ''
+      end
+    else
+      puts 'no entre a nada DEFAULT'
+    end
+    puts '-fin'+html.name
+  end
+=end
+=begin
+  def dame_primer_texto html
+    resp = ''
+    html.children.each do |g|
+      puts '...'+g.text
+      next if (g.name != 'text' || g.text == '' || g.children.length == 0)
+      resp = g.children.length == 1 ? g.text : (dame_primer_texto g)
+      #resp = g.text
+      #puts '+++'+resp
+      break if resp != ''
+    end
+    return resp
+  end
+=end
+
+  def dame_primer_texto html
+    resp = ''
+    html.children.each do |g|
+      puts '...'+g.name+g.children.length.to_s
+      next if (g.text == '' || (g.children.length == 0 && g.name != 'text'))
+      puts '---'+g.text
+      resp = ((g.children.length == 0) && (g.name=='text')) ? g.text : (dame_primer_texto g)
+      #resp = g.text
+      puts '+++'+resp
+      break if resp != ''
+    end
+    return resp
   end
 
   #Copia un correo en string a una carpeta dada
@@ -416,11 +467,13 @@ class ComentariosController < ApplicationController
     c = dame_correo(id)
     x = c.reply
     x.text_part = Mail::Part.new do
-      content_type 'text/plain; charset=UTF-8'
-      #body "\r\n\r\n<div class='comentarios-generales-actual'>AQUI VA EL MENSAJE: \n  #{mensaje}<br /><br /></div>\r\n\r\n"+
-      #         "<blockquote class='comentarios-generales-historial'>"+
-      #         c.html_part.decoded.force_encoding('UTF-8')+
-      #         "</blockquote>"
+      #content_type 'text/plain; charset=UTF-8'
+      content_type 'text/html; charset=UTF-8'
+      body "\r\n\r\n<div>\n  #{mensaje}<br /><br /></div>\r\n\r\n"+
+               "<div>"+
+               c.html_part.decoded.force_encoding('UTF-8')+
+               "</div>"
+=begin
       body "***:: Su comentario enviado a EncicloVida ha sido contestado ::***\n\n" +
                "\n\n" + mensaje +
                "\n\n:: Gracias por usar nuestra plataforma.\n" +
@@ -428,6 +481,7 @@ class ComentariosController < ApplicationController
                "\n:: Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo \n" +
                "\n:: ¡Muchas Gracias!\n\n" +
                c.text_part.decoded.force_encoding('UTF-8')
+=end
     end
 
     x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx' || x.to.first == 'ggonzalez@conabio.gob.mx')
