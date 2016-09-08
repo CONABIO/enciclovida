@@ -399,7 +399,7 @@ class ComentariosController < ApplicationController
     end
 
     if comment.save
-      correo.subject = correo.subject.to_s + "###[#{comment.id}]###"
+      correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
     end
   end
@@ -466,7 +466,7 @@ class ComentariosController < ApplicationController
   def responde_correo(id, mensaje)
     c = dame_correo(id)
     x = c.reply
-    x.text_part = Mail::Part.new do
+    x.html_part = Mail::Part.new do
       #content_type 'text/plain; charset=UTF-8'
       content_type 'text/html; charset=UTF-8'
       body "\r\n\r\n<div>\n  #{mensaje}<br /><br /></div>\r\n\r\n"+
