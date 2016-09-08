@@ -57,7 +57,7 @@ class Lista < ActiveRecord::Base
 
     # Para la cabecera
     columnas.each do |a|
-      sheet.add_cell(0,columna,a)
+      sheet.add_cell(0,columna,I18n.t("listas_columnas.generales.#{a}", default: I18n.t("listas_columnas.categorias.#{a}", default: a)))
       columna+= 1
     end
 

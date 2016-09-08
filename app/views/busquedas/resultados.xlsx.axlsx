@@ -2,7 +2,7 @@ wb = xlsx_package.workbook
 wb.add_worksheet(name: 'Taxa de EncicloVida') do |sheet|
 
     # Para la cabecera
-    sheet.add_row @atributos
+    sheet.add_row @atributos.map{|a| I18n.t("listas_columnas.generales.#{a}", default: I18n.t("listas_columnas.categorias.#{a}", default: a))}
 
     @taxones.each do |t|
         data = []
