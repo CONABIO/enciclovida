@@ -23,7 +23,7 @@ class BusquedasController < ApplicationController
       if params[:solo_categoria].present?
         # Por si desea descargar el formato en excel o csv sin que haga todos los querys
         if Lista::FORMATOS_DESCARGA.include?(params[:format])
-          @totales = 1
+          @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
         else
           @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
                                                        solo_categoria: params[:solo_categoria]})
@@ -39,7 +39,7 @@ class BusquedasController < ApplicationController
           # Por si desea descargar el formato en excel o csv sin que haga todos los querys
           if !Lista::FORMATOS_DESCARGA.include?(params[:format])
             @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
-            @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: true, original_url: request.original_url})
+            @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
 
             @taxones.each do |t|
               t.cual_nombre_comun_coincidio(params[:nombre])
@@ -125,6 +125,7 @@ class BusquedasController < ApplicationController
           # Despliega el inicio de un TAB que no sea el default
           format.html { render :partial => 'busquedas/resultados' }
           format.json { render json: {taxa: @taxones} }
+          format.xlsx { descargar_taxa_excel }
         elsif pagina > 1 && @taxones.any?
           # Despliega el paginado del TAB que tiene todos
           format.html { render :partial => 'busquedas/_resultados' }
@@ -136,30 +137,7 @@ class BusquedasController < ApplicationController
         else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
           format.html { render action: 'resultados' }
           format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categoria: @por_categoria.present? ? @por_categoria : [] } }
-          format.xlsx {
-            lista = Lista.new
-            lista.columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
-            lista.formato = 'xlsx'
-
-            # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
-            if @taxones.present? && @taxones.any?
-              @atributos = lista.columnas
-              @taxones = lista.datos_descarga(@taxones)
-              render xlsx: 'resultados'
-            elsif @totales > 0
-              if @totales <= 200
-                # Si son menos de 200, es optimo para bajarlo en vivo
-                taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-                @taxones = lista.datos_descarga(taxones)
-                @atributos = lista.columnas
-                render xlsx: 'resultados'
-              else  # Creamos el excel y lo mandamos por correo por medio de delay_job
-                opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-                lista.to_excel(opts)
-              end
-
-            end
-          }
+          format.xlsx { descargar_taxa_excel }
         end
       end  # end respond_to
 
@@ -419,26 +397,45 @@ class BusquedasController < ApplicationController
 
   private
 
-  def descargar_taxa_excel(busqueda)
+  def descargar_taxa_excel(busqueda=nil)
+
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
     lista.formato = 'xlsx'
     lista.cadena_especies = request.original_url
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+    vista_general = I18n.locale.to_s == 'es' ? true : false
+    basica = params[:busqueda] == 'basica' ? true : false
 
-    # Viene del fuzzy match, por ende deben ser menos de 200 y se descargara directo
-    if @totales > 0
+    # Si es una descarga de la busqueda basica y viene del fuzzy match
+    if basica  && @taxones.present? && @taxones.any?
+      @atributos = columnas
+      @taxones = lista.datos_descarga(@taxones)
+      # el nombre de la lista es cuando la bajo ya que no metio un correo
+      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+
+      if Rails.env.production?  # Solo en produccion la guardo
+        render(xlsx: 'resultados') if lista.save
+      else
+        render xlsx: 'resultados'
+      end
+
+    elsif @totales > 0
       # Para saber si el correo es correcto y poder enviar la descarga
       con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
 
-      if @totales <= 200
+      if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
         # el nombre de la lista es cuando la bajo ya que no metio un correo
         lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-        # Si son menos de 200, es optimo para bajarlo en vivo
-        query = eval(busqueda).distinct.to_sql
-        consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-        taxones = Especie.find_by_sql(consulta)
+
+        if basica
+          taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+        else  # Para la avanzada
+          query = eval(busqueda).distinct.to_sql
+          consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
+          taxones = Especie.find_by_sql(consulta)
+        end
 
         @taxones = lista.datos_descarga(taxones)
         @atributos = columnas
@@ -449,23 +446,37 @@ class BusquedasController < ApplicationController
           render xlsx: 'resultados'
         end
 
-      else  # Creamos el excel y lo mandamos por correo por medio de delay_job
+      else  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
         if con_correo
           if Rails.env.production?
-            # el nombre de la lista es cuando la bajo y el correo
+            # el nombre de la lista es cuando la solicito? y el correo
             lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
-            lista.delay(:priority => 2).to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
-          else
-            lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+
+            if basica
+              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
+            else
+              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
+            end
+
+          else  # Para develpment o test
+            if basica  # si es busqueda basica
+              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+              lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
+            else
+              lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+            end
           end
 
           render json: {estatus: 1}
-        else
+        else  # Por si no puso un correo valido
           render json: {estatus: 0}
         end
 
       end
 
-    end  # end totales
-  end
+    else  # No entro a ningun condicional, es un error
+      render json: {estatus: 0}
+    end  # end totales > 0
+  end  # end metodo
 end

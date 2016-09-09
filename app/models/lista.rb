@@ -64,7 +64,7 @@ class Lista < ActiveRecord::Base
     if opts[:basica]
       # Para buscar y completar la informacion de los taxones
       t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-      taxones = lista.datos_descarga(t)
+      taxones = datos_descarga(t)
 
     elsif opts[:avanzada]
       query = eval(opts[:busqueda]).distinct.to_sql

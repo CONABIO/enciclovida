@@ -126,6 +126,10 @@ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
         subquery << ' AND estatus=2'
       end
 
+      if opts[:solo_categoria].present?
+        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
+      end
+
       union << subquery
     end
 
