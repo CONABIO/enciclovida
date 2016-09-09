@@ -3,6 +3,7 @@ class CreateComentariosGenerales < ActiveRecord::Migration
     create_table :comentarios_generales do |t|
       t.string :comentario_id, limit: 10, null: false, default: '', unique: true
       t.text :subject, :null => false
+      t.text :commentArray, :null => false
       t.timestamps
     end
   end
