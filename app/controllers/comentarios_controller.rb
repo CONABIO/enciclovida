@@ -370,24 +370,17 @@ class ComentariosController < ApplicationController
       comentario_root = Comentario.find(id_original)
       comment.estatus = 6
       comment.ancestry = comentario_root.subtree_ids.join('/')
-      #correo.subject = correo.subject.to_s[0..tiene_id-1]
-      #Aqui se tiene q incluir NOKOGIRI
-      #LA IDEA ES ESTO, UNA MINI FUNCION RECURSIVA
-      #sí, lo se, es un gasto horrible de memoria, pero el caso promedio no hara mas de unas 10 iteraciones
-      #la idea es esta:
-      #revisar si el correo ya tiene una etiqueta html, de ser asi, sustituirla por alguna otra correo.html_part.decoded.gsub('html', 'oldhtml')
-      #el doc se parseara como html, pero los elementos seran xml
-      #se hace Nokogiri::HTML(correo.html_part.decoded) (previa sustitucion de la etiqueta html) y se asigna  a variable 'g'
-      # aqui se raliza un metodito local llamado tiene_texto
-      # def tiene_texto (g) {g.children[0].class=='Nokogiri::XML::Text'}
-      # y la llamada recursiva
-      # tiene_texto(g) ? g.children[0].text : tiene_texto(g.children[0])
-      #(o algo así. (si ya se q no tiene caso, base, esto se tiene que estudiar y solucionar, internet no me odies por esta aberración 101))
-      # comentarios guardados por premura de tiempo, mañana los quito
-      # g.children[1].children[0].children[0].children[0] esta linea fue la q me inspiro, NO PERDER
-      # lo siento!!
 
-      comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
+      #Linea ya no necesaria, ya que  ¬¬ si tendre que hacer diferenciación, pero con un array de string (thx caloncho)
+      #comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
+
+      #NO HACERSE BOLAS CON all ESTO, ESCRIBIRLO BONITO
+      papa_inmediato = comment.ancestry.split('/').last
+      correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
+      correo_nuevo2 = correo_nuevo
+      historial_correos = Comentario.find(papa_inmediato).general.commentArray
+      correo_nuevo2.join(',').slice!(historial_correos.join(','))
+      comment.comentario = correo_nuevo2.to_s
 
       #inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
       #comment.comentario = comment.comentario[0..inicio_correos_viejos]
@@ -396,55 +389,27 @@ class ComentariosController < ApplicationController
       #comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
       #comment.comentario = correo.text_part.decoded
       comment.comentario = correo.html_part.decoded
+      #comment.comentario = dame_textos(Nokogiri::HTML(correo.html_part.decoded))
     end
 
     if comment.save
       correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
+      ##comentario, truena pq el papa inmediato es vació pq al momento de enviar el correo no lo guardo en la tabla comentarioGral, so, arreglar ello,
+      ##NOTA IMPORTANTE, LA COMA ES MAL DELIMITADOR, USAR OTRO ASAP
+      comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml"))).to_s ))
     end
   end
-=begin
-  def dame_primer_texto html
-    puts '-inicio'+html.name
-    if (html.name == 'text')
-      puts '_soy texto: '+html.text
-      html.text
-    elsif html.children.length > 0
-      puts 'entre long > 0'
-      html.children.each do |g|
-        puts 'iteracion each: '+g.to_s
-        return dame_primer_texto g if (dame_primer_texto g) != ''
-      end
-    else
-      puts 'no entre a nada DEFAULT'
-    end
-    puts '-fin'+html.name
+
+  def dame_textos html
+    html.search('//text()').map(&:text).keep_if &:present? #MAGIA!!!!!! :D
   end
-=end
-=begin
-  def dame_primer_texto html
-    resp = ''
-    html.children.each do |g|
-      puts '...'+g.text
-      next if (g.name != 'text' || g.text == '' || g.children.length == 0)
-      resp = g.children.length == 1 ? g.text : (dame_primer_texto g)
-      #resp = g.text
-      #puts '+++'+resp
-      break if resp != ''
-    end
-    return resp
-  end
-=end
 
   def dame_primer_texto html
     resp = ''
     html.children.each do |g|
-      puts '...'+g.name+g.children.length.to_s
       next if (g.text == '' || (g.children.length == 0 && g.name != 'text'))
-      puts '---'+g.text
       resp = ((g.children.length == 0) && (g.name=='text')) ? g.text : (dame_primer_texto g)
-      #resp = g.text
-      puts '+++'+resp
       break if resp != ''
     end
     return resp
@@ -469,8 +434,19 @@ class ComentariosController < ApplicationController
     x.html_part = Mail::Part.new do
       #content_type 'text/plain; charset=UTF-8'
       content_type 'text/html; charset=UTF-8'
-      body "\r\n\r\n<div>\n  #{mensaje}<br /><br /></div>\r\n\r\n"+
+      body "\r\n\r\n<div>"+
+               "***:: Su comentario enviado a EncicloVida ha sido contestado ::***"+
+               "</div><br /><br />"+
+               "<div>#{mensaje}</div><br /><br />"+
                "<div>"+
+               "<p>Gracias por usar nuestra plataforma.<br />" +
+               "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
+               "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
+               "¡Muchas Gracias!</p>"+
+               "</div>"+
+               "<br /><br /><br /><br />"+
+               "<div>"+
+               "<p>El #{c.header[:date].value.to_time} se escribió lo siguiente:</p><br /><br />"+
                c.html_part.decoded.force_encoding('UTF-8')+
                "</div>"
 =begin
@@ -484,7 +460,7 @@ class ComentariosController < ApplicationController
 =end
     end
 
-    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx' || x.to.first == 'ggonzalez@conabio.gob.mx')
+    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first.include?("@conabio.gob.mx"))
   end
 
   # Use callbacks to share common setup or constraints between actions.
