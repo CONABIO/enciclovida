@@ -71,7 +71,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
       update_column(:id, idBase32)
-      ComentarioGeneral.new(comentario_id: idBase32, subject: '').save if categoria_comentario_id == 29
+      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_comentario_id == 29
     end
   end
 
