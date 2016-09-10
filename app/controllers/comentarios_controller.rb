@@ -9,7 +9,7 @@ class ComentariosController < ApplicationController
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
+    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos', sent: 'SENT'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV', sent: 'SENTDEV'}
   end
 
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
@@ -212,7 +212,7 @@ class ComentariosController < ApplicationController
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if (params[:categoria_comentario_id] == '29')  # Si es comentario general
-            responde_correo(@comentario.root.id, @comentario.comentario)
+            envia_correo(@comentario)
           else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
@@ -375,12 +375,18 @@ class ComentariosController < ApplicationController
       #comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
 
       #NO HACERSE BOLAS CON all ESTO, ESCRIBIRLO BONITO
+      puts "\ncomment.ancestry: "+comment.ancestry
       papa_inmediato = comment.ancestry.split('/').last
-      correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
-      correo_nuevo2 = correo_nuevo
-      historial_correos = Comentario.find(papa_inmediato).general.commentArray
-      correo_nuevo2.join(',').slice!(historial_correos.join(','))
-      comment.comentario = correo_nuevo2.to_s
+      puts "\npapa_inmediato: "+papa_inmediato
+      correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>")))
+      puts "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
+      correo_nuevo2 = correo_nuevo.join('|').gsub("\r","")
+      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      historial_correos = eval(Comentario.find(papa_inmediato).general.commentArray).join('|').gsub("\r","")
+      puts "\nhistorial_correos: "+historial_correos
+      correo_nuevo2.slice!(historial_correos)
+      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      comment.comentario = correo_nuevo2.gsub("|","\n")
 
       #inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
       #comment.comentario = comment.comentario[0..inicio_correos_viejos]
@@ -397,7 +403,7 @@ class ComentariosController < ApplicationController
       comment.general.update_column(:subject, correo.subject.codifica64)
       ##comentario, truena pq el papa inmediato es vació pq al momento de enviar el correo no lo guardo en la tabla comentarioGral, so, arreglar ello,
       ##NOTA IMPORTANTE, LA COMA ES MAL DELIMITADOR, USAR OTRO ASAP
-      comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml"))).to_s ))
+      comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
     end
   end
 
@@ -428,39 +434,37 @@ class ComentariosController < ApplicationController
     response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
 
-  def responde_correo(id, mensaje)
-    c = dame_correo(id)
-    x = c.reply
-    x.html_part = Mail::Part.new do
-      #content_type 'text/plain; charset=UTF-8'
+  def cuerpo_correo_respuesta mensaje, to_reply
+    "<div>"+
+        "***:: Su comentario enviado a EncicloVida ha sido contestado ::***"+
+        "</div><br /><br />"+
+        "<div>#{mensaje}</div><br /><br />"+
+        "<div>"+
+        "<p>Gracias por usar nuestra plataforma.<br />" +
+        "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
+        "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
+        "¡Muchas Gracias!</p>"+
+        "</div>"+
+        "<br /><hr><br />"+
+        "<p>En #{to_reply.header[:date].value.to_time.strftime('%d/%m/%y-%H:%M')} se escribió lo siguiente:</p>"+
+        "<blockquote>"+
+        to_reply.html_part.decoded.force_encoding('UTF-8')+
+        "</blockquote>"
+  end
+
+  def envia_correo(comentario)
+    last_received_mail = dame_correo(comentario.root.id) # doy elroot pq de todos modos jalo el último q recibí
+    respuesta = last_received_mail.reply # creo la respuesta usndo la gema Mail
+    respuesta_body = cuerpo_correo_respuesta(comentario.comentario, last_received_mail) # String
+    respuesta.html_part = Mail::Part.new do
       content_type 'text/html; charset=UTF-8'
-      body "\r\n\r\n<div>"+
-               "***:: Su comentario enviado a EncicloVida ha sido contestado ::***"+
-               "</div><br /><br />"+
-               "<div>#{mensaje}</div><br /><br />"+
-               "<div>"+
-               "<p>Gracias por usar nuestra plataforma.<br />" +
-               "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
-               "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
-               "¡Muchas Gracias!</p>"+
-               "</div>"+
-               "<br /><br /><br /><br />"+
-               "<div>"+
-               "<p>El #{c.header[:date].value.to_time} se escribió lo siguiente:</p><br /><br />"+
-               c.html_part.decoded.force_encoding('UTF-8')+
-               "</div>"
-=begin
-      body "***:: Su comentario enviado a EncicloVida ha sido contestado ::***\n\n" +
-               "\n\n" + mensaje +
-               "\n\n:: Gracias por usar nuestra plataforma.\n" +
-               "\n:: Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación." +
-               "\n:: Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo \n" +
-               "\n:: ¡Muchas Gracias!\n\n" +
-               c.text_part.decoded.force_encoding('UTF-8')
-=end
+      body respuesta_body
     end
 
-    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first.include?("@conabio.gob.mx"))
+    respuesta.deliver if (Rails.env.production? || respuesta.to.first == 'albertoglezba@gmail.com' || respuesta.to.first.include?("@conabio.gob.mx"))
+    copia_correo(respuesta.to_s, @folder[:sent])
+    comentario.general.update_column(:subject, respuesta.subject.codifica64)
+    comentario.general.update_column(:commentArray, dame_textos(Nokogiri::HTML(respuesta_body)).to_s)
   end
 
   # Use callbacks to share common setup or constraints between actions.
