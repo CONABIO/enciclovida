@@ -38,15 +38,13 @@ class Comentario < ActiveRecord::Base
   email_name_regex  = '[\w\.%\+\-]+'.freeze
   domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
   domain_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
-  email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
+  EMAIL_REGEX       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
   bad_email_message = "no tiene la estructura apropiada.".freeze
 
-  validates_format_of :correo, :with => email_regex, :message => bad_email_message, :if => 'usuario_id.blank?'
+  validates_format_of :correo, :with => EMAIL_REGEX, :message => bad_email_message, :if => 'usuario_id.blank?'
   validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'
 
   after_create :idABase32
-  #after_create :isGeneral
-
 
   scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
   scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }

@@ -66,21 +66,26 @@ class Busqueda
     union = []
 
     select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
- adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
-categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos FROM
- ( '
+adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, ancestry_ascendente_directo,
+cita_nomenclatural, nombres_comunes as nombres_comunes_todos FROM ( '
 
-    from = ") especies
+    from = ') especies
  LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
  LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
  LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- ORDER BY nombre_cientifico ASC OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+ ORDER BY nombre_cientifico ASC'
+
+    if opts[:todos].blank? && opts[:pagina].present? && opts[:por_pagina].present?
+      from << " OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+    end
 
     campos.each do |c|
       subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
  adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
- categoria_taxonomica_id, nombre_categoria_taxonomica, nombres_comunes as nombres_comunes_todos
+ categoria_taxonomica_id, nombre_categoria_taxonomica, ancestry_ascendente_directo,
+ cita_nomenclatural, nombres_comunes as nombres_comunes_todos
  FROM especies
  LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
@@ -119,6 +124,10 @@ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
 
       if opts[:vista_general]
         subquery << ' AND estatus=2'
+      end
+
+      if opts[:solo_categoria].present?
+        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
       end
 
       union << subquery
