@@ -14,7 +14,7 @@ module BusquedasHelper
     radios = ''
     columnas = 1
 
-    Especie.datos_basicos.
+    Especie.datos_basicos(['taxon_icono, icono, nombre_icono, color_icono']).icono_join.
         caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
         order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
 
@@ -116,7 +116,6 @@ module BusquedasHelper
       sin_page_per_page = datos[:request].split('&').map{|attr| attr if !attr.include?('pagina=')}
       peticion = sin_page_per_page.compact.join('&')
       peticion << "&por_pagina=#{datos[:totales]}&checklist=1"
-      link_to('Listado para Revisión (✓)', peticion, :class => 'btn btn-info', :target => :_blank)
     else
       ''
     end

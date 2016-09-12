@@ -27,6 +27,11 @@ class EnviaCorreo < Devise::Mailer
     mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if Rails.env.production?
   end
 
+  def descargar_taxa(ruta, correo)
+    @ruta = ruta
+    mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')# if Rails.env.production?
+  end
+
 
   private
 
