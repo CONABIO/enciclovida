@@ -25,13 +25,7 @@ class ComentariosController < ApplicationController
   # GET /comentarios/1.json
   # Show de la vista de admins
   def show
-    @ficha = if params[:ficha].present?
-               params[:ficha] == '1' ? true : false
-             else
-               false
-             end
-    #las lineas de acá arriba no se puede sustituir por:
-    #@ficha = (params[:ficha].present? && params[:ficha] == '1')
+    @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
@@ -63,7 +57,7 @@ class ComentariosController < ApplicationController
     @comentario.usuario_id = current_usuario.id
 
     # Estatus 6 quiere decir que es parte del historial de un comentario
-    @comentario.estatus = 6
+    @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
     # Categoria comentario ID
     @comentario.categoria_comentario_id = categoriaComentario
@@ -95,6 +89,7 @@ class ComentariosController < ApplicationController
 
       @comentario_resp = @comentario
       cuantos = comentario_root.descendant_ids.count
+      categoriaComentario = @comentario.categoria_comentario_id
 
       if cuantos > 0
         resp = @comentario.descendants.map{ |c|
@@ -125,10 +120,10 @@ class ComentariosController < ApplicationController
         @comentario.institucion = @comentario.institucion
 
         # Estatus 6 quiere decir que es parte del historial de un comentario
-        @comentario.estatus = 6
+        @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
         # Categoria comentario ID
-        @comentario.categoria_comentario_id = 26
+        @comentario.categoria_comentario_id = categoriaComentario
 
         # Caseta de verificacion
         @comentario.con_verificacion = true
