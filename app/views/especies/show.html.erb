@@ -45,7 +45,7 @@
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
-    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong>  Comentarios</strong></a></li>
+    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong>  Comentarios</strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
 
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>

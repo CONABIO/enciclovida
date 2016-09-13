@@ -39,6 +39,7 @@ class EspeciesController < ApplicationController
     fotos_naturalista = @especie.photos.where.not(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
     fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
+    @cuantos = Comentario.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
 
     respond_to do |format|
       format.html do
@@ -419,7 +420,7 @@ class EspeciesController < ApplicationController
 
   # Muestra los comentarios relacionados a la especie
   def comentarios
-    @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (1,2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
+    @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count

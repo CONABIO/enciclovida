@@ -24,10 +24,16 @@
         <td width="15%"></td>
       </tr>
       <% end %>
+      <tr><td colspan="3" style="text-align: right;">
+        ¿Deseas contribuir con un
+        <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>?
+      </td></tr>
+
       <% else %>
           Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, contribuye con un
           <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>
       <% end %>
+
 
   </tbody>
 </table>
