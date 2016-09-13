@@ -211,7 +211,7 @@ class ComentariosController < ApplicationController
       # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          if (params[:categoria_comentario_id] == '29')  # Si es comentario general
+          if @comentario.root.general  # Si es comentario general
             envia_correo(@comentario)
           else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
