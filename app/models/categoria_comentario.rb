@@ -3,24 +3,45 @@ class CategoriaComentario < ActiveRecord::Base
 
   has_ancestry
 
-  def self.grouped_options
+  def self.grouped_options(con_comentario_general=false)
     # Aplicando un low level caching, esta consulta es requerida simpre y casi nunca cambia
-    Rails.cache.fetch('categorias_comentario_grouped_options', expires_in: 12.hours) do
+    if con_comentario_general
+      Rails.cache.fetch('categorias_comentario_grouped_options_con_cc', expires_in: 12.hours) do
 
-      options = []
+        options = []
 
-      CategoriaComentario.all.each do |cc|
-        next unless cc.is_root?
-        grouped_options = []
+        CategoriaComentario.all.each do |cc|
+          next if !cc.is_root? || (cc.id == 28 && con_comentario_general)  # Para no poder escoger un tipo de comentario general
+          grouped_options = []
 
-        descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
-        grouped_options << cc.nombre
-        grouped_options << descendientes if descendientes.any?
+          descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
+          grouped_options << cc.nombre
+          grouped_options << descendientes if descendientes.any?
 
-        options << grouped_options
+          options << grouped_options
+        end
+
+        options
       end
+    else
 
-      options
+      Rails.cache.fetch('categorias_comentario_grouped_options_sin_cc', expires_in: 12.hours) do
+
+        options = []
+
+        CategoriaComentario.all.each do |cc|
+          next unless cc.is_root?
+          grouped_options = []
+
+          descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
+          grouped_options << cc.nombre
+          grouped_options << descendientes if descendientes.any?
+
+          options << grouped_options
+        end
+
+        options
+      end
     end
   end
 

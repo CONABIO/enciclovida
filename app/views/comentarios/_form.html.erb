@@ -34,7 +34,7 @@
 
     <div>
       <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?' %>
-      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options),
+      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),
                    include_blank: '---Elige una opción---', class: 'form-control' %>
     </div>
 
