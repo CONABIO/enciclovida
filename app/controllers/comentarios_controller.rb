@@ -371,38 +371,28 @@ class ComentariosController < ApplicationController
       comment.estatus = 6
       comment.ancestry = comentario_root.subtree_ids.join('/')
 
-      #Linea ya no necesaria, ya que  ¬¬ si tendre que hacer diferenciación, pero con un array de string (thx caloncho)
-      #comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
 
       #NO HACERSE BOLAS CON all ESTO, ESCRIBIRLO BONITO
-      puts "\ncomment.ancestry: "+comment.ancestry
+      #puts "\ncomment.ancestry: "+comment.ancestry
       papa_inmediato = comment.ancestry.split('/').last
-      puts "\npapa_inmediato: "+papa_inmediato
+      #puts "\npapa_inmediato: "+papa_inmediato
       correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>")))
-      puts "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
+      #puts "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
       correo_nuevo2 = correo_nuevo.join('|').gsub("\r","")
-      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      #puts "\ncorreo_nuevo2: "+correo_nuevo2
       historial_correos = eval(Comentario.find(papa_inmediato).general.commentArray).join('|').gsub("\r","")
-      puts "\nhistorial_correos: "+historial_correos
+      #puts "\nhistorial_correos: "+historial_correos
       correo_nuevo2.slice!(historial_correos)
-      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      #puts "\ncorreo_nuevo2: "+correo_nuevo2
       comment.comentario = correo_nuevo2.gsub("|","\n")
 
-      #inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
-      #comment.comentario = comment.comentario[0..inicio_correos_viejos]
-
     else
-      #comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
-      #comment.comentario = correo.text_part.decoded
       comment.comentario = correo.html_part.decoded
-      #comment.comentario = dame_textos(Nokogiri::HTML(correo.html_part.decoded))
     end
 
     if comment.save
       correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
-      ##comentario, truena pq el papa inmediato es vació pq al momento de enviar el correo no lo guardo en la tabla comentarioGral, so, arreglar ello,
-      ##NOTA IMPORTANTE, LA COMA ES MAL DELIMITADOR, USAR OTRO ASAP
       comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
     end
   end
@@ -436,11 +426,11 @@ class ComentariosController < ApplicationController
 
   def cuerpo_correo_respuesta mensaje, to_reply
     "<div>"+
-        "***:: Su comentario enviado a EncicloVida ha sido contestado ::***"+
+        "<strong>Su comentario enviado a EncicloVida ha sido contestado </strong>"+
         "</div><br /><br />"+
-        "<div>#{mensaje}</div><br /><br />"+
+        "<div style='font-style: italic; font-size:larger;'>#{mensaje}</div><br /><br />"+
         "<div>"+
-        "<p>Gracias por usar nuestra plataforma.<br />" +
+        "<p style='font-size:small;'>Gracias por usar nuestra plataforma.<br />" +
         "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
         "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
         "¡Muchas Gracias!</p>"+
