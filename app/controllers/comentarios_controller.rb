@@ -9,7 +9,7 @@ class ComentariosController < ApplicationController
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
-    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV'}
+    @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos', sent: 'SENT'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV', sent: 'SENTDEV'}
   end
 
   layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
@@ -212,7 +212,7 @@ class ComentariosController < ApplicationController
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if @comentario.root.general  # Si es comentario general
-            responde_correo(@comentario.root.id, @comentario.comentario)
+            envia_correo(@comentario)
           else  # Si fue un comentario en la plataforma
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
@@ -358,9 +358,7 @@ class ComentariosController < ApplicationController
 
     tiene_id = correo.subject.to_s.include?('###[') && correo.subject.to_s.include?(']###')#correo.subject.to_s.include?('###[')
 
-    #comment.comentario= correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
-    comment.comentario = correo.text_part.decoded
-    #comment.comentario = correo.html_part.decoded
+
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
@@ -372,16 +370,55 @@ class ComentariosController < ApplicationController
       comentario_root = Comentario.find(id_original)
       comment.estatus = 6
       comment.ancestry = comentario_root.subtree_ids.join('/')
-      #correo.subject = correo.subject.to_s[0..tiene_id-1]
-      puts comment.comentario
-      inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
-      comment.comentario = comment.comentario[0..inicio_correos_viejos]
+
+      #Linea ya no necesaria, ya que  ¬¬ si tendre que hacer diferenciación, pero con un array de string (thx caloncho)
+      #comment.comentario = dame_primer_texto(Nokogiri::HTML(correo.html_part.decoded.gsub("html", "oldhtml")))
+
+      #NO HACERSE BOLAS CON all ESTO, ESCRIBIRLO BONITO
+      puts "\ncomment.ancestry: "+comment.ancestry
+      papa_inmediato = comment.ancestry.split('/').last
+      puts "\npapa_inmediato: "+papa_inmediato
+      correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>")))
+      puts "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
+      correo_nuevo2 = correo_nuevo.join('|').gsub("\r","")
+      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      historial_correos = eval(Comentario.find(papa_inmediato).general.commentArray).join('|').gsub("\r","")
+      puts "\nhistorial_correos: "+historial_correos
+      correo_nuevo2.slice!(historial_correos)
+      puts "\ncorreo_nuevo2: "+correo_nuevo2
+      comment.comentario = correo_nuevo2.gsub("|","\n")
+
+      #inicio_correos_viejos = comment.comentario.index(/\*\*\*::[[:print:]]+::\*\*\*/)
+      #comment.comentario = comment.comentario[0..inicio_correos_viejos]
+
+    else
+      #comment.comentario = correo.subject.codifica64 ##Para poder guardar en la bd, si se desea ver en browser hacer un force_encoding(utf-8)
+      #comment.comentario = correo.text_part.decoded
+      comment.comentario = correo.html_part.decoded
+      #comment.comentario = dame_textos(Nokogiri::HTML(correo.html_part.decoded))
     end
 
     if comment.save
-      correo.subject = correo.subject.to_s + "###[#{comment.id}]###"
+      correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
+      ##comentario, truena pq el papa inmediato es vació pq al momento de enviar el correo no lo guardo en la tabla comentarioGral, so, arreglar ello,
+      ##NOTA IMPORTANTE, LA COMA ES MAL DELIMITADOR, USAR OTRO ASAP
+      comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
     end
+  end
+
+  def dame_textos html
+    html.search('//text()').map(&:text).keep_if &:present? #MAGIA!!!!!! :D
+  end
+
+  def dame_primer_texto html
+    resp = ''
+    html.children.each do |g|
+      next if (g.text == '' || (g.children.length == 0 && g.name != 'text'))
+      resp = ((g.children.length == 0) && (g.name=='text')) ? g.text : (dame_primer_texto g)
+      break if resp != ''
+    end
+    return resp
   end
 
   #Copia un correo en string a una carpeta dada
@@ -397,25 +434,37 @@ class ComentariosController < ApplicationController
     response.last  # Deberia ser solo uno, cachar si es diferente de uno
   end
 
-  def responde_correo(id, mensaje)
-    c = dame_correo(id)
-    x = c.reply
-    x.text_part = Mail::Part.new do
-      content_type 'text/plain; charset=UTF-8'
-      #body "\r\n\r\n<div class='comentarios-generales-actual'>AQUI VA EL MENSAJE: \n  #{mensaje}<br /><br /></div>\r\n\r\n"+
-      #         "<blockquote class='comentarios-generales-historial'>"+
-      #         c.html_part.decoded.force_encoding('UTF-8')+
-      #         "</blockquote>"
-      body "***:: Su comentario enviado a EncicloVida ha sido contestado ::***\n\n" +
-               "\n\n" + mensaje +
-               "\n\n:: Gracias por usar nuestra plataforma.\n" +
-               "\n:: Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación." +
-               "\n:: Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo \n" +
-               "\n:: ¡Muchas Gracias!\n\n" +
-               c.text_part.decoded.force_encoding('UTF-8')
+  def cuerpo_correo_respuesta mensaje, to_reply
+    "<div>"+
+        "***:: Su comentario enviado a EncicloVida ha sido contestado ::***"+
+        "</div><br /><br />"+
+        "<div>#{mensaje}</div><br /><br />"+
+        "<div>"+
+        "<p>Gracias por usar nuestra plataforma.<br />" +
+        "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
+        "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
+        "¡Muchas Gracias!</p>"+
+        "</div>"+
+        "<br /><hr><br />"+
+        "<p>En #{to_reply.header[:date].value.to_time.strftime('%d/%m/%y-%H:%M')} se escribió lo siguiente:</p>"+
+        "<blockquote>"+
+        to_reply.html_part.decoded.force_encoding('UTF-8')+
+        "</blockquote>"
+  end
+
+  def envia_correo(comentario)
+    last_received_mail = dame_correo(comentario.root.id) # doy elroot pq de todos modos jalo el último q recibí
+    respuesta = last_received_mail.reply # creo la respuesta usndo la gema Mail
+    respuesta_body = cuerpo_correo_respuesta(comentario.comentario, last_received_mail) # String
+    respuesta.html_part = Mail::Part.new do
+      content_type 'text/html; charset=UTF-8'
+      body respuesta_body
     end
 
-    x.deliver if (Rails.env.production? || x.to.first == 'albertoglezba@gmail.com' || x.to.first == 'carlos.alonso@conabio.gob.mx' || x.to.first == 'ggonzalez@conabio.gob.mx')
+    respuesta.deliver if (Rails.env.production? || respuesta.to.first == 'albertoglezba@gmail.com' || respuesta.to.first.include?("@conabio.gob.mx"))
+    copia_correo(respuesta.to_s, @folder[:sent])
+    comentario.general.update_column(:subject, respuesta.subject.codifica64)
+    comentario.general.update_column(:commentArray, dame_textos(Nokogiri::HTML(respuesta_body)).to_s)
   end
 
   # Use callbacks to share common setup or constraints between actions.
