@@ -1,3 +1,5 @@
+<%= render('historial', c: @comentario_root) if @comentario_root.present? %>
+
 <div class="historial_comentarios">
   <% if @comentarios.present? && @comentarios[:cuantos] > 0 %>
       <% @comentarios[:resp].each do |c| %>
@@ -6,4 +8,12 @@
   <% end %>
 </div>
 
-<%= render 'form_respuesta' if !@ficha %>
+<% if @sin_caja %>
+    Tu comentario ha sido marcado como solucionado/resuleto. Si deseas añadir otro puedes hacerlo desde la ficha de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
+<% elsif @eliminado %>
+    Tu comentario ha sido marcado como inapropiado u ofensivo. Si deseas añadir otro puedes hacerlo desde la página de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
+<% elsif @moderador %>
+    Tu comentario aún no ha pasado por un moderador. Una vez que pase el filtro podrás verlo desde la página de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
+<% else %>
+    <%= render 'form_respuesta' if !@ficha%>
+<% end %>

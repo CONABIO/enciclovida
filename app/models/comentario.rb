@@ -61,6 +61,8 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   POR_PAGINA_PREDETERMINADO = 10
   RESUELTOS = [3,4]
   ESTATUS_RESPUESTA = 6
+  OCULTAR = 5  # Nunca se borran comentarios, a lo mas los ocualtamos de la vista
+  MODERADOR = 1  # Significa que esta pendiente de mostrarse en la ficha
 
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
