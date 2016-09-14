@@ -336,8 +336,9 @@ class ComentariosController < ApplicationController
   def extrae_comentarios_generales
    #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    response = Comentario.find_all_by_categoria_comentario_id(29)
-    render 'comentarios/generales', :locals => {:response => response}
+    #response = Comentario.find_all_by_categoria_comentario_id(29)
+    #render 'comentarios/generales', :locals => {:response => response}
+    render text: 'Procesados'
   end
 
   def show_correo
@@ -394,6 +395,7 @@ class ComentariosController < ApplicationController
       correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
       comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
+      EnviaCorreo.confirmacion_comentario_general(comment).deliver if !tiene_id ##para usar el mailer de calonso de confirmación
     end
   end
 
