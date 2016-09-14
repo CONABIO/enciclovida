@@ -27,6 +27,11 @@ class EnviaCorreo < Devise::Mailer
     mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba"))
   end
 
+  def confirmacion_comentario_general(comentario)
+    completa_datos_comentario(comentario)
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba"))
+  end
+
   def descargar_taxa(ruta, correo)
     @ruta = ruta
     mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')# if Rails.env.production?

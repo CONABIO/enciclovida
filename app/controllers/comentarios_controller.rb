@@ -1,8 +1,8 @@
 class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :show_correo, :ultimo_id_comentario] do
+  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
@@ -338,8 +338,9 @@ class ComentariosController < ApplicationController
   def extrae_comentarios_generales
    #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    response = Comentario.find_all_by_categoria_comentario_id(29)
-    render 'comentarios/generales', :locals => {:response => response}
+    #response = Comentario.find_all_by_categoria_comentario_id(29)
+    #render 'comentarios/generales', :locals => {:response => response}
+    render text: 'Procesados'
   end
 
   def show_correo
@@ -396,6 +397,7 @@ class ComentariosController < ApplicationController
       correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
       comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
+      EnviaCorreo.confirmacion_comentario_general(comment).deliver if !tiene_id ##para usar el mailer de calonso de confirmación
     end
   end
 
