@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726201747) do
+ActiveRecord::Schema.define(version: 20160824004141) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 20160726201747) do
     t.text     "fotos_principales"
     t.text     "nombres_comunes"
   end
+
+  add_index "adicionales", ["especie_id"], name: "ClusteredIndex-20160727-142909"
+  add_index "adicionales", ["nombre_comun_principal"], name: "NonClusteredIndex-20160727-142836"
 
   create_table "bibliografias", force: true do |t|
     t.text     "observaciones"
@@ -62,6 +65,13 @@ ActiveRecord::Schema.define(version: 20160726201747) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
+  create_table "categorias_comentario", force: true do |t|
+    t.string   "nombre",     null: false
+    t.string   "ancestry"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "categorias_conteo", force: true do |t|
     t.integer  "especie_id",           null: false
     t.integer  "conteo",               null: false
@@ -83,15 +93,45 @@ ActiveRecord::Schema.define(version: 20160726201747) do
 
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
-  create_table "comentarios", force: true do |t|
-    t.text     "comentario",             null: false
+  create_table "comentarios", primary_key: "idConsecutivo", force: true do |t|
+    t.string   "id",                      limit: 10, default: "", null: false
+    t.text     "comentario",                                      null: false
     t.string   "correo"
     t.string   "nombre"
-    t.integer  "especie_id",             null: false
+    t.integer  "especie_id",                                      null: false
     t.integer  "usuario_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "resuelto",   default: 0, null: false
+    t.integer  "estatus",                            default: 1,  null: false
+    t.string   "ancestry"
+    t.datetime "fecha_estatus"
+    t.integer  "usuario_id2"
+    t.integer  "categoria_comentario_id",            default: 26, null: false
+    t.string   "institucion"
+    t.string   "idBak"
+  end
+
+  create_table "comentarios2", force: true do |t|
+    t.text     "comentario",                           null: false
+    t.string   "correo"
+    t.string   "nombre"
+    t.integer  "especie_id",                           null: false
+    t.integer  "usuario_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "estatus",                 default: 1,  null: false
+    t.string   "ancestry"
+    t.datetime "fecha_estatus"
+    t.integer  "usuario_id2"
+    t.integer  "categoria_comentario_id", default: 26, null: false
+    t.string   "institucion"
+  end
+
+  create_table "comentarios_generales", force: true do |t|
+    t.string   "comentario_id", limit: 10, default: "", null: false
+    t.text     "subject",                               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "delayed_jobs", force: true do |t|

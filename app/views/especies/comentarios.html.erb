@@ -1,0 +1,39 @@
+<table class="table table-striped table-condensed table-bordered comentarios">
+  <thead>
+  <tr>
+    <th colspan="3"></th>
+  </tr>
+  </thead>
+  <tbody id="mas_comentarios">
+
+      <% if @comentarios.any? %>
+      <%- @comentarios.each do |comentario| -%>
+          <tr>
+        <td width="15%"></td>
+        <td width="70%">
+
+              <%= render 'comentarios/historial', c: comentario, ficha: true %>
+
+              <% if comentario.cuantos == 0 %>
+                  Aún no hay respuesta a este comentario
+              <% end %>
+
+              <div id="historial_<%= comentario.id %>"></div>
+
+        </td>
+        <td width="15%"></td>
+      </tr>
+      <% end %>
+      <tr><td colspan="3" style="text-align: right;">
+        ¿Deseas contribuir con un
+        <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>?
+      </td></tr>
+
+      <% else %>
+          Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, contribuye con un
+          <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>
+      <% end %>
+
+
+  </tbody>
+</table>

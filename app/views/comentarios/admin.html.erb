@@ -1,53 +1,74 @@
-<table class="table table-hover table-striped table-condensed table-bordered">
-  <thead>
-  <tr>
-    <th>Estatus</th>
-    <th>Comentario</th>
-    <th><%= t :taxon %></th>
-    <th>Nombre / correo / fecha</th>
-    <th></th>
-    <!--th>Eliminar</th-->
-  </tr>
-  </thead>
+<%= javascript_include_tag 'scrolling_basico', 'data-turbolinks-track' => true %>
 
-  <tbody style="font-size: .85em;">
-  <%
-     @comentarios.each do |c|
-       if c.usuario_id.present?
-         if u = c.usuario
-           correo = u.email
-           nombre = "#{u.nombre} #{u.apellido}"
+<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
 
-         else
-           correo = c.correo
-           nombre = c.nombre
-         end
-       else
-         correo = c.correo
-         nombre = c.nombre
-       end
+    $(document).ready(function() {
 
-       if t = c.especie
-         taxon = t.nombre_cientifico
-       else
-         taxon = "Este #{t(:taxon)} no existe"
-       end
-  %>
+        $('#mas_comentarios').scrollPagination({
+            per_page: <%= @por_pagina %>, // The number of posts per scroll to be loaded
+            page    : <%= @pagina %>, // the actual page
+            error   : 'No hay mas comentarios.', // When the user reaches the end this is the message that is
+                                        // displayed. You can change this if you want.
+            delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
+                           // This is mainly for usability concerns. You can alter this as you see fit
+            scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
+                           // but will still load if the user clicks.
+        });
+        $('#mas_comentarios').on('click', '.comentarios-correos', function() {
+            $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
+            id=$(this).children('div.correos')[0].getAttribute('id');
+            if ($('#'+id).html().trim().length==0) {
+                $('#' + id).load('/comentarios/correoId?id=' + id);
+            }
+        });
+    });
 
+</script>
+
+<% if @totales.present? %>
+    <h4>
+      <span id="totales" class="badge"><%= @totales %></span> comentarios
+    </h4>
+<% end %>
+
+<table class="table table-striped table-condensed table-bordered comentarios">
+  <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
+      <thead>
       <tr>
-        <td class="text-center">
-          <span class="glyphicon glyphicon-<%= c.resuelto == 1 ? "ok" : "alert" %>" title="<%= c.resuelto == 1 ? "Resuelto" : "Pendiente" %>"
-                style="color: <%= c.resuelto == 1 ? "#889b45" : "#ea9028" %>;" id="span_resuelto_<%= c.id %>">
-          </span>
-        </td>
-        <td><%= c.comentario %></td>
-        <td><%= link_to taxon, "/especies/#{c.especie_id}", target: :_blank %></td>
-        <td><%= nombre %><br /><%= link_to correo, "mailto:#{correo}" %><br /><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
-        <td><%= check_box_tag 'comentario[resuelto]', c.resuelto == 1 ? '1' : '0', c.resuelto == 1 ? true : false, id: "resuelto_#{c.id}" %></td>
-        <!--td><%#= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, "/especies/#{c.especie_id}/comentarios/#{c.id}", method: :delete,
-                        onclick: "return confirm('¿Deseas eliminar este comentario? Este cambio es irreversible')" , class: "btn btn-sm btn-link eliminar_comentario" %></td-->
+        <th colspan="5">
+          <table width="100%">
+            <tr>
+              <th width="10%" rowspan="2"><span class="text-success">Filtrar por: </span></th>
+              <th width="40%">Estatus <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="Público: muestra el comentario como una advertencia, en la ficha del taxón. <br /> Resuelto: se da por solucionado/finalizado el comentario del usuario." type="button"></i>
+              </th>
+              <th width="40%">Tipo de comentarios</th>
+              <th width="10%">Limpiar filtros</th>
+            </tr>
+            <tr>
+              <td><%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select), id: 'filtro_estatus', prompt: 'Estatus', class: 'form-control input-sm pull-left' %></td>
+              <td><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario), id: 'filtro_categoria_comentario_id', prompt: 'Tipo de comentario', class: 'form-control input-sm pull-right' %></td>
+              <td><%= link_to "<i class='glyphicon glyphicon-trash'></i>".html_safe, admin_path, class: "btn btn-xs btn-info", "data-toggle" => "tooltip", "data-placement" => "bottom", title: 'Borra las opciones de los menus desplegables, regresando al ordenamiento por default'%></td>
+            </tr>
+          </table>
+        </th>
       </tr>
+      <th colspan="2"><strong style="font-size: larger;">Comentarios</strong></th>
+        <th>
+          <%= t :taxon %> <button type="button" class="btn btn-xs btn-default" href="<%= admin_path %>" id="filtro_nombre_cientifico" data-toggle="tooltip" data-placement="bottom" title="Ordena alfabéticamente por nombre de especie"><i class="glyphicon glyphicon-sort text-success"></i></button>
+          <%= hidden_field_tag 'comentario[nombre_cientifico]' %>
+        </th>
+        <th>
+          Fecha <button type="button" class="btn btn-xs btn-default" href="<%= admin_path %>" id="filtro_created_at" data-toggle="tooltip" data-placement="bottom" title="Ordena cronológicamente de acuerdo a como fueron realizados"><i class="glyphicon glyphicon-sort text-success"></i></button>
+          <%= hidden_field_tag 'comentario[created_at]' %>
+        </th>
+        <th>Modificado
+          <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="El personal de CONABIO que realizó la ultima modificación en el estatus del comentario" type="button"></i>
+        </th>
+      </tr>
+      </thead>
   <% end %>
 
+  <tbody id="mas_comentarios">
+  <%= render :partial => 'comentarios/admin' %>
   </tbody>
 </table>

@@ -2,10 +2,10 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista]
+                                     :descripcion_catalogos, :naturalista, :comentarios]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +17,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -39,6 +39,7 @@ class EspeciesController < ApplicationController
     fotos_naturalista = @especie.photos.where.not(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
     fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
     @photos = [fotos_naturalista, fotos_conabio].flatten.compact
+    @cuantos = Comentario.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
 
     respond_to do |format|
       format.html do
@@ -399,7 +400,7 @@ class EspeciesController < ApplicationController
   def descripcion_catalogos
   end
 
-  # Devuelve las observaciones denaturalista para hacer el parsen en geojson
+  # Devuelve las observaciones de naturalista para hacer el parsen en geojson
   def naturalista
     if p = @especie.proveedor
       if p.naturalista_obs.present?
@@ -414,6 +415,16 @@ class EspeciesController < ApplicationController
       end
     else
       render json: []
+    end
+  end
+
+  # Muestra los comentarios relacionados a la especie
+  def comentarios
+    @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
+
+    @comentarios.each do |c|
+      c.cuantos = c.descendants.count
+      c.completa_info((c.usuario_id if c.is_root?))
     end
   end
 

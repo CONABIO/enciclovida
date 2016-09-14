@@ -1,0 +1,39 @@
+<% @comentarios.each do |c| %>
+    <tr id="renglon_<%= c.id %>">
+      <td width="19%">
+        <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus), class: 'comentario_estatus form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
+        <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
+        <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id), class: 'comentario_categoria_comentario_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
+        <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
+      </td>
+      <td width="52%">
+        <% if c.general %>
+            <b>Asunto: </b><i><%= Base64.decode64(c.general.subject).force_encoding('UTF-8').gsub(/###\[[[:alnum:]]+\]###/, "") %></i><br />
+            <%= render 'historial', c: c %>
+        <% else %>
+             <%= render 'historial', c: c %>
+        <% end %>
+        <div id="historial_<%= c.id %>"></div>
+
+      </td>
+      <td width="12%">
+        <% if c.especie_id > 0 && c.nombre_cientifico.present? %>
+            <% if c.nombre_comun_principal.present? %>
+                <%= c.nombre_comun_principal %><br />
+            <% end %>
+            <%= link_to c.nombre_cientifico, "/especies/#{c.especie_id}", target: :_blank %>
+        <% elsif c.general  %>
+            Este es un comentario general
+        <% else %>
+            La especie o grupo ya no existen
+        <% end %>
+      </td>
+      <td width="8%"><span title="<%= c.created_at %>"><%= c.created_at.strftime('%d/%m/%y') %></span></td>
+      <td width="9%">
+        <% if c.usuario_id2.present? && c.u2_nombre.present? && c.fecha_estatus.present? %>
+            <p><%= c.u2_nombre %></p>
+            <span title="<%= c.fecha_estatus %>"><%= c.created_at.strftime('%d/%m/%y') %></span>
+        <% end %>
+      </td>
+    </tr>
+<% end %>

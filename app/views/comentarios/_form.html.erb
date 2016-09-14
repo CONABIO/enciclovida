@@ -13,7 +13,9 @@
         </div>
     <% end %>
 
-    <% if !usuario_signed_in? %>
+    <% if usuario_signed_in? %>
+        <%= f.hidden_field :usuario_id, value: current_usuario.id %>
+    <% else %>
         <div>
           <%= f.label :correo %>
           <%= f.text_field :correo %>
@@ -23,9 +25,18 @@
           <%= f.label :nombre %>
           <%= f.text_field :nombre %>
         </div>
-    <% else %>
-        <%= f.hidden_field :usuario_id, value: current_usuario.id %>
+
+        <div>
+          <%= f.label :institucion, 'Institución, dependencia, etc. (opcional)' %>
+          <%= f.text_field :institucion %>
+        </div>
     <% end %>
+
+    <div>
+      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?' %>
+      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),
+                   include_blank: '---Elige una opción---', class: 'form-control' %>
+    </div>
 
     <div>
       <%= f.label :comentario %>
@@ -36,5 +47,6 @@
       <%= f.submit :Enviar, id: 'comentario_submit' %>
     </div>
 
-    <%= recaptcha_tags(:hl => 'es-419') %>
+    <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
+    <%= recaptcha_tags(:hl => 'es-419') if Rails.env.production? %>
 <% end %>

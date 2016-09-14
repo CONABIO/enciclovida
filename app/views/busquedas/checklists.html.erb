@@ -15,12 +15,12 @@
 </div>
 
 <p align="right">
-  Descargar en <%= link_to(image_tag('app/pdf.png', title: 'Verificación de listado'), request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank) %>
+  Descargar en <%= link_to('<i class="file-pdf-ev-icon"></i>'.html_safe, request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank, title: 'Verificación de listado') %>
 </p>
 <div style="width: 100%; float:left;">
   <ul>
     <% @taxones.each do |taxon| %>
-        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, link: true, con_icono: false)}</span></li>".html_safe %>
+        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, link: true)}</span></li>".html_safe %>
     <% end %>
   </ul>
   <p class="enlaces_acciones">

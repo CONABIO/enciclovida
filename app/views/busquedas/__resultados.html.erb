@@ -5,13 +5,13 @@
         <% if taxon.foto_principal.present?  %>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
               <div class="imagen_resultados" style="background-image: url('<%= taxon.fotos_principales.split('|')[2] %>');" >
-                <%= tituloNombreCientifico(taxon, :link => true, :con_icono => false).html_safe %>
+                <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
               </div>
             </div>
         <% else %>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
               <div class="imagen_resultados">
-                <%= tituloNombreCientifico(taxon, :link => true, :con_icono => false).html_safe %>
+                <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
                 <i class="ev1-ev-icon"></i>
               </div>
             </div>

@@ -8,144 +8,7 @@
     var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
     var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
     var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
-
-    info = function(){
-        $('#ficha-div').slideUp();
-        $('#info-div').slideDown();
-        return false;
-    };
-
-    ficha = function(){
-        $('#info-div').slideUp();
-        $('#ficha-div').slideDown();
-        return false;
-    };
-
-    muestraBibliografiaNombres = function(ident){
-        var id=ident.split('_')[2];
-        $("#biblio_"+id).dialog();
-        return false;
-    };
-
-    despliegaOcontrae = function(id)
-    {
-        var sufijo = id.substring(5);
-
-        if ($("#nodo_" + sufijo + " li").length > 0)
-        {
-            var minus = $('#span_' + sufijo).hasClass("glyphicon-minus");
-
-            if (minus)
-                $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
-
-            $("#nodo_" + sufijo + " li").remove();
-
-        } else {
-            var origin_id = window.location.pathname.split('/')[2];
-
-            $.ajax(
-                    {
-                        url: "/especies/" + sufijo + "/hojas_arbol_identado?origin_id=" + origin_id
-                    }).done(function(nodo)
-                    {
-                        var plus = $('#span_' + sufijo).hasClass("glyphicon-plus");
-
-                        if (plus)
-                            $('#span_' + sufijo).removeClass("glyphicon-plus").addClass("glyphicon-minus");
-
-                        return $("#nodo_" + sufijo).append(nodo);
-                    });
-        }
-        return false;
-    };
-
-    $(document).ready(function()
-    {
-        $('#pestañas').tabs(); // Inicia los tabs
-
-        $('#pestañas > .nav a').click(function(){
-            $('#pestañas > .nav li').removeClass("active");
-            $(this).parent().addClass("active");
-        }).one('click',function(){
-            if (!Boolean($(this).hasClass('noLoad'))){
-                idPestaña = this.getAttribute('href');
-                pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
-                $(idPestaña).load(pestaña);
-            }
-        });
-
-        // Inicia los proveedores de fotos
-        $('#edit_photos_dialog').dialog({
-            modal: true,
-            title: 'Escoge las fotos para este grupo o especie',
-            autoOpen: false,
-            width: 700,
-            open: function( event, ui ) {
-                $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'});
-                $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function(){
-                    var photoSelectorOptions = {
-                        defaultQuery: TAXON.nombre_cientifico,
-                        skipLocal: true,
-                        baseURL: '/conabio/photo_fields',
-                        taxon_id: TAXON.id,
-                        urlParams: {
-                            authenticity_token: $('meta[name=csrf-token]').attr('content'),
-                            limit: 14
-                        },
-                        afterQueryPhotos: function(q, wrapper, options) {
-                            $(wrapper).imagesLoaded(function() {
-                                $('#edit_photos_dialog').centerDialog()
-                            })
-                        }
-                    };
-
-                    $('.tabs', this).tabs({
-                        beforeActivate: function( event, ui ) {
-                            if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                //$('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
-                                $('.taxon_photos', ui.newPanel).photoSelector(
-                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/flickr/photo_fields'})
-                                )
-                            } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                $('.taxon_photos', ui.newPanel).photoSelector(
-                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
-                                )
-                            } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                $('.taxon_photos', ui.newPanel).photoSelector(
-                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
-                                )
-                            } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                $('.taxon_photos', ui.newPanel).photoSelector(
-                                        $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
-                                )
-                            } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                                $('.taxon_photos', ui.newPanel).photoSelector(
-                                        $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
-                                )
-                            }
-
-                            $(ui.newPanel).addClass('loaded')
-                            $('#edit_photos_dialog').centerDialog()
-                        },
-                        create: function( event, ui) {
-                            $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
-                            $(ui.panel).addClass('loaded')
-                            $('#edit_photos_dialog').centerDialog()
-                        }
-                    })
-                })
-            }
-        });
-
-        <%# if (!@especie.species_or_lower? && @photos.size < 24) || @photos.blank? %>
-        //$('#photos_loading_status').show()
-        /*$('#photos').load('<%# taxon_photos_path(@especie) %>', function() {
-     $('#modal_image_box').jqmAddTrigger('#photos a.modal_image_link')
-     });*/
-        <%# end %>
-    });
 </script>
-
 
 <% if notice.present? %>
     <div class="row alert alert-success" role="alert"><%= notice %></div>
@@ -155,7 +18,6 @@
     <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
-
 <div class="row">
   <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
     <h3>
@@ -163,17 +25,6 @@
       <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
       <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
     </h3>
-  </div>
-  <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
-    <div class="leaf bg-success text-success" id="conSugerencia">
-      <p>¿Algún <%= link_to('comentario <span class="glyphicon glyphicon-send" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@especie.id)) %> acerca de este taxón? </p>
-    </div>
-    <% if @con_naturalista %>
-        <div class="leaf bg-warning text-primary text-center" id="conNaturalista">
-          <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>
-          <p>¿Has visto esta especie? <br /> Sube tus observaciones y se un <br /> <%= link_to(("<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, "http://naturalista.conabio.gob.mx/observations/new?taxon_id=#{@con_naturalista}", :target => :_blank, :class => 'btn btn-link') %></p>
-        </div>
-    <% end %>
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -194,25 +45,36 @@
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
+    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong>  Comentarios</strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
+
     <li class="pull-right">
       <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
       <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
       <% else %>
-          <%= button_tag(("<i class ='file-pdf-ev-icon''></i>Descargar PDF").html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
+          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
       <% end %>
     </li>
 
     <li class="pull-right">
-      <%= button_tag(("Consulta en BHL").html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default btn-title', :onClick => "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}', '_blank', 'status=no, menubar=no' )", :title=>"Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)") %>
+      <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-sm btn-default btn-title',
+                     onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
+                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
     </li>
 
-
+    <% if @con_naturalista %>
+        <li class="pull-right">
+          <%= button_tag(' NaturaLista', type: :button, class: 'noLoad btn btn-sm btn-default btn-title naturalista-ev-icon',
+                         onClick: "window.open('http://www.naturalista.mx/observations/new?taxon_id=#{@con_naturalista}',
+                     '_blank', 'status=no', 'menubar=no')", title: 'Sube tus observaciones a NaturaLista') %>
+        </li>
+    <% end %>
   </ul>
+
   <% if I18n.locale.to_s != 'es-cientifico' %>
       <script type="application/javascript">
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
+          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
+          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
       </script>
   <% end %>
 
@@ -234,6 +96,7 @@
     </p>
   </div>
 
-  <div id="arbol" class="tab-pane panel-body">
-  </div>
+  <div id="arbol" class="tab-pane panel-body"></div>
+
+  <div id="comentario" class="tab-pane panel-body"></div>
 </div>

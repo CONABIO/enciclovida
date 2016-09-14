@@ -13,31 +13,6 @@ class Usuario < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :lockable, :timeoutable,
          :authentication_keys => [:login]
-  # Para registrarse con el email o usuario
-
-  #attr_accessor :confirma_contrasenia
-  #validates :usuario, :presence => true, :uniqueness=>true
-  #validates :correo, :presence => true, :uniqueness=>true
-  #validates :nombre, :presence => true
-  #validates :apellido, :presence => true
-  #validates :institucion, :presence => true
-  #validates :grado_academico, :presence => true
-  #validates :contrasenia, :presence => true, :on => :create
-  #validates :confirma_contrasenia, :presence => true, :on => :create
-  #validate :comparaContrasenia, :on => :create
-
-  #before_create :generaContrasenia
-
-  login_regex       = /\A[A-z][\w\-_]+\z/
-  bad_login_message = "use only letters, numbers, and -_ please.".freeze
-  email_name_regex  = '[\w\.%\+\-]+'.freeze
-  domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
-  domain_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
-  email_regex       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
-  bad_email_message = "no tiene la estructura apropiada.".freeze
-
-  #validates_format_of :correo, :with => email_regex, :message => bad_email_message
-  #validates_length_of :correo, :within => 6..100
 
   def self.autentica(login, contrasenia)
     usuario = where("usuario='#{login}' OR correo='#{login}'")
@@ -63,6 +38,10 @@ class Usuario < ActiveRecord::Base
     else
       where(conditions).first
     end
+  end
+
+  def es_admin?
+    rol.prioridad >= 100
   end
 
   private

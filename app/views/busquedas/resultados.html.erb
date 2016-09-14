@@ -1,4 +1,12 @@
+<%= javascript_include_tag 'scrolling', 'data-turbolinks-track' => true %>
+
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+  // Para validar el correo
+  function isValidEmailAddress(emailAddress) {
+      var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+      return pattern.test(emailAddress);
+  };
+
   // Hacemos un set de todas las posibles tabs que podria haber, para
   // que conserve el paginado con el scrolling
     offset = {
@@ -60,6 +68,12 @@
 
     $(document).ready(function()
     {
+        POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
+        //Variable globar para poder saber cuales datos descargar
+        datos_descarga = {};
+        datos_descarga.url = "<%= request.url %>";
+        datos_descarga.cuantos = <%= @totales %>;
+
         $('#pestañas').tabs(); // Inicia los tabs
 
         scrolling_page("#resultados", settings.nop, settings.url);
@@ -72,6 +86,32 @@
             var nivel = $(this).attr('id').substring(6);
             var id_div = '#' + $(this).attr('id_div');
             var url = $(this).attr('url') + '&solo_categoria=' + nivel;
+
+            if (nivel == '')  // tab default
+            {
+                datos_descarga.url = "<%= request.url %>";
+                datos_descarga.cuantos = <%= @totales %>;
+
+            } else {
+                $.each(POR_CATEGORIA, function (index, value) {
+                    if (value.nombre_categoria_taxonomica == nivel) {
+                        datos_descarga.url = value.url;
+                        datos_descarga.cuantos = value.cuantos;
+                    }
+                });
+            }
+
+            if (datos_descarga.cuantos > 200)
+            {
+                $('#boton_enviar_descarga').attr('disabled','disabled');
+                $('#correo').show();
+                $('#label_correo').show();
+
+            } else {
+                $('#boton_enviar_descarga').removeAttr('disabled');
+                $('#correo').hide();
+                $('#label_correo').hide();
+            }
 
             // Es cero ya que cuenta los espacios en el div ***
             // No mover la linea del div donde pone el tab shalalala
@@ -116,6 +156,61 @@
             });
             return false;
         });
+
+        // Para validar en vivo el correo
+        $(document).on('keyup', '#correo', function(){
+            if( !isValidEmailAddress($(this).val()) )
+            {
+                $(this).parent().addClass("has-error");
+                $(this).parent().removeClass("has-success");
+
+                $(this).siblings("span:first").addClass("glyphicon-remove");
+                $(this).siblings("span:first").removeClass("glyphicon-ok");
+                $('#boton_enviar_descarga').attr('disabled', 'disabled')
+            } else {
+                $(this).parent().removeClass("has-error");
+                $(this).parent().addClass("has-success");
+                $(this).siblings("span:first").addClass("glyphicon-ok");
+                $(this).siblings("span:first").removeClass("glyphicon-remove");
+                $('#boton_enviar_descarga').removeAttr('disabled')
+            }
+        });
+
+        // Para validar una ultima vez cuando paso la validacion del boton
+        $(document).on('click', '#boton_enviar_descarga', function(){
+            var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
+
+            // No datos mayores a 200
+            if (datos_descarga.cuantos > 200)
+            {
+                var correo = $('#correo').val();
+
+                if(isValidEmailAddress(correo))
+                {
+                    $.ajax({
+                        url: url_xlsx + "&correo=" + correo,
+                        type: 'GET',
+                        dataType: "json"
+                    }).done(function(resp) {
+                        if (resp.estatus == 1)
+                        {
+                            $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
+                        } else {
+                            $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                        }
+
+                    }).fail(function(){
+                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    });
+
+                } else {
+                    return false;
+                }
+            } else {
+                window.location.replace(url_xlsx);
+                $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
+            }
+        });
     });
 </script>
 
@@ -125,12 +220,6 @@
 
 <% if notice.present? %>
     <div class="alert alert-warning" role="alert"><%= notice %></div>
-<% end %>
-
-<% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
-    <p class="text-right">
-      <%= checklist(@paginacion).html_safe %>
-    </p>
 <% end %>
 
 <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
@@ -194,7 +283,7 @@
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active">
-      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos">Todos (<%= @totales if @totales.present? %>)</a>
+      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" url="<%= request.url %>">Todos (<%= @totales if @totales.present? %>)</a>
     </li>
 
     <% if @por_categoria.present? && @por_categoria.length > 0 %>
@@ -208,6 +297,21 @@
             </li>
         <% end %>
     <% end %>
+
+    <li class="pull-right">
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#myModal">
+        Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
+      </button>
+    </li>
+
+    <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
+        <li class="pull-right">
+          <button type="button" class="btn btn-sm btn-warning" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
+            Listado para Revisión (✓)
+          </button>
+        </li>
+    <% end %>
   </ul>
 
   <div class="tab-pane panel-body" id="todos">
@@ -220,4 +324,37 @@
       <% end %>
   <% end %>
 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Descarga resultados</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+          Para resultados mayores a <strong>200</strong> es necesario proporcionar un correo electrónico, al cual
+          se te enviará un archivo excel (.xlsx) con la taxa correspondiente.
+
+          <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de taxa</small></p>
+        </p>
+        <div class="form-group has-feedback">
+          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo', style: ('display:none;' if @totales <= 200) %>
+          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales <= 200) %>
+          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+          <span id="inputSuccess2Status" class="sr-only">(success)</span>
+
+          <span id="estatus_descargar_taxa"></span>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success" id="boton_enviar_descarga" <%= 'disabled="disabled"' if @totales > 200 %>">Enviar</button>
+      </div>
+    </div>
+  </div>
 </div>

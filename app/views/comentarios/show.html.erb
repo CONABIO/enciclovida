@@ -1,4 +1,9 @@
-<p id="notice"><%= notice %></p>
+<div class="historial_comentarios">
+  <% if @comentarios.present? && @comentarios[:cuantos] > 0 %>
+      <% @comentarios[:resp].each do |c| %>
+          <%= render 'historial', c: c %>
+      <% end %>
+  <% end %>
+</div>
 
-<%= link_to 'Edit', edit_comentario_path(@comentario) %> |
-<%= link_to 'Back', comentarios_path %>
+<%= render 'form_respuesta' if !@ficha %>
