@@ -474,7 +474,7 @@ es:
   recaptcha:
     errors:
       incorrect-captcha-sol: 'Fail'
-      missing_confirm: 'Por favor confirma la casilla de "No soy un maldito robot"'
+      missing_confirm: 'Por favor confirma la casilla de "No soy un robot"'
   sinonimo: inactivos
   solo_taxones: Solo especies o grupos
   support:
