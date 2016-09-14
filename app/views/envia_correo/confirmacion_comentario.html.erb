@@ -1,47 +1,27 @@
-<div style="background-color: #b7bfa2; font-size: 16px; font-family: 'Arial', sans-serif; width: 100%; color: #333333;">
-  <div style="background-color: #333333; padding: 20px; min-height: 100px; color: #bababa; float: left;">
-    <div style="width: 30%; float: left; padding: 0; min-height: 1px;">
-      <img src="http://enciclovida.mx/logoEnciclovidaCorreo.png" style="display: block; max-width: 100%; height: auto;">
-      <!--img src="http://enciclovida.mx/assets/correo/logoEnciclovidaCorreo.png" style="display: block; max-width: 100%; height: auto;"-->
-    </div>
-    <div style="width: 30%; float: left; padding: 0 10px; min-height: 1px;">
-      <p style="font-size: 1.2em; font-weight: bold; text-align: center;">Gracias por utilizar el servicio de comentarios de EncicloVida</p>
-    </div>
-    <div style="width: 30%; float: right; padding: 0; min-height: 1px;">
-      <img src="http://enciclovida.mx/logoConabioCorreo.png" style="display: block; max-width: 100%; height: auto;">
-      <!--img src="http://enciclovida.mx/assets/correo/logoConabioCorreo.png" style="display: block; max-width: 100%; height: auto;"-->
-
-    </div>
-  </div>
-
-  <div style="padding: 0 20px; float: left">
-    <p>
-      El personal de CONABIO ha recibido tu comentario que realizaste para:
-      <% con_taxon = @nombre_cientifico.present? %>
-      <span style="font-size: 1.2em;">
-      <% if con_taxon %>
-          <% if @nombre_comun.present? %>
-              <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
-          <% else %>
-              <strong><%= @nombre_cientifico %></strong>
-          <% end %>
-      <% end %>
-      </span>
-    </p>
-
-    <blockquote style="font-style: italic;">
-      <%= @comentario.comentario %>
-    </blockquote>
-
-    <p>
-      <% if con_taxon %>
-          Para darle un adecuado seguimiento a tu comentario y futuras respuestas, visita: <br />
-          <%= link_to "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/respuesta_externa?created_at=#{@created_at}", "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/respuesta_externa?created_at=#{@created_at}", style: "color: #800000;" %>  <br />
-          hasta que tu comentario haya sido solucionado/finalizado.
+<p>
+  El personal de CONABIO ha recibido tu comentario que realizaste para:
+  <% con_taxon = @nombre_cientifico.present? %>
+  <span style="font-size: 1.2em;">
+  <% if con_taxon %>
+      <% if @nombre_comun.present? %>
+          <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
       <% else %>
-          Para más información consultar <%= link_to(CONFIG.site_url.to_s, CONFIG.site_url.to_s) %>.
+          <strong><%= @nombre_cientifico %></strong>
       <% end %>
-    </p>
-  </div>
-  <img src="http://enciclovida.mx/assets/portada/bosqueEncabezado.png" style="width: 100%;">
-</div>
+  <% end %>
+  </span>
+</p>
+
+<blockquote style="font-style: italic;">
+  <%= @comentario.comentario %>
+</blockquote>
+
+<p>
+  <% if con_taxon %>
+      Para darle un adecuado seguimiento a tu comentario y futuras respuestas, visita: <br />
+      <%= link_to "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/respuesta_externa?created_at=#{@created_at}", "#{CONFIG.site_url}especies/#{@comentario.especie_id}/comentarios/#{@comentario.id}/respuesta_externa?created_at=#{@created_at}", style: "color: #800000;" %>  <br />
+      hasta que tu comentario haya sido solucionado/finalizado.
+  <% else %>
+      Para más información consultar <%= link_to(CONFIG.site_url.to_s, CONFIG.site_url.to_s) %>.
+  <% end %>
+</p>
