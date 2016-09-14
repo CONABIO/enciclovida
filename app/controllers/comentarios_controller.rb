@@ -269,9 +269,6 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
-    procesa_correos({mborigen:  @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    #procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos', delete: true})
-
     if params[:comentario].present?
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
@@ -334,10 +331,7 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-   #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
-   procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    #response = Comentario.find_all_by_categoria_comentario_id(29)
-    #render 'comentarios/generales', :locals => {:response => response}
+    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
     render text: 'Procesados'
   end
 
