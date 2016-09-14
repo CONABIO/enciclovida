@@ -430,7 +430,7 @@ class ComentariosController < ApplicationController
         "</div><br /><br />"+
         "<div style='font-style: italic; font-size:larger;'>#{mensaje}</div><br /><br />"+
         "<div>"+
-        "<p style='font-size:small;'>Gracias por usar nuestra plataforma.<br />" +
+        "<p style='font-size:smaller;'>Gracias por usar nuestra plataforma.<br />" +
         "Le recordamos contestar (reply) a este mismo correo con la finalidad de que mantener un historial de conversación.<br />" +
         "Si tiene otra nueva duda/comentario/aportación, lo invitamos a enviar un nuevo correo y se le asignará un nuevo ticket de apoyo.<br />" +
         "¡Muchas Gracias!</p>"+
