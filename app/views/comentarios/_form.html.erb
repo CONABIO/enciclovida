@@ -2,12 +2,11 @@
 <%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", :html => {:class => 'form-horizontal'}) do |f| %>
 
     <% if @comentario.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@comentario.errors.count, 'error') %> no permitió que el comentario fuese enviado:</h2>
-
+        <div id="error_explanation" class="alert alert-danger" role="alert">
+          <strong>Debido a <span class="bg-primary" style="border-radius: 10px; padding: 4px;"><%= pluralize(@comentario.errors.count, 'error') %></span> el comentario no ha podido ser enviado:</strong><hr>
           <ul>
             <% @comentario.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
+                <li><small><%= msg %></small></li>
             <% end %>
           </ul>
         </div>
