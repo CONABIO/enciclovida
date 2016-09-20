@@ -1,5 +1,5 @@
 <div id="error_mensaje"></div>
-<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", class: 'form-inline') do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", :html => {:class => 'form-horizontal'}) do |f| %>
 
     <% if @comentario.errors.any? %>
         <div id="error_explanation">
@@ -16,35 +16,44 @@
     <% if usuario_signed_in? %>
         <%= f.hidden_field :usuario_id, value: current_usuario.id %>
     <% else %>
-        <div>
-          <%= f.label :correo %>
-          <%= f.text_field :correo %>
+        <div class="form-group">
+          <%= f.label :nombre, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :nombre, class: 'form-control' %>
+          </div>
         </div>
-
-        <div>
-          <%= f.label :nombre %>
-          <%= f.text_field :nombre %>
+        <div class="form-group">
+          <%= f.label :correo, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :correo, class: 'form-control' %>
+          </div>
         </div>
-
-        <div>
-          <%= f.label :institucion, 'Institución, dependencia, etc. (opcional)' %>
-          <%= f.text_field :institucion %>
+        <div class="form-group">
+          <%= f.label :institucion, 'Institución, dependencia, etc. (opcional)', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :institucion, class: 'form-control' %>
+          </div>
         </div>
     <% end %>
 
-    <div>
-      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?' %>
-      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),
-                   include_blank: '---Elige una opción---', class: 'form-control' %>
+    <div class="form-group">
+      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)), {:include_blank => '---Elige una opción---'}, {:class => 'form-control'} %>
+      </div>
     </div>
 
-    <div>
-      <%= f.label :comentario %>
-      <%= f.text_area :comentario, class: 'form-control' %>
+    <div class="form-group">
+      <%= f.label :comentario, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+      <%= f.text_area :comentario, class: 'form-control', :rows => 5 %>
+      </div>
     </div>
 
-    <div class="actions">
-      <%= f.submit :Enviar, id: 'comentario_submit' %>
+    <div class="actions form-group">
+      <div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-11 col-md-offset-9 col-md-3 col-lg-offset-7 col-lg-3">
+        <%= f.submit :Enviar, id: 'comentario_submit', class: 'btn btn-success btn-block' %>
+      </div>
     </div>
 
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
