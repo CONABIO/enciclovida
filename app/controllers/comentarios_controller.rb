@@ -195,7 +195,7 @@ class ComentariosController < ApplicationController
                                        nombre: @comentario.nombre}.to_json}
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
-            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
 
         else
