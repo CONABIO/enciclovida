@@ -96,17 +96,19 @@ class ComentariosController < ApplicationController
       @comentario_resp = @comentario
       cuantos = comentario_root.descendant_ids.count
 
+      #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
+      comentario_root.completa_info(comentario_root.usuario_id)
+      resp = [comentario_root]
+
       if cuantos > 0
-        resp = @comentario.descendants.map{ |c|
+        resp = resp + @comentario.descendants.map{ |c|
           c.completa_info(comentario_root.usuario_id)
           c
         }
-
-        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
-
-      else
-        @comentarios = {estatus:1, cuantos: cuantos}
       end
+
+      #Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
       # Para crear el comentario si NO es el render de la ficha
       if @ficha

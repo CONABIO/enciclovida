@@ -1,12 +1,16 @@
-<%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", class: 'form-inline') do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", :html => {:class => 'form-horizontal'}) do |f| %>
 
-    <div class="comentario">
-      <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí" %>
-      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning' %>
+    <div class="comentario form-group">
+      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning col-xs-offset-0 col-xs-12 col-sm-offset-7 col-sm-4 col-md-offset-0 col-md-3 col-lg-offset-0 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-0 col-md-9 col-lg-8">
+        <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí", :rows => 4  %>
+      </div>
     </div>
 
-    <div class="actions pull-right">
-      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success' %>
+    <div class="actions  form-group">
+      <div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-6 col-md-6 col-lg-offset-7 col-lg-4">
+        <%= f.submit :Enviar, class: 'comentario_submit btn btn-block btn-success' %>
+      </div>
     </div>
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
@@ -34,7 +38,7 @@
         $('.comentario_submit').click(function () {
             // Busco AHORA sí el comentario, si cambia el orden de las etiquetas, revisar aquí (¬¬ ggonzalez)
             var label = $(this).parent().prev().children('label');
-            var comentario = $(this).parent().prev().children('textarea');
+            var comentario = $(this).parent().prev().children('div').children('textarea');
 
             var historial_comentarios = $(this).parent().parent().prev();
 
@@ -53,7 +57,6 @@
                     data: form.serialize()
 
                 }).done(function(resp) {
-            console.log('entre3b done');
 
                     //return false;
                     if (resp.estatus == 1)

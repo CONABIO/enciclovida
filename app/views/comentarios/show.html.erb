@@ -1,9 +1,32 @@
-<div class="historial_comentarios">
-  <% if @comentarios.present? && @comentarios[:cuantos] > 0 %>
-      <% @comentarios[:resp].each do |c| %>
-          <%= render 'historial', c: c %>
-      <% end %>
-  <% end %>
-</div>
+<table class="table table-bordered table-condensed table-bordered comentarios">
+  <thead>
+  <tr>
+    <th colspan="3"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td width="15%"></td>
+    <td width="70%">
+      <div class="historial_comentarios">
+        <%# if @comentarios.present? &&  @comentarios[:resp].present? ##Preguntar a calonso si este show se utiliza en más lados como para q sólo bsate con esto %>
+        <% if @comentarios.present? && ((@comentarios[:cuantos] > 0) || (@comentarios[:cuantos] == 0 && @comentarios[:resp].present?)) %>
+            <% @comentarios[:resp].each do |c| %>
 
-<%= render 'form_respuesta' if !@ficha %>
+                <%= render 'historial', c: c %>
+
+            <% end %>
+        <% end %>
+      </div>
+    </td>
+    <td width="15%"></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <%= render 'form_respuesta' if !@ficha %>
+    </td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
