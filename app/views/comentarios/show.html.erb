@@ -1,27 +1,17 @@
 <% if @comentarios.present? &&  @comentarios[:resp].present? %>
     <%# if @comentarios.present? && ((@comentarios[:cuantos] > 0) || (@comentarios[:cuantos] == 0 && @comentarios[:resp].present?)) %>
-    <table class="table table-condensed comentarios">
-      <tbody>
-      <% if @comentario.especie.present? %>
-          <tr>
-            <th colspan="3">
-              <h4>A continuación se muestran los comentarios que has relizado para <strong><%= tituloNombreCientifico(@comentario.especie, :show => true).gsub(' )',')').html_safe %></strong></h4>
-            </th>
-          </tr>
-      <% end %>
-      <tr>
-        <td width="15%"></td>
-        <td width="70%">
-          <div class="historial_comentarios">
-            <% @comentarios[:resp].each do |c| %>
-                <%= render 'historial', c: c %>
-            <% end %>
-          </div>
+    <% if @comentario.especie.present? && params[:action]=='respuesta_externa' %>
+        <p>
+          A continuación se muestran los comentarios que has realizado para: <br />
+          <strong><%= tituloNombreCientifico(@comentario.especie, :show => true).gsub(' )',')').html_safe %></strong>
+        </p>
+        <hr>
+    <% end %>
 
-        </td>
-        <td width="15%"></td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="historial_comentarios" id="historial_comentarios_<%= params[:id] %>" style="margin: 0 15%;">
+      <% @comentarios[:resp].each do |c| %>
+          <%= render 'historial', c: c %>
+      <% end %>
+    </div>
 <% end %>
 <%= render 'form_respuesta' if !@ficha %>
