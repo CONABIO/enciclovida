@@ -11,7 +11,7 @@
   text-align: center !important;
 }
 .comentarios .btn{
-  border-radius: 1em;
+  border-radius: .5em;
 }
 .comentarios thead table th, .comentarios thead table td{
   text-align: center;
@@ -22,35 +22,37 @@ a.historial.btn{
 }
 a.historial.btn > span{
   color: white;
-  background-color: #666666;
+  background-color: #800000;
   border-radius: 1em;
   text-shadow: none;
   padding: 0 5px;
 }
 .comentario-burbuja{
-  margin-top:4px;
-  margin-bottom:4px;
+  margin-top:8px;
+  margin-bottom:8px;
   padding: 5px 10px;
-  border-radius: 1.5em;
-  min-width: 85%;
-  max-width: 85%;
-  font-size: .95em;
+  border-radius: 4px;
+  min-width: 80%;
+  max-width: 80%;
+  font-size: .9em;
   border: 0px !important;
 }
 .comentario-burbuja.op{
-  -webkit-box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
-  -moz-box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
-  box-shadow: -1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  -webkit-box-shadow: -4px 4px 6px -3px rgba(100, 100, 100, 0.50);
+  -moz-box-shadow: -4px 4px 6px -3px rgba(100, 100, 100, 0.50);
+  box-shadow: -4px 4px 6px -3px rgba(100, 100, 100, 0.50);
   margin-right: 15%;
+  background-color: #e2efcf;
 }
 .comentario-burbuja.respuesta{
-  background-color: #efefef;
+  //background-color: #efefef;
+  background-color: #dbe9ef;
   text-align: right;
   border-left: 0px;
   font-style: italic;
-  -webkit-box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
-  -moz-box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
-  box-shadow: 1px 1px 1px 0px rgba(100, 100, 100, 0.50);
+  -webkit-box-shadow: 4px 4px 6px -3px rgba(100, 100, 100, 0.50);
+  -moz-box-shadow: 4px 4px 6px -3px rgba(100, 100, 100, 0.50);
+  box-shadow: 4px 4px 6px -3px rgba(100, 100, 100, 0.50);
   margin-left: 15%;
 }
 .comentarios textarea{
