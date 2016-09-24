@@ -14,4 +14,10 @@
       <% end %>
     </div>
 <% end %>
-<%= render 'form_respuesta' if !@ficha %>
+<% if  params[:action]=='respuesta_externa' %>
+    <div id="escucha_envio">
+      <%= render 'form_respuesta' if !@ficha %>
+    </div>
+<% else%>
+    <%= render 'form_respuesta' if !@ficha %>
+<% end %>
