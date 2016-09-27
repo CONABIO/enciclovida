@@ -286,7 +286,7 @@ $(document).ready(function(){
                 url: form.attr('action'),
                 method: 'POST',
                 dataType: "json",
-                data: form.serialize().replace("_"+commentId,"ancestry")
+                data: form.serialize().replace("_"+commentId,"")
                 //NOTA: HAY QUE CAMBIAR TODOS LOS INPUT HIDDEN TAMBIÉN!!!!! ¬¬
                 //QUIZA CON UN .replace("_"+commentId,"") a ALL funcione //
             }).done(function(resp) {
