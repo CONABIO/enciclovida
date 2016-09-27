@@ -194,7 +194,7 @@ class ComentariosController < ApplicationController
             @comentario.completa_info(comentario_root.usuario_id)
 
             format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
-                                       nombre: @comentario.nombre}.to_json}
+                                       nombre: @comentario.nombre}.to_json} #SI NO ME EQUIVOCO AQUÍ ES DODNDE SE TIENQ MANDAR A LLAMAR EL RENDERDE HISTORIAL COMENTARIOS PARA YA NO HARDCODEAR EL HTML EN EL JS !>.>
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }

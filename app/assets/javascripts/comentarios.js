@@ -286,7 +286,9 @@ $(document).ready(function(){
                 url: form.attr('action'),
                 method: 'POST',
                 dataType: "json",
-                data: form.serialize().replace("ancestry_"+commentId,"ancestry")//replace necesario apra q el ancestry sea aceptado en los parametros
+                data: form.serialize().replace("_"+commentId,"ancestry")
+                //NOTA: HAY QUE CAMBIAR TODOS LOS INPUT HIDDEN TAMBIÉN!!!!! ¬¬
+                //QUIZA CON UN .replace("_"+commentId,"") a ALL funcione //
             }).done(function(resp) {
                 //return false;
                 if (resp.estatus == 1)
