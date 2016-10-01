@@ -276,21 +276,19 @@ $(document).ready(function(){
             $('#error_'+commentId).text('El comentario no puede estar vacío');
         }
         else {
-            console.log('0');
             var form = $("#form_"+commentId);
             var ancestry = $("#comentario_ancestry_"+commentId);
             label.parent().removeClass('has-error');
             $('#error_'+commentId).text('');
+            var re = new RegExp("_"+commentId,"g");
 
             $.ajax({
                 url: form.attr('action'),
                 method: 'POST',
                 dataType: "json",
-                data: form.serialize().replace("_"+commentId,"")
-                //NOTA: HAY QUE CAMBIAR TODOS LOS INPUT HIDDEN TAMBIÉN!!!!! ¬¬
-                //QUIZA CON UN .replace("_"+commentId,"") a ALL funcione //
+                data: form.serialize().replace(re,"")//se le pasa una regExp para que sustituya TODAS las apariciones y no solo la primera
             }).done(function(resp) {
-                //return false;
+
                 if (resp.estatus == 1)
                 {
                     // Si la respuesta viene de un usuario

@@ -21,19 +21,19 @@
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
 
     <%= f.hidden_field "ancestry_"+params[:id], {value: @comentario.ancestry} %>
-    <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
-    <%= f.hidden_field :es_admin, value: @comentario.es_admin ? '1' : '0' %>
-    <%= f.hidden_field :es_respuesta, value: @comentario.es_respuesta ? '1' : '0' %>
+    <%= f.hidden_field "con_verificacion_"+params[:id], {value: @comentario.con_verificacion ? '1' : '0'} %>
+    <%= f.hidden_field "es_admin_"+params[:id], {value: @comentario.es_admin ? '1' : '0'} %>
+    <%= f.hidden_field "es_respuesta_"+params[:id], {value: @comentario.es_respuesta ? '1' : '0'} %>
 
-    <%= f.hidden_field :institucion, value: @comentario.institucion %>
-    <%= f.hidden_field :estatus, value: @comentario.estatus %>
-    <%= f.hidden_field :categoria_comentario_id, value: @comentario.categoria_comentario_id %>
+    <%= f.hidden_field "institucion_"+params[:id], {value: @comentario.institucion} %>
+    <%= f.hidden_field "estatus_"+params[:id], {value: @comentario.estatus} %>
+    <%= f.hidden_field "categoria_comentario_id_"+params[:id], {value: @comentario.categoria_comentario_id} %>
 
     <% if @comentario.usuario_id.present? %>
-        <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) %>
+        <%= f.hidden_field("usuario_id_"+params[:id], {value: @comentario.usuario_id}) %>
     <% else %>
-        <%= f.hidden_field(:nombre, value: @comentario.nombre) %>
-        <%= f.hidden_field(:correo, value: @comentario.correo) %>
+        <%= f.hidden_field("nombre_"+params[:id], {value: @comentario.nombre}) %>
+        <%= f.hidden_field("correo_"+params[:id], {value: @comentario.correo}) %>
     <% end %>
 
 <% end %>
