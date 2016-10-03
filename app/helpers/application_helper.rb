@@ -141,8 +141,8 @@ module ApplicationHelper
   end
 
   def correo_enciclovida claro=nil
-    correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-link'></span><span class='glyphicon glyphicon-envelope text-link'></span>".html_safe
+    correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-link'></span><span class='glyphicon glyphicon-envelope text-link'></span>"
     correo_en_fuente.gsub!("text-link","text-info") if claro
-    link_to(correo_en_fuente,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
+    link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
   end
 end
