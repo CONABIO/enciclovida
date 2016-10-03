@@ -1,93 +1,39 @@
 <%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", :html => {:id => 'form_'+params[:id], :class => 'form-horizontal'}) do |f| %>
 
     <div class="comentario form-group">
-      <%= f.label :comentario, "Responder".html_safe, id: 'label_'+params[:id], class: 'col-xs-offset-0 col-xs-12 col-sm-offset-7 col-sm-4 col-md-offset-0 col-md-3 col-lg-offset-0 col-lg-3 control-label' %>
-      <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-9 col-lg-8">
+      <%= f.label :comentario, "Responder".html_safe, id: 'label_'+params[:id], class: 'col-xs-offset-0 col-xs-12 col-sm-offset-2 col-sm-1 col-md-offset-0 col-md-3 col-lg-offset-0 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-7 col-lg-7">
         <%= f.text_area :comentario, id: 'textArea_'+params[:id], class: 'form-control', placeholder: "Escribe tu respuesta aquí", :rows => 4  %>
         <%= tag 'span', id: 'error_'+params[:id], class: "help-block" %>
       </div>
-    </div>
-
-    <div class="actions form-group">
-      <div class="col-xs-offset-0 col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-9 col-md-3 col-lg-offset-9 col-lg-2">
-        <%= f.submit :Enviar, id: 'submit_'+params[:id], class: 'comentario_submit btn btn-xs btn-block btn-success' %>
+      <style>
+          @media (min-width: 992px){
+              div.actions{top: 70px;}
+          }
+      </style>
+      <div class="actions col-xs-offset-0 col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-2 col-lg-offset-0 col-lg-2">
+        <%= f.submit :Enviar, id: 'submit_'+params[:id], class: 'comentario_submit btn btn-xs btn-block btn-success', type: 'button' %>
       </div>
     </div>
+
+
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
 
     <%= f.hidden_field "ancestry_"+params[:id], {value: @comentario.ancestry} %>
-    <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
-    <%= f.hidden_field :es_admin, value: @comentario.es_admin ? '1' : '0' %>
-    <%= f.hidden_field :es_respuesta, value: @comentario.es_respuesta ? '1' : '0' %>
+    <%= f.hidden_field "con_verificacion_"+params[:id], {value: @comentario.con_verificacion ? '1' : '0'} %>
+    <%= f.hidden_field "es_admin_"+params[:id], {value: @comentario.es_admin ? '1' : '0'} %>
+    <%= f.hidden_field "es_respuesta_"+params[:id], {value: @comentario.es_respuesta ? '1' : '0'} %>
 
-    <%= f.hidden_field :institucion, value: @comentario.institucion %>
-    <%= f.hidden_field :estatus, value: @comentario.estatus %>
-    <%= f.hidden_field :categoria_comentario_id, value: @comentario.categoria_comentario_id %>
+    <%= f.hidden_field "institucion_"+params[:id], {value: @comentario.institucion} %>
+    <%= f.hidden_field "estatus_"+params[:id], {value: @comentario.estatus} %>
+    <%= f.hidden_field "categoria_comentario_id_"+params[:id], {value: @comentario.categoria_comentario_id} %>
 
     <% if @comentario.usuario_id.present? %>
-        <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) %>
+        <%= f.hidden_field("usuario_id_"+params[:id], {value: @comentario.usuario_id}) %>
     <% else %>
-        <%= f.hidden_field(:nombre, value: @comentario.nombre) %>
-        <%= f.hidden_field(:correo, value: @comentario.correo) %>
+        <%= f.hidden_field("nombre_"+params[:id], {value: @comentario.nombre}) %>
+        <%= f.hidden_field("correo_"+params[:id], {value: @comentario.correo}) %>
     <% end %>
 
 <% end %>
-
-<script>
-    $(document).ready(function() {
-        $('.comentario_submit').click(function () {
-            // Busco AHORA sí las etiquetas ADECUADAS (¬¬ ggonzalez)
-            var commentId = $(this).attr('id').replace('submit_','');
-
-            var label = $("#label_"+commentId);
-            var comentario = $("#textArea_"+commentId);
-            var historial_comentarios = $("#historial_comentarios_"+commentId);
-
-            if (comentario.val() == ''){
-                console.log($('#error_'+commentId));
-                label.parent().addClass('has-error');
-                $('#error_'+commentId).text('El comentario no puede estar vacío');
-            }
-            else {
-                console.log('0');
-                var form = $("#form_"+commentId);
-                var ancestry = $("#comentario_ancestry_"+commentId);
-                label.parent().removeClass('has-error');
-                $('#error_'+commentId).text('');
-
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    dataType: "json",
-                    data: form.serialize().replace("ancestry_"+commentId,"ancestry")//replace necesario apra q el ancestry sea aceptado en los parametros
-                }).done(function(resp) {
-                    //return false;
-                    if (resp.estatus == 1)
-                    {
-                        // Si la respuesta viene de un usuario
-                        /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
-                            window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
-                       /* else {*/
-                            html_blockquote='<div class="comentario-burbuja respuesta">'+
-                            comentario.val()+ '<br />'+
-                            '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
-                            '</div>';
-                            historial_comentarios.append(html_blockquote);
-                            ancestry.val(resp.ancestry);
-                            comentario.val('');
-                        //}
-
-                    } else
-                        console.log('Hubo un error al guardar la respuesta');
-
-                }).fail(function() {
-                    console.log('Hubo un error al guardar la respuesta');
-                });
-            }
-
-            return false;
-        });
-    });
-</script>
-

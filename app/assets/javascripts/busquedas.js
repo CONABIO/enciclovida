@@ -90,7 +90,7 @@ soulmate_asigna = function(tipo_busqueda)
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
-        maxResults:     15
+        maxResults:     5
     });
 };
 
