@@ -14,6 +14,7 @@
             scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
                            // but will still load if the user clicks.
         });
+        /* Comentado ya que no se muestra el correo extraído de xolo, en un futuro se necesitará
         $('#mas_comentarios').on('click', '.comentarios-correos', function() {
             $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
             id=$(this).children('div.correos')[0].getAttribute('id');
@@ -21,6 +22,7 @@
                 $('#' + id).load('/comentarios/correoId?id=' + id);
             }
         });
+        */
     });
 
 </script>
