@@ -14,6 +14,7 @@
             scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
                            // but will still load if the user clicks.
         });
+        /* Comentado ya que no se muestra el correo extraído de xolo, en un futuro se necesitará
         $('#mas_comentarios').on('click', '.comentarios-correos', function() {
             $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
             id=$(this).children('div.correos')[0].getAttribute('id');
@@ -21,6 +22,7 @@
                 $('#' + id).load('/comentarios/correoId?id=' + id);
             }
         });
+        */
     });
 
 </script>
@@ -31,7 +33,7 @@
     </h4>
 <% end %>
 
-<table class="table table-striped table-condensed table-bordered comentarios">
+<table class="table table-striped table-condensed table-bordered comentarios" id="escucha_envio">
   <%= form_tag admin_path, method: :get, id: 'filtro_form' do %>
       <thead>
       <tr>
@@ -39,7 +41,7 @@
           <table width="100%">
             <tr>
               <th width="10%" rowspan="2"><span class="text-success">Filtrar por: </span></th>
-              <th width="40%">Estatus <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="Público: muestra el comentario como una advertencia, en la ficha del taxón. <br /> Resuelto: se da por solucionado/finalizado el comentario del usuario." type="button"></i>
+              <th width="40%">Estatus <i class="glyphicon glyphicon-question-sign text-warning" data-toggle="tooltip" data-placement="bottom" title="<b>Público:</b> muestra el comentario como una advertencia, en la ficha del taxón. <br /> <b>Resuelto:</b> se da por solucionado/finalizado el comentario del usuario." type="button"></i>
               </th>
               <th width="40%">Tipo de comentarios</th>
               <th width="10%">Limpiar filtros</th>

@@ -1,5 +1,5 @@
 Buscador::Application.routes.draw do
-
+  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
   get "busquedas/basica"
   get "busquedas/avanzada"
   get "busquedas/resultados"

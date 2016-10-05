@@ -1,8 +1,8 @@
 class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :extrae_comentarios_generales, :show_correo, :ultimo_id_comentario] do
+  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(100)  # Minimo administrador
     render :_error unless permiso
   end
@@ -88,17 +88,19 @@ class ComentariosController < ApplicationController
       cuantos = @comentario_root.descendant_ids.count
       categoriaComentario = @comentario.categoria_comentario_id
 
+      #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
+      @comentario_root.completa_info(@comentario_root.usuario_id)
+      resp = [@comentario_root]
+
       if cuantos > 0
-        resp = @comentario.descendants.map{ |c|
+        resp = resp + @comentario.descendants.map{ |c|
           c.completa_info(@comentario_root.usuario_id)
           c
         }
-
-        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
-
-      else
-        @comentarios = {estatus:1, cuantos: cuantos}
       end
+
+      #Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
       # Para crear el comentario si NO es el render de la ficha
       if @ficha
@@ -194,10 +196,10 @@ class ComentariosController < ApplicationController
             @comentario.completa_info(comentario_root.usuario_id)
 
             format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
-                                       nombre: @comentario.nombre}.to_json}
+                                       nombre: @comentario.nombre}.to_json} #SI NO ME EQUIVOCO AQUÍ ES DODNDE SE TIENQ MANDAR A LLAMAR EL RENDERDE HISTORIAL COMENTARIOS PARA YA NO HARDCODEAR EL HTML EN EL JS !>.>
           else
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
-            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
 
         else
@@ -271,9 +273,6 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
-    procesa_correos({mborigen:  @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    #procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos', delete: true})
-
     if params[:comentario].present?
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
@@ -336,10 +335,8 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-   #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
-   procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    response = Comentario.find_all_by_categoria_comentario_id(29)
-    render 'comentarios/generales', :locals => {:response => response}
+    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
+    render text: 'Procesados'
   end
 
   def show_correo
@@ -396,6 +393,7 @@ class ComentariosController < ApplicationController
       correo.subject = correo.subject.to_s + "###[#{tiene_id ? id_original : comment.id}]###"
       comment.general.update_column(:subject, correo.subject.codifica64)
       comment.general.update_column(:commentArray, (correo_nuevo.present? ? (correo_nuevo.to_s) : dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>"))).to_s ))
+      EnviaCorreo.confirmacion_comentario_general(comment).deliver if !tiene_id ##para usar el mailer de calonso de confirmación
     end
   end
 

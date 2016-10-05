@@ -1,19 +1,30 @@
-<%= render('historial', c: @comentario_root) if @comentario_root.present? %>
+<% respuesta_externa = params[:action]=='respuesta_externa' %>
 
-<div class="historial_comentarios">
-  <% if @comentarios.present? && @comentarios[:cuantos] > 0 %>
+<% if @comentarios.present? &&  @comentarios[:resp].present? %>
+
+    <% if @comentario.especie.present? && respuesta_externa %>
+        <p>
+          A continuación se muestran los comentarios que has realizado para: <br />
+          <strong><%= tituloNombreCientifico(@comentario.especie, :show => true).gsub(' )',')').html_safe %></strong>
+        </p>
+        <hr>
+    <% end %>
+
+    <div class="historial_comentarios" id="historial_comentarios_<%= params[:id] %>" <%= "style='margin: 0 15%;'".html_safe if respuesta_externa %> >
       <% @comentarios[:resp].each do |c| %>
           <%= render 'historial', c: c %>
       <% end %>
-  <% end %>
-</div>
+    </div>
+<% end %>
 
 <% if @sin_caja %>
-    Tu comentario ha sido marcado como solucionado/resuleto. Si deseas añadir otro puedes hacerlo desde la ficha de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
+    Tu comentario ha sido marcado como solucionado/resuelto. Si deseas añadir otro puedes hacerlo desde la ficha de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
 <% elsif @eliminado %>
     Tu comentario ha sido marcado como inapropiado u ofensivo. Si deseas añadir otro puedes hacerlo desde la página de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
 <% elsif @moderador %>
     Tu comentario aún no ha pasado por un moderador. Una vez que pase el filtro podrás verlo desde la página de la <%= link_to 'especie', "/especies/#{@especie_id}" %>.
-<% else %>
-    <%= render 'form_respuesta' if !@ficha%>
+<% elsif  respuesta_externa && !@ficha %>
+    <div id="escucha_envio"><%= render 'form_respuesta' %></div>
+<% else%>
+    <%= render 'form_respuesta' if !@ficha %>
 <% end %>

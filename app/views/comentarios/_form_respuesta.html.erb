@@ -1,86 +1,39 @@
-<%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", class: 'form-inline') do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@comentario.especie_id}/comentarios", :html => {:id => 'form_'+params[:id], :class => 'form-horizontal'}) do |f| %>
 
-    <div class="comentario">
-      <%= f.text_area :comentario, class: 'form-control', placeholder: "Escribe tu respuesta aquí" %>
-      <%= f.label :comentario, "Responder".html_safe, class: 'text-warning' %>
+    <div class="comentario form-group">
+      <%= f.label :comentario, "Responder".html_safe, id: 'label_'+params[:id], class: 'col-xs-offset-0 col-xs-12 col-sm-offset-2 col-sm-1 col-md-offset-0 col-md-3 col-lg-offset-0 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-7 col-lg-7">
+        <%= f.text_area :comentario, id: 'textArea_'+params[:id], class: 'form-control', placeholder: "Escribe tu respuesta aquí", :rows => 4  %>
+        <%= tag 'span', id: 'error_'+params[:id], class: "help-block" %>
+      </div>
+      <style>
+          @media (min-width: 992px){
+              div.actions{top: 70px;}
+          }
+      </style>
+      <div class="actions col-xs-offset-0 col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-2 col-lg-offset-0 col-lg-2">
+        <%= f.submit :Enviar, id: 'submit_'+params[:id], class: 'comentario_submit btn btn-xs btn-block btn-success', type: 'button' %>
+      </div>
     </div>
 
-    <div class="actions pull-right">
-      <%= f.submit :Enviar, class: 'comentario_submit btn btn-xs btn-success' %>
-    </div>
+
 
     <%= recaptcha_tags(:hl => 'es-419') if @comentario.con_verificacion && Rails.env.production? %>
 
-    <%= f.hidden_field :ancestry, value: @comentario.ancestry %>
-    <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>
-    <%= f.hidden_field :es_admin, value: @comentario.es_admin ? '1' : '0' %>
-    <%= f.hidden_field :es_respuesta, value: @comentario.es_respuesta ? '1' : '0' %>
+    <%= f.hidden_field "ancestry_"+params[:id], {value: @comentario.ancestry} %>
+    <%= f.hidden_field "con_verificacion_"+params[:id], {value: @comentario.con_verificacion ? '1' : '0'} %>
+    <%= f.hidden_field "es_admin_"+params[:id], {value: @comentario.es_admin ? '1' : '0'} %>
+    <%= f.hidden_field "es_respuesta_"+params[:id], {value: @comentario.es_respuesta ? '1' : '0'} %>
 
-    <%= f.hidden_field :institucion, value: @comentario.institucion %>
-    <%= f.hidden_field :estatus, value: @comentario.estatus %>
-    <%= f.hidden_field :categoria_comentario_id, value: @comentario.categoria_comentario_id %>
+    <%= f.hidden_field "institucion_"+params[:id], {value: @comentario.institucion} %>
+    <%= f.hidden_field "estatus_"+params[:id], {value: @comentario.estatus} %>
+    <%= f.hidden_field "categoria_comentario_id_"+params[:id], {value: @comentario.categoria_comentario_id} %>
 
     <% if @comentario.usuario_id.present? %>
-        <%= f.hidden_field(:usuario_id, value: @comentario.usuario_id) %>
+        <%= f.hidden_field("usuario_id_"+params[:id], {value: @comentario.usuario_id}) %>
     <% else %>
-        <%= f.hidden_field(:nombre, value: @comentario.nombre) %>
-        <%= f.hidden_field(:correo, value: @comentario.correo) %>
+        <%= f.hidden_field("nombre_"+params[:id], {value: @comentario.nombre}) %>
+        <%= f.hidden_field("correo_"+params[:id], {value: @comentario.correo}) %>
     <% end %>
 
 <% end %>
-
-<script>
-    $(document).ready(function() {
-        $('.comentario_submit').click(function () {
-            // Busco AHORA sí el comentario, si cambia el orden de las etiquetas, revisar aquí (¬¬ ggonzalez)
-            var label = $(this).parent().prev().children('label');
-            var comentario = $(this).parent().prev().children('textarea');
-
-            var historial_comentarios = $(this).parent().parent().prev();
-
-            if (comentario.val() == ''){
-                label.addClass('error_mensaje');
-            }
-            else {
-                var form = $(this).parent().parent();
-                var ancestry = $(this).parent().nextAll().slice(0,1);
-                label.removeClass('error_mensaje');
-
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    dataType: "json",
-                    data: form.serialize()
-
-                }).done(function(resp) {
-            console.log('entre3b done');
-
-                    //return false;
-                    if (resp.estatus == 1)
-                    {
-                        // Si la respuesta viene de un usuario
-                        /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
-                            window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
-                       /* else {*/
-                            html_blockquote='<div class="comentario-burbuja respuesta">'+
-                            comentario.val()+ '<br />'+
-                            '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
-                            '</div>';
-                            historial_comentarios.append(html_blockquote);
-                            ancestry.val(resp.ancestry);
-                            comentario.val('');
-                        //}
-
-                    } else
-                        console.log('Hubo un error al guardar la respuesta');
-
-                }).fail(function() {
-                    console.log('Hubo un error al guardar la respuesta');
-                });
-            }
-
-            return false;
-        });
-    });
-</script>
-

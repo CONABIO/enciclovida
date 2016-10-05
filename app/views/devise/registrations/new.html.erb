@@ -1,33 +1,40 @@
-<h2>Registrate</h2>
+<div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-4 col-lg-4">
+  <h2>Regístrate</h2>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <% if devise_error_messages!.present? %>
+          <div class="alert alert-danger" role="alert">
+            <%= devise_error_messages! %>
+          </div>
+      <% end %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <%= devise_error_messages! %>
+      <div class="form-group">
+        <%= f.label :email %>
+        <%= f.email_field :email, autofocus: true, class: 'form-control' %></div>
 
-    <div><%= f.label :email %><br />
-      <%= f.email_field :email, autofocus: true %></div>
+      <div class="form-group"><%= f.label :usuario %>
+        <%= f.text_field :usuario, autocomplete: true, class: 'form-control' %></div>
 
-    <div><%= f.label :usuario %><br />
-      <%= f.text_field :usuario, autocomplete: true %></div>
+      <div class="form-group"><%= f.label :nombre %>
+        <%= f.text_field :nombre, class: 'form-control' %></div>
 
-    <div><%= f.label :nombre %><br />
-      <%= f.text_field :nombre, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.label :apellido %>
+        <%= f.text_field :apellido, class: 'form-control' %></div>
 
-    <div><%= f.label :apellido %><br />
-      <%= f.text_field :apellido, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.label :institucion %>
+        <%= f.text_field :institucion, class: 'form-control' %></div>
 
-    <div><%= f.label :institucion %><br />
-      <%= f.text_field :institucion, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.label :grado_academico %>
+        <%= f.text_field :grado_academico, class: 'form-control' %></div>
 
-    <div><%= f.label :grado_academico %><br />
-      <%= f.text_field :grado_academico, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.label :password %>
+        <%= f.password_field :password, autocomplete: "off", class: 'form-control' %></div>
 
-    <div><%= f.label :password %><br />
-      <%= f.password_field :password, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control' %></div>
 
-    <div><%= f.label :password_confirmation %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+      <div class="form-group"><%= f.submit 'Crear cuenta', class: 'btn btn-xsm btn-success' %></div>
 
-    <div><%= f.submit 'Crear cuenta' %></div>
-<% end %>
+  <% end %>
 
-<%= render "devise/shared/links" %>
+  <%= render "devise/shared/links" %>
+</div>
