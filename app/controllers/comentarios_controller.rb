@@ -25,13 +25,7 @@ class ComentariosController < ApplicationController
   # GET /comentarios/1.json
   # Show de la vista de admins
   def show
-    @ficha = if params[:ficha].present?
-               params[:ficha] == '1' ? true : false
-             else
-               false
-             end
-    #las lineas de acá arriba no se puede sustituir por:
-    #@ficha = (params[:ficha].present? && params[:ficha] == '1')
+    @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
     categoriaComentario = @comentario.categoria_comentario_id
@@ -63,7 +57,7 @@ class ComentariosController < ApplicationController
     @comentario.usuario_id = current_usuario.id
 
     # Estatus 6 quiere decir que es parte del historial de un comentario
-    @comentario.estatus = 6
+    @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
     # Categoria comentario ID
     @comentario.categoria_comentario_id = categoriaComentario
@@ -80,29 +74,27 @@ class ComentariosController < ApplicationController
 
   #Show cuando alguien externo responde a CONABIO
   def respuesta_externa
-    comentario_root = @comentario.root
-
-    @ficha = if params[:ficha].present?
-               params[:ficha] == '1' ? true : false
-             else
-               false
-             end
+    @comentario_root = @comentario.root
+    @comentario_root.completa_info(@comentario_root.usuario_id)
+    @especie_id = params[:especie_id] || 0  # Si es cero, es porque era un comentario general y lo cambiaron de tipo de comentario
+    @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     # Si es una respuesta de usuario o es para mostrar en la ficha
-    if (params[:created_at].present? && comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at])
+    if (params[:created_at].present? && @comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S') != params[:created_at])
       render :file => '/public/404.html', :status => 404, :layout => false
     else
 
       @comentario_resp = @comentario
-      cuantos = comentario_root.descendant_ids.count
+      cuantos = @comentario_root.descendant_ids.count
+      categoriaComentario = @comentario.categoria_comentario_id
 
       #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
-      comentario_root.completa_info(comentario_root.usuario_id)
-      resp = [comentario_root]
+      @comentario_root.completa_info(@comentario_root.usuario_id)
+      resp = [@comentario_root]
 
       if cuantos > 0
         resp = resp + @comentario.descendants.map{ |c|
-          c.completa_info(comentario_root.usuario_id)
+          c.completa_info(@comentario_root.usuario_id)
           c
         }
       end
@@ -114,37 +106,47 @@ class ComentariosController < ApplicationController
       if @ficha
         render 'show', layout: false
       else
-        # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
-        ultimo_comentario = @comentario_resp.subtree.order('ancestry ASC').map(&:id).reverse.first
 
-        # Crea el nuevo comentario con las clases de la gema ancestry
-        @comentario = Comentario.children_of(ultimo_comentario).new
+        if Comentario::RESUELTOS.include?(@comentario_root.estatus)  #Marcado como resuleto
+          @sin_caja = true
+        elsif Comentario::OCULTAR == @comentario_root.estatus  # Marcado como eliminado
+          @eliminado = true
+        elsif Comentario::MODERADOR == @comentario_root.estatus  # Marcado como eliminado
+          @moderador = true
+        else
+          # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
+          ultimo_comentario = @comentario_resp.subtree.order('ancestry ASC').map(&:id).reverse.first
 
-        # Datos del usuario
-        @comentario.usuario_id = @comentario_resp.usuario_id
-        @comentario.nombre = @comentario_resp.nombre
-        @comentario.correo = @comentario_resp.correo
-        @comentario.institucion = @comentario.institucion
+          # Crea el nuevo comentario con las clases de la gema ancestry
+          @comentario = Comentario.children_of(ultimo_comentario).new
 
-        # Estatus 6 quiere decir que es parte del historial de un comentario
-        @comentario.estatus = 6
+          # Datos del usuario
+          @comentario.usuario_id = @comentario_resp.usuario_id
+          @comentario.nombre = @comentario_resp.nombre
+          @comentario.correo = @comentario_resp.correo
+          @comentario.institucion = @comentario.institucion
 
-        # Categoria comentario ID
-        @comentario.categoria_comentario_id = 26
+          # Estatus 6 quiere decir que es parte del historial de un comentario
+          @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
-        # Caseta de verificacion
-        @comentario.con_verificacion = true
+          # Categoria comentario ID
+          @comentario.categoria_comentario_id = categoriaComentario
 
-        # Proviene de un administrador
-        @comentario.es_admin = false
+          # Caseta de verificacion
+          @comentario.con_verificacion = true
 
-        # Si es una respuesta de un usuario
-        @comentario.es_respuesta = true
+          # Proviene de un administrador
+          @comentario.es_admin = false
 
-        # Asigna la especie
-        @comentario.especie_id = @comentario_resp.especie_id
+          # Si es una respuesta de un usuario
+          @comentario.es_respuesta = true
+
+          # Asigna la especie
+          @comentario.especie_id = @comentario_resp.especie_id
+        end  # end si no es un comenatrio resuelto
 
         render 'show'
+
       end
 
     end
@@ -256,7 +258,7 @@ class ComentariosController < ApplicationController
   # DELETE /comentarios/1
   # DELETE /comentarios/1.json
   def destroy
-    @comentario.estatus = 5
+    @comentario.estatus = Comentario::OCULTAR
 
     if @comentario.save
       render text: '1'
