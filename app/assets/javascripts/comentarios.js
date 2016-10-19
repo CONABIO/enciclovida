@@ -260,4 +260,57 @@ $(document).ready(function(){
 
     $('[data-toggle="tooltip"]').tooltip({html: true});
     asigna_valores_select();
+
+
+    $('#escucha_envio').on('click', '.comentario_submit', function() {
+        // Busco AHORA sí las etiquetas ADECUADAS (¬¬ ggonzalez)
+        var commentId = $(this).attr('id').replace('submit_','');
+
+        var label = $("#label_"+commentId);
+        var comentario = $("#textArea_"+commentId);
+        var historial_comentarios = $("#historial_comentarios_"+commentId);
+
+        if (comentario.val() == ''){
+            console.log($('#error_'+commentId));
+            label.parent().addClass('has-error');
+            $('#error_'+commentId).text('El comentario no puede estar vacío');
+        }
+        else {
+            var form = $("#form_"+commentId);
+            var ancestry = $("#comentario_ancestry_"+commentId);
+            label.parent().removeClass('has-error');
+            $('#error_'+commentId).text('');
+            var re = new RegExp("_"+commentId,"g");
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                dataType: "json",
+                data: form.serialize().replace(re,"")//se le pasa una regExp para que sustituya TODAS las apariciones y no solo la primera
+            }).done(function(resp) {
+
+                if (resp.estatus == 1)
+                {
+                    // Si la respuesta viene de un usuario
+                    /*if (resp.comentario_id != undefined && resp.especie_id != undefined && resp.created_at != undefined)
+                     window.location.replace("/especies/" + resp.especie_id + "/comentarios/" + resp.comentario_id + "/show_respuesta?created_at=" + resp.created_at);*/
+                    /* else {*/
+                    html_blockquote='<div class="comentario-burbuja respuesta">'+
+                    comentario.val()+ '<br />'+
+                    '<small>'+resp.nombre + '-' + resp.created_at +'</small>'+
+                    '</div>';
+                    historial_comentarios.append(html_blockquote);
+                    ancestry.val(resp.ancestry);
+                    comentario.val('');
+                    //}
+
+                } else
+                    console.log('Hubo un error al guardar la respuesta');
+
+            }).fail(function() {
+                console.log('Hubo un error al guardar la respuesta');
+            });
+        }
+    });
+
 });
