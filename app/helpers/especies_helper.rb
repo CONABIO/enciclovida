@@ -155,6 +155,7 @@ module EspeciesHelper
     end
   end
 
+  # Nombres comunes agrupados por lengua
   def dameNomComunes(taxon)
     nombres_comunes = ''
     if I18n.locale.to_s == 'es-cientifico'
@@ -172,44 +173,48 @@ module EspeciesHelper
     nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
-  def dameRegionesNombresBibliografia(especie)
-    tipo_distribucion = []
-    distribucion = {}
-    nombres_comunes = []
-    nombres_comunes_unicos = []
+  # Nombres comunes con su bibliografia como referencia
+  def dameNomComunesBiblio(taxon)
+    nombres_comunes = {}
 
-    especie.especies_regiones.each do |e|
-      # Tipo de distribucion
-      tipo_distribucion << e.tipo_distribucion.descripcion if e.tipo_distribucion_id.present?
-
-      # Distribucion
-      tipo_reg = e.region.tipo_region
-      nivel = TipoRegion::REGION_POR_NIVEL["#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"]
-      distribucion[nivel] = [] if distribucion[nivel].nil?
-      distribucion[nivel] << e.region.nombre_region
+    taxon.especies_regiones.each do |er|
 
       # Parte de los nombres comunes con la bibliografia
-      e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
-        nombres_comunes << { nombre: nombre.nombre_comun.nombre_comun.primera_en_mayuscula, lengua: nombre.nombre_comun.lengua.downcase }
+      er.nombres_regiones.where(:region_id => er.region_id).each do |nombre|
+        if nombres_comunes[nombre.nombre_comun.id].nil?
+          # Nombre comun con su lengua
+          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.primera_en_mayuscula, lengua: nombre.nombre_comun.lengua.downcase }
 
-
-        # Si ya estaba ese nombre comun, me lo salto
-        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}")
-        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}"
-
-        nombre_comun = "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula} (#{nombre.nombre_comun.lengua.downcase})"
-
-        nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-          nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
-<div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"
-          biblioCont+=1
+          # Para una o mas bibliografias
+          nombres_comunes[nombre.nombre_comun.id][:bibliografia] = []
+          nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
+            nombres_comunes[nombre.nombre_comun.id][:bibliografia] << biblio.bibliografia.cita_completa
+          end
         end
+      end  # End each nombre
+    end  # End each especie_region
 
-        nombresComunes+="<li>#{nomBib}</li>"
-      end
+    # Ordena por el nombre
+    nombres_comunes.sort_by {|k,v| v[:nombre]}
+  end
+
+  # La distribucion agrupada por el tipo de region
+  def dameDistribucion(taxon)
+    distribucion = {}
+
+    taxon.especies_regiones.each do |er|
+      tipo_reg = er.region.tipo_region
+      nivel = TipoRegion::REGION_POR_NIVEL["#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"]
+      distribucion[nivel] = [] if distribucion[nivel].nil?
+      distribucion[nivel] << er.region.nombre_region
     end
 
-    {:distribucion => distribucion, :nombres_comunes => nombres_comunes, :tipo_distribucion => tipo_distribucion}
+    # Para quitar el presente en Mexico, si es que tiene alguna distribucion estatal, municipal, etc.
+    presente = TipoRegion::REGION_POR_NIVEL['100']
+    if distribucion.count > 1 && distribucion.key?(presente)
+      distribucion.delete(presente)
+    end
+    distribucion
   end
 
   def dameStatus(taxon, opciones={})
