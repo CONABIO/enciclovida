@@ -206,6 +206,9 @@ module EspeciesHelper
       tipo_reg = er.region.tipo_region
       nivel = TipoRegion::REGION_POR_NIVEL["#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"]
       distribucion[nivel] = [] if distribucion[nivel].nil?
+
+      # Evita poner ND como una region
+      next if er.region.nombre_region.downcase == 'nd'
       distribucion[nivel] << er.region.nombre_region
     end
 
