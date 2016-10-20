@@ -97,7 +97,7 @@
             <% distribucion.each do |tipo, regiones| %>
                 <%= tipo %>
                 <ul>
-                  <% regiones.each do |r| %>
+                  <% regiones.uniq.sort.each do |r| %>
                       <li>
                         <%= r %>
                       </li>

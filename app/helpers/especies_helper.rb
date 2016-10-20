@@ -204,11 +204,22 @@ module EspeciesHelper
 
     taxon.especies_regiones.each do |er|
       tipo_reg = er.region.tipo_region
-      nivel = TipoRegion::REGION_POR_NIVEL["#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"]
+      nivel_numero = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
+      nivel = TipoRegion::REGION_POR_NIVEL[nivel_numero]
       distribucion[nivel] = [] if distribucion[nivel].nil?
 
       # Evita poner ND como una region
       next if er.region.nombre_region.downcase == 'nd'
+
+      # Para poner los estados faltantes provenientes de municipios u otros tipos de regiones
+      if nivel_numero.to_i > 110
+        er.region.ancestors.joins(:tipo_region).where('nivel1 = ? AND nivel2 = ? AND nivel3= ?', 1,1,0).each do |r|
+          # Asigno el estado de una region menor a 110
+          distribucion[TipoRegion::REGION_POR_NIVEL['110']] = [] if distribucion[TipoRegion::REGION_POR_NIVEL['110']].nil?
+          distribucion[TipoRegion::REGION_POR_NIVEL['110']] << r.nombre_region
+        end
+      end
+
       distribucion[nivel] << er.region.nombre_region
     end
 
@@ -217,7 +228,9 @@ module EspeciesHelper
     if distribucion.count > 1 && distribucion.key?(presente)
       distribucion.delete(presente)
     end
-    distribucion
+
+    # Ordena por el titulo del tipo de region
+    distribucion.sort
   end
 
   def dameStatus(taxon, opciones={})
