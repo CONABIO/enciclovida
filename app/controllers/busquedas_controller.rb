@@ -119,9 +119,36 @@ class BusquedasController < ApplicationController
       end
 
     else
-      @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
 
-      if @totales > 0
+      # Fue una busqueda sin anotar todos, te da todos los resultados
+      if params[:nombre].strip.blank?
+        if !Lista::FORMATOS_DESCARGA.include?(params[:format])
+          @totales = if vista_general
+                       scope = Especie.where(estatus: 2)
+                       scope.count
+                     else
+                       scope = Especie
+                       scope.count
+                     end
+
+          @taxones = scope.datos_basicos.offset((pagina-1)*por_pagina).limit(por_pagina).order(:nombre_cientifico)
+
+          # Para separarlos por categoria
+          scope.select('SELECT nombre_categoria_taxonomica, count(*) AS cuantos').categoria_taxonomica_join.adicional_join
+
+
+          Especie.find_by_sql(query).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
+                                              cuantos: t.cuantos, url: "#{opts[:original_url]}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
+              #Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
+
+          @taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
+          end
+        end
+
+      elsif @totales > 0
+        @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
+
         # Por si desea descargar el formato en excel o csv sin que haga todos los querys
         if !Lista::FORMATOS_DESCARGA.include?(params[:format])
           @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
