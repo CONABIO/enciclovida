@@ -201,6 +201,7 @@ $(document).ready(function(){
     }
 
     function content_geoportal(feature){
+        console.log(feature);
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
@@ -219,7 +220,10 @@ $(document).ready(function(){
 
         contenido += "<dt>Más información: </dt><dd><a href='http://" + feature.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-        return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+        // Para enviar un comentario acerca de un registro en particular
+        contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + feature.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+
+        return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + feature.idejemplar;
     }
 
     function content_naturalista(feature){
@@ -235,7 +239,7 @@ $(document).ready(function(){
 
         /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
         contenido += "<dt>Fecha: </dt><dd>" + feature.observed_on + "</dd>";
-        contenido += "<dt>¿silvestre / naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
+        contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
         contenido += "<dt>Grado de calidad: </dt><dd>" + I18n.t('quality_grade.' + feature.quality_grade) + "</dd>";
         contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ feature.uri +"' target='_blank'>ver la observación</a></dd>";
 
