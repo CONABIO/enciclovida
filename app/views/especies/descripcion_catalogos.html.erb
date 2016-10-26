@@ -1,4 +1,4 @@
-<% regNomBib=dameRegionesNombresBibliografia(@especie) %>
+<%# regNomBib=dameRegionesNombresBibliografia(@especie) %>
 
 <table>
   <tr>
@@ -13,8 +13,43 @@
 
         <%= dameStatus(@especie, :tab_catalogos => true).html_safe %>
         <%= dameCaracteristica(@especie, :tab_catalogos => true).html_safe %>
-        <%= "<p><strong>Nombres comunes:</strong><ul>#{regNomBib[:nombresComunes]}</ul></p>".html_safe if regNomBib[:nombresComunes].present? %>
-        <%= "<p><strong>Tipo de distribución:</strong><ul>#{regNomBib[:tipoDistribuciones]}</ul></p>".html_safe if regNomBib[:tipoDistribuciones].present? %>
+
+        <% nombres_comunes = dameNomComunesBiblio(@especie) %>
+        <% if nombres_comunes.any? %>
+            <p>
+              <strong>Nombres comunes:</strong>
+            <ul>
+              <% nombres_comunes.each do |id, datos| %>
+                  <li>
+                    <%= datos[:nombre] %> (<%= datos[:lengua] %>)
+
+                    <% biblioCont = 1 %>
+                    <% datos[:bibliografia].each do |b| %>
+                        <%= link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;') %>
+
+                        <div id="biblio_<%= biblioCont %>" title="Bibliografía" class="biblio" style="display: none"><%= b %></div>
+                        <% biblioCont+= 1 %>
+                    <% end %>
+
+                  </li>
+              <% end %>
+            </ul>
+            </p>
+        <% end %>
+
+        <% tipo_distribucion = @especie.tipos_distribuciones.uniq %>
+        <% if tipo_distribucion.any? %>
+            <p>
+              <strong>Tipo de distribución</strong>
+            <ul>
+              <% tipo_distribucion.each do |td| %>
+                  <li>
+                    <%= td.descripcion %>
+                  </li>
+              <% end %>
+            </ul>
+            </p>
+        <% end %>
 
         <% if @especie.cita_nomenclatural.present? %>
             <p>
@@ -53,7 +88,25 @@
 
     <td width="60%" valign="top">
       <%= dameTaxonesInferiores(@especie).html_safe %>
-      <%= "<fieldset><legend class='leyenda'>Distribución reportada en literatura:</legend>#{regNomBib[:distribuciones]}</fieldset>".html_safe if regNomBib[:distribuciones].present? %>
+
+      <% distribucion = dameDistribucion(@especie) %>
+      <% if distribucion.any? %>
+          <fieldset>
+            <legend class='leyenda'>Distribución reportada en literatura:</legend>
+
+            <% distribucion.each do |tipo, regiones| %>
+                <%= tipo %>
+                <ul>
+                  <% regiones.uniq.sort.each do |r| %>
+                      <li>
+                        <%= r %>
+                      </li>
+                  <% end %>
+                </ul>
+            <% end %>
+          </fieldset>
+      <% end %>
+
     </td>
   </tr>
 </table>

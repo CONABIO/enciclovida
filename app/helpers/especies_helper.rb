@@ -155,6 +155,7 @@ module EspeciesHelper
     end
   end
 
+  # Nombres comunes agrupados por lengua
   def dameNomComunes(taxon)
     nombres_comunes = ''
     if I18n.locale.to_s == 'es-cientifico'
@@ -172,85 +173,64 @@ module EspeciesHelper
     nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
-  def dameRegionesNombresBibliografia(especie)
-    distribuciones = ''
-    nombresComunes=  ''
-    tipoDistribuciones = ''
-    distribucion = {}
-    tipoDist = []
-    nombres_comunes_unicos = []
-    biblioCont = 1
+  # Nombres comunes con su bibliografia como referencia
+  def dameNomComunesBiblio(taxon)
+    nombres_comunes = {}
 
-    especie.especies_regiones.each do |e|
-      tipoDist << e.tipo_distribucion.descripcion if e.tipo_distribucion_id.present?
-
-        tipo_reg = e.region.tipo_region
-        niveles = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
-        distribucion[niveles] = [] if distribucion[niveles].nil?
-
-      # Separa por niveles la distribucion
-        case niveles
-          when '100'
-            distribucion[niveles].push('<b>Presente en México</b>')
-          when '110'
-            distribucion[niveles].push('<b>Estatal</b>') if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '111'
-            distribucion[niveles].push('<b>Municipal</b>') if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '200'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '300'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '400'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '500'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '510'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-          when '511'
-            distribucion[niveles].push("<b>#{tipo_reg.descripcion}</b>") if distribucion[niveles].empty?
-            distribucion[niveles].push("<li>#{e.region.nombre_region}</li>")
-        end
+    taxon.especies_regiones.each do |er|
 
       # Parte de los nombres comunes con la bibliografia
-      e.nombres_regiones.where(:region_id => e.region_id).each do |nombre|
-        # Si ya estaba ese nombre comun, me lo salto
-        next if nombres_comunes_unicos.include?("#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}")
-        nombres_comunes_unicos << "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula}-#{nombre.nombre_comun.lengua.downcase}"
+      er.nombres_regiones.where(:region_id => er.region_id).each do |nombre|
+        if nombres_comunes[nombre.nombre_comun.id].nil?
+          # Nombre comun con su lengua
+          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.primera_en_mayuscula, lengua: nombre.nombre_comun.lengua.downcase }
 
-        nomBib = "#{nombre.nombre_comun.nombre_comun.primera_en_mayuscula} (#{nombre.nombre_comun.lengua.downcase})"
-        nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-          nomBib+=" #{link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;')}
-<div id=\"biblio_#{biblioCont}\" title=\"Bibliografía\" class=\"biblio\" style=\"display: none\">#{biblio.bibliografia.cita_completa}</div>"
-          biblioCont+=1
+          # Para una o mas bibliografias
+          nombres_comunes[nombre.nombre_comun.id][:bibliografia] = []
+          nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
+            nombres_comunes[nombre.nombre_comun.id][:bibliografia] << biblio.bibliografia.cita_completa
+          end
         end
-        nombresComunes+="<li>#{nomBib}</li>"
+      end  # End each nombre
+    end  # End each especie_region
+
+    # Ordena por el nombre
+    nombres_comunes.sort_by {|k,v| v[:nombre]}
+  end
+
+  # La distribucion agrupada por el tipo de region
+  def dameDistribucion(taxon)
+    distribucion = {}
+
+    taxon.especies_regiones.each do |er|
+      tipo_reg = er.region.tipo_region
+      nivel_numero = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
+      nivel = TipoRegion::REGION_POR_NIVEL[nivel_numero]
+      distribucion[nivel] = [] if distribucion[nivel].nil?
+
+      # Evita poner ND como una region
+      next if er.region.nombre_region.downcase == 'nd'
+
+      # Para poner los estados faltantes provenientes de municipios u otros tipos de regiones
+      if nivel_numero.to_i > 110
+        er.region.ancestors.joins(:tipo_region).where('nivel1 = ? AND nivel2 = ? AND nivel3= ?', 1,1,0).each do |r|
+          # Asigno el estado de una region menor a 110
+          distribucion[TipoRegion::REGION_POR_NIVEL['110']] = [] if distribucion[TipoRegion::REGION_POR_NIVEL['110']].nil?
+          distribucion[TipoRegion::REGION_POR_NIVEL['110']] << r.nombre_region
+        end
       end
+
+      distribucion[nivel] << er.region.nombre_region
     end
 
-    distribucion.each do |k, v|
-      # Quita el titulo del territorio nacional si tambien esta en un estado en particular
-      next if distribucion.count > 1 && k == '100'
-
-      titulo = true
-      v.each do |reg|
-        titulo ? distribuciones+= "#{reg}<ul>" : distribuciones+= reg
-        titulo = false
-      end
-      distribuciones+= '</ul>'
+    # Para quitar el presente en Mexico, si es que tiene alguna distribucion estatal, municipal, etc.
+    presente = TipoRegion::REGION_POR_NIVEL['100']
+    if distribucion.count > 1 && distribucion.key?(presente)
+      distribucion.delete(presente)
     end
 
-    tipoDist.uniq.each do |d|
-      tipoDistribuciones+= "<li>#{d}</li>"
-    end
-
-    {:distribuciones => distribuciones, :nombresComunes => nombresComunes, :tipoDistribuciones => tipoDistribuciones}
+    # Ordena por el titulo del tipo de region
+    distribucion.sort
   end
 
   def dameStatus(taxon, opciones={})
@@ -398,10 +378,10 @@ module EspeciesHelper
       nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
       response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)
     end
-   response
+    response
   end
 
- def dameEspecieBibliografia(taxon)
+  def dameEspecieBibliografia(taxon)
     biblio=''
     taxon.especies_bibliografias.each do |bib|
       biblio_comp = bib.bibliografia.cita_completa

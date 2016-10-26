@@ -73,8 +73,9 @@
 
   <% if I18n.locale.to_s != 'es-cientifico' %>
       <script type="application/javascript">
-          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
-          $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
+        // Para cambiar el orden de los TABS en vista general
+        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
+        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
       </script>
   <% end %>
 
