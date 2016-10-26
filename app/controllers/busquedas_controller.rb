@@ -105,87 +105,135 @@ class BusquedasController < ApplicationController
 
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
+    params[:solo_categoria] = params[:solo_categoria].gsub('-', ' ') if params[:solo_categoria].present?  # Para la categoria grupo especies
 
     if params[:solo_categoria].present?
+      if vista_general
+        scope = Especie.where(estatus: 2)
+      else
+        scope = Especie
+      end
+
+      scope = scope.where('nombre_categoria_taxonomica = ? COLLATE Latin1_general_CI_AI', params[:solo_categoria])
+
       # Por si desea descargar el formato en excel o csv sin que haga todos los querys
       if Lista::FORMATOS_DESCARGA.include?(params[:format])
-        @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
+        # Por si en la busqueda original estaba vacia
+        if params[:nombre].strip.blank?
+          @totales = scope.count
+        else
+          @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
+        end
+
       else
-        @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
-                                                     solo_categoria: params[:solo_categoria]})
+        if params[:nombre].strip.blank?
+          @taxones = scope.datos_basicos.offset((pagina-1)*por_pagina).limit(por_pagina).order(:nombre_cientifico)
+        else
+          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
+                                                       solo_categoria: params[:solo_categoria]})
+        end
+
         @taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
         end
       end
 
-    else
-      @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
+    else  # Es una busqueda para desplegar el TAB principal
 
-      if @totales > 0
-        # Por si desea descargar el formato en excel o csv sin que haga todos los querys
+      # Fue una busqueda vacia, te da todos los resultados
+      if params[:nombre].strip.blank?
         if !Lista::FORMATOS_DESCARGA.include?(params[:format])
-          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
-          @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
+          @totales = if vista_general
+                       scope = Especie.where(estatus: 2)
+                       scope.count
+                     else
+                       scope = Especie
+                       scope.count
+                     end
+
+          @taxones = scope.datos_basicos.offset((pagina-1)*por_pagina).limit(por_pagina).order(:nombre_cientifico)
+
+          # Para separarlos por categoria
+          @por_categoria = scope.select('nombre_categoria_taxonomica, count(*) AS cuantos').categoria_taxonomica_join.adicional_join.group('nombre_categoria_taxonomica').
+              map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica, cuantos: t.cuantos, url: "#{request.original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
 
           @taxones.each do |t|
             t.cual_nombre_comun_coincidio(params[:nombre])
           end
         end
 
-      else
-        ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-        ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+      else  # Es una busqueda NO vacia en el nombre
+        @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
 
-        if ids_comun.any? || ids_cientifico.any?
-          sql = "Especie.datos_basicos(['nombre_comun', 'ancestry_ascendente_directo', 'cita_nomenclatural']).nombres_comunes_join"
+        # Hubo resultados
+        if @totales > 0
 
-          # Parte del estatus
-          if vista_general
-            sql << ".where('estatus=2')"
+          # Por si desea descargar el formato en excel o csv sin que haga todos los querys
+          if !Lista::FORMATOS_DESCARGA.include?(params[:format])
+            @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
+            @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
+
+            @taxones.each do |t|
+              t.cual_nombre_comun_coincidio(params[:nombre])
+            end
           end
 
-          if ids_comun.any? && ids_cientifico.any?
-            sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
-          elsif ids_comun.any?
-            sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
-          elsif ids_cientifico.any?
-            sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
-          end
+        else # Si no hubo resultados, tratamos de encontrarlos con el fuzzy match
+          ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
+          ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
 
-          query = eval(sql).distinct.to_sql
-          consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-          taxones = Especie.find_by_sql(consulta)
+          if ids_comun.any? || ids_cientifico.any?
+            sql = "Especie.datos_basicos(['nombre_comun', 'ancestry_ascendente_directo', 'cita_nomenclatural']).nombres_comunes_join"
 
-          ids_totales = []
-
-          taxones.each do |taxon|
-            # Para evitar que se repitan los taxones con los joins
-            next if ids_totales.include?(taxon.id)
-            ids_totales << taxon.id
-
-            # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            if taxon.nombre_comun.present?
-              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
-              @taxones <<= taxon if distancia < 3
+            # Parte del estatus
+            if vista_general
+              sql << ".where('estatus=2')"
             end
 
-            distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
-            @taxones <<= taxon if distancia < 3
+            if ids_comun.any? && ids_cientifico.any?
+              sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
+            elsif ids_comun.any?
+              sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
+            elsif ids_cientifico.any?
+              sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
+            end
+
+            query = eval(sql).distinct.to_sql
+            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
+            taxones = Especie.find_by_sql(consulta)
+
+            ids_totales = []
+
+            taxones.each do |taxon|
+              # Para evitar que se repitan los taxones con los joins
+              next if ids_totales.include?(taxon.id)
+              ids_totales << taxon.id
+
+              # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+              if taxon.nombre_comun.present?
+                distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
+                @taxones <<= taxon if distancia < 3
+              end
+
+              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
+              @taxones <<= taxon if distancia < 3
+            end
           end
-        end
 
-        # Para que saga el total tambien con el fuzzy match
-        if @taxones.any?
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre], true)
+          # Para que saga el total tambien con el fuzzy match
+          if @taxones.any?
+            @taxones.each do |t|
+              t.cual_nombre_comun_coincidio(params[:nombre], true)
+            end
+
+            @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
           end
 
-          @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-        end
+          @totales = @taxones.length
 
-        @totales = @taxones.length
-      end
-    end
+        end  # Fin de posibles resultados
+      end  #Fin nombre.blank?
+    end  # Fin solo_categoria
 
     response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
 
@@ -297,7 +345,7 @@ class BusquedasController < ApplicationController
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
     if params[:solo_categoria]
-      condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria]}' COLLATE Latin1_general_CI_AI\")"
+      condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI\")"
     end
 
     # Quita las condiciones y los joins repetidos

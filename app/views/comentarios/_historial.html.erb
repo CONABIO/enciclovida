@@ -11,5 +11,14 @@
 
 <div class="comentario-burbuja <%= c.es_propietario ? 'op' : 'respuesta' %>">
   <%= c.comentario.gsub("\n","<br />").html_safe %> <br />
+
+  <% if cp = c.comentario_proveedor %>
+    <% if c.categoria_comentario_id == 6 %>
+      <p>Enlace al <%= link_to 'ejemplar', CONFIG.geoportal_informacion + cp.proveedor_id, target: :_blank %></p>
+    <% elsif c.categoria_comentario_id == 7 %>
+      <p>Enlace a la <%= link_to 'observación', "#{CONFIG.naturalista_url}/observations/#{cp.proveedor_id}", target: :_blank %></p>
+    <% end %>
+  <% end %>
+
   <small><%= c.nombre %> - <%= c.institucion + " - " if c.institucion.present? %><%= c.created_at.strftime('%d/%m/%y-%H:%M') %></small>
 </div>

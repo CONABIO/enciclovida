@@ -3,6 +3,8 @@ class CategoriaComentario < ActiveRecord::Base
 
   has_ancestry
 
+  REGISTROS_GEODATA = %w(6 7)  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
+
   def self.grouped_options(con_comentario_general=false)
 
     con_cc = con_comentario_general ? "categorias_comentario_grouped_options_con_cc" : "categorias_comentario_grouped_options_sin_cc"

@@ -9,6 +9,7 @@ class Comentario < ActiveRecord::Base
   has_ancestry
 
   has_one :general, :class_name => 'ComentarioGeneral', :foreign_key => 'comentario_id'
+  has_one :comentario_proveedor, :class_name => 'ComentarioProveedor', :foreign_key => 'comentario_id'
 
   # Atributo para tener la cuenta de los comentarios del historial
   attr_reader :cuantos

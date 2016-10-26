@@ -185,6 +185,8 @@ class ComentariosController < ApplicationController
     end
 
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
+    tipo_proveedor = params[:tipo_proveedor]
+    proveedor_id = params[:proveedor_id]
     params = comentario_params
 
     respond_to do |format|
@@ -196,8 +198,16 @@ class ComentariosController < ApplicationController
             @comentario.completa_info(comentario_root.usuario_id)
 
             format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
-                                       nombre: @comentario.nombre}.to_json} #SI NO ME EQUIVOCO AQUÍ ES DODNDE SE TIENQ MANDAR A LLAMAR EL RENDERDE HISTORIAL COMENTARIOS PARA YA NO HARDCODEAR EL HTML EN EL JS !>.>
+                                       nombre: @comentario.nombre}.to_json}
           else
+            # Para guardar en la tabla comentarios proveedores
+            if proveedor_id.present? && CategoriaComentario::REGISTROS_GEODATA.include?(tipo_proveedor)
+              comentario_proveedor = ComentarioProveedor.new
+              comentario_proveedor.comentario_id = @comentario.id
+              comentario_proveedor.proveedor_id = proveedor_id
+              comentario_proveedor.save
+            end
+
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
@@ -464,6 +474,8 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion, :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :ajax, :nombre_cientifico, :created_at)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
+                                       :ajax, :nombre_cientifico, :created_at)
   end
 end

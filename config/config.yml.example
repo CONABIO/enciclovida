@@ -22,6 +22,7 @@ base: &base
 
   # URL SNIB, se realizo un proxy reverse en su respectivo web server
   geoportal_url: http://localhost:9000/snib?qtype=getSpecies
+  geoportal_informacion: http://www.conabio.gob.mx/snibgeoportal/Ejemplar.php?id=
 
   # URL geoserver
   geoserver_url: http://localhost:9001/mapcache/wms
@@ -32,7 +33,7 @@ base: &base
   bdi_fotoweb: http://bdi.conabio.gob.mx/fotoweb/Grid.fwx?columns=4&rows=8&search=
 
   # URL de NaturaLista e iNaturalist
-  naturalista_url: http://conabio.inaturalist.org
+  naturalista_url: http://www.naturalista.mx
   # Es necesario la URL de iNaturalist para las observaciones, ya que en NaturaLista no salen todas
   inaturalist_url: http://www.inaturalist.org
 
