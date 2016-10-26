@@ -227,6 +227,7 @@ $(document).ready(function(){
     }
 
     function content_naturalista(feature){
+        console.log(feature);
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
@@ -242,6 +243,9 @@ $(document).ready(function(){
         contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
         contenido += "<dt>Grado de calidad: </dt><dd>" + I18n.t('quality_grade.' + feature.quality_grade) + "</dd>";
         contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ feature.uri +"' target='_blank'>ver la observación</a></dd>";
+
+        // Para enviar un comentario acerca de un registro en particular
+        contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + feature.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
 
         return "<dl class='dl-horizontal'>" + contenido + "</dl>";
     }

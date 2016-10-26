@@ -45,7 +45,14 @@
             <%= f.hidden_field :categoria_comentario_id, value: params[:tipo_proveedor] %>
             <%= hidden_field_tag 'tipo_proveedor', params[:tipo_proveedor] %>
             <%= hidden_field_tag 'proveedor_id', params[:proveedor_id] %>
-            <small><strong>Acerca del ejemplar con ID: </strong><%= params[:proveedor_id] %></small>
+
+            <% if params[:tipo_proveedor] == '6' %>
+                <small><strong>Acerca del ejemplar con ID: </strong><%= params[:proveedor_id] %>, para más información del ejemplar consulta el siguiente
+                  <%= link_to 'enlace', CONFIG.geoportal_informacion + params[:proveedor_id], target: :_blank %></small>
+            <% else %>
+                <small>Sí deseas contactar al dueño de la observación consulta el siguiente
+                  <%= link_to 'enlace', "#{CONFIG.naturalista_url}/observations/#{params[:proveedor_id]}", target: :_blank %></small>
+            <% end %>
 
         <% else %>
             <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),

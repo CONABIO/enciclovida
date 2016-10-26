@@ -204,7 +204,6 @@ class ComentariosController < ApplicationController
             if proveedor_id.present? && CategoriaComentario::REGISTROS_GEODATA.include?(tipo_proveedor)
               comentario_proveedor = ComentarioProveedor.new
               comentario_proveedor.comentario_id = @comentario.id
-              comentario_proveedor.tipo_proveedor = tipo_proveedor
               comentario_proveedor.proveedor_id = proveedor_id
               comentario_proveedor.save
             end
