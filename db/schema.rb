@@ -363,10 +363,9 @@ ActiveRecord::Schema.define(version: 20161027011840) do
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
 
   create_table "roles", force: true do |t|
-    t.string   "nombre_rol",           null: false
-    t.integer  "taxonomia_especifica"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.string   "nombre_rol",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.string   "ancestry"
     t.string   "observaciones"
   end
