@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027011840) do
+ActiveRecord::Schema.define(version: 20161027074449) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -363,10 +363,9 @@ ActiveRecord::Schema.define(version: 20161027011840) do
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
 
   create_table "roles", force: true do |t|
-    t.string   "nombre_rol",           null: false
-    t.integer  "taxonomia_especifica"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.string   "nombre_rol",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.string   "ancestry"
     t.string   "observaciones"
   end
@@ -438,6 +437,13 @@ ActiveRecord::Schema.define(version: 20161027011840) do
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "observaciones"
+  end
+
+  create_table "usuarios_especie", force: true do |t|
+    t.integer  "usuario_id"
+    t.integer  "especie_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "usuarios_roles", force: true do |t|
