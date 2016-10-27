@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027180317) do
+ActiveRecord::Schema.define(version: 20161027181612) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -64,6 +64,13 @@ ActiveRecord::Schema.define(version: 20161027180317) do
   end
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
+
+  create_table "categoria_contenidos_roles", force: true do |t|
+    t.integer  "categoria_contenido_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "categorias_contenido", force: true do |t|
     t.string   "nombre",     null: false

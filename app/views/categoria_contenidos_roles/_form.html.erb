@@ -1,0 +1,25 @@
+<%= form_for(@categoria_contenido_rol) do |f| %>
+  <% if @categoria_contenido_rol.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@categoria_contenido_rol.errors.count, "error") %> prohibited this categoria_contenido_rol from being saved:</h2>
+
+      <ul>
+      <% @categoria_contenido_rol.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :categoria_contenido_id %><br>
+    <%= f.number_field :categoria_contenido_id %>
+  </div>
+  <div class="field">
+    <%= f.label :rol_id %><br>
+    <%= f.number_field :rol_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

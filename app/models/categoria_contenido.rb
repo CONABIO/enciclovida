@@ -3,6 +3,8 @@ class CategoriaContenido < ActiveRecord::Base
 
   has_ancestry
 
+  has_many :categoria_contenido_rol, :class_name=> 'CategoriaContenidoRol', :foreign_key => :categoria_contenido_id
+
   REGISTROS_GEODATA = %w(6 7)  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
 
   def self.grouped_options(con_comentario_general=false)
