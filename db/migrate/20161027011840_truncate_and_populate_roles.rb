@@ -4,11 +4,8 @@ class TruncateAndPopulateRoles < ActiveRecord::Migration
 
     Rol.create!([{nombre_rol:'Super usuario', ancestry:nil, observaciones:'Todo poderoso'},
                 {nombre_rol:'Administrador', ancestry:'1', observaciones:''},
-                {nombre_rol:'Fotos', ancestry:'1/2', observaciones:''},
-                {nombre_rol:'Mapas', ancestry:'1/2', observaciones:''},
-                {nombre_rol:'Fichas', ancestry:'1/2', observaciones:''},
-                {nombre_rol:'NombresComunes', ancestry:'1/2', observaciones:''},
-                {nombre_rol:'Taxonomia', ancestry:'1/2', observaciones:''},
+                {nombre_rol:'AdminComentarios', ancestry:'1/2', observaciones:''},
+                {nombre_rol:'AdminComentariosSCAT', ancestry:'1/2/3', observaciones:''}
                 ])
   end
 end
