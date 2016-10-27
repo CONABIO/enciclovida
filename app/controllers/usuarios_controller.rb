@@ -97,7 +97,6 @@ class UsuariosController < ApplicationController
       current_usuario.filtro.save if current_usuario.filtro.changed?
       current_usuario.save if current_usuario.changed?
     else
-      Rails.logger.info "---aqui"
       filtro = Filtro.where(:sesion => request.session_options[:id]).first
       filtro = Filtro.new unless filtro
 
@@ -124,7 +123,7 @@ class UsuariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def usuario_params
     params.require(:usuario).permit(:usuario, :correo, :nombre, :apellido, :institucion,
-                                    :grado_academico, :contrasenia, :confirma_contrasenia)
+                                    :contrasenia, :confirma_contrasenia)
   end
 
   def busqueda_avanzada

@@ -215,11 +215,11 @@ es:
       unconfirmed: Necesitas confirmar tu cuenta antes de continuar.
     mailer:
       confirmation_instructions:
-        subject: Confirma tu cuenta en BIOS
+        subject: Confirma tu cuenta en EncicloVida
       reset_password_instructions:
-        subject: Cambia tu contraseña en BIOS
+        subject: Cambia tu contraseña en EncicloVida
       unlock_instructions:
-        subject: Desbloquea tu cuenta en BIOS
+        subject: Desbloquea tu cuenta en EncicloVida
     omniauth_callbacks:
       failure: No pudimos autenticarte de %{kind} debido a "%{reason}".
       success: Fuiste autenticado satisfactoriamente desde %{kind} de la cuenta.
@@ -310,10 +310,11 @@ es:
     label:
       usuario:
         current_password: Contraseña actual
-        email: Correo
-        login: Usuario o correo
+        email: Correo electrónico
+        login: Correo electrónico
         password: Contraseña
         password_confirmation: Confirma la contraseña
+        institucion: Institución, organización, etc. (opcional)
         remember_me: Recordarme la próxima vez
     select:
       prompt: Por favor selecciona
