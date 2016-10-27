@@ -1,0 +1,25 @@
+<%= form_for(@usuario_rol) do |f| %>
+  <% if @usuario_rol.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@usuario_rol.errors.count, "error") %> prohibited this usuario_rol from being saved:</h2>
+
+      <ul>
+      <% @usuario_rol.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :usuario_id %><br>
+    <%= f.number_field :usuario_id %>
+  </div>
+  <div class="field">
+    <%= f.label :rol_id %><br>
+    <%= f.number_field :rol_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -12,7 +12,7 @@ class EspeciesController < ApplicationController
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
   before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados] do
-    permiso = tiene_permiso?(100)  # Minimo administrador
+    permiso = tiene_permiso?(2)  #TODO Minimo administrador (ajustar bien el permiso necesario)
     render :_error unless permiso
   end
 
