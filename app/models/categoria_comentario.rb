@@ -11,46 +11,14 @@ class CategoriaComentario < ActiveRecord::Base
     options = []
 
     if Rails.env.production?
-
       # Aplicando un low level caching, esta consulta es requerida simpre y casi nunca cambia
       Rails.cache.fetch(con_cc, expires_in: 12.hours) do
-
-        CategoriaComentario.all.each do |cc|
-          if con_comentario_general
-            next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
-          else
-            next unless cc.is_root?
-          end
-
-          grouped_options = []
-          descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
-          grouped_options << cc.nombre
-          grouped_options << descendientes if descendientes.any?
-          options << grouped_options
-        end
-
-        options
+        categorias
       end
 
     else
-
-      CategoriaComentario.all.each do |cc|
-        if con_comentario_general
-          next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
-        else
-          next unless cc.is_root?
-        end
-
-        grouped_options = []
-        descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
-        grouped_options << cc.nombre
-        grouped_options << descendientes if descendientes.any?
-        options << grouped_options
-      end
-
-      options
+      categorias
     end
-
   end
 
   def categoria_ancestro
@@ -59,5 +27,28 @@ class CategoriaComentario < ActiveRecord::Base
     else
       path.map(&:nombre)
     end
+  end
+
+
+  private
+
+  def categorias
+    options = []
+
+    CategoriaComentario.all.each do |cc|
+      if con_comentario_general
+        next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
+      else
+        next unless cc.is_root?
+      end
+
+      grouped_options = []
+      descendientes = cc.descendants.map {|d| [d.nombre, d.id]}
+      grouped_options << cc.nombre
+      grouped_options << descendientes if descendientes.any?
+      options << grouped_options
+    end
+
+    options
   end
 end
