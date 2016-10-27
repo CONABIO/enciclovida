@@ -1,29 +1,33 @@
 <h2>Configuración de tu cuenta</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
+    <%= devise_error_messages! %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, autofocus: true %></div>
+    <div><%= f.label :nombre %><br />
+      <%= f.text_field :nombre, autofocus: true %></div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
+    <div><%= f.label :apellido %><br />
+      <%= f.text_field :apellido %></div>
 
-  <div><%= f.label :password %> <i>(dejar vacio si no se desea cambiar la contraseña)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %></div>
+    <div><%= f.label :email %><br />
+      <%= f.email_field :email %></div>
 
-  <div><%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <% end %>
 
-  <div><%= f.label :current_password %> <i>(es necesaria para guardar los cambios)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %></div>
+    <div><%= f.label :password %> <i>(dejar vacio si no se desea cambiar la contraseña)</i><br />
+      <%= f.password_field :password, autocomplete: "off" %></div>
 
-  <div><%= f.submit 'Guardar cambios' %></div>
+    <div><%= f.label :password_confirmation %><i>(dejar vacio si no se desea cambiar la contraseña)</i><br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %></div>
+
+    <div><%= f.label :current_password %> <i>(es necesaria para guardar los cambios)</i><br />
+      <%= f.password_field :current_password, autocomplete: "off" %></div>
+
+    <div><%= f.submit 'Guardar cambios' %></div>
 <% end %>
 
 <h3>Cancelar la cuenta</h3>
 
 <p>¿No es lo que esperabas? <%= button_to 'Cancelar la cuenta', registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
-
-<%= link_to :Regresar, :back %>

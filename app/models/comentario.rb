@@ -54,9 +54,9 @@ class Comentario < ActiveRecord::Base
   scope :select_basico,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
 comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
 comentarios.estatus, fecha_estatus, categoria_comentario_id, comentarios.institucion AS c_institucion,
-CONCAT(u.grado_academico,' ', u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
+CONCAT(u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
 u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
-CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
+CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre") }
   scope :select_basico_espAnc,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
 comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
 comentarios.estatus, fecha_estatus, categoria_comentario_id, comentarios.institucion AS c_institucion,
@@ -96,7 +96,7 @@ CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre, especi
         self.institucion = u_institucion
       rescue
         u = usuario
-        self.nombre = "#{u.grado_academico} #{u.nombre} #{u.apellido}".strip
+        self.nombre = "#{u.nombre} #{u.apellido}".strip
         self.correo = u.email
         self.institucion = u.institucion
       end

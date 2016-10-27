@@ -37,48 +37,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Atributos adicionales para el registro y autenticacion
   def configure_permitted_parameters
-    #Atributos adicionales al modelo
-    devise_parameter_sanitizer.for(:sign_up) << :usuario
     devise_parameter_sanitizer.for(:sign_up) << :email
     devise_parameter_sanitizer.for(:sign_up) << :nombre
     devise_parameter_sanitizer.for(:sign_up) << :apellido
     devise_parameter_sanitizer.for(:sign_up) << :institucion
-    devise_parameter_sanitizer.for(:sign_up) << :grado_academico
-    #devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:usuario, :email ) }
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :usuario, :email, :password, :remember_me) }
-  end
-
-  def paginacion(totales, pag = 1, p_pag = Especie::POR_PAGINA_PREDETERMINADO)
-    pagina = pag.to_i
-    por_pagina = p_pag.to_i
-    paginas = totales/por_pagina + 1    # + 1 porque puede que totales%por_pagina no sea cero
-    rangos = []
-
-    if paginas <= 12
-      rangos << (1..paginas).to_a
-    elsif paginas > 12
-      if pagina.between?(1,8)
-        rangos << (1..10).to_a
-        rangos << '...'
-        rangos << (paginas-1..paginas).to_a
-      elsif pagina.between?(9,paginas-10)
-        rangos << (1..2).to_a
-        rangos << '...'
-        rangos << (pagina-4..pagina+4).to_a
-        rangos << '...'
-        rangos << (paginas-1..paginas).to_a
-      elsif pagina.between?(paginas-9, paginas)
-        rangos << (1..2).to_a
-        rangos << '...'
-        rangos << (paginas-10..paginas).to_a
-      end
-    end
-
-    { :rangos => rangos, :pagina => pagina,
-      :rango_resultados =>
-          "Mostrando #{(pagina-1)*por_pagina+1} - #{pagina*por_pagina <= totales ? pagina*por_pagina : (pagina-1)*por_pagina + totales%por_pagina} de #{totales}",
-      :request => request.fullpath, :por_pagina => por_pagina, :totales => totales }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :email, :password, :remember_me) }
+    devise_parameter_sanitizer.for(:account_update) << :email
+    devise_parameter_sanitizer.for(:account_update) << :nombre
+    devise_parameter_sanitizer.for(:account_update) << :apellido
+    devise_parameter_sanitizer.for(:account_update) << :institucion
   end
 
   def tiene_permiso?(nivel)
