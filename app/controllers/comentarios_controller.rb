@@ -3,7 +3,7 @@ class ComentariosController < ApplicationController
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
-    permiso = tiene_permiso?(2)  # Minimo administrador
+    permiso = tiene_permiso?(3)  # Minimo administrador
     render :_error unless permiso
   end
 
