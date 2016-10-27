@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027004048) do
+ActiveRecord::Schema.define(version: 20161027011840) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -419,7 +419,6 @@ ActiveRecord::Schema.define(version: 20161027004048) do
     t.string   "institucion"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.integer  "rol_id",                 default: 1,    null: false
     t.string   "locale",                 default: "es", null: false
     t.string   "email",                  default: "",   null: false
     t.string   "encrypted_password",     default: "",   null: false
