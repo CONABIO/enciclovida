@@ -285,7 +285,7 @@ class ComentariosController < ApplicationController
 
     if params[:comentario].present?
       params = comentario_params
-      consulta = 'Comentario.datos_basicos_espAnc'
+      consulta = 'Comentario.datos_basicos'
 
       if params[:categoria_comentario_id].present?
         consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
@@ -320,9 +320,9 @@ class ComentariosController < ApplicationController
 
       # estatus = 5 quiere decir oculto a la vista
       if current_usuario.rol.taxonomia_especifica.nil?
-        sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5').to_sql
+        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
       else
-        sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
+        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
         #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5').where("comentarios.especie_id > 3000000 and comentarios.especie_id < 4000000").to_sql
       end
       sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
