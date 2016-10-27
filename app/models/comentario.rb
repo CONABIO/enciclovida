@@ -57,7 +57,15 @@ comentarios.estatus, fecha_estatus, categoria_comentario_id, comentarios.institu
 CONCAT(u.grado_academico,' ', u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
 u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
 CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre") }
+  scope :select_basico_espAnc,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
+comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
+comentarios.estatus, fecha_estatus, categoria_comentario_id, comentarios.institucion AS c_institucion,
+CONCAT(u.grado_academico,' ', u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
+u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
+CONCAT(u2.grado_academico,' ', u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_directo") }
   scope :datos_basicos,-> { select_basico.join_usuarios.join_usuarios2.join_especies.join_adicionales }
+  scope :datos_basicos_espAnc,-> { select_basico_espAnc.join_usuarios.join_usuarios2.join_especies.join_adicionales }
+
 
   POR_PAGINA_PREDETERMINADO = 10
   RESUELTOS = [3,4]
