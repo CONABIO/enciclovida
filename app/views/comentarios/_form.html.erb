@@ -1,13 +1,12 @@
 <div id="error_mensaje"></div>
-<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", class: 'form-inline') do |f| %>
+<%= form_for(@comentario, url: "/especies/#{@especie_id}/comentarios", :html => {:class => 'form-horizontal'}) do |f| %>
 
     <% if @comentario.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@comentario.errors.count, 'error') %> no permitió que el comentario fuese enviado:</h2>
-
+        <div id="error_explanation" class="alert alert-danger" role="alert">
+          <strong>Debido a <span class="bg-primary" style="border-radius: 10px; padding: 4px;"><%= pluralize(@comentario.errors.count, 'error') %></span> el comentario no ha podido ser enviado:</strong><hr>
           <ul>
             <% @comentario.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
+                <li><small><%= msg %></small></li>
             <% end %>
           </ul>
         </div>
@@ -16,35 +15,64 @@
     <% if usuario_signed_in? %>
         <%= f.hidden_field :usuario_id, value: current_usuario.id %>
     <% else %>
-        <div>
-          <%= f.label :correo %>
-          <%= f.text_field :correo %>
+        <div class="form-group">
+          <%= f.label :nombre, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :nombre, class: 'form-control' %>
+          </div>
         </div>
-
-        <div>
-          <%= f.label :nombre %>
-          <%= f.text_field :nombre %>
+        <div class="form-group">
+          <%= f.label :correo, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :correo, class: 'form-control' %>
+          </div>
         </div>
-
-        <div>
-          <%= f.label :institucion, 'Institución, dependencia, etc. (opcional)' %>
-          <%= f.text_field :institucion %>
+        <div class="form-group">
+          <%= f.label :institucion, 'Institución, dependencia, etc. (opcional)', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+          <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+          <%= f.text_field :institucion, class: 'form-control' %>
+          </div>
         </div>
     <% end %>
 
-    <div>
-      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?' %>
-      <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),
-                   include_blank: '---Elige una opción---', class: 'form-control' %>
+    <div class="form-group">
+      <%= f.label :categoria_comentario_id, '¿Qué clase de comentario tienes en mente?', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+
+        <% if params[:proveedor_id].present? && CategoriaComentario::REGISTROS_GEODATA.include?(params[:tipo_proveedor]) %>
+            <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true), params[:tipo_proveedor]),
+                         {:include_blank => '---Elige una opción---'}, {:class => 'form-control', :disabled => :disabled} %>
+            <%= f.hidden_field :categoria_comentario_id, value: params[:tipo_proveedor] %>
+            <%= hidden_field_tag 'tipo_proveedor', params[:tipo_proveedor] %>
+            <%= hidden_field_tag 'proveedor_id', params[:proveedor_id] %>
+
+            <% if params[:tipo_proveedor] == '6' %>
+                <small><strong>Acerca del ejemplar con ID: </strong><%= params[:proveedor_id] %>, para más información del ejemplar consulta el siguiente
+                  <%= link_to 'enlace', CONFIG.geoportal_informacion + params[:proveedor_id], target: :_blank %></small>
+            <% else %>
+                <small>Sí deseas contactar al dueño de la observación consulta el siguiente
+                  <%= link_to 'enlace', "#{CONFIG.naturalista_url}/observations/#{params[:proveedor_id]}", target: :_blank %></small>
+            <% end %>
+
+        <% else %>
+            <%= f.select :categoria_comentario_id, grouped_options_for_select(CategoriaComentario.grouped_options(true)),
+                         {:include_blank => '---Elige una opción---'}, {:class => 'form-control'} %>
+        <% end %>
+
+      </div>
     </div>
 
-    <div>
-      <%= f.label :comentario %>
-      <%= f.text_area :comentario, class: 'form-control' %>
+    <div class="form-group">
+      <%= f.label :comentario, class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+      <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
+      <%= f.text_area :comentario, class: 'form-control', :rows => 5 %>
+      </div>
     </div>
 
-    <div class="actions">
-      <%= f.submit :Enviar, id: 'comentario_submit' %>
+    <div class="actions form-group">
+      <div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-11 col-md-offset-9 col-md-3 col-lg-offset-7 col-lg-3">
+        <%= f.submit :Enviar, id: 'comentario_submit', class: 'btn btn-success btn-block' %>
+      </div>
     </div>
 
     <%= f.hidden_field :con_verificacion, value: @comentario.con_verificacion ? '1' : '0' %>

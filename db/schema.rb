@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160824004141) do
+ActiveRecord::Schema.define(version: 20161027011840) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.text     "nombres_comunes"
   end
 
-  add_index "adicionales", ["especie_id"], name: "ClusteredIndex-20160727-142909"
-  add_index "adicionales", ["nombre_comun_principal"], name: "NonClusteredIndex-20160727-142836"
+  add_index "adicionales", ["especie_id"], name: "ClusteredIndex-20160801-144106"
+  add_index "adicionales", ["nombre_comun_principal"], name: "NonClusteredIndex-20160801-144122"
 
   create_table "bibliografias", force: true do |t|
     t.text     "observaciones"
@@ -94,42 +94,34 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", primary_key: "idConsecutivo", force: true do |t|
-    t.string   "id",                      limit: 10, default: "", null: false
     t.text     "comentario",                                      null: false
     t.string   "correo"
     t.string   "nombre"
     t.integer  "especie_id",                                      null: false
     t.integer  "usuario_id"
-    t.datetime "created_at"
+    t.datetime "created_at",                                      null: false
     t.datetime "updated_at"
     t.integer  "estatus",                            default: 1,  null: false
     t.string   "ancestry"
     t.datetime "fecha_estatus"
     t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id",            default: 26, null: false
+    t.integer  "categoria_comentario_id",            default: 31, null: false
     t.string   "institucion"
     t.string   "idBak"
-  end
-
-  create_table "comentarios2", force: true do |t|
-    t.text     "comentario",                           null: false
-    t.string   "correo"
-    t.string   "nombre"
-    t.integer  "especie_id",                           null: false
-    t.integer  "usuario_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "estatus",                 default: 1,  null: false
-    t.string   "ancestry"
-    t.datetime "fecha_estatus"
-    t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id", default: 26, null: false
-    t.string   "institucion"
+    t.string   "id",                      limit: 10, default: "", null: false
   end
 
   create_table "comentarios_generales", force: true do |t|
     t.string   "comentario_id", limit: 10, default: "", null: false
     t.text     "subject",                               null: false
+    t.text     "commentArray",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comentarios_proveedores", force: true do |t|
+    t.string   "comentario_id", limit: 10, null: false
+    t.string   "proveedor_id",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -371,17 +363,12 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
 
   create_table "roles", force: true do |t|
-    t.string   "nombre_rol",                                 null: false
-    t.text     "atributos_base"
-    t.text     "tablas_adicionales"
-    t.string   "permisos"
-    t.text     "taxonomia_especifica"
-    t.text     "usuarios_especificos"
-    t.integer  "es_admin",             limit: 2, default: 0, null: false
-    t.integer  "es_super_usuario",     limit: 2, default: 0, null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
-    t.integer  "prioridad",                      default: 0, null: false
+    t.string   "nombre_rol",           null: false
+    t.integer  "taxonomia_especifica"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "ancestry"
+    t.string   "observaciones"
   end
 
   create_table "sessions", force: true do |t|
@@ -427,14 +414,11 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "tipos_regiones", ["descripcion"], name: "index_descripcion_tipos_regiones"
 
   create_table "usuarios", force: true do |t|
-    t.string   "usuario",                               null: false
     t.string   "nombre",                                null: false
     t.string   "apellido",                              null: false
-    t.string   "institucion",                           null: false
-    t.string   "grado_academico",                       null: false
+    t.string   "institucion"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.integer  "rol_id",                 default: 1,    null: false
     t.string   "locale",                 default: "es", null: false
     t.string   "email",                  default: "",   null: false
     t.string   "encrypted_password",     default: "",   null: false
@@ -453,6 +437,14 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.integer  "failed_attempts",        default: 0,    null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.string   "observaciones"
+  end
+
+  create_table "usuarios_roles", force: true do |t|
+    t.integer  "usuario_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "validaciones", force: true do |t|

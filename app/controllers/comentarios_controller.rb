@@ -88,17 +88,19 @@ class ComentariosController < ApplicationController
       cuantos = @comentario_root.descendant_ids.count
       categoriaComentario = @comentario.categoria_comentario_id
 
+      #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
+      @comentario_root.completa_info(@comentario_root.usuario_id)
+      resp = [@comentario_root]
+
       if cuantos > 0
-        resp = @comentario.descendants.map{ |c|
+        resp = resp + @comentario.descendants.map{ |c|
           c.completa_info(@comentario_root.usuario_id)
           c
         }
-
-        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
-
-      else
-        @comentarios = {estatus:1, cuantos: cuantos}
       end
+
+      #Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
       # Para crear el comentario si NO es el render de la ficha
       if @ficha
@@ -183,6 +185,8 @@ class ComentariosController < ApplicationController
     end
 
     @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
+    tipo_proveedor = params[:tipo_proveedor]
+    proveedor_id = params[:proveedor_id]
     params = comentario_params
 
     respond_to do |format|
@@ -196,8 +200,16 @@ class ComentariosController < ApplicationController
             format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
                                        nombre: @comentario.nombre}.to_json}
           else
+            # Para guardar en la tabla comentarios proveedores
+            if proveedor_id.present? && CategoriaComentario::REGISTROS_GEODATA.include?(tipo_proveedor)
+              comentario_proveedor = ComentarioProveedor.new
+              comentario_proveedor.comentario_id = @comentario.id
+              comentario_proveedor.proveedor_id = proveedor_id
+              comentario_proveedor.save
+            end
+
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
-            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente.' }
+            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
 
         else
@@ -271,9 +283,6 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
-    procesa_correos({mborigen:  @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    #procesa_correos({mborigen: 'Pendientes', mbdestino: 'Resueltos', delete: true})
-
     if params[:comentario].present?
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
@@ -287,6 +296,7 @@ class ComentariosController < ApplicationController
       end
 
       consulta << ".where('comentarios.estatus < 5')"
+          consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
 
       # Comentarios totales
       @totales = eval(consulta).count
@@ -309,7 +319,12 @@ class ComentariosController < ApplicationController
       @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
 
       # estatus = 5 quiere decir oculto a la vista
-      sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      if current_usuario.rol.taxonomia_especifica.nil?
+        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      else
+        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
+        #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5').where("comentarios.especie_id > 3000000 and comentarios.especie_id < 4000000").to_sql
+      end
       sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
 
@@ -336,10 +351,7 @@ class ComentariosController < ApplicationController
   #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
-   #procesa_correos({mborigen: 'INBOX', mbdestino: 'INBOXDEV', delete: false})
-   procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
-    #response = Comentario.find_all_by_categoria_comentario_id(29)
-    #render 'comentarios/generales', :locals => {:response => response}
+    procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
     render text: 'Procesados'
   end
 
@@ -468,6 +480,8 @@ class ComentariosController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion, :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id, :ajax, :nombre_cientifico, :created_at)
+    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
+                                       :ajax, :nombre_cientifico, :created_at)
   end
 end
