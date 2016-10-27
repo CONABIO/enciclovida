@@ -3,7 +3,7 @@ class ComentariosController < ApplicationController
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
-    permiso = tiene_permiso?(100)  # Minimo administrador
+    permiso = tiene_permiso?(2)  # Minimo administrador
     render :_error unless permiso
   end
 
@@ -319,12 +319,12 @@ class ComentariosController < ApplicationController
       @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
 
       # estatus = 5 quiere decir oculto a la vista
-      if current_usuario.rol.taxonomia_especifica.nil?
+      #if current_usuario.rol.taxonomia_especifica.nil?
         sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
-      else
-        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
-        #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5').where("comentarios.especie_id > 3000000 and comentarios.especie_id < 4000000").to_sql
-      end
+      #else
+        #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
+        #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
+      #end
       sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
 

@@ -51,16 +51,11 @@ class ApplicationController < ActionController::Base
   end
 
   def tiene_permiso?(nivel)
-    if usuario_signed_in?
-      rol = current_usuario.rol.prioridad
-
-      if rol >= nivel
-        true
-      else
-        false
-      end
-    else
-      false
+    return false if !usuario_signed_in?
+    roles = current_usuario.usuario_roles
+    return true if roles.map(&:rol_id).include?(nivel)
+    roles.each do |r|
+      return true if r.rol.descendant_ids.include?(nivel)
     end
   end
 
