@@ -1,5 +1,5 @@
-class CategoriaComentario < ActiveRecord::Base
-  self.table_name='categorias_comentario'
+class CategoriaContenido < ActiveRecord::Base
+  self.table_name='categorias_contenido'
 
   has_ancestry
 
@@ -15,7 +15,7 @@ class CategoriaComentario < ActiveRecord::Base
       # Aplicando un low level caching, esta consulta es requerida simpre y casi nunca cambia
       Rails.cache.fetch(con_cc, expires_in: 12.hours) do
 
-        CategoriaComentario.all.each do |cc|
+        CategoriaContenido.all.each do |cc|
           if con_comentario_general
             next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
           else
@@ -34,7 +34,7 @@ class CategoriaComentario < ActiveRecord::Base
 
     else
 
-      CategoriaComentario.all.each do |cc|
+      CategoriaContenido.all.each do |cc|
         if con_comentario_general
           next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
         else

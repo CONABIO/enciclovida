@@ -201,7 +201,7 @@ class ComentariosController < ApplicationController
                                        nombre: @comentario.nombre}.to_json}
           else
             # Para guardar en la tabla comentarios proveedores
-            if proveedor_id.present? && CategoriaComentario::REGISTROS_GEODATA.include?(tipo_proveedor)
+            if proveedor_id.present? && CategoriaContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
               comentario_proveedor = ComentarioProveedor.new
               comentario_proveedor.comentario_id = @comentario.id
               comentario_proveedor.proveedor_id = proveedor_id
@@ -296,7 +296,7 @@ class ComentariosController < ApplicationController
       end
 
       consulta << ".where('comentarios.estatus < 5')"
-          consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
+          #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
 
       # Comentarios totales
       @totales = eval(consulta).count
@@ -335,7 +335,7 @@ class ComentariosController < ApplicationController
       c.completa_info(c.root.usuario_id)
     end
 
-    @categoria_comentario = CategoriaComentario.grouped_options
+    @categoria_comentario = CategoriaContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
 

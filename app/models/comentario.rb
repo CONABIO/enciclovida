@@ -4,7 +4,7 @@ class Comentario < ActiveRecord::Base
 
   belongs_to :especie
   belongs_to :usuario
-  belongs_to :categoria_comentario, :class_name => 'CategoriaComentario', :foreign_key => 'categoria_comentario_id', :dependent => :destroy
+  belongs_to :categoria_comentario, :class_name => 'CategoriaContenido', :foreign_key => 'categoria_comentario_id', :dependent => :destroy
 
   has_ancestry
 

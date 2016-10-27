@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027074449) do
+ActiveRecord::Schema.define(version: 20161027174448) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20161027074449) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
-  create_table "categorias_comentario", force: true do |t|
+  create_table "categorias_contenido", force: true do |t|
     t.string   "nombre",     null: false
     t.string   "ancestry"
     t.datetime "created_at"
