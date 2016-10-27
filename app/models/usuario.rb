@@ -3,7 +3,7 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
-  belongs_to :rol
+  has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
   has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
   attr_accessor :login
   validates :nombre, :apellido, presence: true
@@ -23,8 +23,5 @@ class Usuario < ActiveRecord::Base
       where(conditions).first
     end
   end
-
-  def es_admin?
-    rol.prioridad >= 100
-  end
+  
 end

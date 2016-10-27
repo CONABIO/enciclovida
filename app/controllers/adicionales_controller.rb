@@ -2,7 +2,7 @@ class AdicionalesController < ApplicationController
   skip_before_filter :set_locale
   before_action :authenticate_usuario!
   before_action do
-    permiso = tiene_permiso?(10)  # Minimo curador basico
+    permiso = tiene_permiso?(2)  #TODO Minimo administrador (ajustar bien los permisos necesarios)
     render :_error unless permiso
   end
   before_action :set_adicional, only: [:show, :edit, :update, :destroy]

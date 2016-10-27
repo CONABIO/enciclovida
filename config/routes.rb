@@ -1,4 +1,6 @@
 Buscador::Application.routes.draw do
+  resources :usuarios_especie
+
   resources :usuarios_roles
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]

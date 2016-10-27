@@ -8,7 +8,7 @@ class AddAncestryToRoles < ActiveRecord::Migration
       t.remove :es_admin
       t.remove :es_super_usuario
       t.remove :prioridad
-      t.change :taxonomia_especifica, :integer
+      t.remove :taxonomia_especifica
       t.string :ancestry
       t.string :observaciones
     end
