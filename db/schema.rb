@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027074449) do
+ActiveRecord::Schema.define(version: 20161027181612) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -65,7 +65,14 @@ ActiveRecord::Schema.define(version: 20161027074449) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
-  create_table "categorias_comentario", force: true do |t|
+  create_table "categoria_contenidos_roles", force: true do |t|
+    t.integer  "categoria_contenido_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "categorias_contenido", force: true do |t|
     t.string   "nombre",     null: false
     t.string   "ancestry"
     t.datetime "created_at"
@@ -94,21 +101,21 @@ ActiveRecord::Schema.define(version: 20161027074449) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", primary_key: "idConsecutivo", force: true do |t|
-    t.text     "comentario",                                      null: false
+    t.text     "comentario",                                     null: false
     t.string   "correo"
     t.string   "nombre"
-    t.integer  "especie_id",                                      null: false
+    t.integer  "especie_id",                                     null: false
     t.integer  "usuario_id"
-    t.datetime "created_at",                                      null: false
+    t.datetime "created_at",                                     null: false
     t.datetime "updated_at"
-    t.integer  "estatus",                            default: 1,  null: false
+    t.integer  "estatus",                           default: 1,  null: false
     t.string   "ancestry"
     t.datetime "fecha_estatus"
     t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id",            default: 31, null: false
+    t.integer  "categoria_contenido_id",            default: 31, null: false
     t.string   "institucion"
     t.string   "idBak"
-    t.string   "id",                      limit: 10, default: "", null: false
+    t.string   "id",                     limit: 10, default: "", null: false
   end
 
   create_table "comentarios_generales", force: true do |t|
