@@ -32,7 +32,7 @@ class CategoriaContenido < ActiveRecord::Base
   def self.categorias(con_comentario_general)
     options = []
 
-    CategoriaComentario.all.each do |cc|
+    CategoriaContenido.all.each do |cc|
       if con_comentario_general
         next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
       else
