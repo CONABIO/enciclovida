@@ -23,8 +23,5 @@ class Usuario < ActiveRecord::Base
       where(conditions).first
     end
   end
-
-  def es_admin?
-    rol.prioridad >= 100
-  end
+  
 end
