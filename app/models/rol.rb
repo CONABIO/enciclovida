@@ -1,4 +1,7 @@
 class Rol < ActiveRecord::Base
+
+  has_ancestry
+
   # Los roles para poder consultar la variable
   ROLES =
       {
