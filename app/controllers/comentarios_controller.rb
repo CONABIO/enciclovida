@@ -283,50 +283,38 @@ class ComentariosController < ApplicationController
 
     if params[:comentario].present?
       params = comentario_params
-      consulta = 'Comentario.datos_basicos'
+      consulta = Comentario.datos_basicos
 
       if params[:categoria_contenido_id].present?
-        consulta << ".where(categoria_contenido_id: #{params[:categoria_contenido_id].to_i})"
+        consulta = consulta.where(categoria_contenido_id: params[:categoria_contenido_id].to_i)
       end
 
       if params[:estatus].present?
-        consulta << ".where('comentarios.estatus=#{params[:estatus].to_i}')"
-      end
-
-      consulta << ".where('comentarios.estatus < #{Comentario::OCULTAR}')"
-      #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
-
-      # Comentarios totales
-      @totales = eval(consulta).count
-
-      sql = eval(consulta).to_sql
-
-      # Para ordenar por created_at
-      if params[:created_at].present?
-        sql = sql + " ORDER BY created_at #{params[:created_at]}"
-      elsif params[:nombre_cientifico].present?
-        sql = sql + " ORDER BY nombre_cientifico #{params[:nombre_cientifico]}"
+        consulta = consulta.where('comentarios.estatus = ?', params[:estatus].to_i)
       else
-        sql = sql + ' ORDER BY comentarios.estatus ASC, created_at ASC'
+        consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
       end
 
-      sql+= " OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+      @totales = consulta.count
 
-    else
-      # Comentarios totales
-      @totales = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").count
+      # Para ordenar por created_at, nombre_cientifico o ambos
+      if params[:created_at].present? && params[:nombre_cientifico].present?
+        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
+      elsif params[:created_at].present?
+        consulta = consulta.order("comentarios.created_at #{params[:created_at]}")
+      elsif params[:nombre_cientifico].present?
+        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}")
+      else
+        consulta = consulta.order("comentarios.estatus ASC, comentarios.created_at #{params[:created_at]} ASC")
+      end
 
-      # estatus = 5 quiere decir oculto a la vista
-      #if current_usuario.rol.taxonomia_especifica.nil?
-      sql = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").to_sql
-      #else
-      #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
-      #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
-      #end
-      sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+      @comentarios = consulta.offset(offset).limit(@por_pagina)
+
+    else  # Comentarios totales
+      consulta = Comentario.datos_basicos.where('comentarios.estatus < ?', Comentario::OCULTAR)
+      @totales = consulta.count
+      @comentarios = consulta.order('comentarios.estatus ASC, comentarios.created_at ASC').offset(offset).limit(@por_pagina)
     end
-
-    @comentarios = Comentario.find_by_sql(sql)
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
@@ -346,7 +334,7 @@ class ComentariosController < ApplicationController
 
   end
 
-  #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
+  # Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
     procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
