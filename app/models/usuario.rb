@@ -23,5 +23,5 @@ class Usuario < ActiveRecord::Base
       where(conditions).first
     end
   end
-  
+
 end
