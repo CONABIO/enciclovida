@@ -271,7 +271,6 @@ $(document).ready(function(){
         var historial_comentarios = $("#historial_comentarios_"+commentId);
 
         if (comentario.val() == ''){
-            console.log($('#error_'+commentId));
             label.parent().addClass('has-error');
             $('#error_'+commentId).text('El comentario no puede estar vacío');
         }

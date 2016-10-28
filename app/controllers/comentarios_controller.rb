@@ -30,19 +30,17 @@ class ComentariosController < ApplicationController
     cuantos = @comentario.descendants.count
     categoriaContenido = @comentario.categoria_contenido_id
 
-    #if !@comentario.general
-      if cuantos > 0
-        resp = @comentario.descendants.map{ |c|
-          c.completa_info(@comentario.usuario_id)
-          c
-        }
+    if cuantos > 0
+      resp = @comentario.descendants.map{ |c|
+        c.completa_info(@comentario.usuario_id)
+        c
+      }
 
-        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
-      else
-        @comentarios = {estatus:1, cuantos: cuantos}
-      end
-    #end
+    else
+      @comentarios = {estatus:1, cuantos: cuantos}
+    end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
     ultimo_comentario = @comentario.subtree.order('ancestry ASC').map(&:id).reverse.first
@@ -99,7 +97,7 @@ class ComentariosController < ApplicationController
         }
       end
 
-      #Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
+      # Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
       @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
       # Para crear el comentario si NO es el render de la ficha
@@ -222,7 +220,7 @@ class ComentariosController < ApplicationController
 
         end
 
-      # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
+        # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if @comentario.root.general  # Si es comentario general
@@ -296,7 +294,7 @@ class ComentariosController < ApplicationController
       end
 
       consulta << ".where('comentarios.estatus < #{Comentario::OCULTAR}')"
-          #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
+      #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
 
       # Comentarios totales
       @totales = eval(consulta).count
@@ -320,10 +318,10 @@ class ComentariosController < ApplicationController
 
       # estatus = 5 quiere decir oculto a la vista
       #if current_usuario.rol.taxonomia_especifica.nil?
-        sql = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").to_sql
+      sql = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").to_sql
       #else
-        #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
-        #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
+      #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
+      #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
       #end
       sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
@@ -340,7 +338,7 @@ class ComentariosController < ApplicationController
     response.headers['x-total-entries'] = @totales.to_s
 
     if (@pagina > 1 && @comentarios.any?) || (params.present? && params[:ajax].present? && params[:ajax] == '1')
-    # Tiene resultados el scrollling o peticiones de ajax
+      # Tiene resultados el scrollling o peticiones de ajax
       render :partial => 'comentarios/admin'
     elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
       render text: ''
