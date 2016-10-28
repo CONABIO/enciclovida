@@ -57,7 +57,7 @@ class ComentariosController < ApplicationController
     @comentario.usuario_id = current_usuario.id
 
     # Estatus 6 quiere decir que es parte del historial de un comentario
-    @comentario.estatus = Comentario::ESTATUS_RESPUESTA
+    @comentario.estatus = Comentario::RESPUESTA
 
     # Categoria comentario ID
     @comentario.categoria_contenido_id = categoriaContenido
@@ -127,7 +127,7 @@ class ComentariosController < ApplicationController
           @comentario.institucion = @comentario.institucion
 
           # Estatus 6 quiere decir que es parte del historial de un comentario
-          @comentario.estatus = Comentario::ESTATUS_RESPUESTA
+          @comentario.estatus = Comentario::RESPUESTA
 
           # Categoria comentario ID
           @comentario.categoria_contenido_id = categoriaContenido
@@ -295,7 +295,7 @@ class ComentariosController < ApplicationController
         consulta << ".where('comentarios.estatus=#{params[:estatus].to_i}')"
       end
 
-      consulta << ".where('comentarios.estatus < 5')"
+      consulta << ".where('comentarios.estatus < #{Comentario::OCULTAR}')"
           #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
 
       # Comentarios totales
@@ -316,11 +316,11 @@ class ComentariosController < ApplicationController
 
     else
       # Comentarios totales
-      @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
+      @totales = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").count
 
       # estatus = 5 quiere decir oculto a la vista
       #if current_usuario.rol.taxonomia_especifica.nil?
-        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+        sql = Comentario.datos_basicos.where("comentarios.estatus < #{Comentario::OCULTAR}").to_sql
       #else
         #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
         #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
@@ -377,13 +377,13 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_contenido_id = 29
+    comment.categoria_contenido_id = CategoriaContenido::COMENTARIO_ENCICLOVIDA
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
       id_original = correo.subject.slice!(/###\[[[:alnum:]]+\]###/).slice!(/[[:alnum:]]+/)
       comentario_root = Comentario.find(id_original)
-      comment.estatus = 6
+      comment.estatus = Comentario::RESPUESTA
       comment.ancestry = comentario_root.subtree_ids.join('/')
 
 
