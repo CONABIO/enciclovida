@@ -281,9 +281,11 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
+    tax_especifica = current_usuario.usuario_especies
+    consulta = Comentario.datos_basicos
+
     if params[:comentario].present?
       params = comentario_params
-      consulta = Comentario.datos_basicos
 
       if params[:categoria_contenido_id].present?
         consulta = consulta.where(categoria_contenido_id: params[:categoria_contenido_id].to_i)
@@ -295,6 +297,15 @@ class ComentariosController < ApplicationController
         consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
       end
 
+      if tax_especifica.length > 0
+        or_taxa = []
+        tax_especifica.each do |e|
+          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+        end
+        consulta = consulta.where(or_taxa.join(" OR "))
+      end
+
+      # Comentarios totales
       @totales = consulta.count
 
       # Para ordenar por created_at, nombre_cientifico o ambos
@@ -310,9 +321,21 @@ class ComentariosController < ApplicationController
 
       @comentarios = consulta.offset(offset).limit(@por_pagina)
 
-    else  # Comentarios totales
-      consulta = Comentario.datos_basicos.where('comentarios.estatus < ?', Comentario::OCULTAR)
+    else
+
+      # estatus = 5 quiere decir oculto a la vista
+      consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
+
+      # Comentarios totales
       @totales = consulta.count
+
+      if tax_especifica.length > 0
+        or_taxa = []
+        tax_especifica.each do |e|
+          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+          end
+        consulta = consulta.where(or_taxa.join(" OR "))
+      end
       @comentarios = consulta.order('comentarios.estatus ASC, comentarios.created_at ASC').offset(offset).limit(@por_pagina)
     end
 
