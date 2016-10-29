@@ -4,6 +4,7 @@ class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
   has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
+  has_many :usuario_especies, :class_name=> 'UsuarioEspecie', :foreign_key => :usuario_id
   has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
   attr_accessor :login
   validates :nombre, :apellido, presence: true
