@@ -61,8 +61,8 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_d
 
 
   POR_PAGINA_PREDETERMINADO = 10
-  RESUELTOS = [3,4]
-  ESTATUS_RESPUESTA = 6
+  RESUELTOS = [3,4] # Casos de comentarios marcados como resueltos
+  RESPUESTA = 6 # Es una respuesta a un comentario
   OCULTAR = 5  # Nunca se borran comentarios, a lo mas los ocualtamos de la vista
   MODERADOR = 1  # Significa que esta pendiente de mostrarse en la ficha
 
@@ -74,7 +74,7 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_d
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
       update_column(:id, idBase32)
-      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_contenido_id == 29
+      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_contenido_id == CategoriaContenido::COMENTARIO_ENCICLOVIDA
     end
   end
 

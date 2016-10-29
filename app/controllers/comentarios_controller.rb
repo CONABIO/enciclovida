@@ -30,19 +30,17 @@ class ComentariosController < ApplicationController
     cuantos = @comentario.descendants.count
     categoriaContenido = @comentario.categoria_contenido_id
 
-    #if !@comentario.general
-      if cuantos > 0
-        resp = @comentario.descendants.map{ |c|
-          c.completa_info(@comentario.usuario_id)
-          c
-        }
+    if cuantos > 0
+      resp = @comentario.descendants.map{ |c|
+        c.completa_info(@comentario.usuario_id)
+        c
+      }
 
-        @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
+      @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
-      else
-        @comentarios = {estatus:1, cuantos: cuantos}
-      end
-    #end
+    else
+      @comentarios = {estatus:1, cuantos: cuantos}
+    end
 
     # Para saber el id del ultimo comentario, antes de sobreescribir a @comentario
     ultimo_comentario = @comentario.subtree.order('ancestry ASC').map(&:id).reverse.first
@@ -57,7 +55,7 @@ class ComentariosController < ApplicationController
     @comentario.usuario_id = current_usuario.id
 
     # Estatus 6 quiere decir que es parte del historial de un comentario
-    @comentario.estatus = Comentario::ESTATUS_RESPUESTA
+    @comentario.estatus = Comentario::RESPUESTA
 
     # Categoria comentario ID
     @comentario.categoria_contenido_id = categoriaContenido
@@ -99,7 +97,7 @@ class ComentariosController < ApplicationController
         }
       end
 
-      #Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
+      # Como resp ya esta seteado desde arriba, ya no es necesario mandar uno distinto si cuantos == 0
       @comentarios = {estatus:1, cuantos: cuantos, resp: resp}
 
       # Para crear el comentario si NO es el render de la ficha
@@ -127,7 +125,7 @@ class ComentariosController < ApplicationController
           @comentario.institucion = @comentario.institucion
 
           # Estatus 6 quiere decir que es parte del historial de un comentario
-          @comentario.estatus = Comentario::ESTATUS_RESPUESTA
+          @comentario.estatus = Comentario::RESPUESTA
 
           # Categoria comentario ID
           @comentario.categoria_contenido_id = categoriaContenido
@@ -222,7 +220,7 @@ class ComentariosController < ApplicationController
 
         end
 
-      # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
+        # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
       else
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if @comentario.root.general  # Si es comentario general
@@ -294,10 +292,10 @@ class ComentariosController < ApplicationController
       end
 
       if params[:estatus].present?
-        consulta = consulta.where("comentarios.estatus = #{params[:estatus].to_i}")
+        consulta = consulta.where('comentarios.estatus = ?', params[:estatus].to_i)
+      else
+        consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
       end
-
-      consulta = consulta.where('comentarios.estatus < 5')
 
       if tax_especifica.length > 0
         or_taxa = []
@@ -310,23 +308,23 @@ class ComentariosController < ApplicationController
       # Comentarios totales
       @totales = consulta.count
 
-      sql = consulta.to_sql
-
-      # Para ordenar por created_at
-      if params[:created_at].present?
-        sql << " ORDER BY created_at #{params[:created_at]}"
+      # Para ordenar por created_at, nombre_cientifico o ambos
+      if params[:created_at].present? && params[:nombre_cientifico].present?
+        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
+      elsif params[:created_at].present?
+        consulta = consulta.order("comentarios.created_at #{params[:created_at]}")
       elsif params[:nombre_cientifico].present?
-        sql << " ORDER BY nombre_cientifico #{params[:nombre_cientifico]}"
+        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}")
       else
-        sql << ' ORDER BY comentarios.estatus ASC, created_at ASC'
+        consulta = consulta.order("comentarios.estatus ASC, comentarios.created_at #{params[:created_at]} ASC")
       end
 
-      sql << " OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+      @comentarios = consulta.offset(offset).limit(@por_pagina)
 
     else
 
       # estatus = 5 quiere decir oculto a la vista
-      consulta = consulta.where('comentarios.estatus < 5')
+      consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
 
       # Comentarios totales
       @totales = consulta.count
@@ -338,11 +336,8 @@ class ComentariosController < ApplicationController
           end
         consulta = consulta.where(or_taxa.join(" OR "))
       end
-
-      sql = consulta.to_sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
+      @comentarios = consulta.order('comentarios.estatus ASC, comentarios.created_at ASC').offset(offset).limit(@por_pagina)
     end
-
-    @comentarios = Comentario.find_by_sql(sql)
 
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
@@ -354,7 +349,7 @@ class ComentariosController < ApplicationController
     response.headers['x-total-entries'] = @totales.to_s
 
     if (@pagina > 1 && @comentarios.any?) || (params.present? && params[:ajax].present? && params[:ajax] == '1')
-    # Tiene resultados el scrollling o peticiones de ajax
+      # Tiene resultados el scrollling o peticiones de ajax
       render :partial => 'comentarios/admin'
     elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
       render text: ''
@@ -362,7 +357,7 @@ class ComentariosController < ApplicationController
 
   end
 
-  #Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
+  # Extrae los correos de la cuenta enciclovida@conabio.gob.mx y los guarda en la base
   # en el formato de la tabla comentarios para tener un front-end adminsitrable
   def extrae_comentarios_generales
     procesa_correos({mborigen: @folder[:inbox], mbdestino: @folder[:pendientes], delete: true})
@@ -391,13 +386,13 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_contenido_id = 29
+    comment.categoria_contenido_id = CategoriaContenido::COMENTARIO_ENCICLOVIDA
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
       id_original = correo.subject.slice!(/###\[[[:alnum:]]+\]###/).slice!(/[[:alnum:]]+/)
       comentario_root = Comentario.find(id_original)
-      comment.estatus = 6
+      comment.estatus = Comentario::RESPUESTA
       comment.ancestry = comentario_root.subtree_ids.join('/')
 
 
