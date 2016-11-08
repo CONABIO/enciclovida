@@ -1,5 +1,10 @@
 class UsuariosRolesController < ApplicationController
   before_action :set_usuario_rol, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action do
+    permiso = tiene_permiso?(2)  # Minimo administrador
+    render 'shared/sin_permiso' unless permiso
+  end
 
   # GET /usuarios_roles
   # GET /usuarios_roles.json
