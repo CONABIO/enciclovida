@@ -1,4 +1,4 @@
-<%= form_for(@usuario_rol) do |f| %>
+<%= form_for(@usuario_rol, :html => {:class => 'form-inline'}) do |f| %>
   <% if @usuario_rol.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@usuario_rol.errors.count, "error") %> prohibited this usuario_rol from being saved:</h2>
@@ -11,15 +11,15 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :usuario_id %><br>
-    <%= f.number_field :usuario_id %>
+  <div class="form-group">
+    <%= f.label :usuario_id %>
+    <%= f.collection_select(:usuario_id, Usuario.all, :id, :nombre_completo, options ={:prompt => "Selecciona un usuario"}, {:class => 'form-control'}) %>
   </div>
-  <div class="field">
-    <%= f.label :rol_id %><br>
-    <%= f.number_field :rol_id %>
+  <div class="form-group">
+    <%= f.label :rol_id %>
+    <%= f.collection_select(:rol_id, Rol.all, :id, :nombre_rol, options ={:prompt => "Selecciona un rol"}, {:class => 'form-control'}) %>
   </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
+
 <% end %>

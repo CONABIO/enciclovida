@@ -25,4 +25,7 @@ class Usuario < ActiveRecord::Base
     end
   end
 
+  def nombre_completo
+    "#{id}. #{nombre} #{apellido}"
+  end
 end

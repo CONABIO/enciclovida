@@ -1,12 +1,10 @@
-<h1>Listing usuarios_roles</h1>
+<h1>Usuarios - Roles</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
       <th>Usuario</th>
       <th>Rol</th>
-      <th></th>
-      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -14,16 +12,13 @@
   <tbody>
     <% @usuarios_roles.each do |usuario_rol| %>
       <tr>
-        <td><%= usuario_rol.usuario_id %></td>
-        <td><%= usuario_rol.rol_id %></td>
-        <td><%= link_to 'Show', usuario_rol %></td>
-        <td><%= link_to 'Edit', edit_usuario_rol_path(usuario_rol) %></td>
-        <td><%= link_to 'Destroy', usuario_rol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>[<%= usuario_rol.usuario_id %>] - <%= usuario_rol.nombre %> <%= usuario_rol.apellido %></td>
+        <td>[<%= usuario_rol.rol_id %>] - <%= usuario_rol.nombre_rol %></td>
+        <td><%= link_to 'Ver', usuario_rol %> | <%= link_to 'Editar', edit_usuario_rol_path(usuario_rol) %> | <%= link_to 'Eliminar', usuario_rol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Usuario rol', new_usuario_rol_path %>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Usuario a Rol".html_safe, new_usuario_rol_path, class: 'btn btn-info btn-sm' %>
+</p>
