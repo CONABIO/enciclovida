@@ -1,4 +1,4 @@
-<%= form_for(@usuario_especie) do |f| %>
+<%= form_for(@usuario_especie, :html => {:class => 'form-inline'}) do |f| %>
   <% if @usuario_especie.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@usuario_especie.errors.count, "error") %> prohibited this usuario_especie from being saved:</h2>
@@ -11,15 +11,14 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :usuario_id %><br>
-    <%= f.number_field :usuario_id %>
-  </div>
-  <div class="field">
-    <%= f.label :especie_id %><br>
-    <%= f.number_field :especie_id %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="form-group">
+      <%= f.label :usuario_id %>
+      <%= f.collection_select(:usuario_id, Usuario.all, :id, :nombre_completo, options ={:prompt => "Selecciona un usuario"}, {:class => 'form-control', :required => true }) %>
+    </div>
+    <div class="form-group">
+      <%= f.label :especie_id %>
+      <%= f.number_field :especie_id %>
+      <%# f.collection_select(:especie_id, Especie.all, :id, :nombre_cientifico, options ={:prompt => "Selecciona una especie"}, {:class => 'form-control', :required => true }) %>
+    </div>
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
 <% end %>
