@@ -1,7 +1,9 @@
-class CategoriaComentario < ActiveRecord::Base
-  self.table_name='categorias_comentario'
+class CategoriaContenido < ActiveRecord::Base
+  self.table_name='categorias_contenido'
 
   has_ancestry
+
+  has_many :categoria_contenido_rol, :class_name=> 'CategoriaContenidoRol', :foreign_key => :categoria_contenido_id
 
   REGISTROS_GEODATA = %w(6 7)  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
 
@@ -13,7 +15,6 @@ class CategoriaComentario < ActiveRecord::Base
       Rails.cache.fetch(con_cc, expires_in: 12.hours) do
         self.categorias(con_comentario_general)
       end
-
     else
       self.categorias(con_comentario_general)
     end

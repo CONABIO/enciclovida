@@ -3,7 +3,7 @@ class ComentariosController < ApplicationController
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
-    permiso = tiene_permiso?(100)  # Minimo administrador
+    permiso = tiene_permiso?(3)  # Minimo administrador
     render :_error unless permiso
   end
 
@@ -28,7 +28,7 @@ class ComentariosController < ApplicationController
     @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
-    categoriaComentario = @comentario.categoria_comentario_id
+    categoriaContenido = @comentario.categoria_contenido_id
 
     #if !@comentario.general
       if cuantos > 0
@@ -60,7 +60,7 @@ class ComentariosController < ApplicationController
     @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
     # Categoria comentario ID
-    @comentario.categoria_comentario_id = categoriaComentario
+    @comentario.categoria_contenido_id = categoriaContenido
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -86,7 +86,7 @@ class ComentariosController < ApplicationController
 
       @comentario_resp = @comentario
       cuantos = @comentario_root.descendant_ids.count
-      categoriaComentario = @comentario.categoria_comentario_id
+      categoriaContenido = @comentario.categoria_contenido_id
 
       #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
       @comentario_root.completa_info(@comentario_root.usuario_id)
@@ -130,7 +130,7 @@ class ComentariosController < ApplicationController
           @comentario.estatus = Comentario::ESTATUS_RESPUESTA
 
           # Categoria comentario ID
-          @comentario.categoria_comentario_id = categoriaComentario
+          @comentario.categoria_contenido_id = categoriaContenido
 
           # Caseta de verificacion
           @comentario.con_verificacion = true
@@ -201,7 +201,7 @@ class ComentariosController < ApplicationController
                                        nombre: @comentario.nombre}.to_json}
           else
             # Para guardar en la tabla comentarios proveedores
-            if proveedor_id.present? && CategoriaComentario::REGISTROS_GEODATA.include?(tipo_proveedor)
+            if proveedor_id.present? && CategoriaContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
               comentario_proveedor = ComentarioProveedor.new
               comentario_proveedor.comentario_id = @comentario.id
               comentario_proveedor.proveedor_id = proveedor_id
@@ -252,7 +252,7 @@ class ComentariosController < ApplicationController
       @comentario.fecha_estatus = Time.now
     end
 
-    @comentario.categoria_comentario_id = params[:categoria_comentario_id] if params[:categoria_comentario_id].present?
+    @comentario.categoria_contenido_id = params[:categoria_contenido_id] if params[:categoria_contenido_id].present?
 
     if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
@@ -287,8 +287,8 @@ class ComentariosController < ApplicationController
       params = comentario_params
       consulta = 'Comentario.datos_basicos'
 
-      if params[:categoria_comentario_id].present?
-        consulta << ".where(categoria_comentario_id: #{params[:categoria_comentario_id].to_i})"
+      if params[:categoria_contenido_id].present?
+        consulta << ".where(categoria_contenido_id: #{params[:categoria_contenido_id].to_i})"
       end
 
       if params[:estatus].present?
@@ -296,6 +296,7 @@ class ComentariosController < ApplicationController
       end
 
       consulta << ".where('comentarios.estatus < 5')"
+          #consulta <<            ".where(\"especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'\")"
 
       # Comentarios totales
       @totales = eval(consulta).count
@@ -318,7 +319,12 @@ class ComentariosController < ApplicationController
       @totales = Comentario.datos_basicos.where('comentarios.estatus < 5').count
 
       # estatus = 5 quiere decir oculto a la vista
-      sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      #if current_usuario.rol.taxonomia_especifica.nil?
+        sql = Comentario.datos_basicos.where('comentarios.estatus < 5').to_sql
+      #else
+        #sql = Comentario.datos_basicos.where('comentarios.estatus < 5').where("especies.ancestry_ascendente_directo like '%#{current_usuario.rol.taxonomia_especifica}%'").to_sql
+        #sql = Comentario.datos_basicos_espAnc.where('comentarios.estatus < 5')
+      #end
       sql = sql + " ORDER BY comentarios.estatus ASC, created_at ASC OFFSET #{offset} ROWS FETCH NEXT #{@por_pagina} ROWS ONLY"
     end
 
@@ -329,7 +335,7 @@ class ComentariosController < ApplicationController
       c.completa_info(c.root.usuario_id)
     end
 
-    @categoria_comentario = CategoriaComentario.grouped_options
+    @categoria_contenido = CategoriaContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
 
@@ -371,7 +377,7 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_comentario_id = 29
+    comment.categoria_contenido_id = 29
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
@@ -475,7 +481,7 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_comentario_id,
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_contenido_id,
                                        :ajax, :nombre_cientifico, :created_at)
   end
 end

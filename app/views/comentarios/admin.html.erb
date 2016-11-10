@@ -48,7 +48,7 @@
             </tr>
             <tr>
               <td><%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select), id: 'filtro_estatus', prompt: 'Estatus', class: 'form-control input-sm pull-left' %></td>
-              <td><%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario), id: 'filtro_categoria_comentario_id', prompt: 'Tipo de comentario', class: 'form-control input-sm pull-right' %></td>
+              <td><%= select_tag 'comentario[categoria_contenido_id]', grouped_options_for_select(@categoria_contenido), id: 'filtro_categoria_contenido_id', prompt: 'Tipo de comentario', class: 'form-control input-sm pull-right' %></td>
               <td><%= link_to "<i class='glyphicon glyphicon-trash'></i>".html_safe, admin_path, class: "btn btn-xs btn-info", "data-toggle" => "tooltip", "data-placement" => "bottom", title: 'Borra las opciones de los menus desplegables, regresando al ordenamiento por default'%></td>
             </tr>
           </table>
