@@ -4,6 +4,7 @@ class CategoriaContenidosRolesController < ApplicationController
   before_action do
     permiso = tiene_permiso?(2)  # Minimo administrador
     render 'shared/sin_permiso' unless permiso
+    @no_render_busqueda_basica = true
   end
 
   # GET /categoria_contenidos_roles

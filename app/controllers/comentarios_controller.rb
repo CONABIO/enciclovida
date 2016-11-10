@@ -5,6 +5,7 @@ class ComentariosController < ApplicationController
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
     permiso = tiene_permiso?(3)  # Minimo administrador de comentarios
     render 'shared/sin_permiso' unless permiso
+    @no_render_busqueda_basica = true
   end
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
