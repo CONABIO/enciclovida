@@ -73,7 +73,7 @@ soulmate_asigna = function(tipo_busqueda)
     var select = function(term, data, type)
     {
         $('#nombre').val(term);
-        $('#id').attr('value', data.id);
+        $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
 
         if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')
