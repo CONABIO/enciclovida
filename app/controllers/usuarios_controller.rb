@@ -7,7 +7,7 @@ class UsuariosController < ApplicationController
   # GET /usuarios
   # GET /usuarios.json
   def index
-    @usuarios = Usuario.all
+    @usuarios = Usuario.join_user_rol_categorias_contenido.load
   end
 
   # GET /usuarios/1
@@ -117,7 +117,7 @@ class UsuariosController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_usuario
-    @usuario = Usuario.find(params[:id])
+    @usuario = Usuario.join_user_rol_categorias_contenido.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

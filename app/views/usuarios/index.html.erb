@@ -1,16 +1,11 @@
-<h1>Listing usuarios</h1>
+<h1>Usuarios registrados a Enciclovida</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>ID Usuario</th>
+      <th>Datos Usuario</th>
+      <th>Niveles de accesso</th>
       <th></th>
     </tr>
   </thead>
@@ -19,14 +14,9 @@
     <% @usuarios.each do |usuario| %>
       <tr>
         <td><%= usuario.id %></td>
-        <td><%= usuario.nombre %></td>
-        <td><%= usuario.apellido %></td>
-        <td><%= usuario.email %></td>
-        <td><%= usuario.institucion %></td>
-        <td><%= usuario.observaciones%></td>
-        <td><%= link_to 'Show', usuario %></td>
-        <td><%= link_to 'Edit', edit_usuario_path(usuario) %></td>
-        <td><%= link_to 'Destroy', usuario, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= usuario.nombre %> <%= usuario.apellido %> <br /><small><%= usuario.email %></small> <br /><small><%= usuario.institucion %></small></td>
+        <td><%= usuario.nombre_rol %> <br /><%= usuario.nombre_cc %> <br /><%= usuario.nombre_cientifico%> <small><%= usuario.id_especie %></small></td>
+        <td><small><%= link_to 'Ver', usuario %> | <%= link_to 'Editar', edit_usuario_path(usuario) %> | <%= link_to 'Eliminar', usuario, method: :delete, data: { confirm: '¿Estas seguro? es irreversible' } %></small></td>
       </tr>
     <% end %>
   </tbody>
@@ -34,4 +24,4 @@
 
 <br>
 
-<%= link_to 'New Usuario', new_usuario_path %>
+<%= link_to 'Añadir un nuevo usuario', new_usuario_path %>
