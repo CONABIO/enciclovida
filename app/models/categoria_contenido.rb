@@ -5,7 +5,12 @@ class CategoriaContenido < ActiveRecord::Base
 
   has_many :categoria_contenido_rol, :class_name=> 'CategoriaContenidoRol', :foreign_key => :categoria_contenido_id
 
-  REGISTROS_GEODATA = %w(6 7)  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
+  REGISTROS_SNIB = 6
+  REGISTROS_NATURALISTA = 7
+  REGISTROS_GEODATA = [REGISTROS_SNIB, REGISTROS_NATURALISTA]  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
+  MAPA_DISTRIBUCION = 8
+  COMENTARIO_GENERAL = 28
+  COMENTARIO_ENCICLOVIDA = 29
 
   def self.grouped_options(con_comentario_general=false)
     con_cc = con_comentario_general ? 'categorias_comentario_grouped_options_con_cc' : 'categorias_comentario_grouped_options_sin_cc'
@@ -32,16 +37,16 @@ class CategoriaContenido < ActiveRecord::Base
   def self.categorias(con_comentario_general)
     options = []
 
-    CategoriaComentario.all.each do |cc|
+    CategoriaContenido.all.each do |cc|
       if con_comentario_general
-        next if !cc.is_root? || cc.id == 28  # Para no poder escoger un tipo de comentario general
+        next if !cc.is_root? || cc.id == COMENTARIO_GENERAL  # Para no poder escoger un tipo de comentario general
       else
         next unless cc.is_root?
       end
 
       grouped_options = []
       # Disabled a subir un mapa de distribucion
-      descendientes = cc.descendants.map {|d| d.id == 8 ? [d.nombre, d.id, {disabled: 'disabled'}] : [d.nombre, d.id]}
+      descendientes = cc.descendants.map {|d| d.id == MAPA_DISTRIBUCION ? [d.nombre, d.id, {disabled: 'disabled'}] : [d.nombre, d.id]}
       grouped_options << cc.nombre
       grouped_options << descendientes if descendientes.any?
       puts grouped_options.inspect

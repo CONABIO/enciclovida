@@ -1,6 +1,7 @@
-<h1>Editing usuario_rol</h1>
+<h1>Editar usuario - rol</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @usuario_rol %> |
-<%= link_to 'Back', usuarios_roles_path %>
+<p class="text-right">
+  <%= link_to 'Ver el rol del usuario', @usuario_rol %> | <%= link_to 'Regresar al listado', usuarios_roles_path %>
+</p>

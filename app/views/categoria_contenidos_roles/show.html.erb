@@ -1,14 +1,22 @@
 <p id="notice"><%= notice %></p>
-
 <p>
-  <strong>Categoria contenido:</strong>
-  <%= @categoria_contenido_rol.categoria_contenido_id %>
+  <strong>CategoriaContenido:</strong>
+  <%= @categoria_contenido_rol.nombre %>
 </p>
-
+<p>
+  <strong>CategoriaContenidoID:</strong>
+  [<%= @categoria_contenido_rol.categoria_contenido_id%>]
+</p>
 <p>
   <strong>Rol:</strong>
-  <%= @categoria_contenido_rol.rol_id %>
+  <%= @categoria_contenido_rol.nombre_rol %>
+</p>
+<p>
+  <strong>RolID:</strong>
+  [<%= @categoria_contenido_rol.rol_id %>]
 </p>
 
-<%= link_to 'Edit', edit_categoria_contenido_rol_path(@categoria_contenido_rol) %> |
-<%= link_to 'Back', categoria_contenidos_roles_path %>
+<p class="text-right">
+  <%= link_to 'Editar', edit_categoria_contenido_rol_path(@categoria_contenido_rol) %> |
+  <%= link_to 'Regresar', categoria_contenidos_roles_path %>
+</p>

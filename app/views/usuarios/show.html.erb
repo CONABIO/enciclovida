@@ -4,17 +4,17 @@
     <%= @titulo=gradoYnombre(@usuario) %>
 <% end %>
 
-<table style="max-width:1000px;" id="tabla_form"><tr>
+<table id="tabla_form"><tr>
   <td valign="top">
     <fieldset>
       <legend class="leyenda"><%= @titulo %></legend>
       <p>
         <strong>Usuario:</strong>
-        <%= @usuario.usuario %>
+        <%= @usuario.nombre %>
       </p>
       <p>
         <strong>Correo:</strong>
-        <%= @usuario.correo %>
+        <%= @usuario.email %>
       </p>
       <p>
         <strong>Institución:</strong>
@@ -22,7 +22,11 @@
       </p>
       <p>
         <strong>Nivel de permisos:</strong>
-        <%= @usuario.rol.nombre_rol %>
+        <%= @usuario.nombre_rol %>
+      </p>
+      <p>
+        <strong>Taxonomía específica:</strong>
+        <%= @usuario.nombre_cientifico %> | <%= @usuario.id_especie %>
       </p>
       <p>
         <strong>Fecha de creación:</strong>
@@ -36,6 +40,7 @@
   </td>
 </tr></table>
 
-<br>
-<%= link_to 'Editar', edit_usuario_path(@usuario) %>
-
+<p class="text-right">
+  <%= link_to 'Editar', edit_usuario_path(@usuario) %> |
+  <%= link_to 'Regresar', usuarios_path %>
+</p>

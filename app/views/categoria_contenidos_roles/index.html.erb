@@ -1,29 +1,24 @@
-<h1>Listing categoria_contenidos_roles</h1>
+<h1>Categoria_contenidos - Roles</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
       <th>Categoria contenido</th>
       <th>Rol</th>
       <th></th>
-      <th></th>
-      <th></th>
     </tr>
   </thead>
-
   <tbody>
     <% @categoria_contenidos_roles.each do |categoria_contenido_rol| %>
       <tr>
-        <td><%= categoria_contenido_rol.categoria_contenido_id %></td>
-        <td><%= categoria_contenido_rol.rol_id %></td>
-        <td><%= link_to 'Show', categoria_contenido_rol %></td>
-        <td><%= link_to 'Edit', edit_categoria_contenido_rol_path(categoria_contenido_rol) %></td>
-        <td><%= link_to 'Destroy', categoria_contenido_rol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>[<%= categoria_contenido_rol.categoria_contenido_id %>] - <%= categoria_contenido_rol.nombre %></td>
+        <td>[<%= categoria_contenido_rol.rol_id %>] - <%= categoria_contenido_rol.nombre_rol %></td>
+        <td><%= link_to 'Ver', categoria_contenido_rol %> | <%= link_to 'Editar', edit_categoria_contenido_rol_path(categoria_contenido_rol) %> | <%= link_to 'Eliminar', categoria_contenido_rol, method: :delete, data: { confirm: '¿Estás seguro? (es un cambio irreversible)' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Categoria contenido rol', new_categoria_contenido_rol_path %>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Categoria_contenido a Rol".html_safe, new_categoria_contenido_rol_path, class: 'btn btn-info btn-sm' %>
+</p>

@@ -1,10 +1,16 @@
 class UsuariosRolesController < ApplicationController
   before_action :set_usuario_rol, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action do
+    permiso = tiene_permiso?(2)  # Minimo administrador
+    render 'shared/sin_permiso' unless permiso
+    @no_render_busqueda_basica = true
+  end
 
   # GET /usuarios_roles
   # GET /usuarios_roles.json
   def index
-    @usuarios_roles = UsuarioRol.all
+    @usuarios_roles = UsuarioRol.join_user_rol.order(:usuario_id, :id).load
   end
 
   # GET /usuarios_roles/1
@@ -14,6 +20,8 @@ class UsuariosRolesController < ApplicationController
 
   # GET /usuarios_roles/new
   def new
+    #@usuarios = Usuarios.load
+    #@roles = Roles.load
     @usuario_rol = UsuarioRol.new
   end
 
@@ -28,7 +36,7 @@ class UsuariosRolesController < ApplicationController
 
     respond_to do |format|
       if @usuario_rol.save
-        format.html { redirect_to @usuario_rol, notice: 'Usuario rol was successfully created.' }
+        format.html { redirect_to @usuario_rol, notice: 'El Rol fue añadido al usuario exitosamente.' }
         format.json { render action: 'show', status: :created, location: @usuario_rol }
       else
         format.html { render action: 'new' }
@@ -42,7 +50,7 @@ class UsuariosRolesController < ApplicationController
   def update
     respond_to do |format|
       if @usuario_rol.update(usuario_rol_params)
-        format.html { redirect_to @usuario_rol, notice: 'Usuario rol was successfully updated.' }
+        format.html { redirect_to @usuario_rol, notice: 'El Rol del usuario se actualizo correctamente.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -64,7 +72,7 @@ class UsuariosRolesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_usuario_rol
-      @usuario_rol = UsuarioRol.find(params[:id])
+      @usuario_rol = UsuarioRol.join_user_rol.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

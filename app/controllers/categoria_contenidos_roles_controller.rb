@@ -1,10 +1,16 @@
 class CategoriaContenidosRolesController < ApplicationController
   before_action :set_categoria_contenido_rol, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action do
+    permiso = tiene_permiso?(2)  # Minimo administrador
+    render 'shared/sin_permiso' unless permiso
+    @no_render_busqueda_basica = true
+  end
 
   # GET /categoria_contenidos_roles
   # GET /categoria_contenidos_roles.json
   def index
-    @categoria_contenidos_roles = CategoriaContenidoRol.all
+    @categoria_contenidos_roles = CategoriaContenidoRol.join_categorias_contenido_rol.order(:rol_id).load
   end
 
   # GET /categoria_contenidos_roles/1
@@ -28,7 +34,7 @@ class CategoriaContenidosRolesController < ApplicationController
 
     respond_to do |format|
       if @categoria_contenido_rol.save
-        format.html { redirect_to @categoria_contenido_rol, notice: 'Categoria contenido rol was successfully created.' }
+        format.html { redirect_to @categoria_contenido_rol, notice: 'Categoria_contenido - rol se creo satisfactoriamente.' }
         format.json { render action: 'show', status: :created, location: @categoria_contenido_rol }
       else
         format.html { render action: 'new' }
@@ -42,7 +48,7 @@ class CategoriaContenidosRolesController < ApplicationController
   def update
     respond_to do |format|
       if @categoria_contenido_rol.update(categoria_contenido_rol_params)
-        format.html { redirect_to @categoria_contenido_rol, notice: 'Categoria contenido rol was successfully updated.' }
+        format.html { redirect_to @categoria_contenido_rol, notice: 'Categoria_contenido - rol se actualizo satisfactoriamente.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -64,7 +70,7 @@ class CategoriaContenidosRolesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_categoria_contenido_rol
-      @categoria_contenido_rol = CategoriaContenidoRol.find(params[:id])
+      @categoria_contenido_rol = CategoriaContenidoRol.join_categorias_contenido_rol.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -57,6 +57,7 @@ class ApplicationController < ActionController::Base
     roles.each do |r|
       return true if r.rol.descendant_ids.include?(nivel)
     end
+    return false #S'sí esta logueado, pero ninguno de sus roles es el que se pide, ni esta contenido en ninguno de sus hijos, regreso FALSO!!!
   end
 
   def es_propietario?(obj)

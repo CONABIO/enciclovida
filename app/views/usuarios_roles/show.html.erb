@@ -2,13 +2,30 @@
 
 <p>
   <strong>Usuario:</strong>
-  <%= @usuario_rol.usuario_id %>
+<%= @usuario_rol.nombre %> <%= @usuario_rol.apellido %>
 </p>
-
+<p>
+  <strong>UsuarioID:</strong>
+  [<%= @usuario_rol.usuario_id %>]
+</p>
+<p>
+  <strong>Email:</strong>
+  <%= @usuario_rol.email %>
+</p>
+<p>
+  <strong>Institución:</strong>
+  <%= @usuario_rol.institucion%>
+</p>
 <p>
   <strong>Rol:</strong>
-  <%= @usuario_rol.rol_id %>
+  <%= @usuario_rol.nombre_rol %>
+</p>
+<p>
+  <strong>RolID:</strong>
+  [<%= @usuario_rol.rol_id %>]
 </p>
 
-<%= link_to 'Edit', edit_usuario_rol_path(@usuario_rol) %> |
-<%= link_to 'Back', usuarios_roles_path %>
+<p class="text-right">
+  <%= link_to 'Editar', edit_usuario_rol_path(@usuario_rol) %> |
+  <%= link_to 'Regresar', usuarios_roles_path %>
+</p>

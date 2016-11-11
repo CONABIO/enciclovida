@@ -2,13 +2,30 @@
 
 <p>
   <strong>Usuario:</strong>
-  <%= @usuario_especie.usuario_id %>
+<%= @usuario_especie.nombre %> <%= @usuario_especie.apellido %>
 </p>
-
 <p>
-  <strong>Especie:</strong>
-  <%= @usuario_especie.especie_id %>
+  <strong>UsuarioID:</strong>
+  [<%= @usuario_especie.usuario_id %>]
+</p>
+<p>
+  <strong>Email:</strong>
+  <%= @usuario_especie.email %>
+</p>
+<p>
+  <strong>Institución:</strong>
+  <%= @usuario_especie.institucion%>
+</p>
+<p>
+  <strong>EspecieID:</strong>
+  [<%= @usuario_especie.especie_id %>]
+</p>
+<p>
+  <strong>Nombre científico:</strong>
+  <%= @usuario_especie.nombre_cientifico%>
 </p>
 
-<%= link_to 'Edit', edit_usuario_especie_path(@usuario_especie) %> |
-<%= link_to 'Back', usuarios_especie_path %>
+<p class="text-right">
+  <%= link_to 'Editar', edit_usuario_especie_path(@usuario_especie) %> |
+  <%= link_to 'Regresar', usuarios_especie_path %>
+</p>

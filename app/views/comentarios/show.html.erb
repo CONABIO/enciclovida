@@ -1,6 +1,6 @@
 <% respuesta_externa = params[:action]=='respuesta_externa' %>
 
-<% if @comentarios.present? &&  @comentarios[:resp].present? %>
+<% if @comentarios.present? && @comentarios[:resp].present? %>
 
     <% if @comentario.especie.present? && respuesta_externa %>
         <p>
@@ -10,7 +10,7 @@
         <hr>
     <% end %>
 
-    <div class="historial_comentarios" id="historial_comentarios_<%= params[:id] %>" <%= "style='margin: 0 15%;'".html_safe if respuesta_externa %> >
+    <div class="historial_comentarios" id="historial_comentarios_<%= params[:id] %>" <%= "style='margin: 0 15%;'".html_safe if respuesta_externa %>>
       <% @comentarios[:resp].each do |c| %>
           <%= render 'historial', c: c %>
       <% end %>
@@ -26,5 +26,7 @@
 <% elsif  respuesta_externa && !@ficha %>
     <div id="escucha_envio"><%= render 'form_respuesta' %></div>
 <% else%>
+    <div class="historial_comentarios" id="historial_comentarios_<%= params[:id] %>"></div>
+
     <%= render 'form_respuesta' if !@ficha %>
 <% end %>
