@@ -1,12 +1,12 @@
 class ComentariosController < ApplicationController
   before_action do
-    render 'shared/en_mantenimiento'
+    #render 'shared/en_mantenimiento'
   end
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
   before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
-    permiso = tiene_permiso?(3)  # Minimo administrador de comentarios
+    permiso = tiene_permiso?(4)  # Minimo administrador de comentarios
     render 'shared/sin_permiso' unless permiso
     @no_render_busqueda_basica = true
   end
