@@ -3,6 +3,10 @@ class UsuariosController < ApplicationController
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   layout :false, :only => [:guarda_filtro, :cambia_locale, :limpia_filtro, :filtros]
+  before_action :only => [:index, :show, :destroy] {tiene_permiso?(2)} # Minimo administrador
+  before_action do
+    @no_render_busqueda_basica = true
+  end
 
   # GET /usuarios
   # GET /usuarios.json
