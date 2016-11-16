@@ -20,10 +20,10 @@ class Usuario < ActiveRecord::Base
   scope :roles,-> { joins('LEFT JOIN roles on usuarios_roles.rol_id = roles.id') }
   scope :usuarios_especies,-> { joins('LEFT JOIN usuarios_especie on usuarios_especie.usuario_id = usuarios.id') }
   scope :especies,-> { joins('LEFT JOIN especies on especie_id = especies.id') }
-  scope :categorias_contenidos_roles,-> { joins('LEFT JOIN categoria_contenidos_roles on roles.id = categoria_contenidos_roles.rol_id') }
-  scope :categorias_contenidos,-> { joins('LEFT JOIN categorias_contenido on categoria_contenido_id = categorias_contenido.id') }
+  scope :roles_categorias_contenido,-> { joins('LEFT JOIN roles_categorias_contenido on roles.id = roles_categorias_contenido.rol_id') }
+  scope :categorias_contenido,-> { joins('LEFT JOIN categorias_contenido on categoria_contenido_id = categorias_contenido.id') }
   scope :select_para_joins, -> { select("usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.email, usuarios.institucion, usuarios.observaciones, roles.nombre_rol, especies.id as id_especie, especies.nombre_cientifico, categorias_contenido.nombre as nombre_cc")}
-  scope :join_user_rol_categorias_contenido,-> { select_para_joins.usuarios_roles.roles.usuarios_especies.especies.categorias_contenidos_roles.categorias_contenidos }
+  scope :join_user_rol_categorias_contenido,-> { select_para_joins.usuarios_roles.roles.usuarios_especies.especies.roles_categorias_contenido.categorias_contenido }
 
 
   def self.find_for_database_authentication(warden_conditions)
