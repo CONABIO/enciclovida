@@ -1,4 +1,6 @@
 Buscador::Application.routes.draw do
+  resources :roles_categorias_contenido
+
   resources :categoria_contenidos_roles
 
   resources :usuarios_especie

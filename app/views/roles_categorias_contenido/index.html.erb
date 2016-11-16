@@ -1,0 +1,29 @@
+<h1>Listing roles_categorias_contenido</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Categoria contenido</th>
+      <th>Rol</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @roles_categorias_contenido.each do |rol_categorias_contenido| %>
+      <tr>
+        <td><%= rol_categorias_contenido.categoria_contenido_id %></td>
+        <td><%= rol_categorias_contenido.rol_id %></td>
+        <td><%= link_to 'Show', rol_categorias_contenido %></td>
+        <td><%= link_to 'Edit', edit_rol_categorias_contenido_path(rol_categorias_contenido) %></td>
+        <td><%= link_to 'Destroy', rol_categorias_contenido, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Rol categorias contenido', new_rol_categorias_contenido_path %>
