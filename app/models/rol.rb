@@ -2,6 +2,7 @@ class Rol < ActiveRecord::Base
 
   has_ancestry
 
-  has_many :categoria_contenido_rol, :class_name=> 'CategoriaContenidoRol', :foreign_key => :rol_id
+  has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenidoRol', :foreign_key => :rol_id
+  has_many :roles, :through => :roles_categorias_contenidos
 
 end
