@@ -4,7 +4,7 @@ class Comentario < ActiveRecord::Base
 
   belongs_to :especie
   belongs_to :usuario
-  belongs_to :categoria_contenido, :class_name => 'CategoriaContenido', :foreign_key => 'categoria_contenido_id', :dependent => :destroy
+  belongs_to :categoria_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categoria_contenido_id', :dependent => :destroy
 
   has_ancestry
 
@@ -74,7 +74,7 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_d
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
       update_column(:id, idBase32)
-      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_contenido_id == CategoriaContenido::COMENTARIO_ENCICLOVIDA
+      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_contenido_id == CategoriasContenido::COMENTARIO_ENCICLOVIDA
     end
   end
 

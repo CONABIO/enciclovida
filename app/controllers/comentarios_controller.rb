@@ -200,7 +200,7 @@ class ComentariosController < ApplicationController
                                        nombre: @comentario.nombre}.to_json}
           else
             # Para guardar en la tabla comentarios proveedores
-            if proveedor_id.present? && CategoriaContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
+            if proveedor_id.present? && CategoriasContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
               comentario_proveedor = ComentarioProveedor.new
               comentario_proveedor.comentario_id = @comentario.id
               comentario_proveedor.proveedor_id = proveedor_id
@@ -345,7 +345,7 @@ class ComentariosController < ApplicationController
       c.completa_info(c.root.usuario_id)
     end
 
-    @categoria_contenido = CategoriaContenido.grouped_options
+    @categoria_contenido = CategoriasContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
 
@@ -387,7 +387,7 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_contenido_id = CategoriaContenido::COMENTARIO_ENCICLOVIDA
+    comment.categoria_contenido_id = CategoriasContenido::COMENTARIO_ENCICLOVIDA
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
