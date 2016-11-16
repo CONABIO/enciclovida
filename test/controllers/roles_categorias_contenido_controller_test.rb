@@ -18,7 +18,7 @@ class RolesCategoriasContenidoControllerTest < ActionController::TestCase
 
   test "should create rol_categorias_contenido" do
     assert_difference('RolCategoriasContenido.count') do
-      post :create, rol_categorias_contenido: { categoria_contenido_id: @rol_categorias_contenido.categoria_contenido_id, rol_id: @rol_categorias_contenido.rol_id }
+      post :create, rol_categorias_contenido: { categorias_contenido_id: @rol_categorias_contenido.categorias_contenido_id, rol_id: @rol_categorias_contenido.rol_id }
     end
 
     assert_redirected_to rol_categorias_contenido_path(assigns(:rol_categorias_contenido))
@@ -35,7 +35,7 @@ class RolesCategoriasContenidoControllerTest < ActionController::TestCase
   end
 
   test "should update rol_categorias_contenido" do
-    patch :update, id: @rol_categorias_contenido, rol_categorias_contenido: { categoria_contenido_id: @rol_categorias_contenido.categoria_contenido_id, rol_id: @rol_categorias_contenido.rol_id }
+    patch :update, id: @rol_categorias_contenido, rol_categorias_contenido: { categorias_contenido_id: @rol_categorias_contenido.categorias_contenido_id, rol_id: @rol_categorias_contenido.rol_id }
     assert_redirected_to rol_categorias_contenido_path(assigns(:rol_categorias_contenido))
   end
 

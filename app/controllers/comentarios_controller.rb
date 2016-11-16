@@ -29,7 +29,7 @@ class ComentariosController < ApplicationController
     @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
-    categoriaContenido = @comentario.categoria_contenido_id
+    categoriaContenido = @comentario.categorias_contenido_id
 
     if cuantos > 0
       resp = @comentario.descendants.map{ |c|
@@ -59,7 +59,7 @@ class ComentariosController < ApplicationController
     @comentario.estatus = Comentario::RESPUESTA
 
     # Categoria comentario ID
-    @comentario.categoria_contenido_id = categoriaContenido
+    @comentario.categorias_contenido_id = categoriaContenido
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -85,7 +85,7 @@ class ComentariosController < ApplicationController
 
       @comentario_resp = @comentario
       cuantos = @comentario_root.descendant_ids.count
-      categoriaContenido = @comentario.categoria_contenido_id
+      categoriaContenido = @comentario.categorias_contenido_id
 
       #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
       @comentario_root.completa_info(@comentario_root.usuario_id)
@@ -129,7 +129,7 @@ class ComentariosController < ApplicationController
           @comentario.estatus = Comentario::RESPUESTA
 
           # Categoria comentario ID
-          @comentario.categoria_contenido_id = categoriaContenido
+          @comentario.categorias_contenido_id = categoriaContenido
 
           # Caseta de verificacion
           @comentario.con_verificacion = true
@@ -251,7 +251,7 @@ class ComentariosController < ApplicationController
       @comentario.fecha_estatus = Time.now
     end
 
-    @comentario.categoria_contenido_id = params[:categoria_contenido_id] if params[:categoria_contenido_id].present?
+    @comentario.categorias_contenido_id = params[:categorias_contenido_id] if params[:categorias_contenido_id].present?
 
     if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
@@ -288,8 +288,8 @@ class ComentariosController < ApplicationController
     if params[:comentario].present?
       params = comentario_params
 
-      if params[:categoria_contenido_id].present?
-        consulta = consulta.where(categoria_contenido_id: params[:categoria_contenido_id].to_i)
+      if params[:categorias_contenido_id].present?
+        consulta = consulta.where(categorias_contenido_id: params[:categorias_contenido_id].to_i)
       end
 
       if params[:estatus].present?
@@ -345,7 +345,7 @@ class ComentariosController < ApplicationController
       c.completa_info(c.root.usuario_id)
     end
 
-    @categoria_contenido = CategoriasContenido.grouped_options
+    @categorias_contenido = CategoriasContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
 
@@ -387,7 +387,7 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_contenido_id = CategoriasContenido::COMENTARIO_ENCICLOVIDA
+    comment.categorias_contenido_id = CategoriasContenido::COMENTARIO_ENCICLOVIDA
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
@@ -491,7 +491,7 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_contenido_id,
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categorias_contenido_id,
                                        :ajax, :nombre_cientifico, :created_at)
   end
 end

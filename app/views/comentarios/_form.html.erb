@@ -36,13 +36,13 @@
     <% end %>
 
     <div class="form-group">
-      <%= f.label :categoria_contenido_id, '¿Qué clase de comentario tienes en mente?', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
+      <%= f.label :categorias_contenido_id, '¿Qué clase de comentario tienes en mente?', class: 'col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label' %>
       <div class="col-xs-12 col-sm-9 col-md-9 col-lg-7">
 
         <% if params[:proveedor_id].present? && CategoriasContenido::REGISTROS_GEODATA.include?(params[:tipo_proveedor]) %>
-            <%= f.select :categoria_contenido_id, grouped_options_for_select(CategoriasContenido.grouped_options(true), params[:tipo_proveedor]),
+            <%= f.select :categorias_contenido_id, grouped_options_for_select(CategoriasContenido.grouped_options(true), params[:tipo_proveedor]),
                          {:include_blank => '---Elige una opción---'}, {:class => 'form-control', :disabled => :disabled} %>
-            <%= f.hidden_field :categoria_contenido_id, value: params[:tipo_proveedor] %>
+            <%= f.hidden_field :categorias_contenido_id, value: params[:tipo_proveedor] %>
             <%= hidden_field_tag 'tipo_proveedor', params[:tipo_proveedor] %>
             <%= hidden_field_tag 'proveedor_id', params[:proveedor_id] %>
 
@@ -55,7 +55,7 @@
             <% end %>
 
         <% else %>
-            <%= f.select :categoria_contenido_id, grouped_options_for_select(CategoriasContenido.grouped_options(true)),
+            <%= f.select :categorias_contenido_id, grouped_options_for_select(CategoriasContenido.grouped_options(true)),
                          {:include_blank => '---Elige una opción---'}, {:class => 'form-control'} %>
         <% end %>
 

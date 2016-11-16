@@ -4,7 +4,7 @@ class Comentario < ActiveRecord::Base
 
   belongs_to :especie
   belongs_to :usuario
-  belongs_to :categoria_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categoria_contenido_id', :dependent => :destroy
+  belongs_to :categorias_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categorias_contenido_id', :dependent => :destroy
 
   has_ancestry
 
@@ -33,7 +33,7 @@ class Comentario < ActiveRecord::Base
 
   validates_presence_of :comentario
   validates_presence_of :especie_id
-  validates_presence_of :categoria_contenido_id
+  validates_presence_of :categorias_contenido_id
   validates_presence_of :nombre, :if => 'usuario_id.blank?'
 
   email_name_regex  = '[\w\.%\+\-]+'.freeze
@@ -53,7 +53,7 @@ class Comentario < ActiveRecord::Base
   scope :join_usuarios2,-> { joins('LEFT JOIN usuarios u2 ON u2.id=comentarios.usuario_id2') }
   scope :select_basico,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
 comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
-comentarios.estatus, fecha_estatus, categoria_contenido_id, comentarios.institucion AS c_institucion,
+comentarios.estatus, fecha_estatus, categorias_contenido_id, comentarios.institucion AS c_institucion,
 CONCAT(u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
 u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
 CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_directo") }
@@ -74,7 +74,7 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_d
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
       update_column(:id, idBase32)
-      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categoria_contenido_id == CategoriasContenido::COMENTARIO_ENCICLOVIDA
+      ComentarioGeneral.new(comentario_id: idBase32, subject: '', commentArray: [].to_s).save if categorias_contenido_id == CategoriasContenido::COMENTARIO_ENCICLOVIDA
     end
   end
 

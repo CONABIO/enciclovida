@@ -25,7 +25,7 @@
 
     <%= f.hidden_field "institucion_"+params[:id], {value: @comentario.institucion} %>
     <%= f.hidden_field "estatus_"+params[:id], {value: @comentario.estatus} %>
-    <%= f.hidden_field "categoria_contenido_id_"+params[:id], {value: @comentario.categoria_contenido_id} %>
+    <%= f.hidden_field "categorias_contenido_id_"+params[:id], {value: @comentario.categorias_contenido_id} %>
 
     <% if @comentario.usuario_id.present? %>
         <%= f.hidden_field("usuario_id_"+params[:id], {value: @comentario.usuario_id}) %>
