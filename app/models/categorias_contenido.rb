@@ -3,8 +3,8 @@ class CategoriasContenido < ActiveRecord::Base
 
   has_ancestry
 
-  has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenidoRol', :foreign_key => :categoria_contenido_id
-  has_many :roles, :through => :roles_categorias_contenidos
+  has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenido', :foreign_key => :categorias_contenido_id
+  has_many :roles, :through => :roles_categorias_contenidos, :source => :rol
 
   REGISTROS_SNIB = 6
   REGISTROS_NATURALISTA = 7
