@@ -1,5 +1,5 @@
 class RolCategoriasContenido < ActiveRecord::Base
-  belongs_to :categoria_contenido
+  belongs_to :categorias_contenido
   belongs_to :rol
 
   scope :join_roles,-> { joins('JOIN roles on rol_id = roles.id') }
