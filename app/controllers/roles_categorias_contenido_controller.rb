@@ -75,6 +75,6 @@ class RolesCategoriasContenidoController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def rol_categorias_contenido_params
-      params.require(:rol_categorias_contenido).permit(:categoria_contenido_id, :rol_id)
+      params.require(:rol_categorias_contenido).permit(:categorias_contenido_id, :rol_id)
     end
 end

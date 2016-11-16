@@ -1,25 +1,26 @@
-<%= form_for(@rol_categorias_contenido) do |f| %>
-  <% if @rol_categorias_contenido.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@rol_categorias_contenido.errors.count, "error") %> prohibited this rol_categorias_contenido from being saved:</h2>
+<%= form_for(@rol_categorias_contenido, :html => {:class => 'form-inline'}) do |f| %>
+    <% if @rol_categorias_contenido.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@rol_categorias_contenido.errors.count, "error") %> prohibited this categoria_contenido_rol from being saved:</h2>
 
-      <ul>
-      <% @rol_categorias_contenido.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+          <ul>
+            <% @rol_categorias_contenido.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :rol_id %>
+      <%= f.collection_select(:rol_id, Rol.all, :id, :nombre_rol, options ={:prompt => "Selecciona un rol"}, {:class => 'form-control', :required => true }) %>
     </div>
-  <% end %>
+    <div class="form-group">
+      <%= f.label :categorias_contenido_id %>
+      <%# f.select(:categorias_contenido_id, grouped_options_for_select(CategoriaContenido.grouped_options(false)), options ={:prompt => "Selecciona una categoria"}, {:class => 'form-control', :required => true }) %>
+      <%= f.collection_select(:categorias_contenido_id, CategoriasContenido.all, :id, :nombre, options ={:prompt => "Selecciona una categoria"}, {:class => 'form-control', :required => true }) %>
+    </div>
 
-  <div class="field">
-    <%= f.label :categoria_contenido_id %><br>
-    <%= f.number_field :categoria_contenido_id %>
-  </div>
-  <div class="field">
-    <%= f.label :rol_id %><br>
-    <%= f.number_field :rol_id %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
+
 <% end %>

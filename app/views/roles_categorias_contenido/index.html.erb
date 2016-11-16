@@ -1,29 +1,24 @@
-<h1>Listing roles_categorias_contenido</h1>
+<h1>Roles - CategoriasContenidos</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
-    <tr>
-      <th>Categoria contenido</th>
-      <th>Rol</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
+  <tr>
+    <th>Categoria Contenido</th>
+    <th>Rol</th>
+    <th></th>
+  </tr>
   </thead>
-
   <tbody>
-    <% @roles_categorias_contenido.each do |rol_categorias_contenido| %>
+  <% @roles_categorias_contenido.each do |rol_categorias_contenido| %>
       <tr>
-        <td><%= rol_categorias_contenido.categoria_contenido_id %></td>
-        <td><%= rol_categorias_contenido.rol_id %></td>
-        <td><%= link_to 'Show', rol_categorias_contenido %></td>
-        <td><%= link_to 'Edit', edit_rol_categorias_contenido_path(rol_categorias_contenido) %></td>
-        <td><%= link_to 'Destroy', rol_categorias_contenido, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>[<%= rol_categorias_contenido.categorias_contenido_id %>] - <%= rol_categorias_contenido.nombre %></td>
+        <td>[<%= rol_categorias_contenido.rol_id %>] - <%= rol_categorias_contenido.nombre_rol %></td>
+        <td><%= link_to 'Ver', rol_categorias_contenido %> | <%= link_to 'Editar', edit_rol_categorias_contenido_path(rol_categorias_contenido) %> | <%= link_to 'Eliminar', rol_categorias_contenido, method: :delete, data: { confirm: '¿Estás seguro? (es un cambio irreversible)' } %></td>
       </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Rol categorias contenido', new_rol_categorias_contenido_path %>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Categoria_contenido a Rol".html_safe, new_rol_categorias_contenido_path, class: 'btn btn-info btn-sm' %>
+</p>
