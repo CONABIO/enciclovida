@@ -1,4 +1,4 @@
-class CategoriaContenido < ActiveRecord::Base
+class CategoriasContenido < ActiveRecord::Base
   self.table_name='categorias_contenido'
 
   has_ancestry
