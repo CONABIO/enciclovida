@@ -37,6 +37,8 @@ class Especie < ActiveRecord::Base
   has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
   has_many :metadatos_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'especie_id'
   has_many :metadatos, :through => :metadatos_especies#, :source => :metadato
+  has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
+  has_many :usuarios, :through => :usuario_especies, :source => :usuario
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
