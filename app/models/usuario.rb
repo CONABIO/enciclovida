@@ -5,6 +5,7 @@ class Usuario < ActiveRecord::Base
   self.table_name='usuarios'
   has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
   has_many :roles, :through => :usuario_roles, :source => :rol
+  has_many :categorias_contenidos, :through => :roles, :source => :categorias_contenidos
 
   has_many :usuario_especies, :class_name=> 'UsuarioEspecie', :foreign_key => :usuario_id
   has_many :especies, :through => :usuario_especies, :source => :especie

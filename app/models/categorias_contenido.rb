@@ -5,6 +5,7 @@ class CategoriasContenido < ActiveRecord::Base
 
   has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenido', :foreign_key => :categorias_contenido_id
   has_many :roles, :through => :roles_categorias_contenidos, :source => :rol
+  has_many :usuarios, :through => :roles, :source => :usuarios
 
   REGISTROS_SNIB = 6
   REGISTROS_NATURALISTA = 7
