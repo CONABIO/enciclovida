@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161027181612) do
+ActiveRecord::Schema.define(version: 20161116023051) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -65,8 +65,8 @@ ActiveRecord::Schema.define(version: 20161027181612) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
-  create_table "categoria_contenidos_roles", force: true do |t|
-    t.integer  "categoria_contenido_id"
+  create_table "categorias_contenidos_roles", force: true do |t|
+    t.integer  "categorias_contenido_id"
     t.integer  "rol_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(version: 20161027181612) do
     t.string   "ancestry"
     t.datetime "fecha_estatus"
     t.integer  "usuario_id2"
-    t.integer  "categoria_contenido_id",            default: 31, null: false
+    t.integer  "categorias_contenido_id",            default: 31, null: false
     t.string   "institucion"
     t.string   "idBak"
     t.string   "id",                     limit: 10, default: "", null: false
@@ -375,6 +375,13 @@ ActiveRecord::Schema.define(version: 20161027181612) do
     t.datetime "updated_at",    null: false
     t.string   "ancestry"
     t.string   "observaciones"
+  end
+
+  create_table "roles_categorias_contenido", force: true do |t|
+    t.integer  "categorias_contenido_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sessions", force: true do |t|

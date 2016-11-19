@@ -1,13 +1,24 @@
 class UsuariosController < ApplicationController
   skip_before_filter :set_locale, only: [:create, :update, :destroy, :guarda_filtro, :limpia_filtro, :cambia_locale]
-  before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   layout :false, :only => [:guarda_filtro, :cambia_locale, :limpia_filtro, :filtros]
+  before_action :only => [:index, :show, :destroy] {tiene_permiso?(2)} # Minimo administrador
+  before_action :only => [:conabio] {tiene_permiso?(4)} # Minimo administrador de comentarios de área
+  before_action do
+    @no_render_busqueda_basica = true
+  end
 
   # GET /usuarios
   # GET /usuarios.json
   def index
-    @usuarios = Usuario.join_user_rol_categorias_contenido.load
+    @usuarios = Usuario.join_userRolEspeciesCategoriasContenido.load
+    #@usuarios = Usuario.all
+  end
+
+  def conabio
+    @usuarios = Usuario.join_userRolEspeciesCategoriasContenido.where("usuarios.email like '%conabio%' or usuarios.institucion like '%conabio%'").load
+    render :action => 'index'
   end
 
   # GET /usuarios/1
@@ -117,7 +128,8 @@ class UsuariosController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_usuario
-    @usuario = Usuario.join_user_rol_categorias_contenido.find(params[:id])
+    @usuario_completo = Usuario.join_userRolEspeciesCategoriasContenido.where("usuarios.id = #{params[:id]}")
+    @usuario = @usuario_completo.first
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

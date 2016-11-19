@@ -4,7 +4,12 @@ class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
   has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
+  has_many :roles, :through => :usuario_roles, :source => :rol
+  has_many :categorias_contenidos, :through => :roles, :source => :categorias_contenidos
+
   has_many :usuario_especies, :class_name=> 'UsuarioEspecie', :foreign_key => :usuario_id
+  has_many :especies, :through => :usuario_especies, :source => :especie
+
   has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
   attr_accessor :login
   validates :nombre, :apellido, presence: true
@@ -16,14 +21,11 @@ class Usuario < ActiveRecord::Base
          :lockable, :timeoutable,
          :authentication_keys => [:login]
 
-  scope :usuarios_roles,-> { joins('LEFT JOIN usuarios_roles on usuarios.id = usuarios_roles.usuario_id') }
-  scope :roles,-> { joins('LEFT JOIN roles on usuarios_roles.rol_id = roles.id') }
-  scope :usuarios_especies,-> { joins('LEFT JOIN usuarios_especie on usuarios_especie.usuario_id = usuarios.id') }
-  scope :especies,-> { joins('LEFT JOIN especies on especie_id = especies.id') }
-  scope :categorias_contenidos_roles,-> { joins('LEFT JOIN categoria_contenidos_roles on roles.id = categoria_contenidos_roles.rol_id') }
-  scope :categorias_contenidos,-> { joins('LEFT JOIN categorias_contenido on categoria_contenido_id = categorias_contenido.id') }
+  scope :usuariosRoles,-> { joins('LEFT JOIN usuarios_roles on usuarios.id = usuarios_roles.usuario_id LEFT JOIN roles on usuarios_roles.rol_id = roles.id') }
+  scope :usuariosEspecies,-> { joins('LEFT JOIN usuarios_especie on usuarios_especie.usuario_id = usuarios.id LEFT JOIN especies on especie_id = especies.id') }
+  scope :rolesCategoriasContenido,-> { joins('LEFT JOIN roles_categorias_contenido on roles.id = roles_categorias_contenido.rol_id LEFT JOIN categorias_contenido on categorias_contenido_id = categorias_contenido.id') }
   scope :select_para_joins, -> { select("usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.email, usuarios.institucion, usuarios.observaciones, roles.nombre_rol, especies.id as id_especie, especies.nombre_cientifico, categorias_contenido.nombre as nombre_cc")}
-  scope :join_user_rol_categorias_contenido,-> { select_para_joins.usuarios_roles.roles.usuarios_especies.especies.categorias_contenidos_roles.categorias_contenidos }
+  scope :join_userRolEspeciesCategoriasContenido,-> { select_para_joins.usuariosRoles.usuariosEspecies.rolesCategoriasContenido }
 
 
   def self.find_for_database_authentication(warden_conditions)

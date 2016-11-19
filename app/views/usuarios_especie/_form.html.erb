@@ -2,12 +2,12 @@
 <script data-turbolinks-track="true">
     $(document).ready(function(){
         soulmate_asigna('avanzada'); // Asigna el soulmate a la caja nombre
-        $('#new_usuario_especie').submit(function(){$('#usuario_especie_especie_id').val($('#id').val());});
+        $('#new_usuario_especie, #edit_usuario_especie_<%= @usuario_especie.id %>').submit(function(){$('#usuario_especie_especie_id').val($('#id').val());});
     });
 </script>
 <style type="text/css">
     #soulmate{
-        width: auto!important;
+        width: 60%!important;
         margin: 0 0 0 56px!important;
     }
 </style>

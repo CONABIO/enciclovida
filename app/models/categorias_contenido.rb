@@ -1,9 +1,11 @@
-class CategoriaContenido < ActiveRecord::Base
+class CategoriasContenido < ActiveRecord::Base
   self.table_name='categorias_contenido'
 
   has_ancestry
 
-  has_many :categoria_contenido_rol, :class_name=> 'CategoriaContenidoRol', :foreign_key => :categoria_contenido_id
+  has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenido', :foreign_key => :categorias_contenido_id
+  has_many :roles, :through => :roles_categorias_contenidos, :source => :rol
+  has_many :usuarios, :through => :roles, :source => :usuarios
 
   REGISTROS_SNIB = 6
   REGISTROS_NATURALISTA = 7
@@ -37,7 +39,7 @@ class CategoriaContenido < ActiveRecord::Base
   def self.categorias(con_comentario_general)
     options = []
 
-    CategoriaContenido.all.each do |cc|
+    CategoriasContenido.all.each do |cc|
       if con_comentario_general
         next if !cc.is_root? || cc.id == COMENTARIO_GENERAL  # Para no poder escoger un tipo de comentario general
       else

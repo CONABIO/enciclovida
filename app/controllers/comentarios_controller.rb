@@ -1,15 +1,12 @@
 class ComentariosController < ApplicationController
   before_action do
-    render 'shared/en_mantenimiento'
+    #render 'shared/en_mantenimiento'
+    @no_render_busqueda_basica = true
   end
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
-    permiso = tiene_permiso?(3)  # Minimo administrador de comentarios
-    render 'shared/sin_permiso' unless permiso
-    @no_render_busqueda_basica = true
-  end
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?(4)}  # Minimo administrador de comentarios
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
@@ -32,7 +29,7 @@ class ComentariosController < ApplicationController
     @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
     cuantos = @comentario.descendants.count
-    categoriaContenido = @comentario.categoria_contenido_id
+    categoriaContenido = @comentario.categorias_contenido_id
 
     if cuantos > 0
       resp = @comentario.descendants.map{ |c|
@@ -62,7 +59,7 @@ class ComentariosController < ApplicationController
     @comentario.estatus = Comentario::RESPUESTA
 
     # Categoria comentario ID
-    @comentario.categoria_contenido_id = categoriaContenido
+    @comentario.categorias_contenido_id = categoriaContenido
 
     # Para no poner la caseta de verificacion
     @comentario.con_verificacion = false
@@ -88,7 +85,7 @@ class ComentariosController < ApplicationController
 
       @comentario_resp = @comentario
       cuantos = @comentario_root.descendant_ids.count
-      categoriaContenido = @comentario.categoria_contenido_id
+      categoriaContenido = @comentario.categorias_contenido_id
 
       #Esto es para que en el show se muestre el primer comentario ALWAYS (el seguro está en preguntar si resp.present?)
       @comentario_root.completa_info(@comentario_root.usuario_id)
@@ -132,7 +129,7 @@ class ComentariosController < ApplicationController
           @comentario.estatus = Comentario::RESPUESTA
 
           # Categoria comentario ID
-          @comentario.categoria_contenido_id = categoriaContenido
+          @comentario.categorias_contenido_id = categoriaContenido
 
           # Caseta de verificacion
           @comentario.con_verificacion = true
@@ -203,7 +200,7 @@ class ComentariosController < ApplicationController
                                        nombre: @comentario.nombre}.to_json}
           else
             # Para guardar en la tabla comentarios proveedores
-            if proveedor_id.present? && CategoriaContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
+            if proveedor_id.present? && CategoriasContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
               comentario_proveedor = ComentarioProveedor.new
               comentario_proveedor.comentario_id = @comentario.id
               comentario_proveedor.proveedor_id = proveedor_id
@@ -254,7 +251,7 @@ class ComentariosController < ApplicationController
       @comentario.fecha_estatus = Time.now
     end
 
-    @comentario.categoria_contenido_id = params[:categoria_contenido_id] if params[:categoria_contenido_id].present?
+    @comentario.categorias_contenido_id = params[:categorias_contenido_id] if params[:categorias_contenido_id].present?
 
     if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
@@ -286,13 +283,15 @@ class ComentariosController < ApplicationController
     offset = (@pagina-1)*@por_pagina
 
     tax_especifica = current_usuario.usuario_especies
+    contenido_especifico = current_usuario.categorias_contenidos
+
     consulta = Comentario.datos_basicos
 
     if params[:comentario].present?
       params = comentario_params
 
-      if params[:categoria_contenido_id].present?
-        consulta = consulta.where(categoria_contenido_id: params[:categoria_contenido_id].to_i)
+      if params[:categorias_contenido_id].present?
+        consulta = consulta.where(categorias_contenido_id: params[:categorias_contenido_id].to_i)
       end
 
       if params[:estatus].present?
@@ -307,6 +306,10 @@ class ComentariosController < ApplicationController
           or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
         end
         consulta = consulta.where(or_taxa.join(" OR "))
+      end
+
+      if contenido_especifico.length > 0
+        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
       end
 
       # Comentarios totales
@@ -330,9 +333,6 @@ class ComentariosController < ApplicationController
       # estatus = 5 quiere decir oculto a la vista
       consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
 
-      # Comentarios totales
-      @totales = consulta.count
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
@@ -340,6 +340,13 @@ class ComentariosController < ApplicationController
           end
         consulta = consulta.where(or_taxa.join(" OR "))
       end
+
+      if contenido_especifico.length > 0
+        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+      end
+
+      # Comentarios totales
+      @totales = consulta.count
       @comentarios = consulta.order('comentarios.estatus ASC, comentarios.created_at ASC').offset(offset).limit(@por_pagina)
     end
 
@@ -348,7 +355,7 @@ class ComentariosController < ApplicationController
       c.completa_info(c.root.usuario_id)
     end
 
-    @categoria_contenido = CategoriaContenido.grouped_options
+    @categorias_contenido = CategoriasContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
 
@@ -390,7 +397,7 @@ class ComentariosController < ApplicationController
     comment.correo = correo.from.first#.encode('ASCII-8BIT').force_encoding('UTF-8')
     comment.nombre = correo.header[:from].display_names.join(',')
     comment.especie_id = 0
-    comment.categoria_contenido_id = CategoriaContenido::COMENTARIO_ENCICLOVIDA
+    comment.categorias_contenido_id = CategoriasContenido::COMENTARIO_ENCICLOVIDA
     comment.created_at = correo.header[:date].value.to_time
 
     if tiene_id
@@ -494,7 +501,7 @@ class ComentariosController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def comentario_params
     params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
-                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categoria_contenido_id,
+                                       :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categorias_contenido_id,
                                        :ajax, :nombre_cientifico, :created_at)
   end
 end
