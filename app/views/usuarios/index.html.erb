@@ -1,4 +1,4 @@
-<h1>Usuarios registrados a Enciclovida</h1>
+<h1>Usuarios <%= 'de ' + params['action'].upcase if  params['action']== 'conabio' %> registrados en Enciclovida</h1>
 
 <table class="table table-condensed table-hover table-responsive">
   <thead>
