@@ -283,6 +283,8 @@ class ComentariosController < ApplicationController
     offset = (@pagina-1)*@por_pagina
 
     tax_especifica = current_usuario.usuario_especies
+    contenido_especifico = current_usuario.categorias_contenidos
+
     consulta = Comentario.datos_basicos
 
     if params[:comentario].present?
@@ -306,6 +308,10 @@ class ComentariosController < ApplicationController
         consulta = consulta.where(or_taxa.join(" OR "))
       end
 
+      if contenido_especifico.length > 0
+        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+      end
+
       # Comentarios totales
       @totales = consulta.count
 
@@ -327,9 +333,6 @@ class ComentariosController < ApplicationController
       # estatus = 5 quiere decir oculto a la vista
       consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
 
-      # Comentarios totales
-      @totales = consulta.count
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
@@ -337,6 +340,13 @@ class ComentariosController < ApplicationController
           end
         consulta = consulta.where(or_taxa.join(" OR "))
       end
+
+      if contenido_especifico.length > 0
+        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+      end
+
+      # Comentarios totales
+      @totales = consulta.count
       @comentarios = consulta.order('comentarios.estatus ASC, comentarios.created_at ASC').offset(offset).limit(@por_pagina)
     end
 
