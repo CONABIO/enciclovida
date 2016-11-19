@@ -1,4 +1,7 @@
 Buscador::Application.routes.draw do
+
+  get "usuarios/conabio"
+
   resources :roles_categorias_contenido
 
   resources :usuarios_especie

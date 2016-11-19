@@ -25,7 +25,7 @@ class Usuario < ActiveRecord::Base
   scope :usuariosEspecies,-> { joins('LEFT JOIN usuarios_especie on usuarios_especie.usuario_id = usuarios.id LEFT JOIN especies on especie_id = especies.id') }
   scope :rolesCategoriasContenido,-> { joins('LEFT JOIN roles_categorias_contenido on roles.id = roles_categorias_contenido.rol_id LEFT JOIN categorias_contenido on categorias_contenido_id = categorias_contenido.id') }
   scope :select_para_joins, -> { select("usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.email, usuarios.institucion, usuarios.observaciones, roles.nombre_rol, especies.id as id_especie, especies.nombre_cientifico, categorias_contenido.nombre as nombre_cc")}
-  scope :join_user_rol_categorias_contenido,-> { select_para_joins.usuariosRoles.usuariosEspecies.rolesCategoriasContenido }
+  scope :join_userRolEspeciesCategoriasContenido,-> { select_para_joins.usuariosRoles.usuariosEspecies.rolesCategoriasContenido }
 
 
   def self.find_for_database_authentication(warden_conditions)
