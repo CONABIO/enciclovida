@@ -129,7 +129,7 @@ class UsuariosController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_usuario
     @usuario_completo = Usuario.join_userRolEspeciesCategoriasContenido.where("usuarios.id = #{params[:id]}")
-    #@usuario = @usuario_completo.first Puede q no se utilice, TODO hay q quitar las acciones inservibles y añadir algunas q nos sirvan
+    @usuario = @usuario_completo.first
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
