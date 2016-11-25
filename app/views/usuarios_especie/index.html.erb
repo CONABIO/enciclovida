@@ -1,12 +1,11 @@
-<h1>Listing usuarios_especie</h1>
+<h1>Taxonomía específica a usuarios</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
+      <th>ID</th>
       <th>Usuario</th>
       <th>Especie</th>
-      <th></th>
-      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -14,16 +13,14 @@
   <tbody>
     <% @usuarios_especie.each do |usuario_especie| %>
       <tr>
-        <td><%= usuario_especie.usuario_id %></td>
-        <td><%= usuario_especie.especie_id %></td>
-        <td><%= link_to 'Show', usuario_especie %></td>
-        <td><%= link_to 'Edit', edit_usuario_especie_path(usuario_especie) %></td>
-        <td><%= link_to 'Destroy', usuario_especie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= usuario_especie.id %></td>
+        <td><%= usuario_especie.usuario_id %>. <%= usuario_especie.nombre %> <%= usuario_especie.apellido %></td>
+        <td><%= usuario_especie.especie_id %>. <%= usuario_especie.nombre_cientifico %></td>
+        <td><%= link_to 'Ver', usuario_especie %> | <%= link_to 'Editar', edit_usuario_especie_path(usuario_especie) %> | <%= link_to 'Eliminar', usuario_especie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Usuario especie', new_usuario_especie_path %>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Taxonomía específica a usuario".html_safe, new_usuario_especie_path, class: 'btn btn-info btn-sm' %>
+</p>

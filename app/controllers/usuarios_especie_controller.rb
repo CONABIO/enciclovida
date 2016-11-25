@@ -1,10 +1,16 @@
 class UsuariosEspecieController < ApplicationController
   before_action :set_usuario_especie, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action {tiene_permiso?(2)}  # Minimo administrador
+  before_action do
+    Rails.application.reload_routes!
+    @no_render_busqueda_basica = true
+  end
 
   # GET /usuarios_especie
   # GET /usuarios_especie.json
   def index
-    @usuarios_especie = UsuarioEspecie.all
+    @usuarios_especie = UsuarioEspecie.join_user_especies.order(:usuario_id).load
   end
 
   # GET /usuarios_especie/1
@@ -64,7 +70,7 @@ class UsuariosEspecieController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_usuario_especie
-      @usuario_especie = UsuarioEspecie.find(params[:id])
+      @usuario_especie = UsuarioEspecie.join_user_especies.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -23,8 +23,8 @@ function asigna_valores_select()
     if (params["comentario%5Bestatus%5D"] != undefined)
         $('#filtro_estatus').val(params["comentario%5Bestatus%5D"]);
 
-    if (params["comentario%5Bcategoria_contenido_id%5D"] != undefined)
-        $('#filtro_categoria_contenido_id').val(params["comentario%5Bcategoria_contenido_id%5D"]);
+    if (params["comentario%5Bcategorias_contenido_id%5D"] != undefined)
+        $('#filtro_categorias_contenido_id').val(params["comentario%5Bcategorias_contenido_id%5D"]);
 
     if (params["comentario%5Bcreated_at%5D"] != undefined)
     {
@@ -56,7 +56,7 @@ $(document).ready(function(){
         if ($('#comentario_comentario').val() == '')
             errores.push("El comentario no puede ser vacío.");
 
-        if ($('#comentario_categoria_contenido_id').val() == '')
+        if ($('#comentario_categorias_contenido_id').val() == '')
             errores.push("La clase de comentario no puede ser vacía.");
 
         if (errores.length > 0)
@@ -125,17 +125,17 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('change', ".comentario_categoria_contenido_id", function()
+    $(document).on('change', ".comentario_categorias_contenido_id", function()
     {
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
-        var div_estatus = $('#comentario_categoria_contenido_id_div_' + comentario_id);
+        var div_estatus = $('#comentario_categorias_contenido_id_div_' + comentario_id);
 
         $.ajax({
             url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
             method: 'PUT',
             dataType: "json",
-            data: {categoria_contenido_id: $(this).val()}
+            data: {categorias_contenido_id: $(this).val()}
 
         }).done(function(resp) {
 
@@ -271,7 +271,6 @@ $(document).ready(function(){
         var historial_comentarios = $("#historial_comentarios_"+commentId);
 
         if (comentario.val() == ''){
-            console.log($('#error_'+commentId));
             label.parent().addClass('has-error');
             $('#error_'+commentId).text('El comentario no puede estar vacío');
         }

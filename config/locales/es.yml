@@ -314,7 +314,7 @@ es:
         login: Correo electrónico
         password: Contraseña
         password_confirmation: Confirma la contraseña
-        institucion: Institución, organización, etc. (opcional)
+        institucion: Institución, organización, etc.
         remember_me: Recordarme la próxima vez
     select:
       prompt: Por favor selecciona

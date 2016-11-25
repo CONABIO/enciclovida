@@ -13,9 +13,9 @@
   <%= c.comentario.gsub("\n","<br />").html_safe %> <br />
 
   <% if cp = c.comentario_proveedor %>
-    <% if c.categoria_contenido_id == 6 %>
+    <% if c.categorias_contenido_id == CategoriasContenido::REGISTROS_SNIB %>
       <p>Enlace al <%= link_to 'ejemplar', CONFIG.geoportal_informacion + cp.proveedor_id, target: :_blank %></p>
-    <% elsif c.categoria_contenido_id == 7 %>
+    <% elsif c.categorias_contenido_id == CategoriasContenido::REGISTROS_NATURALISTA %>
       <p>Enlace a la <%= link_to 'observación', "#{CONFIG.naturalista_url}/observations/#{cp.proveedor_id}", target: :_blank %></p>
     <% end %>
   <% end %>

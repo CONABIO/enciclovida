@@ -1,4 +1,10 @@
 class BusquedasController < ApplicationController
+  before_action only: :resultados, if: -> {params[:busqueda] == 'avanzada'} do
+    @no_render_busqueda_basica = true
+  end
+  before_action only: :avanzada do
+    @no_render_busqueda_basica = true
+  end
 
   skip_before_filter :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]

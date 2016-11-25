@@ -51,12 +51,7 @@ class ApplicationController < ActionController::Base
   end
 
   def tiene_permiso?(nivel)
-    return false if !usuario_signed_in?
-    roles = current_usuario.usuario_roles
-    return true if roles.map(&:rol_id).include?(nivel)
-    roles.each do |r|
-      return true if r.rol.descendant_ids.include?(nivel)
-    end
+    render 'shared/sin_permiso' unless usuario_signed_in? && current_usuario.usuario_roles.map(&:rol).map(&:subtree_ids).flatten.include?(nivel)
   end
 
   def es_propietario?(obj)
@@ -72,4 +67,5 @@ class ApplicationController < ActionController::Base
       false
     end
   end
+
 end
