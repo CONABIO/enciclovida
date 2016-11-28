@@ -3,7 +3,11 @@
 <table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
-      <th>ID Usuario</th>
+
+      <% if params[:controller] == 'usuarios' &&params[:action] == 'index'  %>
+        <th>ID Usuario</th>
+      <% end %>
+
       <th>Datos Usuario</th>
       <th>Niveles de accesso</th>
       <th></th>
@@ -23,7 +27,10 @@
           <%= "<small>".html_safe+usuario.id_especie.to_s+"</small>".html_safe if current_user.id_especie != usuario.id_especie && usuario.id_especie.present? %>
       <% else %>
           <%= last_column.html_safe %>
-          <td><%= usuario.id %></td>
+          <% if params[:controller] == 'usuarios' &&params[:action] == 'index'  %>
+              <td><%= usuario.id %></td>
+          <% end %>
+
           <td><%= usuario.nombre %> <%= usuario.apellido %> <br /><small><%= usuario.email %></small> <br /><small><%= usuario.institucion %></small></td>
           <td><%= usuario.nombre_rol if usuario.nombre_rol.present? %>
             <%= "<br />".html_safe+usuario.nombre_cc if usuario.nombre_cc.present? %>

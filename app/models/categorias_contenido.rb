@@ -47,9 +47,6 @@ class CategoriasContenido < ActiveRecord::Base
       end
 
       grouped_options = []
-      #sub_grouped_options = []
-      # Disabled a subir un mapa de distribucion
-      #descendientes = cc.descendants.map {|d| d.id == MAPA_DISTRIBUCION ? [d.nombre, d.id, {disabled: 'disabled'}] : [d.nombre, d.id]}
 
       cc.children.each do |d|
         if d.id == MAPA_DISTRIBUCION
@@ -72,5 +69,27 @@ class CategoriasContenido < ActiveRecord::Base
     end
 
     options
+  end
+
+  # Regresa las categorias en un arreglo bidimensional para el grouped options
+  def self.categorias_para_roles
+    grouped_options = []
+
+    CategoriasContenido.all.each do |cc|
+      next unless cc.is_root?
+      grouped_options << [cc.nombre, cc.id]
+
+      cc.children.each do |d|
+        if d.children.count > 0
+          grouped_options << [d.nombre, d.id]
+          d.children.each { |dd| grouped_options << [dd.nombre, dd.id]}
+        else
+          grouped_options << [d.nombre, d.id]
+        end
+      end
+
+    end
+
+    grouped_options
   end
 end
