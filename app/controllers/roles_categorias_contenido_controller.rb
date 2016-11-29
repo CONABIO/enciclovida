@@ -1,7 +1,7 @@
 class RolesCategoriasContenidoController < ApplicationController
   before_action :set_rol_categorias_contenido, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!
-  before_action { tiene_permiso?(2) } # Minimo administrador
+  before_action { tiene_permiso?('Administrador') } # Minimo administrador
   before_action do
     Rails.application.reload_routes!
     @no_render_busqueda_basica = true
