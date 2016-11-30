@@ -7,10 +7,10 @@ class CategoriasContenido < ActiveRecord::Base
   has_many :roles, :through => :roles_categorias_contenidos, :source => :rol
   has_many :usuarios, :through => :roles, :source => :usuarios
 
-  REGISTROS_SNIB = 6
-  REGISTROS_NATURALISTA = 7
-  REGISTROS_GEODATA = [REGISTROS_SNIB, REGISTROS_NATURALISTA]  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
-  MAPA_DISTRIBUCION = 8
+  REGISTROS_SNIB = [6, 32, 33, 34]
+  REGISTROS_NATURALISTA = [7]
+  REGISTROS_GEODATA = [REGISTROS_SNIB, REGISTROS_NATURALISTA].flatten  # De momento puede haber comentarios asociados a un ID para el snib y naturalista
+  MAPA_DISTRIBUCION = 9
   COMENTARIO_GENERAL = 28
   COMENTARIO_ENCICLOVIDA = 29
 
@@ -47,14 +47,49 @@ class CategoriasContenido < ActiveRecord::Base
       end
 
       grouped_options = []
-      # Disabled a subir un mapa de distribucion
-      descendientes = cc.descendants.map {|d| d.id == MAPA_DISTRIBUCION ? [d.nombre, d.id, {disabled: 'disabled'}] : [d.nombre, d.id]}
-      grouped_options << cc.nombre
-      grouped_options << descendientes if descendientes.any?
-      puts grouped_options.inspect
-      options << grouped_options
+
+      cc.children.each do |d|
+        if d.id == MAPA_DISTRIBUCION
+          grouped_options << [d.nombre, d.id, {disabled: 'disabled'}]
+        else
+
+          if d.children.count > 0
+            grouped_options << [d.nombre, d.id]
+            d.children.each { |dd| grouped_options << [dd.nombre, dd.id]}
+          else
+            grouped_options << [d.nombre, d.id]
+          end
+        end  # End aportar mapa distribucion
+      end
+
+      if grouped_options.any?
+        options << [cc.nombre, grouped_options]
+      end
+
     end
 
     options
+  end
+
+  # Regresa las categorias en un arreglo bidimensional para el grouped options
+  def self.categorias_para_roles
+    grouped_options = []
+
+    CategoriasContenido.all.each do |cc|
+      next unless cc.is_root?
+      grouped_options << [cc.nombre, cc.id]
+
+      cc.children.each do |d|
+        if d.children.count > 0
+          grouped_options << [d.nombre, d.id]
+          d.children.each { |dd| grouped_options << [dd.nombre, dd.id]}
+        else
+          grouped_options << [d.nombre, d.id]
+        end
+      end
+
+    end
+
+    grouped_options
   end
 end

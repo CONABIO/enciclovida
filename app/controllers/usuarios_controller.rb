@@ -17,7 +17,7 @@ class UsuariosController < ApplicationController
   end
 
   def conabio
-    @usuarios = Usuario.join_userRolEspeciesCategoriasContenido.where("usuarios.email like '%conabio%' or usuarios.institucion like '%conabio%'").load
+    @usuarios = Usuario.join_userRolEspeciesCategoriasContenido.where("usuarios.email like '%conabio%'").order('usuarios.nombre ASC, apellido asc').load
     render :action => 'index'
   end
 
