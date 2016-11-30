@@ -4,7 +4,7 @@ class UsuariosController < ApplicationController
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   layout :false, :only => [:guarda_filtro, :cambia_locale, :limpia_filtro, :filtros]
   before_action :only => [:index, :show, :destroy] {tiene_permiso?('Administrador')} # Minimo administrador
-  before_action :only => [:conabio] {tiene_permiso?(3)} # Minimo administrador de comentarios de área
+  before_action :only => [:conabio] {tiene_permiso?('AdminComentarios')} # Minimo administrador de comentarios de área
   before_action do
     @no_render_busqueda_basica = true
   end
