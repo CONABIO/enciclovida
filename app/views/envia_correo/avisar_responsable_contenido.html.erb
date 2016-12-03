@@ -1,0 +1,21 @@
+<p>
+  Se te ha asignado el siguiente comentario:
+  <% con_taxon = @nombre_cientifico.present? %>
+  <span style="font-size: 1.2em;">
+  <% if con_taxon %>
+      <% if @nombre_comun.present? %>
+          <%= @nombre_comun %> (<strong><%= @nombre_cientifico %></strong>)
+      <% else %>
+          <strong><%= @nombre_cientifico %></strong>
+      <% end %>
+  <% end %>
+  </span>
+</p>
+
+<blockquote style="font-style: italic;">
+  <%= @comentario.comentario %>
+</blockquote>
+
+<p>
+  Para poder contestarlo, ingresa al <%= link_to 'panel de administracion de comentarios', admin_path %>.
+</p>

@@ -245,6 +245,7 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
+    ya_estaba_resuelto = Comentario::RESUELTOS.include?(@comentario.estatus) #Ya estaba en algun estatus de resuleto?
     if params[:estatus].present?
       @comentario.estatus = params[:estatus]
       @comentario.usuario_id2 = current_usuario.id
@@ -255,8 +256,9 @@ class ComentariosController < ApplicationController
 
     if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
-        EnviaCorreo.comentario_resuelto(@comentario).deliver
+        EnviaCorreo.comentario_resuelto(@comentario).deliver unless ya_estaba_resuelto #Solo envia correo cuando cambia el estatus
       end
+      EnviaCorreo.avisar_responsable_contenido(@comentario, CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:email)) if params[:categorias_contenido_id].present?
 
       render json: {estatus: 1}.to_json
     else
