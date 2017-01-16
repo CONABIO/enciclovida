@@ -50,8 +50,13 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:account_update) << :institucion
   end
 
-  def tiene_permiso?(nivel)
-    render 'shared/sin_permiso' unless usuario_signed_in? && current_usuario.usuario_roles.map(&:rol).map(&:subtree_ids).flatten.include?(nivel)
+  def tiene_permiso?(nombre_rol)
+    render 'shared/sin_permiso' and return unless usuario_signed_in? #con esto aseguramos que el usuario ya inicio sesión
+    roles_usuario = current_usuario.usuario_roles.map(&:rol)
+    return if roles_usuario.map(&:depth).any?{|d| d < 1}
+    rol = Rol.find_by_nombre_rol(nombre_rol)
+    #Revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
+    render 'shared/sin_permiso' unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.subtree_ids.flatten).any?
   end
 
   def es_propietario?(obj)

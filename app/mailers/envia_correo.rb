@@ -37,6 +37,10 @@ class EnviaCorreo < Devise::Mailer
     mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')# if Rails.env.production?
   end
 
+  def avisar_responsable_contenido(comentario,correos)
+    completa_datos_comentario(comentario)
+    mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if (Rails.env.production? || correos.join(',').include?("ggonzalez") || correos.join(',').include?("calonso") || correos.join(',').include?("albertoglezba") || correos.join(',').include?("mailinator"))
+  end
 
   private
 

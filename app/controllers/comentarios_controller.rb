@@ -6,7 +6,7 @@ class ComentariosController < ApplicationController
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?(4)}  # Minimo administrador de comentarios
+  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?('AdminComentarios')}  # Minimo administrador de comentarios
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
@@ -245,6 +245,7 @@ class ComentariosController < ApplicationController
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
   def update
+    ya_estaba_resuelto = Comentario::RESUELTOS.include?(@comentario.estatus) #Ya estaba en algun estatus de resuleto?
     if params[:estatus].present?
       @comentario.estatus = params[:estatus]
       @comentario.usuario_id2 = current_usuario.id
@@ -255,9 +256,15 @@ class ComentariosController < ApplicationController
 
     if @comentario.changed? && @comentario.save
       if Comentario::RESUELTOS.include?(@comentario.estatus)
-        EnviaCorreo.comentario_resuelto(@comentario).deliver
+        EnviaCorreo.comentario_resuelto(@comentario).deliver unless ya_estaba_resuelto #Solo envia correo cuando cambia el estatus
       end
-
+      if params[:categorias_contenido_id].present?
+        #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
+        #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
+        #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
+        #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
+        EnviaCorreo.avisar_responsable_contenido(@comentario, CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:email)).deliver
+      end
       render json: {estatus: 1}.to_json
     else
       render json: {estatus: 0}.to_json
