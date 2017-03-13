@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
 class Validacion < ActiveRecord::Base
 
@@ -250,6 +251,7 @@ class Validacion < ActiveRecord::Base
 
   # Si concidio mas de uno, busca recursivamente el indicado
   def busca_recursivamente(taxones, hash)
+    puts "\n\nBusca recursivamente en especie o mas arriba"
     coincidio_alguno = false
     taxon_coincidente = Especie.none
     nombres = hash['nombre_cientifico'].split(' ')
@@ -325,6 +327,7 @@ class Validacion < ActiveRecord::Base
 
   # Encuentra el mas parecido
   def encuentra_record_por_nombre_cientifico(hash = {})
+    puts "\n Encuentra record por nombre cientifico: #{hash['nombre_cientifico']}"
     # Evita que el nombre cientifico este vacio
     if hash['nombre_cientifico'].blank?
       return {hash: hash, estatus: false, error: 'El nombre cientifico está vacío'}
@@ -334,10 +337,12 @@ class Validacion < ActiveRecord::Base
     taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
+      puts "\n\nCoincidio busqueda exacta"
       taxon = asigna_categorias_correspondientes(taxon.first)
       return {taxon: taxon, hash: hash, estatus: true}
 
     elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
+      puts "\n\nCoincidio mas de uno directo en la base"
       # Mando a imprimir solo el valido
       taxon.each do |t|
         if t.estatus == 2
@@ -349,6 +354,7 @@ class Validacion < ActiveRecord::Base
       return busca_recursivamente(taxon, hash)
 
     else
+      puts "\n\nTratando de encontrar concidencias con la base o fuzzy match"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
       nombres = hash['nombre_cientifico'].strip.split(' ')
 
@@ -393,6 +399,7 @@ class Validacion < ActiveRecord::Base
           end
 
         else  # No hubo coincidencias con su nombre cientifico
+          puts "\n\nSin coincidencia"
           return {hash: h, estatus: false, error: 'Sin coincidencias'}
         end
       end
@@ -401,6 +408,7 @@ class Validacion < ActiveRecord::Base
   end
 
   def valida_campos(path, asociacion)
+    puts "\n Validando campos en 30 seg ..."
     sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     primera_fila = true
@@ -425,6 +433,7 @@ class Validacion < ActiveRecord::Base
 
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta(info = {})
+    puts "\n\nAsocia la respuesta con el excel"
     if info[:estatus]
       taxon = info[:taxon]
 
