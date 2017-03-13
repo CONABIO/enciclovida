@@ -285,7 +285,7 @@ class Proveedor < ActiveRecord::Base
 
     if snib_id.present?
       geodatos[:cuales] << 'geoportal'
-      geodatos[:geoportal_url] = "#{CONFIG.geoportal_url}&rd=#{snib_reino}&id=#{snib_id}"
+      geodatos[:geoportal_url] = "#{CONFIG.geoportal_url}&rd=#{snib_reino}&id=#{especie.catalogo_id}"
       #geodatos[:geoportal_url_descarga] = nil
     end
 
