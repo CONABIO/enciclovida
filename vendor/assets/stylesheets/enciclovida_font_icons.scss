@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?37167702');
-  src: font-url('enciclovida_font_icons.eot?37167702#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?37167702') format('woff2'),
-       font-url('enciclovida_font_icons.woff?37167702') format('woff'),
-       font-url('enciclovida_font_icons.ttf?37167702') format('truetype'),
-       font-url('enciclovida_font_icons.svg?37167702#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?47174918');
+  src: font-url('enciclovida_font_icons.eot?47174918#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?47174918') format('woff2'),
+       font-url('enciclovida_font_icons.woff?47174918') format('woff'),
+       font-url('enciclovida_font_icons.ttf?47174918') format('truetype'),
+       font-url('enciclovida_font_icons.svg?47174918#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?37167702#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?47174918#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -137,7 +137,6 @@
 .ev1-ev-icon:before { content: '\e84f'; } /* '' */
 .vida-ev-icon:before { content: '\e850'; } /* '' */
 .bone-ev-icon:before { content: '\e851'; } /* '' */
-.biomex-ev-icon:before { content: '\e852'; } /* '' */
 .naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
 .naturalista-4-ev-icon:before { content: '\e854'; } /* '' */
 .picture-ev-icon:before { content: '\e855'; } /* '' */
@@ -158,3 +157,4 @@
 .globe-2-ev-icon:before { content: '\e864'; } /* '' */
 .naturalista-2-ev-icon:before { content: '\e865'; } /* '' */
 .block-ev-icon:before { content: '\e866'; } /* '' */
+.biomex-ev-icon:before { content: '\e867'; } /* '' */
