@@ -3,8 +3,8 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Exporta a un archivo .csv dlos nombres comunes que no son de catalogos, i.e.
-loqs que vienen de NaturaLista y se han metido desde biotas.
+Exporta a un archivo .csv los nombres comunes que no son de catalogos, i.e.
+los que vienen de NaturaLista y se han metido desde EncicloVida.
 
 
 Usage:
@@ -41,8 +41,8 @@ def datos
     # Se mete a la bitacora
     if nombre_comun_principal_original == nombre_comun_principal_naturalista
       @bitacora.puts "#{taxon.catalogo_id}\t#{nombre_comun_principal_naturalista}\tNaturaLista"
-    else  # Vienen de bios
-      @bitacora.puts "#{taxon.catalogo_id}\t#{nombre_comun_principal_original}\tBiotas"
+    else  # Vienen de enciclovida
+      @bitacora.puts "#{taxon.catalogo_id}\t#{nombre_comun_principal_original}\tEncicloVida"
     end
   end
 end
