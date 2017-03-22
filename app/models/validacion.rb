@@ -4,8 +4,8 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
-  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia autoridad_infraespecie)
-  COLUMNAS_OBLIGATORIAS = %w(familia genero especie autoridad infraespecie categoria nombre_cientifico)
+  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia nombre_autoridad_infraespecie)
+  COLUMNAS_OBLIGATORIAS = %w(familia genero especie nombre_autoridad infraespecie categoria nombre_cientifico)
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando solo pasan el nombre cientifico
@@ -505,9 +505,23 @@ class Validacion < ActiveRecord::Base
 
   # Parte azul del excel
   def correcciones(info = {})
+    puts "\n\nGenerando informacion de correcciones ..."
     correcciones_hash = {}
     hash = info[:hash]
 
+    (COLUMNAS_OBLIGATORIAS + COLUMNAS_OPCIONALES).each do |categoria|
+      if info[:estatus]
+        taxon = info[:taxon]
+
+        if hash.key?(categoria)
+          correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = eval("taxon.x_#{categoria}").try(:downcase) == hash[categoria].try(:downcase) ? nil : eval("taxon.x_#{categoria}")
+        end
+
+      else
+        correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = nil
+      end
+    end
+=begin
     if info[:estatus]
       taxon = info[:taxon]
 
@@ -606,7 +620,7 @@ class Validacion < ActiveRecord::Base
       correcciones_hash['SCAT_CorreccionInfraespecie'] = nil if hash.key?('infraespecie')
       correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = nil if hash.key?('autoridad_infraespecie')
     end
-
+=end
     correcciones_hash
   end
 
