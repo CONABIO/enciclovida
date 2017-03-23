@@ -15,7 +15,7 @@ class Especie < ActiveRecord::Base
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
-                :x_nombre_autoridad_especie, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
+                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
                 :x_distancia, :x_nombre_comun_principal
 
   has_one :proveedor

@@ -4,7 +4,7 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
-  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia nombre_autoridad_infraespecie)
+  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia subgenero nombre_autoridad_infraespecie)
   COLUMNAS_OBLIGATORIAS = %w(familia genero especie nombre_autoridad infraespecie categoria nombre_cientifico)
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
@@ -234,7 +234,7 @@ class Validacion < ActiveRecord::Base
 
       # Asigna autoridades para el excel
       if categoria == 'x_especie'
-        taxon.x_nombre_autoridad_especie = taxon.nombre_autoridad
+        taxon.x_nombre_autoridad = taxon.nombre_autoridad
       end
 
       # Para las infraespecies
@@ -508,13 +508,24 @@ class Validacion < ActiveRecord::Base
     puts "\n\nGenerando informacion de correcciones ..."
     correcciones_hash = {}
     hash = info[:hash]
+    taxon = info[:taxon]
 
     (COLUMNAS_OBLIGATORIAS + COLUMNAS_OPCIONALES).each do |categoria|
       if info[:estatus]
-        taxon = info[:taxon]
 
         if hash.key?(categoria)
-          correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = eval("taxon.x_#{categoria}").try(:downcase) == hash[categoria].try(:downcase) ? nil : eval("taxon.x_#{categoria}")
+          if categoria == 'infraespecie'  # caso especial para las infrespecies
+            cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
+
+            if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
+              correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = taxon.nombre.downcase == hash['infraespecie'].try(:downcase) ? nil : taxon.nombre
+            else
+              correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = nil
+            end
+
+          else
+            correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = eval("taxon.x_#{categoria}").try(:downcase) == hash[categoria].try(:downcase) ? nil : eval("taxon.x_#{categoria}")
+          end
         end
 
       else
@@ -649,7 +660,7 @@ class Validacion < ActiveRecord::Base
       validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero
       validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie
       validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie
-      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad_especie
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad
 
       # Para la infraespecie
       cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
