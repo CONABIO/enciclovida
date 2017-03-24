@@ -4,8 +4,12 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
-  COLUMNAS_OPCIONALES = %w(reino division subdivision clase subclase orden suborden infraorden superfamilia subgenero nombre_autoridad_infraespecie)
-  COLUMNAS_OBLIGATORIAS = %w(familia genero especie nombre_autoridad infraespecie categoria nombre_cientifico)
+  # Si alguna columna se llama diferente, es solo cosa de añadir un elemento mas al array correspondiente
+  COLUMNAS_OPCIONALES = {reino: ['reino'], division: ['division'], subdivision: ['subdivision'], clase: ['clase'], subclase: ['subclase'],
+                         orden: ['orden'], suborden: ['suborden'], infraorden: ['infraorden'], superfamilia: ['superfamilia'],
+                         subgenero: ['subgenero'], nombre_autoridad_infraespecie: %w(nombre_autoridad_infraespecie autoridad_infraespecie)}
+  COLUMNAS_OBLIGATORIAS = {familia: ['familia'], genero: ['genero'], especie: ['especie'], nombre_autoridad: %w(nombre_autoridad autoridad),
+                           infraespecie: ['infraespecie'], categoria_taxonomica: %w(categoria categoria_taxonomica), nombre_cientifico: ['nombre_cientifico']}
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
   # Valida el taxon cuando solo pasan el nombre cientifico
@@ -418,6 +422,7 @@ class Validacion < ActiveRecord::Base
 
     #sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
     @sheet.parse(asociacion).each do |hash|
+      puts hash.inspect
       if primera_fila
         primera_fila = false
         next
@@ -510,26 +515,27 @@ class Validacion < ActiveRecord::Base
     hash = info[:hash]
     taxon = info[:taxon]
 
-    (COLUMNAS_OBLIGATORIAS + COLUMNAS_OPCIONALES).each do |categoria|
+    # Se iteran con los campos que previamente coincidieron en compruebas_columnas
+    hash.each do |campo, valor|
       if info[:estatus]
 
-        if hash.key?(categoria)
-          if categoria == 'infraespecie'  # caso especial para las infrespecies
-            cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
+        #if hash.key?(categoria)
+        if campo == 'infraespecie'  # caso especial para las infrespecies
+          cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
 
-            if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-              correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = taxon.nombre.downcase == hash['infraespecie'].try(:downcase) ? nil : taxon.nombre
-            else
-              correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = nil
-            end
-
+          if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
+            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = taxon.nombre.downcase == hash[campo].try(:downcase) ? nil : taxon.nombre
           else
-            correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = eval("taxon.x_#{categoria}").try(:downcase) == hash[categoria].try(:downcase) ? nil : eval("taxon.x_#{categoria}")
+            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
           end
+
+        else
+          correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = eval("taxon.x_#{campo}").try(:downcase) == hash[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
         end
+        #end
 
       else
-        correcciones_hash["SCAT_Correccion#{categoria.primera_en_mayuscula}"] = nil
+        correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
       end
     end
 =begin

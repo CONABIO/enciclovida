@@ -79,9 +79,9 @@ es:
     familia: familia
     genero: género
     especie: especie
-    autoridad: autoridad
+    nombre_autoridad: autoridad
     infraespecie: infraespecie
-    categoria: categoria
+    categoria_taxonomica: categoria
     nombre_cientifico: nombre científico
   comentario:
    x_comentario:

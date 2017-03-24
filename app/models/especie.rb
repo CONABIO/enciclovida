@@ -17,6 +17,7 @@ class Especie < ActiveRecord::Base
                 :x_subgrupo, :x_hiporden,
                 :x_nombre_autoridad, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
                 :x_distancia, :x_nombre_comun_principal
+  alias_attribute :x_nombre_cientifico, :nombre_cientifico
 
   has_one :proveedor
   has_one :adicional

@@ -119,7 +119,6 @@ class ValidacionesController < ApplicationController
         #end
       end
 
-
       if @errores.empty?
         cabecera = sheet.row(1)
         cc = comprueba_columnas(cabecera)
@@ -128,7 +127,8 @@ class ValidacionesController < ApplicationController
         if cc[:faltan].any?
           @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
         else
-          validacion.delay(priority: USER_PRIORITY, queue: 'validaciones').valida_campos(path.to_s, cc[:asociacion]) if validacion.save
+          #validacion.delay(priority: USER_PRIORITY, queue: 'validaciones').valida_campos(path.to_s, cc[:asociacion]) if validacion.save
+          validacion.valida_campos(path.to_s, cc[:asociacion]) if validacion.save
         end
       end  # Fin errores empty
     end  # Fin del tipo de archivo
@@ -147,26 +147,19 @@ class ValidacionesController < ApplicationController
   end
 
   def comprueba_columnas(cabecera)
-    # Se hace un clon para poder borrarlas del array
-    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.clone
+    columnas = Validacion::COLUMNAS_OPCIONALES.merge(Validacion::COLUMNAS_OBLIGATORIAS)
+    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.keys.map{|c| c.to_s}
     columnas_asociadas = Hash.new
-    columnas_faltantes = []
 
     cabecera.each do |c|
-      next unless c.present?  # para las cabeceras vacias
-      cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase
-
-      if columnas_obligatoraias.include?(cab) || Validacion::COLUMNAS_OPCIONALES.include?(cab)
-        columnas_obligatoraias.delete(cab) if columnas_obligatoraias.include?(cab)
-
-        # Se hace con regexp porque por default agarra las similiares, ej: Familia y Superfamilia (toma la primera)
-        columnas_asociadas[cab] = "^#{c}$"
-      end
+      next unless c.present?  # para las columnas que son cabeceras y estan vacias
+      cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase.strip
+      col_coincidio = columnas.map{ |k,v| v.include?(cab) ? k : nil }
+      columnas_asociadas[col_coincidio.compact.first.to_s] = "^#{c}$" if col_coincidio.compact.count == 1
     end
 
-    columnas_obligatoraias.compact.each do |col_obl|
-      columnas_faltantes << t("columnas_obligatorias_excel.#{col_obl}")
-    end
+    faltantes = columnas_obligatoraias - columnas_asociadas.keys
+    columnas_faltantes = faltantes.map{|cf| t("columnas_obligatorias_excel.#{cf}")}
 
     {faltan: columnas_faltantes, asociacion: columnas_asociadas}
   end
