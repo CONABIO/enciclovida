@@ -12,6 +12,12 @@ class Validacion < ActiveRecord::Base
                            infraespecie: ['infraespecie'], categoria_taxonomica: %w(categoria categoria_taxonomica), nombre_cientifico: ['nombre_cientifico']}
   FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
 
+  # Colores de las secciones en la validacion
+  RESUMEN = '00BFFF'
+  CORRECCIONES = 'FF8C00'
+  VALIDACION_INTERNA = '32CD32'
+
+
   # Valida el taxon cuando solo pasan el nombre cientifico
   def valida_batch(path)
     sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
@@ -186,6 +192,7 @@ class Validacion < ActiveRecord::Base
         columna+= 1
       end
       fila+= 1
+
     end
 
     # Escribe el excel en cierta ruta
@@ -207,24 +214,32 @@ class Validacion < ActiveRecord::Base
     @hash.each do |h|
       columna = @sheet.last_column  # Desde la columna donde empieza
 
-      h.each do |k,v|
-        next if COLUMNAS_OPCIONALES.include?(k) || COLUMNAS_OBLIGATORIAS.include?(k)
+      h.each do |seccion,datos|
 
-        # Para la cabecera
-        sheet.add_cell(0,columna,k) if fila == 1
+        datos.each do |campo, dato|
+          # Para la cabecera, asigna tambien el color correspondiente, de acuerdo a la seccion
+          sheet.add_cell(0,columna,campo).change_fill(eval(seccion.to_s.upcase)) if fila == 1
 
-        # Para los demas datos
-        sheet.add_cell(fila,columna,v)
-        columna+= 1
+          # Para los datos abajo de la cabecera
+          if dato.class == String
+            sheet.add_cell(fila,columna,dato)
+          elsif dato.class == Hash  # Tiene un color asignado
+            sheet.add_cell(fila,columna,dato[:valor]).change_fill(dato[:color])
+          end
+
+          columna+= 1
+        end
+
       end
+
       fila+= 1
     end
 
     # Escribe el excel en cierta ruta
     ruta_excel = Rails.root.join('public','validaciones_excel', usuario_id.to_s)
     FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+    puts "#{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
-    puts "Escribio excel en: #{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
   end
 
   def asigna_categorias_correspondientes(taxon)
@@ -338,6 +353,7 @@ class Validacion < ActiveRecord::Base
     end
 
     h = hash
+    puts hash['nombre_cientifico'].inspect
     taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
 
     if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
@@ -376,7 +392,7 @@ class Validacion < ActiveRecord::Base
       elsif taxon.present? && taxon.length > 1
         return busca_recursivamente(taxon, hash)
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
-        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].strip, limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].limpia, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
@@ -420,9 +436,7 @@ class Validacion < ActiveRecord::Base
     xlsx = Roo::Excelx.new(path, packed: nil, file_warning: :ignore)
     @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
-    #sheet.parse(:clean => true)  # Para limpiar los caracteres de control y espacios en blanco de mas
     @sheet.parse(asociacion).each do |hash|
-      puts hash.inspect
       if primera_fila
         primera_fila = false
         next
@@ -468,7 +482,7 @@ class Validacion < ActiveRecord::Base
     validacion_interna_hash = validacion_interna(info)
 
     # Devuelve toda la asociacion unida y en orden
-    info[:hash].merge(resumen_hash).merge(correcciones_hash).merge(validacion_interna_hash)
+    { resumen: resumen_hash, correcciones: correcciones_hash, validacion_interna: validacion_interna_hash }
   end
 
   # Parte roja del excel
@@ -519,7 +533,6 @@ class Validacion < ActiveRecord::Base
     hash.each do |campo, valor|
       if info[:estatus]
 
-        #if hash.key?(categoria)
         if campo == 'infraespecie'  # caso especial para las infrespecies
           cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
 
@@ -532,112 +545,12 @@ class Validacion < ActiveRecord::Base
         else
           correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = eval("taxon.x_#{campo}").try(:downcase) == hash[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
         end
-        #end
 
       else
         correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
       end
     end
-=begin
-    if info[:estatus]
-      taxon = info[:taxon]
 
-      if hash.key?('reino')
-        correcciones_hash['SCAT_CorreccionReino'] = taxon.x_reino.try(:downcase) == hash['reino'].try(:downcase) ? nil : taxon.x_reino
-      end
-
-      if hash.key?('division')
-        correcciones_hash['SCAT_CorreccionDivision'] = taxon.x_division.try(:downcase) == hash['division'].try(:downcase) ? nil : taxon.x_division
-      end
-
-      if hash.key?('subdivision')
-        correcciones_hash['SCAT_CorreccionSubdivision'] = taxon.x_subdivision.try(:downcase) == hash['subdivision'].try(:downcase) ? nil : taxon.x_subdivision
-      end
-
-      if hash.key?('phylum')
-        correcciones_hash['SCAT_CorreccionPhylum'] = taxon.x_phylum.try(:downcase) == hash['phylum'].try(:downcase) ? nil : taxon.x_phylum
-      end
-
-      if hash.key?('clase')
-        correcciones_hash['SCAT_CorreccionClase'] = taxon.x_clase.try(:downcase) == hash['clase'].try(:downcase) ? nil : taxon.x_clase
-      end
-
-      if hash.key?('subclase')
-        correcciones_hash['SCAT_CorreccionSubclase'] = taxon.x_subclase.try(:downcase) == hash['subclase'].try(:downcase) ? nil : taxon.x_subclase
-      end
-
-      if hash.key?('orden')
-        correcciones_hash['SCAT_CorreccionOrden'] = taxon.x_orden.try(:downcase) == hash['orden'].try(:downcase) ? nil : taxon.x_orden
-      end
-
-      if hash.key?('suborden')
-        correcciones_hash['SCAT_CorreccionSuborden'] = taxon.x_suborden.try(:downcase) == hash['suborden'].try(:downcase) ? nil : taxon.x_suborden
-      end
-
-      if hash.key?('infraorden')
-        correcciones_hash['SCAT_CorreccionInfraorden'] = taxon.x_infraorden.try(:downcase) == hash['infraorden'].try(:downcase) ? nil : taxon.x_infraorden
-      end
-
-      if hash.key?('superfamilia')
-        correcciones_hash['SCAT_CorreccionSuperfamilia'] = taxon.x_superfamilia.try(:downcase) == hash['superfamilia'].try(:downcase) ? nil : taxon.x_superfamilia
-      end
-
-      if hash.key?('familia')
-        correcciones_hash['SCAT_CorreccionFamilia'] = taxon.x_familia.try(:downcase) == hash['familia'].try(:downcase) ? nil : taxon.x_familia
-      end
-
-      if hash.key?('genero')
-        correcciones_hash['SCAT_CorreccionGenero'] = taxon.x_genero.try(:downcase) == hash['genero'].try(:downcase) ? nil : taxon.x_genero
-      end
-
-      if hash.key?('subgenero')
-        correcciones_hash['SCAT_CorreccionSubgenero'] = taxon.x_subgenero.try(:downcase) == hash['subgenero'].try(:downcase) ? nil : taxon.x_subgenero
-      end
-
-      if hash.key?('especie')
-        correcciones_hash['SCAT_CorreccionEspecie'] = taxon.x_especie.try(:downcase) == hash['especie'].try(:downcase) ? nil : taxon.x_especie
-      end
-
-      if hash.key?('autoridad')
-        correcciones_hash['SCAT_CorreccionAutorEspecie'] = taxon.x_nombre_autoridad_especie.try(:downcase) == hash['autoridad'].try(:downcase) ? nil : taxon.x_nombre_autoridad_especie
-      end
-
-      if hash.key?('infraespecie')
-        cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
-
-        if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-          correcciones_hash['SCAT_CorreccionInfraespecie'] = taxon.nombre.downcase == hash['infraespecie'].try(:downcase) ? nil : taxon.nombre
-        else
-          correcciones_hash['SCAT_CorreccionInfraespecie'] = nil
-        end
-      end
-
-      if hash.key?('autoridad_infraespecie')
-        correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = taxon.x_nombre_autoridad_infraespecie.try(:downcase) == hash['autoridad_infraespecie'].try(:downcase) ? nil : taxon.x_nombre_autoridad_infraespecie
-      end
-
-      # correcciones_hash['SCAT_CorreccionSinonimo'] = ''  # Sin implementar
-
-    else  # Asociacion vacia
-      correcciones_hash['SCAT_CorreccionReino'] = nil if hash.key?('reino')
-      correcciones_hash['SCAT_CorreccionDivision'] = nil if hash.key?('division')
-      correcciones_hash['SCAT_CorreccionSubdivision'] = nil if hash.key?('subdivision')
-      correcciones_hash['SCAT_CorreccionPhylum'] = nil if hash.key?('phylum')
-      correcciones_hash['SCAT_CorreccionClase'] = nil if hash.key?('clase')
-      correcciones_hash['SCAT_CorreccionSubclase'] = nil if hash.key?('subclase')
-      correcciones_hash['SCAT_CorreccionOrden'] = nil if hash.key?('orden')
-      correcciones_hash['SCAT_CorreccionSuborden'] = nil if hash.key?('suborden')
-      correcciones_hash['SCAT_CorreccionInfraorden'] = nil if hash.key?('infraorden')
-      correcciones_hash['SCAT_CorreccionSuperfamilia'] = nil if hash.key?('superfamilia')
-      correcciones_hash['SCAT_CorreccionFamilia'] = nil if hash.key?('familia')
-      correcciones_hash['SCAT_CorreccionGenero'] = nil if hash.key?('genero')
-      correcciones_hash['SCAT_CorreccionSubgenero'] = nil if hash.key?('subgenero')
-      correcciones_hash['SCAT_CorreccionEspecie'] = nil if hash.key?('especie')
-      correcciones_hash['SCAT_CorreccionAutorEspecie'] = nil if hash.key?('autoridad_especie')
-      correcciones_hash['SCAT_CorreccionInfraespecie'] = nil if hash.key?('infraespecie')
-      correcciones_hash['SCAT_CorreccionAutorInfraespecie'] = nil if hash.key?('autoridad_infraespecie')
-    end
-=end
     correcciones_hash
   end
 

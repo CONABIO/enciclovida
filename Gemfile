@@ -37,8 +37,8 @@ gem 'rake', '10.4.2'
 gem 'recaptcha', :require => 'recaptcha/rails'  # con el api de google
 gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'  # extiende el metodo auto_link
-gem 'roo', :require => 'roo'  # Para poder leer el excel
-gem 'rubyXL', :require => 'rubyXL'
+gem 'roo', :require => 'roo'  # Solo lectura excel, open office, google docs
+gem 'rubyXL', :require => 'rubyXL'  # Crea archivos xlsx, con formato
 gem 'sass-rails', '~> 4.0.0'
 gem 'savon', '2.4.0'  # para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # extrae las tuplas de un modelo o de toda la base
