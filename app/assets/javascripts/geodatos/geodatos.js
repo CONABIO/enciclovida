@@ -201,7 +201,6 @@ $(document).ready(function(){
     }
 
     function content_geoportal(feature){
-        console.log(feature);
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
@@ -227,7 +226,6 @@ $(document).ready(function(){
     }
 
     function content_naturalista(feature){
-        console.log(feature);
         var contenido = "";
 
         contenido += "<h4>" + name() + "</h4>";
