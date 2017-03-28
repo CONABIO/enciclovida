@@ -42,7 +42,7 @@ class ConabioPhoto < Photo
         :native_photo_id => api_response.id,
         :square_url => "#{imagen}?w=75&h=75&mode=crop",
         :original_url => imagen,
-        :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
+        :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.path.gsub('/fotosBDI/','').gsub(' ','%20')}",
         :native_username => copyright,
         :native_realname => copyright,
         :license => 3
