@@ -242,106 +242,94 @@ class Validacion < ActiveRecord::Base
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
-  def asigna_categorias_correspondientes(taxon)
-    return nil unless taxon.ancestry_ascendente_directo.present?  # Por si se les olvido poner el ascendente_directo o es reino
-    ids = taxon.ancestry_ascendente_directo.gsub('/',',')
+  # Busca recursivamente el indicado, y valida hasta algun taxon valido en catalogos
+  def busca_recursivamente(taxones, hash)
+    puts "\n\nBusca recursivamente en subespecie o mas arriba"
+    nombre = hash['nombre_cientifico'].limpiar.downcase
 
-    Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.caso_rango_valores('especies.id',ids).each do |ancestro|
-      categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
-      next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
-      eval("taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
-
-      # Asigna autoridades para el excel
-      if categoria == 'x_especie'
-        taxon.x_nombre_autoridad = taxon.nombre_autoridad
-      end
-
-      # Para las infraespecies
-      infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.map{|c| "x_#{c}"}
-      if infraespecies.include?(categoria)
-        taxon.x_nombre_autoridad_infraespecie = taxon.nombre_autoridad
-      end
+    if taxones.length == 1  # Si es uno, no hay de otra que regrese el resultado
+      taxon = taxones.first
+      taxon.asigna_categorias_correspondientes
+      return {taxon: taxon, hash: hash, estatus: true, info: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
     end
 
-    # Asigna la categoria taxonomica
-    taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
-    taxon
-  end
+    min = nil
+    opciones = []
+    opciones_arriba = []
+    taxones.each do |taxon|
+      taxones_arriba = []
+      taxon.asigna_categorias_correspondientes
+      taxon.x_distancia = 0
+      # Distancia con el nombre cientifico, debe ser menor a 3, pues que en anteriores pasos se valido esta informacion
+      taxon.x_distancia+= Levenshtein.distance(nombre, taxon.nombre_cientifico.limpiar.downcase)
 
-  # Si concidio mas de uno, busca recursivamente el indicado
-  def busca_recursivamente(taxones, hash)
-    puts "\n\nBusca recursivamente en especie o mas arriba"
-    coincidio_alguno = false
-    taxon_coincidente = Especie.none
-    nombres = hash['nombre_cientifico'].split(' ')
-    h = hash
+      # Lista las categorias taxomicas arriba del taxon y que empiezan de menor a mayor
+      categorias = taxon.ancestors.select('nombre_categoria_taxonomica').categoria_taxonomica_join.map(&:nombre_categoria_taxonomica).reverse
+      puts "---#{categorias.inspect}"
+      categorias.each do |categoria|
+        categoria = I18n.transliterate(categoria).gsub(' ','_').downcase
+        valor = eval("taxon.x_#{categoria}.downcase")
+        categoria = 'division' if categoria == 'phylum' && !hash.key(categoria)  # En el excel solo ponene division aunque sean del reino animalia ...
 
-    taxones_coincidentes = taxones.map{|t| asigna_categorias_correspondientes(t)}
-    taxones_coincidentes.each do |t|  # Iterare cada taxon que resulto parecido para ver cual es el correcto
-      t = asigna_categorias_correspondientes(t)
-      next unless t.present?  # Por si regresa nulo
-
-      # Si es la especie lo mando directo a coincidencia
-      cat_tax_taxon_cat = I18n.transliterate(t.x_categoria_taxonomica).gsub(' ','_').downcase
-      if cat_tax_taxon_cat == 'especie' && nombres.length == 2 && hash['infraespecie'].blank?
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Caso para infraespecies
-      variedad = %w(var. var variedad)
-      if cat_tax_taxon_cat == 'variedad' && nombres.length == 3 && variedad.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      subvariedad = %w(subvar. subvar subvariedad)
-      if cat_tax_taxon_cat == 'subvariedad' && nombres.length == 3 && subvariedad.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      forma = %w(f. f forma)
-      if cat_tax_taxon_cat == 'forma' && nombres.length == 3 && forma.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      subforma = %w(subf. subf subforma)
-      if cat_tax_taxon_cat == 'subforma' && nombres.length == 3 && subforma.include?(hash['categoria'].try(:downcase))
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Si no coincide ninguna de las infraespecies anteriores, toma subespecie por default
-      subespecies = %w(subsp. subsp subespecie ssp. ssp)
-      if cat_tax_taxon_cat == 'subespecie' && nombres.length == 3 && (hash['categoria'].blank? || subespecies.include?(hash['categoria'].try(:downcase)))
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Para poner el genero si esque esta vacio con especie
-      if cat_tax_taxon_cat == 'genero' && nombres.length == 1 && hash['especie'].blank?
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: (validó hasta género) #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Si no coincidio con ninguno le dejo el unico
-      if taxones.length == 1
-        return {taxon: t, hash: h, estatus: true, info: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-      end
-
-      # Comparamos entonces la familia, si vuelve a coincidir seguro existe un error en catalogos
-      if t.x_familia == hash['familia'].try(:downcase)
-
-        if coincidio_alguno
-          return {hash: h, estatus: false, error: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-        else
-          taxon_coincidente = t
-          coincidio_alguno = true
+        if hash[categoria].present?
+          dist = Levenshtein.distance(hash[categoria].downcase, valor)
+          taxon.x_distancia+= dist
+          taxones_arriba << taxon.ancestors.where(nombre: valor).first if dist == 0
+          puts "---#{taxon.nombre_cientifico}---#{hash[categoria].downcase}---#{valor}---#{taxon.x_distancia}"
         end
       end
-    end  #Fin each taxones coincidentes
 
-    # Mando el taxon si coincidio alguno
-    if coincidio_alguno
-      return {taxon: taxon_coincidente, hash: h, estatus: true}
-    else  # De lo contrario no hubo coincidencias claras
-      return {hash: h, estatus: false, error: "Posibles coincidencias: #{taxones_coincidentes.map{|t_c| "#{t_c.x_categoria_taxonomica} #{t_c.nombre_cientifico}"}.join(', ')}"}
-    end
+      # Compara y asigna el taxon y la longitud minima
+      if min.nil?
+        opciones << taxon
+        min = taxon.x_distancia
+        opciones_arriba << taxones_arriba if taxones_arriba.any?
+      else
+        if min == taxon.x_distancia
+          opciones << taxon
+          opciones_arriba << taxones_arriba if taxones_arriba.any?
+        elsif taxon.x_distancia < min
+          opciones.clear
+          opciones << taxon
+          min = taxon.x_distancia
+          opciones_arriba.clear
+          opciones_arriba << taxones_arriba if taxones_arriba.any?
+        end
+      end
+
+    end  # End each taxones
+
+    puts "---#{taxones.length}---#{opciones.length}--#{opciones_arriba.length}"
+
+    # La distancia coincidio con un solo taxon
+    if opciones.count == 1
+      # Devuelve el primer taxon con la distancia mas chica
+      taxon = opciones.first
+      return {taxon: taxon, hash: hash, estatus: true, info: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+    elsif opciones.count > 1  # Hubo mas de una opcion con el mismo peso, validamos mas arriba entonces
+      if opciones_arriba.empty?  # No hubo coincidencias arriba
+        return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+      elsif opciones_arriba.count == 1  # Hubo una sola coincidencia arriba
+        taxon = opciones_arriba[0][0]
+        taxon.asigna_categorias_correspondientes
+        return {taxon: taxon, hash: hash, estatus: true, info: "valido hasta #{taxon.x_categoria_taxonomica}"}
+      elsif opciones_arriba.count > 1  # Hubo más de una coincidencia arriba
+
+        concidencia = opciones_arriba.inject(:&)
+        puts "---#{opciones_arriba.inspect}---#{concidencia.inspect}"
+
+        if concidencia.any?  # Entre las coincidencias hubo por lo menos uno, tomo el primero, el ancestro mas cercano
+          taxon = concidencia.first
+          taxon.asigna_categorias_correspondientes
+          return {taxon: taxon, hash: hash, estatus: true, info: "valido hasta #{taxon.x_categoria_taxonomica}"}
+        else  # No hubo una coincidencia en comun, entre ancestros
+          return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+        end
+      end
+    else  # No hubo opciones de coincidencia con el mismo peso
+      return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+    end  # End opciones count
+
   end
 
   # Encuentra el mas parecido
@@ -353,32 +341,32 @@ class Validacion < ActiveRecord::Base
     end
 
     h = hash
-    puts hash['nombre_cientifico'].inspect
-    taxon = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
+    taxones = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
 
-    if taxon.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
+    if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
-      taxon = asigna_categorias_correspondientes(taxon.first)
+      taxon = taxones.first
+      taxon.asigna_categorias_correspondientes
       return {taxon: taxon, hash: hash, estatus: true}
 
-    elsif taxon.length > 1  # Encontro el mismo nombre cientifico mas de una vez
+    elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
       # Mando a imprimir solo el valido
-      taxon.each do |t|
-        if t.estatus == 2
-          tax = asigna_categorias_correspondientes(t)
-          return {taxon: tax, hash: hash, estatus: true}
+      taxones.each do |taxon|
+        if taxon.estatus == 2
+          taxon.asigna_categorias_correspondientes
+          return {taxon: taxon, hash: hash, estatus: true}
         end
       end
 
-      return busca_recursivamente(taxon, hash)
+      return busca_recursivamente(taxones, hash)
 
     else
-      puts "\n\nTratando de encontrar concidencias con la base o fuzzy match"
+      puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = hash['nombre_cientifico'].strip.split(' ')
+      nombres = hash['nombre_cientifico'].limpiar.downcase.split(' ')
 
-      taxon = if nombres.length == 2  # Especie
+      taxones = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
               elsif nombres.length == 3  # Infraespecie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]} % #{nombres[2]}'")
@@ -386,12 +374,14 @@ class Validacion < ActiveRecord::Base
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
               end
 
-      if taxon.present? && taxon.length == 1  # Caso mas sencillo
-        taxon = asigna_categorias_correspondientes(taxon.first)
+      if taxones.present? && taxones.length == 1  # Caso mas sencillo
+        taxon = taxones.first
+        taxon.asigna_categorias_correspondientes
         return {taxon: taxon, hash: hash, estatus: true}
-      elsif taxon.present? && taxon.length > 1
-        return busca_recursivamente(taxon, hash)
-      else  # Lo buscamos con el fuzzy match y despues con el algoritmo de aproximacion
+      elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
+        return busca_recursivamente(taxones, hash)
+      else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
+        puts "\n\nTratando de encontrar concidencias con el fuzzy match"
         ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].limpia, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
@@ -401,11 +391,11 @@ class Validacion < ActiveRecord::Base
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(hash['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.strip.limpiar.downcase)
+            distancia = Levenshtein.distance(hash['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
 
             if distancia == 0  # Es exactamente el mismo taxon
-              t = asigna_categorias_correspondientes(taxon)
-              return {taxon: t, hash: hash, estatus: true}
+              taxon.asigna_categorias_correspondientes
+              return {taxon: taxon, hash: hash, estatus: true}
             end
 
             next if distancia > 2  # No cumple con la distancia
@@ -429,7 +419,7 @@ class Validacion < ActiveRecord::Base
 
   def valida_campos(path, asociacion)
     puts "\n Validando campos en 30 seg ..."
-    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
+    sleep(5)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     primera_fila = true
 
@@ -443,8 +433,28 @@ class Validacion < ActiveRecord::Base
       end
 
       info = encuentra_record_por_nombre_cientifico(hash)
-      @hash << asocia_respuesta(info)
-    end
+      if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+        @hash << asocia_respuesta(info)
+      else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
+        nombre_cientifico_orig = hash['nombre_cientifico']
+        categorias = (CategoriaTaxonomica::CATEGORIAS & hash.keys).reverse#.drop(1)
+        puts "@@@#{categorias.inspect}"
+
+        categorias.each do |categoria|
+          hash['nombre_cientifico'] = hash[categoria]
+          puts "@@@#{hash.inspect}"
+          info = encuentra_record_por_nombre_cientifico(hash)
+
+          if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+            hash['nombre_cientifico'] = nombre_cientifico_orig
+            info[:info] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
+            @hash << asocia_respuesta(info)
+            break
+          end
+
+        end
+      end  # info estatus inicial, con el nombre_cientifico original
+    end  # sheet parse
 
     escribe_excel(path)
     EnviaCorreo.excel(self).deliver

@@ -488,4 +488,28 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
+  def asigna_categorias_correspondientes
+    return if is_root?  # Por si se les olvido poner el ascendente_directo o es reino
+
+    Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.where('especies.id' => path_ids).each do |ancestro|
+      categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
+      next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
+      eval("self.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+
+      # Asigna autoridades para el excel
+      if categoria == 'x_especie'
+        self.x_nombre_autoridad = nombre_autoridad
+      end
+
+      # Para las infraespecies
+      infraespecies = CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.map{|c| "x_#{c}"}
+      if infraespecies.include?(categoria)
+        self.x_nombre_autoridad_infraespecie = nombre_autoridad
+      end
+    end
+
+    # Asigna la categoria taxonomica
+    self.x_categoria_taxonomica = categoria_taxonomica.nombre_categoria_taxonomica
+  end
+
 end
