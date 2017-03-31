@@ -250,7 +250,7 @@ class Validacion < ActiveRecord::Base
     if taxones.length == 1  # Si es uno, no hay de otra que regrese el resultado
       taxon = taxones.first
       taxon.asigna_categorias_correspondientes
-      return {taxon: taxon, hash: hash, estatus: true, info: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      return {taxon: taxon, hash: hash, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
     end
 
     min = nil
@@ -265,7 +265,6 @@ class Validacion < ActiveRecord::Base
 
       # Lista las categorias taxomicas arriba del taxon y que empiezan de menor a mayor
       categorias = taxon.ancestors.select('nombre_categoria_taxonomica').categoria_taxonomica_join.map(&:nombre_categoria_taxonomica).reverse
-      puts "---#{categorias.inspect}"
       categorias.each do |categoria|
         categoria = I18n.transliterate(categoria).gsub(' ','_').downcase
         valor = eval("taxon.x_#{categoria}.downcase")
@@ -275,7 +274,6 @@ class Validacion < ActiveRecord::Base
           dist = Levenshtein.distance(hash[categoria].downcase, valor)
           taxon.x_distancia+= dist
           taxones_arriba << taxon.ancestors.where(nombre: valor).first if dist == 0
-          puts "---#{taxon.nombre_cientifico}---#{hash[categoria].downcase}---#{valor}---#{taxon.x_distancia}"
         end
       end
 
@@ -299,35 +297,31 @@ class Validacion < ActiveRecord::Base
 
     end  # End each taxones
 
-    puts "---#{taxones.length}---#{opciones.length}--#{opciones_arriba.length}"
-
     # La distancia coincidio con un solo taxon
     if opciones.count == 1
       # Devuelve el primer taxon con la distancia mas chica
       taxon = opciones.first
-      return {taxon: taxon, hash: hash, estatus: true, info: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      return {taxon: taxon, hash: hash, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
     elsif opciones.count > 1  # Hubo mas de una opcion con el mismo peso, validamos mas arriba entonces
       if opciones_arriba.empty?  # No hubo coincidencias arriba
-        return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+        return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
       elsif opciones_arriba.count == 1  # Hubo una sola coincidencia arriba
         taxon = opciones_arriba[0][0]
         taxon.asigna_categorias_correspondientes
-        return {taxon: taxon, hash: hash, estatus: true, info: "valido hasta #{taxon.x_categoria_taxonomica}"}
+        return {taxon: taxon, hash: hash, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
       elsif opciones_arriba.count > 1  # Hubo más de una coincidencia arriba
-
         concidencia = opciones_arriba.inject(:&)
-        puts "---#{opciones_arriba.inspect}---#{concidencia.inspect}"
 
         if concidencia.any?  # Entre las coincidencias hubo por lo menos uno, tomo el primero, el ancestro mas cercano
           taxon = concidencia.first
           taxon.asigna_categorias_correspondientes
-          return {taxon: taxon, hash: hash, estatus: true, info: "valido hasta #{taxon.x_categoria_taxonomica}"}
+          return {taxon: taxon, hash: hash, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
         else  # No hubo una coincidencia en comun, entre ancestros
-          return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+          return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
         end
       end
     else  # No hubo opciones de coincidencia con el mismo peso
-      return {hash: hash, estatus: false, error: 'Sin coincidencias'}
+      return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
     end  # End opciones count
 
   end
@@ -337,7 +331,7 @@ class Validacion < ActiveRecord::Base
     puts "\n Encuentra record por nombre cientifico: #{hash['nombre_cientifico']}"
     # Evita que el nombre cientifico este vacio
     if hash['nombre_cientifico'].blank?
-      return {hash: hash, estatus: false, error: 'El nombre cientifico está vacío'}
+      return {hash: hash, estatus: false, obs: 'El nombre cientifico está vacío'}
     end
 
     h = hash
@@ -403,14 +397,14 @@ class Validacion < ActiveRecord::Base
           end
 
           if taxones_con_distancia.empty?
-            return {hash: h, estatus: false, error: 'Sin coincidencias'}
+            return {hash: h, estatus: false, obs: 'Sin coincidencias'}
           else
             return busca_recursivamente(taxones_con_distancia, hash)
           end
 
         else  # No hubo coincidencias con su nombre cientifico
           puts "\n\nSin coincidencia"
-          return {hash: h, estatus: false, error: 'Sin coincidencias'}
+          return {hash: h, estatus: false, obs: 'Sin coincidencias'}
         end
       end
 
@@ -419,7 +413,7 @@ class Validacion < ActiveRecord::Base
 
   def valida_campos(path, asociacion)
     puts "\n Validando campos en 30 seg ..."
-    sleep(5)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
+    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     @hash = []
     primera_fila = true
 
@@ -438,16 +432,15 @@ class Validacion < ActiveRecord::Base
       else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
         nombre_cientifico_orig = hash['nombre_cientifico']
         categorias = (CategoriaTaxonomica::CATEGORIAS & hash.keys).reverse#.drop(1)
-        puts "@@@#{categorias.inspect}"
 
         categorias.each do |categoria|
           hash['nombre_cientifico'] = hash[categoria]
-          puts "@@@#{hash.inspect}"
           info = encuentra_record_por_nombre_cientifico(hash)
 
           if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
-            hash['nombre_cientifico'] = nombre_cientifico_orig
-            info[:info] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
+            info[:hash]['nombre_cientifico'] = nombre_cientifico_orig
+            info[:obs] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
+            info[:valido_hasta] = true
             @hash << asocia_respuesta(info)
             break
           end
@@ -472,19 +465,28 @@ class Validacion < ActiveRecord::Base
         if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
           begin  # Por si ya no existe ese taxon, suele pasar!
             taxon_valido = Especie.find(estatus.first.especie_id2)
-            t_val = asigna_categorias_correspondientes(taxon_valido)  # Le asociamos los datos
-            info[:taxon_valido] = t_val
+            taxon_valido.asigna_categorias_correspondientes
+            # Asigna el taxon valido al taxon original
+            info[:taxon] = taxon_valido
+            info[:taxon_valido] = true
           rescue
             info[:estatus] = false
-            info[:error] = 'No existe el taxón válido en CAT'
+            info[:error] = 'Sin coincidencias'
           end
 
         else  # No existe el valido >.>!
           info[:estatus] = false
-          info[:error] = 'No existe el taxón válido en CAT'
+          info[:error] = 'Sin coincidencias'
         end
       end  # End estatus = 1
     end  # End info estatus
+
+    # Para saber si no era un sinonimo
+    if info[:taxon_valido].present?
+      info[:scat_estatus] = 'sinónimo'
+    elsif info[:obs].blank?
+      info[:scat_estatus] = Especie::ESTATUS_SIGNIFICADO[info[:taxon].estatus]
+    end
 
     # Se completa cada seccion del excel
     resumen_hash = resumen(info)
@@ -503,23 +505,32 @@ class Validacion < ActiveRecord::Base
       taxon = info[:taxon]
       hash = info[:hash]
 
-      resumen_hash['SCAT_NombreEstatus'] = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
+      if info[:scat_estatus].present?
+        resumen_hash['SCAT_NombreEstatus'] = info[:scat_estatus]
+      else
+        resumen_hash['SCAT_NombreEstatus'] = nil
+      end
 
-      if info[:info].present?
-        resumen_hash['SCAT_Observaciones'] = "Información: #{info[:info]}"
+      if info[:obs].present?
+        resumen_hash['SCAT_Observaciones'] = info[:obs]
       else
         resumen_hash['SCAT_Observaciones'] = nil
       end
 
-      resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
-      resumen_hash['SCAT_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_cientifico : taxon.nombre_cientifico
-      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = info[:taxon_valido].present? ? info[:taxon_valido].nombre_autoridad : taxon.nombre_autoridad
+      if info[:valido_hasta].present?
+        resumen_hash['SCAT_Correccion_NombreCient'] = nil
+      else
+        resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
+      end
+
+      resumen_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
+      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = taxon.nombre_autoridad
 
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
 
       if info[:error].present?
-        resumen_hash['SCAT_Observaciones'] = "Revisión: #{info[:error]}"
+        resumen_hash['SCAT_Observaciones'] = info[:error]
       else
         resumen_hash['SCAT_Observaciones'] = nil
       end
@@ -568,7 +579,7 @@ class Validacion < ActiveRecord::Base
     validacion_interna_hash = {}
 
     if info[:estatus]
-      taxon = info[:taxon_valido].present? ? info[:taxon_valido] : info[:taxon]
+      taxon = info[:taxon]
 
       validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino
 
