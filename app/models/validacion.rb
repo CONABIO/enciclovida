@@ -397,6 +397,7 @@ class Validacion < ActiveRecord::Base
           end
 
           if taxones_con_distancia.empty?
+            puts "\n\nSin coincidencia"
             return {hash: h, estatus: false, obs: 'Sin coincidencias'}
           else
             return busca_recursivamente(taxones_con_distancia, hash)
@@ -404,6 +405,7 @@ class Validacion < ActiveRecord::Base
 
         else  # No hubo coincidencias con su nombre cientifico
           puts "\n\nSin coincidencia"
+
           return {hash: h, estatus: false, obs: 'Sin coincidencias'}
         end
       end
@@ -426,26 +428,48 @@ class Validacion < ActiveRecord::Base
         next
       end
 
-      info = encuentra_record_por_nombre_cientifico(hash)
-      if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
-        @hash << asocia_respuesta(info)
+      info_primer_caso = encuentra_record_por_nombre_cientifico(hash)
+      if info_primer_caso[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+        @hash << asocia_respuesta(info_primer_caso)
       else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
         nombre_cientifico_orig = hash['nombre_cientifico']
-        categorias = (CategoriaTaxonomica::CATEGORIAS & hash.keys).reverse#.drop(1)
+        categorias = (CategoriaTaxonomica::CATEGORIAS & hash.keys).reverse
+        encontro_arriba = false
 
         categorias.each do |categoria|
+          next if encontro_arriba
+          next if hash[categoria].blank?
           hash['nombre_cientifico'] = hash[categoria]
           info = encuentra_record_por_nombre_cientifico(hash)
 
           if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
-            info[:hash]['nombre_cientifico'] = nombre_cientifico_orig
-            info[:obs] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
-            info[:valido_hasta] = true
-            @hash << asocia_respuesta(info)
-            break
-          end
+            # Me quedo con las categorias superiores y verifico que se encuentre familia u orden
+            asegurar_categoria = %w(familia orden)
+            index = categorias.index(categoria)
+            sub_cats = categorias[index+1..-1]
+            # Me asegura que por lo menos estoy abajo de familia
+            categorias_coincidio = sub_cats & asegurar_categoria
+            if categorias_coincidio.any?
+              categorias_coincidio.each do |c|
+                #next if encontro_arriba
+                if hash[c].try(:downcase) == eval("info[:taxon].x_#{c.downcase}").try(:downcase)
+                  info[:hash]['nombre_cientifico'] = nombre_cientifico_orig
+                  info[:obs] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
+                  info[:valido_hasta] = true
+                  @hash << asocia_respuesta(info)
+                  encontro_arriba = true
+                  break
+                end
+              end
+
+            end
+
+          end  # end if estatus
 
         end
+
+        @hash << asocia_respuesta(info_primer_caso) if !encontro_arriba
+
       end  # info estatus inicial, con el nombre_cientifico original
     end  # sheet parse
 
@@ -529,8 +553,8 @@ class Validacion < ActiveRecord::Base
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
 
-      if info[:error].present?
-        resumen_hash['SCAT_Observaciones'] = info[:error]
+      if info[:obs].present?
+        resumen_hash['SCAT_Observaciones'] = info[:obs]
       else
         resumen_hash['SCAT_Observaciones'] = nil
       end
