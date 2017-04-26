@@ -1,0 +1,58 @@
+<% content_for(:extrajs) do %>
+    <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js" data-turbolinks-track="true"></script>
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js" data-turbolinks-track="true"></script>
+    <%#= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
+<% end %>
+
+<% content_for(:extracss) do %>
+    <style>
+        #map {
+            height: 500px;
+            width: 80%;
+        }
+    </style>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+
+    <%= stylesheet_link_tag "MarkerCluster.Default", "data-turbolinks-track" => true %>
+<% end %>
+
+
+<div id="contenedor_mapa" height="300px;">
+    <div id="map" width="300px;"></div>
+</div>
+
+<script data-turbolinks-track="true">
+    var loadMap = function (id) {
+        var HELSINKI = [19.29568189, -99.1843784];
+        var map = L.map(id);
+        var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+        var layer = L.tileLayer(tile_url, {
+            attribution: 'OSM',
+            noWrap: true
+        });
+        map.addLayer(layer);
+        map.setView(HELSINKI, 15);
+
+        map.locate({setView: true, enableHighAccuracy: true}) /* This will return map so you can do chaining */
+                .on('locationfound', function(e){
+                    var marker = L.marker([e.latitude, e.longitude]).bindPopup('Your are here :)');
+                    var circle = L.circle([e.latitude, e.longitude], e.accuracy/2, {
+                        weight: 1,
+                        color: 'blue',
+                        fillColor: '#cacaca',
+                        fillOpacity: 0.2
+                    });
+                    map.addLayer(marker);
+                    map.addLayer(circle);
+                })
+                .on('locationerror', function(e){
+                    console.log(e);
+                    alert("Location access denied.");
+                });
+    };
+
+    loadMap('map');
+</script>
