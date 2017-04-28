@@ -57,8 +57,8 @@
         map.locate({enableHighAccuracy: true})
                 .on('locationfound', function(e){
 
-                    var marker = L.marker([e.latitude, e.longitude], {draggable: true}).bindPopup('Tu ubicación aproximada');
-                    var circle = L.circle([e.latitude, e.longitude], e.accuracy/10, {
+                    var marker = L.marker([e.latitude, e.longitude], {draggable: true}).bindPopup('Tu ubicación aproximada, puede arrastrar este marcador');
+                    var circle = L.circle([e.latitude, e.longitude], 1*1000, {
                         weight: 1,
                         color: 'blue',
                         fillColor: '#cacaca',
@@ -79,6 +79,8 @@
                     marker.on('dragend', function(e){
                         console.log('dragend');
                     });
+
+                    console.log(e);
                 })
                 .on('locationerror', function(e){
                     console.log(e);
@@ -87,4 +89,5 @@
     };
 
     loadMap('map');
+
 </script>
