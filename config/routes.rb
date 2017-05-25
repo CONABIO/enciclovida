@@ -1,6 +1,7 @@
 Buscador::Application.routes.draw do
 
-  get "usuarios/conabio"
+  get 'usuarios/conabio'
+  get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
 
   resources :roles_categorias_contenido
 
