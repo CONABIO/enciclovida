@@ -1,1 +1,104 @@
-<%= @exoticas.inspect %>
+<% content_for(:title) do %>
+    <%= @titulo = 'Especies exóticas invasoras' %>
+<% end %>
+
+<div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+  <h3><%= @titulo %></h3>
+</div>
+
+<form method="get" action="/exoticas-invasoras.csv">
+    <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
+      Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
+    </button>
+</form>
+
+<table class="table">
+
+  <thead>
+  <tr>
+    <th></th>
+    <th>Nombre científico</th>
+    <th>Nombre común</th>
+    <th>Familia</th>
+    <th>Ambiente</th>
+    <!--th>Distribución nativa</th>
+    <th>Distribución invasora</th-->
+    <th>Origen</th>
+    <th>Presencia</th>
+    <th>Estatus</th>
+    <th>Regulada por otros instrumentos</th>
+    <th>Ficha</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+  <%
+     file = File.dirname(__FILE__) << '/../../../public/exoticas-invasoras.csv'
+     exoticas_url = '/pdfs/exoticas_invasoras/'
+     exoticas_dir = File.dirname(__FILE__) << '/../../../public' << exoticas_url
+
+     csv_text = File.read(file)
+     csv = CSV.parse(csv_text, :headers => true)
+     csv.each do |row|
+       pdf = false
+  %>
+
+      <tr>
+        <%
+           if row['id_enciclovida'].present?
+             t = Especie.find(row['id_enciclovida'])
+        %>
+
+            <% foto = t.adicional.try(:foto_principal)
+               if foto.present?
+            %>
+                <td><%= image_tag(foto, alt: t.nombre_cientifico) %></td>
+            <% else %>
+                <td></td>
+            <% end %>
+
+            <td><%= link_to(t.nombre_cientifico, especie_url(t)) %></td>
+            <td><%= t.adicional.try(:nombre_comun_principal) %></td>
+            <td>
+              <% if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'") %>
+                <%= familia.first.nombre_cientifico %>
+              <% end %>
+            </td>
+
+            <%
+               pdf_path = exoticas_dir + t.nombre_cientifico + '.pdf'
+               pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
+            %>
+
+        <% else %>
+            <td></td>
+            <td><%= row['Nombre científico'] %></td>
+            <td><%= row['Nombre comun'] %></td>
+            <td><%= row['Familia'] %></td>
+
+            <%
+               pdf_path = exoticas_dir + row['Nombre científico'] + '.pdf'
+               pdf = exoticas_url + row['Nombre científico'] + '.pdf' if File.exist?(pdf_path)
+            %>
+
+        <% end %>
+
+        <td><%= row['Ambiente'] %></td>
+        <!--td><%#= row['DistribuciónNativa'] %></td>
+        <td><%#= row['DistribuciónInvasora'] %></td-->
+        <td><%= row['Origen'] %></td>
+        <td><%= row['Presencia'] %></td>
+        <td><%= row['Estatus'] %></td>
+        <td><%= row['Regulada por otros instrumentos'] %></td>
+        <td>
+          <% if pdf.present? %>
+              <%= link_to '<i class="newspaper-ev-icon"></i>'.html_safe, pdf %>
+          <% end %>
+        </td>
+
+      </tr>
+  <% end %>
+
+  </tbody>
+</table>
