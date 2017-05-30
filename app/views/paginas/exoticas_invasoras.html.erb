@@ -7,96 +7,40 @@
 </div>
 
 <form method="get" action="/exoticas-invasoras.csv">
-    <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
-      Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
-    </button>
+  <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
+    Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
+  </button>
 </form>
 
 <table class="table">
 
   <thead>
   <tr>
-    <th></th>
-    <th>Nombre científico</th>
-    <th>Nombre común</th>
-    <th>Familia</th>
-    <th>Ambiente</th>
-    <!--th>Distribución nativa</th>
-    <th>Distribución invasora</th-->
-    <th>Origen</th>
-    <th>Presencia</th>
-    <th>Estatus</th>
-    <th>Regulada por otros instrumentos</th>
-    <th>Ficha</th>
+    <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
+        <th><%= cabecera %></th>
+    <% end %>
   </tr>
   </thead>
 
   <tbody>
 
-  <%
-     file = File.dirname(__FILE__) << '/../../../public/exoticas-invasoras.csv'
-     exoticas_url = '/pdfs/exoticas_invasoras/'
-     exoticas_dir = File.dirname(__FILE__) << '/../../../public' << exoticas_url
-
-     csv_text = File.read(file)
-     csv = CSV.parse(csv_text, :headers => true)
-     csv.each do |row|
-       pdf = false
-  %>
-
+  <% @tabla_exoticas[:datos].each do |row| %>
       <tr>
-        <%
-           if row['id_enciclovida'].present?
-             t = Especie.find(row['id_enciclovida'])
-        %>
-
-            <% foto = t.adicional.try(:foto_principal)
-               if foto.present?
-            %>
-                <td><%= image_tag(foto, alt: t.nombre_cientifico) %></td>
-            <% else %>
-                <td></td>
-            <% end %>
-
-            <td><%= link_to(t.nombre_cientifico, especie_url(t)) %></td>
-            <td><%= t.adicional.try(:nombre_comun_principal) %></td>
+        <% row.each_with_index do |col, index| %>
             <td>
-              <% if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'") %>
-                <%= familia.first.nombre_cientifico %>
+
+              <% case index %>
+              <% when 0  # Foto %>
+                  <%= image_tag(col) if col.present? %>
+              <% when 1  # Nombre cientifico %>
+                  <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
+              <% when 9  # el PDF %>
+                  <%= link_to('<i class="newspaper-ev-icon"></i>'.html_safe, col) if col.present? %>
+              <% else %>
+                  <%= col %>
               <% end %>
             </td>
-
-            <%
-               pdf_path = exoticas_dir + t.nombre_cientifico + '.pdf'
-               pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
-            %>
-
-        <% else %>
-            <td></td>
-            <td><%= row['Nombre científico'] %></td>
-            <td><%= row['Nombre comun'] %></td>
-            <td><%= row['Familia'] %></td>
-
-            <%
-               pdf_path = exoticas_dir + row['Nombre científico'] + '.pdf'
-               pdf = exoticas_url + row['Nombre científico'] + '.pdf' if File.exist?(pdf_path)
-            %>
-
         <% end %>
-
-        <td><%= row['Ambiente'] %></td>
-        <!--td><%#= row['DistribuciónNativa'] %></td>
-        <td><%#= row['DistribuciónInvasora'] %></td-->
-        <td><%= row['Origen'] %></td>
-        <td><%= row['Presencia'] %></td>
-        <td><%= row['Estatus'] %></td>
-        <td><%= row['Regulada por otros instrumentos'] %></td>
-        <td>
-          <% if pdf.present? %>
-              <%= link_to '<i class="newspaper-ev-icon"></i>'.html_safe, pdf %>
-          <% end %>
-        </td>
-
       </tr>
   <% end %>
 
