@@ -21,7 +21,7 @@ class PaginasController < ApplicationController
 
         datos << t.adicional.try(:foto_principal)
         datos << t
-        datos << t.adicional.try(:nombre_comun_principal)
+        datos << (row['Nombre comun'].present? ? row['Nombre comun'] : t.adicional.try(:nombre_comun_principal))
 
             if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'")
               datos << familia.first.nombre_cientifico
@@ -63,10 +63,6 @@ class PaginasController < ApplicationController
 
     @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Nombre común', 'Familia', 'Ambiente',
                                    'Origen', 'Presencia', 'Estatus', 'Regulada por otros instrumentos', 'Ficha']
-
-    # Datos que llevan algun formato: foto, nombre_cientifico, ficha  (depende del orden las cabeceras y los datos)
-    @tabla_exoticas[:especiales] = [0,1,9]
-
   end
 
 end
