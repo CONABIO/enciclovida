@@ -2,6 +2,37 @@
     <%= @titulo = 'Especies exóticas invasoras' %>
 <% end %>
 
+<% content_for(:extrajs) do %>
+    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:delayedjs) do %>
+    <script>
+        $('#page-selection').bootpag({
+            total: <%= @paginas %>,          // total pages
+            page: 1,            // default page
+            maxVisible: 5,     // visible pagination
+            leaps: true,         // next/prev leaps through maxVisible
+            firstLastUse: true,
+            first: '←',
+            last: '→'
+        }).on("page", function(event, page){
+            $.ajax(
+                    {
+                        url: "/exoticas-invasoras-paginado",
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {
+                            page: page
+                        }
+                    }).done(function(res)
+                    {
+                        console.log(res);
+                    });
+        });
+    </script>
+<% end %>
+
 <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
   <h3><%= @titulo %></h3>
 </div>
@@ -34,7 +65,7 @@
                   <%= image_tag(col) if col.present? %>
               <% when 1  # Nombre cientifico %>
                   <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
-              <% when 9  # el PDF %>
+              <% when 10  # el PDF %>
                   <%= link_to('<i class="newspaper-ev-icon"></i>'.html_safe, col) if col.present? %>
               <% else %>
                   <%= col %>
@@ -46,3 +77,5 @@
 
   </tbody>
 </table>
+
+<div id="page-selection"></div>
