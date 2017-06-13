@@ -2,10 +2,9 @@
     <tr>
       <% row.each_with_index do |col, index| %>
           <td>
-
             <% case index %>
             <% when 0  # Foto %>
-                <%= image_tag(col) if col.present? %>
+                <%= image_tag(col, class: 'img-responsive img-rounded') if col.present? %>
             <% when 1  # Nombre cientifico %>
                 <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
             <% when 10  # el PDF %>

@@ -21,6 +21,9 @@ class PaginasController < ApplicationController
   def lee_csv
     @tabla_exoticas = {}
     @tabla_exoticas[:datos] = []
+    @grupos = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
+    @grupo = params[:grupo] if params[:grupo].present? && @grupos.include?(params[:grupo])
+
     file = File.dirname(__FILE__) << '/../../public/exoticas-invasoras.csv'
     exoticas_url = '/pdfs/exoticas_invasoras/'
     exoticas_dir = File.dirname(__FILE__) << '/../../public' << exoticas_url
@@ -28,14 +31,16 @@ class PaginasController < ApplicationController
     csv_text = File.read(file)
     csv = CSV.parse(csv_text, :headers => true)
 
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = 15#params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
-
-    resultados = csv.count
-    @paginas = resultados%por_pagina == 0 ? resultados/por_pagina : (resultados/por_pagina) +1
+    por_pagina = 15
+    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    contador = 0  # Cuenta los que han pasado el filtro
 
     csv.each_with_index do |row, index|
-      next if (por_pagina*(pagina-1)) > index || ((por_pagina*pagina)-1) < index
+      next if @grupo.present? && row['OrdenfiloWEB'] != @grupo  # Solo filtra los del grupo seleccionado
+
+      contador+= 1
+      next if (por_pagina*(@pagina-1)+1) > contador || por_pagina*@pagina < contador  # Por si esta fuera de rango del paginado
+
       pdf = false
       datos = []
 
@@ -76,16 +81,15 @@ class PaginasController < ApplicationController
       datos << row['Presencia']
       datos << row['Estatus']
       datos << row['Regulada por otros instrumentos']
-
-      if pdf.present?
-        datos << pdf
-      else
-        datos << nil
-      end
+      pdf.present? ? datos << pdf : datos << nil
 
       @tabla_exoticas[:datos] << datos
 
     end  # End each row
+
+    # El paginado
+    resultados = contador
+    @paginas = resultados%por_pagina == 0 ? resultados/por_pagina : (resultados/por_pagina) +1
   end
 
 end
