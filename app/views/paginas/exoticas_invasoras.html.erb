@@ -21,13 +21,12 @@
                     {
                         url: "/exoticas-invasoras-paginado",
                         type: 'GET',
-                        dataType: 'json',
                         data: {
                             page: page
                         }
                     }).done(function(res)
                     {
-                        console.log(res);
+                        $('#tbody').append(res);
                     });
         });
     </script>
@@ -43,7 +42,7 @@
   </button>
 </form>
 
-<table class="table">
+<table class="table table-striped">
 
   <thead>
   <tr>
@@ -53,29 +52,8 @@
   </tr>
   </thead>
 
-  <tbody>
+  <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
 
-  <% @tabla_exoticas[:datos].each do |row| %>
-      <tr>
-        <% row.each_with_index do |col, index| %>
-            <td>
-
-              <% case index %>
-              <% when 0  # Foto %>
-                  <%= image_tag(col) if col.present? %>
-              <% when 1  # Nombre cientifico %>
-                  <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
-              <% when 10  # el PDF %>
-                  <%= link_to('<i class="newspaper-ev-icon"></i>'.html_safe, col) if col.present? %>
-              <% else %>
-                  <%= col %>
-              <% end %>
-            </td>
-        <% end %>
-      </tr>
-  <% end %>
-
-  </tbody>
 </table>
 
 <div id="page-selection"></div>

@@ -13,7 +13,7 @@ class PaginasController < ApplicationController
   # La resultados que provienen del paginado
   def exoticas_invasoras_paginado
     lee_csv
-    render json: @tabla_exoticas.to_json
+    render partial: 'exoticas_invasoras'
   end
 
   protected
