@@ -3,6 +3,14 @@ class Proveedor < ActiveRecord::Base
   belongs_to :especie
   attr_accessor :snib_kml, :naturalista_kml
 
+  # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
+  def fotos_naturalista
+    return nil unless ficha = ficha_naturalista
+
+    fotos = ficha['taxon_photos']
+    fotos.any? ? fotos : nil
+  end
+
   # Saca los nombres comunes del campo naturalista_info
   def nombres_comunes
     datos = eval(naturalista_info.decodifica64)
@@ -202,7 +210,7 @@ class Proveedor < ActiveRecord::Base
 
   def info_naturalista
     if naturalista_id.present?
-      puts "\t\t#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+      puts "\t\tObteniendo información con ID: #{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
 
       begin
         response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
@@ -211,7 +219,7 @@ class Proveedor < ActiveRecord::Base
         return nil
       end
     else
-      puts "\t\t#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
+      puts "\t\tBuscando coincidencia por nombre: #{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
       begin
         response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
         data_todos = JSON.parse(response.limpia_sql)
@@ -334,6 +342,19 @@ class Proveedor < ActiveRecord::Base
   end
 
   private
+
+  def ficha_naturalista
+    return nil unless naturalista_id.present?
+
+    begin
+      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+      data = JSON.parse(response)
+    rescue
+      return nil
+    end
+
+    data.empty? ? nil : data
+  end
 
   def to_kml(cadenas)
     evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']

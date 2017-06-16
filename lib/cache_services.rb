@@ -15,6 +15,15 @@ module CacheServices
     puts "\t\tTermino satisfactoriamente"
   end
 
+  # Despliega las fotos de referencia de naturalista, las guarda como json para no consultar siempre al vuelo.
+  def fotos_naturalista_service
+    if p = proveedor
+      p.fotos_naturalista
+    else
+      p = Proveedor.crea_info_naturalista(self)
+    end
+  end
+
   def naturalista_service
     puts "\t\tGenerando la información de NaturaLista"
 
