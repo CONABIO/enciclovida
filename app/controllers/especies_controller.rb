@@ -40,14 +40,11 @@ class EspeciesController < ApplicationController
     #fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
     #@photos = [fotos_naturalista, fotos_conabio].flatten.compact
 
+
     @photos = []
     if p = @especie.proveedor
-      if fotos = p.fotos_naturalista
-        @photos = fotos
-      end
+      @naturalista_id = p.naturalista_id
     end
-
-    puts @photos.inspect
 
     @cuantos = Comentario.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
 
