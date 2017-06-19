@@ -15,6 +15,7 @@ class Photo < ActiveRecord::Base
 
   cattr_accessor :descendent_classes
   cattr_accessor :remote_descendent_classes
+  cattr_accessor :attribution_txt  # Para poder ver la atribucion que ya viene armada en la API de naturalista
 
   before_save :set_license, :trim_fields
   #after_save :update_default_license,          #no son necesarias
