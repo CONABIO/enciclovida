@@ -88,6 +88,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol_nodo' => 'especies#arbol_nodo'
       get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
+      post ':id/fotos_carrusel' => 'especies#fotos_carrusel'
     end
   end
 

@@ -2,7 +2,7 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_carrusel]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :naturalista, :comentarios]
@@ -17,7 +17,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios, :fotos_carrusel]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -336,6 +336,12 @@ class EspeciesController < ApplicationController
 
     @despliega_o_contrae = true
     render :partial => 'arbol_identado'
+  end
+
+  # Las fotos en el carrusel inicial, en el show
+  def fotos_carrusel
+    @fotos = JSON.parse params['fotos']
+    @foto_default = JSON.parse params['foto_default']
   end
 
   def edit_photos
