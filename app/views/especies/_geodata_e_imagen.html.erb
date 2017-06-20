@@ -10,7 +10,12 @@
     <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>
 <% end%>
 
-<div class='col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' id="contenedor_fotos"></div>
+<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' id="contenedor_fotos">
+  <p class="text-center">
+    <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+  <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
+  </p>
+</div>
 
 <% if @geo.present? %>
     <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' id="contenedor_mapa">

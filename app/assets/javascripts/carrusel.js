@@ -24,11 +24,12 @@ $(document).on('ready', function(){
                             type: 'POST',
                             data: {
                                 foto_default: JSON.stringify(json.default_photo),
-                                fotos: JSON.stringify(json.taxon_photos)
+                                fotos: JSON.stringify(json.taxon_photos.slice(0,5))
                             }
                         }).done(function(fotos){
                             $('#contenedor_mapa').removeClass().addClass('col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
                             $('#contenedor_fotos').html(fotos);
+                            $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
                             inicia_carrusel();
                         }).error(function(error){
                             console.log('error');
