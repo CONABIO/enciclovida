@@ -76,9 +76,9 @@ input.gsc-search-button {border-color: #666666; background-color: #c0c0c0;}
 /*Lo mas seguro es que deba ir en  el css de especies*/
 div#contenedor_mapa > div.embed-responsive {
     background-color: #f7f7f7;
-    padding-top: 6px;
+    /*padding-top: 6px;
     margin-left: -6px;
-    margin-right: -6px;
+    margin-right: -6px;*/
 }
 div#contenedor_mapa{
     margin-bottom: 10px;
@@ -87,7 +87,6 @@ div#contenedor_mapa h6{
     margin: 3px 6px 0 0;
 }
 div#map{
-  border-radius: 3px;
   color: #333333;
 }
 
