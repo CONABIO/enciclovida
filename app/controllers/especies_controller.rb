@@ -5,7 +5,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -426,6 +426,12 @@ class EspeciesController < ApplicationController
       c.cuantos = c.descendants.count
       c.completa_info((c.usuario_id if c.is_root?))
     end
+  end
+
+  def fotos_bdi
+    x = BDIService.new
+    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
+    render json: fotos_conabio.to_json
   end
 
   private
