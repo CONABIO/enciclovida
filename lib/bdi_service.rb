@@ -24,7 +24,7 @@ class BDIService
       fotos << Photo.new({original_url: bdi+x['previews'][3]['href'],native_page_url: bdi+x['href'],license: x['metadata']['340']['value'],square_url: bdi+x['previews'][10]['href']})
     end
 
-    if jres['paging']['next'] != ''
+    if jres['paging'].present? && jres['paging']['next'].present?
       {:status => 'OK', :siguiente => bdi+jres['paging']['next'], :ultima => bdi+jres['paging']['last'], :fotos => fotos}
     else
       {:status => 'OK', :siguiente => '', :fotos => fotos}
