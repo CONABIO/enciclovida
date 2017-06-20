@@ -62,7 +62,7 @@ function inicia_carrusel() {
     var sly = new Sly('#carrusel', {
         horizontal: 1,
         // Item based navigation //
-        itemNav: 'centered',
+        itemNav: 'basic',
         smart: 1,
         activateOn: 'click',
         // Scrolling //
@@ -74,16 +74,11 @@ function inicia_carrusel() {
         elasticBounds: 1,
         startAt: 0,
         // Scrollbar //
-        scrollBar: '.scrollbar',
-        dragHandle: 1,
-        dynamicHandle: 1,
-        clickBar: 1,
-        syncSpeed: 1,
         // Pagesbar //
         // Navigation buttons //
         // Automated cycling //
         cycleBy: 'items',
-        cycleInterval: 3500,
+        cycleInterval: 5000,
         pauseOnHover: 1,
         // Mixed options //
         // Classes //
@@ -91,7 +86,7 @@ function inicia_carrusel() {
     }).init();
 //En el evento de que una foto se convierte en activa, se modifica la foto central
     sly.on('active', function (eventName) {
-        // Para cambiar la atribucion de la foto (cŕeditos) tanto en texto, como en ligas
+        // Para cambiar la atribucion de la foto (créditos) tanto en texto, como en ligas
         $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
         $('.enlace-atribucion').attr('href', $('img.seleccionada').attr('data-native-page-url'));
         //Para cambiar la foto interna y establecer el tamaño máximo
