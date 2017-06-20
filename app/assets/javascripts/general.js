@@ -96,7 +96,7 @@ cambiaSidebar = function(){
     $('#filtros > div').toggleClass('hidden');
 };
 
-var fondo = 2;
+var fondo = 1;
 cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
     url = "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
@@ -111,7 +111,7 @@ $(document).ready(function (){
             $("#img-fondo").css("background-image", "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
         }).animate({opacity: 1}, 1500);
         fondo++;
-    }, 5000);
+    }, 60000);
 });
 
 $(document).ready(function(){
