@@ -1,13 +1,17 @@
 <% content_for(:extracss) do %>
-    <%= stylesheet_link_tag    'carrusel', media: 'all', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'carrusel', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
 
 <%= content_for(:delayedjs) do %>
-    <% if @naturalista_id.present? %>
-        <script>
-          var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@naturalista_id}" %>";
-        </script>
-    <% end %>
+    <script>
+        <% if @naturalista_id.present? %>
+            var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@naturalista_id}" %>";
+        <% else %>
+            var INATURALIST_API = undefined;
+        <% end %>
+
+        var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi';
+    </script>
 
     <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>
 <% end%>

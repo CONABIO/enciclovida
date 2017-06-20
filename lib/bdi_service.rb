@@ -17,7 +17,7 @@ class BDIService
       res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
       jres = JSON.parse(res.body)
     rescue => e
-      {:status => 'error', :msg => e}
+      {:estatus => 'error', :msg => e}
     end
 
     jres['data'].each do |x|
@@ -25,12 +25,10 @@ class BDIService
     end
 
     if jres['paging'].present? && jres['paging']['next'].present?
-      {:status => 'OK', :siguiente => bdi+jres['paging']['next'], :ultima => bdi+jres['paging']['last'], :fotos => fotos}
+      {:estatus => 'OK', :siguiente => bdi+jres['paging']['next'], :ultima => bdi+jres['paging']['last'], :fotos => fotos}
     else
-      {:status => 'OK', :siguiente => '', :fotos => fotos}
+      {:estatus => 'OK', :siguiente => '', :fotos => fotos}
     end
-
   end
-
 end
 

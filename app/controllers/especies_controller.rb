@@ -331,13 +331,13 @@ class EspeciesController < ApplicationController
     render :partial => 'arbol_identado'
   end
 
-  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista
+  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
   def fotos_referencia
     # Atributos a borrar para la respuesta de naturalista
-    atributos_adicionales = %w(license_code attribution url original_dimensions best_photo)
+    atributos_adicionales = %w(license_code license_url license_name attribution url original_dimensions best_photo)
 
     @fotos = JSON.parse(params['fotos']).map{ |foto|
-      f = foto['photo']
+      f = foto['photo'].present? ? foto['photo'] : foto
       f['attribution_txt'] = f['attribution']
 
       atributos_adicionales.each do |a|
@@ -450,7 +450,7 @@ class EspeciesController < ApplicationController
   def fotos_bdi
     x = BDIService.new
     fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
-    render json: fotos_conabio.to_json
+    render json: fotos_conabio
   end
 
   private
