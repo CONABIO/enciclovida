@@ -9,6 +9,9 @@
     padding-bottom: 100%;
     min-height: 150px;
 }
+#foto-carrusel-interna{
+    margin: 0 auto;
+}
 #foto-atribucion{
     font-size: .8em;
     display: block;
