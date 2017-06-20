@@ -2,10 +2,10 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_carrusel]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_referencia]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +17,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios, :fotos_carrusel]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios, :fotos_referencia]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -338,8 +338,8 @@ class EspeciesController < ApplicationController
     render :partial => 'arbol_identado'
   end
 
-  # Las fotos en el carrusel inicial, en el show
-  def fotos_carrusel
+  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista
+  def fotos_referencia
     # Atributos a borrar para la respuesta de naturalista
     atributos_adicionales = %w(user_id subtype native_original_image_url license_code attribution license_name license_url)
     foto_default = JSON.parse params['foto_default']
@@ -456,6 +456,12 @@ class EspeciesController < ApplicationController
       c.cuantos = c.descendants.count
       c.completa_info((c.usuario_id if c.is_root?))
     end
+  end
+
+  def fotos_bdi
+    x = BDIService.new
+    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
+    render json: fotos_conabio.to_json
   end
 
   private

@@ -20,7 +20,7 @@ $(document).on('ready', function(){
                 else {
                     $.ajax(
                         {
-                            url: '/especies/' + TAXON.id + '/fotos_carrusel',
+                            url: '/especies/' + TAXON.id + '/fotos-referencia',
                             type: 'POST',
                             data: {
                                 foto_default: JSON.stringify(json.default_photo),
