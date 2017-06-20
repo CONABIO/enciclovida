@@ -36,6 +36,8 @@ base: &base
   naturalista_url: http://www.naturalista.mx
   # Es necesario la URL de iNaturalist para las observaciones, ya que en NaturaLista no salen todas
   inaturalist_url: http://www.inaturalist.org
+  # El API nodejs de inaturalist
+  inaturalist_api: http://api.inaturalist.org/v1
 
   # Coordenadas del rectangulo de la republica, para las obs. de NaturaLista
   swlat: 13.9234

@@ -341,24 +341,20 @@ class EspeciesController < ApplicationController
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista
   def fotos_referencia
     # Atributos a borrar para la respuesta de naturalista
-    atributos_adicionales = %w(user_id subtype native_original_image_url license_code attribution license_name license_url)
-    foto_default = JSON.parse params['foto_default']
-    foto_default['attribution_txt'] = foto_default['attribution']
+    atributos_adicionales = %w(license_code attribution url original_dimensions best_photo)
 
     @fotos = JSON.parse(params['fotos']).map{ |foto|
       f = foto['photo']
-      f['usuario_id'] = f['user_id']
       f['attribution_txt'] = f['attribution']
 
       atributos_adicionales.each do |a|
         f.delete(a)
-        foto_default.delete(a)
       end
 
       Photo.new(f)
     }
 
-    @foto_default = Photo.new(foto_default)
+    @foto_default = @fotos.first
   end
 
   def edit_photos

@@ -4,7 +4,7 @@
 
 <%= content_for(:delayedjs) do %>
     <script>
-      var NATURALISTA_URL = "<%= "#{CONFIG.naturalista_url}/taxa/#{@naturalista_id}.json" %>";
+      var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@naturalista_id}" %>";
     </script>
 
     <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>

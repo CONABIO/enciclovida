@@ -6,16 +6,17 @@ $(document).on('ready', function(){
 
     $.ajax(
         {
-            url: NATURALISTA_URL,
+            url: INATURALIST_API,
             type: 'GET',
             dataType: 'json'
         }).done(function(json){
             if (jQuery.isEmptyObject(json))
-            {
-                console.log('esta vacia la respuesta de naturalista');
-            } else {
+                $('#contenedor_fotos').remove();
+            else {
 
-                if (jQuery.isEmptyObject(json.default_photo) && json.taxon_photos.length == 0)
+                if (json.total_results == 0)
+                    $('#contenedor_fotos').remove();
+                else if (json.results[0].taxon_photos.length == 0)
                     $('#contenedor_fotos').remove();
                 else {
                     $.ajax(
@@ -23,8 +24,7 @@ $(document).on('ready', function(){
                             url: '/especies/' + TAXON.id + '/fotos-referencia',
                             type: 'POST',
                             data: {
-                                foto_default: JSON.stringify(json.default_photo),
-                                fotos: JSON.stringify(json.taxon_photos.slice(0,5))
+                                fotos: JSON.stringify(json.results[0].taxon_photos.slice(0,5))
                             }
                         }).done(function(fotos){
                             $('#contenedor_mapa').removeClass().addClass('col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
@@ -32,11 +32,13 @@ $(document).on('ready', function(){
                             $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
                             inicia_carrusel();
                         }).error(function(error){
-                            console.log('error');
+                            $('#contenedor_fotos').remove();
                         });
                 }
             }
-        });
+        }).error(function(error){
+            $('#contenedor_fotos').remove();
+        });;
 });
 
 
