@@ -111,7 +111,7 @@ function inicia_carrusel()
     var sly = new Sly('#carrusel', {
         horizontal: 1,
         // Item based navigation //
-        itemNav: 'basic',
+        itemNav: 'centered',
         smart: 1,
         activateOn: 'click',
         // Scrolling //
@@ -139,8 +139,9 @@ function inicia_carrusel()
         $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
         $('.enlace-atribucion').attr('href', $('img.seleccionada').attr('data-native-page-url'));
         //Para cambiar la foto interna y establecer el tamaño máximo
-        $('#foto-carrusel-interna').attr('src', $('img.seleccionada').attr('data-large'));
-        $('#foto-carrusel-interna').css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
+        $('#foto-carrusel-interna').fadeOut(300, function(){
+            $(this).attr('src', $('img.seleccionada').attr('data-large')).css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
+        }).fadeIn();
     });
 
     $(window).resize(function (e) {
