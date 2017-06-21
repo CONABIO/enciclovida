@@ -2,9 +2,10 @@
     <% @taxones.each do |taxon| %>
         <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none;">
 
-        <% if taxon.foto_principal.present? && taxon.fotos_principales.present?  %>
+        <% if taxon.foto_principal.present? %>
+            <% puts 'aqui' %>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-              <div class="imagen_resultados" style="background-image: url('<%= taxon.fotos_principales.split('|')[2] %>');" >
+              <div class="imagen_resultados" style="background-image: url('<%= taxon.foto_principal %>');" >
                 <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
               </div>
             </div>

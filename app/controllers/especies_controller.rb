@@ -333,14 +333,12 @@ class EspeciesController < ApplicationController
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
   def fotos_referencia
-    # Atributos a borrar para la respuesta de naturalista
     @fotos = []
 
     JSON.parse(params['fotos']).each do |foto|
       f = foto['photo'].present? ? foto['photo'] : foto
       f_obj = Photo.new({native_page_url: f['native_page_url'],medium_url: f['medium_url'],large_url: f['large_url'],square_url: f['square_url']})
       f_obj.attribution_txt = f['attribution']
-      #puts f_obj.a
       @fotos << f_obj
     end
 
@@ -349,8 +347,11 @@ class EspeciesController < ApplicationController
     # Para guardar la foto principal
     if a = @especie.adicional
       a.foto_principal = @foto_default.best_photo
-      a.save
+      a.save if a.changed?
+    else
+      @especie.adicional = Adicional.create({foto_principal: @foto_default.best_photo, especie_id: @especie.id})
     end
+
   end
 
   def edit_photos
