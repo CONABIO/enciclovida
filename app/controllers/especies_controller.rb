@@ -5,7 +5,7 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_referencia]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi, :fotos_referencia]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -334,20 +334,23 @@ class EspeciesController < ApplicationController
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
   def fotos_referencia
     # Atributos a borrar para la respuesta de naturalista
-    atributos_adicionales = %w(license_code license_url license_name attribution url original_dimensions best_photo)
+    @fotos = []
 
-    @fotos = JSON.parse(params['fotos']).map{ |foto|
+    JSON.parse(params['fotos']).each do |foto|
       f = foto['photo'].present? ? foto['photo'] : foto
-      f['attribution_txt'] = f['attribution']
-
-      atributos_adicionales.each do |a|
-        f.delete(a)
-      end
-
-      Photo.new(f)
-    }
+      f_obj = Photo.new({native_page_url: f['native_page_url'],medium_url: f['medium_url'],large_url: f['large_url'],square_url: f['square_url']})
+      f_obj.attribution_txt = f['attribution']
+      #puts f_obj.a
+      @fotos << f_obj
+    end
 
     @foto_default = @fotos.first
+
+    # Para guardar la foto principal
+    if a = @especie.adicional
+      a.foto_principal = @foto_default.best_photo
+      a.save
+    end
   end
 
   def edit_photos

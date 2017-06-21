@@ -1,19 +1,5 @@
 //=require sly
 
-$(document).on('ready', function(){
-    /* Este contenido se mandará a llamar una vez cargue el DOM, así la petición se realizará con el cliente y
-     y la respuesta no dependerá del API (tiempo de respuesta) */
-
-    if (INATURALIST_API != undefined) {
-        fotos_naturalista();
-    } else {
-        fotos_bdi();
-        //$('#contenedor_fotos').remove();
-        //if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
-    }
-
-});
-
 function fotos_naturalista()
 {
     $.ajax(
@@ -162,3 +148,13 @@ function inicia_carrusel()
 
     });
 }
+
+
+if (INATURALIST_API != undefined) {
+    fotos_naturalista();
+} else {
+    fotos_bdi();
+    //$('#contenedor_fotos').remove();
+    //if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+}
+
