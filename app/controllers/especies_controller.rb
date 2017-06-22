@@ -352,6 +352,12 @@ class EspeciesController < ApplicationController
       @especie.adicional = Adicional.create({foto_principal: @foto_default.best_photo, especie_id: @especie.id})
     end
 
+    # Para guardar los cambios en redis
+    if Rails.env.production?
+      a.delay(queue: 'redis').guarda_redis({foto_principal: @foto_default.square_photo, fotos_totales: @fotos.count})
+    else
+      a.guarda_redis({foto_principal: @foto_default.square_photo, fotos_totales: @fotos.count})
+    end
   end
 
   def edit_photos

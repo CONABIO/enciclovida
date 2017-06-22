@@ -59,9 +59,8 @@ class Adicional < ActiveRecord::Base
     end
   end
 
-  # Repito el metodo porque el otro, parte del modelo NombreComun, estos nombres son puestos
-  # sin relacion a catalogos
-  def exporta_nom_comun_a_redis
+  # Repito el metodo porque el otro, parte del nombre_cientifico, estos nombres son puestos
+  def redis(opc={})
     taxon = especie
     datos = {}
     datos['data'] = {}
@@ -73,7 +72,7 @@ class Adicional < ActiveRecord::Base
     datos['term'] = I18n.transliterate(nombre_comun_principal.limpia)
 
     if foto_principal.present?
-      datos['data']['foto'] = foto_principal.limpia
+      datos['data']['foto'] = opc[:foto_principal].limpia || foto_principal.limpia
     else
       datos['data']['foto'] = ''
     end
@@ -91,44 +90,29 @@ class Adicional < ActiveRecord::Base
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
     # Para saber cuantas fotos tiene
-    datos['data']['fotos'] = taxon.photos.count
+    datos['data']['fotos'] = opc[:fotos_totales] || photos.count
 
     # Para saber si tiene algun mapa
     if p = taxon.proveedor
       datos['data']['geodatos'] = p.geodatos[:cuales]
     end
 
-    # Para mandar el json como string al archivo
-    datos.to_json.to_s
+    datos
   end
 
   # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
-  def actualiza_o_crea_nom_com_en_redis
-    return unless especie
+  def guarda_redis(opc={})
+    return unless t = especie
+    categoria = I18n.transliterate(t.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
 
-    fecha = Time.now.strftime("%Y%m%d%H%M%S")
-    ruta_com = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_com.json").to_s
-    ruta_cien = Rails.root.join('tmp','redis',"#{fecha}_#{id}-#{especie_id}_cien.json").to_s
-    carpeta_redis = Rails.root.join('tmp','redis').to_s
-    categoria = I18n.transliterate(especie.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-    json_com = exporta_nom_comun_a_redis
-    json_cien = especie.exporta_redis
-    Dir.mkdir(carpeta_redis, 0755) unless File.exists?(carpeta_redis)
-
-    File.open(ruta_com,'a') do |f|
-      f.puts(json_com)
-    end
-
-    File.open(ruta_cien,'a') do |f|
-      f.puts(json_cien)
-    end
-
-    system("soulmate add com_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_com}") if File.exists?(ruta_com)
-    system("soulmate add cien_#{categoria} --redis=redis://#{IP}:6379/0 < #{ruta_cien}") if File.exists?(ruta_cien)
+    # Guarda en la categoria seleccionada
+    loader = Soulmate::Loader.new(categoria)
+    loader.add(redis(opc))
+    loader.add(t.redis(opc))
   end
 
   # Para borra el registro del nombre comun y actualiza el del nombre cientifico
-  def borra_nom_comun_en_redis
+  def borra_redis
     return unless especie
 
     fecha = Time.now.strftime("%Y%m%d%H%M%S")

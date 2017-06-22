@@ -262,7 +262,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     FUZZY_NOM_CIEN.put(nombre_cientifico, id)
   end
 
-  def exporta_redis
+  def redis(opc={})
     datos = {}
     datos['data'] = {}
 
@@ -273,7 +273,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     if ad = adicional
       if ad.foto_principal.present?
-        datos['data']['foto'] = ad.foto_principal.limpia
+        datos['data']['foto'] = opc[:foto_principal].limpia || ad.foto_principal.limpia
       else
         datos['data']['foto'] = ''
       end
@@ -301,15 +301,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
     # Para saber cuantas fotos tiene
-    datos['data'][:fotos] = photos.count
+    datos['data'][:fotos] = opc[:fotos_totales] || photos.count
 
     # Para saber si tiene algun mapa
     if p = proveedor
       datos['data']['geodatos'] = p.geodatos[:cuales]
     end
 
-    # Para mandar el json como string al archivo
-    datos.to_json.to_s
+    datos
   end
 
   def cat_tax_asociadas
@@ -438,7 +437,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def delayed_job_service
     if !existe_cache?
       escribe_cache
-      delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
+
+      if Rails.env.production?
+        delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
+      else
+        cache_services
+      end
     end
   end
 
