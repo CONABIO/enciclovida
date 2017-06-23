@@ -217,6 +217,9 @@
 <% content_for(:title) do %>
     <%= @titulo='Resultados' %>
 <% end %>
+<%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+<%- end -%>
 
 <% if notice.present? %>
     <div class="alert alert-warning" role="alert"><%= notice %></div>
@@ -314,13 +317,13 @@
     <% end %>
   </ul>
 
-  <div class="tab-pane panel-body" id="todos">
+  <div class="tab-pane panel-body panel-resultados" id="todos">
     <%= render :partial => 'busquedas/resultados' %>
   </div>
 
   <% if @por_categoria.present? && @por_categoria.length > 0 %>
       <% @por_categoria.each do |categoria| %>
-          <div class="tab-pane panel-body" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
+          <div class="tab-pane panel-body panel-resultados" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
       <% end %>
   <% end %>
 
