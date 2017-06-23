@@ -46,7 +46,7 @@ class EspeciesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @especie.delayed_job_service
+        #@especie.delayed_job_service
 
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
@@ -347,22 +347,11 @@ class EspeciesController < ApplicationController
 
     @foto_default = @fotos.first
 
-    # Para guardar la foto principal
-    if a = @especie.adicional
-      a.foto_principal = @foto_default.best_photo
-      a.save if a.changed?
-    else
-      @especie.adicional = Adicional.create({foto_principal: @foto_default.best_photo, especie_id: @especie.id})
-    end
-
-    # Para aobtener numero de fotos y la foto principal
-    @especie.fotos_totales_principal
-
     # Para guardar los cambios en redis
     if Rails.env.production?
-      @especie.delay(queue: 'redis').guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+      @especie.delay(queue: 'redis').guarda_redis
     else
-      @especie.guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+      @especie.guarda_redis
     end
   end
 

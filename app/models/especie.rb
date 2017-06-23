@@ -266,33 +266,39 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos = {}
     datos['data'] = {}
 
-    datos['id'] = id
+    ad = adicional
+    fotos_totales_principal
 
-    # Para poder buscar con o sin acentos en redis
-    datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
+    # Asigna si viene la peticion de nombre comun
+    if nc = opc[:nombre_comun]
+      datos['id'] = "#{nc.id}#{id}00000".to_i
+      datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
+      datos['data']['nombre_comun'] = nc.nombre_comun.limpia
+      datos['data']['id'] = nc.id
 
-    if ad = adicional
-      if ad.foto_principal.present?
-        datos['data']['foto'] = opc[:foto_principal].limpia || ad.foto_principal.limpia
-      else
-        datos['data']['foto'] = ''
-      end
+    elsif opc[:adicional]  # Asigna si viene la peticion de nombre_comun_principal
+      datos['id'] = "#{ad.id}#{id}".to_i
+      datos['term'] = I18n.transliterate(ad.nombre_comun_principal.limpia)
+      datos['data']['nombre_comun'] = ad.nombre_comun_principal.limpia
+      datos['data']['id'] = ad.id
 
-      if ad.nombre_comun_principal.present?
-        datos['data']['nombre_comun'] = ad.nombre_comun_principal.limpia
-      else
-        datos['data']['nombre_comun'] = ''
-      end
-
-    else
-      datos['data']['nombre_comun'] = ''
-      datos['data']['foto'] = ''
+    else  # Asigna si viene la peticion de nombre_cientifico
+      datos['id'] = id
+      datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
+      datos['data']['nombre_comun'] = ad.nombre_comun_principal.try(:limpia) if ad
+      datos['data']['id'] = id
     end
 
-    datos['data']['id'] = id
+    # Foto principal
+    if x_foto_principal
+      datos['data']['foto'] = x_foto_principal
+    else
+      datos['data']['foto'] = ad.foto_principal if ad
+    end
+
     datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
-    datos['data']['autoridad'] = nombre_autoridad.limpia
+    datos['data']['autoridad'] = nombre_autoridad.try(:limpia)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
@@ -301,7 +307,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
     # Para saber cuantas fotos tiene
-    datos['data'][:fotos] = opc[:fotos_totales] || 0
+    datos['data'][:fotos] = x_fotos_totales
 
     # Para saber si tiene algun mapa
     if p = proveedor
@@ -318,7 +324,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Guarda en la categoria seleccionada
     loader = Soulmate::Loader.new(categoria)
     loader.add(redis(opc))
-    #loader.add(t.redis(opc))
+
+    # Guarda el redis con todos los nombres comunes
+    nombres_comunes.each do |nc|
+      loader.add(redis(opc.merge({nombre_comun: nc})))
+    end
   end
 
   # Servicio que trae la respuesta de bdi
@@ -327,8 +337,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     bdi.dameFotos(nombre_cientifico,p)
   end
 
-  # Servicio que trae la foto principal y las fotos totales, de los servicios bdi y naturalista
-  def fotos_totales_principal
+  # Servicio que trae la foto principal y las fotos totales, el nombre_comun principal de los servicios bdi y naturalista
+  def fotos_nombres_principal_totales
     self.x_foto_principal = nil  # Para saber si tiene informacion despues
     self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
 
@@ -363,6 +373,21 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
+
+    # Para guardar la foto principal, es la best_photo
+    if a = adicional
+      a.foto_principal = x_best_photo
+      a.save if a.changed?
+    else
+      Adicional.create({foto_principal: x_best_photo, especie_id: id})
+    end
+
+    # Para guardar el nombre_comun_principal
+
+  end
+
+  def nombre_comun_principal
+
   end
 
   def cat_tax_asociadas

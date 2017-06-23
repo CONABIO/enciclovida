@@ -4,9 +4,10 @@ class BDIService
     bdi = CONFIG.bdi_imagenes
     fotos = []
 
-    url = "#{bdi}/fotoweb/archives/5000-Banco%20de%20Im%C3%A1genes/?528='#{nombre_cientifico.gsub(" ","+")}'"
+    url = "#{bdi}/fotoweb/archives/5000-Banco de Imágenes/?528='#{nombre_cientifico}'"
     url << "&p=#{p-1}" if p
-    uri = URI.parse(url)
+    url_escape = URI.escape(url)
+    uri = URI.parse(url_escape)
 
     req = Net::HTTP::Get.new(uri.to_s)
     req['Accept'] = 'application/vnd.fotoware.assetlist+json'
