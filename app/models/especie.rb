@@ -267,7 +267,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data'] = {}
 
     ad = adicional
-    fotos_totales_principal
+    fotos_nombres_servicios
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
@@ -337,8 +337,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     bdi.dameFotos(nombre_cientifico,p)
   end
 
-  # Servicio que trae la foto principal y las fotos totales, el nombre_comun principal de los servicios bdi y naturalista
-  def fotos_nombres_principal_totales
+  # Fotos y nombres comunes de dbi, catalogos y naturalista
+  def fotos_nombres_servicios
     self.x_foto_principal = nil  # Para saber si tiene informacion despues
     self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
 
@@ -374,7 +374,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       end
     end
 
-    # Para guardar la foto principal, es la best_photo
+    # Para guardar la foto principal para los resultados, es la best_photo
     if a = adicional
       a.foto_principal = x_best_photo
       a.save if a.changed?
@@ -382,12 +382,59 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       Adicional.create({foto_principal: x_best_photo, especie_id: id})
     end
 
-    # Para guardar el nombre_comun_principal
+    # Para guardar los nombres comunes de naturalista y el nombre comun principal
 
   end
 
-  def nombre_comun_principal
+  # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
+  def ficha_naturalista_por_nombre
+    begin
+      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
+      resultados = JSON.parse(respuesta)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
 
+    # Nos aseguramos que coincide el nombre
+    return {estatus: 'error', msg: 'No hay resultados'} if resultados.count == 0
+
+    resultados.each do |t|
+      if t['name'] == nombre_cientifico
+        reino_naturalista = t['ancestry'].split('/')[1].to_i
+        next unless reino_naturalista.present?
+        reino_enciclovida = is_root? ? id : ancestry_ascendente_directo.split('/').first
+
+        # Si coincide el reino con animalia, plantas u hongos
+        if (reino_naturalista == 1 && reino_enciclovida == 1000001) || (reino_naturalista == 47126 && reino_enciclovida == 6000002) || (reino_naturalista == 47170 && reino_enciclovida == 3000004)
+          self.proveedor = Proveedor.create({naturalista_id: t.id, especie_id: id}) if !proveedor
+          return {estatus: 'OK', ficha: t}
+        end
+
+      end  # End nombre cientifico
+    end  # End resultados
+
+    return {estatus: 'error', msg: 'No hubo coincidencias con los resultados del servicio'}
+  end
+
+  def self.comprueba_nombre(taxon, data)
+    return nil if data.count == 0
+
+    data.each do |d|
+      if d['name'] == taxon
+        reino_naturalista = d['ancestry'].split('/')[1].to_i
+        next unless reino_naturalista.present?
+
+        reino_enciclovida = taxon.is_root? ? taxon.id : taxon.ancestry_ascendente_directo.split('/').first
+
+        # Aseguramos que el taxon aparte de coincidir en el nombre coincida en el reino por lo menos, asi evitamos homonimos
+        return d if reino_naturalista == 1 && reino_enciclovida == 1000001  # Animales
+        return d if reino_naturalista == 47126 && reino_enciclovida == 6000002  # Plantas
+        return d if reino_naturalista == 47170 && reino_enciclovida == 3000004  # Hongos
+
+      end
+    end
+
+    nil
   end
 
   def cat_tax_asociadas

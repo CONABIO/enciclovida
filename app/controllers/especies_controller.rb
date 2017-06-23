@@ -3,11 +3,11 @@
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
-                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi]
+                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
-                                     :fotos_referencia, :fotos_naturalista]
+                                     :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -20,7 +20,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_naturalista]
+                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -369,6 +369,23 @@ class EspeciesController < ApplicationController
             end
 
     render json: fotos
+  end
+
+  def nombres_comunes_naturalista
+    nombres_comunes = if p = @especie.proveedor
+                        p.nombres_comunes_naturalista
+                      else
+                        ficha = @especie.ficha_naturalista_por_nombre
+
+                        # Intentamos de nuevo a ver si vinculo con un ID de naturalista
+                        if ficha[:estatus] == 'OK'
+                          {estatus: 'OK', nombres_comunes: ficha[:taxon_names]}
+                        else
+                          {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                        end
+                      end
+
+    render json: nombres_comunes
   end
 
   def edit_photos

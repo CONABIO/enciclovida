@@ -10,7 +10,58 @@ class Proveedor < ActiveRecord::Base
 
     resultado = ficha[:ficha]['results'].first
     fotos = resultado['taxon_photos']
-    {estatus: 'OK', msg: nil, fotos: fotos}
+    {estatus: 'OK', fotos: fotos}
+  end
+
+  # Todos los nombres comunes de la ficha de naturalista
+  def nombres_comunes_naturalista
+    ficha = ficha_naturalista_api
+    return ficha unless ficha[:estatus] == 'OK'
+
+    nombres_comunes = ficha[:ficha]['taxon_names']
+    {estatus: 'OK', nombres_comunes: nombres_comunes}
+  end
+
+  # Consulta la fihca de naturalista por medio de su API nodejs
+  def ficha_naturalista_api_nodejs
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+      self.naturalista_id = resp[:taxon]['id']
+      save
+    end
+
+    begin
+      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
+      ficha = JSON.parse(resp)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
+
+    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
+    return {estatus: 'OK', ficha: ficha}
+  end
+
+  # Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
+  def ficha_naturalista_api
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+      self.naturalista_id = resp[:ficha]['id']
+      save
+    end
+
+    begin
+      resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+      ficha = JSON.parse(resp)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
+
+    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
+    return {estatus: 'OK', ficha: ficha}
   end
 
   # Saca los nombres comunes del campo naturalista_info
@@ -278,59 +329,8 @@ class Proveedor < ActiveRecord::Base
     geodatos
   end
 
-  def self.comprueba_nombre(taxon, data)
-    return nil if data.count == 0
-
-    data.each do |d|
-      if d['name'] == taxon
-        reino_naturalista = d['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-
-        reino_enciclovida = taxon.is_root? ? taxon.id : taxon.ancestry_ascendente_directo.split('/').first
-
-        # Aseguramos que el taxon aparte de coincidir en el nombre coincida en el reino por lo menos, asi evitamos homonimos
-        return d if reino_naturalista == 1 && reino_enciclovida == 1000001  # Animales
-        return d if reino_naturalista == 47126 && reino_enciclovida == 6000002  # Plantas
-        return d if reino_naturalista == 47170 && reino_enciclovida == 3000004  # Hongos
-
-      end
-    end
-
-    nil
-  end
-
 
   private
-
-  # Consulta la fihca de naturalista por medio de su API nodejs
-  def ficha_naturalista_api_nodejs()
-    return {estatus: 'error', msg: 'naturalista_id no exitste'} unless naturalista_id.present?
-
-    begin
-      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: 'error', msg: e}
-    end
-
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: 'OK', msg: nil, ficha: ficha}
-  end
-
-  # Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
-  def ficha_naturalista_api
-    return {estatus: 'error', msg: 'naturalista_id no exitste'} unless naturalista_id.present?
-
-    begin
-      resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: 'error', msg: e}
-    end
-
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
-    return {estatus: 'OK', msg: nil, ficha: ficha}
-  end
 
   def to_kml(cadenas)
     evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']
