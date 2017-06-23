@@ -7,7 +7,7 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
-                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal, :x_fotos_principales,
+                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal, :x_best_photo, :x_fotos_principales, :x_fotos_totales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
@@ -309,6 +309,60 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     datos
+  end
+
+  # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
+  def guarda_redis(opc={})
+    categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+
+    # Guarda en la categoria seleccionada
+    loader = Soulmate::Loader.new(categoria)
+    loader.add(redis(opc))
+    #loader.add(t.redis(opc))
+  end
+
+  # Servicio que trae la respuesta de bdi
+  def fotos_bdi(p=nil)
+    bdi = BDIService.new
+    bdi.dameFotos(nombre_cientifico,p)
+  end
+
+  # Servicio que trae la foto principal y las fotos totales, de los servicios bdi y naturalista
+  def fotos_totales_principal
+    self.x_foto_principal = nil  # Para saber si tiene informacion despues
+    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
+
+    if p = proveedor
+      # Fotos de naturalista
+      fn = p.fotos_naturalista
+
+      if fn[:estatus] == 'OK'
+        self.x_fotos_totales+= fn[:fotos].count
+
+        if fn[:fotos].count > 0
+          self.x_foto_principal = fn[:fotos].first['photo']['square_url']
+          self.x_best_photo = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
+        end
+      end
+    end
+
+    # Fotos de bdi
+    fb = fotos_bdi
+    if fb[:estatus] == 'OK'
+      self.x_foto_principal = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
+      self.x_best_photo = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
+
+      if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
+        self.x_fotos_totales+= 25*(ultima-1)
+        fbu = fotos_bdi(ultima)
+
+        if fbu[:estatus] == 'OK'
+          self.x_fotos_totales+= fbu[:fotos].count
+        end
+      else  # Solo era un paginado, las sumo inmediatamente
+        self.x_fotos_totales+= fb[:fotos].count
+      end
+    end
   end
 
   def cat_tax_asociadas

@@ -69,7 +69,11 @@ class Adicional < ActiveRecord::Base
     datos['id'] = "#{id}#{especie_id}".to_i
 
     # Para poder buscar con o sin acentos en redis
-    datos['term'] = I18n.transliterate(nombre_comun_principal.limpia)
+    if nombre_comun_principal.present?
+      datos['term'] = I18n.transliterate(nombre_comun_principal.limpia)
+    else
+      datos['term'] = ''
+    end
 
     if foto_principal.present?
       datos['data']['foto'] = opc[:foto_principal].limpia || foto_principal.limpia
@@ -108,7 +112,7 @@ class Adicional < ActiveRecord::Base
     # Guarda en la categoria seleccionada
     loader = Soulmate::Loader.new(categoria)
     loader.add(redis(opc))
-    loader.add(t.redis(opc))
+    #loader.add(t.redis(opc))
   end
 
   # Para borra el registro del nombre comun y actualiza el del nombre cientifico

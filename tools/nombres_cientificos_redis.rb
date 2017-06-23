@@ -32,11 +32,15 @@ def procesando_nombres
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
 
     # Sacando el conteo de fotos al vuelo
-    if p = t.proveedor
-      p.fotos_totales_principal
-      data = t.redis(foto_principal: p.foto_principal, fotos_totales: p.fotos_totales).to_json.to_s
+    t.fotos_totales_principal
+    data = t.redis(foto_principal: t.x_foto_principal, fotos_totales: t.x_fotos_totales).to_json.to_s
+
+    # Para guardar la foto principal
+    if a = t.adicional
+      a.foto_principal = t.x_best_photo
+      a.save if a.changed?
     else
-      data = t.redis.to_json.to_s
+      t.adicional = Adicional.create({foto_principal: t.x_best_photo, especie_id: t.id})
     end
 
     File.open("#{@path}/nom_cien_#{I18n.transliterate(t.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
