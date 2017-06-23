@@ -1,3 +1,38 @@
-// Place all the styles related to the busquedas controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+#todos{
+    text-align: center;
+}
+#todos div.result-img-container{
+    display: inline-block;
+    overflow: hidden;
+    max-width: 100%;
+    margin: 5px;
+    position: relative;
+}
+#todos div.result-img-container img{
+    max-height: 250px;
+    margin: -20px
+}
+#todos div.result-img-container i.ev1-ev-icon{
+    height: 250px;
+    font-size: 8em;
+}
+
+#todos div.result-img-container img:hover{
+    transform:scale(.85);
+    -ms-transform:scale(.85); /* IE 9 */
+    -moz-transform:scale(.85); /* Firefox */
+    -webkit-transform:scale(.85); /* Safari and Chrome */
+    -o-transform:scale(.85); /* Opera */
+}
+#todos div.result-img-container h5{
+    position: relative;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 3px 5px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+#todos div.result-img-container h5 a{
+    cursor: pointer;
+}
