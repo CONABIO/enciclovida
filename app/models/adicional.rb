@@ -90,7 +90,7 @@ class Adicional < ActiveRecord::Base
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
     # Para saber cuantas fotos tiene
-    datos['data']['fotos'] = opc[:fotos_totales] || photos.count
+    datos['data']['fotos'] = opc[:fotos_totales] || 0
 
     # Para saber si tiene algun mapa
     if p = taxon.proveedor

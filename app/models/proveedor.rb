@@ -1,14 +1,54 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml
+  attr_accessor :snib_kml, :naturalista_kml, :foto_principal, :fotos_totales
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
-    return nil unless ficha = ficha_naturalista
+    ficha = ficha_naturalista
+    return ficha unless ficha[:estatus] == 'OK'
 
-    fotos = ficha['taxon_photos']
-    fotos.any? ? fotos : nil
+    resultado = ficha[:ficha]['results'].first
+    fotos = resultado['taxon_photos']
+    {estatus: 'OK', msg: nil, fotos: fotos}
+  end
+
+  def fotos_bdi(p=nil)
+    bdi = BDIService.new
+    bdi.dameFotos(especie.nombre_cientifico,p)
+  end
+
+  def fotos_totales_principal
+    self.foto_principal = nil  # Para saber si tiene informacion despues
+    self.fotos_totales = 0  # Para poner cero si no tiene fotos
+
+      # Fotos de naturalista
+      fn = fotos_naturalista
+    puts fn[:fotos].count
+      if fn[:estatus] == 'OK'
+        self.fotos_totales+= fn[:fotos].count
+
+        if fn[:fotos].count > 0
+          self.foto_principal = fn[:fotos].first['photo']['square_url']
+        end
+      end
+
+      # Fotos de bdi
+      fb = fotos_bdi
+      if fb[:estatus] == 'OK'
+        self.foto_principal = fb[:fotos].first.square_url if foto_principal.blank? && fb[:fotos].count > 0
+
+        if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
+          self.fotos_totales+= 25*(ultima-1)
+          fbu = fotos_bdi(ultima)
+
+          if fbu[:estatus] == 'OK'
+            self.fotos_totales+= fbu[:fotos].count
+          end
+        else  # Solo era un paginado, las sumo inmediatamente
+          self.fotos_totales+= fb[:fotos].count
+        end
+      end
   end
 
   # Saca los nombres comunes del campo naturalista_info
@@ -341,19 +381,21 @@ class Proveedor < ActiveRecord::Base
     nil
   end
 
+
   private
 
   def ficha_naturalista
-    return nil unless naturalista_id.present?
+    return {estatus: 'error', msg: 'naturalista_id no exitste'} unless naturalista_id.present?
 
     begin
-      response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      data = JSON.parse(response)
-    rescue
-      return nil
+      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
+      ficha = JSON.parse(resp)
+    rescue => e
+      return {estatus: 'error', msg: e}
     end
 
-    data.empty? ? nil : data
+    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
+    return {estatus: 'OK', msg: nil, ficha: ficha}
   end
 
   def to_kml(cadenas)

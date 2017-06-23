@@ -2,10 +2,12 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_referencia]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
+                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi, :fotos_referencia]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
+                                     :fotos_referencia, :fotos_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +19,8 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios, :fotos_referencia]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
+                          :fotos_referencia, :fotos_bdi, :fotos_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -354,10 +357,26 @@ class EspeciesController < ApplicationController
 
     # Para guardar los cambios en redis
     if Rails.env.production?
-      a.delay(queue: 'redis').guarda_redis({foto_principal: @foto_default.square_photo, fotos_totales: @fotos.count})
+      a.delay(queue: 'redis').guarda_redis({foto_principal: @foto_default.square_url, fotos_totales: @fotos.count})
     else
-      a.guarda_redis({foto_principal: @foto_default.square_photo, fotos_totales: @fotos.count})
+      a.guarda_redis({foto_principal: @foto_default.square_url, fotos_totales: @fotos.count})
     end
+  end
+
+  def fotos_bdi
+    x = BDIService.new
+    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
+    render json: fotos_conabio
+  end
+
+  def fotos_naturalista
+    fotos = if p = @especie.proveedor
+              p.fotos_naturalista
+            else
+              {estatus: 'error', msg: 'proveedor no exitste'}
+            end
+
+    render json: fotos
   end
 
   def edit_photos
@@ -457,11 +476,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def fotos_bdi
-    x = BDIService.new
-    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
-    render json: fotos_conabio
-  end
 
   private
 

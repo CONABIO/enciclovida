@@ -40,7 +40,7 @@ module CacheServices
     puts "\t\tCambios en naturalista_info"
 
     # Para guardar las fotos nuevas de naturalista
-    usuario = Usuario.where(usuario: CONFIG.usuario).first
+    usuario = Usuario.find(CONFIG.usuario)
     p.fotos(usuario.id)
     puts "\t\tProceso fotos de NaturaLista"
 

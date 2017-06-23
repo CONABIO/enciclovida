@@ -19,34 +19,41 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-def system_call(cmd)
+def sistema(cmd)
   puts "Ejecutando: #{cmd}" if OPTS[:debug]
   system cmd
 end
 
-def batches
+def procesando_nombres
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
-  Especie.find_each do |taxon|
-  #Especie.limit(100).each do |taxon|
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
-    data = taxon.exporta_redis
+  #Especie.find_each do |t|
+  Especie.limit(100).each do |t|
+    puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
 
-    File.open("#{@path}/nom_cien_#{I18n.transliterate(taxon.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
+    # Sacando el conteo de fotos al vuelo
+    if p = t.proveedor
+      p.fotos_totales_principal
+      data = t.redis(foto_principal: p.foto_principal, fotos_totales: p.fotos_totales).to_json.to_s
+    else
+      data = t.redis.to_json.to_s
+    end
+
+    File.open("#{@path}/nom_cien_#{I18n.transliterate(t.categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')}.json",'a') do |f|
       f.puts(data)
     end
   end
 end
 
-def load_file
+def cargando_archivos
   puts 'Cargando los datos a redis...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f="#{@path}/nom_cien_#{cat}.json"
-    system_call("soulmate load cien_#{cat} --redis=redis://#{IP}:6379/0 < #{f}") if File.exists?(f)
+    sistema("soulmate load cien_#{cat} --redis=redis://#{IP}:6379/0 < #{f}") if File.exists?(f)
   end
 end
 
-def delete_files
+def borrando_archivos
   puts 'Eliminando archivos anteriores...' if OPTS[:debug]
   CategoriaTaxonomica.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_')}.uniq.each do |cat|
     f="#{@path}/nom_cien_#{cat}.json"
@@ -64,8 +71,8 @@ start_time = Time.now
 
 @path='db/redis'     #cambiar si se desea otra ruta
 creando_carpeta
-delete_files
-batches
-load_file
+borrando_archivos
+procesando_nombres
+#cargando_archivos
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
