@@ -19,7 +19,7 @@ class BDIService
     end
 
     jres['data'].each do |x|
-      fotos << Photo.new ({large_url: bdi+x['previews'][3]['href'],
+      fotos << Photo.new({large_url: bdi+x['previews'][3]['href'],
                            medium_url: bdi+x['previews'][0]['href'],
                            native_page_url: bdi+x['href'],
                            license: x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia',
