@@ -225,65 +225,63 @@
     <div class="alert alert-warning" role="alert"><%= notice %></div>
 <% end %>
 
-<% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
-    <%= render :file => 'busquedas/avanzada' %>
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-
-            var SET_PARAMS = <%=raw @setParams.to_json %>;
-
-            // Escogio de grupo iconico
-            if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
-                $('#id_' + SET_PARAMS.id).prop('checked', true);
-            else if (SET_PARAMS.nombre != undefined) {
-                    por_nombre();
-                    $('#nombre').val(SET_PARAMS.nombre);
-            }
-
-            if (SET_PARAMS.id != undefined)
-                $('#id').val(SET_PARAMS.id);
-            if (SET_PARAMS.por_pagina != undefined)
-                $('#por_pagina').val(SET_PARAMS.por_pagina);
-            if (SET_PARAMS.dist != undefined)
-            {
-                SET_PARAMS.dist.forEach(function(valor){
-                    $('#dist_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.edo_cons != undefined)
-            {
-                SET_PARAMS.edo_cons.forEach(function(valor){
-                    $('#edo_cons_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.prior != undefined)
-            {
-                SET_PARAMS.prior.forEach(function(valor){
-                    $('#prior_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.estatus != undefined)
-            {
-                SET_PARAMS.estatus.forEach(function(valor){
-                    $('#estatus_' + valor).prop('checked', true);
-                });
-            }
-
-            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
-                cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
-            <% end %>
-        });
-    </script>
-<% end %>
-
 <% if @fuzzy_match.present? %>
     <div class="alert alert-success">
         <strong><%= @fuzzy_match %></strong>
     </div>
 <% end %>
+<% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+  <%= render :file => 'busquedas/avanzada' %>
 
-<div id="pestañas" class="panel row">
+  <script type="text/javascript">
+	  $(document).ready(function(){
+
+		  var SET_PARAMS = <%=raw @setParams.to_json %>;
+
+		  // Escogio de grupo iconico
+		  if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
+			  $('#id_' + SET_PARAMS.id).prop('checked', true);
+		  else if (SET_PARAMS.nombre != undefined) {
+			  por_nombre();
+			  $('#nombre').val(SET_PARAMS.nombre);
+		  }
+
+		  if (SET_PARAMS.id != undefined)
+			  $('#id').val(SET_PARAMS.id);
+		  if (SET_PARAMS.por_pagina != undefined)
+			  $('#por_pagina').val(SET_PARAMS.por_pagina);
+		  if (SET_PARAMS.dist != undefined)
+		  {
+			  SET_PARAMS.dist.forEach(function(valor){
+				  $('#dist_' + valor).prop('checked', true);
+			  });
+		  }
+		  if (SET_PARAMS.edo_cons != undefined)
+		  {
+			  SET_PARAMS.edo_cons.forEach(function(valor){
+				  $('#edo_cons_' + valor).prop('checked', true);
+			  });
+		  }
+		  if (SET_PARAMS.prior != undefined)
+		  {
+			  SET_PARAMS.prior.forEach(function(valor){
+				  $('#prior_' + valor).prop('checked', true);
+			  });
+		  }
+		  if (SET_PARAMS.estatus != undefined)
+		  {
+			  SET_PARAMS.estatus.forEach(function(valor){
+				  $('#estatus_' + valor).prop('checked', true);
+			  });
+		  }
+
+		  <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+		  cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+		  <% end %>
+	  });
+  </script>
+<% end %>
+<div id="pestañas" class="panel col-md-offset-3">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active">
       <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" url="<%= request.url %>">Todos (<%= @totales if @totales.present? %>)</a>

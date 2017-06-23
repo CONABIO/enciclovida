@@ -47,3 +47,10 @@ div.result-img-container{
 .panel-resultados div.result-img-container a{
     cursor: pointer;
 }
+
+
+.nav:before, .nav:after {
+    content: " ";
+    display: inline-block;
+    padding-bottom: 32px;
+}
