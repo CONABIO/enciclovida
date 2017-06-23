@@ -96,10 +96,10 @@ cambiaSidebar = function(){
     $('#filtros > div').toggleClass('hidden');
 };
 
-var fondo = 2;
+var fondo = 1;
 cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
-    url = "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
+    url = "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
     $('#img-fondo').css('background-image',url);
 };
 
@@ -108,10 +108,10 @@ $(document).ready(function (){
     var bgrotater = setInterval(function() {
         if (fondo==16) fondo=0;
         $('#img-fondo').animate({opacity: 0}, 1500, function(){
-            $("#img-fondo").css("background-image", "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
+            $("#img-fondo").css("background-image", "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
         }).animate({opacity: 1}, 1500);
         fondo++;
-    }, 30000);
+    }, 60000);
 });
 
 $(document).ready(function(){

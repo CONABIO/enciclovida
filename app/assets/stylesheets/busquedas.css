@@ -1,3 +1,49 @@
-// Place all the styles related to the busquedas controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.panel-resultados{
+    text-align: center;
+}
+.resultados-cientificos{
+    text-align: left;
+}
+div.result-img-container{
+    display: inline-block;
+    overflow: hidden;
+    max-width: 100%;
+    margin: 5px;
+    position: relative;
+}
+.panel-resultados div.result-img-container img{
+    max-height: 225px;
+    margin: -25px;
+    transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+    vertical-align: middle;
+    font-size: 3.75em;
+}
+
+.panel-resultados div.result-img-container i.ev1-ev-icon{
+    transition: all .2s ease;
+    vertical-align: baseline;
+    font-size: 4em;
+}
+.panel-resultados div.result-img-container img:hover{
+    transform:scale(.75);
+    -ms-transform:scale(.75); /* IE 9 */
+    -moz-transform:scale(.75); /* Firefox */
+    -webkit-transform:scale(.75); /* Safari and Chrome */
+    -o-transform:scale(.75); /* Opera */
+}
+.panel-resultados div.result-img-container i.ev1-ev-icon:hover{
+    font-size: 3em;
+}
+
+.panel-resultados div.result-img-container h5{
+    position: relative;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 3px 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.panel-resultados div.result-img-container a{
+    cursor: pointer;
+}

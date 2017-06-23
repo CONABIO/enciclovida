@@ -2,10 +2,12 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios, :fotos_referencia]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
+                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
+                                     :fotos_referencia, :fotos_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +19,8 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios, :fotos_referencia]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
+                          :fotos_referencia, :fotos_bdi, :fotos_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -35,13 +38,6 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    # Esto es para mostrar primero las fotos de NaturaLista, despues las de CONABIO
-    #fotos_naturalista = @especie.photos.where.not(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
-    #fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
-    #@photos = [fotos_naturalista, fotos_conabio].flatten.compact
-
-
-    @photos = []
     if p = @especie.proveedor
       @naturalista_id = p.naturalista_id
     end
@@ -338,27 +334,52 @@ class EspeciesController < ApplicationController
     render :partial => 'arbol_identado'
   end
 
-  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista
+  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
   def fotos_referencia
-    # Atributos a borrar para la respuesta de naturalista
-    atributos_adicionales = %w(user_id subtype native_original_image_url license_code attribution license_name license_url)
-    foto_default = JSON.parse params['foto_default']
-    foto_default['attribution_txt'] = foto_default['attribution']
+    @fotos = []
 
-    @fotos = JSON.parse(params['fotos']).map{ |foto|
-      f = foto['photo']
-      f['usuario_id'] = f['user_id']
-      f['attribution_txt'] = f['attribution']
+    JSON.parse(params['fotos']).each do |foto|
+      f = foto['photo'].present? ? foto['photo'] : foto
+      f_obj = Photo.new({native_page_url: f['native_page_url'],medium_url: f['medium_url'],large_url: f['large_url'],square_url: f['square_url']})
+      f_obj.attribution_txt = f['attribution']
+      @fotos << f_obj
+    end
 
-      atributos_adicionales.each do |a|
-        f.delete(a)
-        foto_default.delete(a)
-      end
+    @foto_default = @fotos.first
 
-      Photo.new(f)
-    }
+    # Para guardar la foto principal
+    if a = @especie.adicional
+      a.foto_principal = @foto_default.best_photo
+      a.save if a.changed?
+    else
+      @especie.adicional = Adicional.create({foto_principal: @foto_default.best_photo, especie_id: @especie.id})
+    end
 
-    @foto_default = Photo.new(foto_default)
+    # Para aobtener numero de fotos y la foto principal
+    @especie.fotos_totales_principal
+
+    # Para guardar los cambios en redis
+    if Rails.env.production?
+      @especie.delay(queue: 'redis').guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+    else
+      @especie.guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+    end
+  end
+
+  def fotos_bdi
+    x = BDIService.new
+    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
+    render json: fotos_conabio
+  end
+
+  def fotos_naturalista
+    fotos = if p = @especie.proveedor
+              p.fotos_naturalista
+            else
+              {estatus: 'error', msg: 'proveedor no exitste'}
+            end
+
+    render json: fotos
   end
 
   def edit_photos
@@ -458,11 +479,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def fotos_bdi
-    x = BDIService.new
-    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
-    render json: fotos_conabio.to_json
-  end
 
   private
 
