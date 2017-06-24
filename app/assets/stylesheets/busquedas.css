@@ -54,3 +54,10 @@ div.result-img-container{
     display: inline-block;
     padding-bottom: 32px;
 }
+
+#toggleFiltros.oculta:before, #toggleFiltros-xs-sm.oculta:before{
+    content: "<< Ocultar filtros";
+}
+#toggleFiltros.muestra:before, #toggleFiltros-xs-sm.muestra:before{
+    content: ">> Mostrar filtros";
+}

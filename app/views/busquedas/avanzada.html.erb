@@ -1,16 +1,19 @@
-<div id="busqueda_avanzada" class="<%= params[:action]=='resultados' ? 'col-md-3' : 'row' %>">
+<div id="busqueda_avanzada" class="<%= params[:action]=='resultados' ? 'col-md-3 hidden-xs hidden-sm' : 'row' %>">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
       <div class="panel panel-default <%= params[:action]=='resultados' ? '' : 'dropup' %>" id="panelFiltrosPt">
-        <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')}).toggleClass('hidden-xs hidden-sm');">
-          <% if params[:action] != 'resultados' %>
+        <% if params[:action] != 'resultados' %>
+          <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
             <h4 class="text-center">
               <strong>Búsqueda avanzada <span class="caret"></span></strong>
               <br />
               <small>Selecciona un ícono o una combinación de íconos y presiona buscar</small>
             </h4>
-          <% end %>
-        </div>
-        <div class="panel-body text-center hidden-xs hidden-sm" id="panelFiltros">
+          </div>
+        <% else %>
+	      <!-- Aun decidiendo q poner aquí :P -->
+        <% end %>
+
+        <div class="panel-body text-center" id="panelFiltros">
           <% if I18n.locale.to_s == 'es-cientifico' %>
               <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
           <% else %>

@@ -230,9 +230,27 @@
         <strong><%= @fuzzy_match %></strong>
     </div>
 <% end %>
+
+<div class="col-xs-12">
+  <% if params[:busqueda]=='avanzada' %>
+    <button id="toggleFiltros" class="hidden-xs hidden-sm btn btn-link oculta" onclick="$('#busqueda_avanzada').toggle(function(){$('#pestañas').toggleClass('col-xs-12 col-md-9', function(){$('#toggleFiltros').toggleClass('oculta muestra')})})"; type="button">
+    </button>
+    <button id="toggleFiltros-xs-sm" class="hidden-md hidden-lg btn btn-link muestra" onclick="$('#busqueda_avanzada').toggleClass('col-md-3 hidden-xs hidden-sm', function(){$('#toggleFiltros-xs-sm').toggleClass('oculta muestra')})"; type="button">
+    </button>
+  <% end %>
+  <button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#myModal">
+    Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
+  </button>
+  <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
+    <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
+      Listado para Revisión (✓)
+    </button>
+  <% end %>
+</div>
+
+
 <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
   <%= render :file => 'busquedas/avanzada' %>
-
   <script type="text/javascript">
 	  $(document).ready(function(){
 
@@ -281,7 +299,8 @@
 	  });
   </script>
 <% end %>
-<div id="pestañas" class="panel col-md-offset-3">
+
+<div id="pestañas" class="panel col-xs-12 <%= 'col-md-9' if params[:busqueda]=='avanzada' %>">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active">
       <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" url="<%= request.url %>">Todos (<%= @totales if @totales.present? %>)</a>
@@ -297,21 +316,6 @@
               </a>
             </li>
         <% end %>
-    <% end %>
-
-    <li class="pull-right">
-      <!-- Button trigger modal -->
-      <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#myModal">
-        Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
-      </button>
-    </li>
-
-    <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
-        <li class="pull-right">
-          <button type="button" class="btn btn-sm btn-warning" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
-            Listado para Revisión (✓)
-          </button>
-        </li>
     <% end %>
   </ul>
 
