@@ -323,6 +323,42 @@ es:
       submit: Guardar %{model}
       update: Actualizar %{model}
   iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
+  lenguas:
+    afrikaans: Afrikáans
+    bengali: Bengalí
+    cebuano: Cebuano
+    creole_french: Criollo (Francés)
+    creole_portuguese: Criollo (Portugués)
+    davawenyo: Davawenyo
+    dutch: Holandés
+    english: Inglés
+    french: Francés
+    gela: Gela
+    german: Alemán
+    hawaiian: Hawaiano
+    hebrew: Hebreo
+    hiligaynon: Hiligainón
+    icelandic: Islandés
+    ilokano: Ilocano
+    italian: Italiano
+    japanese: Japonés
+    korean: Coreano
+    maltese: Maltés
+    maori: Maorí
+    misima_paneati: Misima-paneati
+    nd: ND
+    norwegian: Noruego
+    pangasinan: Pangasinán
+    portuguese: Portugués
+    romanian: Rumano
+    russian: Ruso
+    spanish: Español
+    swedish: Sueco
+    tagalog: Tagalo
+    tahitian: Tahitiano
+    tokelauan: Tokelauano
+    turkish: Turco
+    waray_waray: Samareño
   listas_columnas:
     generales:
       anotacion: Anotación

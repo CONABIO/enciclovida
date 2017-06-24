@@ -19,6 +19,8 @@ class Proveedor < ActiveRecord::Base
     return ficha unless ficha[:estatus] == 'OK'
 
     nombres_comunes = ficha[:ficha]['taxon_names']
+    # Pone en la primera posicion el deafult_name
+    nombres_comunes.unshift(ficha[:ficha]['default_name']) if ficha[:ficha]['default_name'].any?
     {estatus: 'OK', nombres_comunes: nombres_comunes}
   end
 

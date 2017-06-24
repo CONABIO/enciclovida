@@ -365,7 +365,19 @@ class EspeciesController < ApplicationController
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
             else
-              {estatus: 'error', msg: 'proveedor no exitste'}
+              ficha = @especie.ficha_naturalista_por_nombre
+
+              # Intentamos de nuevo a ver si vinculo con un ID de naturalista
+              if ficha[:estatus] == 'OK'
+                if p = @especie.proveedor
+                  p.fotos_naturalista
+                else
+                  {estatus: 'error', msg: 'Hubo un error, no guardo naturalista_id'}
+                end
+
+              else
+                {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+              end
             end
 
     render json: fotos
@@ -377,9 +389,11 @@ class EspeciesController < ApplicationController
                       else
                         ficha = @especie.ficha_naturalista_por_nombre
 
-                        # Intentamos de nuevo a ver si vinculo con un ID de naturalista
                         if ficha[:estatus] == 'OK'
-                          {estatus: 'OK', nombres_comunes: ficha[:taxon_names]}
+                          nombres_comunes = ficha[:ficha]['taxon_names']
+                          # Pone en la primera posicion el deafult_name
+                          nombres_comunes.unshift(ficha[:ficha]['default_name']) if ficha[:ficha]['default_name'].any?
+                          {estatus: 'OK', nombres_comunes: nombres_comunes}
                         else
                           {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
                         end

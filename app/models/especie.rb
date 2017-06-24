@@ -7,7 +7,8 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
-                :x_nombres_comunes, :x_fotos, :x_nombre_comun_principal, :x_foto_principal, :x_best_photo, :x_fotos_principales, :x_fotos_totales,
+                :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos,
+                :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
@@ -266,36 +267,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos = {}
     datos['data'] = {}
 
-    ad = adicional
-    fotos_nombres_servicios
+    fotos_nombres_servicios if opc[:consumir_servicios]
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
       datos['id'] = "#{nc.id}#{id}00000".to_i
       datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
-      datos['data']['nombre_comun'] = nc.nombre_comun.limpia
+      datos['data']['nombre_comun'] = nc.nombre_comun.limpia.primera_en_mayuscula
       datos['data']['id'] = nc.id
-
-    elsif opc[:adicional]  # Asigna si viene la peticion de nombre_comun_principal
-      datos['id'] = "#{ad.id}#{id}".to_i
-      datos['term'] = I18n.transliterate(ad.nombre_comun_principal.limpia)
-      datos['data']['nombre_comun'] = ad.nombre_comun_principal.limpia
-      datos['data']['id'] = ad.id
 
     else  # Asigna si viene la peticion de nombre_cientifico
       datos['id'] = id
       datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
-      datos['data']['nombre_comun'] = ad.nombre_comun_principal.try(:limpia) if ad
+      datos['data']['nombre_comun'] = x_nombre_comun_principal.try(:limpia).try(:primera_en_mayuscula)
       datos['data']['id'] = id
     end
 
-    # Foto principal
-    if x_foto_principal
-      datos['data']['foto'] = x_foto_principal
-    else
-      datos['data']['foto'] = ad.foto_principal if ad
-    end
-
+    datos['data']['lengua'] = x_lengua
+    datos['data']['foto'] = x_square_url  # Foto square_url
     datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
     datos['data']['autoridad'] = nombre_autoridad.try(:limpia)
@@ -319,16 +308,47 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
   def guarda_redis(opc={})
+    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
+    self.x_foto_principal = nil
+    self.x_nombre_comun_principal = nil
+    self.x_lengua = nil
+    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
+    self.x_nombres_comunes_naturalista = nil
+
     categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
 
     # Guarda en la categoria seleccionada
     loader = Soulmate::Loader.new(categoria)
-    loader.add(redis(opc))
+
+    # Guarda el redis con todos los nombres cientificos
+    loader.add(redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
     nombres_comunes.each do |nc|
       loader.add(redis(opc.merge({nombre_comun: nc})))
     end
+
+    # Guarda el redis con los nombres comunes de naturalista diferentes a catalogos
+    if x_nombres_comunes_naturalista
+      x_nombres_comunes_naturalista.each do |nom|
+        next if nom['lexicon'] == 'Scientific Names'
+        # Si no hay nombres en catalogos o son diferentes, entonces meto el nombre a redis
+        if x_nombres_comunes_catalogos.blank? || !x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
+
+          if nom['lexicon'].present?
+            lengua = I18n.transliterate(nom['lexicon'].downcase.gsub(' ','_'))
+          else
+            lengua = 'nd'
+          end
+
+          nc = NombreComun.new({id: nom['id'], nombre_comun: nom['name'], lengua: I18n.t("lenguas.#{lengua}", default: lengua)})
+          '--------------------' + nc.inspect
+          loader.add(redis(opc.merge({nombre_comun: nc})))
+        end
+
+      end
+    end
+
   end
 
   # Servicio que trae la respuesta de bdi
@@ -339,8 +359,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Fotos y nombres comunes de dbi, catalogos y naturalista
   def fotos_nombres_servicios
-    self.x_foto_principal = nil  # Para saber si tiene informacion despues
-    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
+    ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
 
     if p = proveedor
       # Fotos de naturalista
@@ -350,17 +369,30 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_fotos_totales+= fn[:fotos].count
 
         if fn[:fotos].count > 0
-          self.x_foto_principal = fn[:fotos].first['photo']['square_url']
-          self.x_best_photo = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
+          self.x_square_url = fn[:fotos].first['photo']['square_url']
+          self.x_foto_principal = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
+        end
+      end
+
+      # Para guardar los nombres comunes de naturalista y el nombre comun principal
+      ncn = p.nombres_comunes_naturalista
+      if ncn[:estatus] == 'OK'  # Si naturalista tiene un nombre default, le pongo ese
+        if ncn[:nombres_comunes].count > 0 && ncn[:nombres_comunes].first['lexicon'] != 'Scientific Names'
+          self.x_nombre_comun_principal = ncn[:nombres_comunes].first['name']
+          self.x_lengua = ncn[:nombres_comunes].first['lexicon']
+          self.x_nombres_comunes_naturalista = ncn[:nombres_comunes]
         end
       end
     end
 
+    # Si no guardo el de naturalista, pongo el default de catalogos
+    nombre_comun_principal_catalogos if x_nombre_comun_principal.blank?
+
     # Fotos de bdi
     fb = fotos_bdi
     if fb[:estatus] == 'OK'
-      self.x_foto_principal = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
-      self.x_best_photo = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
+      self.x_square_url = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
+      self.x_foto_principal = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
 
       if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
         self.x_fotos_totales+= 25*(ultima-1)
@@ -376,14 +408,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Para guardar la foto principal para los resultados, es la best_photo
     if a = adicional
-      a.foto_principal = x_best_photo
+      a.foto_principal = x_foto_principal
+      a.nombre_comun_principal = x_nombre_comun_principal
       a.save if a.changed?
     else
-      Adicional.create({foto_principal: x_best_photo, especie_id: id})
+      Adicional.create({foto_principal: x_foto_principal, nombre_comun_principal: x_nombre_comun_principal, especie_id: id})
     end
-
-    # Para guardar los nombres comunes de naturalista y el nombre comun principal
-
   end
 
   # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
@@ -416,25 +446,26 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     return {estatus: 'error', msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
-  def self.comprueba_nombre(taxon, data)
-    return nil if data.count == 0
+  # El nombre predeterminado de catalogos
+  def nombre_comun_principal_catalogos
+    con_espaniol = false
+    nombres_comunes_catalogos = nombres_comunes
+    self.x_nombres_comunes_catalogos = nombres_comunes_catalogos.map{|nc| I18n.transliterate(nc.nombre_comun.downcase)} if nombres_comunes_catalogos.length > 0
 
-    data.each do |d|
-      if d['name'] == taxon
-        reino_naturalista = d['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-
-        reino_enciclovida = taxon.is_root? ? taxon.id : taxon.ancestry_ascendente_directo.split('/').first
-
-        # Aseguramos que el taxon aparte de coincidir en el nombre coincida en el reino por lo menos, asi evitamos homonimos
-        return d if reino_naturalista == 1 && reino_enciclovida == 1000001  # Animales
-        return d if reino_naturalista == 47126 && reino_enciclovida == 6000002  # Plantas
-        return d if reino_naturalista == 47170 && reino_enciclovida == 3000004  # Hongos
-
+    # Verifica el nombre en catalogos
+    nombres_comunes_catalogos.each do |nc|
+      if !con_espaniol && nc.lengua == 'Español'
+        self.x_nombre_comun_principal = nc.nombre_comun
+        self.x_lengua = nc.lengua
+        con_espaniol = true
+      elsif !con_espaniol && nc.lengua == 'Inglés'
+        self.x_nombre_comun_principal = nc.nombre_comun
+        self.x_lengua = nc.lengua
+      elsif !con_espaniol
+        self.x_nombre_comun_principal = nc.nombre_comun
+        self.x_lengua = nc.lengua
       end
-    end
-
-    nil
+    end  # End nombres_comunes
   end
 
   def cat_tax_asociadas
@@ -455,27 +486,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
           caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
           where("nivel2 IN (#{rama.join(',')}) OR nombre_categoria_taxonomica='Reino'").order('nivel')
     end
-  end
-
-  def asigna_nombre_comun
-    if adicional
-      # Por si no se quiere sobre-escribir el nombre comun principal
-      return {:cambio => false} if adicional.nombre_comun_principal.present?
-      adicional.pon_nombre_comun_principal
-      {:cambio => adicional.nombre_comun_principal_changed?, :adicional => adicional}
-    else
-      ad = crea_con_nombre_comun
-      {:cambio => ad.nombre_comun_principal.present?, :adicional => ad}
-    end
-  end
-
-  # Pone el nombre comun principal en la tabla adicionales
-  def crea_con_nombre_comun
-    ad = Adicional.new
-    ad.especie_id = id
-
-    ad.pon_nombre_comun_principal
-    ad
   end
 
   # Pone el grupo iconico en la tabla adicionales

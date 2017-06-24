@@ -1,4 +1,5 @@
 module CacheServices
+  # ***********************OJO, los metodos de este archivo cambiaron****************************
   # Actualiza los diferentes servicios a nivel taxon unos minutos despues que el usuario vio el taxon y
   # si es que caduco el cache
   def cache_services
