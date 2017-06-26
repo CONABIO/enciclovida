@@ -5,12 +5,65 @@ class Proveedor < ActiveRecord::Base
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
-    ficha = ficha_naturalista
+    ficha = ficha_naturalista_api_nodejs
     return ficha unless ficha[:estatus] == 'OK'
 
     resultado = ficha[:ficha]['results'].first
     fotos = resultado['taxon_photos']
-    {estatus: 'OK', msg: nil, fotos: fotos}
+    {estatus: 'OK', fotos: fotos}
+  end
+
+  # Todos los nombres comunes de la ficha de naturalista
+  def nombres_comunes_naturalista
+    ficha = ficha_naturalista_api
+    return ficha unless ficha[:estatus] == 'OK'
+
+    nombres_comunes = ficha[:ficha]['taxon_names']
+    # Pone en la primera posicion el deafult_name
+    nombres_comunes.unshift(ficha[:ficha]['default_name']) if ficha[:ficha]['default_name'].any?
+    {estatus: 'OK', nombres_comunes: nombres_comunes}
+  end
+
+  # Consulta la fihca de naturalista por medio de su API nodejs
+  def ficha_naturalista_api_nodejs
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+      self.naturalista_id = resp[:taxon]['id']
+      save
+    end
+
+    begin
+      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
+      ficha = JSON.parse(resp)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
+
+    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
+    return {estatus: 'OK', ficha: ficha}
+  end
+
+  # Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
+  def ficha_naturalista_api
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+      self.naturalista_id = resp[:ficha]['id']
+      save
+    end
+
+    begin
+      resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
+      ficha = JSON.parse(resp)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
+
+    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
+    return {estatus: 'OK', ficha: ficha}
   end
 
   # Saca los nombres comunes del campo naturalista_info
@@ -210,36 +263,6 @@ class Proveedor < ActiveRecord::Base
     rename == 0
   end
 
-  def info_naturalista
-    if naturalista_id.present?
-      puts "\t\tObteniendo información con ID: #{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-
-      begin
-        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-        data = JSON.parse(response.limpia_sql)
-      rescue
-        return nil
-      end
-    else
-      puts "\t\tBuscando coincidencia por nombre: #{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
-      begin
-        response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(especie.nombre_cientifico.limpiar.limpia)}"
-        data_todos = JSON.parse(response.limpia_sql)
-        data = Proveedor.comprueba_nombre(especie, data_todos)
-      rescue
-        return nil
-      end
-    end
-
-    return nil unless data.present?
-    self.naturalista_id = data['id']
-    self.naturalista_info = "#{data}".codifica64     #solo para actualizar el json
-
-    # Solo para especies o inferiores
-    return unless especie.species_or_lower?
-    obs_naturalista
-  end
-
   def obs_naturalista
     data = []
     url = "#{CONFIG.inaturalist_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo&per_page=200"
@@ -308,57 +331,8 @@ class Proveedor < ActiveRecord::Base
     geodatos
   end
 
-  def self.crea_info_naturalista(taxon)
-    puts "\t\t#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-
-    response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(taxon.nombre_cientifico.limpiar.limpia)}"
-    data = JSON.parse(response.limpia_sql)
-    exact_data = Proveedor.comprueba_nombre(taxon, data)
-
-    return nil unless exact_data.present?
-    proveedor = Proveedor.new(especie_id: taxon.id, naturalista_id: exact_data['id'], naturalista_info: "#{exact_data}".codifica64)
-    return proveedor unless taxon.species_or_lower?
-    proveedor.obs_naturalista
-    proveedor
-  end
-
-  def self.comprueba_nombre(taxon, data)
-    return nil if data.count == 0
-
-    data.each do |d|
-      if d['name'] == taxon
-        reino_naturalista = d['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-
-        reino_enciclovida = taxon.is_root? ? taxon.id : taxon.ancestry_ascendente_directo.split('/').first
-
-        # Aseguramos que el taxon aparte de coincidir en el nombre coincida en el reino por lo menos, asi evitamos homonimos
-        return d if reino_naturalista == 1 && reino_enciclovida == 1000001  # Animales
-        return d if reino_naturalista == 47126 && reino_enciclovida == 6000002  # Plantas
-        return d if reino_naturalista == 47170 && reino_enciclovida == 3000004  # Hongos
-
-      end
-    end
-
-    nil
-  end
-
 
   private
-
-  def ficha_naturalista
-    return {estatus: 'error', msg: 'naturalista_id no exitste'} unless naturalista_id.present?
-
-    begin
-      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: 'error', msg: e}
-    end
-
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: 'OK', msg: nil, ficha: ficha}
-  end
 
   def to_kml(cadenas)
     evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']

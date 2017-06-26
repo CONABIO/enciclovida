@@ -27,8 +27,8 @@ end
 def procesando_nombres
   puts 'Procesando los nombres cientificos...' if OPTS[:debug]
 
-  #Especie.find_each do |t|
-  Especie.limit(100).each do |t|
+  Especie.find_each do |t|
+  #Especie.limit(100).each do |t|
     puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
 
     # Sacando el conteo de fotos al vuelo
@@ -77,6 +77,6 @@ start_time = Time.now
 creando_carpeta
 borrando_archivos
 procesando_nombres
-#cargando_archivos
+cargando_archivos
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

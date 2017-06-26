@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'trollop'
-
+# ************************OJO los metodos de este archivo cambiaron********************************
 OPTS = Trollop::options do
   banner <<-EOS
 Exporta a un archivo .csv los nombres comunes que no son de catalogos, i.e.

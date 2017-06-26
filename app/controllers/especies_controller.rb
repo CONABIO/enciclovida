@@ -3,11 +3,11 @@
 class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
-                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi]
+                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
-                                     :fotos_referencia, :fotos_naturalista]
+                                     :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -20,7 +20,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_naturalista]
+                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -46,7 +46,7 @@ class EspeciesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @especie.delayed_job_service
+        #@especie.delayed_job_service
 
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
@@ -347,22 +347,11 @@ class EspeciesController < ApplicationController
 
     @foto_default = @fotos.first
 
-    # Para guardar la foto principal
-    if a = @especie.adicional
-      a.foto_principal = @foto_default.best_photo
-      a.save if a.changed?
-    else
-      @especie.adicional = Adicional.create({foto_principal: @foto_default.best_photo, especie_id: @especie.id})
-    end
-
-    # Para aobtener numero de fotos y la foto principal
-    @especie.fotos_totales_principal
-
     # Para guardar los cambios en redis
     if Rails.env.production?
-      @especie.delay(queue: 'redis').guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+      @especie.delay(queue: 'redis').guarda_redis
     else
-      @especie.guarda_redis({foto_principal: @especie.x_foto_principal, fotos_totales: @especie.x_fotos_totales})
+      @especie.guarda_redis
     end
   end
 
@@ -376,10 +365,41 @@ class EspeciesController < ApplicationController
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
             else
-              {estatus: 'error', msg: 'proveedor no exitste'}
+              ficha = @especie.ficha_naturalista_por_nombre
+
+              # Intentamos de nuevo a ver si vinculo con un ID de naturalista
+              if ficha[:estatus] == 'OK'
+                if p = @especie.proveedor
+                  p.fotos_naturalista
+                else
+                  {estatus: 'error', msg: 'Hubo un error, no guardo naturalista_id'}
+                end
+
+              else
+                {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+              end
             end
 
     render json: fotos
+  end
+
+  def nombres_comunes_naturalista
+    nombres_comunes = if p = @especie.proveedor
+                        p.nombres_comunes_naturalista
+                      else
+                        ficha = @especie.ficha_naturalista_por_nombre
+
+                        if ficha[:estatus] == 'OK'
+                          nombres_comunes = ficha[:ficha]['taxon_names']
+                          # Pone en la primera posicion el deafult_name
+                          nombres_comunes.unshift(ficha[:ficha]['default_name']) if ficha[:ficha]['default_name'].any?
+                          {estatus: 'OK', nombres_comunes: nombres_comunes}
+                        else
+                          {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                        end
+                      end
+
+    render json: nombres_comunes
   end
 
   def edit_photos
