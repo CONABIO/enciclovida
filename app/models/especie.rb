@@ -275,15 +275,16 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
       datos['data']['nombre_comun'] = nc.nombre_comun.limpia.primera_en_mayuscula
       datos['data']['id'] = nc.id
+      datos['data']['lengua'] = nc.lengua
 
     else  # Asigna si viene la peticion de nombre_cientifico
       datos['id'] = id
       datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
       datos['data']['nombre_comun'] = x_nombre_comun_principal.try(:limpia).try(:primera_en_mayuscula)
       datos['data']['id'] = id
+      datos['data']['lengua'] = x_lengua
     end
 
-    datos['data']['lengua'] = x_lengua
     datos['data']['foto'] = x_square_url  # Foto square_url
     datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
     datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
@@ -330,21 +331,22 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Guarda el redis con los nombres comunes de naturalista diferentes a catalogos
     if x_nombres_comunes_naturalista
-      x_nombres_comunes_naturalista.each do |nom|
+      primer_nombre = nil
+
+      x_nombres_comunes_naturalista.each_with_index do |nom, index|
         next if nom['lexicon'] == 'Scientific Names'
-        # Si no hay nombres en catalogos o son diferentes, entonces meto el nombre a redis
-        if x_nombres_comunes_catalogos.blank? || !x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
+        next if x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
+        primer_nombre = nom['name'] if index == 0
+        next if primer_nombre == nom['name'] && index > 0
 
-          if nom['lexicon'].present?
-            lengua = I18n.transliterate(nom['lexicon'].downcase.gsub(' ','_'))
-          else
-            lengua = 'nd'
-          end
-
-          nc = NombreComun.new({id: nom['id'], nombre_comun: nom['name'], lengua: I18n.t("lenguas.#{lengua}", default: lengua)})
-          '--------------------' + nc.inspect
-          loader.add(redis(opc.merge({nombre_comun: nc})))
+        if nom['lexicon'].present?
+          lengua = I18n.transliterate(nom['lexicon'].downcase.gsub(' ','_'))
+        else
+          lengua = 'nd'
         end
+
+        nc = NombreComun.new({id: nom['id'], nombre_comun: nom['name'], lengua: I18n.t("lenguas.#{lengua}", default: lengua)})
+        loader.add(redis(opc.merge({nombre_comun: nc})))
 
       end
     end
@@ -385,9 +387,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       end
     end
 
-    # Si no guardo el de naturalista, pongo el default de catalogos
-    nombre_comun_principal_catalogos if x_nombre_comun_principal.blank?
-
     # Fotos de bdi
     fb = fotos_bdi
     if fb[:estatus] == 'OK'
@@ -405,6 +404,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
+
+    # Asigno estos nombres comunes ya que los ocupare más adelante
+    self.x_nombres_comunes_catalogos = nombres_comunes.map{|nc| I18n.transliterate(nc.nombre_comun.downcase)} if nombres_comunes.length > 0
+
+    # Si no guardo el de naturalista, pongo el default de catalogos
+    nombre_comun_principal_catalogos if x_nombre_comun_principal.blank?
 
     # Para guardar la foto principal para los resultados, es la best_photo
     if a = adicional
@@ -434,7 +439,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         next unless reino_naturalista.present?
         reino_enciclovida = is_root? ? id : ancestry_ascendente_directo.split('/').first
 
-        # Si coincide el reino con animalia, plantas u hongos
+        # Si coincide el reino con animalia, plantas u hongos, OJO quitar esto en la centralizacion
         if (reino_naturalista == 1 && reino_enciclovida == 1000001) || (reino_naturalista == 47126 && reino_enciclovida == 6000002) || (reino_naturalista == 47170 && reino_enciclovida == 3000004)
           self.proveedor = Proveedor.create({naturalista_id: t.id, especie_id: id}) if !proveedor
           return {estatus: 'OK', ficha: t}
@@ -446,14 +451,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     return {estatus: 'error', msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
-  # El nombre predeterminado de catalogos
+  # El nombre predeterminado de catalogos y la lengua
   def nombre_comun_principal_catalogos
     con_espaniol = false
-    nombres_comunes_catalogos = nombres_comunes
-    self.x_nombres_comunes_catalogos = nombres_comunes_catalogos.map{|nc| I18n.transliterate(nc.nombre_comun.downcase)} if nombres_comunes_catalogos.length > 0
 
-    # Verifica el nombre en catalogos
-    nombres_comunes_catalogos.each do |nc|
+    nombres_comunes.each do |nc|
       if !con_espaniol && nc.lengua == 'Español'
         self.x_nombre_comun_principal = nc.nombre_comun
         self.x_lengua = nc.lengua

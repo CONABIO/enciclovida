@@ -46,6 +46,12 @@ class EspeciesController < ApplicationController
 
     respond_to do |format|
       format.html do
+        # Para guardar los cambios en redis
+        if Rails.env.production?
+          @especie.delay(queue: 'redis').guarda_redis
+        else
+          @especie.guarda_redis
+        end
         #@especie.delayed_job_service
 
         if @species_or_lower = @especie.species_or_lower?
@@ -346,13 +352,6 @@ class EspeciesController < ApplicationController
     end
 
     @foto_default = @fotos.first
-
-    # Para guardar los cambios en redis
-    if Rails.env.production?
-      @especie.delay(queue: 'redis').guarda_redis
-    else
-      @especie.guarda_redis
-    end
   end
 
   def fotos_bdi
@@ -365,19 +364,7 @@ class EspeciesController < ApplicationController
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
             else
-              ficha = @especie.ficha_naturalista_por_nombre
-
-              # Intentamos de nuevo a ver si vinculo con un ID de naturalista
-              if ficha[:estatus] == 'OK'
-                if p = @especie.proveedor
-                  p.fotos_naturalista
-                else
-                  {estatus: 'error', msg: 'Hubo un error, no guardo naturalista_id'}
-                end
-
-              else
-                {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
-              end
+              {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
             end
 
     render json: fotos
@@ -387,16 +374,7 @@ class EspeciesController < ApplicationController
     nombres_comunes = if p = @especie.proveedor
                         p.nombres_comunes_naturalista
                       else
-                        ficha = @especie.ficha_naturalista_por_nombre
-
-                        if ficha[:estatus] == 'OK'
-                          nombres_comunes = ficha[:ficha]['taxon_names']
-                          # Pone en la primera posicion el deafult_name
-                          nombres_comunes.unshift(ficha[:ficha]['default_name']) if ficha[:ficha]['default_name'].any?
-                          {estatus: 'OK', nombres_comunes: nombres_comunes}
-                        else
-                          {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
-                        end
+                        {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
                       end
 
     render json: nombres_comunes
