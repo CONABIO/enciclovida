@@ -274,7 +274,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       datos['id'] = "#{nc.id}#{id}00000".to_i
       datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
       datos['data']['nombre_comun'] = nc.nombre_comun.limpia.primera_en_mayuscula
-      datos['data']['id'] = nc.id
+      datos['data']['id'] = id
       datos['data']['lengua'] = nc.lengua
 
     else  # Asigna si viene la peticion de nombre_cientifico
@@ -335,7 +335,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
       x_nombres_comunes_naturalista.each_with_index do |nom, index|
         next if nom['lexicon'] == 'Scientific Names'
-        next if x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
+        next if x_nombres_comunes_catalogos.present? && x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
         primer_nombre = nom['name'] if index == 0
         next if primer_nombre == nom['name'] && index > 0
 
@@ -381,8 +381,16 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       if ncn[:estatus] == 'OK'  # Si naturalista tiene un nombre default, le pongo ese
         if ncn[:nombres_comunes].count > 0 && ncn[:nombres_comunes].first['lexicon'] != 'Scientific Names'
           self.x_nombre_comun_principal = ncn[:nombres_comunes].first['name']
-          self.x_lengua = ncn[:nombres_comunes].first['lexicon']
           self.x_nombres_comunes_naturalista = ncn[:nombres_comunes]
+
+          # Asigna la lengua
+          lengua = ncn[:nombres_comunes].first['lexicon']
+          if lengua.present?
+            l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
+            self.x_lengua = I18n.t("lenguas.#{l}", default: lengua)
+          else
+            self.x_lengua = 'nd'
+          end
         end
       end
     end
