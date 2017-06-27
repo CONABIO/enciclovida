@@ -1,3 +1,4 @@
+# coding: utf-8
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
@@ -152,24 +153,6 @@ module EspeciesHelper
             #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
             #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
     end
-  end
-
-  # Nombres comunes agrupados por lengua
-  def dameNomComunes(taxon)
-    nombres_comunes = ''
-    if I18n.locale.to_s == 'es-cientifico'
-      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
-    else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
-    end
-
-    # Agrupa los nombres por su lengua
-    agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
-    keys = agrupa_nombres.keys.sort
-    keys.each do |k|
-      nombres_comunes << "#{agrupa_nombres[k].join(', ')} <small>(#{k})</small> / "
-    end
-    nombres_comunes.present? ? "<p><strong>Nombres comunes: </strong>#{nombres_comunes[0..-3]}</p>" : nombres_comunes
   end
 
   # Nombres comunes con su bibliografia como referencia

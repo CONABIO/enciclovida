@@ -92,6 +92,7 @@ Buscador::Application.routes.draw do
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
+      get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
     end
   end
 

@@ -44,8 +44,4 @@ adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_co
   def personalizaBusqueda
     "#{self.nombre_comun} (#{self.lengua})".html_safe
   end
-
-  def traduce_lengua
-
-  end
 end

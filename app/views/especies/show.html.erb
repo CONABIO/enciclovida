@@ -3,6 +3,13 @@
     <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
 <% end %>
 
+<% content_for(:delayedjs) do %>
+<script>
+  // Para correr los nobres comunes del lado del cliente
+  nombres_comunes_todos();
+</script>
+<% end %>
+
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var TAXON = <%=raw @especie.to_json %>;
     var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
@@ -28,7 +35,7 @@
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <%= dameNomComunes(@especie).html_safe %>
+    <div id="nombres_comunes_todos"></div>
     <%= dameStatus(@especie).html_safe %>
   </div>
 </div>

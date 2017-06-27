@@ -1,5 +1,10 @@
 //= require photo_selectors
 
+function nombres_comunes_todos()
+{
+    $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
+}
+
 $(document).ready(function(){
     cual_ficha = '';
 
