@@ -1,6 +1,6 @@
 <div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
   <% if params[:action] != 'resultados' %>
-    <h4 class="text-left text-primary"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />
+    <h4 class="text-left text-success"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />
   <% end %>
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
     <div class="" id="panelFiltrosPt">

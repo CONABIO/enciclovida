@@ -64,10 +64,10 @@ div.result-img-container{
     transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
 @media (min-width: 993px){
-    #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros";}
-    #resultados-container.state-one #toggleFiltros span:before{content: "\e079";}
-    #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros";}
-    #resultados-container.state-two #toggleFiltros span:before{content: "\e080";}
+    #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros de búsqueda";}
+    #resultados-container.state-one #toggleFiltros span:before{content: "\e132";}
+    #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de buúsqueda";}
+    #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
     #resultados-container.state-one #busqueda_avanzada{
         width: 25%;
         display: block;
@@ -84,10 +84,10 @@ div.result-img-container{
     }
 }
 @media (max-width: 992px){
-    #resultados-container.state-one #toggleFiltros:after{content: " Mostrar filtros";}
-    #resultados-container.state-one #toggleFiltros span:before{content: "\e114";}
-    #resultados-container.state-two #toggleFiltros:after{content: " Ocultar filtros";}
-    #resultados-container.state-two #toggleFiltros span:before{content: "\e113";}
+    #resultados-container.state-one #toggleFiltros:before{content: "Mostrar filtros de búsqueda ";}
+    #resultados-container.state-one #toggleFiltros span:after{content: "\e134";}
+    #resultados-container.state-two #toggleFiltros:before{content: "Ocultar filtros de búsqueda ";}
+    #resultados-container.state-two #toggleFiltros span:after{content: "\e133";}
     #resultados-container.state-one #busqueda_avanzada{
         width: 0%;
         display: none;
