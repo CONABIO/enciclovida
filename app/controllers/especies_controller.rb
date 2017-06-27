@@ -366,7 +366,7 @@ class EspeciesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render json: @fotos.to_json}
+      format.json {render json: bdi}
       format.html do
         @fotos = bdi[:fotos]
       end

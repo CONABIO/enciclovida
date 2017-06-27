@@ -15,7 +15,7 @@
     var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
     var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
     var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
-    var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi';
+    var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
 </script>
 
 <% if notice.present? %>
