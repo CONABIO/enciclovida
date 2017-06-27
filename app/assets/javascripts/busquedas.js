@@ -16,10 +16,7 @@ por_nombre = function()
         $(this).prop('checked', false);
     });
 
-    $('#por_gi').hide();
-    $('#por_nombre_fuente').hide();
-    $('#por_gi_fuente').show();
-    $('#por_nombre').slideDown();
+    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
 por_gi = function()
@@ -29,10 +26,7 @@ por_gi = function()
     $("#datos_cat").html("");
     $("#panelCategoriaTaxonomicaPt").hide();
 
-    $('#por_gi').slideDown();
-    $('#por_nombre_fuente').show();
-    $('#por_gi_fuente').hide();
-    $('#por_nombre').hide();
+    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
 soulmate_asigna = function(tipo_busqueda)
