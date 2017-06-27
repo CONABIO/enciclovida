@@ -5,6 +5,20 @@ function nombres_comunes_todos()
     $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
 }
 
+function imagenes_taxon(p)
+{
+    $.ajax(
+        {
+            url: BDI_API,
+            type: 'GET',
+            data: {p: p}
+        }).done(function (fotos) {
+
+        }).error(function (error) {
+            $('#imagenes_taxon').html('Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>');
+        });
+}
+
 $(document).ready(function(){
     cual_ficha = '';
 

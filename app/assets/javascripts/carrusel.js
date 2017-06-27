@@ -77,7 +77,6 @@ function fotos_bdi()
                                 fotos: JSON.stringify(json.fotos.slice(0, 5))
                             }
                         }).done(function (fotos) {
-                            console.log(fotos)
                             if (jQuery.isEmptyObject(GEO))
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                             else {
