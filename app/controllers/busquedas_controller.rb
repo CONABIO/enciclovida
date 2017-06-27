@@ -179,6 +179,7 @@ class BusquedasController < ApplicationController
             @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
             @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
 
+            #puts @taxones.to_sql
             @taxones.each do |t|
               t.cual_nombre_comun_coincidio(params[:nombre])
             end

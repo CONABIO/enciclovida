@@ -7,7 +7,8 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
-                :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos,
+                :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista,
+                :x_nombres_comunes_catalogos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
@@ -17,7 +18,7 @@ class Especie < ActiveRecord::Base
                 :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden,
                 :x_nombre_autoridad, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
-                :x_distancia, :x_nombre_comun_principal
+                :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
 
   has_one :proveedor
@@ -82,7 +83,7 @@ class Especie < ActiveRecord::Base
   scope :select_basico, ->(attr_adicionales=[]) { select('especies.id, nombre_cientifico, estatus, nombre_autoridad,
         adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
 categoria_taxonomica_id, nombre_categoria_taxonomica, cita_nomenclatural, ancestry_ascendente_directo,
-nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+nombres_comunes as nombres_comunes_adicionales' << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   # Datos sacar los IDs unicos de especies
@@ -91,7 +92,7 @@ nombres_comunes as nombres_comunes_todos' << (attr_adicionales.any? ? ",#{attr_a
   scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
 categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
-nombres_comunes as nombres_comunes_todos").categoria_taxonomica_join.adicional_join }
+nombres_comunes as nombres_comunes_adicionales").categoria_taxonomica_join.adicional_join }
   scope :datos_arbol_con_filtros , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol").categoria_taxonomica_join.adicional_join }
   #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
   scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
@@ -657,9 +658,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
   # nombre es la busqueda que realizo
   def cual_nombre_comun_coincidio(nombre, fuzzy_match=false)
-    # nombres_comunes_todos es un alias a nombres_comunes de adicionales
-    return self.x_nombre_comun_principal = nil unless nombres_comunes_todos.present?
-    nombres = JSON.parse(nombres_comunes_todos).values.flatten
+    # nombres_comunes_adicionales es un alias a nombres_comunes de adicionales
+    return self.x_nombre_comun_principal = nil unless nombres_comunes_adicionales.present?
+    nombres = JSON.parse(nombres_comunes_adicionales).values.flatten
     return self.x_nombre_comun_principal = nil unless nombres.any?
 
     # Para hacer la comparacion en minisculas y sin acentos
