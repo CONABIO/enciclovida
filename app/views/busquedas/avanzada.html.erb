@@ -1,4 +1,4 @@
-<div id="busqueda_avanzada" class="<%= params[:action]=='resultados' ? 'hide-xs hidden-sm col-md-3' : 'row' %>">
+<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
       <div class="panel panel-default <%= params[:action]=='resultados' ? '' : 'dropup' %>" id="panelFiltrosPt">
         <% if params[:action] != 'resultados' %>

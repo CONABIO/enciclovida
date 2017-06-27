@@ -55,9 +55,51 @@ div.result-img-container{
     padding-bottom: 32px;
 }
 
-#toggleFiltros.oculta:before{
-    content: "<< Ocultar filtros";
+#resultados-container #busqueda_avanzada, #resultados-container #pestañas{
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
-#toggleFiltros.muestra:before{
-    content: ">> Mostrar filtros";
+@media (min-width: 993px){
+    #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros";}
+    #resultados-container.state-one #toggleFiltros span:before{content: "\e079";}
+    #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros";}
+    #resultados-container.state-two #toggleFiltros span:before{content: "\e080";}
+    #resultados-container.state-one #busqueda_avanzada{
+        width: 25%;
+        display: block;
+    }
+    #resultados-container.state-two #busqueda_avanzada{
+        width: 0%;
+        display: none;
+    }
+    #resultados-container.state-one #pestañas{
+        width: 75%;
+    }
+    #resultados-container.state-two #pestañas{
+        width: 100%;
+    }
+}
+@media (max-width: 992px){
+    #resultados-container.state-one #toggleFiltros:after{content: " Mostrar filtros";}
+    #resultados-container.state-one #toggleFiltros span:before{content: "\e114";}
+    #resultados-container.state-two #toggleFiltros:after{content: " Ocultar filtros";}
+    #resultados-container.state-two #toggleFiltros span:before{content: "\e113";}
+    #resultados-container.state-one #busqueda_avanzada{
+        width: 0%;
+        display: none;
+    }
+    #resultados-container.state-two #busqueda_avanzada{
+        width: 100%;
+        display: block;
+    }
+    #resultados-container.state-one #pestañas{
+        width: 100%;
+    }
+    #resultados-container.state-two #pestañas{
+        width: 100%;
+    }
 }
