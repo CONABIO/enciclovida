@@ -52,6 +52,7 @@
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Información <%= t(:del_taxon) %></small></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
+    <li id="fotos_li"><a href="#fotos"><i class="newspaper-ev-icon"></i><strong><small>  Fotos</small></strong></a></li>
     <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
 
 
@@ -114,7 +115,13 @@
     </p>
   </div>
 
+  <div id="fotos" class="tab-pane panel-body">
+    <p class="text-center">
+      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+    </p>
+  </div>
+  
   <div id="arbol" class="tab-pane panel-body"></div>
-
   <div id="comentario" class="tab-pane panel-body"></div>
 </div>
