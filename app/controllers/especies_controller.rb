@@ -382,7 +382,7 @@ class EspeciesController < ApplicationController
   end
 
   def nombres_comunes_todos
-    render json: @especie.nombres_comunes_todos
+    @nombres_comunes = @especie.nombres_comunes_todos
   end
 
   def edit_photos

@@ -1,0 +1,8 @@
+<% if @nombres_comunes.present? && @nombres_comunes.any? %>
+<strong>Nombres comunes: </strong>
+<% @nombres_comunes.keys.sort.each do |lengua| %>
+
+<%= @nombres_comunes[lengua].sort.join(', ') %> <sub>(<%= lengua %>)</sub>
+
+<% end %>
+<% end %>
