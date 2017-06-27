@@ -19,6 +19,7 @@ class Lista < ActiveRecord::Base
 
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
+  COLUMNAS_GEODATOS = %w(x_naturalista_obs x_snib_registros x_geoportal_mapa)
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion x_foto_principal
                         cita_nomenclatural nombre_autoridad)
@@ -144,6 +145,18 @@ class Lista < ActiveRecord::Base
             taxon.x_snib_reino = proveedor.snib_reino
           end
         when 'x_naturalista_id'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
+        when 'x_naturalista_obs'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
+        when 'x_snib_registros'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
+        when 'x_geoportal_mapa'
           if proveedor = taxon.proveedor
             taxon.x_naturalista_id = proveedor.naturalista_id
           end

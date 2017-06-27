@@ -6,6 +6,7 @@ class Especie < ActiveRecord::Base
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
+                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista,
                 :x_nombres_comunes_catalogos,
