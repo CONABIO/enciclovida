@@ -55,9 +55,9 @@ div.result-img-container{
     padding-bottom: 32px;
 }
 
-#toggleFiltros.oculta:before, #toggleFiltros-xs-sm.oculta:before{
+#toggleFiltros.oculta:before{
     content: "<< Ocultar filtros";
 }
-#toggleFiltros.muestra:before, #toggleFiltros-xs-sm.muestra:before{
+#toggleFiltros.muestra:before{
     content: ">> Mostrar filtros";
 }
