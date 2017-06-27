@@ -156,12 +156,12 @@ module EspeciesHelper
   end
 
   # Nombres comunes agrupados por lengua
-  def dameNomComunes(taxon)
+  def dameNomComunes
     nombres_comunes = ''
     if I18n.locale.to_s == 'es-cientifico'
-      nombres = taxon.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
+      nombres = @especie.nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     else
-      nombres = taxon.nombres_comunes.where("nombre_comun != '#{taxon.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
+      nombres = @especie.nombres_comunes.where("nombre_comun != '#{@especie.nom_com_prin(false).limpia_sql}'").map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}.uniq
     end
 
     # Agrupa los nombres por su lengua

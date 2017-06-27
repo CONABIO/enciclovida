@@ -442,6 +442,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     return {estatus: 'error', msg: 'No hay resultados'} if resultados.count == 0
 
     resultados.each do |t|
+      next unless t['ancestry'].present?
       if t['name'] == nombre_cientifico
         reino_naturalista = t['ancestry'].split('/')[1].to_i
         next unless reino_naturalista.present?
@@ -476,6 +477,40 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_lengua = nc.lengua
       end
     end  # End nombres_comunes
+  end
+
+  def nombres_comunes_todos
+    # Los nombres comunes de catalogos en hash con la lengua
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}
+
+    # Para los nombres comunes de naturalista
+    if p = proveedor
+      ncnat = p.nombres_comunes_naturalista
+    else
+      ncnat = {estatus: 'error'}
+    end
+
+    if ncnat[:estatus] == 'OK'
+      ncn = ncnat[:nombres_comunes].map do |nc|
+        next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
+
+        # Asigna la lengua
+        lengua = nc['lexicon']
+
+        if lengua.present?
+          l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
+        else
+          l = 'nd'
+        end
+
+        {I18n.t("lenguas.#{l}", default: lengua) => nc['name'].primera_en_mayuscula}
+      end
+    else
+      ncn = []
+    end
+
+    nombres = (ncc + ncn).uniq
+    nombres.compact.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
   end
 
   def cat_tax_asociadas
