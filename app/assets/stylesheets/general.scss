@@ -20,17 +20,15 @@
 }
 
 
-body{
-  background-color: #666666;
-}
 /*Brandbar es la plequita negra al inicio de cada página*/
-#brandBar {
-//  background-color: rgba(51, 51, 51, 0.75);
-//  background-image: url("/fondos/01.jpg");
-//  background-repeat: no-repeat;
-//  background-attachment: fixed;
-//  background-size: cover;
-//  background-position: center center;
+#brandBar.general {
+  background-repeat: no-repeat!important;
+  background-attachment: fixed!important;
+  background-size: cover!important;
+  background-position: bottom!important;
+}
+#brandBar{
+  background-color: rgba(51,51,51,0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
   margin-top: 10px;
@@ -191,8 +189,6 @@ ul.social-buttons li a:active {
   color: #777777;
 }
 .panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
-  //border: 1px solid transparent!important;
-  border: 0px;
   color: #800000;
   background-color: #ececec;
 }
