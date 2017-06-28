@@ -389,20 +389,27 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       # Para guardar los nombres comunes de naturalista y el nombre comun principal
       ncn = p.nombres_comunes_naturalista
       if ncn[:estatus] == 'OK'  # Si naturalista tiene un nombre default, le pongo ese
-        if ncn[:nombres_comunes].count > 0 && ncn[:nombres_comunes].first['lexicon'] != 'Scientific Names'
-          self.x_nombre_comun_principal = ncn[:nombres_comunes].first['name']
-          self.x_nombres_comunes_naturalista = ncn[:nombres_comunes]
+        ncn[:nombres_comunes].each do |nc|
+          if nc['lexicon'] != 'Scientific Names'
+            self.x_nombre_comun_principal = nc['name']
 
-          # Asigna la lengua
-          lengua = ncn[:nombres_comunes].first['lexicon']
-          if lengua.present?
-            l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
-            self.x_lengua = I18n.t("lenguas.#{l}", default: lengua)
-          else
-            self.x_lengua = 'nd'
-          end
-        end
-      end
+            # Asigna la lengua
+            lengua = nc['lexicon']
+            if lengua.present?
+              l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
+              self.x_lengua = I18n.t("lenguas.#{l}", default: lengua)
+            else
+              self.x_lengua = I18n.t("lenguas.nd", default: lengua)
+            end
+
+            break  # Es necesario salirse para que no asigne el ultimo
+
+          end  # End lexicon != nombre cientifico
+        end  # End each do nombres_comunes
+
+        self.x_nombres_comunes_naturalista = ncn[:nombres_comunes]
+
+      end  # End estatus OK
     end
 
     # Fotos de bdi
