@@ -1,11 +1,11 @@
 class BDIService
 
-  def dameFotos(nombre_cientifico, p=nil)
+  def dameFotos(opts)
     bdi = CONFIG.bdi_imagenes
     fotos = []
 
-    url = "#{bdi}/fotoweb/archives/5000-Banco de Imágenes/?528='#{nombre_cientifico}'"
-    url << "&p=#{p-1}" if p
+    url = "#{bdi}/fotoweb/archives/5000-Banco de Imágenes/?#{opts[:campo]}='#{opts[:nombre]}'"
+    url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
 
