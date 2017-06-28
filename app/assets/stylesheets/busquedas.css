@@ -8,11 +8,11 @@ div.result-img-container{
     display: inline-block;
     overflow: hidden;
     max-width: 100%;
-    margin: 5px;
+    margin: 5px 0px;
     position: relative;
 }
 .panel-resultados div.result-img-container img{
-    max-height: 225px;
+    max-height: 215px;
     margin: -25px;
     transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
     vertical-align: middle;
@@ -34,15 +34,20 @@ div.result-img-container{
 .panel-resultados div.result-img-container i.ev1-ev-icon:hover{
     font-size: 3em;
 }
-
-.panel-resultados div.result-img-container h5{
-    position: relative;
-    background-color: #f7f7f7;
+.panel-resultados div.result-img-container .result-nombre-container{
+    min-height: 44px;
+    padding: 0;
     margin: 0;
-    padding: 3px 5px;
+    background-color: #ececec;
+    position: relative;
+
+}
+.panel-resultados div.result-img-container h5{
+    margin: 0;
+    padding: 2px 5px;
     text-align: center;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 .panel-resultados div.result-img-container a{
     cursor: pointer;
@@ -69,7 +74,7 @@ div.result-img-container{
     #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de buúsqueda";}
     #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
     #resultados-container.state-one #busqueda_avanzada{
-        width: 25%;
+        width: 27%;
         display: block;
     }
     #resultados-container.state-two #busqueda_avanzada{
@@ -77,7 +82,7 @@ div.result-img-container{
         display: none;
     }
     #resultados-container.state-one #pestañas{
-        width: 75%;
+        width: 73%;
     }
     #resultados-container.state-two #pestañas{
         width: 100%;
