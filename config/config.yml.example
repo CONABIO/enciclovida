@@ -17,9 +17,6 @@ base: &base
   ip_sql_server: [tus_ips]
   secret_sql_server: Tu cadena secreta
 
-  # IP(s) de donde toman los cambios de BDI
-  fotos_ip: [172.16.1.158]
-
   # URL SNIB, se realizo un proxy reverse en su respectivo web server
   geoportal_url: http://localhost:9000/snib?qtype=getSpecies
   geoportal_informacion: http://www.conabio.gob.mx/snibgeoportal/Ejemplar.php?id=
@@ -29,7 +26,7 @@ base: &base
   geoserver_descarga_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?format=kmz&height=1024&width=1024&request=GetMap&service=wms
 
   # URL BDI y URL basico para imagen
-  bdi_imagenes: http://bdi.conabio.gob.mx:5050
+  bdi_imagenes: http://bdi.conabio.gob.mx
   bdi_fotoweb: http://bdi2.conabio.gob.mx/fotoweb/archives/5000-Banco%20de%20Imágenes/
 
   # URL de NaturaLista e iNaturalist
@@ -50,15 +47,14 @@ base: &base
   photo_providers: [conabio, eol, wikimedia,flickr]
 
   # Usuario predeterminado para correr procesos desde los scripts de tools
-  usuario: usuario
+  usuario: 1
 
   # Credenaciles generales por http
   username: tu-usuario
   password: tu-passwd
 
-  # Servidor en produccion que tendra los kml y kmz (bios)
-  servidor: http://bios.conabio.gob.mx/kmz
-  servidor_bios: http://bios.conabio.gob.mx
+  # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
+  servidor: http://enciclovida.mx/kmz
 
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
