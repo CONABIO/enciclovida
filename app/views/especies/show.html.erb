@@ -82,7 +82,7 @@
 <hr/>
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="glyphicon glyphicon-globe"></i><strong><small> Mapa</small></strong></a></li>
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a></li>
     <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
     <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Información <%= t(:del_taxon) %></small></strong></a></li>
@@ -91,7 +91,7 @@
 
 
     <div class="btn-group pull-right">
-      <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Más recursos...  <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" style="z-index: 1001;">
