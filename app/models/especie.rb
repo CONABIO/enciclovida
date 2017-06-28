@@ -633,7 +633,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       escribe_cache
 
       if Rails.env.production?
-        delay(priority: USER_PRIORITY, queue: 'cache_services').cache_services
+        delay(queue: 'cache_services').cache_services
       else
         cache_services
       end
