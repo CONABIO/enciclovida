@@ -55,7 +55,9 @@ class EspeciesController < ApplicationController
         else
           @especie.guarda_redis
         end
-        #@especie.delayed_job_service
+
+        # Para guardar las observaciones, tiene cache de 1 semana
+        @especie.delayed_job_service if Rails.env.production?
 
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
