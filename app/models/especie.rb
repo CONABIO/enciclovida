@@ -356,9 +356,20 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   # Servicio que trae la respuesta de bdi
-  def fotos_bdi(p=nil)
+  def fotos_bdi(opts={})
     bdi = BDIService.new
-    bdi.dameFotos(nombre_cientifico,p)
+
+    if species_or_lower?
+      puts "\n\n\nAQUI especia\n\n\n"
+      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 528}))
+    elsif is_root?
+      puts "\n\n\nAQUI raiz\n\n\n"
+      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 15}))
+    else
+      puts "\n\n\nAQUI lo demás\n\n\n"
+      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 20}))
+    end
+
   end
 
   # Fotos y nombres comunes de dbi, catalogos y naturalista
@@ -405,7 +416,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
       if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
         self.x_fotos_totales+= 25*(ultima-1)
-        fbu = fotos_bdi(ultima)
+        fbu = fotos_bdi({pagina: ultima})
 
         if fbu[:estatus] == 'OK'
           self.x_fotos_totales+= fbu[:fotos].count
