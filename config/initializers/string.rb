@@ -39,6 +39,7 @@ class String
   end
 
   def primera_en_mayuscula
+    return self unless self.present?
     self.sub(/^(.)/) { $1.mb_chars.capitalize }
   end
 end

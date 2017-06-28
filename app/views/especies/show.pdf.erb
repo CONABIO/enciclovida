@@ -8,12 +8,15 @@
   <%= wicked_pdf_stylesheet_link_tag 'application' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
   <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
-
+  
   <script>
+      var TAXON = <%=raw @especie.to_json %>;
       $(document).ready(function() {
           I18n.defaultLocale = "<%= 'es-cientifico' %>";
           I18n.locale = "<%= 'es-cientifico' %>";
-          I18n.fallbacks = true
+          I18n.fallbacks = true;
+          // Para correr los nobres comunes del lado del cliente
+          $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
       });
   </script>
 
@@ -32,7 +35,7 @@
 </div>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  <%= dameNomComunes(@especie).html_safe %>
+  <div id="nombres_comunes_todos"></div>
   <%= dameStatus(@especie).html_safe %>
 </div>
 

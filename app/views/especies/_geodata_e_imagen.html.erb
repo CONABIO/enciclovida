@@ -1,10 +1,14 @@
 <% content_for(:extracss) do %>
-    <%= stylesheet_link_tag    'carrusel', media: 'all', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'carrusel', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
 
 <%= content_for(:delayedjs) do %>
     <script>
-      var NATURALISTA_URL = "<%= "#{CONFIG.naturalista_url}/taxa/#{@naturalista_id}.json" %>";
+        <% if @naturalista_id.present? %>
+            var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@naturalista_id}" %>";
+        <% else %>
+            var INATURALIST_API = undefined;
+        <% end %>
     </script>
 
     <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>
@@ -12,7 +16,7 @@
 
 <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' id="contenedor_fotos">
   <p class="text-center">
-    <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+    <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
   <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
   </p>
 </div>
@@ -31,9 +35,6 @@
     </div>
 <% end %>
 
-<% if !(@photos.any? || @geo.present?) %>
-    <p class="text-center">
-    <h4 style="color: #800000;">Lo sentimos, pero no contamos con una imagen o geodato para:</h4>
-    <h3><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></h3>
-    </p>
-<% end %>
+<p class="text-center">
+    <h4 style="color: #800000;" id="sin_datos"></h4>
+</p>

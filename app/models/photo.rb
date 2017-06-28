@@ -11,11 +11,11 @@ class Photo < ActiveRecord::Base
   # licensing extras
   attr_accessor :make_license_default
   attr_accessor :make_licenses_same
+  attr_accessor :attribution_txt  # Para poder ver la atribucion que ya viene armada en la API de naturalista
   MASS_ASSIGNABLE_ATTRIBUTES = [:make_license_default, :make_licenses_same]
 
   cattr_accessor :descendent_classes
   cattr_accessor :remote_descendent_classes
-  cattr_accessor :attribution_txt  # Para poder ver la atribucion que ya viene armada en la API de naturalista
 
   before_save :set_license, :trim_fields
   #after_save :update_default_license,          #no son necesarias
@@ -64,10 +64,10 @@ class Photo < ActiveRecord::Base
   def best_photo
     if original_url.present?
       original_url
-    elsif large_url.present?
-      large_url
     elsif medium_url.present?
       medium_url
+    elsif large_url.present?
+      large_url
     else
       nil
     end
@@ -112,7 +112,7 @@ class Photo < ActiveRecord::Base
   end
 
   def attribution_name
-    if !native_realname.blank?
+    if native_realname.present?
       native_realname
     elsif !native_username.blank?
       native_username
@@ -212,8 +212,8 @@ class Photo < ActiveRecord::Base
   def as_json(options = {})
     options[:except] ||= []
     options[:except] += [:metadata, :file_content_type, :file_file_name,
-                         :file_file_size, :file_processing, :file_updated_at, :mobile,
-                         :original_url]
+                         :file_file_size, :file_processing, :file_updated_at, :mobile]
+                         #:original_url]
     options[:methods] ||= []
     options[:methods] += [:license_name, :license_url, :attribution]
     super(options)

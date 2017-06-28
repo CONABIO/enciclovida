@@ -1,0 +1,94 @@
+<% content_for(:title) do %>
+    <%= @titulo = 'Especies exóticas invasoras' %>
+<% end %>
+
+<% content_for(:extrajs) do %>
+    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:delayedjs) do %>
+    <script>
+        var es_primero = null;
+
+        $('.page-selection1').bootpag({
+            total: <%= @paginas %>,          // total pages
+            page: <%= @pagina.present? ? @pagina : 1 %>,            // default page
+            maxVisible: 5,     // visible pagination
+            leaps: true,         // next/prev leaps through maxVisible
+            firstLastUse: true,
+            first: '←',
+            last: '→'
+        }).on("page", function(event, pagina){
+            if (es_primero == pagina)
+                return;
+            else {
+                $.ajax(
+                        {
+                            url: "/exoticas-invasoras-paginado",
+                            type: 'GET',
+                            data: {
+                                pagina: pagina,
+                                grupo: "<%= @grupo %>"
+                            }
+                        }).done(function(res)
+                        {
+                            $('#tbody').empty().append(res);
+                        });
+            }
+
+            es_primero = pagina;
+        });
+    </script>
+<% end %>
+
+<% content_for(:extracss) do %>
+    <style>
+        #tbody td {
+            vertical-align: middle;
+        }
+
+        #tbody tr td:nth-child(11) {
+            font-size: 1.5em;
+        }
+
+        #tbody tr td:nth-child(2) {
+            font-style: italic;
+        }
+
+        #tbody tr td:nth-child(1) {
+            width: 10%;
+        }
+
+        #tbody tr td:nth-child(2), #tbody tr td:nth-child(3) {
+            width: 20%;
+        }
+    </style>
+<% end %>
+
+<div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
+  <h3><%= @titulo %></h3>
+</div>
+
+<form method="get" action="/exoticas-invasoras.csv">
+  <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
+    Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
+  </button>
+</form>
+
+<div class="text-center page-selection1"></div>
+
+<table class="table table-striped table-responsive table-condensed">
+
+  <thead>
+  <tr>
+    <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
+        <th><%= cabecera %></th>
+    <% end %>
+  </tr>
+  </thead>
+
+  <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
+
+</table>
+
+<div class="text-center page-selection1"></div>

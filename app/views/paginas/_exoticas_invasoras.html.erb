@@ -1,0 +1,18 @@
+<% @tabla_exoticas[:datos].each do |row| %>
+    <tr>
+      <% row.each_with_index do |col, index| %>
+          <td>
+            <% case index %>
+            <% when 0  # Foto %>
+                <%= image_tag(col, class: 'img-responsive img-rounded') if col.present? %>
+            <% when 1  # Nombre cientifico %>
+                <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
+            <% when 10  # el PDF %>
+                <%= link_to('<i class="newspaper-ev-icon"></i>'.html_safe, col) if col.present? %>
+            <% else %>
+                <%= col %>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+<% end %>

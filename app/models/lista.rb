@@ -19,6 +19,7 @@ class Lista < ActiveRecord::Base
 
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
+  COLUMNAS_GEODATOS = %w(x_naturalista_obs x_snib_registros x_geoportal_mapa)
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion x_foto_principal
                         cita_nomenclatural nombre_autoridad)
@@ -147,6 +148,18 @@ class Lista < ActiveRecord::Base
           if proveedor = taxon.proveedor
             taxon.x_naturalista_id = proveedor.naturalista_id
           end
+        when 'x_naturalista_obs'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
+        when 'x_snib_registros'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
+        when 'x_geoportal_mapa'
+          if proveedor = taxon.proveedor
+            taxon.x_naturalista_id = proveedor.naturalista_id
+          end
         when 'x_categoria_taxonomica'
           taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
         when 'x_estatus'
@@ -160,7 +173,7 @@ class Lista < ActiveRecord::Base
             taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
           end
         when 'x_nombres_comunes'
-          nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun} (#{nom.lengua})"}.uniq
+          nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.primera_en_mayuscula} (#{nom.lengua})"}.uniq
           next unless nombres_comunes.any?
           taxon.x_nombres_comunes = nombres_comunes.join(',')
         when 'x_tipo_distribucion'

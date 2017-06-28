@@ -19,11 +19,8 @@
 
 @media (max-width: 1380px) {
     div#contenedor_mapa > div.embed-responsive, #contenedor_fotos, div#contenedor_mapa > div.embed-responsive h6{
-        background-color: #282828 !important;
-        color: #bababa !important;
-    }
-    .scrollbar .handle{
-        background-color: #777 !important;
+     /*   background-color: #282828 !important;*/
+        /*color: #bababa !important;*/
     }
 }
 .leaf{
@@ -96,19 +93,12 @@
  */
 
 .main {
-    padding: 20px;
-    /*filter: alpha(opacity=90); /* For IE8 and eaarlier */
-    background-color: rgba(242, 240, 237, 0.85);
-    border-radius: 1px;
-    /*border: 1px solid rgba(58, 175, 66, 0.3);*/
-    -webkit-box-shadow: 13px 13px 20px 0px rgba(50, 50, 50, 0.5);
-    -moz-box-shadow:    13px 13px 20px 0px rgba(50, 50, 50, 0.5);
-    box-shadow:         13px 13px 20px 0px rgba(50, 50, 50, 0.5);
+    padding: 25px;
+    background-color: #ececec;
 }
 @media (min-width: 872px) {
   .main {
-    /*padding-right: 40px;
-    padding-left: 40px;*/
+   /*just in case*/
   }
 }
 .main .page-header {

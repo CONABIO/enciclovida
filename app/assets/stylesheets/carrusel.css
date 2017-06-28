@@ -1,8 +1,5 @@
 #contenedor_fotos{
-    padding-right: 4px;
-    padding-left: 4px;
-    padding-top: 6px;
-    padding-bottom: 4px;
+    padding: 0px;
     background-color: #F7F7F7;
     margin-bottom: 10px;
 }
@@ -12,83 +9,37 @@
     padding-bottom: 100%;
     min-height: 150px;
 }
-#foto-carrusel > p{
-    border-radius: 3px;
-    padding: 0px;
-    opacity: .6;
-}
-img#foto-carrusel-interna{
-    display: inline-block;
-    border-radius: 5px;
-    min-height: 100px;
+#foto-carrusel-interna{
+    margin: 0 auto;
 }
 #foto-atribucion{
-    font-size: .75em;
+    font-size: .8em;
     display: block;
-    border-radius: 3px;
-    opacity: .8;
-    color: #F7F7F7;
 }
 #foto-atribucion + small{
-    font-size: .65em;
+    font-size: .7em;
     display: block;
-    border-radius: 3px;
-    opacity: .6;
-    color: #e3e3e3;
-}
-@media(min-width:1380px) {
-    #foto-atribucion{
-        color: #333333;
-    }
-    #foto-atribucion + small{
-        color: #e00000;
-    }
-}
-/*De momento los siguientes estilos no se ocupan, sin embargo,
-    no borrar por si llegasen a hacer falta*/
-div#foto-carrusel-interna{
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y: center;
-    border-radius: 1.5em;
-    padding-bottom: 75%;
+    color: #b97474;
 }
 .frame {
     width: 100%;
-    height: 70px;
+    height: 80px;
     overflow: hidden;
-    margin-top: -72px;
+    margin-top: -71px;
 }
 .slidee {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    margin: 0 auto;
+    overflow: visible;
+    min-width: 355px;
 }
-.slidee img {
+.slidee img{
     float: left;
-    margin: 0 1px;
-    padding: 0px;
-    opacity: 0.5;
-    border-radius: 2px;
+    width: 65px;
+    opacity: 0.3;
     cursor: pointer;
 }
-img.seleccionada {
-    border-radius: 5px;
+img.seleccionada{
     opacity: 1;
     padding: 1px;
-}
-.scrollbar {
-    width: 100%;
-    height: 7px;
-    margin-top: 4px;
-    background-color: #cdcdcd;
-    border-radius: 4px;
-}
-.scrollbar .handle {
-    width: 100px; /* overriden if dynamicHandle: 1 */
-    height: 100%;
-    background: #700000;
-    border-radius: 4px;
-    cursor: move;
+    width: 75px;
 }
