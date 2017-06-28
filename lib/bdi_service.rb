@@ -1,11 +1,11 @@
 class BDIService
 
-  def dameFotos(nombre_cientifico, p=nil)
+  def dameFotos(opts)
     bdi = CONFIG.bdi_imagenes
     fotos = []
 
-    url = "#{bdi}/fotoweb/archives/5000-Banco de Imágenes/?528='#{nombre_cientifico}'"
-    url << "&p=#{p-1}" if p
+    url = "#{bdi}/fotoweb/archives/5000-Banco de Imágenes/?#{opts[:campo]}='#{opts[:nombre]}'"
+    url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
 
@@ -22,7 +22,7 @@ class BDIService
 
     jres['data'].each do |x|
       fotos << Photo.new({large_url: bdi+x['previews'][3]['href'],
-                           medium_url: bdi+x['previews'][0]['href'],
+                           medium_url: bdi+x['previews'][7]['href'],
                            native_page_url: bdi+x['href'],
                            license: x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia',
                            square_url: bdi+x['previews'][10]['href'],

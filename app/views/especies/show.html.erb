@@ -49,11 +49,11 @@
 <hr/>
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="glyphicon glyphicon-globe"></i>&middot;<i class="picture-ev-icon"></i><strong><small> Mapa e imágenes</small></strong></a></li>
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="glyphicon glyphicon-globe"></i><strong><small> Mapa</small></strong></a></li>
+    <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
+    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
     <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Información <%= t(:del_taxon) %></small></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
-    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
-    <li id="imagenes-taxon_li"><a href="#imagenes-taxon"><i class="newspaper-ev-icon"></i><strong><small>  Más fotos</small></strong></a></li>
     <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
 
 
@@ -86,17 +86,8 @@
         <% end %>
       </ul>
     </div>
-
-
   </ul>
 
-  <% if I18n.locale.to_s != 'es-cientifico' %>
-      <script type="application/javascript">
-        // Para cambiar el orden de los TABS en vista general
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
-      </script>
-  <% end %>
 
   <div id="geodata_e_imagen" class="tab-pane panel-body">
     <%= render :partial => 'geodata_e_imagen' %>
@@ -104,21 +95,21 @@
 
   <div id="descripcion_catalogos" class="tab-pane panel-body">
     <p class="text-center">
-      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
     <h4>Cargando... Por favor, espera</h4>
     </p>
   </div>
 
   <div id="describe" class="tab-pane panel-body">
     <p class="text-center">
-      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
     <h4>Cargando... Por favor, espera</h4>
     </p>
   </div>
 
-  <div id="imagenes-taxon" class="tab-pane panel-body">
+  <div id="fotos-bdi" class="tab-pane panel-body">
     <p class="text-center">
-      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
     </p>
   </div>

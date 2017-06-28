@@ -359,8 +359,8 @@ class EspeciesController < ApplicationController
 
   # Servicio de lib/bdi_service.rb
   def fotos_bdi
-    if params['p'].present?
-      bdi = @especie.fotos_bdi(params['p'].to_i)
+    if params['pagina'].present?
+      bdi = @especie.fotos_bdi({pagina: params['pagina'].to_i})
     else
       bdi = @especie.fotos_bdi
     end
@@ -371,8 +371,6 @@ class EspeciesController < ApplicationController
         @fotos = bdi[:fotos]
       end
     end
-
-    #render json: fotos_bdi
   end
 
   def fotos_naturalista
