@@ -359,17 +359,40 @@ class EspeciesController < ApplicationController
 
   # Servicio de lib/bdi_service.rb
   def fotos_bdi
-    if params['pagina'].present?
-      bdi = @especie.fotos_bdi({pagina: params['pagina'].to_i})
+    @pagina = params['pagina']
+
+    if @pagina.present?
+      bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
     else
       bdi = @especie.fotos_bdi
     end
 
-    respond_to do |format|
-      format.json {render json: bdi}
-      format.html do
-        @fotos = bdi[:fotos]
-      end
+    if bdi[:estatus] == 'OK'
+      @fotos = bdi[:fotos]
+
+      respond_to do |format|
+        format.json {render json: bdi}
+        format.html do
+
+          # El conteo de las paginas
+          totales = 0
+          por_pagina = 25
+
+          # Por ser la primera saco el conteo de paginas
+          if @pagina.blank?
+            # Saca el conteo de las fotos de bdi
+            if bdi[:ultima].present?
+              totales+= por_pagina*(bdi[:ultima]-1)
+              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
+              totales+= fbu[:fotos].count if fbu[:estatus] == 'OK'
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) +1
+            end
+          end  # End pagina blank
+        end  # End format html
+      end  # End respond
+
+    else  # End estatus OK
+      render :_error and return
     end
   end
 

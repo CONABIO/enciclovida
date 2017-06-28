@@ -1,13 +1,46 @@
 <% content_for(:extrajs) do %>
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
 <% end %>
 
-<% content_for(:delayedjs) do %>
-<script>
-  // Para correr los nobres comunes del lado del cliente
-  nombres_comunes_todos();
-</script>
+<%= content_for(:delayedjs) do %>
+    <script>
+        function paginado_fotos(paginas, pagina)
+        {
+            var es_primero = null;
+
+            $('.paginado_1, .paginado_2').bootpag({
+                total: paginas,          // total pages
+                page: pagina,            // default page
+                maxVisible: 5,     // visible pagination
+                leaps: true,         // next/prev leaps through maxVisible
+                firstLastUse: true,
+                first: '←',
+                last: '→'
+            }).on("page", function (event, pag) {
+                if (es_primero == pag)
+                    return;
+                else {
+                    $.ajax(
+                            {
+                                url: '/especies/' + TAXON.id + '/fotos-bdi.html',
+                                type: 'GET',
+                                data: {
+                                    pagina: pag
+                                }
+                            }).done(function (res) {
+                                $('#paginado_fotos').empty().append(res);
+                            });
+                }
+
+                es_primero = pag;
+            });
+        }
+
+        // Para correr los nobres comunes del lado del cliente
+        nombres_comunes_todos();
+    </script>
 <% end %>
 
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
