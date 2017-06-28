@@ -64,10 +64,10 @@ class Photo < ActiveRecord::Base
   def best_photo
     if original_url.present?
       original_url
-    elsif large_url.present?
-      large_url
     elsif medium_url.present?
       medium_url
+    elsif large_url.present?
+      large_url
     else
       nil
     end

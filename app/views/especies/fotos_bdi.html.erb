@@ -1,6 +1,9 @@
 <% if @fotos.any? %>
     <% @fotos.each do |foto| %>
-        <%= image_tag foto.best_photo %>
+    <div class="result-img-container">
+      <%= link_to (image_tag foto.medium_url), foto.native_page_url %>
+    </div>
+
     <% end %>
 <% else %>
     Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
