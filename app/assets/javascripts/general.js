@@ -98,7 +98,7 @@ cambiaFondo = function(){
 };
 
 
-$(document).ready(function (){
+/*$(document).ready(function (){
     var bgrotater = setInterval(function() {
         if (fondo==16) fondo=0;
         $('#img-fondo').animate({opacity: 0}, 1500, function(){
@@ -106,7 +106,7 @@ $(document).ready(function (){
         }).animate({opacity: 1}, 1500);
         fondo++;
     }, 60000);
-});
+});*/
 
 $(document).ready(function(){
     $('.btn-title').each(function(){
