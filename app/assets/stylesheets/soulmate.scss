@@ -56,17 +56,17 @@ $soulmateWidth: $inputWidth - 21px;
   margin: 0;
 }
 
-#soulmate, #soulmate_2 {
+#soulmate {
   margin: 45px 0 0 0;
 }
 
 @media (min-width: 992px) {
-  #soulmate, #soulmate_2 {
+  #soulmate {
     margin: 33px 0 0 0;
   }
 }
 
-#soulmate, #soulmate_2, #soulmate_3, #soulmate_4 {
+#soulmate {
   background-color: rgba(242, 240, 237, .95);
   border-color: #66afe9;
   outline: 0;
@@ -152,3 +152,6 @@ $soulmateWidth: $inputWidth - 21px;
   padding: 2px;
   border: 1px solid #e7e7e7;
 }
+.soulmate-suggestion a{display: block;}
+.soulmate-suggestion sub{color: #888888;}
+.soulmate-suggestion.focus sub{color: rgba(242, 240, 237, 0.95);}

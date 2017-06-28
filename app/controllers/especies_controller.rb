@@ -2,10 +2,14 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios]
+  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
+                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
+                                         :nombres_comunes_todos]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi]
+                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
+                                     :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
+                                     :nombres_comunes_todos]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -17,7 +21,9 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios]
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
+                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :nombres_comunes_todos]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -35,15 +41,23 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    # Esto es para mostrar primero las fotos de NaturaLista, despues las de CONABIO
-    fotos_naturalista = @especie.photos.where.not(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
-    fotos_conabio = @especie.photos.where(type: 'ConabioPhoto').where("medium_url is not null or large_url is not null or original_url is not null")
-    @photos = [fotos_naturalista, fotos_conabio].flatten.compact
+    if p = @especie.proveedor
+      @naturalista_id = p.naturalista_id
+    end
+
     @cuantos = Comentario.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
 
     respond_to do |format|
       format.html do
-        @especie.delayed_job_service
+        # Para guardar los cambios en redis
+        if Rails.env.production?
+          @especie.delay(queue: 'redis').guarda_redis
+        else
+          @especie.guarda_redis
+        end
+
+        # Para guardar las observaciones, tiene cache de 1 semana
+        @especie.delayed_job_service if Rails.env.production?
 
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
@@ -256,7 +270,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Despliega el arbol
+  # Despliega el arbol, viene de la pestaña de la ficha
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
       obj_arbol_identado
@@ -331,6 +345,83 @@ class EspeciesController < ApplicationController
     render :partial => 'arbol_identado'
   end
 
+  # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
+  def fotos_referencia
+    @fotos = []
+
+    JSON.parse(params['fotos']).each do |foto|
+      f = foto['photo'].present? ? foto['photo'] : foto
+      f_obj = Photo.new({native_page_url: f['native_page_url'],medium_url: f['medium_url'],large_url: f['large_url'],square_url: f['square_url']})
+      f_obj.attribution_txt = f['attribution']
+      @fotos << f_obj
+    end
+
+    @foto_default = @fotos.first
+  end
+
+  # Servicio de lib/bdi_service.rb
+  def fotos_bdi
+    @pagina = params['pagina']
+
+    if @pagina.present?
+      bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
+    else
+      bdi = @especie.fotos_bdi
+    end
+
+    if bdi[:estatus] == 'OK'
+      @fotos = bdi[:fotos]
+
+      respond_to do |format|
+        format.json {render json: bdi}
+        format.html do
+
+          # El conteo de las paginas
+          totales = 0
+          por_pagina = 25
+
+          # Por ser la primera saco el conteo de paginas
+          if @pagina.blank?
+            # Saca el conteo de las fotos de bdi
+            if bdi[:ultima].present?
+              totales+= por_pagina*(bdi[:ultima]-1)
+              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
+              totales+= fbu[:fotos].count if fbu[:estatus] == 'OK'
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) +1
+            end
+          end  # End pagina blank
+        end  # End format html
+      end  # End respond
+
+    else  # End estatus OK
+      render :_error and return
+    end
+  end
+
+  def fotos_naturalista
+    fotos = if p = @especie.proveedor
+              p.fotos_naturalista
+            else
+              {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+            end
+
+    render json: fotos
+  end
+
+  def nombres_comunes_naturalista
+    nombres_comunes = if p = @especie.proveedor
+                        p.nombres_comunes_naturalista
+                      else
+                        {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                      end
+
+    render json: nombres_comunes
+  end
+
+  def nombres_comunes_todos
+    @nombres_comunes = @especie.nombres_comunes_todos
+  end
+
   def edit_photos
     @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
   end
@@ -364,6 +455,7 @@ class EspeciesController < ApplicationController
 =end
   end
 
+  # Viene de la pestaña de la ficha
   def describe
     @describers = if CONFIG.taxon_describers
                     CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
@@ -397,6 +489,7 @@ class EspeciesController < ApplicationController
     end
   end
 
+  # Viene de la pestaña de la ficha
   def descripcion_catalogos
   end
 
@@ -418,7 +511,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Muestra los comentarios relacionados a la especie
+  # Muestra los comentarios relacionados a la especie, viene de la pestaña de la ficha
   def comentarios
     @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
 
@@ -428,11 +521,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def fotos_bdi
-    x = BDIService.new
-    fotos_conabio = x.dameFotos(@especie.nombre_cientifico)
-    render json: fotos_conabio.to_json
-  end
 
   private
 

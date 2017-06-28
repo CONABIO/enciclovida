@@ -1,6 +1,8 @@
 Buscador::Application.routes.draw do
 
-  get "usuarios/conabio"
+  get 'usuarios/conabio'
+  get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
+  get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
 
   resources :roles_categorias_contenido
 
@@ -9,6 +11,10 @@ Buscador::Application.routes.draw do
   resources :usuarios_roles
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
+  get 'explora_por_ubicacion' => 'ubicaciones#ubicacion'
+  get 'explora_por_region' => 'ubicaciones#region'
+
   get "busquedas/basica"
   get "busquedas/avanzada"
   get "busquedas/resultados"
@@ -84,7 +90,11 @@ Buscador::Application.routes.draw do
       get ':id/arbol_nodo' => 'especies#arbol_nodo'
       get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
-      get ':id/fotos_bdi' => 'especies#fotos_bdi'
+      post ':id/fotos-referencia' => 'especies#fotos_referencia'
+      get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
+      get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
+      get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
     end
   end
 

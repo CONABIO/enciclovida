@@ -1,4 +1,4 @@
-<div id="brandBar" class="container-fluid">
+<div id="brandBar" class="container-fluid <%= 'general' if params[:controller] != 'inicio' %>" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url(\"/fondos/#{rand(1..16)}.jpg\");'".html_safe if params[:controller] != 'inicio' %>>
   <div class="row text-right">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0">
       <div class="btn-group" role="group" aria-label="...">

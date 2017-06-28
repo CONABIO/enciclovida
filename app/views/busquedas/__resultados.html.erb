@@ -1,29 +1,24 @@
 <% if I18n.locale.to_s != 'es-cientifico' %>
-    <% @taxones.each do |taxon| %>
-        <input type="checkbox" name="especies[]" value="<%= taxon.id %>" class="especies" style="display: none;">
-
-        <% if taxon.foto_principal.present? && taxon.fotos_principales.present?  %>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-              <div class="imagen_resultados" style="background-image: url('<%= taxon.fotos_principales.split('|')[2] %>');" >
-                <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
-              </div>
-            </div>
-        <% else %>
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
-              <div class="imagen_resultados">
-                <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
-                <i class="ev1-ev-icon"></i>
-              </div>
-            </div>
-          <% end %>
+  <% @taxones.each do |taxon| %>
+    <% if taxon.foto_principal.present? %>
+      <div class="result-img-container">
+        <%= link_to image_tag(taxon.foto_principal), especie_path(taxon) %>
+        <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+      </div>
+    <% else %>
+      <div class="result-img-container">
+        <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon) %>
+        <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+      </div>
     <% end %>
+
+  <% end %>
 <% else %>
-    <% @taxones.each do |taxon| %>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-          <span class='datos_busqueda-<%= taxon.id %>'>
-            <%= tituloNombreCientifico(taxon, :link => true) %>
-          </span>
-        </div>
-    <% end %>
+  <% @taxones.each do |taxon| %>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 resultados-cientificos">
+      <span class='datos_busqueda-<%= taxon.id %>'>
+        <%= tituloNombreCientifico(taxon, :link => true) %>
+      </span>
+    </div>
+  <% end %>
 <% end %>
-

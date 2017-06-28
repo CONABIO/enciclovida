@@ -20,13 +20,15 @@
 }
 
 
-body{
-  background-color: #333333;
-}
-
 /*Brandbar es la plequita negra al inicio de cada página*/
-#brandBar {
-  background-color: rgba(51, 51, 51, 0.75);
+#brandBar.general {
+  background-repeat: no-repeat!important;
+  background-attachment: fixed!important;
+  background-size: cover!important;
+  background-position: bottom!important;
+}
+#brandBar{
+  background-color: rgba(51,51,51,0.75);
 }
 #brandBar > div.row:nth-child(2) > div{
   margin-top: 10px;
@@ -179,21 +181,27 @@ ul.social-buttons li a:active {
 #pestañas{
   background-color: transparent;
 }
-.panel .nav-tabs > li:not(.active) > a, .panel .nav-stacked > li:not(.active) > a  {
-  border: 1px solid #d3d3d3;
+.panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+  border-bottom: 0px;
   color: #777777;
-  background-color: rgba(247, 247, 247, 0.5);
 }
-.panel .nav-stacked > li.active > a {
-  border: 1px solid #b3b3b3;
+.panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
   color: #800000;
-  background-color: #f7f7f7;
+  background-color: #ececec;
+}
+.panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
+  filter: drop-shadow(5px -5px 4px #cecece)
 }
 #pestañas div.panel-body{
-  background-color: #f7f7f7;
-  border: 1px solid #b3b3b3;
+  background-color: #ececec;
   padding: 1.5em;
   margin-top: -1px;
+  border-left: 1px solid #d3d3d3;
+  filter: drop-shadow(5px 5px 5px #cecece)
+
 }
 
 #panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
@@ -271,4 +279,31 @@ ul.social-buttons li a:active {
   line-height: 1em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+#fotos-bdi div.result-img-container{
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 5px;
+  position: relative;
+}
+#fotos-bdi div.result-img-container img{
+  max-height: 225px;
+  margin: -25px;
+  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+  vertical-align: middle;
+  font-size: 3.75em;
+}
+#fotos-bdi div.result-img-container img:hover{
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
+}
+#fotos-bdi div.result-img-container a{
+  cursor: pointer;
 }

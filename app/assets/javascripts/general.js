@@ -90,29 +90,23 @@ $(document).ready(function(){
     };
 });
 
-cambiaSidebar = function(){
-    $('#filtros').toggleClass('sidebar_lupa col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xs-5 col-sm-4 col-md-4 col-lg-3');
-    $('#filtros > span').toggleClass('glyphicon-search glyphicon-remove ');
-    $('#filtros > div').toggleClass('hidden');
-};
-
-var fondo = 2;
+var fondo = 1;
 cambiaFondo = function(){
     fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
-    url = "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
+    url = "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
     $('#img-fondo').css('background-image',url);
 };
 
 
-$(document).ready(function (){
+/*$(document).ready(function (){
     var bgrotater = setInterval(function() {
         if (fondo==16) fondo=0;
         $('#img-fondo').animate({opacity: 0}, 1500, function(){
-            $("#img-fondo").css("background-image", "url(\"/assets/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
+            $("#img-fondo").css("background-image", "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
         }).animate({opacity: 1}, 1500);
         fondo++;
-    }, 30000);
-});
+    }, 60000);
+});*/
 
 $(document).ready(function(){
     $('.btn-title').each(function(){

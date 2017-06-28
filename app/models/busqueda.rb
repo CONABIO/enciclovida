@@ -68,7 +68,7 @@ class Busqueda
     select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
 adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
 categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, ancestry_ascendente_directo,
-cita_nomenclatural, nombres_comunes as nombres_comunes_todos FROM ( '
+cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales FROM ( '
 
     from = ') especies
  LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
@@ -85,7 +85,7 @@ cita_nomenclatural, nombres_comunes as nombres_comunes_todos FROM ( '
       subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
  adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
  categoria_taxonomica_id, nombre_categoria_taxonomica, ancestry_ascendente_directo,
- cita_nomenclatural, nombres_comunes as nombres_comunes_todos
+ cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales
  FROM especies
  LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
  LEFT JOIN adicionales ON adicionales.especie_id=especies.id
