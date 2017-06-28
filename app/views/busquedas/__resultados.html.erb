@@ -3,12 +3,16 @@
     <% if taxon.foto_principal.present? %>
       <div class="result-img-container">
         <%= link_to image_tag(taxon.foto_principal), especie_path(taxon) %>
-        <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+        <div class="result-nombre-container">
+          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+        </div>
       </div>
     <% else %>
       <div class="result-img-container">
         <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon) %>
-        <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+        <div class="result-nombre-container">
+          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+        </div>
       </div>
     <% end %>
 
@@ -17,7 +21,9 @@
   <% @taxones.each do |taxon| %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 resultados-cientificos">
       <span class='datos_busqueda-<%= taxon.id %>'>
-        <%= tituloNombreCientifico(taxon, :link => true) %>
+        <div class="result-nombre-container">
+          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+        </div>
       </span>
     </div>
   <% end %>

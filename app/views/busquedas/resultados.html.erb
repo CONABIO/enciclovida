@@ -231,7 +231,7 @@
   </div>
 <% end %>
 
-<div id="resultados-container" class="state-one">
+<div id="resultados-container" class="<%= 'state-one' if params[:busqueda]=='avanzada' %>">
   <div class="row">
     <% if params[:busqueda]=='avanzada' %>
       <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>

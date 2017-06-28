@@ -1,4 +1,4 @@
-<% if @pagina.blank? %>
+<% if @pagina.blank? && @fotos.any? %>
     <div class="text-center paginado_1"></div>
 <% end %>
 
@@ -6,7 +6,7 @@
     <div id="paginado_fotos">
       <% @fotos.each do |foto| %>
           <div class="result-img-container" id="fotos_paginado_container">
-            <%= link_to (image_tag foto.medium_url), foto.native_page_url %>
+            <%= link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank %>
           </div>
       <% end %>
     </div>
@@ -14,7 +14,7 @@
     Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
 <% end %>
 
-<% if @pagina.blank? %>
+<% if @pagina.blank? && @fotos.any? %>
     <div class="text-center paginado_2"></div>
 
     <script>
