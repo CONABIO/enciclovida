@@ -9,15 +9,15 @@ function fotos_naturalista()
             dataType: 'json'
         }).done(function (json) {
             if (jQuery.isEmptyObject(json)) {
-                if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                 fotos_bdi();
             } else {
 
                 if (json.total_results == 0) {
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                     fotos_bdi();
                 } else if (json.results[0].taxon_photos.length == 0) {
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                     fotos_bdi();
                 } else {
                     $.ajax(
@@ -39,7 +39,7 @@ function fotos_naturalista()
                             inicia_carrusel();
 
                         }).error(function (error) {
-                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                             fotos_bdi();
                         });
                 }
@@ -73,9 +73,7 @@ function fotos_bdi()
                         {
                             url: '/especies/' + TAXON.id + '/fotos-referencia',
                             type: 'POST',
-                            data: {
-                                fotos: JSON.stringify(json.fotos.slice(0, 5))
-                            }
+                            data: {fotos: JSON.stringify(json.fotos.slice(0, 5))}
                         }).done(function (fotos) {
                             if (jQuery.isEmptyObject(GEO))
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
@@ -89,7 +87,7 @@ function fotos_bdi()
 
                         }).error(function (error) {
                             $('#contenedor_fotos').remove();
-                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                         });
                 }
             }
@@ -122,7 +120,7 @@ function inicia_carrusel()
         // Navigation buttons //
         // Automated cycling //
         cycleBy: 'items',
-        cycleInterval: 5000,
+        cycleInterval: 6000,
         pauseOnHover: 1,
         // Mixed options //
         // Classes //
@@ -130,13 +128,11 @@ function inicia_carrusel()
     }).init();
 //En el evento de que una foto se convierte en activa, se modifica la foto central
     sly.on('active', function (eventName) {
+        //Para cambiar la foto interna y establecer el tamaño máximo
+        $('#foto-carrusel-interna').attr('src', $('img.seleccionada').attr('data-large')).css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
         // Para cambiar la atribucion de la foto (créditos) tanto en texto, como en ligas
         $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
         $('.enlace-atribucion').attr('href', $('img.seleccionada').attr('data-native-page-url'));
-        //Para cambiar la foto interna y establecer el tamaño máximo
-        $('#foto-carrusel-interna').fadeOut(300, function(){
-            $(this).attr('src', $('img.seleccionada').attr('data-large')).css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
-        }).fadeIn();
     });
 
     $(window).resize(function (e) {

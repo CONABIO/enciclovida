@@ -360,13 +360,10 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     bdi = BDIService.new
 
     if species_or_lower?
-      puts "\n\n\nAQUI especia\n\n\n"
       bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 528}))
     elsif is_root?
-      puts "\n\n\nAQUI raiz\n\n\n"
       bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 15}))
     else
-      puts "\n\n\nAQUI lo demás\n\n\n"
       bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 20}))
     end
 
