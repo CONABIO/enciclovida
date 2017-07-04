@@ -348,7 +348,7 @@ class Validacion < ActiveRecord::Base
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
-      # Mando a imprimir solo el valido
+      # Toma el primero y el válido si existe
       taxones.each do |taxon|
         if taxon.estatus == 2
           taxon.asigna_categorias_correspondientes
@@ -356,7 +356,7 @@ class Validacion < ActiveRecord::Base
         end
       end
 
-      return busca_recursivamente(taxones, hash)
+      return busca_recursivamente(taxones, hash)  # Si no hay válido, entonces lo busca recursivamente
 
     else
       puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
@@ -426,7 +426,7 @@ class Validacion < ActiveRecord::Base
     @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
     @sheet.parse(asociacion).each do |hash|
-      if primera_fila
+      if primera_fila  # Para no validar la primera fila
         primera_fila = false
         next
       end
@@ -604,10 +604,10 @@ class Validacion < ActiveRecord::Base
 
   def validacion_interna(info = {})
     validacion_interna_hash = {}
+    excel = info[:excel]
 
     if info[:estatus]
       taxon = info[:taxon]
-      excel = info[:excel]
 
       validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino || [excel['Reino'],INFORMACION_ORIG]
 
@@ -680,34 +680,42 @@ class Validacion < ActiveRecord::Base
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
       validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
+      validacion_interna_hash['SNIB'] = nil
+
+      # Datos del SNIB
+      if p = taxon.proveedor
+        geodatos = p.geodatos
+        if geodatos[:cuales].any? && geodatos[:cuales].include?('geoportal')
+          validacion_interna_hash['SNIB'] = geodatos[:geoportal_url]
+        end
+      end
 
     else  # Asociacion vacia, solo el error
-      validacion_interna_hash['SCAT_Reino_valido'] = nil
-      validacion_interna_hash['SCAT_Phylum/Division_valido'] = nil
-      validacion_interna_hash['SCAT_Clase_valido'] = nil
-      validacion_interna_hash['SCAT_Subclase_valido'] = nil
-      validacion_interna_hash['SCAT_Orden_valido'] = nil
-      validacion_interna_hash['SCAT_Suborden_valido'] = nil
-      validacion_interna_hash['SCAT_Infraorden_valido'] = nil
-      validacion_interna_hash['SCAT_Superfamilia_valido'] = nil
-      validacion_interna_hash['SCAT_Familia_valido'] = nil
-      validacion_interna_hash['SCAT_Genero_valido'] = nil
-      validacion_interna_hash['SCAT_Subgenero_valido'] = nil
-      validacion_interna_hash['SCAT_Especie_valido'] = nil
-      validacion_interna_hash['SCAT_Especie_valido'] = nil
-      validacion_interna_hash['SCAT_AutorEspecie_valido'] = nil
-      validacion_interna_hash['SCAT_Infraespecie_valido'] = nil
-      validacion_interna_hash['SCAT_Infraespecie_valido'] = nil
-      validacion_interna_hash['SCAT_Categoria_valido'] = nil
-      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = nil
-      validacion_interna_hash['SCAT_NombreCient_valido'] = nil
-      validacion_interna_hash['SCAT_NOM-059'] = nil
-      validacion_interna_hash['SCAT_IUCN'] = nil
-      validacion_interna_hash['SCAT_CITES'] = nil
-      validacion_interna_hash['SCAT_Distribucion'] = nil
-      validacion_interna_hash['SCAT_CatalogoDiccionario'] = nil
-      validacion_interna_hash['SCAT_Fuente'] = nil
-      validacion_interna_hash['ENCICLOVIDA'] = nil
+      validacion_interna_hash['SCAT_Reino_valido'] = [excel['Reino'],INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Phylum/Division_valido'] = [excel['division'], INFORMACION_ORIG] || [excel['phylum'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Clase_valido'] = [excel['clase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subclase_valido'] = [excel['subclase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Orden_valido'] = [excel['orden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Suborden_valido'] = [excel['suborden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Infraorden_valido'] = [excel['infraorden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = [excel['superfamilia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Familia_valido'] = [excel['familia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Genero_valido'] = [excel['genero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subgenero_valido'] = [excel['subgenero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Especie_valido'] = [excel['especie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = [excel['nombre_autoridad'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Infraespecie_valido'] = [excel['infraespecie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Categoria_valido'] = [excel['categoria_taxonomica'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = [excel['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NombreCient_valido'] = [excel['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NOM-059'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_IUCN'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_CITES'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Distribucion'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_CatalogoDiccionario'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Fuente'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['ENCICLOVIDA'] = [nil, INFORMACION_ORIG]
+      validacion_interna_hash['SNIB'] = [nil, INFORMACION_ORIG]
     end
 
     validacion_interna_hash
