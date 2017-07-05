@@ -248,97 +248,77 @@ class Validacion < ActiveRecord::Base
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
 
-  # Busca recursivamente el indicado, y valida hasta algun taxon valido en catalogos
+  # Busca recursivamente el indicado
   def busca_recursivamente
-    puts "\n\nBusca recursivamente en subespecie o mas arriba"
-    nombre = fila['nombre_cientifico'].limpiar.downcase
-    taxones = validacion[:taxones]
+    puts "\n\nBusca recursivamente"
+    validacion[:taxones].each do |taxon|
+      validacion[:taxon] = taxon
+      coincide_familia_orden?
 
-    if taxones.length == 1  # Si es uno, no hay de otra que regrese el resultado
-      taxon = validacion[:taxones].first
-      taxon.asigna_categorias_correspondientes
-      self.validacion = {taxon: taxon, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
-      return
+      if validacion[:estatus]
+        validacion[:obs] = "Orig: #{fila['nombre_cientifico']}; Enciclo: #{taxon.nombre_cientifico}"
+        return
+      end
+    end
+  end
+
+  def coincide_familia_orden?  # Valida si coincide con la familia o el orden, en este punto ya tengo un taxon candidato
+    taxon = validacion[:taxon]
+    taxon.asigna_categorias
+    validacion[:taxon] = taxon
+
+    if fila['familia'].present?  # Si escribio la familia en el excel entonces debe de coincidir
+      if fila['familia'].downcase.strip == taxon.x_familia.downcase.strip
+        validacion[:estatus] = true
+      else
+        validacion[:estatus] = false
+        validacion[:obs] = "No coincidio la famila - Orig: #{fila['familia']}; Enciclo: #{taxon.x_familia}"
+        validacion[:salir] = true
+      end
+    elsif fila['orden'].present?  # Si escribio el orden
+      if fila['orden'].downcase.strip == taxon.x_orden.downcase.strip
+        validacion[:estatus] = true
+      else
+        validacion[:estatus] = false
+        validacion[:obs] = "No coincidio el orden - Orig: #{fila['orden']}; Enciclo: #{taxon.x_orden}"
+        validacion[:salir] = true
+      end
+    else  # No tiene ni familia ni orden, entonces lo regreso valido
+      validacion[:estatus] = true
     end
 
-    min = nil
-    opciones = []
-    opciones_arriba = []
-    taxones.each do |taxon|
-      taxones_arriba = []
-      taxon.asigna_categorias_correspondientes
-      taxon.x_distancia = 0
-      # Distancia con el nombre cientifico, debe ser menor a 3, pues que en anteriores pasos se valido esta informacion
-      taxon.x_distancia+= Levenshtein.distance(nombre, taxon.nombre_cientifico.limpiar.downcase)
+    puts "\n\n\nEncontro en familia u orden: #{validacion[:estatus].to_s}"
+  end
 
-      # Lista las categorias taxomicas arriba del taxon y que empiezan de menor a mayor
-      categorias = taxon.ancestors.select('nombre_categoria_taxonomica').categoria_taxonomica_join.map(&:nombre_categoria_taxonomica).reverse
-      categorias.each do |categoria|
-        categoria = I18n.transliterate(categoria).gsub(' ','_').downcase
-        valor = eval("taxon.x_#{categoria}.downcase")
-        categoria = 'division' if categoria == 'phylum' && !fila.key(categoria)  # En el excel solo ponene division aunque sean del reino animalia ...
+  # Este metodo se manda a llamar cuando el taxon coincidio ==  validacion[:estatus] = true
+  def taxon_estatus
+    taxon = validacion[:taxon]
 
-        if fila[categoria].present?
-          dist = Levenshtein.distance(fila[categoria].downcase, valor)
-          taxon.x_distancia+= dist
-          taxones_arriba << taxon.ancestors.where(nombre: valor).first if dist == 0
+    if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
+      estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
+
+      if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
+        begin  # Por si ya no existe ese taxon, suele pasar!
+          taxon_valido = Especie.find(estatus.first.especie_id2)
+          taxon_valido.asigna_categorias
+          # Asigna el taxon valido al taxon original
+          self.validacion[:taxon] = taxon_valido
+          self.validacion[:taxon_valido] = true
+        rescue
+          self.validacion[:obs] = 'No hay un taxon valido para la coincidencia'
         end
+
+      else  # No existe el valido o hay mas de uno >.>!
+        self.validacion[:obs] = 'No hay un taxon valido para la coincidencia'
       end
+    end  # End estatus = 1
 
-      # Compara y asigna el taxon y la longitud minima
-      if min.nil?
-        opciones << taxon
-        min = taxon.x_distancia
-        opciones_arriba << taxones_arriba if taxones_arriba.any?
-      else
-        if min == taxon.x_distancia
-          opciones << taxon
-          opciones_arriba << taxones_arriba if taxones_arriba.any?
-        elsif taxon.x_distancia < min
-          opciones.clear
-          opciones << taxon
-          min = taxon.x_distancia
-          opciones_arriba.clear
-          opciones_arriba << taxones_arriba if taxones_arriba.any?
-        end
-      end
-
-    end  # End each taxones
-
-    # La distancia coincidio con un solo taxon
-    if opciones.count == 1
-      # Devuelve el primer taxon con la distancia mas chica
-      taxon = opciones.first
-      self.validacion = {taxon: taxon, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
-      return
-
-    elsif opciones.count > 1  # Hubo mas de una opcion con el mismo peso, validamos mas arriba entonces
-      if opciones_arriba.empty?  # No hubo coincidencias arriba
-        self.validacion = {estatus: false, obs: 'Sin coincidencias'}
-        return
-      elsif opciones_arriba.count == 1  # Hubo una sola coincidencia arriba
-        taxon = opciones_arriba[0][0]
-        taxon.asigna_categorias_correspondientes
-        self.validacion = {taxon: taxon, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
-        return
-      elsif opciones_arriba.count > 1  # Hubo más de una coincidencia arriba
-        concidencia = opciones_arriba.inject(:&)
-
-        if concidencia.any?  # Entre las coincidencias hubo por lo menos uno, tomo el primero, el ancestro mas cercano
-          taxon = concidencia.first
-          taxon.asigna_categorias_correspondientes
-          self.validacion = {taxon: taxon, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
-          return
-        else  # No hubo una coincidencia en comun, entre ancestros
-          self.validacion = {estatus: false, obs: 'Sin coincidencias'}
-          return
-        end
-      end
-    else  # No hubo opciones de coincidencia con el mismo peso
-      self.validacion = {estatus: false, obs: 'Sin coincidencias'}
-      return
-    end  # End opciones count
-
+    # Para saber si no era un sinonimo
+    if validacion[:taxon_valido].present?
+      self.validacion[:scat_estatus] = 'sinónimo'
+    else
+      self.validacion[:scat_estatus] = Especie::ESTATUS_SIGNIFICADO[validacion[:taxon].estatus]
+    end
   end
 
   # Encuentra el mas parecido
@@ -354,23 +334,13 @@ class Validacion < ActiveRecord::Base
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
-      taxon = taxones.first
-      taxon.asigna_categorias_correspondientes
-      self.validacion = {taxon: taxon, estatus: true}
+      self.validacion = {taxon: taxones.first}
+      coincide_familia_orden?
       return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
-      # Toma el primero y el válido si existe
-      taxones.each do |taxon|
-        if taxon.estatus == 2
-          taxon.asigna_categorias_correspondientes
-          self.validacion = {taxon: taxon, estatus: true}
-          return
-        end
-      end
-
-      self.validacion = {taxones: taxones, estatus: false}
+      self.validacion = {taxones: taxones}
       busca_recursivamente
       return
 
@@ -388,13 +358,12 @@ class Validacion < ActiveRecord::Base
               end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        taxon = taxones.first
-        taxon.asigna_categorias_correspondientes
-        self.validacion = {taxon: taxon, estatus: true}
+        self.validacion = {taxon: taxones.first, estatus: true}
+        coincide_familia_orden?
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {taxones: taxones, estatus: false}
+        self.validacion = {taxones: taxones}
         busca_recursivamente
         return
 
@@ -404,24 +373,11 @@ class Validacion < ActiveRecord::Base
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
-
-          if taxones.empty?
-            self.validacion = {estatus: false, error: 'Sin coincidencias'}
-            return
-          end
-
           taxones_con_distancia = []
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
             distancia = Levenshtein.distance(fila['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
-
-            if distancia == 0  # Es exactamente el mismo taxon, este no debría pasar, pero se pone por algun caso raro
-              taxon.asigna_categorias_correspondientes
-              self.validacion = {taxon: taxon, estatus: true}
-              return
-            end
-
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
           end
@@ -431,14 +387,13 @@ class Validacion < ActiveRecord::Base
             self.validacion = {estatus: false, obs: 'Sin coincidencias'}
             return
           else
-            self.validacion = {taxones: taxones_con_distancia, estatus: false}
+            self.validacion = {taxones: taxones_con_distancia}
             busca_recursivamente
             return
           end
 
         else  # No hubo coincidencias con su nombre cientifico
           puts "\n\nSin coincidencia"
-          puts '@@@@@@@@@@@ aqui el caso raro: ' + fila['nombre_cientifico']
           self.validacion = {estatus: false, obs: 'Sin coincidencias'}
           return
         end
@@ -458,48 +413,45 @@ class Validacion < ActiveRecord::Base
     @sheet.parse(cabecera).each_with_index do |f, index|
       next if index == 0
       self.fila = f
-
       encuentra_por_nombre
-      if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+
+      if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido
         self.excel_valido << asocia_respuesta
       else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
-        nombre_cientifico_orig = fila['nombre_cientifico']
+        # Para salir del programa con el mensaje original
+        if validacion[:salir]
+          self.excel_valido << asocia_respuesta
+          next
+        end
+
+        # Las interseccion de categorias validas entre el excel y las permitidas
         categorias = (CategoriaTaxonomica::CATEGORIAS & fila.keys).reverse
-        encontro_arriba = false
+        asegurar_categoria = %w(genero familia orden)  # Solo estas categorias se sube a validar
+        nombre_cientifico_orig = fila['nombre_cientifico']
 
         categorias.each do |categoria|
-          next if encontro_arriba
-          next if fila[categoria].blank?
+          next unless fila[categoria].present?
+          next unless asegurar_categoria.include?(categoria)
+          puts "\n Tratando de encontrar mas arriba: #{categoria}"
 
           # Asigna una categoria mas arriba a nombre cientifico
           fila['nombre_cientifico'] = fila[categoria]
           encuentra_por_nombre
 
           if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
-            # Me quedo con las categorias superiores y verifico que se encuentre familia u orden
-            asegurar_categoria = %w(familia orden)
-            index = categorias.index(categoria)
-            sub_cats = categorias[index+1..-1]
-            # Me asegura que por lo menos estoy abajo de familia
-            categorias_coincidio = sub_cats & asegurar_categoria
-            if categorias_coincidio.any?
-              categorias_coincidio.each do |c|
-                #next if encontro_arriba
-                if fila[c].try(:downcase) == eval("validacion[:taxon].x_#{c.downcase}").try(:downcase)
-                  fila['nombre_cientifico'] = nombre_cientifico_orig
-                  validacion[:obs] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
-                  validacion[:valido_hasta] = true
-                  self.excel_valido << asocia_respuesta
-                  encontro_arriba = true
-                  break
-                end
-              end
+            fila['nombre_cientifico'] = nombre_cientifico_orig  # Regresa su nombre cientifico original
+            validacion[:obs] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
+            validacion[:valido_hasta] = true
+            self.excel_valido << asocia_respuesta
+            break
+          end
+        end
 
-            end  # End categoria coincidio
-          end  # end if estatus
-        end  # End each categorias
-
-        self.excel_valido << asocia_respuesta if !encontro_arriba
+        # Por si no hubo ningun valido
+        if !validacion[:estatus]
+          validacion[:obs] = 'Sin coincidencias'
+          self.excel_valido << asocia_respuesta
+        end
 
       end  # info estatus inicial, con el nombre_cientifico original
     end  # sheet parse
@@ -511,37 +463,7 @@ class Validacion < ActiveRecord::Base
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    if validacion[:estatus]
-      taxon = validacion[:taxon]
-
-      if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
-        estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
-
-        if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
-          begin  # Por si ya no existe ese taxon, suele pasar!
-            taxon_valido = Especie.find(estatus.first.especie_id2)
-            taxon_valido.asigna_categorias_correspondientes
-            # Asigna el taxon valido al taxon original
-            self.validacion[:taxon] = taxon_valido
-            self.validacion[:taxon_valido] = true
-          rescue
-            self.validacion[:estatus] = false
-            self.validacion[:error] = 'Sin coincidencias'
-          end
-
-        else  # No existe el valido >.>!
-          self.validacion[:estatus] = false
-          self.validacion[:error] = 'Sin coincidencias'
-        end
-      end  # End estatus = 1
-    end  # End info estatus
-
-    # Para saber si no era un sinonimo
-    if validacion[:taxon_valido].present?
-      self.validacion[:scat_estatus] = 'sinónimo'
-    elsif validacion[:obs].blank?
-      self.validacion[:scat_estatus] = Especie::ESTATUS_SIGNIFICADO[validacion[:taxon].estatus]
-    end
+    taxon_estatus
 
     # Se completa cada seccion del excel
     resumen_resp = resumen
