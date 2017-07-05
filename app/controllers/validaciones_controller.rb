@@ -127,10 +127,14 @@ class ValidacionesController < ApplicationController
           @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
         else
           if validacion.save
+            # Asigna unas variables
+            validacion.excel = path.to_s
+            validacion.cabecera = cc[:asociacion]
+
             if Rails.env.production?
-              validacion.delay(queue: 'validaciones').valida_campos(path.to_s, cc[:asociacion])
+              validacion.delay(queue: 'validaciones').valida_campos
             end
-              validacion.valida_campos(path.to_s, cc[:asociacion])
+              validacion.valida_campos
           end
         end
 

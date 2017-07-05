@@ -4,6 +4,9 @@ class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
+  # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
+  attr_accessor :excel, :cabecera, :fila, :validacion, :excel_valido
+
   # Si alguna columna se llama diferente, es solo cosa de añadir un elemento mas al array correspondiente
   COLUMNAS_OPCIONALES = {reino: ['reino'], division: ['division'], subdivision: ['subdivision'], clase: ['clase'], subclase: ['subclase'],
                          orden: ['orden'], suborden: ['suborden'], infraorden: ['infraorden'], superfamilia: ['superfamilia'],
@@ -18,7 +21,7 @@ class Validacion < ActiveRecord::Base
   VALIDACION_INTERNA = '32CD32'
   INFORMACION_ORIG = 'C9C9C9'
 
-
+=begin
   # Valida el taxon cuando solo pasan el nombre cientifico
   def valida_batch(path)
     sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
@@ -202,17 +205,18 @@ class Validacion < ActiveRecord::Base
     puts "#{ruta_excel.to_s}/#{nombre_archivo}.xlsx"
     xlsx.write("#{ruta_excel.to_s}/#{nombre_archivo}.xlsx")
   end
+=end
 
   ###############################################
   # Parte de la validacion del excel
   ###############################################
   # Escribe los datos del excel con la gema rubyXL
-  def escribe_excel(path)
-    xlsx = RubyXL::Parser.parse(path)  # El excel con su primera sheet
+  def escribe_excel
+    xlsx = RubyXL::Parser.parse(excel)  # El excel con su primera sheet
     sheet = xlsx[0]
     fila = 1  # Empezamos por la cabecera
 
-    @hash.each do |h|
+    excel_valido.each do |h|
       columna = @sheet.last_column  # Desde la columna donde empieza
 
       h.each do |seccion,datos|
@@ -232,7 +236,6 @@ class Validacion < ActiveRecord::Base
 
           columna+= 1
         end
-
       end
 
       fila+= 1
@@ -246,14 +249,16 @@ class Validacion < ActiveRecord::Base
   end
 
   # Busca recursivamente el indicado, y valida hasta algun taxon valido en catalogos
-  def busca_recursivamente(taxones, hash)
+  def busca_recursivamente
     puts "\n\nBusca recursivamente en subespecie o mas arriba"
-    nombre = hash['nombre_cientifico'].limpiar.downcase
+    nombre = fila['nombre_cientifico'].limpiar.downcase
+    taxones = validacion[:taxones]
 
     if taxones.length == 1  # Si es uno, no hay de otra que regrese el resultado
-      taxon = taxones.first
+      taxon = validacion[:taxones].first
       taxon.asigna_categorias_correspondientes
-      return {taxon: taxon, hash: hash, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      self.validacion = {taxon: taxon, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      return
     end
 
     min = nil
@@ -271,10 +276,10 @@ class Validacion < ActiveRecord::Base
       categorias.each do |categoria|
         categoria = I18n.transliterate(categoria).gsub(' ','_').downcase
         valor = eval("taxon.x_#{categoria}.downcase")
-        categoria = 'division' if categoria == 'phylum' && !hash.key(categoria)  # En el excel solo ponene division aunque sean del reino animalia ...
+        categoria = 'division' if categoria == 'phylum' && !fila.key(categoria)  # En el excel solo ponene division aunque sean del reino animalia ...
 
-        if hash[categoria].present?
-          dist = Levenshtein.distance(hash[categoria].downcase, valor)
+        if fila[categoria].present?
+          dist = Levenshtein.distance(fila[categoria].downcase, valor)
           taxon.x_distancia+= dist
           taxones_arriba << taxon.ancestors.where(nombre: valor).first if dist == 0
         end
@@ -304,47 +309,55 @@ class Validacion < ActiveRecord::Base
     if opciones.count == 1
       # Devuelve el primer taxon con la distancia mas chica
       taxon = opciones.first
-      return {taxon: taxon, hash: hash, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      self.validacion = {taxon: taxon, estatus: true, obs: "Orig: #{nombre};Enciclo: #{taxon.nombre_cientifico}"}
+      return
+
     elsif opciones.count > 1  # Hubo mas de una opcion con el mismo peso, validamos mas arriba entonces
       if opciones_arriba.empty?  # No hubo coincidencias arriba
-        return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
+        self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+        return
       elsif opciones_arriba.count == 1  # Hubo una sola coincidencia arriba
         taxon = opciones_arriba[0][0]
         taxon.asigna_categorias_correspondientes
-        return {taxon: taxon, hash: hash, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
+        self.validacion = {taxon: taxon, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
+        return
       elsif opciones_arriba.count > 1  # Hubo más de una coincidencia arriba
         concidencia = opciones_arriba.inject(:&)
 
         if concidencia.any?  # Entre las coincidencias hubo por lo menos uno, tomo el primero, el ancestro mas cercano
           taxon = concidencia.first
           taxon.asigna_categorias_correspondientes
-          return {taxon: taxon, hash: hash, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
+          self.validacion = {taxon: taxon, estatus: true, obs: "valido hasta #{taxon.x_categoria_taxonomica}", valido_hasta: true}
+          return
         else  # No hubo una coincidencia en comun, entre ancestros
-          return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
+          self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+          return
         end
       end
     else  # No hubo opciones de coincidencia con el mismo peso
-      return {hash: hash, estatus: false, obs: 'Sin coincidencias'}
+      self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+      return
     end  # End opciones count
 
   end
 
   # Encuentra el mas parecido
-  def encuentra_record_por_nombre_cientifico(hash = {})
-    puts "\n Encuentra record por nombre cientifico: #{hash['nombre_cientifico']}"
+  def encuentra_por_nombre
+    puts "\n Encuentra record por nombre cientifico: #{fila['nombre_cientifico']}"
     # Evita que el nombre cientifico este vacio
-    if hash['nombre_cientifico'].blank?
-      return {hash: hash, estatus: false, obs: 'El nombre cientifico está vacío'}
+    if fila['nombre_cientifico'].blank?
+      self.validacion = {estatus: false, obs: 'El nombre cientifico está vacío'}
+      return
     end
 
-    h = hash
-    taxones = Especie.where(nombre_cientifico: hash['nombre_cientifico'].strip)
+    taxones = Especie.where(nombre_cientifico: fila['nombre_cientifico'].strip)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
       taxon = taxones.first
       taxon.asigna_categorias_correspondientes
-      return {taxon: taxon, hash: hash, estatus: true}
+      self.validacion = {taxon: taxon, estatus: true}
+      return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
@@ -352,16 +365,19 @@ class Validacion < ActiveRecord::Base
       taxones.each do |taxon|
         if taxon.estatus == 2
           taxon.asigna_categorias_correspondientes
-          return {taxon: taxon, hash: hash, estatus: true}
+          self.validacion = {taxon: taxon, estatus: true}
+          return
         end
       end
 
-      return busca_recursivamente(taxones, hash)  # Si no hay válido, entonces lo busca recursivamente
+      self.validacion = {taxones: taxones, estatus: false}
+      busca_recursivamente
+      return
 
     else
       puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = hash['nombre_cientifico'].limpiar.downcase.split(' ')
+      nombres = fila['nombre_cientifico'].limpiar.downcase.split(' ')
 
       taxones = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
@@ -374,25 +390,36 @@ class Validacion < ActiveRecord::Base
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
         taxon = taxones.first
         taxon.asigna_categorias_correspondientes
-        return {taxon: taxon, hash: hash, estatus: true}
+        self.validacion = {taxon: taxon, estatus: true}
+        return
+
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        return busca_recursivamente(taxones, hash)
+        self.validacion = {taxones: taxones, estatus: false}
+        busca_recursivamente
+        return
+
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
         puts "\n\nTratando de encontrar concidencias con el fuzzy match"
-        ids = FUZZY_NOM_CIEN.find(hash['nombre_cientifico'].limpia, limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(fila['nombre_cientifico'].limpia, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
-          return {hash: h, estatus: false, error: 'Sin coincidencias'} if taxones.empty?
+
+          if taxones.empty?
+            self.validacion = {estatus: false, error: 'Sin coincidencias'}
+            return
+          end
+
           taxones_con_distancia = []
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(hash['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
+            distancia = Levenshtein.distance(fila['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
 
-            if distancia == 0  # Es exactamente el mismo taxon
+            if distancia == 0  # Es exactamente el mismo taxon, este no debría pasar, pero se pone por algun caso raro
               taxon.asigna_categorias_correspondientes
-              return {taxon: taxon, hash: hash, estatus: true}
+              self.validacion = {taxon: taxon, estatus: true}
+              return
             end
 
             next if distancia > 2  # No cumple con la distancia
@@ -401,51 +428,54 @@ class Validacion < ActiveRecord::Base
 
           if taxones_con_distancia.empty?
             puts "\n\nSin coincidencia"
-            return {hash: h, estatus: false, obs: 'Sin coincidencias'}
+            self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+            return
           else
-            return busca_recursivamente(taxones_con_distancia, hash)
+            self.validacion = {taxones: taxones_con_distancia, estatus: false}
+            busca_recursivamente
+            return
           end
 
         else  # No hubo coincidencias con su nombre cientifico
           puts "\n\nSin coincidencia"
-
-          return {hash: h, estatus: false, obs: 'Sin coincidencias'}
+          puts '@@@@@@@@@@@ aqui el caso raro: ' + fila['nombre_cientifico']
+          self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+          return
         end
       end
 
     end  #Fin de las posibles coincidencias
   end
 
-  def valida_campos(path, asociacion)
+  def valida_campos
     puts "\n Validando campos en 30 seg ..."
-    sleep(30)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
-    @hash = []
-    primera_fila = true
+    sleep(3)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
+    self.excel_valido = []
 
-    xlsx = Roo::Excelx.new(path, packed: nil, file_warning: :ignore)
+    xlsx = Roo::Excelx.new(excel, packed: nil, file_warning: :ignore)
     @sheet = xlsx.sheet(0)  # toma la primera hoja por default
 
-    @sheet.parse(asociacion).each do |hash|
-      if primera_fila  # Para no validar la primera fila
-        primera_fila = false
-        next
-      end
+    @sheet.parse(cabecera).each_with_index do |f, index|
+      next if index == 0
+      self.fila = f
 
-      info_primer_caso = encuentra_record_por_nombre_cientifico(hash)
-      if info_primer_caso[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
-        @hash << asocia_respuesta(info_primer_caso.merge({excel: hash}))
+      encuentra_por_nombre
+      if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+        self.excel_valido << asocia_respuesta
       else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
-        nombre_cientifico_orig = hash['nombre_cientifico']
-        categorias = (CategoriaTaxonomica::CATEGORIAS & hash.keys).reverse
+        nombre_cientifico_orig = fila['nombre_cientifico']
+        categorias = (CategoriaTaxonomica::CATEGORIAS & fila.keys).reverse
         encontro_arriba = false
 
         categorias.each do |categoria|
           next if encontro_arriba
-          next if hash[categoria].blank?
-          hash['nombre_cientifico'] = hash[categoria]
-          info = encuentra_record_por_nombre_cientifico(hash)
+          next if fila[categoria].blank?
 
-          if info[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
+          # Asigna una categoria mas arriba a nombre cientifico
+          fila['nombre_cientifico'] = fila[categoria]
+          encuentra_por_nombre
+
+          if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido y/o un ancestro valido por medio del nombre
             # Me quedo con las categorias superiores y verifico que se encuentre familia u orden
             asegurar_categoria = %w(familia orden)
             index = categorias.index(categoria)
@@ -455,36 +485,34 @@ class Validacion < ActiveRecord::Base
             if categorias_coincidio.any?
               categorias_coincidio.each do |c|
                 #next if encontro_arriba
-                if hash[c].try(:downcase) == eval("info[:taxon].x_#{c.downcase}").try(:downcase)
-                  info[:hash]['nombre_cientifico'] = nombre_cientifico_orig
-                  info[:obs] = "valido hasta #{info[:taxon].x_categoria_taxonomica}"
-                  info[:valido_hasta] = true
-                  @hash << asocia_respuesta(info.merge({excel: hash}))
+                if fila[c].try(:downcase) == eval("validacion[:taxon].x_#{c.downcase}").try(:downcase)
+                  fila['nombre_cientifico'] = nombre_cientifico_orig
+                  validacion[:obs] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
+                  validacion[:valido_hasta] = true
+                  self.excel_valido << asocia_respuesta
                   encontro_arriba = true
                   break
                 end
               end
 
-            end
-
+            end  # End categoria coincidio
           end  # end if estatus
+        end  # End each categorias
 
-        end
-
-        @hash << asocia_respuesta(info_primer_caso.merge({excel: hash})) if !encontro_arriba
+        self.excel_valido << asocia_respuesta if !encontro_arriba
 
       end  # info estatus inicial, con el nombre_cientifico original
     end  # sheet parse
 
-    escribe_excel(path)
-    EnviaCorreo.excel(self).deliver
+    escribe_excel
+    EnviaCorreo.excel(self).deliver if Rails.env.production?
   end
 
   # Asocia la respuesta para armar el contenido del excel
-  def asocia_respuesta(info = {})
+  def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    if info[:estatus]
-      taxon = info[:taxon]
+    if validacion[:estatus]
+      taxon = validacion[:taxon]
 
       if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
         estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
@@ -494,60 +522,59 @@ class Validacion < ActiveRecord::Base
             taxon_valido = Especie.find(estatus.first.especie_id2)
             taxon_valido.asigna_categorias_correspondientes
             # Asigna el taxon valido al taxon original
-            info[:taxon] = taxon_valido
-            info[:taxon_valido] = true
+            self.validacion[:taxon] = taxon_valido
+            self.validacion[:taxon_valido] = true
           rescue
-            info[:estatus] = false
-            info[:error] = 'Sin coincidencias'
+            self.validacion[:estatus] = false
+            self.validacion[:error] = 'Sin coincidencias'
           end
 
         else  # No existe el valido >.>!
-          info[:estatus] = false
-          info[:error] = 'Sin coincidencias'
+          self.validacion[:estatus] = false
+          self.validacion[:error] = 'Sin coincidencias'
         end
       end  # End estatus = 1
     end  # End info estatus
 
     # Para saber si no era un sinonimo
-    if info[:taxon_valido].present?
-      info[:scat_estatus] = 'sinónimo'
-    elsif info[:obs].blank?
-      info[:scat_estatus] = Especie::ESTATUS_SIGNIFICADO[info[:taxon].estatus]
+    if validacion[:taxon_valido].present?
+      self.validacion[:scat_estatus] = 'sinónimo'
+    elsif validacion[:obs].blank?
+      self.validacion[:scat_estatus] = Especie::ESTATUS_SIGNIFICADO[validacion[:taxon].estatus]
     end
 
     # Se completa cada seccion del excel
-    resumen_hash = resumen(info)
-    correcciones_hash = correcciones(info)
-    validacion_interna_hash = validacion_interna(info)
+    resumen_resp = resumen
+    correcciones_resp = correcciones
+    validacion_interna_resp = validacion_interna
 
-    # Devuelve toda la asociacion unida y en orden
-    { resumen: resumen_hash, correcciones: correcciones_hash, validacion_interna: validacion_interna_hash }
+    # Devuelve toda la asociacion unidas y en orden
+    { resumen: resumen_resp, correcciones: correcciones_resp, validacion_interna: validacion_interna_resp }
   end
 
   # Parte roja del excel
-  def resumen(info = {})
+  def resumen
     resumen_hash = {}
 
-    if info[:estatus]
-      taxon = info[:taxon]
-      hash = info[:hash]
+    if validacion[:estatus]
+      taxon = validacion[:taxon]
 
-      if info[:scat_estatus].present?
-        resumen_hash['SCAT_NombreEstatus'] = info[:scat_estatus]
+      if validacion[:scat_estatus].present?
+        resumen_hash['SCAT_NombreEstatus'] = validacion[:scat_estatus]
       else
         resumen_hash['SCAT_NombreEstatus'] = nil
       end
 
-      if info[:obs].present?
-        resumen_hash['SCAT_Observaciones'] = info[:obs]
+      if validacion[:obs].present?
+        resumen_hash['SCAT_Observaciones'] = validacion[:obs]
       else
         resumen_hash['SCAT_Observaciones'] = nil
       end
 
-      if info[:valido_hasta].present?
+      if validacion[:valido_hasta].present?
         resumen_hash['SCAT_Correccion_NombreCient'] = nil
       else
-        resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == hash['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
+        resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == fila['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
       end
 
       resumen_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
@@ -556,8 +583,8 @@ class Validacion < ActiveRecord::Base
     else  # Asociacion vacia, solo el error
       resumen_hash['SCAT_NombreEstatus'] = nil
 
-      if info[:obs].present?
-        resumen_hash['SCAT_Observaciones'] = info[:obs]
+      if validacion[:obs].present?
+        resumen_hash['SCAT_Observaciones'] = validacion[:obs]
       else
         resumen_hash['SCAT_Observaciones'] = nil
       end
@@ -571,27 +598,26 @@ class Validacion < ActiveRecord::Base
   end
 
   # Parte azul del excel
-  def correcciones(info = {})
+  def correcciones
     puts "\n\nGenerando informacion de correcciones ..."
     correcciones_hash = {}
-    hash = info[:hash]
-    taxon = info[:taxon]
+    taxon = validacion[:taxon]
 
     # Se iteran con los campos que previamente coincidieron en compruebas_columnas
-    hash.each do |campo, valor|
-      if info[:estatus]
+    fila.each do |campo, valor|
+      if validacion[:estatus]
 
         if campo == 'infraespecie'  # caso especial para las infrespecies
           cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
 
           if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = taxon.nombre.downcase == hash[campo].try(:downcase) ? nil : taxon.nombre
+            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = taxon.nombre.downcase == fila[campo].try(:downcase) ? nil : taxon.nombre
           else
             correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
           end
 
         else
-          correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = eval("taxon.x_#{campo}").try(:downcase) == hash[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
+          correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = eval("taxon.x_#{campo}").try(:downcase) == fila[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
         end
 
       else
@@ -602,44 +628,43 @@ class Validacion < ActiveRecord::Base
     correcciones_hash
   end
 
-  def validacion_interna(info = {})
+  def validacion_interna
     validacion_interna_hash = {}
-    excel = info[:excel]
 
-    if info[:estatus]
-      taxon = info[:taxon]
+    if validacion[:estatus]
+      taxon = validacion[:taxon]
 
-      validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino || [excel['Reino'],INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino || [fila['Reino'],INFORMACION_ORIG]
 
       if taxon.x_phylum.present?
-        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_phylum || [excel['division'], INFORMACION_ORIG] || [excel['phylum'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_phylum || [fila['division'], INFORMACION_ORIG] || [fila['phylum'], INFORMACION_ORIG]
       else
-        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_division || [excel['division'], INFORMACION_ORIG] || [excel['phylum'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_division || [fila['division'], INFORMACION_ORIG] || [fila['phylum'], INFORMACION_ORIG]
       end
 
-      validacion_interna_hash['SCAT_Clase_valido'] = taxon.x_clase || [excel['clase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subclase_valido'] = taxon.x_subclase || [excel['subclase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Orden_valido'] = taxon.x_orden || [excel['orden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Suborden_valido'] = taxon.x_suborden || [excel['suborden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Infraorden_valido'] = taxon.x_infraorden || [excel['infraorden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Superfamilia_valido'] = taxon.x_superfamilia || [excel['superfamilia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Familia_valido'] = taxon.x_familia || [excel['familia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Genero_valido'] = taxon.x_genero || [excel['genero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero || [excel['subgenero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie || [excel['especie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad || [excel['nombre_autoridad'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Clase_valido'] = taxon.x_clase || [fila['clase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subclase_valido'] = taxon.x_subclase || [fila['subclase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Orden_valido'] = taxon.x_orden || [fila['orden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Suborden_valido'] = taxon.x_suborden || [fila['suborden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Infraorden_valido'] = taxon.x_infraorden || [fila['infraorden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = taxon.x_superfamilia || [fila['superfamilia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Familia_valido'] = taxon.x_familia || [fila['familia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Genero_valido'] = taxon.x_genero || [fila['genero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero || [fila['subgenero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie || [fila['especie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad || [fila['nombre_autoridad'], INFORMACION_ORIG]
 
       # Para la infraespecie
       cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
       if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-        validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre || [excel['infraespecie'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre || [fila['infraespecie'], INFORMACION_ORIG]
       else
-        validacion_interna_hash['SCAT_Infraespecie_valido'] = [excel['infraespecie'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = [fila['infraespecie'], INFORMACION_ORIG]
       end
 
-      validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || [excel['categoria_taxonomica'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || [excel['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || [excel['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || [fila['categoria_taxonomica'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || [fila['nombre_cientifico'], INFORMACION_ORIG]
 
       # Para la NOM
       nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
@@ -691,23 +716,23 @@ class Validacion < ActiveRecord::Base
       end
 
     else  # Asociacion vacia, solo el error
-      validacion_interna_hash['SCAT_Reino_valido'] = [excel['Reino'],INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Phylum/Division_valido'] = [excel['division'], INFORMACION_ORIG] || [excel['phylum'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Clase_valido'] = [excel['clase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subclase_valido'] = [excel['subclase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Orden_valido'] = [excel['orden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Suborden_valido'] = [excel['suborden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Infraorden_valido'] = [excel['infraorden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Superfamilia_valido'] = [excel['superfamilia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Familia_valido'] = [excel['familia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Genero_valido'] = [excel['genero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subgenero_valido'] = [excel['subgenero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Especie_valido'] = [excel['especie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorEspecie_valido'] = [excel['nombre_autoridad'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Infraespecie_valido'] = [excel['infraespecie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Categoria_valido'] = [excel['categoria_taxonomica'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = [excel['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_NombreCient_valido'] = [excel['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Reino_valido'] = [fila['Reino'],INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Phylum/Division_valido'] = [fila['division'], INFORMACION_ORIG] || [fila['phylum'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Clase_valido'] = [fila['clase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subclase_valido'] = [fila['subclase'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Orden_valido'] = [fila['orden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Suborden_valido'] = [fila['suborden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Infraorden_valido'] = [fila['infraorden'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = [fila['superfamilia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Familia_valido'] = [fila['familia'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Genero_valido'] = [fila['genero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Subgenero_valido'] = [fila['subgenero'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Especie_valido'] = [fila['especie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = [fila['nombre_autoridad'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Infraespecie_valido'] = [fila['infraespecie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Categoria_valido'] = [fila['categoria_taxonomica'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NombreCient_valido'] = [fila['nombre_cientifico'], INFORMACION_ORIG]
       validacion_interna_hash['SCAT_NOM-059'] = [nil, INFORMACION_ORIG]
       validacion_interna_hash['SCAT_IUCN'] = [nil, INFORMACION_ORIG]
       validacion_interna_hash['SCAT_CITES'] = [nil, INFORMACION_ORIG]
