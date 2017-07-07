@@ -359,7 +359,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def fotos_bdi(opts={})
     bdi = BDIService.new
 
-    if species_or_lower?
+    if species_or_lower? || categoria_taxonomica.nombre_categoria_taxonomica == 'género'
       bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 528}))
     elsif is_root?
       bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 15}))
