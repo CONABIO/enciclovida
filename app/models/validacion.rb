@@ -255,6 +255,9 @@ class Validacion < ActiveRecord::Base
       validacion[:taxon] = taxon
       coincide_familia_orden?
 
+      # estamos seguros que no hay coincidencias, salimos
+      return if validacion[:salir]
+
       if validacion[:estatus]
         validacion[:obs] = "Orig: #{fila['nombre_cientifico']}; Enciclo: #{taxon.nombre_cientifico}"
         return
@@ -266,6 +269,14 @@ class Validacion < ActiveRecord::Base
     taxon = validacion[:taxon]
     taxon.asigna_categorias
     validacion[:taxon] = taxon
+
+    # Si no esta puesta la familia en el taxon que coincide, entonces quiere decir que ya subio hasta familia y no es igual, entonces no hubo coincidencias
+    if taxon.x_familia.blank?
+      validacion[:estatus] = false
+      validacion[:obs] = 'Sin coincidencias'
+      validacion[:salir] = true
+      return
+    end
 
     if fila['familia'].present?  # Si escribio la familia en el excel entonces debe de coincidir
       if fila['familia'].downcase.strip == taxon.x_familia.downcase.strip
