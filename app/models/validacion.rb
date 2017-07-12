@@ -474,7 +474,7 @@ class Validacion < ActiveRecord::Base
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    taxon_estatus
+    taxon_estatus if validacion[:estatus]
 
     # Se completa cada seccion del excel
     resumen_resp = resumen
