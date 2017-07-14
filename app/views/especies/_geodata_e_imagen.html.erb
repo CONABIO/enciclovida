@@ -4,8 +4,8 @@
 
 <%= content_for(:delayedjs) do %>
     <script>
-        <% if @naturalista_id.present? %>
-            var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@naturalista_id}" %>";
+        <% if @con_naturalista.present? %>
+            var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
         <% else %>
             var INATURALIST_API = undefined;
         <% end %>

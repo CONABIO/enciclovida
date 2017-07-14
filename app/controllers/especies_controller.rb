@@ -20,6 +20,8 @@ class EspeciesController < ApplicationController
     render :_error unless permiso
   end
 
+  before_action :servicios, only: [:show]
+
   layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
                           :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -41,23 +43,9 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-    if p = @especie.proveedor
-      @naturalista_id = p.naturalista_id
-    end
-
-    @cuantos = Comentario.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
 
     respond_to do |format|
       format.html do
-        # Para guardar los cambios en redis
-        if Rails.env.production?
-          @especie.delay(queue: 'redis').guarda_redis
-        else
-          @especie.guarda_redis
-        end
-
-        # Para guardar las observaciones, tiene cache de 1 semana
-        @especie.delayed_job_service if Rails.env.production?
 
         if @species_or_lower = @especie.species_or_lower?
           if proveedor = @especie.proveedor
@@ -71,12 +59,14 @@ class EspeciesController < ApplicationController
         end
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
-        if @especie.species_or_lower?
-          if proveedor = @especie.proveedor
-            @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
-          end
+        if proveedor = @especie.proveedor
+          @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
         end
+
+        # Para los comentarios
+        @cuantos = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
       end
+
       format.json do
         @especie[:geodata] = []
 
@@ -105,6 +95,7 @@ class EspeciesController < ApplicationController
 
         render json: @especie.to_json
       end
+
       format.kml do
         redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
 
@@ -555,6 +546,17 @@ class EspeciesController < ApplicationController
       end
     rescue    #si no encontro el taxon
       render :_error and return
+    end
+  end
+
+  # Actualiza las observaciones, los nombres comunes y las fotos
+  def servicios
+    # Para guardar los cambios en redis y las observacion
+    if Rails.env.production?
+      @especie.delay(queue: 'redis').guarda_redis
+      @especie.delayed_job_service
+    else
+      @especie.guarda_redis
     end
   end
 
