@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml
+  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -30,8 +30,6 @@ class Proveedor < ActiveRecord::Base
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
       return resp unless resp[:estatus] == 'OK'
-      self.naturalista_id = resp[:taxon]['id']
-      save
     end
 
     begin
@@ -51,8 +49,6 @@ class Proveedor < ActiveRecord::Base
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
       return resp unless resp[:estatus] == 'OK'
-      self.naturalista_id = resp[:ficha]['id']
-      save
     end
 
     begin
@@ -303,6 +299,42 @@ class Proveedor < ActiveRecord::Base
     puts "\t\t#{data.count} observaciones"
   end
 
+  def guarda_observaciones_naturalista_api
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+      self.naturalista_id = resp[:taxon]['id']
+      save
+    end
+
+    # Valida el paginado y los resultados
+    self.observaciones = []
+    validacion = observaciones_naturalista_api_valida
+    return validacion unless validacion[:estatus] == 'OK'
+
+    # Para el paginado
+    paginas = totales/CONFIG.inaturalist_por_pagina.to_i
+    residuo = totales%200
+    paginas+= 1 if residuo < 200 || paginas == 0
+
+    if paginas > 1
+      # Para consultar las demas paginas, si es que tiene mas de una
+      for i in 2..paginas do
+        validacion = observaciones_naturalista_api_valida({page: i})
+        return validacion unless validacion[:estatus] == 'OK'
+      end
+    end
+
+    # Crea carpeta y archivo
+    carpeta = Rails.root.join('public', 'geodatos', especie_id.to_s).to_s
+    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
+    nombre = "#{carpeta}/observaciones.json"
+    archivo = File.new(nombre, 'w+')
+    archivo.puts observaciones.to_json
+
+  end
+
   def geodatos
     geodatos = {}
     geodatos[:cuales] = []
@@ -333,6 +365,28 @@ class Proveedor < ActiveRecord::Base
 
 
   private
+
+
+  def observaciones_naturalista_api_valida(params = {})
+    page = params[:page] || 1
+
+    begin
+      rest_client = RestClient.get "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}"
+      resultados = JSON.parse(rest_client)
+    rescue => e
+      return {estatus: 'error', msg: e}
+    end
+
+    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless resultados.any?
+
+    self.totales = resultados['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
+    self.observaciones+= resultados['results'] if resultados['results'].any?
+
+    return {estatus: 'error', msg: 'No hay observaciones 1'} if totales.blank? || (totales.present? && totales <= 0)
+    return {estatus: 'error', msg: 'No hay observaciones 2'} if observaciones.blank? || observaciones.count == 0
+
+    {estatus: 'OK'}
+  end
 
   def to_kml(cadenas)
     evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']

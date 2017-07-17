@@ -461,14 +461,21 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     resultados.each do |t|
       next unless t['ancestry'].present?
-      if t['name'] == nombre_cientifico
+      if t['name'].downcase == nombre_cientifico.downcase
         reino_naturalista = t['ancestry'].split('/')[1].to_i
         next unless reino_naturalista.present?
-        reino_enciclovida = is_root? ? id : ancestry_ascendente_directo.split('/').first
+        reino_enciclovida = is_root? ? id : ancestry_ascendente_directo.split('/').first.to_i
 
         # Si coincide el reino con animalia, plantas u hongos, OJO quitar esto en la centralizacion
         if (reino_naturalista == 1 && reino_enciclovida == 1000001) || (reino_naturalista == 47126 && reino_enciclovida == 6000002) || (reino_naturalista == 47170 && reino_enciclovida == 3000004)
-          self.proveedor = Proveedor.create({naturalista_id: t.id, especie_id: id}) if !proveedor
+
+          if p = proveedor
+            p.naturalista_id = t['id']
+            p.save
+          else
+            self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
+          end
+
           return {estatus: 'OK', ficha: t}
         end
 
