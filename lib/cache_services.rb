@@ -1,5 +1,5 @@
 module CacheServices
-  def cache_services
+  def guarda_observaciones
     puts "\t\tIniciando el minado de las observaciones"
 
     # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo en kml y kmz
@@ -16,8 +16,8 @@ module CacheServices
   end
 
   # Los servicios no se actualizaran en menos de un dia
-  def escribe_cache
-    Rails.cache.write("cache_service_#{id}", true, :expires_in => 1.week)
+  def escribe_cache(tiempo = 1.week)
+    Rails.cache.write("cache_service_#{id}", true, :expires_in =>tiempo)
   end
 
   def existe_cache?

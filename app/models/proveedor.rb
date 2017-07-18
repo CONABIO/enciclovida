@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion
+  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion, :kml
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -126,7 +126,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   #Guarda el kml asociado al taxon
-  def kml
+  def kml_snib
     return [] unless snib_id.present?
 
     # Catch the response
@@ -192,46 +192,6 @@ class Proveedor < ActiveRecord::Base
     self.snib_kml = to_kml(cadenas)
   end
 
-  # Guarda el kml de naturalista asociado al taxon
-  def kml_naturalista
-    return [] unless naturalista_obs.present?
-    obs = eval(naturalista_obs.decodifica64)
-    return [] unless obs.count > 0
-    cadenas = []
-    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
-
-    obs.each do |ob|
-      # Para evitar las captivas
-      #next if ob['captive']
-
-      cadena = Hash.new
-
-      # Los numere para poder armar los datos en el orden deseado
-      cadena['01_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
-      cadena['02_nombre_comun'] = h.encode(especie.nom_com_prin(true))
-      cadena['05_place_guess'] = h.encode(ob['place_guess'])
-      cadena['06_observed_on'] = ob['observed_on'].gsub('-','/') if ob['observed_on'].present?
-      cadena['07_captive'] =  ob['captive'] ? 'Organismo silvestre / naturalizado' : nil
-      cadena['08_quality_grade'] = ob['quality_grade']
-      cadena['09_uri'] = ob['uri']
-
-      if cadena['09_uri'].present?
-        cadena['09_uri'] = cadena['09_uri'].gsub('www.inaturalist.org','naturalista.conabio.gob.mx').gsub('conabio.inaturalist.org', 'naturalista.conabio.gob.mx')
-      end
-
-      cadena['10_longitude'] = ob['longitude']
-      cadena['11_latitude'] = ob['latitude']
-
-      ob['photos'].each do |photo|
-        cadena['03_thumb_url'] = photo['thumb_url']
-        cadena['04_attribution'] = h.encode(photo['attribution'])
-        break
-      end
-      cadenas << cadena
-    end
-    self.naturalista_kml = to_kml_naturalista(cadenas)
-  end
-
   def usuario_naturalista
     response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
     data = JSON.parse(response)
@@ -246,58 +206,6 @@ class Proveedor < ActiveRecord::Base
     ruta_zip = ruta.join('registros.zip')
     rename = File.rename(ruta_zip, ruta.join('registros.kmz'))
     rename == 0
-  end
-
-  def kmz_naturalista
-    ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
-    FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
-    ruta_kml = ruta.join('observaciones.kml')
-    File.open(ruta_kml, 'w+') { |file| file.write(naturalista_kml) }
-    system "zip #{ruta.join('observaciones')} #{ruta_kml}"
-    ruta_zip = ruta.join('observaciones.zip')
-    rename = File.rename(ruta_zip, ruta.join('observaciones.kmz'))
-    rename == 0
-  end
-
-  # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla
-  def observaciones_naturalista
-
-  end
-
-  def guarda_observaciones_naturalista
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
-    if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
-    end
-
-    # Valida el paginado y los resultados
-    self.observaciones = []
-    validacion = valida_observaciones_naturalista
-    return validacion unless validacion[:estatus] == 'OK'
-
-    # Para el paginado
-    paginas = totales/CONFIG.inaturalist_por_pagina.to_i
-    residuo = totales%200
-    paginas+= 1 if residuo < 200 || paginas == 0
-
-    if paginas > 1
-      # Para consultar las demas paginas, si es que tiene mas de una
-      for i in 2..paginas do
-        validacion = valida_observaciones_naturalista({page: i})
-        return validacion unless validacion[:estatus] == 'OK'
-      end
-    end
-
-    # Crea carpeta y archivo
-    carpeta = Rails.root.join('public', 'geodatos', especie_id.to_s).to_s
-    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
-    nombre = "#{carpeta}/observaciones.json"
-    archivo = File.new(nombre, 'w+')
-
-    # Guarda el archivo en kml y kmz
-
-    archivo.puts observaciones.to_json
   end
 
   def geodatos
@@ -328,38 +236,103 @@ class Proveedor < ActiveRecord::Base
     geodatos
   end
 
+  # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
+  def observaciones_naturalista(formato = '.json')
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    archivo = "#{nombre}#{formato}"
+
+    guarda_observaciones_naturalista if !especie.existe_cache?
+
+    if File.exist?(archivo)
+      {estatus: 'OK', ruta: archivo}
+    else
+      {estatus: 'error', msg: 'No hay observaciones'}
+    end
+  end
+
+  def guarda_observaciones_naturalista
+    # Para no guardar nada si el cache aun esta vigente
+    return if especie.existe_cache?
+
+    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+    if naturalista_id.blank?
+      resp = especie.ficha_naturalista_por_nombre
+      return resp unless resp[:estatus] == 'OK'
+    end
+
+    # Valida el paginado y los resultados
+    self.observaciones = []
+    validacion = valida_observaciones_naturalista
+    return validacion unless validacion[:estatus] == 'OK'
+
+    # Para el paginado
+    paginas = totales/CONFIG.inaturalist_por_pagina.to_i
+    residuo = totales%200
+    paginas+= 1 if residuo < 200 || paginas == 0
+
+    if paginas > 1
+      # Para consultar las demas paginas, si es que tiene mas de una
+      for i in 2..paginas do
+        validacion = valida_observaciones_naturalista({page: i})
+        return validacion unless validacion[:estatus] == 'OK'
+      end
+    end
+
+    # Crea carpeta y archivo
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    archivo_observaciones = File.new("#{nombre}.json", 'w+')
+    archivo_observaciones_kml = File.new("#{nombre}.kml", 'w+')
+
+    # Guarda el archivo en kml y kmz
+    archivo_observaciones.puts observaciones.to_json
+    archivo_observaciones_kml.puts kml
+
+    # Guarda el archivo en kmz
+    kmz_naturalista(nombre)
+
+    # Pone el cache para no volverlo a consultar
+    especie.escribe_cache if Rails.env.production?
+  end
+
 
   private
+
+  # Crea o devuleve la capreta de los geodatos
+  def carpeta_geodatos
+    carpeta = Rails.root.join('public', 'geodatos', especie_id.to_s)
+    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
+    carpeta
+  end
 
   # Solo los campos que ocupo en el mapa para no hacer muy grande la respuesta
   def limpia_observaciones_naturalista
     obs = Hash.new
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
-    taxon = especie
 
     # Los numere para poder armar los datos en el orden deseado
-    obs['01_nombre_cientifico'] = h.encode(taxon.nombre_cientifico)
-    obs['02_nombre_comun'] = h.encode(taxon.nom_com_prin(true))
-    obs['05_place_guess'] = h.encode(observacion['place_guess'])
-    obs['06_observed_on'] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
-    obs['07_captive'] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
-    obs['08_quality_grade'] = observacion['quality_grade']
-    obs['09_uri'] = observacion['uri']
+    obs[:place_guess] = h.encode(observacion['place_guess'])
+    obs[:observed_on] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
+    obs[:captive] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
+    obs[:quality_grade] = observacion['quality_grade']
+    obs[:uri] = observacion['uri']
 
-    if obs['09_uri'].present?
-      obs['09_uri'] = obs['09_uri'].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx')
+    if obs[:uri].present?
+      obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx')
     end
 
-    obs['10_longitude'] = observacion['geojson']['coordinates'][0]
-    obs['11_latitude'] = observacion['geojson']['coordinates'][1]
+    obs[:longitude] = observacion['geojson']['coordinates'][0]
+    obs[:latitude] = observacion['geojson']['coordinates'][1]
 
     observacion['photos'].each do |photo|
-      obs['03_thumb_url'] = photo['url']
-      obs['04_attribution'] = h.encode(photo['attribution'])
+      obs[:thumb_url] = photo['url']
+      obs[:attribution] = h.encode(photo['attribution'])
       break  # Guardo la primera foto
     end
 
-    self.observaciones << obs
+    self.observacion = obs
+    self.observaciones << observacion
   end
 
   def valida_observaciones_naturalista(params = {})
@@ -380,13 +353,96 @@ class Proveedor < ActiveRecord::Base
     return {estatus: 'error', msg: 'No hay observaciones 1'} if totales.blank? || (totales.present? && totales <= 0)
     return {estatus: 'error', msg: 'No hay observaciones 2'} if resultados.blank? || resultados.count == 0
 
-    # Limpia las observaciones
+    # Limpia las observaciones y  las transforma a kml
+    kml_naturalista(inicio: true)
+
     resultados.each do |observacion|
       self.observacion = observacion
       limpia_observaciones_naturalista
+      kml_naturalista(observacion: true)
     end
 
+    kml_naturalista(fin: true)
+
     {estatus: 'OK'}
+  end
+
+  def kml_naturalista(opc = {})
+
+    if opc[:inicio]
+      self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+      self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+      self.kml << "<Document>\n"
+
+      # Para las observaciones de grado cientifico, verde
+      self.kml << "<Style id=\"Placemark_cientifico\">\n"
+      self.kml << "<IconStyle>\n"
+      self.kml << "<Icon>\n"
+      self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/verde.png</href>\n"
+      self.kml << "</Icon>\n"
+      self.kml << "</IconStyle>\n"
+      self.kml << "</Style>\n"
+
+      # Para las observaciones de grado casual, amarillo
+      self.kml << "<Style id=\"Placemark_casual\">\n"
+      self.kml << "<IconStyle>\n"
+      self.kml << "<Icon>\n"
+      self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/amarillo.png</href>\n"
+      self.kml << "</Icon>\n"
+      self.kml << "</IconStyle>\n"
+      self.kml << "</Style>\n"
+    end
+
+    if opc[:observacion]
+      h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
+      nombre_cientifico = h.encode(especie.nombre_cientifico)
+      nombre_comun = h.encode(especie.nom_com_prin(true))
+      nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
+
+      self.kml << "<Placemark>\n"
+      self.kml << "<description>\n"
+      self.kml << "<![CDATA[\n"
+      self.kml << "<div>\n"
+      self.kml << "<h4>\n"
+      self.kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
+      self.kml << "</h4>\n"
+
+      self.kml << "<div><img src=\"#{observacion[:thumb_url]}\"/></div>\n"
+
+      self.kml << '<dl>'
+      self.kml << "<dt>Atribución</dt> <dd>#{observacion[:attribution]}</dd>\n"
+      self.kml << "<dt>Ubicación</dt> <dd>#{observacion[:place_guess]}</dd>\n"
+      self.kml << "<dt>Fecha</dt> <dd>#{observacion[:observed_on]}</dd>\n"
+      self.kml << "<dt>#{observacion[:captive]}</dt> <dd> </dd>\n"
+      self.kml << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << observacion[:quality_grade])}</dd>\n"
+      self.kml << '</dl>'
+
+      self.kml << "<span><text>Ver la </text><a href=\"#{observacion[:uri]}\">observación en NaturaLista</a></span>\n"
+
+      self.kml << "</div>\n"
+      self.kml << "]]>\n"
+      self.kml << "</description>\n"
+
+      if observacion[:quality_grade] == 'research'
+        self.kml << '<styleUrl>#Placemark_cientifico</styleUrl>'
+      else
+        self.kml << '<styleUrl>#Placemark_casual</styleUrl>'
+      end
+
+      self.kml << "<Point>\n<coordinates>\n#{observacion[:longitude]},#{observacion[:latitude]}\n</coordinates>\n</Point>\n"
+      self.kml << "</Placemark>\n"
+    end
+
+    if opc[:fin]
+      self.kml << "</Document>\n"
+      self.kml << '</kml>'
+    end
+  end
+
+  def kmz_naturalista(nombre)
+    archvo_zip = "#{nombre}.zip"
+    system "zip #{archvo_zip} #{nombre}.kml"
+    File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
   def to_kml(cadenas)
@@ -450,86 +506,6 @@ class Proveedor < ActiveRecord::Base
       kml << "</description>\n"
       kml << '<styleUrl>#normalPlacemark</styleUrl>'
       kml << "<Point>\n<coordinates>\n#{cad['13_longitude']},#{cad['14_latitude']}\n</coordinates>\n</Point>\n"
-      kml << "</Placemark>\n"
-    end
-
-    kml << "</Document>\n"
-    kml << '</kml>'
-  end
-
-  def to_kml_naturalista(cadenas)
-    kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
-    kml << "<Document>\n"
-
-    # Para las observaciones de grado cientifico, verde
-    kml << "<Style id=\"Placemark_cientifico\">\n"
-    kml << "<IconStyle>\n"
-    kml << "<Icon>\n"
-    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/verde.png</href>\n"
-    kml << "</Icon>\n"
-    kml << "</IconStyle>\n"
-    kml << "</Style>\n"
-
-    # Para las observaciones de grado casual, amarillo
-    kml << "<Style id=\"Placemark_casual\">\n"
-    kml << "<IconStyle>\n"
-    kml << "<Icon>\n"
-    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/amarillo.png</href>\n"
-    kml << "</Icon>\n"
-    kml << "</IconStyle>\n"
-    kml << "</Style>\n"
-
-    cadenas.each do |cad|
-      grado = ''
-      foto = ''
-      enlace = ''
-      campos = ''
-      valor = cad['02_nombre_comun'].present? ? "<b>#{cad['02_nombre_comun']}</b> <i>(#{cad['01_nombre_cientifico']})</i>" : "<i><b>#{cad['01_nombre_cientifico']}</b></i>"
-      kml << "<Placemark>\n"
-      kml << "<description>\n"
-      kml << "<![CDATA[\n"
-      kml << "<div>\n"
-      kml << "<h4>\n"
-      kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{valor}</a>\n"
-      kml << "</h4>\n"
-
-      cad.keys.sort.each do |k|
-        next unless cad[k].present?
-
-        case k
-          when '03_thumb_url'
-            foto << "<div><img src=\"#{cad[k]}\"/></div>\n"
-          when '04_attribution'
-            campos << "<dt>Atribución</dt> <dd>#{cad[k]}</dd>\n"
-          when '05_place_guess'
-            campos << "<dt>Ubicación</dt> <dd>#{cad[k]}</dd>\n"
-          when '06_observed_on'
-            campos << "<dt>Fecha</dt> <dd>#{cad[k]}</dd>\n"
-          when '07_captive'
-            campos << "<dt>#{cad[k]}</dt> <dd> </dd\n"
-          when '08_quality_grade'
-            campos << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << cad[k])}</dd>\n"
-            grado = cad[k]
-          when '09_uri'
-            enlace << "<span><text>Ver la </text><a href=\"#{cad[k]}\">observación en NaturaLista</a></span>\n"
-          else
-            next
-        end
-      end
-
-      kml << foto << '<dl>' << campos << '</dl>' << enlace << "\n"
-      kml << "</div>\n"
-      kml << "]]>\n"
-      kml << "</description>\n"
-
-      if grado == 'research'
-        kml << '<styleUrl>#Placemark_cientifico</styleUrl>'
-      else
-        kml << '<styleUrl>#Placemark_casual</styleUrl>'
-      end
-
-      kml << "<Point>\n<coordinates>\n#{cad['10_longitude']},#{cad['11_latitude']}\n</coordinates>\n</Point>\n"
       kml << "</Placemark>\n"
     end
 
