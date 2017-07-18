@@ -1,10 +1,11 @@
 module CacheServices
-  def guarda_observaciones
+  def guarda_geodatos
     puts "\t\tIniciando el minado de las observaciones"
 
     # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo a json, kml y kmz
     if p = proveedor
       p.guarda_observaciones_naturalista
+      p.guarda_ejemplares_snib
     end
 
     # Falta el servicio de los registros del SNIB y del fuzzy match

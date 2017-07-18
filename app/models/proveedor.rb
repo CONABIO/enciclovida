@@ -243,6 +243,19 @@ class Proveedor < ActiveRecord::Base
     especie.escribe_cache(1.week) if Rails.env.production?
   end
 
+  # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
+  def ejemplares_snib(formato = '.json')
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    archivo = "#{nombre}#{formato}"
+
+    if File.exist?(archivo)
+      {estatus: 'OK', ruta: archivo}
+    else
+      {estatus: 'error', msg: 'No hay ejemplares en el SNIB'}
+    end
+  end
+
   def guarda_ejemplares_snib
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?
@@ -418,7 +431,6 @@ class Proveedor < ActiveRecord::Base
   end
 
   def valida_ejemplares_snib
-
     begin
       rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 5)
       resultados = JSON.parse(rest_client)
@@ -426,9 +438,12 @@ class Proveedor < ActiveRecord::Base
       return {estatus: 'error', msg: e}
     end
 
-    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless res.present?
+    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless resultados.present?
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
     return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
+
+    # ASigna los ejemplares
+    self.ejemplares = resultados
 
     # Exporta a kml los ejemplares
     kml_snib
@@ -485,7 +500,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "]]>\n"
       self.kml << "</description>\n"
       self.kml << '<styleUrl>#normalPlacemark</styleUrl>'
-      self.kml << "<Point>\n<coordinates>\n#{ejemplar['coordinates'][0]},#{ejemplar['coordinates'][1]}\n</coordinates>\n</Point>\n"
+      self.kml << "<Point>\n<coordinates>\n#{ejemplar['json_geom']['coordinates'][0]},#{ejemplar['json_geom']['coordinates'][1]}\n</coordinates>\n</Point>\n"
       self.kml << "</Placemark>\n"
     end
 

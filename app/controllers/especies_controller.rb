@@ -4,12 +4,12 @@ class EspeciesController < ApplicationController
 
   skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos, :observaciones_naturalista]
+                                         :nombres_comunes_todos, :observaciones_naturalista, :ejemplares_snib]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos]
+                                     :nombres_comunes_todos, :ejemplares_snib]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -25,7 +25,7 @@ class EspeciesController < ApplicationController
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
                           :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
-                          :nombres_comunes_todos]
+                          :nombres_comunes_todos, :ejemplares_snib]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -519,7 +519,49 @@ class EspeciesController < ApplicationController
 
   # Devuelve los ejemplares del SNIB en diferentes formatos
   def ejemplares_snib
+    if p = @especie.proveedor
 
+      respond_to do |format|
+        format.json do
+          resp = p.ejemplares_snib('.json')
+
+          if resp[:estatus] == 'OK'
+            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
+            resp.delete(:ruta)
+            render json: resp
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
+
+        format.kml do
+          resp = p.ejemplares_snib('.kml')
+
+          if resp[:estatus] == 'OK'
+            archivo = File.read(resp[:ruta])
+            send_data archivo, :filename => resp[:ruta].split('/').last
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
+
+        format.kmz do
+          resp = p.ejemplares_snib('.kmz')
+
+          if resp[:estatus] == 'OK'
+            archivo = File.read(resp[:ruta])
+            send_data archivo, :filename => resp[:ruta].split('/').last
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
+      end  # End respond_to
+    else
+      render :_error and return
+    end
   end
 
   # Muestra los comentarios relacionados a la especie, viene de la pestaña de la ficha
