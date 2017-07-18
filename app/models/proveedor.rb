@@ -242,8 +242,6 @@ class Proveedor < ActiveRecord::Base
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     archivo = "#{nombre}#{formato}"
 
-    guarda_observaciones_naturalista if !especie.existe_cache?
-
     if File.exist?(archivo)
       {estatus: 'OK', ruta: archivo}
     else
@@ -293,7 +291,7 @@ class Proveedor < ActiveRecord::Base
     kmz_naturalista(nombre)
 
     # Pone el cache para no volverlo a consultar
-    especie.escribe_cache if Rails.env.production?
+    especie.escribe_cache(1.week) if Rails.env.production?
   end
 
 
@@ -441,7 +439,7 @@ class Proveedor < ActiveRecord::Base
 
   def kmz_naturalista(nombre)
     archvo_zip = "#{nombre}.zip"
-    system "zip #{archvo_zip} #{nombre}.kml"
+    system "zip -j #{archvo_zip} #{nombre}.kml"
     File.rename(archvo_zip, "#{nombre}.kmz")
   end
 

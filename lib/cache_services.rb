@@ -2,13 +2,9 @@ module CacheServices
   def guarda_observaciones
     puts "\t\tIniciando el minado de las observaciones"
 
-    # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo en kml y kmz
+    # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo a json, kml y kmz
     if p = proveedor
-      if p.naturalista_id.present?
-        p.obs_naturalista
-        p.kml_naturalista
-        p.kmz_naturalista if p.naturalista_kml.present?
-      end
+      p.guarda_observaciones_naturalista
     end
 
     # Falta el servicio de los registros del SNIB y del fuzzy match

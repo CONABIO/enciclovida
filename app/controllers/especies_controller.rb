@@ -487,18 +487,47 @@ class EspeciesController < ApplicationController
   # Devuelve las observaciones de naturalista para hacer el parsen en geojson
   def naturalista
     if p = @especie.proveedor
-      if p.naturalista_obs.present?
 
-        naturalista_obs = eval(p.naturalista_obs.force_encoding("UTF-8").decodifica64)
-        render json: [] unless naturalista_obs.count > 0
+      respond_to do |format|
+        format.json do
+          resp = p.observaciones_naturalista('.json')
 
-        render json: naturalista_obs.to_json
+          if resp[:estatus] == 'OK'
+            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
+            resp.delete(:ruta)
+            render json: resp
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
 
-      else
-        render json: []
-      end
+        format.kml do
+          resp = p.observaciones_naturalista('.kml')
+
+          if resp[:estatus] == 'OK'
+            archivo = File.read(resp[:ruta])
+            send_data archivo, :filename => resp[:ruta].split('/').last
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
+
+        format.kmz do
+          resp = p.observaciones_naturalista('.kmz')
+
+          if resp[:estatus] == 'OK'
+            archivo = File.read(resp[:ruta])
+            send_data archivo, :filename => resp[:ruta].split('/').last
+          else
+            resp.delete(:ruta)
+            render json: resp.to_json
+          end
+        end
+      end  # End respond_to
     else
-      render json: []
+      render :_error and return
     end
   end
 
