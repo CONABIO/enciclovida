@@ -2,12 +2,12 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:kmz, :kmz_naturalista, :create, :update, :edit_photos, :comentarios,
-                                         :fotos_referencia, :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos]
+  skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
+                                         :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
+                                         :nombres_comunes_todos, :observaciones_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :datos_principales, :kmz, :kmz_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :naturalista, :comentarios, :fotos_bdi,
+                                     :observaciones_naturalista, :cat_tax_asociadas,
+                                     :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
@@ -22,8 +22,8 @@ class EspeciesController < ApplicationController
 
   before_action :servicios, only: [:show]
 
-  layout false, :only => [:describe, :datos_principales, :kmz, :kmz_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :naturalista, :comentarios,
+  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
                           :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos]
 
@@ -94,20 +94,6 @@ class EspeciesController < ApplicationController
         @especie[:fotos] = @especie.photos
 
         render json: @especie.to_json
-      end
-
-      format.kml do
-        redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor = @especie.proveedor
-
-        if params[:snib].present? && to_boolean(params[:snib])
-          redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.snib_kml
-          send_data @especie.proveedor.snib_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        elsif params[:naturalista].present? && to_boolean(params[:naturalista])
-          redirect_to(especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)) unless proveedor.naturalista_kml
-          send_data @especie.proveedor.naturalista_kml, :filename => "#{@especie.nombre_cientifico}.kml"
-        else
-          redirect_to especie_path(@especie), :notice => t(:el_taxon_no_tiene_kml)
-        end
       end
 
       format.pdf do
@@ -485,7 +471,7 @@ class EspeciesController < ApplicationController
   end
 
   # Devuelve las observaciones de naturalista para hacer el parsen en geojson
-  def naturalista
+  def observaciones_naturalista
     if p = @especie.proveedor
 
       respond_to do |format|
