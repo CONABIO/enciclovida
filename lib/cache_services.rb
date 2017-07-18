@@ -1,5 +1,6 @@
 module CacheServices
   def cache_services
+    puts "\t\tIniciando el minado de las observaciones"
 
     # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo en kml y kmz
     if p = proveedor

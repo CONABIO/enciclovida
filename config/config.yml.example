@@ -35,6 +35,8 @@ base: &base
   inaturalist_url: http://www.inaturalist.org
   # El API nodejs de inaturalist
   inaturalist_api: http://api.inaturalist.org/v1
+  # El paginado del API, es la maxima cantidad de momento
+  inaturalist_por_pagina: 200
 
   # Coordenadas del rectangulo de la republica, para las obs. de NaturaLista
   swlat: 13.9234

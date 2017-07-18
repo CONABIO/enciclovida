@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones
+  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -259,58 +259,21 @@ class Proveedor < ActiveRecord::Base
     rename == 0
   end
 
-  def obs_naturalista
-    data = []
-    url = "#{CONFIG.inaturalist_url}/observations.json?taxon_id=#{naturalista_id}&has[]=geo&per_page=200"
-    # Para limitarlo solo al cuadrado de la republica
-    #url << "&swlat=#{CONFIG.swlat}&swlng=#{CONFIG.swlng}&nelat=#{CONFIG.nelat}&nelng=#{CONFIG.nelng}"
+  # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla
+  def observaciones_naturalista
 
-    # Para obtener los resultados totales y armar el paginado
-    begin
-      rest_client = RestClient.get "#{url}&page=1"
-    rescue
-      return nil
-    end
-
-    resultados = rest_client.headers[:x_total_entries].to_i
-    return nil if resultados == 0
-    cociente = resultados/200
-    residuo = resultados%200
-    cociente+= 1 if residuo < 200
-
-    # Loop de maximo 200,000 registros para NaturaLista (suficientes)
-    for i in 1..cociente do
-      if i > 1
-        begin
-          rest_client = RestClient.get "#{url}&page=#{i}"
-        rescue
-          return nil
-        end
-      end
-
-      response_obs = JSON.parse(rest_client.limpia_sql)
-      break unless response_obs.present?
-
-      puts "\t\t#{url}&page=#{i}"
-      data+= response_obs
-    end
-
-    self.naturalista_obs = "#{data}".codifica64 if data.present?
-    puts "\t\t#{data.count} observaciones"
   end
 
-  def guarda_observaciones_naturalista_api
+  def guarda_observaciones_naturalista
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
       return resp unless resp[:estatus] == 'OK'
-      self.naturalista_id = resp[:taxon]['id']
-      save
     end
 
     # Valida el paginado y los resultados
     self.observaciones = []
-    validacion = observaciones_naturalista_api_valida
+    validacion = valida_observaciones_naturalista
     return validacion unless validacion[:estatus] == 'OK'
 
     # Para el paginado
@@ -321,7 +284,7 @@ class Proveedor < ActiveRecord::Base
     if paginas > 1
       # Para consultar las demas paginas, si es que tiene mas de una
       for i in 2..paginas do
-        validacion = observaciones_naturalista_api_valida({page: i})
+        validacion = valida_observaciones_naturalista({page: i})
         return validacion unless validacion[:estatus] == 'OK'
       end
     end
@@ -331,8 +294,10 @@ class Proveedor < ActiveRecord::Base
     FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
     nombre = "#{carpeta}/observaciones.json"
     archivo = File.new(nombre, 'w+')
-    archivo.puts observaciones.to_json
 
+    # Guarda el archivo en kml y kmz
+
+    archivo.puts observaciones.to_json
   end
 
   def geodatos
@@ -366,24 +331,60 @@ class Proveedor < ActiveRecord::Base
 
   private
 
+  # Solo los campos que ocupo en el mapa para no hacer muy grande la respuesta
+  def limpia_observaciones_naturalista
+    obs = Hash.new
+    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
+    taxon = especie
 
-  def observaciones_naturalista_api_valida(params = {})
+    # Los numere para poder armar los datos en el orden deseado
+    obs['01_nombre_cientifico'] = h.encode(taxon.nombre_cientifico)
+    obs['02_nombre_comun'] = h.encode(taxon.nom_com_prin(true))
+    obs['05_place_guess'] = h.encode(observacion['place_guess'])
+    obs['06_observed_on'] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
+    obs['07_captive'] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
+    obs['08_quality_grade'] = observacion['quality_grade']
+    obs['09_uri'] = observacion['uri']
+
+    if obs['09_uri'].present?
+      obs['09_uri'] = obs['09_uri'].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx')
+    end
+
+    obs['10_longitude'] = observacion['geojson']['coordinates'][0]
+    obs['11_latitude'] = observacion['geojson']['coordinates'][1]
+
+    observacion['photos'].each do |photo|
+      obs['03_thumb_url'] = photo['url']
+      obs['04_attribution'] = h.encode(photo['attribution'])
+      break  # Guardo la primera foto
+    end
+
+    self.observaciones << obs
+  end
+
+  def valida_observaciones_naturalista(params = {})
     page = params[:page] || 1
 
     begin
-      rest_client = RestClient.get "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}"
-      resultados = JSON.parse(rest_client)
+      rest_client = RestClient.get "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}"
+      res = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}
     end
 
-    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless resultados.any?
+    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless res.any?
 
-    self.totales = resultados['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
-    self.observaciones+= resultados['results'] if resultados['results'].any?
+    self.totales = res['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
+    resultados = res['results'] if res['results'].any?
 
     return {estatus: 'error', msg: 'No hay observaciones 1'} if totales.blank? || (totales.present? && totales <= 0)
-    return {estatus: 'error', msg: 'No hay observaciones 2'} if observaciones.blank? || observaciones.count == 0
+    return {estatus: 'error', msg: 'No hay observaciones 2'} if resultados.blank? || resultados.count == 0
+
+    # Limpia las observaciones
+    resultados.each do |observacion|
+      self.observacion = observacion
+      limpia_observaciones_naturalista
+    end
 
     {estatus: 'OK'}
   end
