@@ -470,7 +470,7 @@ class EspeciesController < ApplicationController
   def descripcion_catalogos
   end
 
-  # Devuelve las observaciones de naturalista para hacer el parsen en geojson
+  # Devuelve las observaciones de naturalista en diferentes formatos
   def observaciones_naturalista
     if p = @especie.proveedor
 
@@ -515,6 +515,11 @@ class EspeciesController < ApplicationController
     else
       render :_error and return
     end
+  end
+
+  # Devuelve los ejemplares del SNIB en diferentes formatos
+  def ejemplares_snib
+
   end
 
   # Muestra los comentarios relacionados a la especie, viene de la pestaña de la ficha

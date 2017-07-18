@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion, :kml
+  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion, :kml, :ejemplares
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -125,73 +125,6 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
-  #Guarda el kml asociado al taxon
-  def kml_snib
-    return [] unless snib_id.present?
-
-    # Catch the response
-    begin
-      response = RestClient.get "#{CONFIG.snib_url}&rd=#{snib_reino}&id=#{snib_id}", :timeout => 5, :open_timeout => 5
-      return [] unless response.present?
-    rescue => e
-      puts "\t\t#{e.response}"
-      return []
-    end
-
-    data = JSON.parse(response)
-    colectas = data['colectas']
-    return [] unless colectas.count > 0
-    cadenas = []
-
-    colectas.each do |col|
-      datos = col['properties']
-
-      # Para registros solo de Mexico
-      #next unless datos['nombrepaismapa'] == 'MEXICO'
-
-      cadena = Hash.new
-      h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
-
-      # Los numere para poder armar los datos en el orden deseado
-      cadena['01_nombre_cientifico'] = h.encode(especie.nombre_cientifico)
-      cadena['02_nombre_comun'] = h.encode(especie.nom_com_prin(true))
-      cadena['03_localidad'] = h.encode(datos['localidad'])
-      cadena['04_municipio'] = h.encode(datos['nombremunicipiomapa'])
-      cadena['05_estado'] = h.encode(datos['nombreestadomapa'])
-      cadena['06_pais'] = h.encode(datos['nombrepaismapa'])
-
-      # Para que no se vea feo MEXICO con mayusculas
-      if cadena['06_pais'] == 'MEXICO'
-        cadena['06_pais'] = 'México'
-      end
-
-      # Pone la fecha en formato tiemestamp
-      if datos['diacolecta'].to_s == '99'
-        datos['diacolecta'] = '??'
-      end
-      if datos['mescolecta'].to_s == '99'
-        datos['mescolecta'] = '??'
-      end
-      if datos['aniocolecta'].to_s == '9999'
-        datos['aniocolecta'] = '????'
-      end
-
-      cadena['07_datetime'] = "#{datos['diacolecta'].to_s.rjust(2,'0')}/#{datos['mescolecta'].to_s.rjust(2,'0')}/#{datos['aniocolecta']}"
-
-      cadena['08_nombre_colector'] = h.encode(datos['nombrecolector'])
-      cadena['09_nombre_coleccion'] = h.encode(datos['nombrecoleccion'])
-      cadena['10_nombre_institucion'] = h.encode(datos['nombreinstitucion'])
-      cadena['11_siglas_institucion'] = h.encode(datos['siglasinstitucion'])
-      cadena['12_pais_coleccion'] = h.encode(datos['paiscoleccion'])
-
-      cadena['13_longitude'] = datos['longitud']
-      cadena['14_latitude'] = datos['latitud']
-
-      cadenas << cadena
-    end
-    self.snib_kml = to_kml(cadenas)
-  end
-
   def usuario_naturalista
     response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
     data = JSON.parse(response)
@@ -221,18 +154,34 @@ class Proveedor < ActiveRecord::Base
       geodatos[:geoserver_layer] = info['layers']
     end
 
+    # Para las descargas del SNIB
     if snib_id.present?
       geodatos[:cuales] << 'geoportal'
       geodatos[:geoportal_url] = "#{CONFIG.geoportal_url}&rd=#{snib_reino}&id=#{especie.catalogo_id}"
       #geodatos[:geoportal_url_descarga] = nil
     end
 
-    if naturalista_obs.present?
-      naturalista_path = Rails.root.join('public', 'kmz', especie_id.to_s, 'observaciones.kmz')
+    # Para las descargas de naturalista
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    url = "/especies/#{especie_id}/observaciones_naturalista"
+
+    if File.exists?("#{nombre}.json")
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_url_descarga] = "#{CONFIG.site_url}kmz/#{especie_id}/observaciones.kmz" if File.exist?(naturalista_path)
+      geodatos[:naturalista_json] = "#{url}.json"
     end
 
+    if File.exists?("#{nombre}.kml")
+      geodatos[:cuales] << 'naturalista'
+      geodatos[:naturalista_kml] = "#{url}.kml"
+    end
+
+    if File.exists?("#{nombre}.kmz")
+      geodatos[:cuales] << 'naturalista'
+      geodatos[:naturalista_kmz] = "#{url}.kmz"
+    end
+
+    geodatos[:cuales] = geodatos[:cuales].uniq
     geodatos
   end
 
@@ -288,10 +237,35 @@ class Proveedor < ActiveRecord::Base
     archivo_observaciones_kml.puts kml
 
     # Guarda el archivo en kmz
-    kmz_naturalista(nombre)
+    kmz(nombre)
 
     # Pone el cache para no volverlo a consultar
     especie.escribe_cache(1.week) if Rails.env.production?
+  end
+
+  def guarda_ejemplares_snib
+    # Para no guardar nada si el cache aun esta vigente
+    return if especie.existe_cache?
+
+    self.ejemplares = []
+    validacion = valida_ejemplares_snib
+    return validacion unless validacion[:estatus] == 'OK'
+
+    # Crea carpeta y archivo
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    archivo_ejemplares = File.new("#{nombre}.json", 'w+')
+    archivo_ejemplares_kml = File.new("#{nombre}.kml", 'w+')
+
+    # Guarda el archivo en kml y kmz
+    archivo_ejemplares.puts ejemplares.to_json
+    archivo_ejemplares_kml.puts kml
+
+    # Guarda el archivo en kmz
+    kmz(nombre)
+
+    # Pone el cache para no volverlo a consultar
+    especie.escribe_cache(1.day) if Rails.env.production?
   end
 
 
@@ -337,7 +311,7 @@ class Proveedor < ActiveRecord::Base
     page = params[:page] || 1
 
     begin
-      rest_client = RestClient.get "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}"
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}", timeout: 5)
       res = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}
@@ -348,8 +322,8 @@ class Proveedor < ActiveRecord::Base
     self.totales = res['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
     resultados = res['results'] if res['results'].any?
 
-    return {estatus: 'error', msg: 'No hay observaciones 1'} if totales.blank? || (totales.present? && totales <= 0)
-    return {estatus: 'error', msg: 'No hay observaciones 2'} if resultados.blank? || resultados.count == 0
+    return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
+    return {estatus: 'error', msg: 'No hay observaciones'} if resultados.blank? || resultados.count == 0
 
     # Limpia las observaciones y  las transforma a kml
     kml_naturalista(inicio: true)
@@ -437,78 +411,86 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
-  def kmz_naturalista(nombre)
+  def kmz(nombre)
     archvo_zip = "#{nombre}.zip"
     system "zip -j #{archvo_zip} #{nombre}.kml"
     File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
-  def to_kml(cadenas)
-    evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']
+  def valida_ejemplares_snib
 
-    kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
-    kml << "<Document>\n"
-    kml << "<Style id=\"normalPlacemark\">\n"
-    kml << "<IconStyle>\n"
-    kml << "<Icon>\n"
-    kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/rojo.png</href>\n"
-    kml << "</Icon>\n"
-    kml << "</IconStyle>\n"
-    kml << "</Style>\n"
-
-    cadenas.each do |cad|
-      nombre = cad['02_nombre_comun'].present? ? "<b>#{cad['02_nombre_comun']}</b> <i>(#{cad['01_nombre_cientifico']})</i>" : "<i><b>#{cad['01_nombre_cientifico']}</b></i>"
-      kml << "<Placemark>\n"
-      kml << "<description>\n"
-      kml << "<![CDATA[\n"
-      kml << "<div>\n"
-      kml << "<h4>\n"
-      kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
-      kml << "</h4>\n"
-      kml << "<dl>\n"
-
-      cad.keys.sort.each do |k|
-        next unless cad[k].present?
-        next if evitar_campos.include? cad[k]
-
-        case k
-          when '03_localidad'
-            kml << "<dt>Localidad</dt> <dd>#{cad[k]}</dd>\n"
-          when '04_municipio'
-            kml << "<dt>Municipio</dt> <dd>#{cad[k]}</dd>\n"
-          when '05_estado'
-            kml << "<dt>Estado</dt> <dd>#{cad[k]}</dd>\n"
-          when '06_pais'
-            kml << "<dt>País</dt> <dd>#{cad[k]}</dd>\n"
-          when '07_datetime'
-            kml << "<dt>Fecha</dt> <dd>#{cad[k]}</dd>\n"
-          when '08_nombre_colector'
-            kml << "<dt>Nombre del colector</dt> <dd>#{cad[k]}</dd>\n"
-          when '09_nombre_coleccion'
-            kml << "<dt>Colección</dt> <dd>#{cad[k]}</dd>\n"
-          when '10_nombre_institucion'
-            kml << "<dt>Institución</dt> <dd>#{cad[k]}</dd>\n"
-          when '11_siglas_institucion'
-            kml << "<dt>Siglas de la institución</dt> <dd>#{cad[k]}</dd>\n"
-          when '12_pais_coleccion'
-            kml << "<dt>País de la colección</dt> <dd>#{cad[k]}</dd>\n"
-          else
-            next
-        end
-      end
-
-      kml << "</dl>\n"
-      kml << "</div>\n"
-      kml << "]]>\n"
-      kml << "</description>\n"
-      kml << '<styleUrl>#normalPlacemark</styleUrl>'
-      kml << "<Point>\n<coordinates>\n#{cad['13_longitude']},#{cad['14_latitude']}\n</coordinates>\n</Point>\n"
-      kml << "</Placemark>\n"
+    begin
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 5)
+      resultados = JSON.parse(rest_client)
+    rescue => e
+      return {estatus: 'error', msg: e}
     end
 
-    kml << "</Document>\n"
-    kml << '</kml>'
+    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless res.present?
+    self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
+    return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
+
+    # Exporta a kml los ejemplares
+    kml_snib
+
+    {estatus: 'OK'}
+  end
+
+  def kml_snib
+    #evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']
+    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
+    nombre_cientifico = h.encode(especie.nombre_cientifico)
+    nombre_comun = h.encode(especie.nom_com_prin(true))
+    nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
+
+    self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+    self.kml << "<Document>\n"
+    self.kml << "<Style id=\"normalPlacemark\">\n"
+    self.kml << "<IconStyle>\n"
+    self.kml << "<Icon>\n"
+    self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/rojo.png</href>\n"
+    self.kml << "</Icon>\n"
+    self.kml << "</IconStyle>\n"
+    self.kml << "</Style>\n"
+
+    ejemplares.each do |ejemplar|
+      self.kml << "<Placemark>\n"
+      self.kml << "<description>\n"
+      self.kml << "<![CDATA[\n"
+      self.kml << "<div>\n"
+      self.kml << "<h4>\n"
+      self.kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
+      self.kml << "</h4>\n"
+      self.kml << "<dl>\n"
+
+      self.kml << "<dt>Localidad</dt> <dd>#{ejemplar['localidad']}</dd>\n"
+      self.kml << "<dt>Municipio</dt> <dd>#{ejemplar['municipiomapa']}</dd>\n"
+      self.kml << "<dt>Estado</dt> <dd>#{ejemplar['estadomapa']}</dd>\n"
+      self.kml << "<dt>País</dt> <dd>#{ejemplar['paismapa']}</dd>\n"
+      self.kml << "<dt>Fecha</dt> <dd>#{ejemplar['fechacolecta']}</dd>\n"
+      self.kml << "<dt>Nombre del colector</dt> <dd>#{ejemplar['colector']}</dd>\n"
+      self.kml << "<dt>Colección</dt> <dd>#{ejemplar['coleccion']}</dd>\n"
+      self.kml << "<dt>Institución</dt> <dd>#{ejemplar['institucion']}</dd>\n"
+      self.kml << "<dt>País de la colección</dt> <dd>#{ejemplar['paiscoleccion']}</dd>\n"
+
+      if ejemplar['proyectourl'].present?
+        self.kml << "<dt>Proyecto:</dt> <dd><a href=\"#{ejemplar['proyectourl']}\">#{ejemplar['proyecto'] || 'ver'}</a></dd>\n"
+      else
+        self.kml << "<dt>Proyecto:</dt> <dd>#{ejemplar['proyecto']}</dd>\n"
+      end
+
+      self.kml << "</dl>\n"
+      self.kml << "</div>\n"
+      self.kml << "]]>\n"
+      self.kml << "</description>\n"
+      self.kml << '<styleUrl>#normalPlacemark</styleUrl>'
+      self.kml << "<Point>\n<coordinates>\n#{ejemplar['coordinates'][0]},#{ejemplar['coordinates'][1]}\n</coordinates>\n</Point>\n"
+      self.kml << "</Placemark>\n"
+    end
+
+    self.kml << "</Document>\n"
+    self.kml << '</kml>'
   end
 
   def photo_type(url)
