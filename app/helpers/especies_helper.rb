@@ -15,8 +15,8 @@ module EspeciesHelper
                    ''
                  end
                end
-             end.primera_en_mayuscula
-
+             end.try(:primera_en_mayuscula)
+  
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
