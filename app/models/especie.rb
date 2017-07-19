@@ -198,6 +198,10 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
+  def apta_con_geodatos?
+    CategoriaTaxonomica::CATEGORIAS_GEODATOS.include? categoria_taxonomica.nombre_categoria_taxonomica
+  end
+
   #
   # Fetches associated user-selected FlickrPhotos if they exist, otherwise
   # gets the the first :limit Create Commons-licensed photos tagged with the

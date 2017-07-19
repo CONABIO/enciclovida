@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :snib_kml, :naturalista_kml, :totales, :observaciones, :observacion, :kml, :ejemplares
+  attr_accessor :totales, :observaciones, :observacion, :kml, :ejemplares
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -155,16 +155,28 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas del SNIB
-    if snib_id.present?
-      geodatos[:cuales] << 'geoportal'
-      geodatos[:geoportal_url] = "#{CONFIG.geoportal_url}&rd=#{snib_reino}&id=#{especie.catalogo_id}"
-      #geodatos[:geoportal_url_descarga] = nil
+    carpeta = carpeta_geodatos
+    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    url = "/especies/#{especie_id}/ejemplares-snib"
+
+    if File.exists?("#{nombre}.json")
+      geodatos[:cuales] << 'snib'
+      geodatos[:snib_json] = "#{url}.json"
+    end
+
+    if File.exists?("#{nombre}.kml")
+      geodatos[:cuales] << 'snib'
+      geodatos[:snib_kml] = "#{url}.kml"
+    end
+
+    if File.exists?("#{nombre}.kmz")
+      geodatos[:cuales] << 'snib'
+      geodatos[:snib_kmz] = "#{url}.kmz"
     end
 
     # Para las descargas de naturalista
-    carpeta = carpeta_geodatos
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
-    url = "/especies/#{especie_id}/observaciones_naturalista"
+    url = "/especies/#{especie_id}/observaciones-naturalista"
 
     if File.exists?("#{nombre}.json")
       geodatos[:cuales] << 'naturalista'
@@ -199,6 +211,9 @@ class Proveedor < ActiveRecord::Base
   end
 
   def guarda_observaciones_naturalista
+    # Para no generar geodatos arriba de familia
+    return unless especie.apta_con_geodatos?
+
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?
 
@@ -241,6 +256,8 @@ class Proveedor < ActiveRecord::Base
 
     # Pone el cache para no volverlo a consultar
     especie.escribe_cache(1.week) if Rails.env.production?
+
+    puts "\n\nGuardo observaciones de naturalista"
   end
 
   # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
@@ -257,6 +274,9 @@ class Proveedor < ActiveRecord::Base
   end
 
   def guarda_ejemplares_snib
+    # Para no generar geodatos arriba de familia
+    return unless especie.apta_con_geodatos?
+
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?
 
@@ -279,6 +299,8 @@ class Proveedor < ActiveRecord::Base
 
     # Pone el cache para no volverlo a consultar
     especie.escribe_cache(1.day) if Rails.env.production?
+
+    puts "\n\nGuardo ejemplares del snib"
   end
 
 
@@ -452,7 +474,6 @@ class Proveedor < ActiveRecord::Base
   end
 
   def kml_snib
-    #evitar_campos = ['99/99/9999','??/??/????', 'NO DISPONIBLE', 'SIN INFORMACION', 'NA NA NA', 'ND ND ND', 'NO APLICA']
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
     nombre_cientifico = h.encode(especie.nombre_cientifico)
     nombre_comun = h.encode(especie.nom_com_prin(true))
