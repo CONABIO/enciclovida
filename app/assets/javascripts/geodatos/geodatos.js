@@ -264,7 +264,7 @@ $(document).ready(function(){
     var geojson_geoportal = function()
     {
         $.ajax({
-            url: GEO.geoportal_url,
+            url: GEO.snib_json,
             dataType : "json",
             success : function (d){
                 geoportal_count = d.length;
@@ -294,7 +294,7 @@ $(document).ready(function(){
 
     var geojson_naturalista = function(){
         $.ajax({
-            url: "/especies/" + TAXON.id + "/naturalista",
+            url: GEO.naturalista_json,
             dataType : "json",
             beforeSend: function(xhr){
                 xhr.setRequestHeader('X-Test-Header', 'test-value');
@@ -326,7 +326,7 @@ $(document).ready(function(){
     };
 
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
-    if (GEO.cuales.indexOf("geoportal") >= 0) geojson_geoportal();
+    if (GEO.cuales.indexOf("snib") >= 0) geojson_geoportal();
     if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
 
 });
