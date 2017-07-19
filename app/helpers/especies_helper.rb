@@ -15,7 +15,7 @@ module EspeciesHelper
                    ''
                  end
                end
-             end
+             end.primera_en_mayuscula
 
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
@@ -23,7 +23,7 @@ module EspeciesHelper
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.x_nombre_comun_principal.present?
-            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]} ----------> #{taxon.x_nombre_comun_principal}".html_safe
+            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]} ----------> #{taxon.x_nombre_comun_principal.primera_en_mayuscula}".html_safe
           else
             "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
