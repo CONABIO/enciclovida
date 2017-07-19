@@ -204,7 +204,10 @@ class Proveedor < ActiveRecord::Base
     return unless especie.apta_con_geodatos?
 
     # Para no guardar nada si el cache aun esta vigente
-    return if especie.existe_cache?
+    return if especie.existe_cache?('observaciones_naturalista')
+
+    # Pone el cache para no volverlo a consultar
+    especie.escribe_cache('observaciones_naturalista', 1.week) if Rails.env.production?
 
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
@@ -247,9 +250,6 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    # Pone el cache para no volverlo a consultar
-    especie.escribe_cache(1.week) if Rails.env.production?
-
     puts "\n\nGuardo observaciones de naturalista"
   end
 
@@ -271,7 +271,10 @@ class Proveedor < ActiveRecord::Base
     return unless especie.apta_con_geodatos?
 
     # Para no guardar nada si el cache aun esta vigente
-    return if especie.existe_cache?
+    return if especie.existe_cache?('ejemplares_snib')
+
+    # Pone el cache para no volverlo a consultar
+    especie.escribe_cache('ejemplares_snib', 1.day) if Rails.env.production?
 
     self.ejemplares = []
     validacion = valida_ejemplares_snib
@@ -293,9 +296,6 @@ class Proveedor < ActiveRecord::Base
 
     # Guarda el archivo en kmz
     kmz(nombre)
-
-    # Pone el cache para no volverlo a consultar
-    especie.escribe_cache(1.day) if Rails.env.production?
 
     puts "\n\nGuardo ejemplares del snib"
   end
@@ -451,7 +451,7 @@ class Proveedor < ActiveRecord::Base
 
   def valida_ejemplares_snib
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 5)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}

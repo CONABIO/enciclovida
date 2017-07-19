@@ -453,6 +453,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
+    return {estatus: 'error', msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
+    especie.escribe_cache('ficha_naturalista', 1.day) if Rails.env.production?
+
     begin
       respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
       resultados = JSON.parse(respuesta)
@@ -639,19 +642,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         else
           ''
         end
-      end
-    end
-  end
-
-  # Crea la entrada de cache y el trabajo para realizarse, si el cache no existe
-  def delayed_job_service
-    if !existe_cache?
-      escribe_cache
-
-      if Rails.env.production?
-        delay(queue: 'cache_services').cache_services
-      else
-        cache_services
       end
     end
   end

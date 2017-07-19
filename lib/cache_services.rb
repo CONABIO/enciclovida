@@ -1,27 +1,32 @@
 module CacheServices
-  def guarda_geodatos
-    puts "\t\tIniciando el minado de las observaciones"
-
-    # Solo actualizo las observaciones de naturalista ya que es un servicio costoso para pasarlo a json, kml y kmz
+  def guarda_observaciones_naturalista
     if p = proveedor
       p.guarda_observaciones_naturalista
-      p.guarda_ejemplares_snib
+    else
+      # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
+      escribe_cache('observaciones_naturalista', 1.week) if Rails.env.production?
     end
+  end
 
-    # Falta el servicio de los registros del SNIB y del fuzzy match
-    puts "\t\tTermino satisfactoriamente"
+  def guarda_ejemplares_snib
+    if p = proveedor
+      p.guarda_ejemplares_snib
+    else
+      # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
+      escribe_cache('ejemplares_snib', 1.day) if Rails.env.production?
+    end
   end
 
   # Los servicios no se actualizaran en menos de un dia
-  def escribe_cache(tiempo = 1.week)
-    Rails.cache.write("cache_service_#{id}", true, :expires_in =>tiempo)
+  def escribe_cache(recurso, tiempo = 1.week)
+    Rails.cache.write("#{recurso}_#{id}", true, :expires_in =>tiempo)
   end
 
-  def existe_cache?
-    Rails.cache.exist?("cache_service_#{id}")
+  def existe_cache?(recurso)
+    Rails.cache.exist?("#{recurso}_#{id}")
   end
 
-  def borra_cache
-    Rails.cache.delete("cache_service_#{id}")
+  def borra_cache(recurso)
+    Rails.cache.delete("#{recurso}_#{id}")
   end
 end
