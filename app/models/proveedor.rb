@@ -130,17 +130,6 @@ class Proveedor < ActiveRecord::Base
     data = JSON.parse(response)
   end
 
-  def kmz
-    ruta = Rails.root.join('public', 'kmz', especie.id.to_s)
-    FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
-    ruta_kml = ruta.join('registros.kml')
-    File.open(ruta_kml, 'w+') { |file| file.write(snib_kml) }
-    system "zip #{ruta.join('registros')} #{ruta_kml}"
-    ruta_zip = ruta.join('registros.zip')
-    rename = File.rename(ruta_zip, ruta.join('registros.kmz'))
-    rename == 0
-  end
-
   def geodatos
     geodatos = {}
     geodatos[:cuales] = []
@@ -251,6 +240,10 @@ class Proveedor < ActiveRecord::Base
     archivo_observaciones.puts observaciones.to_json
     archivo_observaciones_kml.puts kml
 
+    # Cierra los archivos
+    archivo_observaciones.close
+    archivo_observaciones_kml.close
+
     # Guarda el archivo en kmz
     kmz(nombre)
 
@@ -291,8 +284,12 @@ class Proveedor < ActiveRecord::Base
     archivo_ejemplares_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
-    archivo_ejemplares.puts ejemplares.to_json
+    archivo_ejemplares.puts self.ejemplares.to_json.gsub('\\', '').gsub('"{', '{').gsub('}"', '}')
     archivo_ejemplares_kml.puts kml
+
+    # Cierra los archivos
+    archivo_ejemplares.close
+    archivo_ejemplares_kml.close
 
     # Guarda el archivo en kmz
     kmz(nombre)
@@ -462,7 +459,7 @@ class Proveedor < ActiveRecord::Base
 
     return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless resultados.present?
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
-    return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
+    return {estatus: 'error', msg: 'No hay ejemplares'} if totales.blank? || (totales.present? && totales <= 0)
 
     # ASigna los ejemplares
     self.ejemplares = resultados
