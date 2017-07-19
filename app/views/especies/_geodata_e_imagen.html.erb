@@ -28,10 +28,34 @@
         <!--h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6-->
       </div>
     </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Descarga los registros <span class="caret"></span>
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
+
+        <li class="dropdown-header"><%= imagotipo_naturalista_nombre %></li>
+        <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:naturalista_kml], :target => :_blank) if @geo[:naturalista_kml].present? %></li>
+        <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:naturalista_kmz], :target => :_blank) if @geo[:naturalista_kmz].present? %></li>
+        <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:naturalista_json], :target => :_blank) if @geo[:naturalista_json].present? %><li>
+        <li role="separator" class="divider"></li>
+
+        <li class="dropdown-header">SNIB</li>
+        <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:snib_kml], :target => :_blank) if @geo[:snib_kml].present? %></li>
+        <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:snib_kmz], :target => :_blank) if @geo[:snib_kmz].present? %></li>
+        <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:snib_json], :target => :_blank) if @geo[:snib_json].present? %><li>
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header"><%= imagotipo_naturalista_nombre %></li>
+      </ul>
+    </div>
+
+
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_descarga_url], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_descarga_url].present? %>
+      Descarga: <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_descarga_url], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_descarga_url].present? %>
       <%#= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
-      <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, @geo[:naturalista_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if @geo[:naturalista_url_descarga].present? %>
+
     </div>
 <% end %>
 

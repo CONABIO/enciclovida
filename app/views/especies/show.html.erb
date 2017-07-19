@@ -112,9 +112,7 @@
 
         <% if @con_naturalista %>
           <li>
-            <%= button_tag(' NaturaLista', type: :button, class: 'noLoad btn btn-link naturalista-ev-icon',
-                           onClick: "window.open('http://www.naturalista.mx/observations/new?taxon_id=#{@con_naturalista}',
-                     '_blank', 'status=no', 'menubar=no')", title: 'Sube tus observaciones a NaturaLista') %>
+            <%= link_to("Añade una obs. en: #{imagotipo_naturalista_nombre}".html_safe, "#{CONFIG.naturalista_url}/observations/new?taxon_id=#{@con_naturalista}", class: 'noLoad btn btn-link', target: '_blank') %>
           </li>
         <% end %>
       </ul>
