@@ -225,6 +225,9 @@ class Proveedor < ActiveRecord::Base
     residuo = totales%200
     paginas+= 1 if residuo < 200 || paginas == 0
 
+    # Si son mas de 50 paginas, entonces el elastic search truena del lado de inaturalist, ver como resolver despues (pasa mas en familia)
+    return {estatus: 'error', msg: 'Son mas de 50 paginas, truena el elastic search'} if paginas > 50
+
     if paginas > 1
       # Para consultar las demas paginas, si es que tiene mas de una
       for i in 2..paginas do
