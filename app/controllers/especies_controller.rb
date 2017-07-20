@@ -711,7 +711,7 @@ class EspeciesController < ApplicationController
 
     children_hash[:especie_id] = t.id
     children_hash[:nombre_cientifico] = t.nombre_cientifico
-    children_hash[:nombre_comun] = t.nombre_comun_principal.try(:primera_en_mayuscula)
+    children_hash[:nombre_comun] = t.nombre_comun_principal.try(:capitalize)
 
     # Pone la abreviacion de la categoria taxonomica
     cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase

@@ -15,7 +15,7 @@ module EspeciesHelper
                    ''
                  end
                end
-             end.try(:primera_en_mayuscula)
+             end.try(:capitalize)
   
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
@@ -23,7 +23,7 @@ module EspeciesHelper
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
           if taxon.x_nombre_comun_principal.present?
-            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]} ----------> #{taxon.x_nombre_comun_principal.primera_en_mayuscula}".html_safe
+            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]} ----------> #{taxon.x_nombre_comun_principal.capitalize}".html_safe
           else
             "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
           end
@@ -165,7 +165,7 @@ module EspeciesHelper
       er.nombres_regiones.where(:region_id => er.region_id).each do |nombre|
         if nombres_comunes[nombre.nombre_comun.id].nil?
           # Nombre comun con su lengua
-          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.primera_en_mayuscula, lengua: nombre.nombre_comun.lengua.downcase }
+          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.capitalize, lengua: nombre.nombre_comun.lengua.downcase }
 
           # Para una o mas bibliografias
           nombres_comunes[nombre.nombre_comun.id][:bibliografia] = []

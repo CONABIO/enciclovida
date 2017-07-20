@@ -76,7 +76,7 @@ class AdicionalesController < ApplicationController
     render :_error if !@adicional = @especie.adicional
     @nombres_comunes = @especie.nombres_comunes
     if @nombres_comunes.any?
-      @nombres_comunes = @nombres_comunes.distinct.map{|nc| ["#{nc.nombre_comun.primera_en_mayuscula} (#{nc.lengua})", nc.nombre_comun.primera_en_mayuscula]}.sort
+      @nombres_comunes = @nombres_comunes.distinct.map{|nc| ["#{nc.nombre_comun.capitalize} (#{nc.lengua})", nc.nombre_comun.capitalize]}.sort
     end
   end
 

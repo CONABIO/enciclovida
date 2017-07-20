@@ -280,14 +280,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     if nc = opc[:nombre_comun]
       datos['id'] = "#{nc.id}#{id}00000".to_i
       datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
-      datos['data']['nombre_comun'] = nc.nombre_comun.limpia.primera_en_mayuscula
+      datos['data']['nombre_comun'] = nc.nombre_comun.limpia.capitalize
       datos['data']['id'] = id
       datos['data']['lengua'] = nc.lengua
 
     else  # Asigna si viene la peticion de nombre_cientifico
       datos['id'] = id
       datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
-      datos['data']['nombre_comun'] = x_nombre_comun_principal.try(:limpia).try(:primera_en_mayuscula)
+      datos['data']['nombre_comun'] = x_nombre_comun_principal.try(:limpia).try(:capitalize)
       datos['data']['id'] = id
       datos['data']['lengua'] = x_lengua
     end
@@ -513,7 +513,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def nombres_comunes_todos
     # Los nombres comunes de catalogos en hash con la lengua
-    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.primera_en_mayuscula}}
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
 
     # Para los nombres comunes de naturalista
     if p = proveedor
@@ -535,7 +535,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
           l = 'nd'
         end
 
-        {I18n.t("lenguas.#{l}", default: lengua) => nc['name'].primera_en_mayuscula}
+        {I18n.t("lenguas.#{l}", default: lengua) => nc['name'].capitalize}
       end
     else
       ncn = []
@@ -620,7 +620,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def nom_com_prin(primera_mayus = true)
     if self.try(:taxon_icono).present?
       if self.try(:nombre_comun_principal).present?
-        primera_mayus ? self.nombre_comun_principal.primera_en_mayuscula : self.nombre_comun_principal
+        primera_mayus ? self.nombre_comun_principal.capitalize : self.nombre_comun_principal
       else
         ''
       end
@@ -628,14 +628,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
       begin
         if nombre_comun_principal.present?
-          primera_mayus ? nombre_comun_principal.primera_en_mayuscula : nombre_comun_principal
+          primera_mayus ? nombre_comun_principal.capitalize : nombre_comun_principal
         else
           ''
         end
       rescue
         if ad=adicional
           if ad.nombre_comun_principal.present?
-            primera_mayus ? ad.nombre_comun_principal.primera_en_mayuscula : ad.nombre_comun_principal
+            primera_mayus ? ad.nombre_comun_principal.capitalize : ad.nombre_comun_principal
           else
             ''
           end
@@ -651,9 +651,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     nombres = nombres_comunes.map {|nc|
       # Este condicional fue necesario para poder agrupar los nombres si la lengua es nula
       if nc.lengua.present?
-        {nc.lengua => nc.nombre_comun.primera_en_mayuscula}
+        {nc.lengua => nc.nombre_comun.capitalize}
       else
-        {'ND' => nc.nombre_comun.primera_en_mayuscula}
+        {'ND' => nc.nombre_comun.capitalize}
       end
     }.uniq
 

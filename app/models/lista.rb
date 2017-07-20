@@ -173,7 +173,7 @@ class Lista < ActiveRecord::Base
             taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
           end
         when 'x_nombres_comunes'
-          nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.primera_en_mayuscula} (#{nom.lengua})"}.uniq
+          nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
           next unless nombres_comunes.any?
           taxon.x_nombres_comunes = nombres_comunes.join(',')
         when 'x_tipo_distribucion'
