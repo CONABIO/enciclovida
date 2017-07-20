@@ -275,12 +275,13 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-weight: bolder;
   font-size: 12px;
 }
-#contenedor_mapa sub{
-  background-color: #888888;
-  border-radius: 50%;
+#contenedor_mapa sub, #nombres_comunes_todos sub {
   padding: 4px;
-  vertical-align: middle;
-  color: white;
+  color: #909090;
+}
+#nombres_comunes_todos span {
+  margin-right: 12px;
+  color: #606060;
 }
 #contenedor_mapa .naturalista-3-ev-icon,#contenedor_mapa .naturalista-4-ev-icon{
   vertical-align: text-bottom;

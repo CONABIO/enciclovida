@@ -385,7 +385,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<Style id=\"Placemark_cientifico\">\n"
       self.kml << "<IconStyle>\n"
       self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/verde.png</href>\n"
+      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/verde.png</href>\n"
       self.kml << "</Icon>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
@@ -394,7 +394,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<Style id=\"Placemark_casual\">\n"
       self.kml << "<IconStyle>\n"
       self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/amarillo.png</href>\n"
+      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/amarillo.png</href>\n"
       self.kml << "</Icon>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
@@ -411,7 +411,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<![CDATA[\n"
       self.kml << "<div>\n"
       self.kml << "<h4>\n"
-      self.kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
+      self.kml << "<a href=\"#{CONFIG.enciclovida_url}/especies/#{especie.id}\">#{nombre}</a>\n"
       self.kml << "</h4>\n"
 
       self.kml << "<div><img src=\"#{observacion[:thumb_url]}\"/></div>\n"
@@ -485,7 +485,7 @@ class Proveedor < ActiveRecord::Base
     self.kml << "<Style id=\"normalPlacemark\">\n"
     self.kml << "<IconStyle>\n"
     self.kml << "<Icon>\n"
-    self.kml << "<href>#{CONFIG.site_url}/assets/app/placemarks/rojo.png</href>\n"
+    self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/rojo.png</href>\n"
     self.kml << "</Icon>\n"
     self.kml << "</IconStyle>\n"
     self.kml << "</Style>\n"
@@ -496,7 +496,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<![CDATA[\n"
       self.kml << "<div>\n"
       self.kml << "<h4>\n"
-      self.kml << "<a href=\"#{CONFIG.site_url}/especies/#{especie.id}\">#{nombre}</a>\n"
+      self.kml << "<a href=\"#{CONFIG.enciclovida_url}/especies/#{especie.id}\">#{nombre}</a>\n"
       self.kml << "</h4>\n"
       self.kml << "<dl>\n"
 
@@ -521,7 +521,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "]]>\n"
       self.kml << "</description>\n"
       self.kml << '<styleUrl>#normalPlacemark</styleUrl>'
-      self.kml << "<Point>\n<coordinates>\n#{ejemplar['json_geom']['coordinates'][0]},#{ejemplar['json_geom']['coordinates'][1]}\n</coordinates>\n</Point>\n"
+      self.kml << "<Point>\n<coordinates>\n#{ejemplar['longitud']},#{ejemplar['latitud']}\n</coordinates>\n</Point>\n"
       self.kml << "</Placemark>\n"
     end
 

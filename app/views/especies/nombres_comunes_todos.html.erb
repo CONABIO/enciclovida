@@ -1,10 +1,8 @@
 <% if @nombres_comunes.present? && @nombres_comunes.any? %>
-    <strong>Nombres comunes: </strong>
     <%
        @nombres_comunes.each do |hash_nombres|
        lengua = hash_nombres.keys.first
     %>
-        <%= hash_nombres[lengua].sort.join(', ') %> <sub class="badge">(<%= lengua %>)</sub> ;
-        
+        <span><%= hash_nombres[lengua].sort.join(', ') %> <sub><i><%= lengua %></i></sub>;</span>
     <% end %>
 <% end %>

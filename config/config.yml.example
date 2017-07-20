@@ -56,7 +56,7 @@ base: &base
   password: tu-passwd
 
   # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
-  servidor: http://enciclovida.mx/kmz
+  enciclovida_url: http://enciclovida.mx
 
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf

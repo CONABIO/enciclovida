@@ -42,7 +42,7 @@
             <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:naturalista_json], :target => :_blank) if @geo[:naturalista_json].present? %></li>
         <% end %>
 
-        <% if @geo[:cuales].include?('naturalista') %>
+        <% if @geo[:cuales].include?('snib') %>
             <li role="separator" class="divider"></li>
             <li class="dropdown-header">SNIB</li>
             <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:snib_kml], :target => :_blank) if @geo[:snib_kml].present? %></li>
