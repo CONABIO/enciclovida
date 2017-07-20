@@ -99,6 +99,7 @@ $(document).ready(function(){
     };
 
     var layer_control = L.control.layers(baseMaps).addTo(map);
+    var legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     /***************************************************************** aditional controls */
     function addPointLayerGeoportal(){
@@ -134,17 +135,17 @@ $(document).ready(function(){
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
 
-        var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FF0000" fill-opacity="0.6"/>';
-        punto_rojo+= '<text x="20" y="13" font-family="sans-serif" font-size="10px">Registros del SNIB</text>';
+        var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/>';
+        punto_rojo+= '<text x="20" y="13">Registros del SNIB</text>';
 
-        var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FFA500" fill-opacity="0.6"/>';
-        punto_naranja+= '<text x="20" y="28" font-family="sans-serif" font-size="10px">Registros de AverAves</text>';
+        var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
+        punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
 
-        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="##2A2A2A" fill-opacity="0.6"/>';
-        punto_gris+= '<text x="20" y="43" font-family="sans-serif" font-size="10px">Registros de Fósiles</text></svg>';
+        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
+        punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';
 
-        layer_control.addOverlay(markersLayer,
-            "<i>" + geoportal_count + "</i> Registros del SNIB <br /> (museos, colectas y proyectos de CONABIO)" +
+        legend_control.addOverlay(markersLayer,
+            "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
             "<p>"+punto_gris+"</p>"
         );
     }
@@ -175,14 +176,14 @@ $(document).ready(function(){
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
 
-        var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#0b9c31" fill-opacity="0.6"/>';
-        punto_verde+= '<text x="20" y="13" font-family="sans-serif" font-size="10px">Grado de investigación</text>';
+        var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#0b9c31" />';
+        punto_verde+= '<text x="20" y="13" >Grado de investigación</text>';
 
-        var punto_amarillo = punto_verde + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="2" stroke-opacity="1" fill="#FFFF00" fill-opacity="0.6"/>';
-        punto_amarillo+= '<text x="20" y="28" font-family="sans-serif" font-size="10px">Grado casual</text></svg>';
+        var punto_amarillo = punto_verde + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFFF00" />';
+        punto_amarillo+= '<text x="20" y="28">Grado casual</text></svg>';
 
-        layer_control.addOverlay(markersLayer,
-            "<i>" + naturalista_count + "</i> observaciones de <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>" +
+        legend_control.addOverlay(markersLayer,
+            "<b>Obs. de  <i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i><sub>" + naturalista_count + "</sub></b>" +
             "<p>"+punto_amarillo+"</p>"
         );
     }
@@ -197,7 +198,7 @@ $(document).ready(function(){
         });
 
         map.addLayer(distribucion_potencial);
-        layer_control.addOverlay(distribucion_potencial, "Distribución potencial (CONABIO)");
+        legend_control.addOverlay(distribucion_potencial, "<b>Distribución potencial (CONABIO)</b>");
     }
 
     function content_geoportal(feature){
@@ -328,6 +329,7 @@ $(document).ready(function(){
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
     if (GEO.cuales.indexOf("snib") >= 0) geojson_geoportal();
     if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
+
 
 });
 
