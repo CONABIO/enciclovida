@@ -15,7 +15,8 @@ end
 
 def guarda_ejemplares
   Especie.find_each do |taxon|
-    puts taxon.nombre_cientifico if OPTS[:debug]
+    #next if taxon.id > 7007253
+    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
     if p = taxon.proveedor
       p.guarda_ejemplares_snib

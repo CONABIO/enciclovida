@@ -15,7 +15,9 @@ end
 
 def guarda_observaciones
   Especie.find_each do |taxon|
-    puts taxon.nombre_cientifico if OPTS[:debug]
+    #next if taxon.id < 8003302
+    #next unless taxon.species_or_lower?
+    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
     if p = taxon.proveedor
       p.guarda_observaciones_naturalista
