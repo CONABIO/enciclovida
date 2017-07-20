@@ -6,16 +6,17 @@ Guarda en disco las observaciones de naturalista en .json, .kml y .kmz
 
 Usage:
 
-rails r tools/guarda_observaciones_naturalista.rb -d
+rails r tools/guarda_observaciones_naturalista.rb -d 1000000 2000000
 
 where [options] are:
   EOS
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-def guarda_observaciones
+def guarda_observaciones(lim_inf = nil, lim_sup = nil)
   Especie.find_each do |taxon|
-    #next if taxon.id < 8003302
+    next if lim_inf.present? && taxon.id < lim_inf
+    next if lim_sup.present? && taxon.id > lim_sup
     #next unless taxon.species_or_lower?
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
@@ -28,6 +29,6 @@ end
 
 start_time = Time.now
 
-guarda_observaciones
+guarda_observaciones(ARGV[0], ARGV[1])
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

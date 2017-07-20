@@ -13,9 +13,10 @@ where [options] are:
   opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
 end
 
-def guarda_ejemplares
+def guarda_ejemplares(lim_inf = nil, lim_sup = nil)
   Especie.find_each do |taxon|
-    #next if taxon.id > 7007253
+    next if lim_inf.present? && taxon.id < lim_inf
+    next if lim_sup.present? && taxon.id > lim_sup
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
     if p = taxon.proveedor
@@ -27,6 +28,6 @@ end
 
 start_time = Time.now
 
-guarda_ejemplares
+guarda_ejemplares(ARGV[0], ARGV[1])
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
