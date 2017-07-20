@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="btn-group pull-right">
+    <div class="btn-group pull-right dropup">
       <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i><%= icono_descarga %></i> Descarga los registros <span class=""></span>
       </button>
@@ -39,7 +39,7 @@
             <li class="dropdown-header"><%= imagotipo_naturalista_nombre %></li>
             <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:naturalista_kml], :target => :_blank) if @geo[:naturalista_kml].present? %></li>
             <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:naturalista_kmz], :target => :_blank) if @geo[:naturalista_kmz].present? %></li>
-            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:naturalista_json], :target => :_blank) if @geo[:naturalista_json].present? %><li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:naturalista_json], :target => :_blank) if @geo[:naturalista_json].present? %></li>
         <% end %>
 
         <% if @geo[:cuales].include?('naturalista') %>
@@ -47,7 +47,7 @@
             <li class="dropdown-header">SNIB</li>
             <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:snib_kml], :target => :_blank) if @geo[:snib_kml].present? %></li>
             <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:snib_kmz], :target => :_blank) if @geo[:snib_kmz].present? %></li>
-            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:snib_json], :target => :_blank) if @geo[:snib_json].present? %><li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:snib_json], :target => :_blank) if @geo[:snib_json].present? %></li>
         <% end %>
 
         <% if @geo[:cuales].include?('geoserver') %>
