@@ -36,7 +36,6 @@ function fotos_naturalista()
                             }
 
                             $('#contenedor_fotos').html(fotos);
-                            console.log('lollololodas');
                             inicia_carrusel();
 
                         }).error(function (error) {

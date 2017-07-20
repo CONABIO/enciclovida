@@ -226,13 +226,14 @@ class Proveedor < ActiveRecord::Base
     paginas+= 1 if residuo < 200 || paginas == 0
 
     # Si son mas de 50 paginas, entonces el elastic search truena del lado de inaturalist, ver como resolver despues (pasa mas en familia)
-    return {estatus: 'error', msg: 'Son mas de 50 paginas, truena el elastic search'} if paginas > 50
+    #return {estatus: 'error', msg: 'Son mas de 50 paginas, truena el elastic search'} if paginas > 50
 
     if paginas > 1
       # Para consultar las demas paginas, si es que tiene mas de una
       for i in 2..paginas do
         validacion = valida_observaciones_naturalista({page: i})
         return validacion unless validacion[:estatus] == 'OK'
+        break if i == 50
       end
     end
 
@@ -253,7 +254,7 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo observaciones de naturalista"
+    puts "\n\nGuardo observaciones de naturalista #{especie_id}"
   end
 
   # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
@@ -300,7 +301,7 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo ejemplares del snib"
+    puts "\n\nGuardo ejemplares del snib #{especie_id}"
   end
 
 

@@ -231,10 +231,10 @@ $(document).ready(function(){
 
         contenido += "<h4>" + name() + "</h4>";
 
-        if (feature.photos.length > 0)
+        if (feature.thumb_url != undefined)
         {
-            contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + feature.photos[0].thumb_url + "'/></div>"
-            contenido += "<dt>Atribución: </dt><dd>" + feature.photos[0].attribution + "</dd>";
+            contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + feature.thumb_url + "'/></div>"
+            contenido += "<dt>Atribución: </dt><dd>" + feature.attribution + "</dd>";
         }
 
         /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
@@ -267,7 +267,8 @@ $(document).ready(function(){
         $.ajax({
             url: GEO.snib_json,
             dataType : "json",
-            success : function (d){
+            success : function (r){
+                var d = r.resultados;
                 geoportal_count = d.length;
                 allowedPoints = d3.map([]);
 
@@ -278,7 +279,7 @@ $(document).ready(function(){
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},
-                        "geometry"  : JSON.parse(d[i].json_geom)
+                        "geometry"  : d[i].json_geom
                     });
                 }
 
@@ -301,7 +302,8 @@ $(document).ready(function(){
                 xhr.setRequestHeader('X-Test-Header', 'test-value');
                 xhr.setRequestHeader("Accept","text/json");
             },
-            success : function (d){
+            success : function (r){
+                var d = r.resultados;
                 naturalista_count = d.length;
                 allowedPoints = d3.map([]);
 
