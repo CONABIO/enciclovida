@@ -517,6 +517,9 @@ class Proveedor < ActiveRecord::Base
       end
 
       self.kml << "</dl>\n"
+
+      self.kml << "<span><text>Ver más en el </text><a href=\"#{ejemplar['urlejemplar']}\">SNIB</a></span>\n"
+
       self.kml << "</div>\n"
       self.kml << "]]>\n"
       self.kml << "</description>\n"
