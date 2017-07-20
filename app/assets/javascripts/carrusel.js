@@ -36,6 +36,7 @@ function fotos_naturalista()
                             }
 
                             $('#contenedor_fotos').html(fotos);
+                            console.log('lollololodas');
                             inicia_carrusel();
 
                         }).error(function (error) {
@@ -84,7 +85,6 @@ function fotos_bdi()
 
                             $('#contenedor_fotos').html(fotos);
                             inicia_carrusel();
-
                         }).error(function (error) {
                             $('#contenedor_fotos').remove();
                             if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
@@ -100,7 +100,6 @@ function inicia_carrusel()
 {
 //Para que la imagen inicial no se desborde antes de que inicie el carrusel:
     $('#foto-carrusel-interna').css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
-
     var sly = new Sly('#carrusel', {
         horizontal: 1,
         // Item based navigation //
@@ -134,11 +133,13 @@ function inicia_carrusel()
         $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
         $('.enlace-atribucion').attr('href', $('img.seleccionada').attr('data-native-page-url'));
     });
-
     $(window).resize(function (e) {
         $('#carrusel').sly('reload');
-
     });
+    if(!jQuery.isEmptyObject(GEO)){
+        $('#map').css('height', $('#contenedor_mapa').height() - 30);
+        map.invalidateSize(true);
+    }
 }
 
 
