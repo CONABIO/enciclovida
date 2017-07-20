@@ -19,14 +19,18 @@
 <script data-turbolinks-track="true">
 	$('#map').css('height', $('#contenedor_mapa').height() - 30);
 	$(document).ready(function() {
-		map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
+		//map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
 		$(window).resize(function () {
 			$('#map').css('height', $('#contenedor_mapa').height() - 30);
 			map.invalidateSize(true);
 		});
-		$('#geodata_e_imagen_li > a').click(function () {
-			$('#map').css('height', $('#contenedor_mapa').height() - 30);
-			map.invalidateSize(true).fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
+
+        //TODO: Poner en el evento cuando se crea el mapa y acomodar este js
+		$('#geodata_e_imagen_li > a, #map a.leaflet-control-fullscreen-button').click(function () {
+            setTimeout(function(){
+                $('#map').css('height', $('#contenedor_mapa').height() - 30);
+                map.invalidateSize(true);
+            },1000);
 		});
 	});
 </script>
