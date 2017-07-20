@@ -38,7 +38,8 @@ class String
     decoded.force_encoding('UTF-8')
   end
 
-  def primera_en_mayuscula
+  # Sobre escribe el metodo para poder convertir las palabras que empiezan con acento
+  def capitalize
     return self unless self.present?
     self.sub(/^(.)/) { $1.mb_chars.capitalize }
   end

@@ -301,7 +301,7 @@ es:
       too_short: es demasiado corto (%{count} caracteres mínimo)
       wrong_length: no tiene la longitud correcta (%{count} caracteres exactos)
     template:
-      body: ! 'Se encontraron problemas con los siguientes campos:'
+      body: "Se encontraron problemas con los siguientes campos:"
       header:
         one: No se pudo guardar este/a %{model} porque se encontró 1 error
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
@@ -327,6 +327,7 @@ es:
     afrikaans: Afrikáans
     bengali: Bengalí
     cebuano: Cebuano
+    chinese_traditional: Chino tradicional
     creole_french: Criollo (Francés)
     creole_portuguese: Criollo (Portugués)
     davawenyo: Davawenyo
@@ -346,9 +347,11 @@ es:
     maltese: Maltés
     maori: Maorí
     misima_paneati: Misima-paneati
+    nahuatl: Náhuatl
     nd: ND
     norwegian: Noruego
     pangasinan: Pangasinán
+    persian: Persa
     portuguese: Portugués
     romanian: Rumano
     russian: Ruso

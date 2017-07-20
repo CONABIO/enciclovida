@@ -159,6 +159,10 @@ module ApplicationHelper
   end
 
   def icono_globo
-    "<i class='globe-ev-icon'></i>"
+    "<i class='globe-ev-icon'></i>".html_safe
+  end
+
+  def icono_descarga
+    "<i class='glyphicon glyphicon-save'></i>".html_safe
   end
 end

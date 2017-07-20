@@ -544,17 +544,17 @@ class Validacion < ActiveRecord::Base
           cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
 
           if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = taxon.nombre.downcase == fila[campo].try(:downcase) ? nil : taxon.nombre
+            correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = taxon.nombre.downcase == fila[campo].try(:downcase) ? nil : taxon.nombre
           else
-            correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
+            correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = nil
           end
 
         else
-          correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = eval("taxon.x_#{campo}").try(:downcase) == fila[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
+          correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = eval("taxon.x_#{campo}").try(:downcase) == fila[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
         end
 
       else
-        correcciones_hash["SCAT_Correccion#{campo.primera_en_mayuscula}"] = nil
+        correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = nil
       end
     end
 
