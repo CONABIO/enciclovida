@@ -518,7 +518,7 @@ class Proveedor < ActiveRecord::Base
 
       self.kml << "</dl>\n"
 
-      self.kml << "<span><text>Ver más en el </text><a href=\"#{ejemplar['urlejemplar']}\">SNIB</a></span>\n"
+      self.kml << "<span><text>Más información: </text><a href=\"http://#{ejemplar['urlejemplar']}\">consultar SNIB</a></span>\n"
 
       self.kml << "</div>\n"
       self.kml << "]]>\n"
