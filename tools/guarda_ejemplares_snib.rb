@@ -6,7 +6,7 @@ Guarda en disco los ejemplares del snib en .json, .kml y .kmz
 
 Usage:
 
-rails r tools/guarda_ejemplares_snib.rb -d
+rails r tools/guarda_ejemplares_snib.rb -d 1000000 2000000
 
 where [options] are:
   EOS
@@ -28,6 +28,6 @@ end
 
 start_time = Time.now
 
-guarda_ejemplares(ARGV[0], ARGV[1])
+guarda_ejemplares(ARGV[0].to_i, ARGV[1].to_i)
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

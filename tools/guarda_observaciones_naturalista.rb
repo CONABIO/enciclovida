@@ -29,6 +29,6 @@ end
 
 start_time = Time.now
 
-guarda_observaciones(ARGV[0], ARGV[1])
+guarda_observaciones(ARGV[0].to_i, ARGV[1].to_i)
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
