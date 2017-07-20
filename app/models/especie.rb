@@ -512,6 +512,10 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   def nombres_comunes_todos
+    # El orden de las lenguas, ya para que no se enojen!!!
+    lenguas_primero = ['Español', 'Nahuatl', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
+    lenguas_ultimo = ['Japonés', 'Chino tradicional', 'ND']
+
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
 
@@ -530,19 +534,71 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         lengua = nc['lexicon']
 
         if lengua.present?
-          l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
+          l = I18n.transliterate(lengua).parameterize.downcase.gsub('-','_')
         else
           l = 'nd'
         end
 
-        {I18n.t("lenguas.#{l}", default: lengua) => nc['name'].capitalize}
+        # Los nombres comunes de naturalista en hash con la lengua
+        {I18n.t("lenguas.#{l}", default: lengua.capitalize) => nc['name'].capitalize}
       end
     else
       ncn = []
     end
 
-    nombres = (ncc + ncn).uniq
-    nombres.compact.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
+    # PAra el orden de las lenguas
+    nombres = (ncc + ncn).uniq.compact
+    nombres_inicio = []
+    nombres_mitad = []
+    nombres_final = []
+
+    nombres.each do |nombre|
+      lengua = nombre.keys.first  # Ya que es un hash
+
+      if lenguas_primero.include?(lengua)
+        index = lenguas_primero.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_inicio[index].nil?
+          nombres_inicio[index] = {}
+          nombres_inicio[index][lengua] = []
+        end
+
+        nombres_inicio[index][lengua] << nombre[lengua]
+
+      elsif lenguas_ultimo.include?(lengua)
+        index = lenguas_ultimo.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_final[index].nil?
+          nombres_final[index] = {}
+          nombres_final[index][lengua] = []
+        end
+
+        nombres_final[index][lengua] << nombre[lengua]
+
+      else
+        encontro_lengua = false
+        nombres_mitad.each do |nombre_mitad|
+          lengua_mitad = nombre_mitad.keys.first
+
+          # Quiere decir que ya habia metido esa lengua
+          if lengua_mitad == lengua
+            nombre_mitad[lengua] << nombre[lengua]
+            encontro_lengua = true
+            break
+          end
+        end
+
+        next if encontro_lengua
+
+        # Si llego a este punto, entonces creamos el hash
+        nombres_mitad << {lengua => [nombre[lengua]]}
+      end
+    end
+
+    # Los uno para obtener los nombres unidos
+    (nombres_inicio + nombres_mitad + nombres_final).compact
   end
 
   def cat_tax_asociadas
