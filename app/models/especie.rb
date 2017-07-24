@@ -358,6 +358,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       end
     end
 
+    puts "\n\nGuardo redis #{id}"
   end
 
   # Servicio que trae la respuesta de bdi

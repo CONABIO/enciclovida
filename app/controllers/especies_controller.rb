@@ -615,13 +615,16 @@ class EspeciesController < ApplicationController
   def servicios
     # Para guardar los cambios en redis y las observacion
     if Rails.env.production?
+      puts "\n\nGuardando redis #{id} ..."
       @especie.delay(queue: 'redis').guarda_redis
 
       if !@especie.existe_cache?('observaciones_naturalista')
+        puts "\n\nGuardando observaciones de naturalista #{@especie.id} ..."
         @especie.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
       end
 
       if !@especie.existe_cache?('ejemplares_snib')
+        puts "\n\nGuardando ejemplares del SNIB #{@especie.id} ..."
         @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
       end
 
