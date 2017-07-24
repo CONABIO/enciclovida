@@ -298,10 +298,6 @@ $(document).ready(function(){
         $.ajax({
             url: GEO.naturalista_json,
             dataType : "json",
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X-Test-Header', 'test-value');
-                xhr.setRequestHeader("Accept","text/json");
-            },
             success : function (r){
                 var d = r.resultados;
                 naturalista_count = d.length;

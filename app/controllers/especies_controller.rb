@@ -478,6 +478,11 @@ class EspeciesController < ApplicationController
         format.json do
           resp = p.observaciones_naturalista('.json')
 
+          headers['Access-Control-Allow-Origin'] = '*'
+          headers['Access-Control-Allow-Methods'] = 'GET'
+          headers['Access-Control-Request-Method'] = '*'
+          headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
           if resp[:estatus] == 'OK'
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
             resp.delete(:ruta)
@@ -524,6 +529,11 @@ class EspeciesController < ApplicationController
       respond_to do |format|
         format.json do
           resp = p.ejemplares_snib('.json')
+
+          headers['Access-Control-Allow-Origin'] = '*'
+          headers['Access-Control-Allow-Methods'] = 'GET'
+          headers['Access-Control-Request-Method'] = '*'
+          headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
           if resp[:estatus] == 'OK'
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
