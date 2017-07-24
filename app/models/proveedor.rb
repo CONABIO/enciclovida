@@ -146,7 +146,7 @@ class Proveedor < ActiveRecord::Base
     # Para las descargas del SNIB
     carpeta = carpeta_geodatos
     nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
-    url = "/especies/#{especie_id}/ejemplares-snib"
+    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/ejemplares-snib"
 
     if File.exists?("#{nombre}.json")
       geodatos[:cuales] << 'snib'
@@ -165,7 +165,7 @@ class Proveedor < ActiveRecord::Base
 
     # Para las descargas de naturalista
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
-    url = "/especies/#{especie_id}/observaciones-naturalista"
+    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/observaciones-naturalista"
 
     if File.exists?("#{nombre}.json")
       geodatos[:cuales] << 'naturalista'
