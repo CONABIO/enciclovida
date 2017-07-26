@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :totales, :observaciones, :observacion, :kml, :ejemplares
+  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -189,7 +189,8 @@ class Proveedor < ActiveRecord::Base
   # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
   def observaciones_naturalista(formato = '.json')
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+    puts "observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa"
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
@@ -217,6 +218,7 @@ class Proveedor < ActiveRecord::Base
 
     # Valida el paginado y los resultados
     self.observaciones = []
+    self.observaciones_mapa = []
     validacion = valida_observaciones_naturalista
     return validacion unless validacion[:estatus] == 'OK'
 
@@ -241,14 +243,17 @@ class Proveedor < ActiveRecord::Base
     carpeta = carpeta_geodatos
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     archivo_observaciones = File.new("#{nombre}.json", 'w+')
+    archivo_observaciones_mapa = File.new("#{nombre}_mapa.json", 'w+')
     archivo_observaciones_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
     archivo_observaciones.puts observaciones.to_json
+    archivo_observaciones_mapa.puts observaciones_mapa.to_json
     archivo_observaciones_kml.puts kml
 
     # Cierra los archivos
     archivo_observaciones.close
+    archivo_observaciones_mapa.close
     archivo_observaciones_kml.close
 
     # Guarda el archivo en kmz
@@ -320,6 +325,7 @@ class Proveedor < ActiveRecord::Base
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
     # Los numere para poder armar los datos en el orden deseado
+    obs[:id] = observacion['id']
     obs[:place_guess] = h.encode(observacion['place_guess'])
     obs[:observed_on] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
     obs[:captive] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
@@ -339,8 +345,12 @@ class Proveedor < ActiveRecord::Base
       break  # Guardo la primera foto
     end
 
+    # Pone la observacion y las observaciones en el arreglo
     self.observacion = obs
     self.observaciones << observacion
+
+    # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
+    self.observaciones_mapa << {geometry: {coordinates: [obs[:longitude].to_f, obs[:latitude].to_f], type: 'Point'}, properties: {d: obs[:id]}, type: 'Feature'}
   end
 
   def valida_observaciones_naturalista(params = {})

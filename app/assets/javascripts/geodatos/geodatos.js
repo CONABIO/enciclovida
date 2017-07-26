@@ -152,24 +152,37 @@ $(document).ready(function(){
 
     function addPointLayerNaturaLista(){
         geojsonFeature =  { "type": "FeatureCollection",
-            "features": allowedPoints.values()};
+            //"features": allowedPoints.values()};
+        "features": allowedPoints};
 
-        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista'});
+
+        console.log(allowedPoints.length);
+        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista', chunkInterval: '2000', chunkDelay: 1});
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
                 // Para cuando es una observacion casual o de investigacion
-                if (feature.properties.d.quality_grade == 'research')
-                    return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
-                else
+                //if (feature.properties.d.quality_grade == 'research')
+                    //return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                //else
                     return L.circleMarker(latlng, geojsonMarkerNaturaListaCasualOptions);
-                //para cuando tenga tiempo, poner el ícono como DEBE de ser!!!
                 //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
             onEachFeature: function (feature, layer) {
-                coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
-                var p_contenido = content_naturalista(feature.properties.d);
-                layer.bindPopup(p_contenido);
+
+                layer.on("click", function (e) {
+                    console.log(feature.properties.d);
+                    var p_contenido = content_naturalista(feature.properties.d);
+                    popup = new L.Popup();
+                    var bounds = layer.getBounds();
+                    var popupContent = "algo" + feature.properties.d;
+                    popup.setLatLng(bounds.getCenter());
+                    popup.setContent(popupContent);
+                    map.openPopup(popup);
+                    });
+
+                //var p_contenido = content_naturalista(feature.properties.d);
+                //layer.bindPopup(p_contenido);
             }
         });
 
@@ -294,14 +307,18 @@ $(document).ready(function(){
     };
 
 
-    var geojson_naturalista = function(){
+    var geojson_naturalista = function()
+    {
         $.ajax({
-            url: GEO.naturalista_json,
+            url: 'http://calonso.conabio.gob.mx:4000/geodatos/10003659/observaciones_Danaus_plexippus_mapa.json',
+            //url: '/especies/10003659/observaciones-naturalista.json',
+            //url: GEO.naturalista_json,
             dataType : "json",
             success : function (r){
-                var d = r.resultados;
-                naturalista_count = d.length;
-                allowedPoints = d3.map([]);
+                //var d = r.resultados;
+                naturalista_count = r.length;
+                allowedPoints = r;
+                /*allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)
                 {
@@ -310,10 +327,10 @@ $(document).ready(function(){
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: d[i]},
-                        "geometry"  : {coordinates: [parseFloat(d[i].longitude), parseFloat(d[i].latitude)], type: "Point"}
+                        "properties": {d: d[i][0]},
+                        "geometry"  : {coordinates: [d[i][1], d[i][2]], type: "Point"}
                     });
-                }
+                }*/
                 addPointLayerNaturaLista();
             },
             error: function( jqXHR ,  textStatus,  errorThrown ){
@@ -327,7 +344,5 @@ $(document).ready(function(){
     if (GEO.cuales.indexOf("naturalista") >= 0) geojson_naturalista();
     if (GEO.cuales.indexOf("snib") >= 0) geojson_geoportal();
     if (GEO.cuales.indexOf("geoserver") >= 0) wms_distribucion_potencial();
-
-
 });
 
