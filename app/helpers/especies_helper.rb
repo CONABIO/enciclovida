@@ -319,46 +319,52 @@ module EspeciesHelper
     response.flatten
   end
 
-  def ponCaracteristicaDistribucionAmbienteJS
+  def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
+    response = []
+    [taxon.nom_cites_iucn_ambiente_prioritaria,taxon.tipo_distribucion].flatten.each{ |x|
+
+      response << "<span class='btn-title' title=''><i class = '#{x}-ev-icon'></i></span>"
+    }
+    response << "<small class='glyphicon glyphicon-info-sign' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer;'></small>" if response.any?
+    response.join.html_safe
+  end
+
+  def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
-    def creaSpan(nombre, id, name, icono)
-      "<span title = '#{nombre}' class = 'btn-title panel-disabled' id = #{id} name = '#{name}'>#{icono}</span>"
+    def creaSpan(nombre, name, icono)
+      "<span title='#{nombre}' class='btn-title' alt='#{name}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
         next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
-        id = "id#{edo.parameterize}"
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
         name = "edo_cons_#{edo.parameterize}"
         icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
-        response[k]  = response[k].to_a << creaSpan(nombre, id, name, icono)
+        response[k]  = response[k].to_a << creaSpan(nombre, name, icono)
       end
     end
 
     TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-      id = "id#{tipoDist.parameterize}"
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       name = "dist_#{tipoDist}"
       icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
 
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, id, name, icono)
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, name, icono)
     end
 
     Catalogo.ambiente_todos.each do |amb|
-      id = "id#{amb.parameterize}"
       icono =  "<i class = 'ambiente #{amb.parameterize}-ev-icon'></i>"
       name = "amb_#{amb}"
       nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, id, name, icono)
+      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, name, icono)
     end
 
     Catalogo::NIVELES_PRIORITARIAS.each do |prior|
-      id = "id#{prior.parameterize}"
       icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
       name = "prio_#{prior}"
       nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
-      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, id, name, icono)
+      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, name, icono)
     end
     response
   end
