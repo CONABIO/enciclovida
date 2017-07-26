@@ -186,6 +186,14 @@ class Proveedor < ActiveRecord::Base
     geodatos
   end
 
+  # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamenteguardado del json
+  def observacion_naturalista
+    resp = observaciones_naturalista('.json')
+    return resp unless resp[:estatus]
+
+    resp.merge({observacion: {quality_grade: 'investigacion ;)'}})
+  end
+
   # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
   def observaciones_naturalista(formato = '.json')
     carpeta = carpeta_geodatos
@@ -329,7 +337,7 @@ class Proveedor < ActiveRecord::Base
     obs[:place_guess] = h.encode(observacion['place_guess'])
     obs[:observed_on] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
     obs[:captive] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
-    obs[:quality_grade] = observacion['quality_grade']
+    obs[:quality_grade] = I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion[:quality_grade])
     obs[:uri] = observacion['uri']
 
     if obs[:uri].present?
@@ -350,7 +358,7 @@ class Proveedor < ActiveRecord::Base
     self.observaciones << observacion
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.observaciones_mapa << {geometry: {coordinates: [obs[:longitude].to_f, obs[:latitude].to_f], type: 'Point'}, properties: {d: obs[:id]}, type: 'Feature'}
+    self.observaciones_mapa << [obs[:longitude].to_f, obs[:latitude].to_f, obs[:id], observacion['quality_grade'] == 'research' ? 1 : 0]
   end
 
   def valida_observaciones_naturalista(params = {})
@@ -432,7 +440,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<dt>Ubicación</dt> <dd>#{observacion[:place_guess]}</dd>\n"
       self.kml << "<dt>Fecha</dt> <dd>#{observacion[:observed_on]}</dd>\n"
       self.kml << "<dt>#{observacion[:captive]}</dt> <dd> </dd>\n"
-      self.kml << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << observacion[:quality_grade])}</dd>\n"
+      self.kml << "<dt>Grado de calidad</dt> <dd>#{observacion[:quality_grade]}</dd>\n"
       self.kml << '</dl>'
 
       self.kml << "<span><text>Ver la </text><a href=\"#{observacion[:uri]}\">observación en NaturaLista</a></span>\n"

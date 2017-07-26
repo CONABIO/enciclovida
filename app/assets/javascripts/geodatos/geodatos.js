@@ -152,37 +152,23 @@ $(document).ready(function(){
 
     function addPointLayerNaturaLista(){
         geojsonFeature =  { "type": "FeatureCollection",
-            //"features": allowedPoints.values()};
-        "features": allowedPoints};
+            "features": allowedPoints.values()};
 
-
-        console.log(allowedPoints.length);
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'naturalista', chunkInterval: '2000', chunkDelay: 1});
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
                 // Para cuando es una observacion casual o de investigacion
-                //if (feature.properties.d.quality_grade == 'research')
-                    //return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
-                //else
+                if (feature.properties.d.quality_grade == 'research')
+                    return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
+                else
                     return L.circleMarker(latlng, geojsonMarkerNaturaListaCasualOptions);
                 //return L.marker(latlng, {icon: L.divIcon({className: "glyphicon glyphicon-map-marker"})});
             },
             onEachFeature: function (feature, layer) {
-
                 layer.on("click", function (e) {
-                    console.log(feature.properties.d);
-                    var p_contenido = content_naturalista(feature.properties.d);
-                    popup = new L.Popup();
-                    var bounds = layer.getBounds();
-                    var popupContent = "algo" + feature.properties.d;
-                    popup.setLatLng(bounds.getCenter());
-                    popup.setContent(popupContent);
-                    map.openPopup(popup);
+                    observacion_naturalista(layer, feature.properties.d);
                     });
-
-                //var p_contenido = content_naturalista(feature.properties.d);
-                //layer.bindPopup(p_contenido);
             }
         });
 
@@ -239,27 +225,48 @@ $(document).ready(function(){
         return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + feature.idejemplar;
     }
 
-    function content_naturalista(feature){
-        var contenido = "";
+    function observacion_naturalista(layer, id)
+    {
+        $.ajax({
+            url: "/especies/" + TAXON.id + "/observacion-naturalista/" + id,
+            dataType : "json",
+            success : function (res){
+                var observacion = res.observacion;
+                var contenido = "";
 
-        contenido += "<h4>" + name() + "</h4>";
+                contenido += "<h4>" + name() + "</h4>";
 
-        if (feature.thumb_url != undefined)
-        {
-            contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + feature.thumb_url + "'/></div>"
-            contenido += "<dt>Atribución: </dt><dd>" + feature.attribution + "</dd>";
-        }
+                if (observacion.thumb_url != undefined)
+                {
+                    contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + observacion.thumb_url + "'/></div>"
+                    contenido += "<dt>Atribución: </dt><dd>" + observacion.attribution + "</dd>";
+                }
 
-        /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
-        contenido += "<dt>Fecha: </dt><dd>" + feature.observed_on + "</dd>";
-        contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (feature.captive == true ? 'sí' : 'no') + "</dd>";
-        contenido += "<dt>Grado de calidad: </dt><dd>" + I18n.t('quality_grade.' + feature.quality_grade) + "</dd>";
-        contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ feature.uri +"' target='_blank'>ver la observación</a></dd>";
+                /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
+                contenido += "<dt>Fecha: </dt><dd>" + observacion.observed_on + "</dd>";
+                contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (observacion.captive == true ? 'sí' : 'no') + "</dd>";
+                contenido += "<dt>Grado de calidad: </dt><dd>" + observacion.quality_grade + "</dd>";
+                contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ observacion.uri +"' target='_blank'>ver la observación</a></dd>";
 
-        // Para enviar un comentario acerca de un registro en particular
-        contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + feature.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
+                // Para enviar un comentario acerca de un registro en particular
+                contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + observacion.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
 
-        return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+                contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>";
+
+                // Pone el popup arriba del punto
+                var popup = new L.Popup();
+                var bounds = layer.getBounds();
+
+                popup.setLatLng(bounds.getCenter());
+                popup.setContent(contenido);
+                map.openPopup(popup);
+            },
+            error: function( jqXHR ,  textStatus,  errorThrown ){
+                console.log("error: " + textStatus);
+                console.log(errorThrown);
+                console.log(jqXHR.responseText);
+            }
+        });  // termina ajax
     }
 
     function name()
@@ -311,26 +318,23 @@ $(document).ready(function(){
     {
         $.ajax({
             url: 'http://calonso.conabio.gob.mx:4000/geodatos/10003659/observaciones_Danaus_plexippus_mapa.json',
-            //url: '/especies/10003659/observaciones-naturalista.json',
-            //url: GEO.naturalista_json,
+            //url: GEO.naturalista_mapa_json,
             dataType : "json",
-            success : function (r){
-                //var d = r.resultados;
-                naturalista_count = r.length;
-                allowedPoints = r;
-                /*allowedPoints = d3.map([]);
+            success : function (d){
+                naturalista_count = d.length;
+                allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)
                 {
-                    item_id = '-' + i.toString();
+                    var item_id = i;
 
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: d[i][0]},
-                        "geometry"  : {coordinates: [d[i][1], d[i][2]], type: "Point"}
+                        "properties": {d: d[i][2]},
+                        "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
-                }*/
+                }
                 addPointLayerNaturaLista();
             },
             error: function( jqXHR ,  textStatus,  errorThrown ){

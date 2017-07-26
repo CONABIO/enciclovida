@@ -83,6 +83,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol' => 'especies#arbol'
       get :error
       get ':id/observaciones-naturalista' => 'especies#observaciones_naturalista'
+      get ':id/observacion-naturalista/:observacion_id' => 'especies#observacion_naturalista'
       get ':id/ejemplares-snib' => 'especies#ejemplares_snib'
       get ':id/arbol_nodo' => 'especies#arbol_nodo'
       get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
