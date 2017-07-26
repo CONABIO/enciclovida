@@ -175,6 +175,7 @@ $(document).ready(function(){
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
 
+        // Para la legenda de la simbologia
         var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#0b9c31" />';
         punto_verde+= '<text x="20" y="13" >Grado de investigación</text>';
 

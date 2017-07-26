@@ -127,7 +127,7 @@ class Proveedor < ActiveRecord::Base
 
   def usuario_naturalista
     response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
-    data = JSON.parse(response)
+    JSON.parse(response)
   end
 
   def geodatos
@@ -164,22 +164,30 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas de naturalista
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/observaciones-naturalista"
 
-    if File.exists?("#{nombre}.json")
+    resp = observaciones_naturalista('.json')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_json] = "#{url}.json"
     end
 
-    if File.exists?("#{nombre}.kml")
+    resp = observaciones_naturalista('.kml')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kml] = "#{url}.kml"
     end
 
-    if File.exists?("#{nombre}.kmz")
+    resp = observaciones_naturalista('.kmz')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kmz] = "#{url}.kmz"
+    end
+
+    resp = observaciones_naturalista('.json', true)
+    if resp[:estatus] == 'OK'
+      geodatos[:cuales] << 'naturalista'
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
@@ -189,16 +197,21 @@ class Proveedor < ActiveRecord::Base
   # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamenteguardado del json
   def observacion_naturalista
     resp = observaciones_naturalista('.json')
-    return resp unless resp[:estatus]
+    return resp unless resp[:estatus] == 'OK'
 
     resp.merge({observacion: {quality_grade: 'investigacion ;)'}})
   end
 
   # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
-  def observaciones_naturalista(formato = '.json')
+  def observaciones_naturalista(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
-    puts "observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa"
+
+    nombre = if mapa
+               carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+             else
+               carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+             end
+
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
