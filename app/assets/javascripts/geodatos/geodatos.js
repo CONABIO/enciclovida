@@ -159,7 +159,7 @@ $(document).ready(function(){
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
                 // Para cuando es una observacion casual o de investigacion
-                if (feature.properties.d.quality_grade == 'research')
+                if (feature.properties.d[1])
                     return L.circleMarker(latlng, geojsonMarkerNaturaListaInvOptions);
                 else
                     return L.circleMarker(latlng, geojsonMarkerNaturaListaCasualOptions);
@@ -167,7 +167,7 @@ $(document).ready(function(){
             },
             onEachFeature: function (feature, layer) {
                 layer.on("click", function (e) {
-                    observacion_naturalista(layer, feature.properties.d);
+                    observacion_naturalista(layer, feature.properties.d[0]);
                     });
             }
         });
@@ -332,7 +332,7 @@ $(document).ready(function(){
                     // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: d[i][2]},
+                        "properties": {d: [d[i][2], d[i][3]]},
                         "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 }

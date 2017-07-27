@@ -196,7 +196,7 @@ class Proveedor < ActiveRecord::Base
 
   # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamenteguardado del json
   def observacion_naturalista
-    resp = observaciones_naturalista('.json')
+    resp = observaciones_naturalista('.json', true)
     return resp unless resp[:estatus] == 'OK'
 
     resp.merge({observacion: {quality_grade: 'investigacion ;)'}})
@@ -240,6 +240,10 @@ class Proveedor < ActiveRecord::Base
     # Valida el paginado y los resultados
     self.observaciones = []
     self.observaciones_mapa = []
+
+    # Limpia las observaciones y  las transforma a kml
+    kml_naturalista(inicio: true)
+
     validacion = valida_observaciones_naturalista
     return validacion unless validacion[:estatus] == 'OK'
 
@@ -259,6 +263,9 @@ class Proveedor < ActiveRecord::Base
         break if i == 50
       end
     end
+
+    # Cierra el kml
+    kml_naturalista(fin: true)
 
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
@@ -349,16 +356,16 @@ class Proveedor < ActiveRecord::Base
     obs[:id] = observacion['id']
     obs[:place_guess] = h.encode(observacion['place_guess'])
     obs[:observed_on] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
-    obs[:captive] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
-    obs[:quality_grade] = I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion[:quality_grade])
+    obs[:captive] = observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
+    obs[:quality_grade] = I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion['quality_grade'])
     obs[:uri] = observacion['uri']
 
     if obs[:uri].present?
       obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
     end
 
-    obs[:longitude] = observacion['geojson']['coordinates'][0]
-    obs[:latitude] = observacion['geojson']['coordinates'][1]
+    obs[:longitude] = observacion['geojson']['coordinates'][0].to_f
+    obs[:latitude] = observacion['geojson']['coordinates'][1].to_f
 
     observacion['photos'].each do |photo|
       obs[:thumb_url] = photo['url']
@@ -371,7 +378,7 @@ class Proveedor < ActiveRecord::Base
     self.observaciones << observacion
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.observaciones_mapa << [obs[:longitude].to_f, obs[:latitude].to_f, obs[:id], observacion['quality_grade'] == 'research' ? 1 : 0]
+    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 0]
   end
 
   def valida_observaciones_naturalista(params = {})
@@ -392,16 +399,11 @@ class Proveedor < ActiveRecord::Base
     return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
     return {estatus: 'error', msg: 'No hay observaciones'} if resultados.blank? || resultados.count == 0
 
-    # Limpia las observaciones y  las transforma a kml
-    kml_naturalista(inicio: true)
-
     resultados.each do |observacion|
       self.observacion = observacion
       limpia_observaciones_naturalista
       kml_naturalista(observacion: true)
     end
-
-    kml_naturalista(fin: true)
 
     {estatus: 'OK'}
   end
@@ -462,7 +464,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "]]>\n"
       self.kml << "</description>\n"
 
-      if observacion[:quality_grade] == 'research'
+      if observacion[:quality_grade] == 'investigación'
         self.kml << '<styleUrl>#Placemark_cientifico</styleUrl>'
       else
         self.kml << '<styleUrl>#Placemark_casual</styleUrl>'

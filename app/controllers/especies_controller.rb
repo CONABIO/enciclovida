@@ -526,6 +526,11 @@ class EspeciesController < ApplicationController
   # Obtiene la informacion de una observacion del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
   def observacion_naturalista
     if p = @especie.proveedor
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Access-Control-Allow-Methods'] = 'GET'
+      headers['Access-Control-Request-Method'] = '*'
+      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
       resp = p.observacion_naturalista
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
