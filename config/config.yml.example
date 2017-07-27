@@ -63,6 +63,7 @@ base: &base
     observaciones_naturalista: 1.day
     ficha_naturalista: 1.day
     ejemplares_snib: 1.day
+    fichas: 1.week
 
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
