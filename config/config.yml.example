@@ -58,6 +58,12 @@ base: &base
   # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
   enciclovida_url: http://enciclovida.mx
 
+  # Cache de los servicios que guarda en disco
+  cache:
+    observaciones_naturalista: 1.day
+    ficha_naturalista: 1.day
+    ejemplares_snib: 1.day
+
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
 
