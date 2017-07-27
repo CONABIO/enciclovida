@@ -232,27 +232,32 @@ $(document).ready(function(){
             url: "/especies/" + TAXON.id + "/observacion-naturalista/" + id,
             dataType : "json",
             success : function (res){
-                var observacion = res.observacion;
-                var contenido = "";
-
-                contenido += "<h4>" + name() + "</h4>";
-
-                if (observacion.thumb_url != undefined)
+                if (res.estatus == 'OK')
                 {
-                    contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + observacion.thumb_url + "'/></div>"
-                    contenido += "<dt>Atribución: </dt><dd>" + observacion.attribution + "</dd>";
+                    var observacion = res.observacion;
+                    var contenido = "";
+
+                    contenido += "<h4>" + name() + "</h4>";
+
+                    if (observacion.thumb_url != undefined)
+                    {
+                        contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + observacion.thumb_url + "'/></div>"
+                        contenido += "<dt>Atribución: </dt><dd>" + observacion.attribution + "</dd>";
+                    }
+
+                    /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
+                    contenido += "<dt>Fecha: </dt><dd>" + observacion.observed_on + "</dd>";
+                    contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (observacion.captive == true ? 'sí' : 'no') + "</dd>";
+                    contenido += "<dt>Grado de calidad: </dt><dd>" + observacion.quality_grade + "</dd>";
+                    contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ observacion.uri +"' target='_blank'>ver la observación</a></dd>";
+
+                    // Para enviar un comentario acerca de un registro en particular
+                    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + observacion.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
+
+                    contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>";
+                } else {
+                    var contenido = "Hubo un error al retraer la observación: " + res.msg;
                 }
-
-                /*contenido += "<dt>Ubicación: </dt><dd>" + feature.place_guess + "</dd>";*/
-                contenido += "<dt>Fecha: </dt><dd>" + observacion.observed_on + "</dd>";
-                contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (observacion.captive == true ? 'sí' : 'no') + "</dd>";
-                contenido += "<dt>Grado de calidad: </dt><dd>" + observacion.quality_grade + "</dd>";
-                contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ observacion.uri +"' target='_blank'>ver la observación</a></dd>";
-
-                // Para enviar un comentario acerca de un registro en particular
-                contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + observacion.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
-
-                contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>";
 
                 // Pone el popup arriba del punto
                 var popup = new L.Popup();
@@ -318,7 +323,7 @@ $(document).ready(function(){
     var geojson_naturalista = function()
     {
         $.ajax({
-            url: 'http://calonso.conabio.gob.mx:4000/geodatos/10003659/observaciones_Danaus_plexippus_mapa.json',
+            url: 'http://calonso.conabio.gob.mx:4000/geodatos/8011454/observaciones_Romerolagus_diazi_mapa.json',
             //url: GEO.naturalista_mapa_json,
             dataType : "json",
             success : function (d){

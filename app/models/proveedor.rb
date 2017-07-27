@@ -195,11 +195,19 @@ class Proveedor < ActiveRecord::Base
   end
 
   # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamenteguardado del json
-  def observacion_naturalista
-    resp = observaciones_naturalista('.json', true)
+  def observacion_naturalista(observacion_id)
+    resp = observaciones_naturalista('.json')
     return resp unless resp[:estatus] == 'OK'
 
-    resp.merge({observacion: {quality_grade: 'investigacion ;)'}})
+    output = `grep #{observacion_id} #{resp[:ruta]}`
+    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    obs = output.gsub('[', '').gsub('},', '}').gsub(']', '')
+
+    begin
+      resp.merge({observacion: JSON.parse(obs)})
+    rescue
+      {estatus: 'error', msg: 'Erro al parsear el json'}
+    end
   end
 
   # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
@@ -275,7 +283,7 @@ class Proveedor < ActiveRecord::Base
     archivo_observaciones_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
-    archivo_observaciones.puts observaciones.to_json
+    archivo_observaciones.puts observaciones.to_json.gsub('},{', "},\n{")
     archivo_observaciones_mapa.puts observaciones_mapa.to_json
     archivo_observaciones_kml.puts kml
 

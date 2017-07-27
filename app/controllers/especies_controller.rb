@@ -531,7 +531,7 @@ class EspeciesController < ApplicationController
       headers['Access-Control-Request-Method'] = '*'
       headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
-      resp = p.observacion_naturalista
+      resp = p.observacion_naturalista(params['observacion_id'])
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
     else
