@@ -199,7 +199,7 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json')
     return resp unless resp[:estatus] == 'OK'
 
-    output = `grep #{observacion_id} #{resp[:ruta]}`
+    output = `grep :#{observacion_id}, #{resp[:ruta]}`
     return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
     obs = output.gsub('[', '').gsub('},', '}').gsub(']', '')
 
