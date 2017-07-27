@@ -5,12 +5,12 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib]
+                                         :ejemplares_snib, :ejemplar_snib]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib]
+                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
@@ -26,7 +26,7 @@ class EspeciesController < ApplicationController
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
                           :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
-                          :nombres_comunes_todos, :ejemplares_snib, :observacion_naturalista]
+                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => 1.week, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }
@@ -588,6 +588,22 @@ class EspeciesController < ApplicationController
       end  # End respond_to
     else
       render :_error and return
+    end
+  end
+
+  # Obtiene la informacion del ejemplar del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
+  def ejemplar_snib
+    if p = @especie.proveedor
+      headers['Access-Control-Allow-Origin'] = '*'
+      headers['Access-Control-Allow-Methods'] = 'GET'
+      headers['Access-Control-Request-Method'] = '*'
+      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
+      resp = p.ejemplar_snib(params['ejemplar_id'])
+      resp.delete(:ruta) if resp[:ruta].present?
+      render json: resp.to_json
+    else
+      render json: {estatus: 'error', msg: 'No existe en el SNIB'}.to_json
     end
   end
 

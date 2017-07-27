@@ -106,29 +106,22 @@ $(document).ready(function(){
         geojsonFeature =  { "type": "FeatureCollection",
             "features": allowedPoints.values()};
 
-        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-
-                // Para saber si es de ebird o averaves
-                var coleccion = feature.properties.d.coleccion.toLowerCase();
-                var fosil = feature.properties.d.taxonfosil;
-                var array_coleccion = coleccion.split(" ");
-                var indice_coleccion_ebird = array_coleccion.indexOf("ebird");
-                var indice_coleccion_averaves = array_coleccion.indexOf("averaves");
-
-                if (indice_coleccion_averaves >= 0 || indice_coleccion_ebird >= 0)
+                // Este campos quiere decir que es de aves aves
+                if (feature.properties.d[1])
                     return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
-                else if (fosil != undefined && fosil != "")
-                    return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
-                else
+                //else if (fosil != undefined && fosil != "")
+                  //  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
+                else  // de lo contrario es un registro rojo normal
                     return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
             },
             onEachFeature: function (feature, layer) {
-                coordinates = parseFloat(feature.geometry.coordinates[1]).toFixed(2) + ", " +  parseFloat(feature.geometry.coordinates[0]).toFixed(2);
-                var p_contenido = content_geoportal(feature.properties.d);
-                layer.bindPopup(p_contenido);
+                layer.on("click", function (e) {
+                    ejemplar_snib(layer, feature.properties.d[0]);
+                });
             }
         });
 
@@ -141,12 +134,12 @@ $(document).ready(function(){
         var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
         punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
 
-        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
-        punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';
+        /*var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
+        punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';*/
 
         legend_control.addOverlay(markersLayer,
             "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
-            "<p>"+punto_gris+"</p>"
+            "<p>"+punto_naranja+"</p>"
         );
     }
 
@@ -201,29 +194,54 @@ $(document).ready(function(){
         legend_control.addOverlay(distribucion_potencial, "<b>Distribución potencial (CONABIO)</b>");
     }
 
-    function content_geoportal(feature){
-        var contenido = "";
+    function ejemplar_snib(layer, id){
+        $.ajax({
+            url: "/especies/" + TAXON.id + "/ejemplar-snib/" + id,
+            dataType : "json",
+            success : function (res){
+                if (res.estatus == 'OK')
+                {
+                    var ejemplar = res.ejemplar;
+                    var contenido = "";
 
-        contenido += "<h4>" + name() + "</h4>";
-        contenido += "<dt>Localidad: </dt><dd>" + feature.localidad + "</dd>";
-        contenido += "<dt>Municipio: </dt><dd>" + feature.municipiomapa + "</dd>";
-        contenido += "<dt>Estado: </dt><dd>" + feature.estadomapa + "</dd>";
-        contenido += "<dt>País: </dt><dd>" + feature.paismapa + "</dd>";
-        contenido += "<dt>Fecha: </dt><dd>" + feature.fechacolecta + "</dd>";
-        contenido += "<dt>Colector: </dt><dd>" + feature.colector + "</dd>";
-        contenido += "<dt>Colección: </dt><dd>" + feature.coleccion + "</dd>";
-        contenido += "<dt>Institución: </dt><dd>" + feature.institucion + "</dd>";
-        contenido += "<dt>País de la colección: </dt><dd>" + feature.paiscoleccion + "</dd>";
+                    contenido += "<h4>" + name() + "</h4>";
+                    contenido += "<dt>Localidad: </dt><dd>" + ejemplar.localidad + "</dd>";
+                    contenido += "<dt>Municipio: </dt><dd>" + ejemplar.municipiomapa + "</dd>";
+                    contenido += "<dt>Estado: </dt><dd>" + ejemplar.estadomapa + "</dd>";
+                    contenido += "<dt>País: </dt><dd>" + ejemplar.paismapa + "</dd>";
+                    contenido += "<dt>Fecha: </dt><dd>" + ejemplar.fechacolecta + "</dd>";
+                    contenido += "<dt>Colector: </dt><dd>" + ejemplar.colector + "</dd>";
+                    contenido += "<dt>Colección: </dt><dd>" + ejemplar.coleccion + "</dd>";
+                    contenido += "<dt>Institución: </dt><dd>" + ejemplar.institucion + "</dd>";
+                    contenido += "<dt>País de la colección: </dt><dd>" + ejemplar.paiscoleccion + "</dd>";
 
-        if (feature.proyecto.length > 0 && feature.urlproyecto.length > 0)
-            contenido += "<dt>Proyecto: </dt><dd><a href='" + feature.urlproyecto + "' target='_blank'>" + feature.proyecto + "</a></dd>";
+                    if (ejemplar.proyecto.length > 0 && ejemplar.urlproyecto.length > 0)
+                        contenido += "<dt>Proyecto: </dt><dd><a href='" + ejemplar.urlproyecto + "' target='_blank'>" + ejemplar.proyecto + "</a></dd>";
 
-        contenido += "<dt>Más información: </dt><dd><a href='http://" + feature.urlejemplar + "' target='_blank'>consultar</a></dd>";
+                    contenido += "<dt>Más información: </dt><dd><a href='http://" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-        // Para enviar un comentario acerca de un registro en particular
-        contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + feature.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+                    // Para enviar un comentario acerca de un registro en particular
+                    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + ejemplar.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
-        return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + feature.idejemplar;
+                    contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + ejemplar.idejemplar;
+                } else {
+                    var contenido = "Hubo un error al retraer el ejemplar: " + res.msg;
+                }
+
+                // Pone el popup arriba del punto
+                var popup = new L.Popup();
+                var bounds = layer.getBounds();
+
+                popup.setLatLng(bounds.getCenter());
+                popup.setContent(contenido);
+                map.openPopup(popup);
+            },
+            error: function( jqXHR ,  textStatus,  errorThrown ){
+                console.log("error: " + textStatus);
+                console.log(errorThrown);
+                console.log(jqXHR.responseText);
+            }
+        });  // termina ajax
     }
 
     function observacion_naturalista(layer, id)
@@ -241,7 +259,7 @@ $(document).ready(function(){
 
                     if (observacion.thumb_url != undefined)
                     {
-                        contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + observacion.thumb_url + "'/></div>"
+                        contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + observacion.thumb_url + "'/></div>";
                         contenido += "<dt>Atribución: </dt><dd>" + observacion.attribution + "</dd>";
                     }
 
@@ -291,21 +309,20 @@ $(document).ready(function(){
     var geojson_geoportal = function()
     {
         $.ajax({
-            url: GEO.snib_json,
+            url: GEO.snib_mapa_json,
             dataType : "json",
-            success : function (r){
-                var d = r.resultados;
+            success : function (d){
                 geoportal_count = d.length;
                 allowedPoints = d3.map([]);
 
                 for(i=0;i<d.length;i++)
                 {
-                    item_id = 'geoportal-' + i.toString();
+                    var item_id = d[i];
 
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: d[i]},
-                        "geometry"  : d[i].json_geom
+                        "properties": {d: [d[i][2], d[i][3]]}, // El ID y si es de aver aves
+                        "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 }
 
@@ -323,8 +340,7 @@ $(document).ready(function(){
     var geojson_naturalista = function()
     {
         $.ajax({
-            url: 'http://calonso.conabio.gob.mx:4000/geodatos/8011454/observaciones_Romerolagus_diazi_mapa.json',
-            //url: GEO.naturalista_mapa_json,
+            url: GEO.naturalista_mapa_json,
             dataType : "json",
             success : function (d){
                 naturalista_count = d.length;
@@ -332,12 +348,11 @@ $(document).ready(function(){
 
                 for(i=0;i<d.length;i++)
                 {
-                    var item_id = i;
+                    var item_id = d[i][2];
 
-                    // this map is fill with the records in the database from an specie, so it discards repetive elemnts.
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: [d[i][2], d[i][3]]},
+                        "properties": {d: [d[i][2], d[i][3]]},  // El ID y si es de grado de investigacion
                         "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 }

@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares
+  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -144,23 +144,30 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas del SNIB
-    carpeta = carpeta_geodatos
-    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/ejemplares-snib"
 
-    if File.exists?("#{nombre}.json")
+    resp = ejemplares_snib('.json')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_json] = "#{url}.json"
     end
 
-    if File.exists?("#{nombre}.kml")
+    resp = ejemplares_snib('.kml')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kml] = "#{url}.kml"
     end
 
-    if File.exists?("#{nombre}.kmz")
+    resp = ejemplares_snib('.kmz')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kmz] = "#{url}.kmz"
+    end
+
+    resp = ejemplares_snib('.json', true)
+    if resp[:estatus] == 'OK'
+      geodatos[:cuales] << 'snib'
+      geodatos[:snib_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
@@ -194,19 +201,19 @@ class Proveedor < ActiveRecord::Base
     geodatos
   end
 
-  # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamenteguardado del json
+  # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamente guardado del json
   def observacion_naturalista(observacion_id)
     resp = observaciones_naturalista('.json')
     return resp unless resp[:estatus] == 'OK'
 
     output = `grep :#{observacion_id}, #{resp[:ruta]}`
     return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
-    obs = output.gsub('[', '').gsub('},', '}').gsub(']', '')
+    obs = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
 
     begin
       resp.merge({observacion: JSON.parse(obs)})
     rescue
-      {estatus: 'error', msg: 'Erro al parsear el json'}
+      {estatus: 'error', msg: 'Error al parsear el json'}
     end
   end
 
@@ -298,10 +305,33 @@ class Proveedor < ActiveRecord::Base
     puts "\n\nGuardo observaciones de naturalista #{especie_id}"
   end
 
+  # Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
+  def ejemplar_snib(ejemplar_id)
+    resp = ejemplares_snib('.json')
+    return resp unless resp[:estatus] == 'OK'
+
+    output = `grep #{ejemplar_id} #{resp[:ruta]}`
+    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    ej = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
+
+    puts ej
+    begin
+      resp.merge({ejemplar: JSON.parse(ej)})
+    rescue
+      {estatus: 'error', msg: 'Error al parsear el json'}
+    end
+  end
+
   # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
-  def ejemplares_snib(formato = '.json')
+  def ejemplares_snib(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+
+    nombre = if mapa
+               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+             else
+               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+             end
+
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
@@ -322,6 +352,7 @@ class Proveedor < ActiveRecord::Base
     especie.escribe_cache('ejemplares_snib', 1.day) if Rails.env.production?
 
     self.ejemplares = []
+    self.ejemplares_mapa = []
     validacion = valida_ejemplares_snib
     return validacion unless validacion[:estatus] == 'OK'
 
@@ -329,14 +360,18 @@ class Proveedor < ActiveRecord::Base
     carpeta = carpeta_geodatos
     nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     archivo_ejemplares = File.new("#{nombre}.json", 'w+')
+    archivo_ejemplares_mapa = File.new("#{nombre}_mapa.json", 'w+')
     archivo_ejemplares_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
-    archivo_ejemplares.puts self.ejemplares.to_json.gsub('\\', '').gsub('"{', '{').gsub('}"', '}')
+    # Esta linea hace mas facil el json del parseo y pone un salto de linea al final de cada ejemplar
+    archivo_ejemplares.puts ejemplares.to_json.gsub('\\', '').gsub('"{', '{').gsub('}"', '}').gsub('},{', "},\n{")
+    archivo_ejemplares_mapa.puts ejemplares_mapa.to_json
     archivo_ejemplares_kml.puts kml
 
     # Cierra los archivos
     archivo_ejemplares.close
+    archivo_ejemplares_mapa.close
     archivo_ejemplares_kml.close
 
     # Guarda el archivo en kmz
@@ -488,10 +523,20 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
-  def kmz(nombre)
-    archvo_zip = "#{nombre}.zip"
-    system "zip -j #{archvo_zip} #{nombre}.kml"
-    File.rename(archvo_zip, "#{nombre}.kmz")
+  # Solo las coordenadas y el ID
+  def limpia_ejemplares_snib
+    # Para ver si es de aver aves el ejemplar
+    aves = %w(averaves ebird)
+    coleccion = ejemplar['coleccion'].downcase
+    es_averaves = false
+
+    coleccion.split(' ').each do |col|
+      break if es_averaves
+      es_averaves = true if aves.include?(col)
+    end
+
+    # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
+    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0]
   end
 
   def valida_ejemplares_snib
@@ -506,8 +551,15 @@ class Proveedor < ActiveRecord::Base
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
     return {estatus: 'error', msg: 'No hay ejemplares'} if totales.blank? || (totales.present? && totales <= 0)
 
-    # ASigna los ejemplares
+    self.ejemplares_mapa = []
+
+    # Asigna los ejemplares
     self.ejemplares = resultados
+
+    resultados.each do |ejemplar|
+      self.ejemplar = ejemplar
+      limpia_ejemplares_snib
+    end
 
     # Exporta a kml los ejemplares
     kml_snib
@@ -572,6 +624,12 @@ class Proveedor < ActiveRecord::Base
 
     self.kml << "</Document>\n"
     self.kml << '</kml>'
+  end
+
+  def kmz(nombre)
+    archvo_zip = "#{nombre}.zip"
+    system "zip -j #{archvo_zip} #{nombre}.kml"
+    File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
   def photo_type(url)
