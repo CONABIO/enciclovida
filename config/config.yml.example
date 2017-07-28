@@ -85,6 +85,10 @@ base: &base
     tracker_id: UA-999999-9
     domain_name: yoursite.org
 
+  iucn:
+    iucn_api: http://apiv3.iucnredlist.org
+    iucn_token: 999999999999999999999999999999999999999999999999
+
 ###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation
