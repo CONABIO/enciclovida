@@ -1,7 +1,7 @@
 class Proveedor < ActiveRecord::Base
 
   belongs_to :especie
-  attr_accessor :totales, :observaciones, :observacion, :kml, :ejemplares
+  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
 
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
@@ -127,7 +127,7 @@ class Proveedor < ActiveRecord::Base
 
   def usuario_naturalista
     response = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(Limpia.cadena(taxon.nombre_cientifico))}"
-    data = JSON.parse(response)
+    JSON.parse(response)
   end
 
   def geodatos
@@ -144,52 +144,89 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas del SNIB
-    carpeta = carpeta_geodatos
-    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
-    url = "/especies/#{especie_id}/ejemplares-snib"
+    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/ejemplares-snib"
 
-    if File.exists?("#{nombre}.json")
+    resp = ejemplares_snib('.json')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_json] = "#{url}.json"
     end
 
-    if File.exists?("#{nombre}.kml")
+    resp = ejemplares_snib('.kml')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kml] = "#{url}.kml"
     end
 
-    if File.exists?("#{nombre}.kmz")
+    resp = ejemplares_snib('.kmz')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kmz] = "#{url}.kmz"
     end
 
-    # Para las descargas de naturalista
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
-    url = "/especies/#{especie_id}/observaciones-naturalista"
+    resp = ejemplares_snib('.json', true)
+    if resp[:estatus] == 'OK'
+      geodatos[:cuales] << 'snib'
+      geodatos[:snib_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+    end
 
-    if File.exists?("#{nombre}.json")
+    # Para las descargas de naturalista
+    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/observaciones-naturalista"
+
+    resp = observaciones_naturalista('.json')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_json] = "#{url}.json"
     end
 
-    if File.exists?("#{nombre}.kml")
+    resp = observaciones_naturalista('.kml')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kml] = "#{url}.kml"
     end
 
-    if File.exists?("#{nombre}.kmz")
+    resp = observaciones_naturalista('.kmz')
+    if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kmz] = "#{url}.kmz"
+    end
+
+    resp = observaciones_naturalista('.json', true)
+    if resp[:estatus] == 'OK'
+      geodatos[:cuales] << 'naturalista'
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
     geodatos
   end
 
+  # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamente guardado del json
+  def observacion_naturalista(observacion_id)
+    resp = observaciones_naturalista('.json')
+    return resp unless resp[:estatus] == 'OK'
+
+    output = `grep :#{observacion_id}, #{resp[:ruta]}`
+    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    obs = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
+
+    begin
+      resp.merge({observacion: JSON.parse(obs)})
+    rescue
+      {estatus: 'error', msg: 'Error al parsear el json'}
+    end
+  end
+
   # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
-  def observaciones_naturalista(formato = '.json')
+  def observaciones_naturalista(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+
+    nombre = if mapa
+               carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+             else
+               carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+             end
+
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
@@ -207,7 +244,7 @@ class Proveedor < ActiveRecord::Base
     return if especie.existe_cache?('observaciones_naturalista')
 
     # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('observaciones_naturalista', 1.week) if Rails.env.production?
+    especie.escribe_cache('observaciones_naturalista', eval(CONFIG.cache.observaciones_naturalista)) if Rails.env.production?
 
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
@@ -217,6 +254,11 @@ class Proveedor < ActiveRecord::Base
 
     # Valida el paginado y los resultados
     self.observaciones = []
+    self.observaciones_mapa = []
+
+    # Limpia las observaciones y  las transforma a kml
+    kml_naturalista(inicio: true)
+
     validacion = valida_observaciones_naturalista
     return validacion unless validacion[:estatus] == 'OK'
 
@@ -237,18 +279,24 @@ class Proveedor < ActiveRecord::Base
       end
     end
 
+    # Cierra el kml
+    kml_naturalista(fin: true)
+
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     archivo_observaciones = File.new("#{nombre}.json", 'w+')
+    archivo_observaciones_mapa = File.new("#{nombre}_mapa.json", 'w+')
     archivo_observaciones_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
-    archivo_observaciones.puts observaciones.to_json
+    archivo_observaciones.puts observaciones.to_json.gsub('},{', "},\n{")
+    archivo_observaciones_mapa.puts observaciones_mapa.to_json
     archivo_observaciones_kml.puts kml
 
     # Cierra los archivos
     archivo_observaciones.close
+    archivo_observaciones_mapa.close
     archivo_observaciones_kml.close
 
     # Guarda el archivo en kmz
@@ -257,10 +305,33 @@ class Proveedor < ActiveRecord::Base
     puts "\n\nGuardo observaciones de naturalista #{especie_id}"
   end
 
+  # Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
+  def ejemplar_snib(ejemplar_id)
+    resp = ejemplares_snib('.json')
+    return resp unless resp[:estatus] == 'OK'
+
+    output = `grep #{ejemplar_id} #{resp[:ruta]}`
+    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    ej = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
+
+    puts ej
+    begin
+      resp.merge({ejemplar: JSON.parse(ej)})
+    rescue
+      {estatus: 'error', msg: 'Error al parsear el json'}
+    end
+  end
+
   # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
-  def ejemplares_snib(formato = '.json')
+  def ejemplares_snib(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+
+    nombre = if mapa
+               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+             else
+               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+             end
+
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
@@ -278,9 +349,10 @@ class Proveedor < ActiveRecord::Base
     return if especie.existe_cache?('ejemplares_snib')
 
     # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('ejemplares_snib', 1.day) if Rails.env.production?
+    especie.escribe_cache('ejemplares_snib', eval(CONFIG.cache.ejemplares_snib)) if Rails.env.production?
 
     self.ejemplares = []
+    self.ejemplares_mapa = []
     validacion = valida_ejemplares_snib
     return validacion unless validacion[:estatus] == 'OK'
 
@@ -288,14 +360,18 @@ class Proveedor < ActiveRecord::Base
     carpeta = carpeta_geodatos
     nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
     archivo_ejemplares = File.new("#{nombre}.json", 'w+')
+    archivo_ejemplares_mapa = File.new("#{nombre}_mapa.json", 'w+')
     archivo_ejemplares_kml = File.new("#{nombre}.kml", 'w+')
 
     # Guarda el archivo en kml y kmz
-    archivo_ejemplares.puts self.ejemplares.to_json.gsub('\\', '').gsub('"{', '{').gsub('}"', '}')
+    # Esta linea hace mas facil el json del parseo y pone un salto de linea al final de cada ejemplar
+    archivo_ejemplares.puts ejemplares.to_json.gsub('\\', '').gsub('"{', '{').gsub('}"', '}').gsub('},{', "},\n{")
+    archivo_ejemplares_mapa.puts ejemplares_mapa.to_json
     archivo_ejemplares_kml.puts kml
 
     # Cierra los archivos
     archivo_ejemplares.close
+    archivo_ejemplares_mapa.close
     archivo_ejemplares_kml.close
 
     # Guarda el archivo en kmz
@@ -320,18 +396,19 @@ class Proveedor < ActiveRecord::Base
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
 
     # Los numere para poder armar los datos en el orden deseado
+    obs[:id] = observacion['id']
     obs[:place_guess] = h.encode(observacion['place_guess'])
     obs[:observed_on] = observacion['observed_on'].gsub('-','/') if observacion['observed_on'].present?
-    obs[:captive] =  observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
-    obs[:quality_grade] = observacion['quality_grade']
+    obs[:captive] = observacion['captive'] ? 'Organismo silvestre / naturalizado' : nil
+    obs[:quality_grade] = I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion['quality_grade'])
     obs[:uri] = observacion['uri']
 
     if obs[:uri].present?
       obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
     end
 
-    obs[:longitude] = observacion['geojson']['coordinates'][0]
-    obs[:latitude] = observacion['geojson']['coordinates'][1]
+    obs[:longitude] = observacion['geojson']['coordinates'][0].to_f
+    obs[:latitude] = observacion['geojson']['coordinates'][1].to_f
 
     observacion['photos'].each do |photo|
       obs[:thumb_url] = photo['url']
@@ -339,8 +416,12 @@ class Proveedor < ActiveRecord::Base
       break  # Guardo la primera foto
     end
 
+    # Pone la observacion y las observaciones en el arreglo
     self.observacion = obs
     self.observaciones << observacion
+
+    # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
+    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 0]
   end
 
   def valida_observaciones_naturalista(params = {})
@@ -361,16 +442,11 @@ class Proveedor < ActiveRecord::Base
     return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
     return {estatus: 'error', msg: 'No hay observaciones'} if resultados.blank? || resultados.count == 0
 
-    # Limpia las observaciones y  las transforma a kml
-    kml_naturalista(inicio: true)
-
     resultados.each do |observacion|
       self.observacion = observacion
       limpia_observaciones_naturalista
       kml_naturalista(observacion: true)
     end
-
-    kml_naturalista(fin: true)
 
     {estatus: 'OK'}
   end
@@ -422,7 +498,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "<dt>Ubicación</dt> <dd>#{observacion[:place_guess]}</dd>\n"
       self.kml << "<dt>Fecha</dt> <dd>#{observacion[:observed_on]}</dd>\n"
       self.kml << "<dt>#{observacion[:captive]}</dt> <dd> </dd>\n"
-      self.kml << "<dt>Grado de calidad</dt> <dd>#{I18n.t('quality_grade.' << observacion[:quality_grade])}</dd>\n"
+      self.kml << "<dt>Grado de calidad</dt> <dd>#{observacion[:quality_grade]}</dd>\n"
       self.kml << '</dl>'
 
       self.kml << "<span><text>Ver la </text><a href=\"#{observacion[:uri]}\">observación en NaturaLista</a></span>\n"
@@ -431,7 +507,7 @@ class Proveedor < ActiveRecord::Base
       self.kml << "]]>\n"
       self.kml << "</description>\n"
 
-      if observacion[:quality_grade] == 'research'
+      if observacion[:quality_grade] == 'investigación'
         self.kml << '<styleUrl>#Placemark_cientifico</styleUrl>'
       else
         self.kml << '<styleUrl>#Placemark_casual</styleUrl>'
@@ -447,10 +523,20 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
-  def kmz(nombre)
-    archvo_zip = "#{nombre}.zip"
-    system "zip -j #{archvo_zip} #{nombre}.kml"
-    File.rename(archvo_zip, "#{nombre}.kmz")
+  # Solo las coordenadas y el ID
+  def limpia_ejemplares_snib
+    # Para ver si es de aver aves el ejemplar
+    aves = %w(averaves ebird)
+    coleccion = ejemplar['coleccion'].downcase
+    es_averaves = false
+
+    coleccion.split(' ').each do |col|
+      break if es_averaves
+      es_averaves = true if aves.include?(col)
+    end
+
+    # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
+    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0]
   end
 
   def valida_ejemplares_snib
@@ -465,8 +551,15 @@ class Proveedor < ActiveRecord::Base
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
     return {estatus: 'error', msg: 'No hay ejemplares'} if totales.blank? || (totales.present? && totales <= 0)
 
-    # ASigna los ejemplares
+    self.ejemplares_mapa = []
+
+    # Asigna los ejemplares
     self.ejemplares = resultados
+
+    resultados.each do |ejemplar|
+      self.ejemplar = ejemplar
+      limpia_ejemplares_snib
+    end
 
     # Exporta a kml los ejemplares
     kml_snib
@@ -531,6 +624,12 @@ class Proveedor < ActiveRecord::Base
 
     self.kml << "</Document>\n"
     self.kml << '</kml>'
+  end
+
+  def kmz(nombre)
+    archvo_zip = "#{nombre}.zip"
+    system "zip -j #{archvo_zip} #{nombre}.kml"
+    File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
   def photo_type(url)

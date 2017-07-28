@@ -160,24 +160,21 @@ nested-fields
   width: 50px;
 }
 
-.icono-show_titulo {
+.icono-show_titulo{
   width: 90px;
 }
 
-#map
-{
+#map{
   margin: 0px auto;
   padding: 0px;
 }
-#map.fullscreen
-{
+#map.fullscreen{
   top: 0px;
   left: 0px;
   z-index: 10000;
 }
 
-#balloon
-{
+#balloon{
   color: rgb(3, 7, 48);
   margin: 0px;
   padding: 0px;
@@ -198,7 +195,7 @@ nested-fields
 }
 
 .panel-disabled i:before{
-  color: #aaaaaa;
+  /*color: #aaaaaa;*/
 }
 #panelCaracteristicaDistribucionAmbientePt{
   padding: 10px;
@@ -208,15 +205,15 @@ nested-fields
 #panelCaracteristicaDistribucionAmbiente{
   display: none;
   position: absolute;
-  left: 1em;
-  margin-top: -10px;
+  right: 1em;
+  top: 50px;
   z-index: 1001;
   background-color: rgba(249,249,249,.95);
   padding: 1.5em;
-  width: 85%;
+  width: 65%;
 }
 #panelCaracteristicaDistribucionAmbiente div{
-  min-height: 90px;
+  min-height: 100px;
 }
 .panel-shadow{
   -webkit-box-shadow: 13px 13px 20px 0px rgba(50, 50, 50, 0.5);

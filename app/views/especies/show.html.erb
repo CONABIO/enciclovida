@@ -65,20 +65,19 @@
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
       <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+      <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
     </h3>
   </div>
-
+  <% if (@species_or_lower) %>
+    <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
+      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+    </div>
+  <% end %>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
     <%= dameStatus(@especie).html_safe %>
   </div>
 </div>
-
-<% if (@species_or_lower) %>
-    <div class="row">
-      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-    </div>
-<% end %>
 <hr/>
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">

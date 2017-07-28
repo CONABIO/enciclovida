@@ -61,8 +61,10 @@ base: &base
   # Cache de los servicios que guarda en disco
   cache:
     observaciones_naturalista: 1.day
+    ficha_naturalista: 1.day
     ejemplares_snib: 1.day
-    
+    fichas: 1.week
+
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
 
@@ -82,6 +84,10 @@ base: &base
   google_analytics:
     tracker_id: UA-999999-9
     domain_name: yoursite.org
+
+  iucn:
+    iucn_api: http://apiv3.iucnredlist.org
+    iucn_token: 999999999999999999999999999999999999999999999999
 
 ###--------------------Aun no se ocupan------------------------###
 
