@@ -1,0 +1,8 @@
+<p>Sube una lista con nombre científicos separados por comma o salto de línea</p>
+
+<%= form_tag validacion_simple_path, :multipart => true, :method => :post do %>
+    <%= text_area_tag :lista, nil, :size => '50x10' %>
+
+    <p><%= file_field_tag :archivo %> O sube un archivo (.csv, .xlsx, .txt) con una columna de nombre científico</p>
+    <%= submit_tag :Envia %>
+<% end %>

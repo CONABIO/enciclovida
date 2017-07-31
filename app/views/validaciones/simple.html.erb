@@ -1,0 +1,20 @@
+<% if @errores.present? %>
+    <div id="error_explanation">
+      <h2>Algunos errores prohibieron que la validación continuara:</h2>
+
+      <ul>
+        <% @errores.each do |e| %>
+            <li><%= e %></li>
+        <% end %>
+      </ul>
+    </div>
+<% else %>
+    <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
+      correo el excel validado por CONABIO.</p>
+    Por favor se paciente este proceso puede tardar
+    dependiendo del número de taxones.
+
+    <p>
+      <strong>NOTA: </strong> el archivo solo durará 7 días en nuestro servidor
+    </p>
+<% end %>

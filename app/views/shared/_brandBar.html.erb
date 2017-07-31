@@ -11,7 +11,6 @@
               <%= link_to "#{current_usuario.nombre} <span class='caret'></span>".html_safe, '#', :class => 'btn btn-sm text-success btn-success dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
               <ul class="dropdown-menu">
                 <li><%= link_to 'Administracion de comentarios', admin_path %></li>
-                <li><%= link_to "Validación de #{t(:taxon_plural)}", validaciones_taxon_path %></li>
                 <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
                 <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
               </ul>
@@ -40,6 +39,7 @@
             <%= link_to 'Cambiar a vista de especialistas', nil, :name => 'es-cientifico', :onClick => 'return cambia_locale(this.name);', :class => 'btn text-danger btn-warning btn-sm', :role => 'button' %>
         <% end %>
 
+        <%= link_to 'Validación en línea', validaciones_path, :class => 'btn text-danger btn-warning btn-sm', :role => 'button' %>
       </div>
     </div>
   </div>

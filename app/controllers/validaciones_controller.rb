@@ -8,7 +8,6 @@ class ValidacionesController < ApplicationController
   #Quita estos metodos para que pueda cargar correctamente la peticion
   skip_before_filter  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
   before_action :authenticate_request!, only: [:update, :insert, :delete]
-  before_action :authenticate_usuario!, :only => [:taxon, :resultados_taxon_simple, :resultados_taxon_excel]
   layout false, only: [:update, :insert, :delete]
 
   def update
@@ -34,31 +33,25 @@ class ValidacionesController < ApplicationController
     render :text => 'Datos de DELETE correctos'
   end
 
-  def taxon
+  # Vista de la validacion simple y avanzada
+  def index
   end
 
-  # Validacion de taxones por medio de un csv o a traves de web
-  def resultados_taxon_simple
-    return @match_taxa= 'Por lo menos debe haber un taxón o un archivo' unless params[:lote].present? || params[:batch].present?
+  # Es una validacion solo con el nombre cientifico, ya sea por medio de una lista o archivo
+  def simple
+    @errores = []
 
-    if params[:lote].present?
+    if params[:lista].present?
       @match_taxa = Hash.new
-      params[:lote].split("\r\n").each do |linea|
-        e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
 
-        if e.first
-          @match_taxa[linea] = e
-        else
-          ids = FUZZY_NOM_CIEN.find(linea, 3)
-          coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
-          @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
-        end
+      params[:lista].split("\r\n").each do |linea|
+        # Algoritmo de comparacion
       end
-    elsif params[:batch].present?
-      @errores = []
 
-      if !Validacion::FORMATOS_PERMITIDOS_BATCH.include? params[:batch].content_type
-        @errores << 'Lo sentimos, el formato ' + params[:batch].content_type + ' no esta permitido'
+    elsif params[:archivo].present?
+
+      if !Validacion::FORMATOS_PERMITIDOS.include? params[:archivo].content_type
+        @errores << 'Lo sentimos, el formato ' + params[:archivo].content_type + ' no esta permitido. Los permitidos son: .csv, .xlsx, .txt'
       end
 
       if @errores.empty?
@@ -78,15 +71,18 @@ class ValidacionesController < ApplicationController
           if Rails.env.production?
             validacion.delay(queue: 'validaciones').valida_batch(path)
           end
-            validacion.valida_batch(path)
+          validacion.valida_batch(path)
         end
 
       end
+    else
+      @errores << 'Por lo menos debe haber un lista o un archivo'
     end
+
   end
 
-  # Validacion a traves de un excel .xlsx
-  def resultados_taxon_excel
+  # Validacion a traves de un excel .xlsx y que conlleva mas columnas a validar
+  def avanzada
     @errores = []
     content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 

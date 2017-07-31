@@ -13,7 +13,8 @@ class Validacion < ActiveRecord::Base
                          subgenero: ['subgenero'], nombre_autoridad_infraespecie: %w(nombre_autoridad_infraespecie autoridad_infraespecie)}
   COLUMNAS_OBLIGATORIAS = {familia: ['familia'], genero: ['genero'], especie: ['especie'], nombre_autoridad: %w(nombre_autoridad autoridad),
                            infraespecie: ['infraespecie'], categoria_taxonomica: %w(categoria categoria_taxonomica), nombre_cientifico: ['nombre_cientifico']}
-  FORMATOS_PERMITIDOS_BATCH = %w(text/csv)
+  FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv text/plain)
+  FORMATO_AVANZADA = FORMATOS_PERMITIDOS.first
 
   # Colores de las secciones en la validacion
   RESUMEN = '00BFFF'
