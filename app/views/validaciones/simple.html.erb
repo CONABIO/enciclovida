@@ -8,6 +8,8 @@
         <% end %>
       </ul>
     </div>
+<% elsif @coincidencias.present? %>
+    <%= @coincidencias.inspect %>
 <% else %>
     <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
       correo el excel validado por CONABIO.</p>

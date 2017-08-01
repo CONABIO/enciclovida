@@ -43,38 +43,50 @@ class ValidacionesController < ApplicationController
 
     if params[:lista].present?
       @match_taxa = Hash.new
+      validacion = ValidacionSimple.new
+      validacion.lista = params[:lista]
+      validacion.encuentra_por_nombre
 
-      params[:lista].split("\r\n").each do |linea|
-        # Algoritmo de comparacion
-      end
+      @coincidencias = validacion.lista_validada
 
-    elsif params[:archivo].present?
+    elsif params[:archivo].present?  # entonces trata de validar por archivo
 
-      if !Validacion::FORMATOS_PERMITIDOS.include? params[:archivo].content_type
-        @errores << 'Lo sentimos, el formato ' + params[:archivo].content_type + ' no esta permitido. Los permitidos son: .csv, .xlsx, .txt'
-      end
+      if params[:archivo].blank? || !Validacion::FORMATOS_PERMITIDOS.include?(params[:archivo].content_type)
+        @errores << "La extension \"#{params[:archivo].content_type}\" no esta permitida, las validas son: xlsx, csv, txt"
+      else
+        copia = crea_copia_archivo
+        @errores << copia[:msg] if !copia[:estatus]
 
-      if @errores.empty?
-        nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename}"
-        validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
+        if @errores.empty?
 
-        # Creando la carpeta del usuario y gurdando el archivo
-        ruta_batch = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
-        FileUtils.mkpath(ruta_batch, :mode => 0755) unless File.exists?(ruta_batch)
+          if params[:archivo].content_type == application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+            xlsx = Roo::Excelx.new(params[:archivo].to_s)
+            sheet = xlsx.sheet(0)  # toma la primera hoja por default
+            cabecera = sheet.row(1)
+            cc = comprueba_columnas_simple(cabecera)
 
-        path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
-        File.open(path, 'wb') do |file|
-          file.write(params[:batch].read)
-        end
+            # Por si no cumple con las columnas obligatorias
+            if cc
+              @errores << "No se encontro la columna \"nombre_cientifico\" en tu excel, por favor verifica"
+            else
+              validacion = Validacion.new(nombre_archivo: params[:archivo].original_filename)
 
-        if validacion.save
-          if Rails.env.production?
-            validacion.delay(queue: 'validaciones').valida_batch(path)
-          end
-          validacion.valida_batch(path)
-        end
+              if validacion.save
+                # Asigna unas variables
+                validacion.archivo = copia[:archivo]
+                validacion.cabecera = ['nombre_cientifico']
 
-      end
+                if Rails.env.production?
+                  validacion.delay(queue: 'validaciones').valida_campos
+                end
+                validacion.valida_campos
+              end
+            end
+          end  # Fin de archivo excel
+
+        end  # Fin errores empty
+      end  # Fin del tipo de archivo
+
     else
       @errores << 'Por lo menos debe haber un lista o un archivo'
     end
@@ -84,47 +96,28 @@ class ValidacionesController < ApplicationController
   # Validacion a traves de un excel .xlsx y que conlleva mas columnas a validar
   def avanzada
     @errores = []
-    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-    if params[:excel].content_type != content_type
-      @errores << t('errors.messages.extension_validacion_excel')
+    if params[:archivo].blank? || params[:archivo].content_type != Validacion::FORMATO_AVANZADA
+      @errores << "La extension \"#{params[:archivo].content_type}\" no esta permitida, las valida es : xlsx"
     else
-      nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
-      validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
-
-      # Creando la carpeta del usuario y gurdando el archivo
-      ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
-      FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
-
-      path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
-      File.open(path, 'wb') do |file|
-        file.write(params[:excel].read)  # Hace una copia del excel, para dejar las columnas originales
-      end
-
-      if !File.exists?(path)
-        @errores << 'El archivo tiene una inconsistencia'
-      else
-        xlsx = Roo::Excelx.new(path.to_s)
-        sheet = xlsx.sheet(0)  # toma la primera hoja por default
-
-        rows = sheet.last_row - sheet.first_row  # Para quitarle del conteo la cabecera
-        columns = sheet.last_column
-
-        @errores << 'La primera hoja de tu excel no tiene información' if rows < 0
-        @errores << 'Las columnas no son las mínimas necesarias para poder leer tu excel' if columns < 7
-      end
+      copia = crea_copia_archivo
+      @errores << copia[:msg] if !copia[:estatus]
 
       if @errores.empty?
+        xlsx = Roo::Excelx.new(params[:archivo].to_s)
+        sheet = xlsx.sheet(0)  # toma la primera hoja por default
         cabecera = sheet.row(1)
-        cc = comprueba_columnas(cabecera)
+        cc = comprueba_columnas_avanzada(cabecera)
 
         # Por si no cumple con las columnas obligatorias
         if cc[:faltan].any?
           @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
         else
+          validacion = Validacion.new(nombre_archivo: params[:archivo].original_filename)
+
           if validacion.save
             # Asigna unas variables
-            validacion.excel = path.to_s
+            validacion.archivo = copia[:archivo]
             validacion.cabecera = cc[:asociacion]
 
             if Rails.env.production?
@@ -150,7 +143,26 @@ class ValidacionesController < ApplicationController
     return nil unless Bases::EQUIVALENCIA.include?(params[:tabla])
   end
 
-  def comprueba_columnas(cabecera)
+  def crea_copia_archivo
+    nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:archivo].original_filename}"
+
+    # Creando la carpeta del usuario y gurdando el archivo
+    ruta_archivo = Rails.root.join('public','validaciones', Time.now.strftime("%Y%m%d"))
+    FileUtils.mkpath(ruta_archivo, :mode => 0755) unless File.exists?(ruta_archivo)
+
+    archivo_copia = ruta_archivo.join("tmp_#{nombre_archivo}")
+    File.open(archivo_copia, 'w+') do |file|
+      file.write(params[:archivo].read)  # Hace una copia del excel, para dejar las columnas originales
+    end.close
+
+    if File.exists?(archivo_copia)
+      {estatus: true, archivo: archivo_copia.to_s}
+    else
+      {estatus: false, msg: 'El archivo copia no se creo'}
+    end
+  end
+
+  def comprueba_columnas_avanzada(cabecera)
     columnas = Validacion::COLUMNAS_OPCIONALES.merge(Validacion::COLUMNAS_OBLIGATORIAS)
     columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.keys.map{|c| c.to_s}
     columnas_asociadas = Hash.new
@@ -166,5 +178,16 @@ class ValidacionesController < ApplicationController
     columnas_faltantes = faltantes.map{|cf| t("columnas_obligatorias_excel.#{cf}")}
 
     {faltan: columnas_faltantes, asociacion: columnas_asociadas}
+  end
+
+  def comprueba_columnas_simple(cabecera)
+    cabecera.each do |c|
+      next unless c.present?  # para las columnas que son cabeceras y estan vacias
+      cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase.strip
+
+      return true if cab == 'nombre_cientifico'
+    end
+
+    false  # Si llego aqui, quiere decir que no encontro la columna nombre cientifico
   end
 end

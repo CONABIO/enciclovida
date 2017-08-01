@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
 class Validacion < ActiveRecord::Base
 
   belongs_to :usuario
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
-  attr_accessor :excel, :cabecera, :fila, :validacion, :excel_valido
+  attr_accessor :excel, :cabecera, :fila, :validacion, :excel_valido, :nombre_cientifico
 
   # Si alguna columna se llama diferente, es solo cosa de añadir un elemento mas al array correspondiente
   COLUMNAS_OPCIONALES = {reino: ['reino'], division: ['division'], subdivision: ['subdivision'], clase: ['clase'], subclase: ['subclase'],
@@ -254,7 +253,7 @@ class Validacion < ActiveRecord::Base
     puts "\n\nBusca recursivamente"
     validacion[:taxones].each do |taxon|
       validacion[:taxon] = taxon
-      coincide_familia_orden?
+      #coincide_familia_orden?
 
       # estamos seguros que no hay coincidencias, salimos
       return if validacion[:salir]
@@ -335,31 +334,31 @@ class Validacion < ActiveRecord::Base
 
   # Encuentra el mas parecido
   def encuentra_por_nombre
-    puts "\n Encuentra record por nombre cientifico: #{fila['nombre_cientifico']}"
+    puts "\n Encuentra record por nombre cientifico: #{nombre_cientifico}"
     # Evita que el nombre cientifico este vacio
-    if fila['nombre_cientifico'].blank?
+    if nombre_cientifico.blank?
       self.validacion = {estatus: false, obs: 'El nombre cientifico está vacío'}
       return
     end
 
-    taxones = Especie.where(nombre_cientifico: fila['nombre_cientifico'].strip)
+    taxones = Especie.where(nombre_cientifico: nombre_cientifico.strip)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
-      self.validacion = {taxon: taxones.first}
-      coincide_familia_orden?
+      self.validacion = {estatus: true, taxon: taxones.first}
+      #coincide_familia_orden?
       return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
       self.validacion = {taxones: taxones}
-      busca_recursivamente
+      #busca_recursivamente
       return
 
     else
       puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = fila['nombre_cientifico'].limpiar.downcase.split(' ')
+      nombres = nombre_cientifico.limpiar.downcase.split(' ')
 
       taxones = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
@@ -370,18 +369,18 @@ class Validacion < ActiveRecord::Base
               end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        self.validacion = {taxon: taxones.first, estatus: true}
-        coincide_familia_orden?
+        self.validacion = {estatus: true, taxon: taxones.first}
+        #coincide_familia_orden?
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
         self.validacion = {taxones: taxones}
-        busca_recursivamente
+        #busca_recursivamente
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
         puts "\n\nTratando de encontrar concidencias con el fuzzy match"
-        ids = FUZZY_NOM_CIEN.find(fila['nombre_cientifico'].limpia, limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
           taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
@@ -389,7 +388,7 @@ class Validacion < ActiveRecord::Base
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(fila['nombre_cientifico'].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
+            distancia = Levenshtein.distance(nombre_cientifico.strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
           end
@@ -399,9 +398,13 @@ class Validacion < ActiveRecord::Base
             self.validacion = {estatus: false, obs: 'Sin coincidencias'}
             return
           else
-            self.validacion = {taxones: taxones_con_distancia}
-            busca_recursivamente
-            return
+            if taxones_con_distancia.length == 1
+              self.validacion = {estatus: true, taxon: taxones_con_distancia.first}
+              return
+            else
+              self.validacion = {taxones: taxones_con_distancia}
+              #busca_recursivamente
+            end
           end
 
         else  # No hubo coincidencias con su nombre cientifico
@@ -414,8 +417,11 @@ class Validacion < ActiveRecord::Base
     end  #Fin de las posibles coincidencias
   end
 
+  def lee_excel
+
+  end
   def valida_campos
-    puts "\n Validando campos en 30 seg ..."
+    puts "\n Validando campos en 3 seg ..."
     sleep(3)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
     self.excel_valido = []
 
@@ -472,96 +478,7 @@ class Validacion < ActiveRecord::Base
     EnviaCorreo.excel(self).deliver if Rails.env.production?
   end
 
-  # Asocia la respuesta para armar el contenido del excel
-  def asocia_respuesta
-    puts "\n\nAsocia la respuesta con el excel"
-    taxon_estatus if validacion[:estatus]
-
-    # Se completa cada seccion del excel
-    resumen_resp = resumen
-    correcciones_resp = correcciones
-    validacion_interna_resp = validacion_interna
-
-    # Devuelve toda la asociacion unidas y en orden
-    { resumen: resumen_resp, correcciones: correcciones_resp, validacion_interna: validacion_interna_resp }
-  end
-
-  # Parte roja del excel
-  def resumen
-    resumen_hash = {}
-
-    if validacion[:estatus]
-      taxon = validacion[:taxon]
-
-      if validacion[:scat_estatus].present?
-        resumen_hash['SCAT_NombreEstatus'] = validacion[:scat_estatus]
-      else
-        resumen_hash['SCAT_NombreEstatus'] = nil
-      end
-
-      if validacion[:obs].present?
-        resumen_hash['SCAT_Observaciones'] = validacion[:obs]
-      else
-        resumen_hash['SCAT_Observaciones'] = nil
-      end
-
-      if validacion[:valido_hasta].present?
-        resumen_hash['SCAT_Correccion_NombreCient'] = nil
-      else
-        resumen_hash['SCAT_Correccion_NombreCient'] = taxon.nombre_cientifico.downcase == fila['nombre_cientifico'].downcase ? nil : taxon.nombre_cientifico
-      end
-
-      resumen_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
-      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = taxon.nombre_autoridad
-
-    else  # Asociacion vacia, solo el error
-      resumen_hash['SCAT_NombreEstatus'] = nil
-
-      if validacion[:obs].present?
-        resumen_hash['SCAT_Observaciones'] = validacion[:obs]
-      else
-        resumen_hash['SCAT_Observaciones'] = nil
-      end
-
-      resumen_hash['SCAT_Correccion_NombreCient'] = nil
-      resumen_hash['SCAT_NombreCient_valido'] = nil
-      resumen_hash['SCAT_Autoridad_NombreCient_valido'] = nil
-    end
-
-    resumen_hash
-  end
-
-  # Parte azul del excel
-  def correcciones
-    puts "\n\nGenerando informacion de correcciones ..."
-    correcciones_hash = {}
-    taxon = validacion[:taxon]
-
-    # Se iteran con los campos que previamente coincidieron en compruebas_columnas
-    fila.each do |campo, valor|
-      if validacion[:estatus]
-
-        if campo == 'infraespecie'  # caso especial para las infrespecies
-          cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
-
-          if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-            correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = taxon.nombre.downcase == fila[campo].try(:downcase) ? nil : taxon.nombre
-          else
-            correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = nil
-          end
-
-        else
-          correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = eval("taxon.x_#{campo}").try(:downcase) == fila[campo].try(:downcase) ? nil : eval("taxon.x_#{campo}")
-        end
-
-      else
-        correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = nil
-      end
-    end
-
-    correcciones_hash
-  end
-
+  # La validacion en comun, no importa si es simple o avanzada
   def validacion_interna
     validacion_interna_hash = {}
 
