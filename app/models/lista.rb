@@ -3,6 +3,7 @@ class Lista < ActiveRecord::Base
   self.table_name = 'listas'
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
+
   #validates :formato, :presence => true
 
   ESTATUS_LISTA = [
@@ -12,10 +13,11 @@ class Lista < ActiveRecord::Base
 
   FORMATOS = [
       [1, '.csv'],
-      [2, '.xlsx']
+      [2, '.xlsx'],
+      [3, '.txt']
   ]
 
-  FORMATOS_DESCARGA = %w(csv xlsx)
+  FORMATOS_DESCARGA = %w(csv xlsx txt)
 
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
@@ -23,7 +25,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion x_foto_principal
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_PROVEEDORES
+  COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
@@ -65,16 +67,20 @@ class Lista < ActiveRecord::Base
     if opts[:basica]
       # Para buscar y completar la informacion de los taxones
       t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-      taxones = datos_descarga(t)
+      self.taxones = datos_descarga(t)
 
     elsif opts[:avanzada]
       query = eval(opts[:busqueda]).distinct.to_sql
       consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-      taxones = Especie.find_by_sql(consulta)
+      self.taxones = Especie.find_by_sql(consulta)
     end
 
     taxones.each do |taxon|
-      t = asigna_datos(taxon)
+      if opts[:avanzada] || opts[:asignar]
+        t = asigna_datos(taxon)
+      else
+        t = taxon
+      end
       columna = 0
 
       columnas.each do |a|
