@@ -1,13 +1,14 @@
-<small>Sube una lista con nombre científicos separados por un salto de línea</small>
+<small>Sube una lista con nombre científicos separados por un salto de línea (máximo 200 nombres)</small>
 
 <%= form_tag validacion_simple_path, multipart: true, method: :post, class: 'form-horizontal' do %>
     <%= text_area_tag :lista, nil, size: '50x10', class: 'form-control', placeholder: 'nombres científicos (uno por línea)' %>
 
     <hr />
-    <span class="btn btn-default btn-large btn-file">
-    <p><%= file_field_tag :archivo %> O sube un archivo (.csv, .xlsx, .txt) con una columna llamada <code>"nombre científico"</code>; uno por línea</p>
-    </span>
+    <p>
+      <small>O sube un archivo (.csv, .xlsx, .txt) con una columna llamada <code>"nombre científico"</code>; uno por línea, no hay un máximo de nombres</small>
+      <%= file_field_tag :archivo, class: 'btn btn-default btn-file' %>
+    </p>
 
     <hr />
-    <%= submit_tag :Envia, class: 'btn btn-success from-control', 'data-disable-with' => 'Procesando ...' %>
+    <%= submit_tag :Envia, class: 'btn btn-success', 'data-disable-with' => 'Procesando ...' %>
 <% end %>

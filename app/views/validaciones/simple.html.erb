@@ -12,6 +12,8 @@
 
     <h4 class="text-left text-success"><strong>Coincidencias con la lista</strong><br /><small>(Tambien puedes descargar esta lista, con más campos de nuestra base)</small></h4><hr />
 
+    <%= link_to("Descargar <span class='glyphicon glyphicon-save'>".html_safe, @excel_url, class: 'pull-right') if @excel_url.present? %>
+
     <table class="table">
       <thead class="thead-inverse">
       <tr>
@@ -38,12 +40,12 @@
 
             <%
                elsif recurso[:taxones].present?
-                urls = recurso[:taxones].map{|t| link_to(t.nombre_cientifico, especie_path(t))}
+                 urls = recurso[:taxones].map{|t| link_to(t.nombre_cientifico, especie_path(t))}
             %>
 
                 <th scope="row">-</th>
                 <td><%= recurso[:nombre_orig] %></td>
-                <td><%= urls.join(', ') %></td>
+                <td><%= urls.join(', ').html_safe %></td>
                 <td><%= recurso[:msg] %></td>
 
             <% else %>

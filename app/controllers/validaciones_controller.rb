@@ -48,6 +48,12 @@ class ValidacionesController < ApplicationController
 
       if resp[:estatus]
         @coincidencias = validacion.lista_validada
+        resp = validacion.guarda_excel
+
+        if resp[:estatus]
+          @excel_url = resp[:excel]
+        end
+
       else
         @errores << resp[:obs]
       end
