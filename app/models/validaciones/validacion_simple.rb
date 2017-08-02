@@ -1,16 +1,10 @@
 class ValidacionSimple < Validacion
 
-  attr_accessor :lista, :lista_validada
-
-  # Si alguna columna se llama diferente, es solo cosa de añadir un elemento mas al array correspondiente
-  COLUMNAS_OPCIONALES = {reino: ['reino'], division: ['division'], subdivision: ['subdivision'], clase: ['clase'], subclase: ['subclase'],
-                         orden: ['orden'], suborden: ['suborden'], infraorden: ['infraorden'], superfamilia: ['superfamilia'],
-                         subgenero: ['subgenero'], nombre_autoridad_infraespecie: %w(nombre_autoridad_infraespecie autoridad_infraespecie)}
-  COLUMNAS_OBLIGATORIAS = {familia: ['familia'], genero: ['genero'], especie: ['especie'], nombre_autoridad: %w(nombre_autoridad autoridad),
-                           infraespecie: ['infraespecie'], categoria_taxonomica: %w(categoria categoria_taxonomica), nombre_cientifico: ['nombre_cientifico']}
+  attr_accessor :lista, :lista_validada, :taxones
 
   def initialize
     self.lista_validada = []
+    self.taxones = []
     super
   end
 
@@ -42,23 +36,26 @@ class ValidacionSimple < Validacion
   end
 
   def valida_lista
-    self.lista = lista.split(',')
+    return {estatus: false, obs: 'La lista no puede ser vacia.'} unless lista.present?
+
+    self.lista = lista.split("\r\n")
+    return {estatus: false, obs: 'Solo pueden ser 200 observaciones para validar en el área de texto, si requieres validar más por favor sube un archivo.'} if lista.length > 200
 
     lista.each do |nombre|
       self.nombre_cientifico = nombre
       encuentra_por_nombre
 
-      if validacion[:estatus]
-        self.lista_validada << {nombre_orig: nombre, coincidencias: validacion[:taxon].nombre_cientifico, url: "#{CONFIG.enciclovida_url}/especies/#{validacion[:taxon].id}"}
-      elsif validacion[:taxones].present?
-        taxones = validacion[:taxones]
-        nombres = taxones.map{|t| "#{CONFIG.enciclovida_url}/especies/#{t.id}"}
-        urls = taxones.map{|t| t.nombre_cientifico}
-        self.lista_validada << {nombre_orig: nombre, coincidencias: nombres.join(', '), url: urls.join(', ')}
-      else
-        self.lista_validada << {nombre_orig: nombre, coincidencias: validacion[:obs]}
+      self.lista_validada << validacion.merge({nombre_orig: nombre})
+
+      # Para tener una lista de taxones y poder exportar esta lista a excel con el modelo Lista
+      if validacion[:estatus]  # Encontro un único taxon
+        self.taxones << validacion[:taxon]
+      else  # Cuando el estatus es falso
+        self.taxones << Especie.none
       end
 
     end  # End each
+
+    {estatus: true}
   end
 end

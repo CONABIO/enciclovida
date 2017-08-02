@@ -42,12 +42,15 @@ class ValidacionesController < ApplicationController
     @errores = []
 
     if params[:lista].present?
-      @match_taxa = Hash.new
       validacion = ValidacionSimple.new
       validacion.lista = params[:lista]
-      validacion.encuentra_por_nombre
+      resp = validacion.valida_lista
 
-      @coincidencias = validacion.lista_validada
+      if resp[:estatus]
+        @coincidencias = validacion.lista_validada
+      else
+        @errores << resp[:obs]
+      end
 
     elsif params[:archivo].present?  # entonces trata de validar por archivo
 

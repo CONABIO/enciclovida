@@ -30,6 +30,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
 
+  # Crea el csv con los datos
   def to_csv(options = {})
     CSV.generate(options) do |csv|
       csv << nombres_columnas
@@ -45,8 +46,8 @@ class Lista < ActiveRecord::Base
     end
   end
 
+  # Para crear el excel con los datos
   def to_excel(opts={})
-    # Para crear el excel con los datos
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
     sheet.sheet_name = 'Resultados'

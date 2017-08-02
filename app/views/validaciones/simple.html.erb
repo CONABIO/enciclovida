@@ -9,7 +9,58 @@
       </ul>
     </div>
 <% elsif @coincidencias.present? %>
-    <%= @coincidencias.inspect %>
+
+    <h4 class="text-left text-success"><strong>Coincidencias con la lista</strong><br /><small>(Tambien puedes descargar esta lista, con más campos de nuestra base)</small></h4><hr />
+
+    <table class="table">
+      <thead class="thead-inverse">
+      <tr>
+        <th>#ID</th>
+        <th>Nombre original</th>
+        <th>Nombre enciclovida</th>
+        <th>Mensaje</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <% @coincidencias.each do |recurso| %>
+
+          <tr>
+            <%
+               if recurso[:estatus]
+                 taxon = recurso[:taxon]
+            %>
+
+                <th scope="row"><%= taxon.id %></th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td><%= link_to taxon.nombre_cientifico, especie_path(taxon) %></td>
+                <td><%= recurso[:msg] %></td>
+
+            <%
+               elsif recurso[:taxones].present?
+                urls = recurso[:taxones].map{|t| link_to(t.nombre_cientifico, especie_path(t))}
+            %>
+
+                <th scope="row">-</th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td><%= urls.join(', ') %></td>
+                <td><%= recurso[:msg] %></td>
+
+            <% else %>
+
+                <th scope="row">-</th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td>-</td>
+                <td><%= recurso[:msg] %></td>
+
+            <% end %>
+          </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+
 <% else %>
     <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
       correo el excel validado por CONABIO.</p>

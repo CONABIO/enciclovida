@@ -260,7 +260,7 @@ class Validacion < ActiveRecord::Base
       return if validacion[:salir]
 
       if validacion[:estatus]
-        validacion[:obs] = "Orig: #{fila['nombre_cientifico']}; Enciclo: #{taxon.nombre_cientifico}"
+        validacion[:msg] = "Orig: #{fila['nombre_cientifico']}; Enciclo: #{taxon.nombre_cientifico}"
         return
       end
     end
@@ -274,7 +274,7 @@ class Validacion < ActiveRecord::Base
     # Si no esta puesta la familia en el taxon que coincide, entonces quiere decir que ya subio hasta familia y no es igual, entonces no hubo coincidencias
     if taxon.x_familia.blank?
       validacion[:estatus] = false
-      validacion[:obs] = 'Sin coincidencias'
+      validacion[:msg] = 'Sin coincidencias'
       validacion[:salir] = true
       return
     end
@@ -284,7 +284,7 @@ class Validacion < ActiveRecord::Base
         validacion[:estatus] = true
       else
         validacion[:estatus] = false
-        validacion[:obs] = "No coincidio la famila - Orig: #{fila['familia']}; Enciclo: #{taxon.x_familia}"
+        validacion[:msg] = "No coincidio la famila - Orig: #{fila['familia']}; Enciclo: #{taxon.x_familia}"
         validacion[:salir] = true
       end
     elsif fila['orden'].present?  # Si escribio el orden
@@ -292,7 +292,7 @@ class Validacion < ActiveRecord::Base
         validacion[:estatus] = true
       else
         validacion[:estatus] = false
-        validacion[:obs] = "No coincidio el orden - Orig: #{fila['orden']}; Enciclo: #{taxon.x_orden}"
+        validacion[:msg] = "No coincidio el orden - Orig: #{fila['orden']}; Enciclo: #{taxon.x_orden}"
         validacion[:salir] = true
       end
     else  # No tiene ni familia ni orden, entonces lo regreso valido
@@ -317,11 +317,11 @@ class Validacion < ActiveRecord::Base
           self.validacion[:taxon] = taxon_valido
           self.validacion[:taxon_valido] = true
         rescue
-          self.validacion[:obs] = 'No hay un taxon valido para la coincidencia'
+          self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
         end
 
       else  # No existe el valido o hay mas de uno >.>!
-        self.validacion[:obs] = 'No hay un taxon valido para la coincidencia'
+        self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
       end
     end  # End estatus = 1
 
@@ -338,7 +338,7 @@ class Validacion < ActiveRecord::Base
     puts "\n Encuentra record por nombre cientifico: #{nombre_cientifico}"
     # Evita que el nombre cientifico este vacio
     if nombre_cientifico.blank?
-      self.validacion = {estatus: false, obs: 'El nombre cientifico está vacío'}
+      self.validacion = {estatus: false, msg: 'El nombre cientifico está vacío'}
       return
     end
 
@@ -346,13 +346,13 @@ class Validacion < ActiveRecord::Base
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
-      self.validacion = {estatus: true, taxon: taxones.first}
+      self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
       #coincide_familia_orden?
       return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
-      self.validacion = {taxones: taxones}
+      self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
       #busca_recursivamente
       return
 
@@ -370,12 +370,12 @@ class Validacion < ActiveRecord::Base
               end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        self.validacion = {estatus: true, taxon: taxones.first}
+        self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
         #coincide_familia_orden?
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {taxones: taxones}
+        self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
         #busca_recursivamente
         return
 
@@ -396,21 +396,21 @@ class Validacion < ActiveRecord::Base
 
           if taxones_con_distancia.empty?
             puts "\n\nSin coincidencia"
-            self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+            self.validacion = {estatus: false, msg: 'Sin coincidencias'}
             return
           else
             if taxones_con_distancia.length == 1
-              self.validacion = {estatus: true, taxon: taxones_con_distancia.first}
+              self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
               return
             else
-              self.validacion = {taxones: taxones_con_distancia}
+              self.validacion = {taxones: taxones_con_distancia, msg: 'Coincidio más de uno'}
               #busca_recursivamente
             end
           end
 
         else  # No hubo coincidencias con su nombre cientifico
           puts "\n\nSin coincidencia"
-          self.validacion = {estatus: false, obs: 'Sin coincidencias'}
+          self.validacion = {estatus: false, msg: 'Sin coincidencias'}
           return
         end
       end
