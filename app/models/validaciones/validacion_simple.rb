@@ -48,11 +48,11 @@ class ValidacionSimple < Validacion
       self.lista_validada << validacion.merge({nombre_orig: nombre})
 
       # Para tener una lista de taxones y poder exportar esta lista a excel con el modelo Lista
-      if validacion[:estatus]  # Encontro un único taxon
-        self.taxones << validacion[:taxon]
-      else  # Cuando el estatus es falso
-        self.taxones << Especie.none
-      end
+      #if validacion[:estatus]  # Encontro un único taxon
+      #  self.taxones << validacion[:taxon]
+      #else  # Cuando el estatus es falso
+      #  self.taxones << Especie.none
+      #end
 
     end  # End each
 
@@ -62,8 +62,8 @@ class ValidacionSimple < Validacion
   # Exporta la informacion, para que desde la lista guarde el excel
   def guarda_excel
     lista = Lista.new
-    lista.columnas = Lista::COLUMNAS_GENERALES
-    lista.taxones = taxones
+    lista.columnas = %w(nombre_orig nombre_enciclovida mensaje) + Lista::COLUMNAS_GENERALES
+    lista.taxones = lista_validada
 
     lista.to_excel(asignar: true)  # Para que asigne los valores de las columnas
   end

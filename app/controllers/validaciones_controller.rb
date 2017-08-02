@@ -51,7 +51,7 @@ class ValidacionesController < ApplicationController
         resp = validacion.guarda_excel
 
         if resp[:estatus]
-          @excel_url = resp[:excel]
+          @excel_url = resp[:excel_url]
         end
 
       else

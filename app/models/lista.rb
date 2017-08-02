@@ -71,6 +71,9 @@ class Lista < ActiveRecord::Base
       columna+= 1
     end
 
+    # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
+    columnas.slice!(0..2) if opts[:asignar]
+
     if opts[:basica]  # Busqueda basica
       t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
       datos_descarga(t)
@@ -84,16 +87,36 @@ class Lista < ActiveRecord::Base
 
     taxones.each do |taxon|
       if opts[:asignar]
-        self.taxon = taxon
+        # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
+        if taxon[:estatus]
+          self.taxon = taxon[:taxon]
+          nombre_cientifico = self.taxon.nombre_cientifico
+        else
+          self.taxon = Especie.none
+
+          if taxon[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
+            nombre_cientifico = taxon[:taxones].map{|t| t.nombre_cientifico}.join(', ')
+          else
+            nombre_cientifico = ''
+          end
+        end
+
         asigna_datos
-      else
+        columna = 3  # Asigna la columna desde el 3, puesto que contiene las sig posiciones antes:
+
+        # El nombre original, el (los) que coincidio, y el mensaje
+        sheet.add_cell(fila,0,taxon[:nombre_orig])
+        sheet.add_cell(fila,1,nombre_cientifico)
+        sheet.add_cell(fila,2,taxon[:msg])
+
+      else  # Cuando viene de una descarga normal de resultados, es decir todos los taxones existen
         self.taxon = taxon
+        columna = 0
       end
-      columna = 0
 
       columnas.each do |a|
         begin
-          sheet.add_cell(fila,columna,taxon.try(a))
+          sheet.add_cell(fila,columna,self.taxon.try(a))
         rescue  # Por si existe algun error en la evaluacion de algun campo
           sheet.add_cell(fila,columna,'¡Hubo un error!')
         end
@@ -104,17 +127,21 @@ class Lista < ActiveRecord::Base
     end
 
     # Escribe el excel en cierta ruta
-    ruta_excel = Rails.root.join('public','descargas_resultados')
-    nombre_archivo = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-    FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
-    xlsx.write("#{ruta_excel}/#{nombre_archivo}.xlsx")
+    fecha = Time.now.strftime("%Y-%m-%d")
+    ruta_dir = Rails.root.join('public','descargas_resultados', fecha)
+    nombre_archivo = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida.xlsx'
+    FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)
+    ruta_excel = ruta_dir.join(nombre_archivo)
+    xlsx.write(ruta_excel)
 
-    if File.exists?("#{ruta_excel}/#{nombre_archivo}.xlsx")
+    if File.exists? ruta_excel
+      excel_url = "#{CONFIG.site_url}descargas_resultados/#{fecha}/#{nombre_archivo}"
+
       if opts[:correo].present?
-        EnviaCorreo.descargar_taxa("#{CONFIG.site_url}descargas_resultados/#{nombre_archivo}.xlsx", opts[:correo]).deliver
+        EnviaCorreo.descargar_taxa(excel_url, opts[:correo]).deliver
       end
 
-      {estatus: true, excel: "#{CONFIG.site_url}descargas_resultados/#{nombre_archivo}.xlsx"}
+      {estatus: true, excel_url: excel_url}
     else
       {estatus: true, msg: 'No pudo guardar el archivo'}
     end
