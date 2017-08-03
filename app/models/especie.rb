@@ -358,6 +358,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       end
     end
 
+    puts "\n\nGuardo redis #{id}"
   end
 
   # Servicio que trae la respuesta de bdi
@@ -454,7 +455,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
     return {estatus: 'error', msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
-    especie.escribe_cache('ficha_naturalista', 1.day) if Rails.env.production?
+    escribe_cache('ficha_naturalista', eval(CONFIG.cache.ficha_naturalista)) if Rails.env.production?
 
     begin
       respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
