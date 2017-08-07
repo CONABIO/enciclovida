@@ -46,15 +46,7 @@ class ValidacionSimple < Validacion
       encuentra_por_nombre
 
       self.lista_validada << validacion.merge({nombre_orig: nombre})
-
-      # Para tener una lista de taxones y poder exportar esta lista a excel con el modelo Lista
-      #if validacion[:estatus]  # Encontro un único taxon
-      #  self.taxones << validacion[:taxon]
-      #else  # Cuando el estatus es falso
-      #  self.taxones << Especie.none
-      #end
-
-    end  # End each
+    end
 
     {estatus: true}
   end
