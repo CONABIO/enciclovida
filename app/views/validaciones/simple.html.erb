@@ -63,7 +63,7 @@
       </tbody>
     </table>
 
-<% else %>
+<% elsif @subio_excel %>
     <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
       correo el excel validado por CONABIO.</p>
     Por favor se paciente este proceso puede tardar
@@ -72,4 +72,6 @@
     <p>
       <strong>NOTA: </strong> el archivo solo durará 7 días en nuestro servidor
     </p>
+<% else %>
+    <p>Lo sentimos, ocurrió un error al procesar tu petición. Por favor intentalo más tarde.</p>
 <% end %>

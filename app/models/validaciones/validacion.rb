@@ -4,10 +4,10 @@ class Validacion < ActiveRecord::Base
   belongs_to :usuario
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
-  attr_accessor :excel, :sheet, :cabecera, :fila, :validacion, :excel_validado, :nombre_cientifico
+  attr_accessor :excel, :sheet, :cabecera, :fila, :validacion, :excel_validado, :nombre_cientifico, :archivo_copia
 
-  FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv text/plain)
-  FORMATO_AVANZADA = FORMATOS_PERMITIDOS.first
+  FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
+  #FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv text/plain)
 
   # Colores de las secciones en la validacion
   RESUMEN = '00BFFF'

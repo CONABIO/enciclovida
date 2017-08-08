@@ -2,6 +2,9 @@ class ValidacionSimple < Validacion
 
   attr_accessor :lista, :lista_validada, :taxones
 
+  COLUMNAS_OBLIGATORIAS = {nombre_cientifico: ['nombre_cientifico']}
+  COLUMNAS_OPCIONALES = {}
+
   def initialize
     self.lista_validada = []
     self.taxones = []
@@ -36,10 +39,10 @@ class ValidacionSimple < Validacion
   end
 
   def valida_lista
-    return {estatus: false, obs: 'La lista no puede ser vacia.'} unless lista.present?
+    return {estatus: false, msg: 'La lista no puede ser vacia.'} unless lista.present?
 
     self.lista = lista.split("\r\n")
-    return {estatus: false, obs: 'Solo pueden ser 200 observaciones para validar en el área de texto, si requieres validar más por favor sube un archivo.'} if lista.length > 200
+    return {estatus: false, msg: 'Solo pueden ser 200 observaciones para validar en el área de texto, si requieres validar más por favor sube un archivo.'} if lista.length > 200
 
     lista.each do |nombre|
       self.nombre_cientifico = nombre
