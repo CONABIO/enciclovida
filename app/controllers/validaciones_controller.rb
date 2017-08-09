@@ -48,7 +48,7 @@ class ValidacionesController < ApplicationController
       resp = validacion.valida_lista
 
       if resp[:estatus]
-        @coincidencias = validacion.lista_validada
+        @coincidencias = validacion.recurso_validado
         resp = validacion.guarda_excel
 
         if resp[:estatus]
@@ -140,7 +140,8 @@ class ValidacionesController < ApplicationController
   end
 
   def valida_archivo(validacion)
-    return {estatus: false,  msg: 'No subió ningún archivo, por favor verifica'} unless params[:archivo].present?
+    return {estatus: false, msg: 'No fue anotado ningún correo para la validación o se inicio sesión'} if params[:correo].blank? && !usuario_signed_in?
+    return {estatus: false,  msg: 'No se subió ningún archivo, por favor verifica'} unless params[:archivo].present?
     return {estatus: false, msg: "La extension \"#{params[:archivo].content_type}\" no esta permitida, las validas son: #{Validacion::FORMATOS_PERMITIDOS.join(', ')}"} unless Validacion::FORMATOS_PERMITIDOS.include?(params[:archivo].content_type)
     copia = crea_copia_archivo
     return {estatus: false, msg: copia[:msg]} unless copia[:estatus]
@@ -156,12 +157,20 @@ class ValidacionesController < ApplicationController
     # Asigna unas variables
     validacion = validacion.new
     validacion.archivo_copia = copia[:archivo_copia]
+    validacion.nombre_archivo = params[:archivo].original_filename
     validacion.cabecera = cc[:asociacion]
 
-    if Rails.env.production?
-      validacion.delay(queue: 'validaciones').valida_campos
+    # Para asignar el correo
+    if usuario_signed_in?
+      validacion.correo = current_usuario.email
     else
-      validacion.valida_campos
+      validacion.correo = params[:correo]
+    end
+
+    if Rails.env.production?
+      validacion.delay(queue: 'validaciones').valida_archivo
+    else
+      validacion.valida_archivo
     end
 
     {estatus: true}

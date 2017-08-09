@@ -3,13 +3,8 @@ class EnviaCorreo < Devise::Mailer
 
   # Metodos adicionales
   def excel(validacion)
-    usuario = validacion.usuario
-    @ruta_excel = "#{CONFIG.site_url}/validaciones_excel/#{usuario.id}/#{validacion.nombre_archivo}.xlsx"
-    mail(:to => usuario.email, :subject => "EncicloVida: validacion de #{validacion.nombre_archivo}")
-
-    validacion.enviado = 1
-    validacion.fecha_envio = Time.now
-    validacion.save
+    @ruta_excel = validacion.excel_url
+    mail(:to => validacion.correo, :subject => "EncicloVida: validacion/descarga de #{validacion.nombre_archivo}")
   end
 
   def respuesta_comentario(comentario)

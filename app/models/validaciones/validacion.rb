@@ -4,7 +4,7 @@ class Validacion < ActiveRecord::Base
   belongs_to :usuario
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
-  attr_accessor :excel, :sheet, :cabecera, :fila, :validacion, :excel_validado, :nombre_cientifico, :archivo_copia
+  attr_accessor :excel, :sheet, :cabecera, :fila, :validacion, :excel_validado, :nombre_cientifico, :archivo_copia, :archivo_validado, :correo, :excel_url, :nombre_archivo
 
   FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
   #FORMATOS_PERMITIDOS = %w(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv text/plain)
@@ -419,14 +419,13 @@ class Validacion < ActiveRecord::Base
   end
 
   def dame_sheet
-    puts "\n Validando campos en 3 seg ..."
-    sleep(3)  # Es necesario el sleep ya que trata de leer el archivo antes de que lo haya escrito en disco
+    puts "\n Validando el archivo ..."
 
-    xlsx = Roo::Excelx.new(excel, packed: nil, file_warning: :ignore)
+    xlsx = Roo::Excelx.new(archivo_copia, packed: nil, file_warning: :ignore)
     self.sheet = xlsx.sheet(0)  # toma la primera hoja por default
   end
 
-  def valida_excel
+  def valida_archivo
     dame_sheet
   end
 end

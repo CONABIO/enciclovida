@@ -1,25 +1,17 @@
 class ValidacionSimple < Validacion
 
-  attr_accessor :lista, :lista_validada, :taxones
+  attr_accessor :lista, :recurso_validado
 
   COLUMNAS_OBLIGATORIAS = {nombre_cientifico: ['nombre_cientifico']}
   COLUMNAS_OPCIONALES = {}
+  COLUMNAS_DEFAULT = %w(nombre_orig nombre_enciclovida mensaje)
 
   def initialize
-    self.lista_validada = []
-    self.taxones = []
+    self.recurso_validado = []
     super
   end
 
-  def valida_csv
-
-  end
-
-  def valida_txt
-
-  end
-
-  def valida_excel
+  def valida_archivo
     super
 
     sheet.parse(cabecera).each_with_index do |f, index|
@@ -27,15 +19,15 @@ class ValidacionSimple < Validacion
       self.nombre_cientifico = f['nombre_cientifico']
       encuentra_por_nombre
 
-      if validacion[:estatus]  # Encontro por lo menos un nombre cientifico valido
-        self.excel_validado << asocia_respuesta
-      else # No encontro coincidencia con nombre cientifico, probamos con los ancestros, a tratar de coincidir
+      self.recurso_validado << validacion.merge({nombre_orig: f['nombre_cientifico']})
+    end
 
-      end  # info estatus inicial, con el nombre_cientifico original
-    end  # sheet parse
+    resp = guarda_excel
 
-    escribe_excel
-    EnviaCorreo.excel(self).deliver if Rails.env.production?
+    if resp[:estatus]
+      self.excel_url = resp[:excel_url]
+      EnviaCorreo.excel(self).deliver
+    end
   end
 
   def valida_lista
@@ -48,7 +40,7 @@ class ValidacionSimple < Validacion
       self.nombre_cientifico = nombre
       encuentra_por_nombre
 
-      self.lista_validada << validacion.merge({nombre_orig: nombre})
+      self.recurso_validado << validacion.merge({nombre_orig: nombre})
     end
 
     {estatus: true}
@@ -57,8 +49,8 @@ class ValidacionSimple < Validacion
   # Exporta la informacion, para que desde la lista guarde el excel
   def guarda_excel
     lista = Lista.new
-    lista.columnas = %w(nombre_orig nombre_enciclovida mensaje) + Lista::COLUMNAS_GENERALES
-    lista.taxones = lista_validada
+    lista.columnas = COLUMNAS_DEFAULT + Lista::COLUMNAS_GENERALES
+    lista.taxones = recurso_validado
 
     lista.to_excel(asignar: true)  # Para que asigne los valores de las columnas
   end
