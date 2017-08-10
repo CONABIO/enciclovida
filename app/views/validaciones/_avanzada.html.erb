@@ -1,6 +1,4 @@
-<p>Sube un archivo excel (.xlsx) con las siguientes especificaciones: </p>
-
-<%= form_tag validacion_avanzada_path, :multipart => true, :method => :post do %>
-    <%= file_field_tag 'excel' %>
-    <%= submit_tag :Envia %>
+<%= form_tag validacion_avanzada_path, multipart: true, method: :post do %>
+    <%= render partial: 'shared', locals: {archivo_label: 'Sube un archivo (.xlsx) con las siguientes columnas: <code>familia, genero, especie, autoridad, infraespecie, categoria taxonomica y nombre cientifico</code>'} %>
 <% end %>
+

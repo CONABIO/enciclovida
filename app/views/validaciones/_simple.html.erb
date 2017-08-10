@@ -8,18 +8,5 @@
 
     <hr />
 
-    <div class="form-group">
-      <label for="archivo">Archivo</label>
-      <%= file_field_tag :archivo, class: 'btn btn-default btn-file form-control' %>
-      <small class="text-muted">O sube un archivo (.xlsx) con una columna llamada <code>nombre científico</code>; uno por línea, no hay un máximo de nombres</small>
-    </div>
-
-    <div class="form-group">
-      <label for="correo">Correo</label>
-      <%= text_field_tag :correo, nil, placeholder: 'tu correo', class: 'form-control' %>
-      <small class="text-muted">Solo es necesario si subes un archivo; para enviar la validación:</small>
-    </div>
-
-    <hr />
-    <%= submit_tag :Envia, class: 'btn btn-success pull-right', 'data-disable-with' => 'Procesando ...' %>
+    <%= render partial: 'shared', locals: {archivo_label: 'O sube un archivo (.xlsx) con una columna llamada <code>nombre científico</code>; uno por línea, no hay un máximo de nombres'} %>
 <% end %>
