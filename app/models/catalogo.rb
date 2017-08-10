@@ -6,14 +6,13 @@ class Catalogo < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo'
   #has_one :especie, :through => :especies_catalogos, :class_name => 'EspecieCatalogo', :foreign_key => 'catalogo_id'
 
-  IUCN_QUITAR_EN_FICHA = ['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)',
-  'Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
+  IUCN_QUITAR_EN_FICHA = []#['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)','Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   NIVELES_PRIORITARIAS = %w(alto medio bajo)
 
-  # Saco el nombre de la categoria de riesgo o comercio ya que al unir los catalogos, los nombres aveces no coinciden
-  def nom_cites_iucn(cat_actual = false)
-    if nivel1 == 4 && nivel2 > 0 && nivel3 > 0   #se asegura que el valor pertenece a la nom, iucn o cites
+  def nom_cites_iucn(cat_actual = false, ws = false)
+    condicion =  ws ?  (nivel2 == 1 || nivel2 == 3) : (nivel2 > 0)
+    if nivel1 == 4 && condicion && nivel3 > 0
       return descripcion if cat_actual
 
       limites = Bases.limites(id)
@@ -27,6 +26,7 @@ class Catalogo < ActiveRecord::Base
       nil
     end
   end
+
 
   # Saco el nombre del ambiente ya que al unir los catalogos, los nombres aveces no coinciden
   def ambiente
