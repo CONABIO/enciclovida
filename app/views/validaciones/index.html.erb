@@ -8,15 +8,16 @@
     });
 </script>
 
-<h4 class="text-left text-success"><strong>Validaciones</strong><br /><small>(puedes validar una lista de taxones o subir un archivo)</small></h4><hr />
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
+  <h4 class="text-left text-success"><strong>Validaciones</strong><br /><small>(puedes validar una lista de taxones o subir un archivo)</small></h4><hr />
   <div id="pestañas" class="panel">
     <ul class="nav nav-tabs" data-tabs="tabs">
       <li class="active"><a href="#simple"><span>Validación por nombre científico</span></a></li>
       <li><a href="#excel"><span>Validación con más campos</span></a></li>
     </ul>
-    <div class="main">
+    <div>
       <div id="simple" class="tab-pane active"><%= render partial: 'simple' %></div>
       <div id="excel" class="tab-pane"><%= render partial: 'avanzada' %></div>
     </div>

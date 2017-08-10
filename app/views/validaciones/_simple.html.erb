@@ -1,14 +1,25 @@
-<small>Sube una lista con nombre científicos separados por un salto de línea (máximo 200 nombres)</small>
+<%= form_tag validacion_simple_path, multipart: true, method: :post do %>
 
-<%= form_tag validacion_simple_path, multipart: true, method: :post, class: 'form-horizontal' do %>
-    <%= text_area_tag :lista, nil, size: '50x10', class: 'form-control', placeholder: 'nombres científicos (uno por línea)' %>
-
-    <hr />
-    <p>
-      <small>O sube un archivo (.csv, .xlsx, .txt) con una columna llamada <code>"nombre científico"</code>; uno por línea, no hay un máximo de nombres</small>
-      <%= file_field_tag :archivo, class: 'btn btn-default btn-file' %>
-    </p>
+    <div class="form-group">
+      <label for="lista">Lista</label>
+      <%= text_area_tag :lista, nil, size: '50x10', class: 'form-control', placeholder: 'nombres científicos (uno por línea)' %>
+      <small class="text-muted">Sube una lista con nombre científicos separados por un salto de línea (máximo 200 nombres)</small>
+    </div>
 
     <hr />
-    <%= submit_tag :Envia, class: 'btn btn-success', 'data-disable-with' => 'Procesando ...' %>
+
+    <div class="form-group">
+      <label for="archivo">Archivo</label>
+      <%= file_field_tag :archivo, class: 'btn btn-default btn-file form-control' %>
+      <small class="text-muted">O sube un archivo (.xlsx) con una columna llamada <code>nombre científico</code>; uno por línea, no hay un máximo de nombres</small>
+    </div>
+
+    <div class="form-group">
+      <label for="correo">Correo</label>
+      <%= text_field_tag :correo, nil, placeholder: 'tu correo', class: 'form-control' %>
+      <small class="text-muted">Solo es necesario si subes un archivo; para enviar la validación:</small>
+    </div>
+
+    <hr />
+    <%= submit_tag :Envia, class: 'btn btn-success pull-right', 'data-disable-with' => 'Procesando ...' %>
 <% end %>

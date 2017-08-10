@@ -140,9 +140,9 @@ class ValidacionesController < ApplicationController
   end
 
   def valida_archivo(validacion)
-    return {estatus: false, msg: 'No fue anotado ningún correo para la validación o se inicio sesión'} if params[:correo].blank? && !usuario_signed_in?
-    return {estatus: false,  msg: 'No se subió ningún archivo, por favor verifica'} unless params[:archivo].present?
+    return {estatus: false,  msg: 'No se subió ningún archivo o lista, por favor verifica'} unless params[:archivo].present?
     return {estatus: false, msg: "La extension \"#{params[:archivo].content_type}\" no esta permitida, las validas son: #{Validacion::FORMATOS_PERMITIDOS.join(', ')}"} unless Validacion::FORMATOS_PERMITIDOS.include?(params[:archivo].content_type)
+    return {estatus: false, msg: 'No fue anotado ningún correo para la validación o se inicio sesión'} if params[:correo].blank? && !usuario_signed_in?
     copia = crea_copia_archivo
     return {estatus: false, msg: copia[:msg]} unless copia[:estatus]
 
@@ -164,7 +164,11 @@ class ValidacionesController < ApplicationController
     if usuario_signed_in?
       validacion.correo = current_usuario.email
     else
-      validacion.correo = params[:correo]
+      if Usuario::CORREO_REGEX.match(params[:correo])
+        validacion.correo = params[:correo]
+      else
+        return {estatus: false, msg:'El correo que proporcionaste no es válido, por favor verifica.'}
+      end
     end
 
     if Rails.env.production?
