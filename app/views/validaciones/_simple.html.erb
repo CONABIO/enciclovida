@@ -1,0 +1,12 @@
+<%= form_tag validacion_simple_path, multipart: true, method: :post do %>
+
+    <div class="form-group">
+      <label for="lista">Lista</label>
+      <%= text_area_tag :lista, nil, size: '50x10', class: 'form-control', placeholder: 'nombres científicos (uno por línea)' %>
+      <small class="text-muted">Sube una lista con nombre científicos separados por un salto de línea (máximo 200 nombres)</small>
+    </div>
+
+    <hr />
+
+    <%= render partial: 'shared', locals: {archivo_label: 'O sube un archivo (.xlsx) con una columna llamada <code>nombre científico</code>; uno por línea, no hay un máximo de nombres'} %>
+<% end %>

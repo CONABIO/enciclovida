@@ -86,8 +86,8 @@ base: &base
     domain_name: yoursite.org
 
   iucn:
-    iucn_api: http://apiv3.iucnredlist.org
-    iucn_token: 999999999999999999999999999999999999999999999999
+    api: http://apiv3.iucnredlist.org
+    token: 999999999999999999999999999999999999999999999999
 
 ###--------------------Aun no se ocupan------------------------###
 

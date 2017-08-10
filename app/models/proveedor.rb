@@ -428,7 +428,7 @@ class Proveedor < ActiveRecord::Base
     page = params[:page] || 1
 
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}", timeout: 10)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}", timeout: 20)
       res = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}

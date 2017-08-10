@@ -36,13 +36,7 @@ class Comentario < ActiveRecord::Base
   validates_presence_of :categorias_contenido_id
   validates_presence_of :nombre, :if => 'usuario_id.blank?'
 
-  email_name_regex  = '[\w\.%\+\-]+'.freeze
-  domain_head_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
-  domain_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
-  EMAIL_REGEX       = /\A#{email_name_regex}@#{domain_head_regex}#{domain_tld_regex}\z/i
-  bad_email_message = "no tiene la estructura apropiada.".freeze
-
-  validates_format_of :correo, :with => EMAIL_REGEX, :message => bad_email_message, :if => 'usuario_id.blank?'
+  validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => 'usuario_id.blank?'
   validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'
 
   after_create :idABase32

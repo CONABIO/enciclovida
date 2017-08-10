@@ -3,6 +3,14 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   self.table_name='usuarios'
+
+  # Para validar un correo y otros modelos lo puedan utilizar
+  nombre_correo_regex  = '[\w\.%\+\-]+'.freeze
+  dominio_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
+  dominio_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
+  CORREO_REGEX       = /\A#{nombre_correo_regex}@#{dominio_regex}#{dominio_tld_regex}\z/i
+  CORREO_INVALIDO_MSG = 'El correo no tiene la estructura apropiada.'.freeze
+
   has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
   has_many :roles, :through => :usuario_roles, :source => :rol
   has_many :categorias_contenidos, :through => :roles, :source => :categorias_contenidos

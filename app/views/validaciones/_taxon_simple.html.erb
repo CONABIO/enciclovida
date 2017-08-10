@@ -1,7 +1,0 @@
-<p>Sube un archivo .csv con una columna de nombre científico</p>
-
-<%= form_tag validaciones_resultados_taxon_simple_path, :multipart => true, :method => :post do %>
-    <%# text_area_tag :lote, nil, :size => '50x10' %>
-    <%= file_field_tag 'batch' %>
-    <%= submit_tag :Envia %>
-<% end %>
