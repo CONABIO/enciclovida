@@ -77,6 +77,8 @@ class ValidacionesController < ApplicationController
 
   # Validacion a traves de un excel .xlsx y que conlleva mas columnas a validar
   def avanzada
+    @errores = []
+
     if @modelo[:estatus]
       resp = valida_archivo(@modelo[:tipo_validacion])
 
@@ -146,7 +148,6 @@ class ValidacionesController < ApplicationController
     copia = crea_copia_archivo
     return {estatus: false, msg: copia[:msg]} unless copia[:estatus]
 
-    puts params[:action].inspect
     # Por si no cumple con las columnas obligatorias
     xlsx = Roo::Excelx.new(copia[:archivo_copia])
     sheet = xlsx.sheet(0)  # toma la primera hoja por default

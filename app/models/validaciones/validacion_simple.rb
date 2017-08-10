@@ -1,13 +1,13 @@
 class ValidacionSimple < Validacion
 
-  attr_accessor :lista, :recurso_validado
+  attr_accessor :lista
 
   COLUMNAS_OBLIGATORIAS = {nombre_cientifico: ['nombre_cientifico']}
   COLUMNAS_OPCIONALES = {}
   COLUMNAS_DEFAULT = %w(nombre_orig nombre_enciclovida mensaje)
 
   def initialize
-    self.recurso_validado = []
+    self.lista = []
     super
   end
 
