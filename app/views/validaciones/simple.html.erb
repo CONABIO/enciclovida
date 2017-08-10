@@ -1,0 +1,77 @@
+<% if @errores.present? %>
+    <div id="error_explanation">
+      <h2>Algunos errores prohibieron que la validación continuara:</h2>
+
+      <ul>
+        <% @errores.each do |e| %>
+            <li><%= e %></li>
+        <% end %>
+      </ul>
+    </div>
+<% elsif @coincidencias.present? %>
+
+    <h4 class="text-left text-success"><strong>Coincidencias con la lista</strong><br /><small>(Tambien puedes descargar esta lista, con más campos de nuestra base)</small></h4><hr />
+
+    <%= link_to("Descargar <span class='glyphicon glyphicon-save'>".html_safe, @excel_url, class: 'pull-right') if @excel_url.present? %>
+
+    <table class="table">
+      <thead class="thead-inverse">
+      <tr>
+        <th>#ID</th>
+        <th>Nombre original</th>
+        <th>Nombre enciclovida</th>
+        <th>Mensaje</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <% @coincidencias.each do |recurso| %>
+
+          <tr>
+            <%
+               if recurso[:estatus]
+                 taxon = recurso[:taxon]
+            %>
+
+                <th scope="row"><%= taxon.id %></th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td><%= link_to taxon.nombre_cientifico, especie_path(taxon) %></td>
+                <td><%= recurso[:msg] %></td>
+
+            <%
+               elsif recurso[:taxones].present?
+                 urls = recurso[:taxones].map{|t| link_to(t.nombre_cientifico, especie_path(t))}
+            %>
+
+                <th scope="row">-</th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td><%= urls.join(', ').html_safe %></td>
+                <td><%= recurso[:msg] %></td>
+
+            <% else %>
+
+                <th scope="row">-</th>
+                <td><%= recurso[:nombre_orig] %></td>
+                <td>-</td>
+                <td><%= recurso[:msg] %></td>
+
+            <% end %>
+          </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+
+<% elsif @subio_excel %>
+    <p>El archivo fue subido exitosamente, cuando termine el proceso se te enviará a tu
+      correo el excel validado por CONABIO.</p>
+    Por favor se paciente este proceso puede tardar
+    dependiendo del número de taxones.
+
+    <p>
+      <strong>NOTA: </strong> el archivo solo durará 7 días en nuestro servidor
+    </p>
+<% else %>
+    <p>Lo sentimos, ocurrió un error al procesar tu petición. Por favor intentalo más tarde.</p>
+<% end %>

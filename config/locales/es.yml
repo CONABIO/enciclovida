@@ -65,6 +65,17 @@ es:
     riesgo-bajo-lr-preocupacion-menor-lc:
       icono: iucn_lc.png
       nombre: "Riesgo bajo (LR): Preocupación menor (lc)"
+    iucn_ws:
+      ex: Extinto (EX)
+      ew: Extinto en estado silvestre (EW)
+      cr: En peligro crítico (CR)
+      en: En peligro (EN)
+      vu: Vulnerable (VU)
+      cd: "Riesgo bajo (LR): Dependiente de conservación (cd)"
+      dd: Datos insuficientes (DD)
+      ne: No evaluado (NE)
+      nt: "Riesgo bajo (LR): Casi amenazado (nt)"
+      lc: "Riesgo bajo (LR): Preocupación menor (lc)"
     apendice-i:
       icono: cites_i.png
       nombre: Apéndice I

@@ -8,7 +8,7 @@ class ValidacionesController < ApplicationController
   #Quita estos metodos para que pueda cargar correctamente la peticion
   skip_before_filter  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
   before_action :authenticate_request!, only: [:update, :insert, :delete]
-  before_action :authenticate_usuario!, :only => [:taxon, :resultados_taxon_simple, :resultados_taxon_excel]
+  before_action :tipo_validacion, only: [:simple, :avanzada]
   layout false, only: [:update, :insert, :delete]
 
   def update
@@ -34,112 +34,62 @@ class ValidacionesController < ApplicationController
     render :text => 'Datos de DELETE correctos'
   end
 
-  def taxon
+  # Vista de la validacion simple y avanzada
+  def index
   end
 
-  # Validacion de taxones por medio de un csv o a traves de web
-  def resultados_taxon_simple
-    return @match_taxa= 'Por lo menos debe haber un taxón o un archivo' unless params[:lote].present? || params[:batch].present?
-
-    if params[:lote].present?
-      @match_taxa = Hash.new
-      params[:lote].split("\r\n").each do |linea|
-        e= Especie.where("nombre_cientifico = '#{linea}'")       #linea de SQL Server
-
-        if e.first
-          @match_taxa[linea] = e
-        else
-          ids = FUZZY_NOM_CIEN.find(linea, 3)
-          coincidencias = ids.present? ? Especie.where("especies.id IN (#{ids.join(',')})").order('nombre_cientifico ASC') : nil
-          @match_taxa[linea] = coincidencias.length > 0 ? coincidencias : 'Sin coincidencia'
-        end
-      end
-    elsif params[:batch].present?
-      @errores = []
-
-      if !Validacion::FORMATOS_PERMITIDOS_BATCH.include? params[:batch].content_type
-        @errores << 'Lo sentimos, el formato ' + params[:batch].content_type + ' no esta permitido'
-      end
-
-      if @errores.empty?
-        nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename}"
-        validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:batch].original_filename.gsub('.csv','')}")
-
-        # Creando la carpeta del usuario y gurdando el archivo
-        ruta_batch = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
-        FileUtils.mkpath(ruta_batch, :mode => 0755) unless File.exists?(ruta_batch)
-
-        path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
-        File.open(path, 'wb') do |file|
-          file.write(params[:batch].read)
-        end
-
-        if validacion.save
-          if Rails.env.production?
-            validacion.delay(queue: 'validaciones').valida_batch(path)
-          end
-            validacion.valida_batch(path)
-        end
-
-      end
-    end
-  end
-
-  # Validacion a traves de un excel .xlsx
-  def resultados_taxon_excel
+  # Es una validacion solo con el nombre cientifico, ya sea por medio de una lista o archivo
+  def simple
     @errores = []
-    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-    if params[:excel].content_type != content_type
-      @errores << t('errors.messages.extension_validacion_excel')
-    else
-      nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:excel].original_filename}"
-      validacion = Validacion.new(usuario_id: current_usuario.id, nombre_archivo: nombre_archivo.gsub('.xlsx',''))
+    if params[:lista].present?  # Valida por una lista de nombres cientificos al vuelo
+      validacion = ValidacionSimple.new
+      validacion.lista = params[:lista]
+      resp = validacion.valida_lista
 
-      # Creando la carpeta del usuario y gurdando el archivo
-      ruta_excel = Rails.root.join('public','validaciones_excel', current_usuario.id.to_s)
-      FileUtils.mkpath(ruta_excel, :mode => 0755) unless File.exists?(ruta_excel)
+      if resp[:estatus]
+        @coincidencias = validacion.recurso_validado
+        resp = validacion.guarda_excel
 
-      path = Rails.root.join('public', 'validaciones_excel', current_usuario.id.to_s, "tmp_#{nombre_archivo}")
-      File.open(path, 'wb') do |file|
-        file.write(params[:excel].read)  # Hace una copia del excel, para dejar las columnas originales
-      end
-
-      if !File.exists?(path)
-        @errores << 'El archivo tiene una inconsistencia'
-      else
-        xlsx = Roo::Excelx.new(path.to_s)
-        sheet = xlsx.sheet(0)  # toma la primera hoja por default
-
-        rows = sheet.last_row - sheet.first_row  # Para quitarle del conteo la cabecera
-        columns = sheet.last_column
-
-        @errores << 'La primera hoja de tu excel no tiene información' if rows < 0
-        @errores << 'Las columnas no son las mínimas necesarias para poder leer tu excel' if columns < 7
-      end
-
-      if @errores.empty?
-        cabecera = sheet.row(1)
-        cc = comprueba_columnas(cabecera)
-
-        # Por si no cumple con las columnas obligatorias
-        if cc[:faltan].any?
-          @errores << "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"
-        else
-          if validacion.save
-            # Asigna unas variables
-            validacion.excel = path.to_s
-            validacion.cabecera = cc[:asociacion]
-
-            if Rails.env.production?
-              validacion.delay(queue: 'validaciones').valida_campos
-            end
-              validacion.valida_campos
-          end
+        if resp[:estatus]
+          @excel_url = resp[:excel_url]  # Guarda el excel para poder consumirlo en la respuesta, a lo mas 200
         end
 
-      end  # Fin errores empty
-    end  # Fin del tipo de archivo
+      else
+        @errores << resp[:msg]
+      end
+
+    else  # entonces trata de validar por archivo
+      if @modelo[:estatus]
+        resp = valida_archivo(@modelo[:tipo_validacion])
+
+        if resp[:estatus]
+          @subio_excel = resp[:estatus]
+        else
+          @errores << resp[:msg]
+        end
+      else
+        @errores << @modelo[:msg]
+      end  # End @modelo
+
+    end  # End lista.present?
+  end
+
+  # Validacion a traves de un excel .xlsx y que conlleva mas columnas a validar
+  def avanzada
+    @errores = []
+
+    if @modelo[:estatus]
+      resp = valida_archivo(@modelo[:tipo_validacion])
+
+      if resp[:estatus]
+        @subio_excel = resp[:estatus]
+      else
+        @errores << resp[:msg]
+      end
+    else
+      @errores << @modelo[:msg]
+    end  # End @modelo
   end
 
 
@@ -154,9 +104,28 @@ class ValidacionesController < ApplicationController
     return nil unless Bases::EQUIVALENCIA.include?(params[:tabla])
   end
 
-  def comprueba_columnas(cabecera)
-    columnas = Validacion::COLUMNAS_OPCIONALES.merge(Validacion::COLUMNAS_OBLIGATORIAS)
-    columnas_obligatoraias = Validacion::COLUMNAS_OBLIGATORIAS.keys.map{|c| c.to_s}
+  def crea_copia_archivo
+    nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:archivo].original_filename}"
+
+    # Creando la carpeta del usuario y gurdando el archivo
+    ruta_archivo = Rails.root.join('public','validaciones', Time.now.strftime("%Y%m%d"))
+    FileUtils.mkpath(ruta_archivo, :mode => 0755) unless File.exists?(ruta_archivo)
+
+    archivo_copia = ruta_archivo.join("tmp_#{nombre_archivo}")
+    File.open(archivo_copia, 'wb') do |file|
+      file.write(params[:archivo].read)  # Hace una copia del excel, para dejar las columnas originales
+    end
+
+    if File.exists?(archivo_copia)
+      {estatus: true, archivo_copia: archivo_copia.to_s}
+    else
+      {estatus: false, msg: 'El archivo copia no se creo'}
+    end
+  end
+
+  def comprueba_columnas(cabecera, validacion)
+    columnas = validacion::COLUMNAS_OPCIONALES.merge(validacion::COLUMNAS_OBLIGATORIAS)
+    columnas_obligatoraias = validacion::COLUMNAS_OBLIGATORIAS.keys.map{|c| c.to_s}
     columnas_asociadas = Hash.new
 
     cabecera.each do |c|
@@ -171,4 +140,55 @@ class ValidacionesController < ApplicationController
 
     {faltan: columnas_faltantes, asociacion: columnas_asociadas}
   end
+
+  def valida_archivo(validacion)
+    return {estatus: false,  msg: 'No se subió ningún archivo o lista, por favor verifica'} unless params[:archivo].present?
+    return {estatus: false, msg: "La extension \"#{params[:archivo].content_type}\" no esta permitida, las validas son: #{Validacion::FORMATOS_PERMITIDOS.join(', ')}"} unless Validacion::FORMATOS_PERMITIDOS.include?(params[:archivo].content_type)
+    return {estatus: false, msg: 'No fue anotado ningún correo para la validación o se inicio sesión'} if params[:correo].blank? && !usuario_signed_in?
+    copia = crea_copia_archivo
+    return {estatus: false, msg: copia[:msg]} unless copia[:estatus]
+
+    # Por si no cumple con las columnas obligatorias
+    xlsx = Roo::Excelx.new(copia[:archivo_copia])
+    sheet = xlsx.sheet(0)  # toma la primera hoja por default
+    cabecera = sheet.row(1)
+    cc = comprueba_columnas(cabecera, validacion)
+    return {estatus: false, msg: "Algunas columnas obligatorias no fueron encontradas en tu excel: #{cc[:faltan].join(', ')}"} if cc[:faltan].any?
+
+    # Asigna unas variables
+    validacion = validacion.new
+    validacion.archivo_copia = copia[:archivo_copia]
+    validacion.nombre_archivo = params[:archivo].original_filename
+    validacion.cabecera = cc[:asociacion]
+
+    # Para asignar el correo
+    if usuario_signed_in?
+      validacion.correo = current_usuario.email
+    else
+      if Usuario::CORREO_REGEX.match(params[:correo])
+        validacion.correo = params[:correo]
+      else
+        return {estatus: false, msg:'El correo que proporcionaste no es válido, por favor verifica.'}
+      end
+    end
+
+    if Rails.env.production?
+      validacion.delay(queue: 'validaciones').valida_archivo
+    else
+      validacion.valida_archivo
+    end
+
+    {estatus: true}
+  end
+
+  def tipo_validacion
+    tipos = %w(simple avanzada)
+
+    @modelo = if params[:action].present? && tipos.include?(params[:action])
+                {estatus: true, tipo_validacion: "Validacion#{params[:action].capitalize}".constantize}
+              else
+                {estatus: false, msg: 'Lo sentimos, ocurrio un error en la acción que consultaste.'}
+              end
+  end
+
 end
