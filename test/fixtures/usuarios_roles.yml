@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  usuario_id: 1
-  rol_id: 1
-
-two:
-  usuario_id: 1
-  rol_id: 1
