@@ -310,22 +310,21 @@ module EspeciesHelper
       catalogos
     end
   end
-=begin
-  def dameCaracteristicaDistribucionAmbienteJS(taxon)
-    response = []
-    response << taxon.nom_cites_iucn_ambiente_prioritaria
-    response << taxon.tipo_distribucion
 
-    response.flatten
-  end
-=end
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    [taxon.nom_cites_iucn_ambiente_prioritaria,taxon.tipo_distribucion].flatten.each{ |x|
+    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria(true),taxon.tipo_distribucion].flatten
+
+    iucn = IUCNService.new.dameRiesgo({:nombre => taxon.nombre_cientifico}).parameterize
+    iucn_ws = t("cat_riesgo.iucn_ws.#{iucn}", :default => iucn)
+
+    caracteristicas.push(iucn_ws.parameterize)
+
+    caracteristicas.each{ |x|
       n = t("cat_riesgo.#{x.parameterize}.nombre", :default => (t("tipo_distribucion.#{x.parameterize}.nombre", :default => (t("ambiente.#{x.parameterize}.nombre", :default => (t("prioritaria.#{x.parameterize}.nombre", :default => '')))))))
       response << "<span class='btn-title' title='#{n}'><i class = '#{x}-ev-icon'></i></span>"
     }
-    response << "<small class='glyphicon glyphicon-info-sign' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer;'></small>" if response.any?
+    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
     response.join.html_safe
   end
 
