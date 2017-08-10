@@ -141,13 +141,13 @@ Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhach
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
-  def nom_cites_iucn_ambiente_prioritaria
+  def nom_cites_iucn_ambiente_prioritaria(ws=false)
     response = []
 
     especies_catalogos.each do |e|
       cat = e.catalogo
 
-      nom_cites_iucn = cat.nom_cites_iucn(true)
+      nom_cites_iucn = cat.nom_cites_iucn(true, ws)
       if nom_cites_iucn.present?
         response << nom_cites_iucn.parameterize
       end
@@ -299,7 +299,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
-    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria
+    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria(true)
     cons_amb_dist << tipo_distribucion
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 

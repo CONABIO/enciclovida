@@ -229,7 +229,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo)
+    if File.exist?(archivo) || !Rails.env.production?
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay observaciones'}
@@ -334,7 +334,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo)
+    if File.exist?(archivo) || !Rails.env.production?
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay ejemplares en el SNIB'}
