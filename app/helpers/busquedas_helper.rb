@@ -14,19 +14,19 @@ module BusquedasHelper
     radios = ''
     columnas = 1
 
-    Especie.datos_basicos(['taxon_icono, icono, nombre_icono, color_icono']).icono_join.
-        caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
-        order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
-
+    iconos = Icono::Reinos+Icono::Animales+Icono::Plantas
+    iconos.each do |taxon|  # Para tener los grupos ordenados
+      ic = taxon.adicional
       # Para dejar el espacio despues de los reinos
       if columnas == 6
         radios << '<br \>'*3  # neta? >.>!
         columnas = 7
       end
+      puts ic.nombre_comun_principal.inspect
 
       radios << "<label>"
       radios << radio_button_tag('id', taxon.id, false)
-      radios << ponIcono(taxon, con_recuadro: true) # En especies_helper, al rededor de l89
+      radios << "<span title=\"#{ic.nombre_comun_principal}\" style=\"color:black;\" class=\"#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title #{}\" id_icono=\"#{taxon.id}\"></span>"
       radios << "</label>"
       radios << '<br>' if columnas%6 == 0
       columnas+=1
