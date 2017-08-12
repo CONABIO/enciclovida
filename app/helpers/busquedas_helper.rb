@@ -26,7 +26,7 @@ module BusquedasHelper
 
       radios << "<label>"
       radios << radio_button_tag('id', taxon.id, false)
-      radios << "<span title=\"#{ic.nombre_comun_principal}\" style=\"color:black;\" class=\"#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title #{}\" id_icono=\"#{taxon.id}\"></span>"
+      radios << "<span title=\"#{ic.nombre_comun_principal}\" style=\"color:#333333;\" class=\"#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title #{}\" id_icono=\"#{taxon.id}\">#{ic.nombre_comun_principal}</span>"
       radios << "</label>"
       radios << '<br>' if columnas%6 == 0
       columnas+=1
