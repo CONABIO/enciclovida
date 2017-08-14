@@ -16,9 +16,9 @@ class ApplicationController < ActionController::Base
     str.downcase == 'true' ? true : false
   end
 
-  #def set_locale
-  #  I18n.locale = params[:locale] || (usuario_signed_in? ? current_usuario.locale : nil) || dameLocaleFiltro || I18n.default_locale
-  #end
+  def set_locale
+    I18n.locale = params[:locale] || (usuario_signed_in? ? current_usuario.locale : nil)  || I18n.default_locale
+  end
 
 
   private
