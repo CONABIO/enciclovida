@@ -111,6 +111,7 @@ class Validacion < ActiveRecord::Base
 
   # Este metodo se manda a llamar cuando el taxon coincidio ==  validacion[:estatus] = true
   def taxon_estatus
+    return unless validacion[:estatus]
     taxon = validacion[:taxon]
 
     if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido

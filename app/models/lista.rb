@@ -88,10 +88,16 @@ class Lista < ActiveRecord::Base
     taxones.each do |taxon|
       if opts[:asignar]
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
-        if taxon[:estatus]
-          self.taxon = taxon[:taxon]
+        if taxon[:estatus]  # Si es un sinónimo
+          if taxon[:taxon_valido].present?
+            self.taxon = taxon[:taxon_valido]
+          else  # La rewspuesta es el taxon que encontro
+            self.taxon = taxon[:taxon]
+          end
+
           nombre_cientifico = self.taxon.nombre_cientifico
-        else
+
+        else  # Si tiene muchos taxones como coincidencia
           self.taxon = Especie.none
 
           if taxon[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
