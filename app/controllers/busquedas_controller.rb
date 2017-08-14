@@ -478,7 +478,7 @@ class BusquedasController < ApplicationController
 
     elsif @totales > 0
       # Para saber si el correo es correcto y poder enviar la descarga
-      con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
+      con_correo = Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
 
       if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
         # el nombre de la lista es cuando la bajo ya que no metio un correo

@@ -75,14 +75,14 @@ class Lista < ActiveRecord::Base
     columnas.slice!(0..2) if opts[:asignar]
 
     if opts[:basica]  # Busqueda basica
-      t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-      datos_descarga(t)
+      r = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
+      datos_descarga(r)
 
     elsif opts[:avanzada]  # Busqueda avanzada
       query = eval(opts[:busqueda]).distinct.to_sql
       consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-      t = Especie.find_by_sql(consulta)
-      datos_descarga(t)
+      r = Especie.find_by_sql(consulta)
+      datos_descarga(r)
     end
 
     taxones.each do |taxon|
@@ -169,6 +169,7 @@ class Lista < ActiveRecord::Base
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
   def datos_descarga(taxones)
     return unless taxones.any?
+    self.taxones = []
 
     taxones.each do |taxon|
       self.taxon = taxon
