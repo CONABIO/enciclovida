@@ -1,11 +1,15 @@
-<% if I18n.locale.to_s != 'es-cientifico' %>
-  <style type="text/css">
-	  .soulmate-type-suggestions li{
-		  padding: 1em 0;
-		  min-height: 125px;
-	  }
-  </style>
-<% end %>
+
+<%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+  <% if I18n.locale.to_s != 'es-cientifico' %>
+    <style type="text/css">
+	    .soulmate-type-suggestions li{
+		    padding: 1em 0;
+		    min-height: 125px;
+	    }
+    </style>
+  <% end %>
+<%- end -%>
 <div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
   <% if params[:action] != 'resultados' %>
     <h4 class="text-left text-success"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />

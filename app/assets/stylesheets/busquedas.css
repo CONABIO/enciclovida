@@ -108,3 +108,36 @@ div.result-img-container{
         width: 100%;
     }
 }
+/*los stilos a continuación deben ir en busquedas.css*/
+.animalia, .plantae, .fungi, .prokaryotae, .protoctista{
+    background-image: linear-gradient(to bottom, #c8ecff 0%, #ffffff 85%);
+    font-size: 2.2em;
+}
+.mammalia, .aves, .reptilia, .amphibia, .actinopterygii, .petromyzontida, .myxini, .chondrichthyes, .cnidaria, .arachnida, .myriapoda, .annelida, .insecta, .porifera, .echinodermata, .mollusca, .crustacea{
+background-image: linear-gradient(to bottom, #ffebd4 0%, #ffffff 85%);
+font-size: 1.6em;
+}
+.bryophyta, .pteridophyta, .cycadophyta, .gnetophyta, .liliopsida, .coniferophyta, .magnoliopsida{
+background-image: linear-gradient(to bottom, #bFDaa8 0%, #ffffff 85%);
+    font-size: 1.6em;
+}
+
+.checkbox label, .radio label{
+    padding-left: 2px;
+}
+.checkbox input, .radio input{
+    display: none;
+    margin: 0 !important;
+}
+.checkbox input:checked + span, .checkbox input + span:hover, .radio input:checked + span, .radio input + span:hover, {
+    padding-left: 6px;
+    margin-right: -1px;
+    color: #333333 !important;
+}
+
+.checkbox i{
+    font-size: 1.8em;
+}
+.checkbox span{
+    background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
+}
