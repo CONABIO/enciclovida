@@ -514,8 +514,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def nombres_comunes_todos
     # El orden de las lenguas, ya para que no se enojen!!!
-    lenguas_primero = ['Español', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
-    lenguas_ultimo = ['Japonés', 'Chino tradicional', 'ND']
+    lenguas_primero = ['Español', 'Español México', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
+    lenguas_ultimo = ['Chino tradicional', 'Ruso', 'Japonés', 'Coreano', 'Hebreo', 'AOU 4-Letter Codes', 'Vermont Flora Codes', 'ND']
 
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
