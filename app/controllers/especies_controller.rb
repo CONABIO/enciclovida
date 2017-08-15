@@ -624,6 +624,7 @@ class EspeciesController < ApplicationController
     begin
       @especie = Especie.find(params[:id])
       suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
+      cuantas_especies_e_inferiores  # Servicio para poner el numero totales de especies o inferiores por taxon
 
       # Por si no viene del arbol, ya que no necesito encontrar el valido
       if !arbol
@@ -675,6 +676,28 @@ class EspeciesController < ApplicationController
         estadistica.conteo = 1
         estadistica.save
       end
+    end
+  end
+
+  def cuantas_especies_e_inferiores
+    if params[:action] == 'show'
+      estadisticas = @especie.estadisticas
+
+      if estadisticas.present?
+        estadistica = estadisticas.where(estadistica_id: 2)
+        if estadistica.present? && estadistica.length == 1
+          estadistica = estadistica.first
+          estadistica.conteo = @especie.cuantas_especies_e_inferiores
+          estadistica.save
+          return
+        end
+      end
+
+      # Quiere decir que no existia la estadistica
+      estadistica = @especie.estadisticas.new
+      estadistica.estadistica_id = 2
+      estadistica.conteo = @especie.cuantas_especies_e_inferiores
+      estadistica.save
     end
   end
 

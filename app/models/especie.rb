@@ -141,6 +141,10 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
+  def cuantas_especies_e_inferiores
+    subtree.where(estatus: 2).categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', SPECIES_OR_LOWER).count
+  end
+
   # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
   def nom_cites_iucn_ambiente_prioritaria(ws=false)
     response = []
