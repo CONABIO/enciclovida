@@ -8,7 +8,4 @@ class Icono < ActiveRecord::Base
   Animales = Especie.where(:nombre_cientifico => IA)
   Plantas = Especie.where(:nombre_cientifico => IP)
 
-  IR << "bar_reino"
-  IA << "bar_animalia"
-  IP << "bar_plantae"
 end

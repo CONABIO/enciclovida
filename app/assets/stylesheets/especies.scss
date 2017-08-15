@@ -220,39 +220,6 @@ nested-fields
   -moz-box-shadow:    13px 13px 20px 0px rgba(50, 50, 50, 0.5);
   box-shadow:         13px 13px 20px 0px rgba(50, 50, 50, 0.5);
 }
-/*los stilos a continuación deben ir en busquedas.css*/
-.bar_reino{
-  background-image: linear-gradient(to bottom, #c8ecff 0%, #ffffff 85%);
-  font-size: 2.2em;
-}
-.bar_animalia{
-  background-image: linear-gradient(to bottom, #ffebd4 0%, #ffffff 85%);
-  font-size: 1.6em;
-}
-.bar_plantae{
-  background-image: linear-gradient(to bottom, #BFDAA8 0%, #ffffff 85%);
-  font-size: 1.6em;
-}
-
-.checkbox label, .radio label{
-  padding-left: 2px;
-}
-.checkbox input, .radio input{
-  display: none;
-  margin: 0 !important;
-}
-.checkbox input:checked + span, .checkbox input + span:hover, .radio input:checked + span, .radio input + span:hover, {
-  padding-left: 6px;
-  margin-right: -1px;
-  color: #333333 !important;
-}
-
-.checkbox i, #panelCaracteristicaDistribucionAmbiente i{
-  font-size: 1.8em;
-}
-.checkbox span{
-  background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
-}
 
 input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background-color: #e0e0e0;
@@ -261,7 +228,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
 }
-
+#panelCaracteristicaDistribucionAmbiente i{
+  font-size: 1.8em;
+}
 .leaflet-control-layers-expanded{
   background-color:rgba(229, 232, 226, 0.68)!important;
 }

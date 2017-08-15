@@ -12,24 +12,24 @@ module BusquedasHelper
   # Filtros para los grupos icónicos en la búsqueda avanzada vista básica
   def radioGruposIconicos
     radios = ''
-    columnas = 1
+    def arma_span(taxon)
+      "<label>#{radio_button_tag('id', taxon.id, false)}<span title='#{taxon.adicional.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
+    end
 
-    iconos = Icono::Reinos+Icono::Animales+Icono::Plantas
-    iconos.each do |taxon|  # Para tener los grupos ordenados
-      ic = taxon.adicional
-      # Para dejar el espacio despues de los reinos
-      if columnas == 6
-        radios << '<br \>'*3  # neta? >.>!
-        columnas = 7
-      end
-      puts ic.nombre_comun_principal.inspect
+    radios << '<h6><strong>Reinos</strong></h6>'
+    Icono::Reinos.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
+    end
+    radios << '<hr />'
 
-      radios << "<label>"
-      radios << radio_button_tag('id', taxon.id, false)
-      radios << "<span title=\"#{ic.nombre_comun_principal}\" style=\"color:#333333;\" class=\"#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title #{}\" id_icono=\"#{taxon.id}\">#{ic.nombre_comun_principal}</span>"
-      radios << "</label>"
-      radios << '<br>' if columnas%6 == 0
-      columnas+=1
+    radios << '<h6><strong>Grupos de animales</strong></h6>'
+    Icono::Animales.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
+    end
+    radios << '<hr />'
+    radios << '<h6><strong>Grupos de plantas</strong></h6>'
+    Icono::Plantas.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
     end
 
     "<div>#{radios}</div>"
