@@ -624,8 +624,8 @@ class EspeciesController < ApplicationController
     begin
       @especie = Especie.find(params[:id])
       suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
-      cuantas_especies_inferiores  # Servicio para poner el numero totales de especies del taxon
-      cuantas_especies_inferiores(3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+      cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
+      cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
 
       # Por si no viene del arbol, ya que no necesito encontrar el valido
       if !arbol
@@ -661,73 +661,38 @@ class EspeciesController < ApplicationController
   def suma_visita
     # Me aseguro que viene de la ficha, para poner el contador
     if params[:action] == 'show'
-      estadisticas = @especie.estadisticas
-
-      if estadisticas.present?
-        estadistica = estadisticas.where(estadistica_id: 1)
-        if estadistica.present? && estadistica.length == 1
-          estadistica = estadistica.first
-          estadistica.conteo+= 1
-          estadistica.save
-          return
-        end
+      if Rails.env.production?
+        @especie.delay(queue: 'estadisticas').suma_visita
+      else
+        @especie.suma_visita
       end
-
-      # Quiere decir que no existia la estadistica
-      estadistica = @especie.estadisticas.new
-      estadistica.estadistica_id = 1
-      estadistica.conteo = 1
-      estadistica.save
-    end
+    end  # if show
   end
 
   # Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
-  def cuantas_especies_inferiores(estadistica_id = 2)
+  def cuantas_especies_inferiores(opc = {})
     if params[:action] == 'show'
-      estadisticas = @especie.estadisticas
-
-      conteo =  if estadistica_id == 2  # Solo especies
-                  @especie.cuantas_especies
-                elsif estadistica_id == 3  # Especies e inferiores
-                  @especie.cuantas_especies_e_inferiores
-                else
-                  0
-                end
-
-      return if conteo == 0
-
-      if estadisticas.present?
-        estadistica = estadisticas.where(estadistica_id: estadistica_id)
-        if estadistica.present? && estadistica.length == 1
-          estadistica = estadistica.first
-          estadistica.conteo = conteo
-          estadistica.save if estadistica.changed?
-          return
+      if Rails.env.production?
+        if !@especie.existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
+          @especie.delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
         end
+      else
+        @especie.cuantas_especies_inferiores(opc)
       end
-
-      # Quiere decir que no existia la estadistica
-      estadistica = @especie.estadisticas.new
-      estadistica.estadistica_id = estadistica_id
-      estadistica.conteo = conteo
-      estadistica.save
-    end
+    end  # if show
   end
 
   # Actualiza las observaciones, los nombres comunes y las fotos
   def servicios
     # Para guardar los cambios en redis y las observacion
     if Rails.env.production?
-      puts "\n\nGuardando redis #{@especie.id} ..."
       @especie.delay(queue: 'redis').guarda_redis
 
       if !@especie.existe_cache?('observaciones_naturalista')
-        puts "\n\nGuardando observaciones de naturalista #{@especie.id} ..."
         @especie.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
       end
 
       if !@especie.existe_cache?('ejemplares_snib')
-        puts "\n\nGuardando ejemplares del SNIB #{@especie.id} ..."
         @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
       end
 

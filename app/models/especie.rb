@@ -149,6 +149,60 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     descendants.categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', SPECIES_OR_LOWER).count
   end
 
+  def cuantas_especies_inferiores(opc = {})
+    return unless opc[:estadistica_id].present?
+    puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
+    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
+    estadisticas = self.estadisticas
+
+    conteo =  if opc[:estadistica_id] == 2  # Solo especies
+                cuantas_especies
+              elsif opc[:estadistica_id] == 3  # Especies e inferiores
+                cuantas_especies_e_inferiores
+              else
+                0
+              end
+
+    return if conteo == 0
+
+    if estadisticas.present?
+      estadistica = self.estadisticas.where(estadistica_id: opc[:estadistica_id])
+      if estadistica.present? && estadistica.length == 1
+        estadistica = estadistica.first
+        estadistica.conteo = conteo
+        estadistica.save if estadistica.changed?
+        return
+      end
+    end
+
+    # Quiere decir que no existia la estadistica
+    estadistica = self.estadisticas.new
+    estadistica.estadistica_id = opc[:estadistica_id]
+    estadistica.conteo = conteo
+    estadistica.save
+  end
+
+  def suma_visita
+    puts "\n\nGuardo conteo de visitas #{id} ..."
+    estadisticas = self.estadisticas
+
+    if estadisticas.present?
+      estadistica = self.estadisticas.where(estadistica_id: 1)
+      if estadistica.present? && estadistica.length == 1
+        estadistica = estadistica.first
+        estadistica.conteo+= 1
+        estadistica.save
+        return
+      end
+    end
+
+    # Quiere decir que no existia la estadistica
+    estadistica = self.estadisticas.new
+    estadistica.estadistica_id = 1
+    estadistica.conteo = 1
+    estadistica.save
+  end
+
   # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
   def nom_cites_iucn_ambiente_prioritaria(ws=false)
     response = []
