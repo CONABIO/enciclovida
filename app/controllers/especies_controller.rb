@@ -624,7 +624,8 @@ class EspeciesController < ApplicationController
     begin
       @especie = Especie.find(params[:id])
       suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
-      cuantas_especies_e_inferiores  # Servicio para poner el numero totales de especies o inferiores por taxon
+      cuantas_especies_inferiores  # Servicio para poner el numero totales de especies del taxon
+      cuantas_especies_inferiores(3)  # Servicio para poner el numero totales de especies o inferiores del taxon
 
       # Por si no viene del arbol, ya que no necesito encontrar el valido
       if !arbol
@@ -680,24 +681,35 @@ class EspeciesController < ApplicationController
     end
   end
 
-  def cuantas_especies_e_inferiores
+  # Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
+  def cuantas_especies_inferiores(estadistica_id = 2)
     if params[:action] == 'show'
       estadisticas = @especie.estadisticas
 
+      conteo =  if estadistica_id == 2  # Solo especies
+                  @especie.cuantas_especies
+                elsif estadistica_id == 3  # Especies e inferiores
+                  @especie.cuantas_especies_e_inferiores
+                else
+                  0
+                end
+
+      return if conteo == 0
+
       if estadisticas.present?
-        estadistica = estadisticas.where(estadistica_id: 2)
+        estadistica = estadisticas.where(estadistica_id: estadistica_id)
         if estadistica.present? && estadistica.length == 1
           estadistica = estadistica.first
-          estadistica.conteo = @especie.cuantas_especies_e_inferiores
-          estadistica.save
+          estadistica.conteo = conteo
+          estadistica.save if estadistica.changed?
           return
         end
       end
 
       # Quiere decir que no existia la estadistica
       estadistica = @especie.estadisticas.new
-      estadistica.estadistica_id = 2
-      estadistica.conteo = @especie.cuantas_especies_e_inferiores
+      estadistica.estadistica_id = estadistica_id
+      estadistica.conteo = conteo
       estadistica.save
     end
   end

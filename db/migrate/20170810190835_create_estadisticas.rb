@@ -6,7 +6,8 @@ class CreateEstadisticas < ActiveRecord::Migration
     end
 
     descripciones = ["Visitas a la especie o grupo",
-                     "Número de especies inferiores",
+                     "Número de especies",
+                     "Número de especies e inferiores",
                      "Nombres comunes de NaturaLista",
                      "Nombres comunes de CONABIO",
                      "Fotos en NaturaLista",
