@@ -1,8 +1,8 @@
 class UsuariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:create, :update, :destroy, :guarda_filtro, :limpia_filtro, :cambia_locale]
+  skip_before_filter :set_locale, only: [:create, :update, :destroy, :cambia_locale]
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  layout :false, :only => [:guarda_filtro, :cambia_locale, :limpia_filtro, :filtros]
+  layout :false, :only => [:cambia_locale]
   before_action :only => [:index, :show, :destroy] {tiene_permiso?('Administrador')} # Minimo administrador
   before_action :only => [:conabio] {tiene_permiso?('AdminComentarios')} # Minimo administrador de comentarios de área
   before_action do
@@ -75,53 +75,8 @@ class UsuariosController < ApplicationController
     end
   end
 
-  # Decide cual filtro cargar y regresa el html y si es nuevo o no
-  def filtros
-    filtro = Filtro.consulta(usuario_signed_in? ? current_usuario : nil, request.session_options[:id])
-    if filtro.present? && filtro.html.present?
-      render :text => filtro.html.html_safe
-    else
-      if I18n.locale.to_s == 'es-cientifico'
-        render :filtros_vista_avanzada
-      else
-        render :filtros_vista_basica
-      end
-    end
-  end
-
-  def guarda_filtro
-    Filtro.guarda(request.session_options[:id], usuario_signed_in? ? current_usuario : nil, params[:html])
-    render :text => 'ok'   #Para no dejar la salida con error
-  end
-
-  def limpia_filtro
-    Filtro.limpia(request.session_options[:id], usuario_signed_in? ? current_usuario : nil)
-    render :text => true
-  end
-
-  def cambia_locale       #decide en donde gaurdar el locale
-    return if params[:locale].blank? || !I18n.available_locales.map{ |loc| loc.to_s }.include?(params[:locale])
-
-    if usuario_signed_in?
-      current_usuario.locale = params[:locale]
-      current_usuario.filtro.html = nil
-      current_usuario.filtro.save if current_usuario.filtro.changed?
-      current_usuario.save if current_usuario.changed?
-    else
-      filtro = Filtro.where(:sesion => request.session_options[:id]).first
-      filtro = Filtro.new unless filtro
-
-      filtro.sesion = request.session_options[:id]
-      filtro.locale = params[:locale]
-      filtro.html = nil if filtro.html.present?
-
-      if filtro.new_record?
-        filtro.save
-      else
-        filtro.save if filtro.changed?
-      end
-    end
-
+  def cambia_locale
+    cookies[:vista] = {value: (cookies[:vista] == "es-cientifico" ? I18n.default_locale : "es-cientifico"), expires: 2.weeks.from_now}
     render :text => 'ok'
   end
 

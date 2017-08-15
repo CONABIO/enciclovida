@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale = params[:locale] || (usuario_signed_in? ? current_usuario.locale : nil)  || I18n.default_locale
+    I18n.locale = cookies[:vista].present? ? cookies[:vista] : I18n.default_locale
   end
 
 
