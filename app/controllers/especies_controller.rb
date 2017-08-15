@@ -668,14 +668,15 @@ class EspeciesController < ApplicationController
           estadistica = estadistica.first
           estadistica.conteo+= 1
           estadistica.save
+          return
         end
-
-      else
-        estadistica = @especie.estadisticas.new
-        estadistica.estadistica_id = 1
-        estadistica.conteo = 1
-        estadistica.save
       end
+
+      # Quiere decir que no existia la estadistica
+      estadistica = @especie.estadisticas.new
+      estadistica.estadistica_id = 1
+      estadistica.conteo = 1
+      estadistica.save
     end
   end
 
