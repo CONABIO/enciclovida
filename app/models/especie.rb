@@ -44,6 +44,7 @@ class Especie < ActiveRecord::Base
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
+  has_many :estadisticas, :class_name => 'EspecieEstadistica'
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 

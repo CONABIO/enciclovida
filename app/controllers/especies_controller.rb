@@ -623,6 +623,7 @@ class EspeciesController < ApplicationController
   def set_especie(arbol = false)
     begin
       @especie = Especie.find(params[:id])
+      suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
 
       # Por si no viene del arbol, ya que no necesito encontrar el valido
       if !arbol
@@ -651,6 +652,29 @@ class EspeciesController < ApplicationController
       end
     rescue    #si no encontro el taxon
       render :_error and return
+    end
+  end
+
+  # Suma una visita a la estadisticas
+  def suma_visita
+    # Me aseguro que viene de la ficha, para poner el contador
+    if params[:action] == 'show'
+      estadisticas = @especie.estadisticas
+
+      if estadisticas.present?
+        estadistica = estadisticas.where(estadistica_id: 1)
+        if estadistica.present? && estadistica.length == 1
+          estadistica = estadistica.first
+          estadistica.conteo+= 1
+          estadistica.save
+        end
+
+      else
+        estadistica = @especie.estadisticas.new
+        estadistica.estadistica_id = 1
+        estadistica.conteo = 1
+        estadistica.save
+      end
     end
   end
 
