@@ -12,23 +12,32 @@ module BusquedasHelper
   # Filtros para los grupos icónicos en la búsqueda avanzada vista básica
   def radioGruposIconicos
     radios = ''
+    ir=%w(Animalia Plantae Fungi Prokaryotae Protoctista)
+    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontida Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+    ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+
+    reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
+    animales = Especie.select_grupos_iconicos.where(:nombre_cientifico => ia)
+    plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => ip)
+
     def arma_span(taxon)
-      "<label>#{radio_button_tag('id', taxon.id, false)}<span title='#{taxon.adicional.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
+      "<label>#{radio_button_tag('id', taxon.id, false)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
     end
 
+
     radios << '<h6><strong>Reinos</strong></h6>'
-    Icono::Reinos.each do |taxon|  # Para tener los grupos ordenados
+    reinos.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
     radios << '<hr />'
 
     radios << '<h6><strong>Grupos de animales</strong></h6>'
-    Icono::Animales.each do |taxon|  # Para tener los grupos ordenados
+    animales.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
     radios << '<hr />'
     radios << '<h6><strong>Grupos de plantas</strong></h6>'
-    Icono::Plantas.each do |taxon|  # Para tener los grupos ordenados
+    plantas.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
 

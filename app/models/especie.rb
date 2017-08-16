@@ -104,6 +104,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
+  #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
+  scope :select_grupos_iconicos, -> {select('especies.id, nombre_cientifico, nombre_comun_principal').adicional_join}
+
 
   CON_REGION = [19, 50]
 

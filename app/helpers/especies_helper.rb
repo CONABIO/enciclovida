@@ -84,29 +84,6 @@ module EspeciesHelper
     end
   end
 
-  def ponIcono(taxon, params={})
-    begin  # Es un record con joins
-      ic = taxon if taxon.taxon_icono.present?
-    rescue
-      ic = (taxon.adicional.present? && taxon.adicional.icono.present?) ? taxon.adicional.icono : nil
-    end
-
-    font_size = params[:font_size].present? ? params[:font_size] : '35'
-
-    if ic.nil?  # Puede que no tenga icono
-      "<i title=\"Sin ícono\" style=\"color:black;font-size:0px;\" class=\"sin_icono\"></i>"
-    else
-      if params[:con_recuadro]
-        clase = Icono::IR[-1] if Icono::IR.include?(ic.taxon_icono)
-        clase = Icono::IA[-1] if Icono::IA.include?(ic.taxon_icono)
-        clase = Icono::IP[-1] if Icono::IP.include?(ic.taxon_icono)
-        "<span title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};\" class=\"#{ic.icono[5..-1]}-ev-icon btn btn-xs btn-basica btn-title #{clase}\" id_icono=\"#{taxon.id}\"></span>"
-      else
-        "<i title=\"#{ic.nombre_icono}\" style=\"color:#{ic.color_icono};font-size:#{font_size}px;\" class=\"#{ic.icono[5..-1]}-ev-icon\"></i>"
-      end
-    end
-  end
-
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
