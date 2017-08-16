@@ -11,7 +11,7 @@
       <h5 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h5>
       <h5 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h5>
     </legend>
-    <div class="radio" id="por_gi">
+    <div class="form-group radio" id="por_gi">
       <%= radioGruposIconicos.html_safe %>
     </div>
 
@@ -30,8 +30,10 @@
   </div>
 
   <div class="form-group">
-    <span class="label" style="color: #333333; font-weight: normal;">Resultados por página</span>
-    <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+    <fieldset>
+	    <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
+      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+    </fieldset>
   </div>
 
 </div>
