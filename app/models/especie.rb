@@ -44,6 +44,7 @@ class Especie < ActiveRecord::Base
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
+  has_many :estadisticas, :class_name => 'EspecieEstadistica'
 
   has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
@@ -142,6 +143,68 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_luteola
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
+
+  def cuantas_especies
+    descendants.where(estatus: 2).categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', %w(especie)).count
+  end
+
+  def cuantas_especies_e_inferiores
+    descendants.categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', SPECIES_OR_LOWER).count
+  end
+
+  def cuantas_especies_inferiores(opc = {})
+    return unless opc[:estadistica_id].present?
+    puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
+    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
+    estadisticas = self.estadisticas
+
+    conteo =  if opc[:estadistica_id] == 2  # Solo especies
+                cuantas_especies
+              elsif opc[:estadistica_id] == 3  # Especies e inferiores
+                cuantas_especies_e_inferiores
+              else
+                0
+              end
+
+    return if conteo == 0
+
+    if estadisticas.present?
+      estadistica = self.estadisticas.where(estadistica_id: opc[:estadistica_id])
+      if estadistica.present? && estadistica.length == 1
+        estadistica = estadistica.first
+        estadistica.conteo = conteo
+        estadistica.save if estadistica.changed?
+        return
+      end
+    end
+
+    # Quiere decir que no existia la estadistica
+    estadistica = self.estadisticas.new
+    estadistica.estadistica_id = opc[:estadistica_id]
+    estadistica.conteo = conteo
+    estadistica.save
+  end
+
+  def suma_visita
+    puts "\n\nGuardo conteo de visitas #{id} ..."
+    estadisticas = self.estadisticas
+
+    if estadisticas.present?
+      estadistica = self.estadisticas.where(estadistica_id: 1)
+      if estadistica.present? && estadistica.length == 1
+        estadistica = estadistica.first
+        estadistica.conteo+= 1
+        estadistica.save
+        return
+      end
+    end
+
+    # Quiere decir que no existia la estadistica
+    estadistica = self.estadisticas.new
+    estadistica.estadistica_id = 1
+    estadistica.conteo = 1
+    estadistica.save
+  end
 
   # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
   def nom_cites_iucn_ambiente_prioritaria(ws=false)
@@ -517,8 +580,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def nombres_comunes_todos
     # El orden de las lenguas, ya para que no se enojen!!!
-    lenguas_primero = ['Español', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
-    lenguas_ultimo = ['Japonés', 'Chino tradicional', 'ND']
+    lenguas_primero = ['Español', 'Español México', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
+    lenguas_ultimo = ['Chino tradicional', 'Ruso', 'Japonés', 'Coreano', 'Hebreo', 'AOU 4-Letter Codes', 'Vermont Flora Codes', 'ND']
 
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}

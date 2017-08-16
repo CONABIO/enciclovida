@@ -75,23 +75,29 @@ class Lista < ActiveRecord::Base
     columnas.slice!(0..2) if opts[:asignar]
 
     if opts[:basica]  # Busqueda basica
-      t = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-      datos_descarga(t)
+      r = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
+      datos_descarga(r)
 
     elsif opts[:avanzada]  # Busqueda avanzada
       query = eval(opts[:busqueda]).distinct.to_sql
       consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-      t = Especie.find_by_sql(consulta)
-      datos_descarga(t)
+      r = Especie.find_by_sql(consulta)
+      datos_descarga(r)
     end
 
     taxones.each do |taxon|
       if opts[:asignar]
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
-        if taxon[:estatus]
-          self.taxon = taxon[:taxon]
+        if taxon[:estatus]  # Si es un sinónimo
+          if taxon[:taxon_valido].present?
+            self.taxon = taxon[:taxon_valido]
+          else  # La rewspuesta es el taxon que encontro
+            self.taxon = taxon[:taxon]
+          end
+
           nombre_cientifico = self.taxon.nombre_cientifico
-        else
+
+        else  # Si tiene muchos taxones como coincidencia
           self.taxon = Especie.none
 
           if taxon[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
@@ -163,6 +169,7 @@ class Lista < ActiveRecord::Base
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
   def datos_descarga(taxones)
     return unless taxones.any?
+    self.taxones = []
 
     taxones.each do |taxon|
       self.taxon = taxon

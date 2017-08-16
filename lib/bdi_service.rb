@@ -15,6 +15,7 @@ class BDIService
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
       jres = JSON.parse(res.body)
+      jres['data'].any?
     rescue => e
       jres = {'data' => []}
       {:estatus => 'error', :msg => e}

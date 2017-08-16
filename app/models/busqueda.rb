@@ -66,7 +66,7 @@ class Busqueda
     union = []
 
     select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
-adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+adicionales.nombre_comun_principal, adicionales.foto_principal,
 categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, ancestry_ascendente_directo,
 cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales FROM ( '
 
@@ -83,7 +83,7 @@ cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales FROM ( '
 
     campos.each do |c|
       subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
- adicionales.nombre_comun_principal, adicionales.foto_principal, adicionales.fotos_principales,
+ adicionales.nombre_comun_principal, adicionales.foto_principal,
  categoria_taxonomica_id, nombre_categoria_taxonomica, ancestry_ascendente_directo,
  cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales
  FROM especies

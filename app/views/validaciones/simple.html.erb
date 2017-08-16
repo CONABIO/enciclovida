@@ -19,7 +19,7 @@
       <tr>
         <th>#ID</th>
         <th>Nombre original</th>
-        <th>Nombre enciclovida</th>
+        <th>Nombre válido en enciclovida</th>
         <th>Mensaje</th>
       </tr>
       </thead>
@@ -30,7 +30,7 @@
           <tr>
             <%
                if recurso[:estatus]
-                 taxon = recurso[:taxon]
+                 taxon = recurso[:taxon_valido].present? ? recurso[:taxon_valido] : recurso[:taxon]
             %>
 
                 <th scope="row"><%= taxon.id %></th>

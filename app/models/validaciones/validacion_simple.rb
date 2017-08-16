@@ -4,7 +4,7 @@ class ValidacionSimple < Validacion
 
   COLUMNAS_OBLIGATORIAS = {nombre_cientifico: ['nombre_cientifico']}
   COLUMNAS_OPCIONALES = {}
-  COLUMNAS_DEFAULT = %w(nombre_orig nombre_enciclovida mensaje)
+  COLUMNAS_DEFAULT = %w(nombre_original nombre_valido_enciclovida mensaje)
 
   def initialize
     self.lista = []
@@ -18,6 +18,7 @@ class ValidacionSimple < Validacion
       next if index == 0
       self.nombre_cientifico = f['nombre_cientifico']
       encuentra_por_nombre
+      taxon_estatus
 
       self.recurso_validado << validacion.merge({nombre_orig: f['nombre_cientifico']})
     end
@@ -39,6 +40,7 @@ class ValidacionSimple < Validacion
     lista.each do |nombre|
       self.nombre_cientifico = nombre
       encuentra_por_nombre
+      taxon_estatus
 
       self.recurso_validado << validacion.merge({nombre_orig: nombre})
     end
