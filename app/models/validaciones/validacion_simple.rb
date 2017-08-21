@@ -18,6 +18,7 @@ class ValidacionSimple < Validacion
       next if index == 0
       self.nombre_cientifico = f['nombre_cientifico']
       encuentra_por_nombre
+      quita_sinonimos_coincidencias if validacion[:taxones].present?
       taxon_estatus
 
       self.recurso_validado << validacion.merge({nombre_orig: f['nombre_cientifico']})
@@ -40,6 +41,7 @@ class ValidacionSimple < Validacion
     lista.each do |nombre|
       self.nombre_cientifico = nombre
       encuentra_por_nombre
+      quita_sinonimos_coincidencias if validacion[:taxones].present?
       taxon_estatus
 
       self.recurso_validado << validacion.merge({nombre_orig: nombre})

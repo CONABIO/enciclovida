@@ -33,7 +33,8 @@ class ValidacionAvanzada < Validacion
         validacion[:taxon].asigna_categorias
       else # No encontro coincidencias, tratamos mas arriba
         if validacion[:taxones].present? && validacion[:taxones].any?
-          busca_recursivamente
+          quita_sinonimos_coincidencias
+          busca_recursivamente unless validacion[:estatus]
         else  # Este caso regreso sin coincidencias, es forzoso validar mas arriba
           valida_mas_arriba
         end
