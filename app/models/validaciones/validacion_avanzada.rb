@@ -241,7 +241,11 @@ class ValidacionAvanzada < Validacion
     fila.each do |campo, valor|
       if validacion[:estatus]
         if campo == 'infraespecie'  # caso especial para las infrespecies
-          cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase.strip
+          begin
+            cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase.strip
+          rescue  # Por si la infraespcie es vacia cuando completo el taxon
+            cat = ''
+          end
 
           if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
             correcciones_hash["SCAT_Correccion#{campo.capitalize}"] = taxon.nombre.downcase == fila[campo].try(:downcase) ? nil : taxon.nombre
@@ -290,7 +294,12 @@ class ValidacionAvanzada < Validacion
       validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad || [fila['nombre_autoridad'], INFORMACION_ORIG]
 
       # Para la infraespecie
-      cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase
+      begin
+        cat = I18n.transliterate(taxon.x_categoria_taxonomica).gsub(' ','_').downcase.strip
+      rescue  # Por si la infraespcie es vacia cuando completo el taxon
+        cat = ''
+      end
+
       if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
         validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre || [fila['infraespecie'], INFORMACION_ORIG]
       else
