@@ -33,7 +33,7 @@ class PaginasController < ApplicationController
     csv_text = File.read(file)
     csv = CSV.parse(csv_text, :headers => true)
 
-    por_pagina = 15000
+    por_pagina = 30
     @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     contador = 0  # Cuenta los que han pasado el filtro
 

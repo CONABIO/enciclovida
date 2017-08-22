@@ -60,7 +60,11 @@
         }
 
         #tbody tr td:nth-child(2), #tbody tr td:nth-child(3) {
-            width: 20%;
+            width: 13%;
+        }
+
+        #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9) {
+            width: 6%;
         }
     </style>
 <% end %>
@@ -77,12 +81,12 @@
 
 <div class="text-center page-selection1"></div>
 
-<table class="table table-striped table-responsive table-condensed">
+<table class="table table-responsive table-hover">
 
   <thead>
   <tr>
     <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
-        <th><%= cabecera %></th>
+        <th ><%= cabecera %></th>
     <% end %>
   </tr>
   </thead>
