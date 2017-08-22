@@ -26,12 +26,14 @@ class PaginasController < ApplicationController
 
     file = File.dirname(__FILE__) << '/../../public/exoticas-invasoras.csv'
     exoticas_url = '/pdfs/exoticas_invasoras/'
+    instrumentos_url = '/pdfs/exoticas_invasoras/instrumentos_legales/'
     exoticas_dir = File.dirname(__FILE__) << '/../../public' << exoticas_url
+    inst_dir = File.dirname(__FILE__) << '/../../public' << instrumentos_url
 
     csv_text = File.read(file)
     csv = CSV.parse(csv_text, :headers => true)
 
-    por_pagina = 15
+    por_pagina = 15000
     @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     contador = 0  # Cuenta los que han pasado el filtro
 
@@ -80,7 +82,22 @@ class PaginasController < ApplicationController
       datos << row['Origen']
       datos << row['Presencia']
       datos << row['Estatus']
-      datos << row['Regulada por otros instrumentos']
+
+      instrumentos = []
+      if row['Regulada por otros instrumentos'].present?
+        row['Regulada por otros instrumentos'].split('/').each do |inst|
+          inst = inst.strip
+          pdf_inst_path = inst_dir + inst + '.pdf'
+          if File.exist?(pdf_inst_path)
+            pdf_inst = instrumentos_url + inst + '.pdf'
+            instrumentos << {nombre: inst, pdf: pdf_inst}
+          else  # Por si esta mal renombrado el pdf
+            instrumentos << {nombre: 'No existe pdf', pdf: nil}
+          end
+        end  # End each do
+      end
+
+      datos << instrumentos
       pdf.present? ? datos << pdf : datos << nil
 
       @tabla_exoticas[:datos] << datos
