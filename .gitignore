@@ -57,3 +57,7 @@ public/pdfs/
 public/uploads/
 public/validaciones_excel/
 public/geodatos/
+node_modules/
+public/descargas_resultados/
+public/fotos_invasoras/
+public/validaciones/
