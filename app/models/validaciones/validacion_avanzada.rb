@@ -100,10 +100,13 @@ class ValidacionAvanzada < Validacion
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    taxon_estatus if validacion[:estatus]
+    if validacion[:estatus]
+      taxon_estatus
+    end
 
     if validacion[:taxon_valido].present?
       self.validacion[:taxon] = validacion[:taxon_valido]
+      self.validacion[:taxon].asigna_categorias
     end
 
     # Devuelve toda la asociacion unidas y en orden
@@ -273,7 +276,7 @@ class ValidacionAvanzada < Validacion
     if validacion[:estatus]
       taxon = validacion[:taxon]
 
-      validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino || [fila['Reino'],INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Reino_valido'] = taxon.x_reino || (fila['Reino'].present? ? [fila['Reino'],INFORMACION_ORIG] : '')
 
       if taxon.x_phylum.present?
         validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_phylum || [fila['division'], INFORMACION_ORIG] || [fila['phylum'], INFORMACION_ORIG]
@@ -281,17 +284,17 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash['SCAT_Phylum/Division_valido'] = taxon.x_division || [fila['division'], INFORMACION_ORIG] || [fila['phylum'], INFORMACION_ORIG]
       end
 
-      validacion_interna_hash['SCAT_Clase_valido'] = taxon.x_clase || [fila['clase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subclase_valido'] = taxon.x_subclase || [fila['subclase'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Orden_valido'] = taxon.x_orden || [fila['orden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Suborden_valido'] = taxon.x_suborden || [fila['suborden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Infraorden_valido'] = taxon.x_infraorden || [fila['infraorden'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Superfamilia_valido'] = taxon.x_superfamilia || [fila['superfamilia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Familia_valido'] = taxon.x_familia || [fila['familia'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Genero_valido'] = taxon.x_genero || [fila['genero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero || [fila['subgenero'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie || [fila['especie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad || [fila['nombre_autoridad'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Clase_valido'] = taxon.x_clase || (fila['clase'].present? ? [fila['clase'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Subclase_valido'] = taxon.x_subclase || (fila['subclase'].present? ? [fila['subclase'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Orden_valido'] = taxon.x_orden || (fila['orden'].present? ? [fila['orden'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Suborden_valido'] = taxon.x_suborden || (fila['suborden'].present? ? [fila['suborden'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Infraorden_valido'] = taxon.x_infraorden || (fila['infraorden'].present? ? [fila['infraorden'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Superfamilia_valido'] = taxon.x_superfamilia || (fila['superfamilia'].present? ? [fila['superfamilia'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Familia_valido'] = taxon.x_familia || (fila['familia'].present? ? [fila['familia'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Genero_valido'] = taxon.x_genero || (fila['genero'].present? ? [fila['genero'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Subgenero_valido'] = taxon.x_subgenero || (fila['subgenero'].present? ? [fila['subgenero'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_Especie_valido'] = taxon.x_especie || (fila['especie'].present? ? [fila['especie'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_AutorEspecie_valido'] = taxon.x_nombre_autoridad || (fila['nombre_autoridad'].present? ? [fila['nombre_autoridad'], INFORMACION_ORIG] : '')
 
       # Para la infraespecie
       begin
@@ -301,14 +304,14 @@ class ValidacionAvanzada < Validacion
       end
 
       if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(cat)
-        validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre || [fila['infraespecie'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = taxon.nombre || (fila['infraespecie'].present? ? [fila['infraespecie'], INFORMACION_ORIG] : '')
       else
-        validacion_interna_hash['SCAT_Infraespecie_valido'] = [fila['infraespecie'], INFORMACION_ORIG]
+        validacion_interna_hash['SCAT_Infraespecie_valido'] = fila['infraespecie'].present? ? [fila['infraespecie'], INFORMACION_ORIG] : ''
       end
 
-      validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || [fila['categoria_taxonomica'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG]
-      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || [fila['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || (fila['categoria_taxonomica'].present? ? [fila['categoria_taxonomica'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || (fila['nombre_autoridad_infraespecie'].present? ? [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || (fila['nombre_cientifico'].present? ? [fila['nombre_cientifico'], INFORMACION_ORIG] : '')
 
       # Para la NOM
       nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct

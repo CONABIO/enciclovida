@@ -117,7 +117,6 @@ class Validacion < ActiveRecord::Base
       if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
         begin  # Por si ya no existe ese taxon, suele pasar!
           taxon_valido = Especie.find(estatus.first.especie_id2)
-          taxon_valido.asigna_categorias
           # Asigna el taxon valido al taxon original
           self.validacion[:taxon_valido] = taxon_valido
           self.validacion[:msg] = 'Es un sinónimo'
