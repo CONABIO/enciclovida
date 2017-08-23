@@ -27,8 +27,7 @@
                             url: "/exoticas-invasoras-paginado",
                             type: 'GET',
                             data: {
-                                pagina: pagina,
-                                grupo: "<%= @grupo %>"
+                                pagina: pagina
                             }
                         }).done(function(res)
                         {
@@ -37,6 +36,10 @@
             }
 
             es_primero = pagina;
+        });
+
+        $("#form-exoticas :input").on('change', function(){
+            $('#form-exoticas').submit();
         });
     </script>
 <% end %>
@@ -73,26 +76,41 @@
   <h3><%= @titulo %></h3>
 </div>
 
-<form method="get" action="/exoticas-invasoras.csv">
-  <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
-    Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
-  </button>
-</form>
+<%= link_to "Descarga lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/exoticas-invasoras.csv' %>
 
 <div class="text-center page-selection1"></div>
 
-<table class="table table-responsive table-hover">
+<form method="get" action="/exoticas-invasoras" id="form-exoticas">
+  <table class="table table-responsive table-hover">
 
-  <thead>
-  <tr>
-    <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
-        <th ><%= cabecera %></th>
-    <% end %>
-  </tr>
-  </thead>
+    <thead>
+    <tr>
+      <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
+          <th >
+            <% case cabecera %>
+            <% when 'Grupo' %>
+                <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
+                <%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: '- - Cualquiera - -' %>
+            <% when 'Origen' %>
+                <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
+                <%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: '- - Cualquiera - -' %>
+            <% when 'Presencia' %>
+                <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
+                <%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: '- - Cualquiera - -' %>
+            <% when 'Estatus' %>
+                <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
+                <%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: '- - Cualquiera - -' %>
+            <% else %>
+                <%= cabecera %>
+            <% end %>
+          </th>
+      <% end %>
+    </tr>
+    </thead>
 
-  <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
+    <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
 
-</table>
+  </table>
+</form>
 
 <div class="text-center page-selection1"></div>

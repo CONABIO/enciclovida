@@ -21,8 +21,37 @@ class PaginasController < ApplicationController
   def lee_csv
     @tabla_exoticas = {}
     @tabla_exoticas[:datos] = []
-    @grupos = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
-    @grupo = params[:grupo] if params[:grupo].present? && @grupos.include?(params[:grupo])
+    @select = {}
+    @select[:grupos] = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
+    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
+    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
+    #@select[:ambientes] = []  # Se necesita estandarizar
+    @select[:estatus] = ['Invasora']
+
+    @selected = {}
+    if params[:grupo].present?
+      @selected[:grupo] = {}
+      @selected[:grupo][:valor] = params[:grupo]
+      @selected[:grupo][:nom_campo] = 'OrdenfiloWEB'
+    end
+
+    if params[:origen].present?
+      @selected[:origen] = {}
+      @selected[:origen][:valor] = params[:origen]
+      @selected[:origen][:nom_campo] = 'Origen'
+    end
+
+    if params[:presencia].present?
+      @selected[:presencia] = {}
+      @selected[:presencia][:valor] = params[:presencia]
+      @selected[:presencia][:nom_campo] = 'Presencia'
+    end
+
+    if params[:estatus].present?
+      @selected[:estatus] = {}
+      @selected[:estatus][:valor] = params[:estatus]
+      @selected[:estatus][:nom_campo] = 'Estatus'
+    end
 
     file = File.dirname(__FILE__) << '/../../public/exoticas-invasoras.csv'
     exoticas_url = '/pdfs/exoticas_invasoras/'
@@ -38,7 +67,13 @@ class PaginasController < ApplicationController
     contador = 0  # Cuenta los que han pasado el filtro
 
     csv.each_with_index do |row, index|
-      next if @grupo.present? && row['OrdenfiloWEB'] != @grupo  # Solo filtra los del grupo seleccionado
+      siguiente = false
+      @selected.each do |campo, v|  # Compara que las condiciones se cumplan
+        puts row[v[:nom_campo]].inspect + '-----' + v[:valor].inspect
+        siguiente = true if row[v[:nom_campo]] != v[:valor]
+      end
+
+      next if siguiente
 
       contador+= 1
       next if (por_pagina*(@pagina-1)+1) > contador || por_pagina*@pagina < contador  # Por si esta fuera de rango del paginado
