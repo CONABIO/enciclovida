@@ -99,7 +99,21 @@ class PaginasController < ApplicationController
         pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
 
       else
-        datos << nil
+        # Para poner una foto de la carpeta, si es que tiene
+        if row['Creditos Fotos'].present?
+          nombre = "#{row['Nombre científico']}.jpg"
+          foto = Rails.root.join('public','fotos_invasoras', nombre)
+
+          if File.exists?(foto)
+            foto_url = "/fotos_invasoras/#{nombre}"
+            datos << foto_url
+          else
+            datos << nil
+          end
+        else
+          datos << nil
+        end
+
         datos << row['Nombre científico']
         datos << row['Nombre comun']
         datos << row['OrdenfiloWEB']
