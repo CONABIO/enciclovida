@@ -62,21 +62,20 @@ class PaginasController < ApplicationController
     csv_text = File.read(file)
     csv = CSV.parse(csv_text, :headers => true)
 
-    por_pagina = 30
+    @por_pagina = 30
     @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    contador = 0  # Cuenta los que han pasado el filtro
+    @totales = 0  # Cuenta los que han pasado el filtro
 
     csv.each_with_index do |row, index|
       siguiente = false
       @selected.each do |campo, v|  # Compara que las condiciones se cumplan
-        puts row[v[:nom_campo]].inspect + '-----' + v[:valor].inspect
         siguiente = true if row[v[:nom_campo]] != v[:valor]
       end
 
       next if siguiente
 
-      contador+= 1
-      next if (por_pagina*(@pagina-1)+1) > contador || por_pagina*@pagina < contador  # Por si esta fuera de rango del paginado
+      @totales+= 1
+      next if (@por_pagina*(@pagina-1)+1) > @totales || @por_pagina*@pagina < @totales  # Por si esta fuera de rango del paginado
 
       pdf = false
       datos = []
@@ -140,8 +139,7 @@ class PaginasController < ApplicationController
     end  # End each row
 
     # El paginado
-    resultados = contador
-    @paginas = resultados%por_pagina == 0 ? resultados/por_pagina : (resultados/por_pagina) +1
+    @paginas = @totales%@por_pagina == 0 ? @totales/@por_pagina : (@totales/@por_pagina) +1
   end
 
 end

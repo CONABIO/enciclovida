@@ -1,3 +1,12 @@
+<%
+   totales = @totales
+   resultados = @tabla_exoticas[:datos].count  # Los que trae por pagina
+
+   por_pagina = @por_pagina
+   comienzo = por_pagina*(@pagina-1) + 1
+   final = comienzo + resultados -1
+%>
+
 <% @tabla_exoticas[:datos].each do |row| %>
     <tr>
       <% row.each_with_index do |col, index| %>
@@ -21,3 +30,9 @@
       <% end %>
     </tr>
 <% end %>
+
+<script>
+    $(document).ready(function(){
+        $('#num-res-exoticas').html("Mostrando del <%= comienzo %> al <%= final %> de <%= totales %> resultados");
+    });
+</script>

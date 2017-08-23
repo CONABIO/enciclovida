@@ -26,9 +26,8 @@
                         {
                             url: "/exoticas-invasoras-paginado",
                             type: 'GET',
-                            data: {
-                                pagina: pagina
-                            }
+                            data: $('#form-exoticas').serialize() + '&pagina=' +pagina
+
                         }).done(function(res)
                         {
                             $('#tbody').empty().append(res);
@@ -77,8 +76,9 @@
 </div>
 
 <%= link_to "Descarga lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/exoticas-invasoras.csv' %>
-
 <div class="text-center page-selection1"></div>
+
+<div class="pull-left" id="num-res-exoticas"></div>
 
 <form method="get" action="/exoticas-invasoras" id="form-exoticas">
   <table class="table table-responsive table-hover">
