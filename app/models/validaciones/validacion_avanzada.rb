@@ -268,7 +268,7 @@ class ValidacionAvanzada < Validacion
     correcciones_hash
   end
 
-# La validacion en comun, no importa si es simple o avanzada
+  # La validacion en comun, no importa si es simple o avanzada
   def validacion_interna
     validacion_interna_hash = {}
     columnas = %w(SCAT_Reino_valido SCAT_Phylum-Division_valido SCAT_Clase_valido SCAT_Subclase_valido SCAT_Orden_valido SCAT_Suborden_valido SCAT_Infraorden_valido SCAT_Superfamilia_valido SCAT_Familia_valido SCAT_Genero_valido SCAT_Subgenero_valido SCAT_Especie_valido SCAT_AutorEspecie_valido SCAT_Infraespecie_valido SCAT_Categoria_valido SCAT_AutorInfraespecie_valido SCAT_NombreCient_valido SCAT_NOM-059 SCAT_IUCN SCAT_CITES SCAT_Distribucion SCAT_CatalogoDiccionario SCAT_Fuente ENCICLOVIDA)
@@ -311,7 +311,7 @@ class ValidacionAvanzada < Validacion
 
       validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || (fila['categoria_taxonomica'].present? ? [fila['categoria_taxonomica'], INFORMACION_ORIG] : '')
       validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || (fila['nombre_autoridad_infraespecie'].present? ? [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG] : '')
-      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || (fila['nombre_cientifico'].present? ? [fila['nombre_cientifico'], INFORMACION_ORIG] : '')
+      validacion_interna_hash['SCAT_NombreCient_valido'] = [fila['nombre_cientifico'], INFORMACION_ORIG]
 
       # Para la NOM
       nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
@@ -355,7 +355,25 @@ class ValidacionAvanzada < Validacion
 
     else  # Asociacion vacia, solo el error
       columnas.each do |columna|
-        validacion_interna_hash[columna] = nil
+        validacion_interna_hash[columna] = nil  # Por default la pongo vacia
+
+        case columna
+          when 'SCAT_Familia_valido'
+            validacion_interna_hash[columna] = [fila['familia'], INFORMACION_ORIG] if fila['familia'].present?
+          when 'SCAT_Genero_valido'
+            validacion_interna_hash[columna] = [fila['genero'], INFORMACION_ORIG] if fila['genero'].present?
+          when 'SCAT_Especie_valido'
+            validacion_interna_hash[columna] = [fila['especie'], INFORMACION_ORIG] if fila['especie'].present?
+          when 'SCAT_AutorEspecie_valido'
+            validacion_interna_hash[columna] = [fila['nombre_autoridad'], INFORMACION_ORIG] if fila['nombre_autoridad'].present?
+          when 'SCAT_Infraespecie_valido'
+            validacion_interna_hash[columna] = [fila['infraespecie'], INFORMACION_ORIG] if fila['infraespecie'].present?
+          when 'SCAT_Categoria_valido'
+            validacion_interna_hash[columna] = [fila['categoria_taxonomica'], INFORMACION_ORIG] if fila['categoria_taxonomica'].present?
+          when 'SCAT_NombreCient_valido'
+            validacion_interna_hash[columna] = [fila['nombre_cientifico'], INFORMACION_ORIG] if fila['nombre_cientifico'].present?
+        end
+
       end
     end
 
