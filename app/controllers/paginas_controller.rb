@@ -54,13 +54,14 @@ class PaginasController < ApplicationController
         datos << t.adicional.try(:foto_principal)
         datos << t
         datos << (row['Nombre comun'].present? ? row['Nombre comun'] : t.adicional.try(:nombre_comun_principal))
-        datos << row['OrdenfiloWEB']
 
         if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'")
           datos << familia.first.nombre_cientifico
         else
           datos << nil
         end
+
+        datos << row['OrdenfiloWEB']
 
         pdf_path = exoticas_dir + t.nombre_cientifico + '.pdf'
         pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
@@ -83,8 +84,8 @@ class PaginasController < ApplicationController
 
         datos << row['Nombre científico']
         datos << row['Nombre comun']
-        datos << row['OrdenfiloWEB']
         datos << row['Familia']
+        datos << row['OrdenfiloWEB']
 
         pdf_path = exoticas_dir + row['Nombre científico'] + '.pdf'
         pdf = exoticas_url + row['Nombre científico'] + '.pdf' if File.exist?(pdf_path)
