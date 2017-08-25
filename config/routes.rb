@@ -12,8 +12,8 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  get 'explora_por_ubicacion' => 'ubicaciones#ubicacion'
-  get 'explora_por_region' => 'ubicaciones#region'
+  get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
+  get 'explora-por-region' => 'ubicaciones#region'
 
   get "busquedas/basica"
   get "busquedas/avanzada"

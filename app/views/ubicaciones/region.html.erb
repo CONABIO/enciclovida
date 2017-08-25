@@ -18,14 +18,18 @@
 <% end %>
 
 
-<div id="contenedor_mapa" height="300px;">
-    <div id="map" width="300px;"></div>
+<div id="contenedor_mapa" class="col-md-8">
+  <div id="map" width="300px;"></div>
+</div>
+
+<div id="regiones" class="col-md-4">
+  <%= render partial: 'regiones' %>
 </div>
 
 <script data-turbolinks-track="true">
     var loadMap = function (id)
     {
-        var place = [19.29568189, -99.1843784];
+        var place = [23.79162789, -102.04376221];
         var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 
         var map = L.map(id, {
@@ -54,39 +58,6 @@
 
         map.addLayer(layer);
         map.setView(place, 5);  // Default place and zoom
-
-        map.locate({setView: true, maxZoom: 16})
-                .on('locationfound', function(e){
-
-                    var marker = L.marker([e.latitude, e.longitude], {draggable: true}).bindPopup('Tu ubicación aproximada, puedes arrastrar este marcador');
-                    var circle = L.circle([e.latitude, e.longitude], 1*1000, {
-                        weight: 1,
-                        color: 'blue',
-                        fillColor: '#cacaca',
-                        fillOpacity: 0.2
-                    });
-
-                    map.addLayer(marker);
-                    map.addLayer(circle);
-                    map.setView([e.latitude, e.longitude], 15);
-
-                    marker.on('dragstart', function(e){
-                        console.log('dragstart');
-                    });
-                    marker.on('drag', function(e){
-                        console.log('drag');
-                        circle.setLatLng(e.target.getLatLng());
-                    });
-                    marker.on('dragend', function(e){
-                        console.log('dragend');
-                    });
-
-                    //console.log(e);
-                })
-                .on('locationerror', function(e){
-                    console.log(e);
-                    alert("Lo sentimos, no pudimos detectar tu ubicación. Inténtalo más tarde.");
-                });
     };
 
     loadMap('map');

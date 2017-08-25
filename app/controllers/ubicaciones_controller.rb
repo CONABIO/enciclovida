@@ -6,9 +6,10 @@ class UbicacionesController < ApplicationController
 
   # Registros con un radio alreadedor de tu ubicación
   def ubicacion
-
   end
 
+  def region
+  end
 
   private
 
