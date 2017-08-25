@@ -65,7 +65,7 @@
             width: 13%;
         }
 
-        #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9) {
+        #tbody tr td:nth-child(4), #tbody tr td:nth-child(5), #tbody tr td:nth-child(6), #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9) {
             width: 6%;
         }
     </style>
@@ -90,22 +90,25 @@
             <% case cabecera %>
             <% when 'Grupo' %>
                 <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
-                <%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
+                Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
             <% when 'Origen' %>
                 <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
-                <%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
+                Origen<br /><%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
             <% when 'Presencia' %>
                 <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
-                <%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
+                Presencia<br /><%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Ambiente' %>
+                <% valor = @selected.present? && @selected[:ambiente].present? ? @selected[:ambiente][:valor] : nil %>
+                Ambiente<br /><%= select_tag :ambiente, options_for_select(@select[:ambientes], valor), prompt: 'Todos', class: 'form-control' %>
             <% when 'Instrumento legal' %>
                 <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
-                <%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
+                Instrumento legal<br /><%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
             <% when 'Estatus' %>
                 <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
-                <%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
+                Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
             <% when 'Ficha' %>
                 <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
-                <%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
+                Ficha<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
             <% else %>
                 <%= cabecera %>
             <% end %>

@@ -6,7 +6,7 @@ class PaginasController < ApplicationController
   # La pagina cuando entran por get
   def exoticas_invasoras
     lee_csv
-    @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Nombre común', 'Grupo', 'Familia', 'Ambiente',
+    @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Nombre común', 'Familia', 'Grupo', 'Ambiente',
                                    'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha']
   end
 
@@ -129,7 +129,7 @@ class PaginasController < ApplicationController
     @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
     @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
     @select[:instrumentos_legales] = ['Acuerdo enfermedades y plagas SAGARPA 2016', 'Acuerdo especies exóticas SEMARNAT', 'MOD NOM-005-FITO-1995', 'NOM-016-SEMARNAT-2013', 'NOM-043-FITO-1999']
-    #@select[:ambientes] = []  # Se necesita estandarizar
+    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Parásito', 'Parásito Dulceacuícola', 'Parásito Marino', 'Párasito Terrestre', 'Salobre', 'Terrestre']  # Se necesita estandarizar
     @select[:estatus] = ['Invasora']
     @select[:fichas] = ['Sí', 'No']
   end
@@ -158,6 +158,12 @@ class PaginasController < ApplicationController
       @selected[:instrumento] = {}
       @selected[:instrumento][:valor] = params[:instrumento]
       @selected[:instrumento][:nom_campo] = 'Regulada por otros instrumentos'
+    end
+
+    if params[:ambiente].present?
+      @selected[:ambiente] = {}
+      @selected[:ambiente][:valor] = params[:ambiente]
+      @selected[:ambiente][:nom_campo] = 'Ambiente'
     end
 
     if params[:estatus].present?
