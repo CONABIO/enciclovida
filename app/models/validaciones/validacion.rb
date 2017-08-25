@@ -34,7 +34,6 @@ class Validacion < ActiveRecord::Base
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
       self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
-      #busca_recursivamente
       return
 
     else
@@ -45,7 +44,7 @@ class Validacion < ActiveRecord::Base
       taxones = if nombres.length == 2  # Especie
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
               elsif nombres.length == 3  # Infraespecie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]} % #{nombres[2]}'")
+                Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
               elsif nombres.length == 1 # Genero o superior
                 Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
               end
@@ -56,7 +55,6 @@ class Validacion < ActiveRecord::Base
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
         self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
-        #busca_recursivamente
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
@@ -84,7 +82,6 @@ class Validacion < ActiveRecord::Base
               return
             else
               self.validacion = {taxones: taxones_con_distancia, msg: 'Coincidio más de uno'}
-              #busca_recursivamente
             end
           end
 
@@ -120,7 +117,6 @@ class Validacion < ActiveRecord::Base
       if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
         begin  # Por si ya no existe ese taxon, suele pasar!
           taxon_valido = Especie.find(estatus.first.especie_id2)
-          taxon_valido.asigna_categorias
           # Asigna el taxon valido al taxon original
           self.validacion[:taxon_valido] = taxon_valido
           self.validacion[:msg] = 'Es un sinónimo'
@@ -132,6 +128,20 @@ class Validacion < ActiveRecord::Base
         self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
       end
     end  # End estatus = 1
+  end
+
+  # Para quitar los sinonimos y ver si la unica coincidencia es valida
+  def quita_sinonimos_coincidencias
+    return unless validacion[:taxones].present?
+    validos = []
+
+    validacion[:taxones].each do |taxon|
+      validos << taxon if taxon.estatus == 2
+    end
+
+    if validos.count == 1
+      self.validacion = {estatus: true, taxon: validos.first, msg: 'Coincidio más de uno, pero solo hubo un taxon válido'}
+    end
   end
 
 end

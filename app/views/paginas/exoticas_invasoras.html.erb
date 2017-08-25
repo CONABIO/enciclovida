@@ -26,10 +26,8 @@
                         {
                             url: "/exoticas-invasoras-paginado",
                             type: 'GET',
-                            data: {
-                                pagina: pagina,
-                                grupo: "<%= @grupo %>"
-                            }
+                            data: $('#form-exoticas').serialize() + '&pagina=' +pagina
+
                         }).done(function(res)
                         {
                             $('#tbody').empty().append(res);
@@ -37,6 +35,10 @@
             }
 
             es_primero = pagina;
+        });
+
+        $("#form-exoticas :input").on('change', function(){
+            $('#form-exoticas').submit();
         });
     </script>
 <% end %>
@@ -60,7 +62,11 @@
         }
 
         #tbody tr td:nth-child(2), #tbody tr td:nth-child(3) {
-            width: 20%;
+            width: 13%;
+        }
+
+        #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9) {
+            width: 6%;
         }
     </style>
 <% end %>
@@ -69,26 +75,48 @@
   <h3><%= @titulo %></h3>
 </div>
 
-<form method="get" action="/exoticas-invasoras.csv">
-  <button type="submit" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#myModal">
-    Descarga la lista &nbsp;<span class="glyphicon glyphicon-save"></span>
-  </button>
-</form>
-
+<%= link_to "Descarga lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/Tabla exóticas.xlsx' %>
 <div class="text-center page-selection1"></div>
 
-<table class="table table-striped table-responsive table-condensed">
+<div class="pull-left" id="num-res-exoticas"></div>
 
-  <thead>
-  <tr>
-    <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
-        <th><%= cabecera %></th>
-    <% end %>
-  </tr>
-  </thead>
+<form method="get" action="/exoticas-invasoras" id="form-exoticas">
+  <table class="table table-responsive table-hover">
 
-  <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
+    <thead>
+    <tr>
+      <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
+          <th >
+            <% case cabecera %>
+            <% when 'Grupo' %>
+                <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
+                <%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Origen' %>
+                <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
+                <%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Presencia' %>
+                <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
+                <%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Instrumento legal' %>
+                <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
+                <%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Estatus' %>
+                <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
+                <%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Ficha' %>
+                <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
+                <%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
+            <% else %>
+                <%= cabecera %>
+            <% end %>
+          </th>
+      <% end %>
+    </tr>
+    </thead>
 
-</table>
+    <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
+
+  </table>
+</form>
 
 <div class="text-center page-selection1"></div>
