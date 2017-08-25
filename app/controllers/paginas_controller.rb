@@ -7,7 +7,7 @@ class PaginasController < ApplicationController
   def exoticas_invasoras
     lee_csv
     @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Nombre común', 'Grupo', 'Familia', 'Ambiente',
-                                   'Origen', 'Presencia', 'Estatus', 'Regulada por otros instrumentos', 'Ficha']
+                                   'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha']
   end
 
   # La resultados que provienen del paginado
@@ -16,42 +16,15 @@ class PaginasController < ApplicationController
     render partial: 'exoticas_invasoras'
   end
 
+
   protected
 
   def lee_csv
     @tabla_exoticas = {}
     @tabla_exoticas[:datos] = []
-    @select = {}
-    @select[:grupos] = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
-    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
-    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
-    #@select[:ambientes] = []  # Se necesita estandarizar
-    @select[:estatus] = ['Invasora']
 
-    @selected = {}
-    if params[:grupo].present?
-      @selected[:grupo] = {}
-      @selected[:grupo][:valor] = params[:grupo]
-      @selected[:grupo][:nom_campo] = 'OrdenfiloWEB'
-    end
-
-    if params[:origen].present?
-      @selected[:origen] = {}
-      @selected[:origen][:valor] = params[:origen]
-      @selected[:origen][:nom_campo] = 'Origen'
-    end
-
-    if params[:presencia].present?
-      @selected[:presencia] = {}
-      @selected[:presencia][:valor] = params[:presencia]
-      @selected[:presencia][:nom_campo] = 'Presencia'
-    end
-
-    if params[:estatus].present?
-      @selected[:estatus] = {}
-      @selected[:estatus][:valor] = params[:estatus]
-      @selected[:estatus][:nom_campo] = 'Estatus'
-    end
+    opciones_posibles
+    opciones_seleccionadas
 
     file = File.dirname(__FILE__) << '/../../public/exoticas-invasoras.csv'
     exoticas_url = '/pdfs/exoticas_invasoras/'
@@ -67,12 +40,7 @@ class PaginasController < ApplicationController
     @totales = 0  # Cuenta los que han pasado el filtro
 
     csv.each_with_index do |row, index|
-      siguiente = false
-      @selected.each do |campo, v|  # Compara que las condiciones se cumplan
-        siguiente = true if row[v[:nom_campo]] != v[:valor]
-      end
-
-      next if siguiente
+      next unless condiciones_filtros(row)
 
       @totales+= 1
       next if (@por_pagina*(@pagina-1)+1) > @totales || @por_pagina*@pagina < @totales  # Por si esta fuera de rango del paginado
@@ -83,7 +51,6 @@ class PaginasController < ApplicationController
       if row['Enciclovida'].present?
         id = row['Enciclovida'].split('/')[4]
         t = Especie.find(id)
-
         datos << t.adicional.try(:foto_principal)
         datos << t
         datos << (row['Nombre comun'].present? ? row['Nombre comun'] : t.adicional.try(:nombre_comun_principal))
@@ -154,6 +121,83 @@ class PaginasController < ApplicationController
 
     # El paginado
     @paginas = @totales%@por_pagina == 0 ? @totales/@por_pagina : (@totales/@por_pagina) +1
+  end
+
+  def opciones_posibles
+    @select = {}
+    @select[:grupos] = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
+    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
+    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
+    @select[:instrumentos_legales] = ['Acuerdo enfermedades y plagas SAGARPA 2016', 'Acuerdo especies exóticas SEMARNAT', 'MOD NOM-005-FITO-1995', 'NOM-016-SEMARNAT-2013', 'NOM-043-FITO-1999']
+    #@select[:ambientes] = []  # Se necesita estandarizar
+    @select[:estatus] = ['Invasora']
+    @select[:fichas] = ['Sí', 'No']
+  end
+
+  def opciones_seleccionadas
+    @selected = {}
+    if params[:grupo].present?
+      @selected[:grupo] = {}
+      @selected[:grupo][:valor] = params[:grupo]
+      @selected[:grupo][:nom_campo] = 'OrdenfiloWEB'
+    end
+
+    if params[:origen].present?
+      @selected[:origen] = {}
+      @selected[:origen][:valor] = params[:origen]
+      @selected[:origen][:nom_campo] = 'Origen'
+    end
+
+    if params[:presencia].present?
+      @selected[:presencia] = {}
+      @selected[:presencia][:valor] = params[:presencia]
+      @selected[:presencia][:nom_campo] = 'Presencia'
+    end
+
+    if params[:instrumento].present?
+      @selected[:instrumento] = {}
+      @selected[:instrumento][:valor] = params[:instrumento]
+      @selected[:instrumento][:nom_campo] = 'Regulada por otros instrumentos'
+    end
+
+    if params[:estatus].present?
+      @selected[:estatus] = {}
+      @selected[:estatus][:valor] = params[:estatus]
+      @selected[:estatus][:nom_campo] = 'Estatus'
+    end
+
+    if params[:ficha].present?
+      @selected[:ficha] = {}
+      @selected[:ficha][:valor] = params[:ficha]
+      @selected[:ficha][:nom_campo] = 'Ficha'
+    end
+  end
+
+  def condiciones_filtros(row)
+    @selected.each do |campo, v|  # Compara que las condiciones se cumplan
+      if v[:nom_campo] == 'Ficha'
+        if v[:valor] == 'Sí'
+          if row[v[:nom_campo]].blank?
+            return false
+          end
+        else
+          if row[v[:nom_campo]].present?
+            return false
+          end
+        end
+
+      else
+        if row[v[:nom_campo]].blank?  # Si es vacio entonces no coincide
+          return false
+        end
+
+        val_params = v[:valor].split('/')
+        val_excel = row[v[:nom_campo]].gsub('/ ', '/').split('/')
+        return false unless (val_params & val_excel).present?
+      end
+    end  # End @selected.each
+
+    true
   end
 
 end
