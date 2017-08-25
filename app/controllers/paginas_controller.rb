@@ -126,7 +126,7 @@ class PaginasController < ApplicationController
 
   def opciones_posibles
     @select = {}
-    @select[:grupos] = ['Anfibios', 'Aves', 'Hongos', 'Mamíferos', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
+    @select[:grupos] = ['Algas y protoctistas', 'Anfibios', 'Arácnidos', 'Aves', 'Crustáceos', 'Hongos', 'Insectos', 'Mamíferos', 'Moluscos', 'Otros invertebrados', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
     @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
     @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
     @select[:instrumentos_legales] = ['Acuerdo enfermedades y plagas SAGARPA 2016', 'Acuerdo especies exóticas SEMARNAT', 'MOD NOM-005-FITO-1995', 'NOM-016-SEMARNAT-2013', 'NOM-043-FITO-1999']
