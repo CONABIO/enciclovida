@@ -28,19 +28,16 @@
   background-position: bottom !important;
   background-color: rgba(51, 51, 51, 0.75);
   padding: 30px 0px;
+  margin: 0px;
 }
-#brandBar > div.row:nth-child(1){
-  /*margin: 30px auto 30px auto;*/
+#brandBar .btn-group > button{/*Esto es para hacer redondito el icono de "Más..."*/
+  margin-top: -32px;
+  border-bottom-left-radius: 4px;
 }
-#brandBar > div:nth-child(1) { /*menú arriba main*/
-
+#brandBar .btn-group > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  margin-top: -1px;
 }
-#brandBar .btn-group > a{
-  /*font-size: .80em;*/
-  margin-top: -30px;
-  border-bottom-left-radius: 20px;
-  /*font-weight: bold;*/
-}
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.75em!important;}
 #busqueda_basica{
   margin-top: 14px;
 }

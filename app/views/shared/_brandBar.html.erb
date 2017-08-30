@@ -1,24 +1,28 @@
 <div id="brandBar" class="row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url(\"/fondos/#{rand(1..16)}.jpg\");'".html_safe if params[:controller] != 'inicio' %>>
 
-  <div class="btn-group text-right pull-right" role="group">
-    <%= link_to "Más... #{current_usuario.nombre if usuario_signed_in?}  <span class='caret'></span>".html_safe, nil, :class => 'btn btn-sm  btn-default  dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
-    <ul class="dropdown-menu">
+  <div class="btn-group pull-right">
+    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
+      <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu ">
+      <li><%= link_to "<strong>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</strong><i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil, :name => I18n.locale.to_s, :onClick => 'return cambia_locale(this.name);'%></li>
+      <li role="separator" class="divider"></li>
+      <li><%= link_to '<strong>Validación en línea...</strong>'.html_safe, validaciones_path, :role => 'button' %></li>
+      <li role="separator" class="divider"></li>
+      <li><%= link_to '¿Qué es EncivloVida?', inicio_acerca_path << '?tab=queEs' %></li>
+      <li><%= link_to 'Diferencia entre las vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
+      <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
+      <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
+      <li role="separator" class="divider"></li>
       <% if usuario_signed_in? %>
         <li><%= link_to 'Administracion de comentarios', admin_path %></li>
         <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
         <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
       <% else %>
-        <li><%= link_to('Iniciar sesión'.html_safe, new_usuario_session_path) if I18n.locale.to_s == 'es-cientifico' %></li>
+        <li><%= link_to('<strong>Iniciar sesión...</strong>'.html_safe, new_usuario_session_path) %></li>
       <% end %>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to "Vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'} <i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil, :name => I18n.locale.to_s, :onClick => 'return cambia_locale(this.name);'%></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to 'Validación en línea', validaciones_path, :role => 'button' %></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
-      <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-      <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-      <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
     </ul>
   </div>
 
