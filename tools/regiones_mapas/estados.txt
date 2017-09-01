@@ -28,6 +28,6 @@ Querétaro	26
 Veracruz	27
 Coahuila	28
 Tamaulipas	29
-Dsitrito Federal	30
+Distrito Federal	30
 Tlaxcala	31
 Morelos	32
