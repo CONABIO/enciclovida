@@ -22,10 +22,10 @@ def guarda_municipio(linea)
   reg.tipo_region = 'municipio'
 
   # Comparo el nombre del estado para asignar su papa
-  estado = RegionMapa.where(nombre_region: datos[4].parameterize.upcase.gsub('-', ' '))
+  estado = RegionMapa.where(nombre_region: datos[4])
 
   if estado.any?
-    reg.ancestry = "#{estado.first.ancestry}/#{estado.first.id}"
+    reg.ancestry = estado.first.path_ids.join('/')
     reg.save
   else
     puts "NO ENCONTRO ESTADO: #{datos[2]}"

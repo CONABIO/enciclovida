@@ -41,7 +41,7 @@ end
 
 def crea_root_inicial
   reg = RegionMapa.new
-  reg.nombre_region = 'México'
+  reg.nombre_region = 'México, país'
   reg.tipo_region = 'país'
   reg.save
 end
