@@ -209,15 +209,22 @@ class Photo < ActiveRecord::Base
     try_methods(*methods)
   end
 
-  def as_json(options = {})
-    options[:except] ||= []
-    options[:except] += [:metadata, :file_content_type, :file_file_name,
-                         :file_file_size, :file_processing, :file_updated_at, :mobile]
+
+#  def as_json(options = {})
+#    options[:except] ||= []
+#    options[:except] += [:metadata, :file_content_type, :file_file_name,
+#                         :file_file_size, :file_processing, :file_updated_at, :mobile]
                          #:original_url]
-    options[:methods] ||= []
-    options[:methods] += [:license_name, :license_url, :attribution]
-    super(options)
-  end
+    #options[:methods] ||= []
+#    options[:methods] += [:license_name, :license_url, :attribution]
+     #options[:methods] = [:large_url,:medium_url,:native_page_url,:license,:square_url,:native_realname]
+
+#    super((options || { }).merge({
+#        :methods => [:large_url,:medium_url,:native_page_url,:license,:square_url,:native_realname]
+#    }))
+#    puts options.inspect
+#  end
+
 
   # Retrieve info about a photo from its native source given its native id.  
   # Should be implemented by descendents
@@ -248,7 +255,7 @@ class Photo < ActiveRecord::Base
   def self.license_code_for_number(number)
     LICENSE_INFO[number].try(:[], :code)
   end
-
+=begin
   def self.default_json_options
     {
         :methods => [:license_code, :attribution],
@@ -257,7 +264,7 @@ class Photo < ActiveRecord::Base
                     :native_realname, :native_photo_id]
     }
   end
-
+=end
   private
 
   def self.attributes_protected_by_default
