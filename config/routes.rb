@@ -185,4 +185,6 @@ Buscador::Application.routes.draw do
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
 
+  get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
+
 end

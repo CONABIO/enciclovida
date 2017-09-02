@@ -21,42 +21,29 @@
 
 
 /*Brandbar es la plequita negra al inicio de cada página*/
-#brandBar.general {
-  background-repeat: no-repeat!important;
-  background-attachment: fixed!important;
-  background-size: cover!important;
-  background-position: bottom!important;
+#brandBar {
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+  background-color: rgba(51, 51, 51, 0.75);
+  padding: 30px 0px;
 }
-#brandBar{
-  background-color: rgba(51,51,51,0.75);
+#brandBar .dropdown {
+  margin-top: -32px;
+  margin-right: 10px;
 }
-#brandBar > div.row:nth-child(2) > div{
-  margin-top: 10px;
-  /*font-size: .75em;*/
-  margin-bottom: 20px;
+#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
+  border-bottom-left-radius: 2px;
+  font-weight: bold;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav a{
-  text-shadow: 2px 2px 6px #999;
-  margin-right: 0px;
-  color: #bababa;
-  font-size: 12px;
+#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  margin-top: -1px;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav li{
-  background-color: rgba(62, 62, 62, 0.60);
-  margin-right: 2px;
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important;}
+#busqueda_basica{
+  margin-top: 14px;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav li:hover a, #brandBar > div.row:nth-child(2) li.active a{
-  color: #444444!important;
-  font-weight: bolder;
-}
-#brandBar > div:nth-child(1) { /*menú arriba main*/
-  margin: 0px auto 0px auto;
-}
-#brandBar .btn-group > a{
-  font-size: .80em;
-  margin-left: 2px;
-}
-
 footer {
   padding: 25px 0;
   text-align: center;
@@ -281,7 +268,7 @@ ul.social-buttons li a:active {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
+/*TODO tengo entendido esto debería estar en especies.scss*/
 #fotos-bdi{
     text-align: center;
 }
