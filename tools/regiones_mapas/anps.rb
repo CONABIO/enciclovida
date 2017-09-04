@@ -16,10 +16,6 @@ end
 
 def guarda_anp(linea)
   @datos = linea.gsub("\"", '').split("\t")
-  @reg = RegionMapa.new
-  @reg.nombre_region = @datos[1]
-  @reg.geo_id = @datos[22]
-  @reg.tipo_region = 'ANP'
 
   if @datos[15].blank?
     puts "El campo de municipio esta vacio: #{@datos[22]}"
@@ -51,25 +47,29 @@ def guarda_anp(linea)
 end
 
 def coincide_mun?
+  reg = RegionMapa.new
+  reg.nombre_region = @datos[1]
+  reg.geo_id = @datos[22]
+  reg.tipo_region = 'ANP'
+
   @municipios.each do |m|
     if m.parent.nombre_region == @datos[4]  # Ver si coinciden los estados
-      reg_clon = @reg.clone
-      reg_clon.ancestry = m.path_ids.join('/')
-      reg_clon.save
-      puts "encontro sin problema: #{reg_clon.inspect} - #{@reg.nombre_region}"
-      break
+      reg.ancestry = m.path_ids.join('/')
+      reg.save
+      puts "encontro sin problema: #{reg.inspect} - #{reg.nombre_region}"
+      return
     else
       if @municipios.length == 1  # Si fue un municipio el de la base entonces que lo asigne
-        reg_clon = @reg.clone
-        reg_clon.ancestry = m.path_ids.join('/')
-        reg_clon.save
-        puts "encontro con otro estado #{reg_clon.inspect} - orig: #{@datos[4]}, base: #{m.parent.nombre_region}"
-        break
+        reg.ancestry = m.path_ids.join('/')
+        reg.save
+        puts "encontro con otro estado #{reg.inspect} - orig: #{@datos[4]}, base: #{m.parent.nombre_region}"
+        return
       else
-        puts "Encontró municipio, más no coincidio con el estado, - #{@reg.nombre_region}, orig: #{@datos[4]}, base: #{m.parent.nombre_region}"
+        puts "Encontró municipio, más no coincidio con el estado, - #{reg.nombre_region}, orig: #{@datos[4]}, base: #{m.parent.nombre_region}"
+        return
       end
 
-    end
+    end  # End si es igual el estado
   end
 end
 
