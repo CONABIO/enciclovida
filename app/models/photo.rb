@@ -1,12 +1,7 @@
 #encoding: utf-8
-class Photo < ActiveRecord::Base
-
-  belongs_to :usuario
-  has_many :taxon_photos, :dependent => :destroy
-  has_many :especies, :class_name => 'Especie', :through => :taxon_photos
+class Photo
 
   attr_accessor :api_response, :id, :usuario_id, :native_photo_id, :square_url, :thumb_url, :small_url, :medium_url, :large_url, :original_url, :created_at, :updated_at, :native_page_url, :native_username, :native_realname, :license, :type, :file_content_type, :file_file_name, :file_file_size, :file_processing, :mobile, :file_updated_at, :metadata
-  serialize :metadata
 
   # licensing extras
   attr_accessor :make_license_default
@@ -16,10 +11,6 @@ class Photo < ActiveRecord::Base
 
   cattr_accessor :descendent_classes
   cattr_accessor :remote_descendent_classes
-
-  before_save :set_license, :trim_fields
-  #after_save :update_default_license,          #no son necesarias
-  #           :update_all_licenses
 
   COPYRIGHT = 0
   NO_COPYRIGHT = 7
@@ -209,23 +200,6 @@ class Photo < ActiveRecord::Base
     try_methods(*methods)
   end
 
-
-#  def as_json(options = {})
-#    options[:except] ||= []
-#    options[:except] += [:metadata, :file_content_type, :file_file_name,
-#                         :file_file_size, :file_processing, :file_updated_at, :mobile]
-                         #:original_url]
-    #options[:methods] ||= []
-#    options[:methods] += [:license_name, :license_url, :attribution]
-     #options[:methods] = [:large_url,:medium_url,:native_page_url,:license,:square_url,:native_realname]
-
-#    super((options || { }).merge({
-#        :methods => [:large_url,:medium_url,:native_page_url,:license,:square_url,:native_realname]
-#    }))
-#    puts options.inspect
-#  end
-
-
   # Retrieve info about a photo from its native source given its native id.  
   # Should be implemented by descendents
   def self.get_api_response(native_photo_id, options = {})
@@ -255,19 +229,11 @@ class Photo < ActiveRecord::Base
   def self.license_code_for_number(number)
     LICENSE_INFO[number].try(:[], :code)
   end
-=begin
-  def self.default_json_options
-    {
-        :methods => [:license_code, :attribution],
-        :except => [:original_url, :file_processing, :file_file_size,
-                    :file_content_type, :file_file_name, :mobile, :metadata, :user_id,
-                    :native_realname, :native_photo_id]
-    }
-  end
-=end
+
   private
 
   def self.attributes_protected_by_default
     super - [inheritance_column]
   end
+
 end
