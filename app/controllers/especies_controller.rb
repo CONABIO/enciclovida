@@ -329,7 +329,11 @@ class EspeciesController < ApplicationController
 
     JSON.parse(params['fotos']).each do |foto|
       f = foto['photo'].present? ? foto['photo'] : foto
-      f_obj = Photo.new({native_page_url: f['native_page_url'],medium_url: f['medium_url'],large_url: f['large_url'],square_url: f['square_url']})
+      f_obj = Photo.new
+      f_obj.native_page_url = f['native_page_url']
+      f_obj.medium_url = f['medium_url']
+      f_obj.large_url = f['large_url']
+      f_obj.square_url = f['square_url']
       f_obj.attribution_txt = f['attribution']
       @fotos << f_obj
     end
