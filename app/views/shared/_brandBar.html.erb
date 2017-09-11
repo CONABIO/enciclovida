@@ -2,9 +2,9 @@
 
   <div class="dropdown pull-right">
     <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
       <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
       <span class="caret"></span>
+      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
       <li><%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b><i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil, :name => I18n.locale.to_s, :onClick => 'return cambia_locale(this.name);'%></li>
