@@ -1309,6 +1309,34 @@
       ]
     },
     {
+      "uid": "622d04b8b30025e3733b8b6b58704e2d",
+      "css": "exotica-invasora",
+      "code": 59497,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M197 239.2A413.3 411.1 0 1 0 825.9 605.1L357.3 804.1 206.2 872 197 239.2Z",
+        "width": 1286
+      },
+      "search": [
+        "exotica-invasora"
+      ]
+    },
+    {
+      "uid": "a935539aa70ea291622faa8124a81b88",
+      "css": "exotica-invasora-2",
+      "code": 59498,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M1284.1 242.9C771.7-247.7 404.7 168.6 397.7 200.4L249.8 89.4 259.8 782.8 876.8 504 695.8 387.1C912.9 86.1 1288.1 239.3 1284.1 242.9Z",
+        "width": 1286
+      },
+      "search": [
+        "exotica-invasora-2"
+      ]
+    },
+    {
       "uid": "bd05a113b498a5dcd0962a59c1570ea8",
       "css": "biomex",
       "code": 59474,
