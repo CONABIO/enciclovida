@@ -4,7 +4,7 @@
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
 
     <script data-turbolinks-track="true">
-        var loadMap = function (id)
+        var cargaMapa = function (id)
         {
             var place = [23.79162789, -102.04376221];
             var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -36,13 +36,28 @@
             map.addLayer(layer);
             map.setView(place, 5);  // Default place and zoom
         };
+
+        var cargaRegion = function(region)
+        {
+            $.ajax({
+                url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
+                method: 'GET',
+                data: {region: region}
+
+            }).done(function(resp) {
+
+            }).fail(function() {
+
+            });
+        }
     </script>
 
 <% end %>
 
 <% content_for(:delayedjs) do %>
     <script>
-        loadMap('map');
+        cargaMapa('map');
+        cargaRegion("aqui");
     </script>
 <% end %>
 
@@ -71,7 +86,3 @@
 <div id="especies" class="col-md-4">
   <%= render partial: 'especies' %>
 </div>
-
-<script>
-    //loadMap('map');
-</script>

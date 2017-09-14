@@ -1,5 +1,7 @@
 class RegionesMapasController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :set_locale
   before_action :set_region_mapa, only: [:show, :edit, :update, :destroy]
+  layout false, :only => [:dame_region]
 
   # GET /regiones_mapas
   # GET /regiones_mapas.json
@@ -61,14 +63,54 @@ class RegionesMapasController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_region_mapa
-      @region_mapa = RegionMapa.find(params[:id])
+  # Devuelve varias regiones o una región si es una hoja
+  def dame_region
+    if params[:id].present?
+      begin
+        set_region_mapa
+
+        if @region_mapa.has_children?
+          @region_mapa = @region_mapa.children
+        end
+      rescue
+        error = true
+      end
+
+    else  # La region a mostrar si da clic en alguna pestaña
+      if params[:tipo_region].present?
+        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region])
+      else
+        @region_mapa = RegionMapa.where(tipo_region: 'estado')
+      end
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def region_mapa_params
-      params[:region_mapa]
+    respond_to do |format|
+      format.html
+      format.json do
+        @res = {}
+
+        if error.blank?
+          @res[:estatus] = true
+          @res[:resultados] = @region_mapa
+        else
+          @res[:estatus] = false
+          @res[:msg] = "No existe una región con el ID: #{params[:id]}"
+        end
+
+        render json: @res
+      end
     end
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_region_mapa
+    @region_mapa = RegionMapa.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def region_mapa_params
+    params[:region_mapa]
+  end
 end

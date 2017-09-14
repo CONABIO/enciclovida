@@ -1,15 +1,17 @@
 class UbicacionesController < ApplicationController
 
   skip_before_filter :verify_authenticity_token, :set_locale
-  before_action :set_ubicacion, only: []
+  #before_action :set_ubicacion, only: []
   #before_action :authenticate_usuario!, :except => :create
 
   # Registros con un radio alreadedor de tu ubicación
   def ubicacion
   end
 
+  # /explora-por-region
   def region
   end
+
 
   private
 

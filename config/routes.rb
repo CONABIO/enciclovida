@@ -1,6 +1,10 @@
 Buscador::Application.routes.draw do
 
-  resources :regiones_mapas
+  resources :regiones_mapas do
+    collection do
+      get 'dame-region' => :dame_region
+    end
+  end
 
   get 'usuarios/conabio'
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
