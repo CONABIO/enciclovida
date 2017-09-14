@@ -1,4 +1,4 @@
-class GitHubService
+class GithubService
 
   def damePulls(numero=nil)
     @github = CONFIG.github.api
