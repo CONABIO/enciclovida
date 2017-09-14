@@ -70,7 +70,7 @@ class RegionesMapasController < ApplicationController
         set_region_mapa
 
         if @region_mapa.has_children?
-          @region_mapa = @region_mapa.children
+          @region_mapa = @region_mapa.children.order(nombre_region: :asc)
         end
       rescue
         error = true
@@ -78,9 +78,9 @@ class RegionesMapasController < ApplicationController
 
     else  # La region a mostrar si da clic en alguna pestaña
       if params[:tipo_region].present?
-        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region])
+        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region]).order(nombre_region: :asc)
       else
-        @region_mapa = RegionMapa.where(tipo_region: 'estado')
+        @region_mapa = RegionMapa.where(tipo_region: 'estado').order(nombre_region: :asc)
       end
     end
 

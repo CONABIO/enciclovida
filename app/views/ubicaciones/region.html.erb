@@ -37,17 +37,16 @@
             map.setView(place, 5);  // Default place and zoom
         };
 
-        var cargaRegion = function(region)
+        var cargaRegion = function(region_id, tipo_region)
         {
             $.ajax({
-                url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
-                method: 'GET',
-                data: {region: region}
+                url: '/regiones_mapas/dame-region',
+                data: {id: region_id, tipo_region: tipo_region}
 
             }).done(function(resp) {
-
+                $('.contenedor_regiones').empty().append(resp);
             }).fail(function() {
-
+                $('.contenedor_regiones').empty().html('Lo sentimos esa búsqueda no dio ningún resultado')
             });
         }
     </script>
@@ -57,7 +56,18 @@
 <% content_for(:delayedjs) do %>
     <script>
         cargaMapa('map');
-        cargaRegion("aqui");
+        cargaRegion();
+
+        $('#lista_tipos_regiones li a').on('click', function(){
+            cargaRegion(null, $(this).attr('tipo_region'));
+        });
+
+        $('.contenedor_regiones').on('scroll', function(){
+            if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
+            {
+
+            }
+        });
     </script>
 <% end %>
 
@@ -68,19 +78,22 @@
     <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
     <style>
         #map {
-            height: 500px;
-            width: 80%;
+            height: 800px;
+            width: 100%;
+        }
+        .contenedor_regiones {
+            height: 600px;
+            overflow: scroll;
         }
     </style>
 <% end %>
 
-
-<div id="contenedor_mapa" class="col-md-8">
-  <div id="map" width="300px;"></div>
-</div>
-
 <div id="regiones" class="col-md-4">
   <%= render partial: 'regiones' %>
+</div>
+
+<div id="contenedor_mapa" class="col-md-8">
+  <div id="map"></div>
 </div>
 
 <div id="especies" class="col-md-4">
