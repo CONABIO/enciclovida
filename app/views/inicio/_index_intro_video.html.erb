@@ -48,7 +48,8 @@
     }
 
     function setPaddingHeader(){
-        $('header').css('padding-bottom', ($(window).height()-$('#brandBar').height())+'px');
+	    $('header').css('padding-bottom', ($(window).height()-$('#brandBar').height())+'px');
+	    //$('#news').css('height', ($(window).height()-$('#brandBar').height()-60)+'px');
     }
     $(window).on('load', function(){
         vidRescale();
@@ -57,4 +58,9 @@
         vidRescale();
     });
     $(document).ready(setPaddingHeader());
+    $('.main-gallery').flickity({
+	    // options
+	    cellAlign: 'left',
+	    contain: true
+    });
 </script>

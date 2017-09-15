@@ -1,11 +1,12 @@
-<div id="news" class="col-xs-3">
-  <h2>News</h2>
-  <p>
-    checa aqui las noticias maás reelevantes
-  <ul>
-    <li>nueva vista</li>
-    <li>nuevas especies</li>
-    <li>mas awesomeness</li>
-  </ul>
-  </p>
+<div id="news" class="pull-right">
+	<div class="gallery js-flickity">
+	  <% dameNews.each do |v,k| %>
+	    <div class="gallery-cell">
+	      <p>
+	        <%= v %><br/>
+	        <small><%= k %></small>
+	      </p>
+	    </div>
+    <% end %>
+  </div>
 </div>

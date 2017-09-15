@@ -40,8 +40,11 @@
 <body id="page-top" class="index">
 <header style="background-image:url('/assets/portada/img_portada_video.png');">
   <%= render :partial => 'shared/brandBar' %>
+  <%= render :partial => 'inicio/index_news' %>
 </header>
-
+<div class="text-center row" style="margin-top: -120px;">
+  <a href="#about" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
+</div>
 <%= yield %>
 
 <!-- Partners -->
