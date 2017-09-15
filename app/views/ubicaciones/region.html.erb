@@ -37,16 +37,19 @@
             map.setView(place, 5);  // Default place and zoom
         };
 
-        var cargaRegion = function(region_id, tipo_region)
+        var cargaRegion = function(tipo_region, region_id, pagina)
         {
             $.ajax({
                 url: '/regiones_mapas/dame-region',
-                data: {id: region_id, tipo_region: tipo_region}
+                data: {id: region_id, tipo_region: tipo_region, pagina: pagina}
 
             }).done(function(resp) {
-                $('.contenedor_regiones').empty().append(resp);
+                if (pagina != undefined)
+                    $('.contenedor_regiones').append(resp);
+                else
+                    $('.contenedor_regiones').empty().append(resp);
             }).fail(function() {
-                $('.contenedor_regiones').empty().html('Lo sentimos esa búsqueda no dio ningún resultado')
+                $('.contenedor_regiones').empty().html('Lo sentimos esa búsqueda no dio ningún resultado');
             });
         }
     </script>
@@ -55,17 +58,24 @@
 
 <% content_for(:delayedjs) do %>
     <script>
+        pagina = 1;
+        tipo_region = 'estado';
         cargaMapa('map');
         cargaRegion();
 
         $('#lista_tipos_regiones li a').on('click', function(){
-            cargaRegion(null, $(this).attr('tipo_region'));
+            tipo_region = $(this).attr('tipo_region');
+            cargaRegion(tipo_region);
+            pagina = 1;
         });
 
         $('.contenedor_regiones').on('scroll', function(){
             if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
             {
+                pagina++;
+                console.log(pagina + '-' + tipo_region);
 
+                cargaRegion(tipo_region , null, pagina);
             }
         });
     </script>

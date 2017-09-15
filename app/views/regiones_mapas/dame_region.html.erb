@@ -1,8 +1,14 @@
-<ul class="list-group">
-  <% @region_mapa.each do |region| %>
-      <li class="list-group-item">
-        <% ancestros = region.ancestors.reverse.map(&:nombre_region).join(', ') %>
-        <%= link_to "#{region.nombre_region}, #{ancestros}", nil, region_id: region.geo_id %>
-      </li>
-  <% end %>
-</ul>
+<% if params[:pagina].blank? %>
+    <ul class="list-group">
+<% end %>
+
+<% @region_mapa.each do |region| %>
+    <li class="list-group-item">
+      <% ancestros = region.ancestors.reverse.map(&:nombre_region).join(', ') %>
+      <%= link_to "#{region.nombre_region}, #{ancestros}", nil, region_id: region.geo_id %>
+    </li>
+<% end %>
+
+<% if params[:pagina].blank? %>
+    </ul>
+<% end %>

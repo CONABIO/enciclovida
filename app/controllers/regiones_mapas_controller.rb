@@ -65,12 +65,18 @@ class RegionesMapasController < ApplicationController
 
   # Devuelve varias regiones o una región si es una hoja
   def dame_region
+    # Para la paginacion
+    pagina = params[:pagina] ||= 1
+    pagina = pagina.to_i
+    por_pagina = 15
+    offset = por_pagina*(pagina-1)
+
     if params[:id].present?
       begin
         set_region_mapa
 
         if @region_mapa.has_children?
-          @region_mapa = @region_mapa.children.order(nombre_region: :asc)
+          @region_mapa = @region_mapa.children
         end
       rescue
         error = true
@@ -78,10 +84,14 @@ class RegionesMapasController < ApplicationController
 
     else  # La region a mostrar si da clic en alguna pestaña
       if params[:tipo_region].present?
-        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region]).order(nombre_region: :asc)
+        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region])
       else
-        @region_mapa = RegionMapa.where(tipo_region: 'estado').order(nombre_region: :asc)
+        @region_mapa = RegionMapa.where(tipo_region: 'estado')
       end
+    end
+
+    if @region_mapa
+      @region_mapa = @region_mapa.offset(offset).limit(por_pagina).order(nombre_region: :asc)
     end
 
     respond_to do |format|
