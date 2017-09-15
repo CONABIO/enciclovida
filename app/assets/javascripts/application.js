@@ -28,3 +28,4 @@
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require "i18n/translations"
+//= require "flickity.pkgd"
