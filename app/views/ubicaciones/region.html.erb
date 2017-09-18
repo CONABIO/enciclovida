@@ -1,15 +1,74 @@
 <% content_for(:extrajs) do %>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/0.5.9/chroma.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
     <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
 
     <script data-turbolinks-track="true">
+        function addTopoData(topoData){
+            topoLayer.addData(topoData);
+            topoLayer.addTo(map);
+            topoLayer.eachLayer(handleLayer);
+        }
+
+        function handleLayer(layer){
+            var randomValue = Math.random(),
+                    fillColor = colorScale(randomValue).hex();
+
+            layer.setStyle({
+                fillColor : fillColor,
+                fillOpacity: 1,
+                color:'#555',
+                weight:1,
+                opacity:.5
+            });
+            layer.on({
+                mouseover : enterLayer,
+                mouseout: leaveLayer
+            });
+        }
+        function enterLayer(){
+            var countryName = this.feature.properties.name;
+            $countryName.text(countryName).show();
+
+            this.bringToFront();
+            this.setStyle({
+                weight:2,
+                opacity: 1
+            });
+        }
+        function leaveLayer(){
+            $countryName.hide();
+            this.bringToBack();
+            this.setStyle({
+                weight:1,
+                opacity:.5
+            });
+        }
+
+        // Copyright (c) 2013 Ryan Clark
+        // https://gist.github.com/rclark/5779673
+        L.TopoJSON = L.GeoJSON.extend({
+            addData: function(jsonData) {
+                if (jsonData.type === "Topology") {
+                    for (key in jsonData.objects) {
+                        geojson = topojson.feature(jsonData, jsonData.objects[key]);
+                        L.GeoJSON.prototype.addData.call(this, geojson);
+                    }
+                }
+                else {
+                    L.GeoJSON.prototype.addData.call(this, jsonData);
+                }
+            }
+        });
+
         var cargaMapa = function (id)
         {
             var place = [23.79162789, -102.04376221];
             var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 
-            var map = L.map(id, {
+            map = L.map(id, {
                 zoomControl: false
             });
 
@@ -35,6 +94,13 @@
 
             map.addLayer(layer);
             map.setView(place, 5);  // Default place and zoom
+
+            // variables de topjson
+            topoLayer = new L.TopoJSON();
+            $countryName = $('.country-name');
+            colorScale = chroma
+                    .scale(['#D5E3FF', '#003171'])
+                    .domain([0,1]);
         };
 
         var cargaRegion = function(tipo_region, region_id, pagina)
@@ -58,15 +124,30 @@
 
 <% content_for(:delayedjs) do %>
     <script>
+        // variables del mapa y topojson
+        map = null;
+        topoLayer = null;
+        $countryName = null;
+        colorScale = null;
+
+        // variables del scrolling de las regiones
         pagina = 1;
         tipo_region = 'estado';
+
         cargaMapa('map');
         cargaRegion();
+
+        $.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
 
         $('#lista_tipos_regiones li a').on('click', function(){
             tipo_region = $(this).attr('tipo_region');
             cargaRegion(tipo_region);
             pagina = 1;
+        });
+
+        $('.contenedor_regiones ul li a').on('click', function(){
+            console.log('dio clic a region');
+            return false;
         });
 
         $('.contenedor_regiones').on('scroll', function(){
