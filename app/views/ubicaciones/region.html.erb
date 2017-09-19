@@ -122,28 +122,48 @@
         var cargaConteoEspecies = function(region_id)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
-            var conteo = {};
-            conteo["Aves"] = 547;
-            conteo["Mamíferos"] = 356;
-            conteo["Anfibios"] = 234;
-            conteo["Arácnidos"] = 134;
-            conteo["Reptiles"] = 491;
-            conteo["Peces con aletas radiadas"] = 346;
-            conteo["Insectos"] = 643;
-            conteo["Plantas"] = 531;
-            conteo["Hongos"] = 31;
-            conteo["Camarones, cangrejos y parintes"] = 46;
+            var grupos = {};
+            grupos["Aves"] = 547;
+            grupos["Mamíferos"] = 356;
+            grupos["Anfibios"] = 234;
+            grupos["Arácnidos"] = 134;
+            grupos["Reptiles"] = 491;
+            grupos["Peces con aletas radiadas"] = 346;
+            grupos["Insectos"] = 643;
+            grupos["Plantas"] = 531;
+            grupos["Hongos"] = 31;
+            grupos["Camarones, cangrejos y parintes"] = 46;
 
-            return conteo;
+            $('#contenedor_especies').empty();
+            $.each(grupos, function(grupo, valor){
+                $('#contenedor_especies').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
+            });
         };
 
-        var poneConteoEspecies = function(conteo)
+        var cargaEspeciesGrupo = function(elemento, pagina, por_pagina)
         {
-            $('#contenedor_especies').empty();
-            $.each(conteo, function(grupo, valor){
-                $('#contenedor_especies').append('<li class="list-group-item">' + grupo + '<span class="badge">' + valor + '</span></li>');
+            // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
+            var especies = {};
+            especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
+                "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
+
+            // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
+            $.ajax({
+                url: '/especies-por-catalogo-id',
+                data: {catalogo_id: especies["resultados"]}
+            }).done(function(resp) {
+                if (resp.estatus)
+                {
+                    $.each(resp.resultados, function(index, taxon){
+                        elemento.parent().append('<li class="list-group-item" snib_url="' + taxon.snib_mapa_json + '">' + taxon.nombre_cientifico + '</li>');
+                    });
+                }
+                else
+                    console.log('algo salio mal');
+
+            }).fail(function() {
+
             });
-            return false;
         };
     </script>
 
@@ -172,8 +192,12 @@
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             $.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
-            var conteo = cargaConteoEspecies($(this).attr('region_id'));
-            poneConteoEspecies(conteo);
+            cargaConteoEspecies($(this).attr('region_id'));
+            return false;
+        });
+
+        $('#contenedor_especies').on('click', '.grupo_id', function(){
+            cargaEspeciesGrupo($(this));
             return false;
         });
 

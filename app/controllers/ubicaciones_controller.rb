@@ -12,6 +12,24 @@ class UbicacionesController < ApplicationController
   def region
   end
 
+  def especies_por_catalogo_id
+    if params[:catalogo_id].present?
+      resultados = []
+
+      Especie.where(catalogo_id: params[:catalogo_id]).each do |taxon|
+        next unless p = taxon.proveedor
+        geodatos = p.geodatos
+        next unless geodatos.any?
+        resultados << {nombre_cientifico: taxon.nombre_cientifico, snib_mapa_json: geodatos[:snib_mapa_json]}
+      end  # each taxon
+
+      render json: {estatus: true, resultados: resultados}
+
+    else
+      render json: {estatus: false, msg: 'No hubo especies que '}
+    end  # End catalogo_id present
+  end
+
 
   private
 
