@@ -119,7 +119,7 @@
             });
         };
 
-        var cargaConteoEspecies = function(region_id)
+        var cargaGrupos = function(region_id)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
             var grupos = {};
@@ -134,20 +134,20 @@
             grupos["Hongos"] = 31;
             grupos["Camarones, cangrejos y parintes"] = 46;
 
-            $('#contenedor_especies').empty();
+            $('#contenedor_grupos').empty();
             $.each(grupos, function(grupo, valor){
-                $('#contenedor_especies').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
+                $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
             });
         };
 
-        var cargaEspeciesGrupo = function(elemento, pagina, por_pagina)
+        var cargaEspecies = function(elemento, pagina, por_pagina)
         {
             // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
             var especies = {};
             especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
                 "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
 
-            // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
+            // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos
             $.ajax({
                 url: '/especies-por-catalogo-id',
                 data: {catalogo_id: especies["resultados"]}
@@ -192,12 +192,12 @@
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             $.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
-            cargaConteoEspecies($(this).attr('region_id'));
+            cargaGrupos($(this).attr('region_id'));
             return false;
         });
 
-        $('#contenedor_especies').on('click', '.grupo_id', function(){
-            cargaEspeciesGrupo($(this));
+        $('#contenedor_grupos').on('click', '.grupo_id', function(){
+            cargaEspecies($(this));
             return false;
         });
 
@@ -229,13 +229,18 @@
 <% end %>
 
 <div id="regiones" class="col-md-4">
-  <%= render partial: 'regiones' %>
+  <%= render partial: 'tipos_regiones' %>
+  <div class="contenedor_regiones"></div>
 </div>
 
 <div id="contenedor_mapa" class="col-md-8">
   <div id="map"></div>
 </div>
 
-<div id="especies" class="col-md-4">
+<div id="grupos" class="col-md-12">
+  <%= render partial: 'grupos' %>
+</div>
+
+<div id="especies" class="col-md-12">
   <%= render partial: 'especies' %>
 </div>

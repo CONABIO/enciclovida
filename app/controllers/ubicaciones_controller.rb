@@ -9,7 +9,7 @@ class UbicacionesController < ApplicationController
   end
 
   # /explora-por-region
-  def region
+  def por_region
   end
 
   def especies_por_catalogo_id
