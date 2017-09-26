@@ -1,12 +1,13 @@
-<div id="news" class="pull-right">
-	<div class="gallery js-flickity">
+<div id="news" class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+	<h4><b>Últimas noticias </b><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></h4>
+	<div id="issues">
 	  <% dameNews.each do |v,k| %>
-	    <div class="gallery-cell">
-	      <p>
-	        <%= v %><br/>
-	        <small><%= k %></small>
-	      </p>
+	    <div class="issue">
+
+	      <strong><%= v %></strong><br />
+	      <small><%= k %></small>
+
 	    </div>
-    <% end %>
+	  <% end %>
   </div>
 </div>
