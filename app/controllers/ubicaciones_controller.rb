@@ -20,7 +20,13 @@ class UbicacionesController < ApplicationController
         next unless p = taxon.proveedor
         geodatos = p.geodatos
         next unless geodatos.any?
+
         resultados << {nombre_cientifico: taxon.nombre_cientifico, snib_mapa_json: geodatos[:snib_mapa_json]}
+
+        if a = taxon.adicional
+          resultados.last.merge!(nombre_comun: a.nombre_comun_principal, foto: a.foto_principal)
+        end
+
       end  # each taxon
 
       render json: {estatus: true, resultados: resultados}
