@@ -48,7 +48,9 @@
     }
 
     function setPaddingHeader(){
-        $('header').css('padding-bottom', ($(window).height()-$('#brandBar').height())+'px');
+	    var vacio = $(window).height()-$('#brandBar').height();
+	    $('header').css('padding-bottom', (vacio));
+	    $('#news').css('margin-top', (100-vacio));
     }
     $(window).on('load', function(){
         vidRescale();
