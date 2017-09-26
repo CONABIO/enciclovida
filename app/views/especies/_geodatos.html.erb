@@ -1,6 +1,28 @@
 <% content_for(:extrajs) do %>
   <script src="http://cdn.leafletjs.com/leaflet/v1.1.0/leaflet.js" data-turbolinks-track="true"></script>
   <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js" data-turbolinks-track="true"></script>
+
+  <%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
+
+  <script data-turbolinks-track="true">
+	  $('#map').css('height', $('#contenedor_mapa').height() - 30);
+	  $(document).ready(function() {
+		  //map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
+		  $(window).resize(function () {
+			  $('#map').css('height', $('#contenedor_mapa').height() - 30);
+			  map.invalidateSize(true);
+		  });
+
+		  //TODO: Poner en el evento cuando se crea el mapa y acomodar este js
+		  $('#geodata_e_imagen_li > a, #map a.leaflet-control-fullscreen-button').click(function () {
+			  setTimeout(function(){
+				  $('#map').css('height', $('#contenedor_mapa').height() - 30);
+				  map.invalidateSize(true);
+			  },1000);
+		  });
+	  });
+  </script>
+
 <% end %>
 
 <% content_for(:extracss) do %>
@@ -12,25 +34,6 @@
   <%= stylesheet_link_tag "MarkerCluster.Default", "data-turbolinks-track" => true %>
 <% end %>
 
-<%= javascript_include_tag "geodatos/geodatos_todos", "data-turbolinks-track" => true %>
 
 <div id="map"></div>
 
-<script data-turbolinks-track="true">
-	$('#map').css('height', $('#contenedor_mapa').height() - 30);
-	$(document).ready(function() {
-		//map.fitBounds(L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)));
-		$(window).resize(function () {
-			$('#map').css('height', $('#contenedor_mapa').height() - 30);
-			map.invalidateSize(true);
-		});
-
-        //TODO: Poner en el evento cuando se crea el mapa y acomodar este js
-		$('#geodata_e_imagen_li > a, #map a.leaflet-control-fullscreen-button').click(function () {
-            setTimeout(function(){
-                $('#map').css('height', $('#contenedor_mapa').height() - 30);
-                map.invalidateSize(true);
-            },1000);
-		});
-	});
-</script>
