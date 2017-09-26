@@ -29,16 +29,16 @@ header {
   height: 200px;
   overflow: hidden;
 }
-#news > h4{
+#news > h5{
   background-color: #333333;
   display: block;
   position: absolute;
   right: 0px;
   left: 0px;
-  text-align: right;
   margin: 0 10px;
   padding: 0 10px;
   line-height: 30px;
+  font-weight: bold;
 }
 #issues{
   margin-top: 30px;
@@ -55,18 +55,10 @@ header {
   80% {margin-top: -770px;}
   100% {margin-top: 30px;}
 }
-
 .issue{
   height: 200px;
   padding: 0 25px;
   background-color: rgba(130, 158, 61, 0.5);
-}
-
-/* cell number */
-.gallery-cell:before {
-/*  display: block;*/
-/*  content: counter(gallery-cell);*/
-/*  font-size: 20px;*/
 }
 
 @media(min-width:768px){
