@@ -91,7 +91,7 @@ class ValidacionAvanzada < Validacion
       coincide_familia_orden?
 
       if validacion[:estatus]  # Puede que se quede con el primer caso que coincida la familia o el orden
-        validacion[:msg] = "Orig: #{nombre_cientifico}; Enciclo: #{taxon.nombre_cientifico}"
+        validacion[:msg] = 'Búsqueda similar'
         return
       end
     end
@@ -188,7 +188,7 @@ class ValidacionAvanzada < Validacion
       end
     else  # No tiene ni familia ni orden, entonces lo regreso false, ya que es ambiguo y no se puede decidir
       validacion[:estatus] = false
-      validacion[:msg] = 'El resultado es ambiguo, buscamos más arriba'
+      validacion[:msg] = 'Sin coincidencias'
     end
 
     puts "\n\n\nResultado en familia u orden: #{validacion[:estatus].to_s}"
