@@ -1,60 +1,112 @@
-.marker-cluster-small {
-	background-color: rgba(181, 226, 140, 0.6);
-	}
-.marker-cluster-small div {
-	background-color: rgba(110, 204, 57, 0.6);
-	}
-
-.marker-cluster-medium {
-	background-color: rgba(241, 211, 87, 0.6);
-	}
-.marker-cluster-medium div {
-	background-color: rgba(240, 194, 12, 0.6);
-	}
-
-.marker-cluster-large {
-	background-color: rgba(253, 156, 115, 0.6);
-	}
-.marker-cluster-large div {
-	background-color: rgba(241, 128, 23, 0.6);
-	}
-
-	/* IE 6-8 fallback colors */
-.leaflet-oldie .marker-cluster-small {
-	background-color: rgb(181, 226, 140);
-	}
-.leaflet-oldie .marker-cluster-small div {
-	background-color: rgb(110, 204, 57);
-	}
-
-.leaflet-oldie .marker-cluster-medium {
-	background-color: rgb(241, 211, 87);
-	}
-.leaflet-oldie .marker-cluster-medium div {
-	background-color: rgb(240, 194, 12);
-	}
-
-.leaflet-oldie .marker-cluster-large {
-	background-color: rgb(253, 156, 115);
-	}
-.leaflet-oldie .marker-cluster-large div {
-	background-color: rgb(241, 128, 23);
+.marker-cluster-geoportal-small {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+.marker-cluster-geoportal-small div {
+  background-color: rgba(255, 0, 0, .5);
+}
+.marker-cluster-geoportal-medium {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+.marker-cluster-geoportal-medium div {
+  background-color: rgba(255, 0, 0, .9);
+}
+.marker-cluster-geoportal-large {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+.marker-cluster-geoportal-large div {
+  background-color: rgba(160, 0, 0, 1);
 }
 
-.marker-cluster {
-	background-clip: padding-box;
-	border-radius: 20px;
-	}
-.marker-cluster div {
-	width: 30px;
-	height: 30px;
-	margin-left: 5px;
-	margin-top: 5px;
 
-	text-align: center;
-	border-radius: 15px;
-	font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
-	}
+.leaflet-oldie .marker-cluster-small {
+  background-color: rgb(229, 119, 119);
+}
+.leaflet-oldie .marker-cluster-small div {
+  background-color: rgb(255, 102, 102);
+}
+.leaflet-oldie .marker-cluster-medium {
+  background-color: rgb(229, 119, 119);
+}
+.leaflet-oldie .marker-cluster-medium div {
+  background-color: rgb(255, 0, 0);
+}
+.leaflet-oldie .marker-cluster-large {
+  background-color: rgb(229, 119, 119);
+}
+.leaflet-oldie .marker-cluster-large div {
+  background-color: rgb(160, 0, 0);
+}
+
+
+.marker-cluster-naturalista-small {
+  background-color: rgba(11, 156, 49, 0.3);
+}
+.marker-cluster-naturalista-small div {
+  background-color: rgba(0, 131, 25, .4);
+}
+.marker-cluster-naturalista-medium {
+  background-color: rgba(11, 156, 49, 0.3);
+}
+.marker-cluster-naturalista-medium div {
+  background-color: rgba(0, 131, 25, .9);
+}
+.marker-cluster-naturalista-large {
+  background-color: rgba(11, 156, 49, 0.3);
+}
+.marker-cluster-naturalista-large div {
+  background-color: rgba(0, 82, 25, 1);
+}
+
+
+.leaflet-oldie .marker-cluster-naturalista-small {
+  background-color: rgb(191, 247, 246);
+}
+.leaflet-oldie .marker-cluster-naturalista-small div {
+  background-color: rgb(200, 255, 25);
+}
+.leaflet-oldie .marker-cluster-naturalista-medium {
+  background-color: rgb(191, 247, 246);
+}
+.leaflet-oldie .marker-cluster-naturalista-medium div {
+  background-color: rgb(0, 131, 25);
+}
+.leaflet-oldie .marker-cluster-naturalista-large {
+  background-color: rgb(191, 247, 246);
+}
+.leaflet-oldie .marker-cluster-naturalista-large div {
+  background-color: rgb(0, 82, 25);
+}
+
+
+.marker-cluster {
+  background-clip: padding-box;
+  border-radius: 20px;
+}
+
+.marker-cluster div {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  margin-top: 5px;
+
+  text-align: center;
+  border-radius: 15px;
+  font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
 .marker-cluster span {
-	line-height: 30px;
-	}
+  line-height: 30px;
+  color: #ffffff;
+}
+
+
+.custom .leaflet-popup-tip,
+.custom .leaflet-popup-content-wrapper {
+  background: #2DC95B; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(#2DC95B, #2DC95B); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#2DC95B, #3B9A58); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#2DC95B, #3B9A58); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#2DC95B, #3B9A58); /* Standard syntax */
+  color: #ffffff;
+  border-radius: 5px;
+}
