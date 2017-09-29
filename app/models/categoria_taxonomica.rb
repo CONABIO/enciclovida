@@ -7,13 +7,15 @@ class CategoriaTaxonomica < ActiveRecord::Base
   scope :cat_taxonom, ->(valor) { find(valor).nombre_categoria_taxonomica }
 
   # Todas las categorias
-  CATEGORIAS  = self.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_').downcase}.uniq
+  CATEGORIAS  = self.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_').downcase.strip}.uniq
   # Despliego solo estas categorias para la vista basica
   CATEGORIAS_OBLIGATORIAS = %w(Reino phylum división clase orden familia género especie subespecie)
   # Para un mejor uso de las infraespecies
   CATEGORIAS_INFRAESPECIES = %w(subespecie forma subforma variedad subvariedad)
   # Reinos
   CATEGORIAS_REINOS = %w(animalia plantae protoctista fungi prokaryotae)
+  # Categorias para geodatos
+  CATEGORIAS_GEODATOS = CATEGORIAS_INFRAESPECIES + %w(familia subfamilia tribu subtribu género subgénero sección subsección serie subserie especie)
 
   # Abreviaciones de las categorias taxonomicas
   ABREVIACIONES = {

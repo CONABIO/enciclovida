@@ -145,4 +145,24 @@ module ApplicationHelper
     correo_en_fuente.gsub!("text-link","text-info") if claro
     link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
   end
+
+  def imagotipo_naturalista_completo
+    "<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>".html_safe
+  end
+
+  def imagotipo_naturalista_nombre(tamaño = nil)
+    "<i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>".html_safe
+  end
+
+  def imagotipo_naturalista_app
+    "<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i>".html_safe
+  end
+
+  def icono_globo
+    "<i class='globe-ev-icon'></i>".html_safe
+  end
+
+  def icono_descarga
+    "<i class='glyphicon glyphicon-save'></i>".html_safe
+  end
 end

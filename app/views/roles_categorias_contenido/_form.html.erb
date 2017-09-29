@@ -1,0 +1,25 @@
+<%= form_for(@rol_categorias_contenido, :html => {:class => 'form-inline'}) do |f| %>
+    <% if @rol_categorias_contenido.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@rol_categorias_contenido.errors.count, "error") %> prohibited this categorias_contenido_rol from being saved:</h2>
+
+          <ul>
+            <% @rol_categorias_contenido.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :rol_id %>
+      <%= f.collection_select(:rol_id, Rol.all, :id, :nombre_rol, options ={:prompt => "Selecciona un rol"}, {:class => 'form-control', :required => true }) %>
+    </div>
+    <div class="form-group">
+      <%= f.label :categorias_contenido_id %>
+      <%= f.select(:categorias_contenido_id, options_for_select(CategoriasContenido.categorias_para_roles, @rol_categorias_contenido.categorias_contenido_id), options ={:prompt => "Selecciona una categoria"}, {:class => 'form-control', :required => true }) %>
+    </div>
+
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
+
+<% end %>

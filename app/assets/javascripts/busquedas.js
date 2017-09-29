@@ -16,10 +16,7 @@ por_nombre = function()
         $(this).prop('checked', false);
     });
 
-    $('#por_gi').hide();
-    $('#por_nombre_fuente').hide();
-    $('#por_gi_fuente').show();
-    $('#por_nombre').slideDown();
+    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
 por_gi = function()
@@ -29,10 +26,7 @@ por_gi = function()
     $("#datos_cat").html("");
     $("#panelCategoriaTaxonomicaPt").hide();
 
-    $('#por_gi').slideDown();
-    $('#por_nombre_fuente').show();
-    $('#por_gi_fuente').hide();
-    $('#por_nombre').hide();
+    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
 soulmate_asigna = function(tipo_busqueda)
@@ -45,11 +39,14 @@ soulmate_asigna = function(tipo_busqueda)
             return nombres;
 
         } else {
-            var nombres = '<h5>' + firstToUpperCase(data.nombre_comun)+'</h5>' + '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+            if (data.nombre_comun == null)
+                var nombres = '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+            else
+                var nombres = '<b>' + firstToUpperCase(data.nombre_comun) + ' </b><sub>(' + data.lengua + ')</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
-            if (data.foto.length == 0)
+
+            if (data.foto == null)
                 var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
-
             else {
                 var foto_url = data.foto;
                 var foto = "<i class='soulmate-img pull-left' style='background-image: url(\"" + foto_url + "\")';></i>";
@@ -73,7 +70,7 @@ soulmate_asigna = function(tipo_busqueda)
     var select = function(term, data, type)
     {
         $('#nombre').val(term);
-        $('#id').attr('value', data.id);
+        $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
 
         if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')

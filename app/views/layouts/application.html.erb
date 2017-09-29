@@ -31,23 +31,18 @@
 </head>
 <body>
 
-<div id="img-fondo"></div>
 
 <%= yield :ribbon %>
 
-<header>
+<header class="container-fluid">
   <%= render :partial => 'shared/brandBar' %>
 </header>
 
 <section id="content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1">
-        <div class="row main">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <%= yield %>
-          </div>
-        </div>
+    <div class="row main">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= yield %>
       </div>
     </div>
   </div>
@@ -61,7 +56,9 @@
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
 
-<%= bitacora.html_safe if bitacora.present? %>
+<%#TODO bitacora.html_safe if bitacora.present? %>
+
+<%= yield :delayedjs %>
 <%= yield :extrajs_carrusel %>
 <% if Rails.env == 'production'  %>
     <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>

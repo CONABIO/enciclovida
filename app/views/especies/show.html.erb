@@ -1,6 +1,46 @@
 <% content_for(:extrajs) do %>
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+<% end %>
+
+<%= content_for(:delayedjs) do %>
+    <script>
+        function paginado_fotos(paginas, pagina)
+        {
+            var es_primero = null;
+
+            $('.paginado_1, .paginado_2').bootpag({
+                total: paginas,          // total pages
+                page: pagina,            // default page
+                maxVisible: 5,     // visible pagination
+                leaps: true,         // next/prev leaps through maxVisible
+                firstLastUse: true,
+                first: '←',
+                last: '→'
+            }).on("page", function (event, pag) {
+                if (es_primero == pag)
+                    return;
+                else {
+                    $.ajax(
+                            {
+                                url: '/especies/' + TAXON.id + '/fotos-bdi.html',
+                                type: 'GET',
+                                data: {
+                                    pagina: pag
+                                }
+                            }).done(function (res) {
+                                $('#paginado_fotos').empty().append(res);
+                            });
+                }
+
+                es_primero = pag;
+            });
+        }
+
+        // Para correr los nobres comunes del lado del cliente
+        nombres_comunes_todos();
+    </script>
 <% end %>
 
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
@@ -8,6 +48,7 @@
     var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
     var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
     var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
+    var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
 </script>
 
 <% if notice.present? %>
@@ -24,60 +65,59 @@
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
       <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
+      <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
     </h3>
   </div>
-
+  <% if (@species_or_lower) %>
+    <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
+      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+    </div>
+  <% end %>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <%= dameNomComunes(@especie).html_safe %>
+    <div id="nombres_comunes_todos"></div>
     <%= dameStatus(@especie).html_safe %>
   </div>
 </div>
-
-<% if (@species_or_lower) %>
-    <div class="row" style="padding: 5px 0 15px 0;">
-      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-    </div>
-<% end %>
-
+<hr/>
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="glyphicon glyphicon-globe"></i>&middot;<i class="picture-ev-icon"></i><strong> Mapa e imágenes</strong></a></li>
-    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong> Información <%= t(:del_taxon) %></strong></a></li>
-    <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong>  <%= t :arreglo_taxonomico %></strong></a></li>
-    <li id="describe_li" <%= 'class = "hidden"'.html_safe unless @species_or_lower %>><a href="#describe"><i class="newspaper-ev-icon"></i><strong>  Fichas</strong></a></li>
-    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong>  Comentarios</strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
+    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a></li>
+    <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
+    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
+    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Información <%= t(:del_taxon) %></small></strong></a></li>
+    <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
+    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
 
-    <li class="pull-right">
-      <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
-      <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-sm btn-default', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
-      <% else %>
-          <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-sm btn-default', id: :boton_pdf, target: '_blank') %>
-      <% end %>
-    </li>
 
-    <li class="pull-right">
-      <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-sm btn-default btn-title',
-                     onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
-                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
-    </li>
-
-    <% if @con_naturalista %>
-        <li class="pull-right">
-          <%= button_tag(' NaturaLista', type: :button, class: 'noLoad btn btn-sm btn-default btn-title naturalista-ev-icon',
-                         onClick: "window.open('http://www.naturalista.mx/observations/new?taxon_id=#{@con_naturalista}',
-                     '_blank', 'status=no', 'menubar=no')", title: 'Sube tus observaciones a NaturaLista') %>
+    <div class="btn-group pull-right">
+      <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Más recursos...  <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" style="z-index: 1001;">
+        <li>
+          <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
+          <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
+            <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-link', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+          <% else %>
+            <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-link', id: :boton_pdf, target: '_blank') %>
+          <% end %>
         </li>
-    <% end %>
+
+        <li>
+          <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-link',
+                         onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
+                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
+        </li>
+
+        <% if @con_naturalista %>
+          <li>
+            <%= link_to("Añade una obs. en: #{imagotipo_naturalista_nombre}".html_safe, "#{CONFIG.naturalista_url}/observations/new?taxon_id=#{@con_naturalista}", class: 'noLoad btn btn-link', target: '_blank') %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   </ul>
 
-  <% if I18n.locale.to_s != 'es-cientifico' %>
-      <script type="application/javascript">
-        // Para cambiar el orden de los TABS en vista general
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[2],$('#pestañas > ul')[0].children[1]);
-        $('#pestañas > ul')[0].insertBefore($('#pestañas > ul')[0].children[3],$('#pestañas > ul')[0].children[1]);
-      </script>
-  <% end %>
 
   <div id="geodata_e_imagen" class="tab-pane panel-body">
     <%= render :partial => 'geodata_e_imagen' %>
@@ -85,19 +125,25 @@
 
   <div id="descripcion_catalogos" class="tab-pane panel-body">
     <p class="text-center">
-      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
     <h4>Cargando... Por favor, espera</h4>
     </p>
   </div>
 
   <div id="describe" class="tab-pane panel-body">
     <p class="text-center">
-      <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
     <h4>Cargando... Por favor, espera</h4>
     </p>
   </div>
 
+  <div id="fotos-bdi" class="tab-pane panel-body">
+    <p class="text-center">
+      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+    </p>
+  </div>
+  
   <div id="arbol" class="tab-pane panel-body"></div>
-
   <div id="comentario" class="tab-pane panel-body"></div>
 </div>

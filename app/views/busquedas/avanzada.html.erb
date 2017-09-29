@@ -1,20 +1,30 @@
-<div id="busqueda_avanzada" class="row">
+
+<%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+  <% if I18n.locale.to_s != 'es-cientifico' %>
+    <style type="text/css">
+	    .soulmate-type-suggestions li{
+		    padding: 1em 0;
+		    min-height: 125px;
+	    }
+    </style>
+  <% end %>
+<%- end -%>
+<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
+  <% if params[:action] != 'resultados' %>
+    <h4 class="text-left text-success"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />
+  <% end %>
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
-      <div class="panel panel-success <%= params[:action]=='resultados' ? '' : 'dropup' %>" id="panelFiltrosPt">
-        <div class="panel-heading" onclick="$('#panelFiltros').slideToggle({duration: 500, easing: 'easeOutBounce', done: $('#panelFiltrosPt').toggleClass('dropup')});">
-          <h5><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
-            <%= (params[:action]=='resultados' ? 'Tu última <strong>búsqueda avanzada</strong> se realizó con los siguientes filtros (click para desplegar): ' : '<strong>  Búsqueda avanzada.</strong> Selecciona un ícono o una combinación de íconos y presiona buscar.').html_safe %>
-          <span class="caret"></span></h5>
-        </div>
-        <div class="panel-body text-center" id="panelFiltros" style="display: <%= params[:action]=='resultados' ? 'none' : 'block' %>;">
-          <% if I18n.locale.to_s == 'es-cientifico' %>
-              <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
-          <% else %>
-              <%= render :partial => 'busqueda_avanzada_vista_basica' %>
-          <% end %>
-          <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9">
-            <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>
-            <button class="form-control btn btn-default"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
+    <div class="" id="panelFiltrosPt">
+      <div class="text-left" id="panelFiltros">
+        <% if I18n.locale.to_s == 'es-cientifico' %>
+          <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
+        <% else %>
+          <%= render :partial => 'busqueda_avanzada_vista_basica' %>
+        <% end %>
+        <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9' if(params[:action] !='resultados') %>">
+          <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>
+          <button class="form-control btn btn-default"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
           </div>
         </div>
       </div>

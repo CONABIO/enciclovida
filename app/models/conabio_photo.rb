@@ -1,9 +1,9 @@
-class ConabioPhoto < Photo
+class ConabioPhoto
 
   Photo.descendent_classes ||= []
   Photo.descendent_classes << self
 
-  validate :licensed_if_no_user
+  #validate :licensed_if_no_user
 
   def sync
     new_photo = self.class.new_from_api_response(self.class.get_api_response(native_photo_id))
@@ -42,7 +42,7 @@ class ConabioPhoto < Photo
         :native_photo_id => api_response.id,
         :square_url => "#{imagen}?w=75&h=75&mode=crop",
         :original_url => imagen,
-        :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.transmission_reference}",
+        :native_page_url => "#{CONFIG.bdi_fotoweb}#{api_response.path.gsub('/fotosBDI/','').gsub(' ','%20')}",
         :native_username => copyright,
         :native_realname => copyright,
         :license => 3

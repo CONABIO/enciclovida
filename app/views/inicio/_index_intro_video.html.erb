@@ -13,7 +13,7 @@
 </div>
 <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
     var tv, playerDefaults = {autoplay: 0, autohide: 1, modestbranding: 0, rel: 0, showinfo: 0, controls: 0, disablekb: 1, enablejsapi: 0, iv_load_policy: 3};
-    var vid = [{'videoId': 'xWmm2oDyiDE', 'startSeconds': 0, 'suggestedQuality': 'hd360'}];
+    var vid = [{'videoId': '2LiJlWFLuJo', 'startSeconds': 0, 'suggestedQuality': 'hd360'}];
 
     function onYouTubePlayerAPIReady(){
         tv = new YT.Player('tv', {events: {'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange}, playerVars: playerDefaults});
@@ -48,7 +48,9 @@
     }
 
     function setPaddingHeader(){
-        $('header').css('padding-bottom', ($(window).height()-$('#brandBar').height())+'px');
+	    var vacio = $(window).height()-$('#brandBar').height();
+	    $('header').css('padding-bottom', (vacio));
+	    $('#news').css('margin-top', (100-vacio));
     }
     $(window).on('load', function(){
         vidRescale();

@@ -1,35 +1,64 @@
-<% if @photos.any? %>
-    <% col1 = (@geo.present?) ? 'col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-    <div class="<%=col1%>" id="contenedor_fotos">
-
-      <%= render :partial => 'fotos_carrusel', :locals => { :photos => @photos } %>
-
-      <% if usuario_signed_in? %>
-          <%= link_to('Edita las fotos', nil, :onClick => "$('#edit_photos_dialog').dialog('open');return false;", :class => 'readmore') %>
-          <div id="edit_photos_dialog" class="dialog" style="display: none"></div>
-      <% end %>
-
-    </div>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag 'carrusel', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
+
+<%= content_for(:delayedjs) do %>
+    <script>
+        <% if @con_naturalista.present? %>
+            var INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
+        <% else %>
+            var INATURALIST_API = undefined;
+        <% end %>
+    </script>
+
+    <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>
+<% end%>
+
+<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' id="contenedor_fotos">
+  <p class="text-center">
+    <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+  <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
+  </p>
+</div>
 
 <% if @geo.present? %>
-    <% col2 = @photos.any? ? 'col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0' : 'col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' %>
-    <div class="<%=col2%>" id="contenedor_mapa">
+    <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' id="contenedor_mapa">
       <div class="embed-responsive embed-responsive-4by3">
         <%= render partial: 'geodatos' %>
-        <!--h6 class="text-right"><strong>NOTA: </strong> La distribución potencial sólo es de México</h6-->
       </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-      <%= link_to(("Mapa de distribución: <i alt = KMZ class = 'kmz-ev-icon' style = 'font-size: 2em;'></i>").html_safe, @geo[:geoserver_descarga_url], :target => :_blank, :class => 'btn btn-sm btn-link') if @geo[:geoserver_descarga_url].present? %>
-      <%#= link_to(("Registros del SNIB: <i alt = 'Registros de museos, colectas y proyectos de CONABIO (SNIB)' class = 'kml-ev-icon' style = 'font-size: 2em;'></i>").html_safe, geo['snib_kml'], :target => :_blank, :class => 'btn btn-sm btn-link') if geo['snib_kml'] %>
-      <%= link_to(("Observaciones de: <i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>").html_safe, @geo[:naturalista_url_descarga], :target => :_blank, :class => 'btn btn-sm btn-link', :style => 'margin-top: .5em;') if @geo[:naturalista_url_descarga].present? %>
+
+    <div class="btn-group pull-right dropup">
+      <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i><%= icono_descarga %></i> Descarga los registros <span class=""></span>
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
+
+        <% if @geo[:cuales].include?('naturalista') %>
+            <li class="dropdown-header"><%= imagotipo_naturalista_nombre %></li>
+            <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:naturalista_kml], :target => :_blank) if @geo[:naturalista_kml].present? %></li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:naturalista_kmz], :target => :_blank) if @geo[:naturalista_kmz].present? %></li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:naturalista_json], :target => :_blank) if @geo[:naturalista_json].present? %></li>
+        <% end %>
+
+        <% if @geo[:cuales].include?('snib') %>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-header">SNIB</li>
+            <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:snib_kml], :target => :_blank) if @geo[:snib_kml].present? %></li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:snib_kmz], :target => :_blank) if @geo[:snib_kmz].present? %></li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:snib_json], :target => :_blank) if @geo[:snib_json].present? %></li>
+        <% end %>
+
+        <% if @geo[:cuales].include?('geoserver') %>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-header">Mapa de distribución</li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:geoserver_descarga_url], :target => :_blank) if @geo[:geoserver_descarga_url].present? %></li>
+        <% end %>
+      </ul>
     </div>
 <% end %>
 
-<% if !(@photos.any? || @geo.present?) %>
-    <p class="text-center">
-    <h4 style="color: #800000;">Lo sentimos, pero no contamos con una imagen o geodato para:</h4>
-    <h3><%= @titulo = tituloNombreCientifico(@especie, :title => true) %></h3>
-    </p>
-<% end %>
+<p class="text-center">
+    <h4 style="color: #800000;" id="sin_datos"></h4>
+</p>

@@ -12,24 +12,33 @@ module BusquedasHelper
   # Filtros para los grupos icónicos en la búsqueda avanzada vista básica
   def radioGruposIconicos
     radios = ''
-    columnas = 1
+    ir=%w(Animalia Plantae Fungi Prokaryotae Protoctista)
+    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontida Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+    ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
-    Especie.datos_basicos(['taxon_icono, icono, nombre_icono, color_icono']).icono_join.
-        caso_rango_valores('nombre_cientifico', "'#{Icono.all.map(&:taxon_icono).join("','")}'").
-        order('ancestry_ascendente_directo, especies.id').each do |taxon|  # Para tener los grupos ordenados
+    reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
+    animales = Especie.select_grupos_iconicos.where(:nombre_cientifico => ia)
+    plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => ip)
 
-      # Para dejar el espacio despues de los reinos
-      if columnas == 6
-        radios << '<br \>'*3  # neta? >.>!
-        columnas = 7
-      end
+    def arma_span(taxon)
+      "<label>#{radio_button_tag('id', taxon.id, false)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
+    end
 
-      radios << "<label>"
-      radios << radio_button_tag('id', taxon.id, false)
-      radios << ponIcono(taxon, con_recuadro: true) # En especies_helper, al rededor de l89
-      radios << "</label>"
-      radios << '<br>' if columnas%6 == 0
-      columnas+=1
+
+    radios << '<h6><strong>Reinos</strong></h6>'
+    reinos.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
+    end
+    radios << '<hr />'
+
+    radios << '<h6><strong>Grupos de animales</strong></h6>'
+    animales.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
+    end
+    radios << '<hr />'
+    radios << '<h6><strong>Grupos de plantas</strong></h6>'
+    plantas.each do |taxon|  # Para tener los grupos ordenados
+      radios << arma_span(taxon)
     end
 
     "<div>#{radios}</div>"
@@ -84,7 +93,7 @@ module BusquedasHelper
   # Filtros para Estatus taxonómico
   def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes = ''
-    Especie::ESTATUS.each do |e|
+    Especie::ESTATUS_BUSQUEDA.each do |e|
 
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"

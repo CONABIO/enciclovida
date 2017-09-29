@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale = params[:locale] || (usuario_signed_in? ? current_usuario.locale : nil) || dameLocaleFiltro || I18n.default_locale
+    I18n.locale = cookies[:vista].present? ? cookies[:vista] : I18n.default_locale
   end
 
 
@@ -50,18 +50,13 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:account_update) << :institucion
   end
 
-  def tiene_permiso?(nivel)
-    if usuario_signed_in?
-      rol = current_usuario.rol.prioridad
-
-      if rol >= nivel
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+  def tiene_permiso?(nombre_rol)
+    render 'shared/sin_permiso' and return unless usuario_signed_in? #con esto aseguramos que el usuario ya inicio sesión
+    roles_usuario = current_usuario.usuario_roles.map(&:rol)
+    return if roles_usuario.map(&:depth).any?{|d| d < 1}
+    rol = Rol.find_by_nombre_rol(nombre_rol)
+    #Revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
+    render 'shared/sin_permiso' unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.subtree_ids.flatten).any?
   end
 
   def es_propietario?(obj)
@@ -77,4 +72,5 @@ class ApplicationController < ActionController::Base
       false
     end
   end
+
 end

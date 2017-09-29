@@ -3,8 +3,8 @@
       <td width="19%">
         <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus), class: 'comentario_estatus form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
         <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
-        <%= select_tag 'comentario[categoria_comentario_id]', grouped_options_for_select(@categoria_comentario, c.categoria_comentario_id), class: 'comentario_categoria_comentario_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
-        <div id="comentario_categoria_comentario_id_div_<%= c.id %>" style="display: none;"></div>
+        <%= select_tag 'comentario[categorias_contenido_id]', grouped_options_for_select(@categorias_contenido, c.categorias_contenido_id), class: 'comentario_categorias_contenido_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
+        <div id="comentario_categorias_contenido_id_div_<%= c.id %>" style="display: none;"></div>
       </td>
       <td width="52%">
         <% if c.general %>

@@ -44,6 +44,7 @@ module Buscador
     config.time_zone = 'Mexico City'
 
     config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
     #config.sass.preferred_syntax=:sass
 
     # Cambia en nombre de la tabla por default

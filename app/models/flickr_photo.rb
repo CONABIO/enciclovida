@@ -1,12 +1,12 @@
 #encoding: utf-8
-class FlickrPhoto < Photo
+class FlickrPhoto
   
   Photo.descendent_classes ||= []
   Photo.descendent_classes << self
   
-  validates_presence_of :native_photo_id
+  #validates_presence_of :native_photo_id
   #validate :user_owns_photo
-  validate :licensed_if_no_user
+  #validate :licensed_if_no_user
 
   def user_owns_photo
     if user

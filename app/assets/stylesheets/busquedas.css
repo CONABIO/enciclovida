@@ -1,3 +1,173 @@
-// Place all the styles related to the busquedas controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.panel-resultados{
+    text-align: center;
+}
+.resultados-cientificos{
+    text-align: left;
+}
+div.result-img-container{
+    display: inline-block;
+    overflow: hidden;
+    max-width: 100%;
+    margin: 5px 0px;
+    position: relative;
+}
+.panel-resultados div.result-img-container img{
+    max-height: 215px;
+    margin: -25px;
+    transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+    vertical-align: middle;
+    font-size: 3.75em;
+}
+
+.panel-resultados div.result-img-container i.ev1-ev-icon{
+    transition: all .2s ease;
+    vertical-align: baseline;
+    font-size: 4em;
+}
+.panel-resultados div.result-img-container img:hover{
+    transform:scale(.75);
+    -ms-transform:scale(.75); /* IE 9 */
+    -moz-transform:scale(.75); /* Firefox */
+    -webkit-transform:scale(.75); /* Safari and Chrome */
+    -o-transform:scale(.75); /* Opera */
+}
+.panel-resultados div.result-img-container i.ev1-ev-icon:hover{
+    font-size: 3em;
+}
+.panel-resultados div.result-img-container .result-nombre-container{
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+    background-color: #ececec;
+    position: relative;
+
+}
+.panel-resultados div.result-img-container h5{
+    margin: 0;
+    padding: 2px 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1em;
+}
+.panel-resultados div.result-img-container a{
+    cursor: pointer;
+}
+
+
+.nav:before, .nav:after {
+    content: " ";
+    display: inline-block;
+    padding-bottom: 32px;
+}
+
+#resultados-container #busqueda_avanzada, #resultados-container #pestañas{
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+}
+@media (min-width: 993px){
+    #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros de búsqueda";}
+    #resultados-container.state-one #toggleFiltros span:before{content: "\e132";}
+    #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de buúsqueda";}
+    #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
+    #resultados-container.state-one #busqueda_avanzada{
+        width: 27%;
+        display: block;
+    }
+    #resultados-container.state-two #busqueda_avanzada{
+        width: 0%;
+        display: none;
+    }
+    #resultados-container.state-one #pestañas{
+        width: 73%;
+    }
+    #resultados-container.state-two #pestañas{
+        width: 100%;
+    }
+}
+@media (max-width: 992px){
+    #resultados-container.state-one #toggleFiltros:before{content: "Mostrar filtros de búsqueda ";}
+    #resultados-container.state-one #toggleFiltros span:after{content: "\e134";}
+    #resultados-container.state-two #toggleFiltros:before{content: "Ocultar filtros de búsqueda ";}
+    #resultados-container.state-two #toggleFiltros span:after{content: "\e133";}
+    #resultados-container.state-one #busqueda_avanzada{
+        width: 0%;
+        display: none;
+    }
+    #resultados-container.state-two #busqueda_avanzada{
+        width: 100%;
+        display: block;
+    }
+    #resultados-container.state-one #pestañas{
+        width: 100%;
+    }
+    #resultados-container.state-two #pestañas{
+        width: 100%;
+    }
+}
+
+.animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon{
+    background-image: linear-gradient(to bottom, #cfe7f5 0%, #d9f1ff 30%);
+    font-size: 2.75em;
+}
+.mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontida-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon{
+    background-image: linear-gradient(to bottom, #f5e1cb 0%, #ffebd4 40%);
+    font-size: 2em;
+}
+.bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon{
+    background-image: linear-gradient(to bottom, #bFDaa8 0%, #d2f2b6 30%);
+    font-size: 2em;
+}
+.animalia-ev-icon{color: #6c3630}
+.plantae-ev-icon{color: #3f7e54}
+.fungi-ev-icon{color: #af7f45}
+.prokaryotae-ev-icon{color: #0e5f59}
+.protoctista-ev-icon{color: #0c4354}
+.mammalia-ev-icon{color: #9d4c47}
+.aves-ev-icon{color: #9b7845}
+.reptilia-ev-icon{color: #999744}
+.amphibia-ev-icon{color: #7a9944}
+.actinopterygii-ev-icon{color: #44997d}
+.petromyzontida-ev-icon{color: #449999}
+.myxini-ev-icon{color: #437395}
+.chondrichthyes-ev-icon{color: #284559}
+.cnidaria-ev-icon{color: #56686f}
+.arachnida-ev-icon{color: #6c4e30}
+.myriapoda-ev-icon{color: #7b5637}
+.annelida-ev-icon{color: #956e43}
+.insecta-ev-icon{color: #aa774d}
+.porifera-ev-icon{color: #a8734c}
+.echinodermata-ev-icon{color: #865a3c}
+.mollusca-ev-icon{color: #aa7961}
+.crustacea-ev-icon{color: #a0837c}
+.bryophyta-ev-icon{color: #7a7544}
+.pteridophyta-ev-icon{color: #adb280}
+.cycadophyta-ev-icon{color: #545a35}
+.gnetophyta-ev-icon{color: #394822}
+.liliopsida-ev-icon{color: #114722}
+.coniferophyta-ev-icon{color: #788c4a}
+.magnoliopsida-ev-icon{color: #495925}
+
+
+.checkbox label, .radio label{
+    padding-left: 2px;
+}
+.checkbox input, .radio input{
+    display: none;
+    margin: 0 !important;
+}
+.checkbox input:checked+span, .checkbox input+span:hover, .radio input:checked+span, .radio input+span:hover{
+    padding-left: 6px;
+    margin-right: -1px;
+    color: #800000 !important;
+}
+
+.checkbox i{
+    font-size: 2em;
+}
+.checkbox span{
+    background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
+}

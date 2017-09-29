@@ -1,5 +1,20 @@
 Buscador::Application.routes.draw do
+
+  get 'usuarios/conabio'
+  get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
+  get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
+
+  resources :roles_categorias_contenido
+
+  resources :usuarios_especie
+
+  resources :usuarios_roles
+
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
+  get 'explora_por_ubicacion' => 'ubicaciones#ubicacion'
+  get 'explora_por_region' => 'ubicaciones#region'
+
   get "busquedas/basica"
   get "busquedas/avanzada"
   get "busquedas/resultados"
@@ -67,14 +82,18 @@ Buscador::Application.routes.draw do
       post :update_photos, :as => :update_photos_for
       get ':id/arbol' => 'especies#arbol'
       get :error
-      get :datos_principales
-      get :kmz
-      get :kmz_naturalista
-      get :cache_services
-      get ':id/naturalista' => 'especies#naturalista'
+      get ':id/observaciones-naturalista' => 'especies#observaciones_naturalista'
+      get ':id/observacion-naturalista/:observacion_id' => 'especies#observacion_naturalista'
+      get ':id/ejemplares-snib' => 'especies#ejemplares_snib'
+      get ':id/ejemplar-snib/:ejemplar_id' => 'especies#ejemplar_snib'
       get ':id/arbol_nodo' => 'especies#arbol_nodo'
       get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
+      post ':id/fotos-referencia' => 'especies#fotos_referencia'
+      get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
+      get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
+      get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
     end
   end
 
@@ -160,10 +179,12 @@ Buscador::Application.routes.draw do
   post 'validaciones/delete' => 'validaciones#delete'
 
   # Para las validaciones de taxones la simple y la avanzada
-  get 'validaciones/taxon' => 'validaciones#taxon'
-  get 'validaciones/taxon_simple' => 'validaciones#taxon_simple'
-  get 'validaciones/taxon_excel' => 'validaciones#taxon_excel'
-  post 'validaciones/resultados_taxon_simple' => 'validaciones#resultados_taxon_simple'
-  post 'validaciones/resultados_taxon_excel' => 'validaciones#resultados_taxon_excel'
+  get 'validaciones' => 'validaciones#index'
+  #get 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
+  #get 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
+  post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
+  post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
+
+  get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
 
 end

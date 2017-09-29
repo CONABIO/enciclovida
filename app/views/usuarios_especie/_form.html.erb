@@ -1,0 +1,39 @@
+<script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
+<script data-turbolinks-track="true">
+    $(document).ready(function(){
+        soulmate_asigna('avanzada'); // Asigna el soulmate a la caja nombre
+        $('#new_usuario_especie, #edit_usuario_especie_<%= @usuario_especie.id %>').submit(function(){$('#usuario_especie_especie_id').val($('#id').val());});
+    });
+</script>
+<style type="text/css">
+    #soulmate{
+        width: 60%!important;
+        margin: 0 0 0 56px!important;
+    }
+</style>
+<%= form_for(@usuario_especie, :html => {:class => 'form-inline'}) do |f| %>
+  <% if @usuario_especie.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@usuario_especie.errors.count, "error") %> prohibited this usuario_especie from being saved:</h2>
+
+      <ul>
+      <% @usuario_especie.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <div class="form-group">
+      <%= f.label :usuario_id %>
+      <%= f.collection_select(:usuario_id, Usuario.all, :id, :nombre_completo, options ={:prompt => "Selecciona un usuario"}, {:class => 'form-control', :required => true }) %>
+    </div>
+    <div class="form-group">
+      <%= f.label :especie_id %>
+      <%= f.hidden_field :especie_id %>
+      <%= hidden_field_tag :id %>
+      <%= hidden_field_tag :busqueda, :basica %>
+      <%= text_field_tag :nombre, nil, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control' %>
+    </div>
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
+<% end %>

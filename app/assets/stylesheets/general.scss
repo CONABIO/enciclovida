@@ -20,41 +20,30 @@
 }
 
 
-body{
-  background-color: #333333;
-}
-
 /*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
   background-color: rgba(51, 51, 51, 0.75);
+  padding: 30px 0px;
 }
-#brandBar > div.row:nth-child(2) > div{
-  margin-top: 10px;
-  /*font-size: .75em;*/
-  margin-bottom: 20px;
+#brandBar .dropdown {
+  margin-top: -32px;
+  margin-right: 10px;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav a{
-  text-shadow: 2px 2px 6px #999;
-  margin-right: 0px;
-  color: #bababa;
-  font-size: 12px;
+#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
+  border-bottom-left-radius: 2px;
+  font-weight: bold;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav li{
-  background-color: rgba(62, 62, 62, 0.60);
-  margin-right: 2px;
+#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  margin-top: -1px;
 }
-#brandBar > div.row:nth-child(2) > div ul.nav li:hover a, #brandBar > div.row:nth-child(2) li.active a{
-  color: #444444!important;
-  font-weight: bolder;
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
+#busqueda_basica{
+  margin-top: 14px;
 }
-#brandBar > div:nth-child(1) { /*menú arriba main*/
-  margin: 0px auto 0px auto;
-}
-#brandBar .btn-group > a{
-  font-size: .80em;
-  margin-left: 2px;
-}
-
 footer {
   padding: 25px 0;
   text-align: center;
@@ -179,21 +168,27 @@ ul.social-buttons li a:active {
 #pestañas{
   background-color: transparent;
 }
-.panel .nav-tabs > li:not(.active) > a, .panel .nav-stacked > li:not(.active) > a  {
-  border: 1px solid #d3d3d3;
+.panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+  border-bottom: 0px;
   color: #777777;
-  background-color: rgba(247, 247, 247, 0.5);
 }
-.panel .nav-stacked > li.active > a {
-  border: 1px solid #b3b3b3;
+.panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
   color: #800000;
-  background-color: #f7f7f7;
+  background-color: #ececec;
+}
+.panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
+  filter: drop-shadow(5px -5px 4px #cecece)
 }
 #pestañas div.panel-body{
-  background-color: #f7f7f7;
-  border: 1px solid #b3b3b3;
+  background-color: #ececec;
   padding: 1.5em;
   margin-top: -1px;
+  border-left: 1px solid #d3d3d3;
+  filter: drop-shadow(5px 5px 5px #cecece)
+
 }
 
 #panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
@@ -231,8 +226,8 @@ ul.social-buttons li a:active {
 .exotica-invasora-ev-icon:after {color: #592626; margin-left: -1.2em;}
 .endemica-ev-icon:after { content: '\e832'; }
 .nativa-ev-icon:after { content: '\e834'; }
-.exotica-invasora-ev-icon:before { content: '\e835'; }
-.exotica-ev-icon:after, .exotica-invasora-ev-icon:after{ content: '\e836'; }
+.exotica-ev-icon:after{ content: '\e836'; }
+.exotica-invasora-ev-icon:after{ content: '\e86A'; }
 /* Termina tipo distribucion */
 
 /* prioritarias */
@@ -271,4 +266,33 @@ ul.social-buttons li a:active {
   line-height: 1em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/*TODO tengo entendido esto debería estar en especies.scss*/
+#fotos-bdi{
+    text-align: center;
+}
+#fotos-bdi div.result-img-container{
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0px;
+  position: relative;
+}
+#fotos-bdi div.result-img-container img{
+  max-height: 300px;
+  margin: -25px;
+  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+  vertical-align: middle;
+  font-size: 3.75em;
+}
+#fotos-bdi div.result-img-container img:hover{
+  transform:scale(.8);
+  -ms-transform:scale(.8); /* IE 9 */
+  -moz-transform:scale(.8); /* Firefox */
+  -webkit-transform:scale(.8); /* Safari and Chrome */
+  -o-transform:scale(.8); /* Opera */
+}
+#fotos-bdi div.result-img-container a{
+  cursor: pointer;
 }

@@ -1,0 +1,38 @@
+<%
+   totales = @totales
+   resultados = @tabla_exoticas[:datos].count  # Los que trae por pagina
+
+   por_pagina = @por_pagina
+   comienzo = por_pagina*(@pagina-1) + 1
+   final = comienzo + resultados -1
+%>
+
+<% @tabla_exoticas[:datos].each do |row| %>
+    <tr>
+      <% row.each_with_index do |col, index| %>
+          <td>
+            <% case index %>
+            <% when 0  # Foto %>
+                <%= image_tag(col, class: 'img-responsive img-rounded') if col.present? %>
+            <% when 1  # Nombre cientifico %>
+                <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
+            <% when 9  # PDF instrumentos legales %>
+                <% col.each do |instrumento| %>
+                    <p><%= link_to instrumento[:nombre], instrumento[:pdf] %></p>
+                <% end %>
+
+            <% when 10  # el PDF %>
+                <%= link_to('<i class="newspaper-ev-icon"></i>'.html_safe, col) if col.present? %>
+            <% else %>
+                <%= col %>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+<% end %>
+
+<script>
+    $(document).ready(function(){
+        $('#num-res-exoticas').html("Mostrando del <%= comienzo %> al <%= final %> de <%= totales %> resultados");
+    });
+</script>

@@ -1,0 +1,26 @@
+<h1>Taxonomía específica a usuarios</h1>
+
+<table class="table table-condensed table-hover table-responsive">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Usuario</th>
+      <th>Especie</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @usuarios_especie.each do |usuario_especie| %>
+      <tr>
+        <td><%= usuario_especie.id %></td>
+        <td><%= usuario_especie.usuario_id %>. <%= usuario_especie.nombre %> <%= usuario_especie.apellido %></td>
+        <td><%= usuario_especie.especie_id %>. <%= usuario_especie.nombre_cientifico %></td>
+        <td><%= link_to 'Ver', usuario_especie %> | <%= link_to 'Editar', edit_usuario_especie_path(usuario_especie) %> | <%= link_to 'Eliminar', usuario_especie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Taxonomía específica a usuario".html_safe, new_usuario_especie_path, class: 'btn btn-info btn-sm' %>
+</p>

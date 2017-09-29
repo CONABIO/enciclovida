@@ -1,24 +1,16 @@
 #encoding: utf-8
-class Photo < ActiveRecord::Base
+class Photo
 
-  belongs_to :usuario
-  has_many :taxon_photos, :dependent => :destroy
-  has_many :especies, :class_name => 'Especie', :through => :taxon_photos
-
-  attr_accessor :api_response
-  serialize :metadata
+  attr_accessor :api_response, :id, :usuario_id, :native_photo_id, :square_url, :thumb_url, :small_url, :medium_url, :large_url, :original_url, :created_at, :updated_at, :native_page_url, :native_username, :native_realname, :license, :type, :file_content_type, :file_file_name, :file_file_size, :file_processing, :mobile, :file_updated_at, :metadata
 
   # licensing extras
   attr_accessor :make_license_default
   attr_accessor :make_licenses_same
+  attr_accessor :attribution_txt  # Para poder ver la atribucion que ya viene armada en la API de naturalista
   MASS_ASSIGNABLE_ATTRIBUTES = [:make_license_default, :make_licenses_same]
 
   cattr_accessor :descendent_classes
   cattr_accessor :remote_descendent_classes
-
-  before_save :set_license, :trim_fields
-  #after_save :update_default_license,          #no son necesarias
-  #           :update_all_licenses
 
   COPYRIGHT = 0
   NO_COPYRIGHT = 7
@@ -63,10 +55,10 @@ class Photo < ActiveRecord::Base
   def best_photo
     if original_url.present?
       original_url
-    elsif large_url.present?
-      large_url
     elsif medium_url.present?
       medium_url
+    elsif large_url.present?
+      large_url
     else
       nil
     end
@@ -111,7 +103,7 @@ class Photo < ActiveRecord::Base
   end
 
   def attribution_name
-    if !native_realname.blank?
+    if native_realname.present?
       native_realname
     elsif !native_username.blank?
       native_username
@@ -208,16 +200,6 @@ class Photo < ActiveRecord::Base
     try_methods(*methods)
   end
 
-  def as_json(options = {})
-    options[:except] ||= []
-    options[:except] += [:metadata, :file_content_type, :file_file_name,
-                         :file_file_size, :file_processing, :file_updated_at, :mobile,
-                         :original_url]
-    options[:methods] ||= []
-    options[:methods] += [:license_name, :license_url, :attribution]
-    super(options)
-  end
-
   # Retrieve info about a photo from its native source given its native id.  
   # Should be implemented by descendents
   def self.get_api_response(native_photo_id, options = {})
@@ -248,18 +230,10 @@ class Photo < ActiveRecord::Base
     LICENSE_INFO[number].try(:[], :code)
   end
 
-  def self.default_json_options
-    {
-        :methods => [:license_code, :attribution],
-        :except => [:original_url, :file_processing, :file_file_size,
-                    :file_content_type, :file_file_name, :mobile, :metadata, :user_id,
-                    :native_realname, :native_photo_id]
-    }
-  end
-
   private
 
   def self.attributes_protected_by_default
     super - [inheritance_column]
   end
+
 end

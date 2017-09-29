@@ -1,0 +1,25 @@
+<%= form_for(@usuario_rol, :html => {:class => 'form-inline'}) do |f| %>
+  <% if @usuario_rol.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@usuario_rol.errors.count, "error") %> prohibited this usuario_rol from being saved:</h2>
+
+      <ul>
+      <% @usuario_rol.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :usuario_id %>
+    <%= f.collection_select(:usuario_id, Usuario.all, :id, :nombre_completo, options ={:prompt => "Selecciona un usuario"}, {:class => 'form-control', :required => true }) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :rol_id %>
+    <%= f.collection_select(:rol_id, Rol.all, :id, :nombre_rol, options ={:prompt => "Selecciona un rol"}, {:class => 'form-control', :required => true }) %>
+  </div>
+
+    <%= f.submit(:class => 'btn btn-success btn-sm') %>
+
+<% end %>

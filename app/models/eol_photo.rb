@@ -1,9 +1,9 @@
-class EolPhoto < Photo
+class EolPhoto
   
   Photo.descendent_classes ||= []
   Photo.descendent_classes << self
 
-  validate :licensed_if_no_user
+  #validate :licensed_if_no_user
 
   def sync
     new_photo = self.class.new_from_api_response(self.class.get_api_response(native_photo_id))

@@ -1,4 +1,10 @@
 class BusquedasController < ApplicationController
+  before_action only: :resultados, if: -> {params[:busqueda] == 'avanzada'} do
+    @no_render_busqueda_basica = true
+  end
+  before_action only: :avanzada do
+    @no_render_busqueda_basica = true
+  end
 
   skip_before_filter :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]
@@ -173,6 +179,7 @@ class BusquedasController < ApplicationController
             @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
             @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
 
+            #puts @taxones.to_sql
             @taxones.each do |t|
               t.cual_nombre_comun_coincidio(params[:nombre])
             end
@@ -471,7 +478,7 @@ class BusquedasController < ApplicationController
 
     elsif @totales > 0
       # Para saber si el correo es correcto y poder enviar la descarga
-      con_correo = Comentario::EMAIL_REGEX.match(params[:correo]) ? true : false
+      con_correo = Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
 
       if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
         # el nombre de la lista es cuando la bajo ya que no metio un correo

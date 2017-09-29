@@ -3,13 +3,8 @@ class EnviaCorreo < Devise::Mailer
 
   # Metodos adicionales
   def excel(validacion)
-    usuario = validacion.usuario
-    @ruta_excel = "#{CONFIG.servidor_bios}/validaciones_excel/#{usuario.id}/#{validacion.nombre_archivo}.xlsx"
-    mail(:to => usuario.email, :subject => "EncicloVida: validacion de #{validacion.nombre_archivo}")
-
-    validacion.enviado = 1
-    validacion.fecha_envio = Time.now
-    validacion.save
+    @ruta_excel = validacion.excel_url
+    mail(:to => validacion.correo, :subject => "EncicloVida: validacion/descarga de #{validacion.nombre_archivo}")
   end
 
   def respuesta_comentario(comentario)
@@ -37,6 +32,10 @@ class EnviaCorreo < Devise::Mailer
     mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')# if Rails.env.production?
   end
 
+  def avisar_responsable_contenido(comentario,correos)
+    completa_datos_comentario(comentario)
+    mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if (Rails.env.production? || correos.join(',').include?("ggonzalez") || correos.join(',').include?("calonso") || correos.join(',').include?("albertoglezba") || correos.join(',').include?("mailinator"))
+  end
 
   private
 

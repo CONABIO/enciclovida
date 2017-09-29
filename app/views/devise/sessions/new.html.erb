@@ -1,20 +1,23 @@
-<div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-4 col-lg-4">
-  <h2>Inicia sesión</h2>
+<div class="col-xs-offset-0 col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+  <h2 class="text-center">Iniciar sesión</h2>
   <p id="notice"><%= notice ||= flash[:notice] ||= flash[:alert] %></p>
-
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="form-group"><%= f.label :login %>
+      <div class="panel panel-body panel-default">
+        <div class="form-group"><%= f.label :login %>
         <%= f.email_field :login, autocoplete: true, autofocus: true, class: 'form-control' %></div>
 
-      <div class="form-group"><%= f.label :password %>
+        <div class="form-group"><%= f.label :password %>
         <%= f.password_field :password, autocomplete: "off", class: 'form-control' %></div>
 
-      <% if devise_mapping.rememberable? -%>
-          <div class="form-group"><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-      <% end -%>
+        <% if devise_mapping.rememberable? -%>
+            <div class="form-group"><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+        <% end -%>
 
-      <div class="form-group"><%= f.submit :Entrar, class: 'btn btn-xs btn-success' %></div>
+        <%= f.submit :Entrar, class: 'btn btn-block btn-success' %>
+      </div>
+
   <% end %>
-
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <%= render 'devise/shared/links' %>
 </div>

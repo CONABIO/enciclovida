@@ -11,23 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160824004141) do
+ActiveRecord::Schema.define(version: 20170810191229) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
     t.string   "nombre_comun_principal"
-    t.text     "justificacion_nombre"
     t.string   "foto_principal"
-    t.text     "justificacion_foto"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "icono_id"
-    t.text     "fotos_principales"
     t.text     "nombres_comunes"
   end
 
-  add_index "adicionales", ["especie_id"], name: "ClusteredIndex-20160727-142909"
-  add_index "adicionales", ["nombre_comun_principal"], name: "NonClusteredIndex-20160727-142836"
+  add_index "adicionales", ["especie_id"], name: "ClusteredIndex-20160801-144106"
+  add_index "adicionales", ["nombre_comun_principal"], name: "NonClusteredIndex-20160801-144122"
 
   create_table "bibliografias", force: true do |t|
     t.text     "observaciones"
@@ -65,7 +61,14 @@ ActiveRecord::Schema.define(version: 20160824004141) do
 
   add_index "catalogos", ["descripcion"], name: "index_descripcion_catalogos"
 
-  create_table "categorias_comentario", force: true do |t|
+  create_table "categoria_contenidos_roles", force: true do |t|
+    t.integer  "categoria_contenido_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "categorias_contenido", force: true do |t|
     t.string   "nombre",     null: false
     t.string   "ancestry"
     t.datetime "created_at"
@@ -94,42 +97,34 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "categorias_taxonomicas", ["nombre_categoria_taxonomica"], name: "index_nombre_categoria_taxonomica_categorias_taxonomicas"
 
   create_table "comentarios", primary_key: "idConsecutivo", force: true do |t|
-    t.string   "id",                      limit: 10, default: "", null: false
     t.text     "comentario",                                      null: false
     t.string   "correo"
     t.string   "nombre"
     t.integer  "especie_id",                                      null: false
     t.integer  "usuario_id"
-    t.datetime "created_at"
+    t.datetime "created_at",                                      null: false
     t.datetime "updated_at"
     t.integer  "estatus",                            default: 1,  null: false
     t.string   "ancestry"
     t.datetime "fecha_estatus"
     t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id",            default: 26, null: false
+    t.integer  "categorias_contenido_id",            default: 31, null: false
     t.string   "institucion"
     t.string   "idBak"
-  end
-
-  create_table "comentarios2", force: true do |t|
-    t.text     "comentario",                           null: false
-    t.string   "correo"
-    t.string   "nombre"
-    t.integer  "especie_id",                           null: false
-    t.integer  "usuario_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "estatus",                 default: 1,  null: false
-    t.string   "ancestry"
-    t.datetime "fecha_estatus"
-    t.integer  "usuario_id2"
-    t.integer  "categoria_comentario_id", default: 26, null: false
-    t.string   "institucion"
+    t.string   "id",                      limit: 10, default: "", null: false
   end
 
   create_table "comentarios_generales", force: true do |t|
     t.string   "comentario_id", limit: 10, default: "", null: false
     t.text     "subject",                               null: false
+    t.text     "commentArray",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comentarios_proveedores", force: true do |t|
+    t.string   "comentario_id", limit: 10, null: false
+    t.string   "proveedor_id",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -188,6 +183,14 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.datetime "updated_at",    null: false
   end
 
+  create_table "especies_estadistica", force: true do |t|
+    t.integer  "especie_id"
+    t.integer  "estadistica_id"
+    t.integer  "conteo"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "especies_estatuses", primary_key: "especie_id1", force: true do |t|
     t.integer  "especie_id2",   null: false
     t.integer  "estatus_id",    null: false
@@ -216,6 +219,12 @@ ActiveRecord::Schema.define(version: 20160824004141) do
 
   add_index "especies_regiones", ["tipo_distribucion_id"], name: "index_tipo_distribucion_id_especies_regiones"
 
+  create_table "estadisticas", force: true do |t|
+    t.string   "descripcion_estadistica"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "estatuses", force: true do |t|
     t.string   "descripcion", limit: 55, null: false
     t.integer  "nivel1",      limit: 2,  null: false
@@ -230,27 +239,6 @@ ActiveRecord::Schema.define(version: 20160824004141) do
 
   add_index "estatuses", ["descripcion"], name: "index_descripcion_estatuses"
 
-  create_table "filtros", force: true do |t|
-    t.text     "html"
-    t.string   "sesion",     limit: 32,                null: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.integer  "usuario_id"
-    t.string   "locale",                default: "es", null: false
-  end
-
-  add_index "filtros", ["sesion"], name: "index_filtros_on_sesion"
-
-  create_table "iconos", force: true do |t|
-    t.string   "taxon_icono",   null: false
-    t.string   "icono",         null: false
-    t.string   "nombre_icono",  null: false
-    t.string   "color_icono",   null: false
-    t.text     "observaciones"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "listas", force: true do |t|
     t.string   "nombre_lista",                          null: false
     t.text     "columnas"
@@ -260,33 +248,6 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.integer  "usuario_id",                            null: false
-  end
-
-  create_table "metadato_especies", force: true do |t|
-    t.integer  "especie_id",  null: false
-    t.integer  "metadato_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "metadatos", force: true do |t|
-    t.string   "object_name"
-    t.string   "artist"
-    t.string   "copyright"
-    t.string   "country_name"
-    t.string   "province_state"
-    t.string   "transmission_reference"
-    t.string   "category"
-    t.string   "supp_category"
-    t.string   "keywords"
-    t.text     "custom_field12"
-    t.string   "custom_field6"
-    t.string   "custom_field7"
-    t.string   "custom_field13"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "path"
-    t.string   "bdi_id",                 limit: 50
   end
 
   create_table "nombres_comunes", force: true do |t|
@@ -316,43 +277,11 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.datetime "updated_at",      null: false
   end
 
-  create_table "photos", force: true do |t|
-    t.integer  "usuario_id"
-    t.string   "native_photo_id"
-    t.string   "square_url"
-    t.string   "thumb_url"
-    t.string   "small_url"
-    t.string   "medium_url"
-    t.string   "large_url"
-    t.string   "original_url",      limit: 512
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "native_page_url"
-    t.string   "native_username"
-    t.string   "native_realname"
-    t.integer  "license"
-    t.string   "type"
-    t.string   "file_content_type"
-    t.string   "file_file_name"
-    t.integer  "file_file_size"
-    t.boolean  "file_processing"
-    t.boolean  "mobile",                        default: false
-    t.datetime "file_updated_at"
-    t.text     "metadata"
-  end
-
-  add_index "photos", ["native_photo_id"], name: "index_flickr_photos_on_flickr_native_photo_id"
-  add_index "photos", ["usuario_id"], name: "index_photos_on_user_id"
-
   create_table "proveedores", force: true do |t|
-    t.integer  "especie_id",       null: false
+    t.integer  "especie_id",     null: false
     t.integer  "naturalista_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "naturalista_info"
-    t.integer  "snib_id"
-    t.string   "snib_reino"
-    t.text     "naturalista_obs"
     t.string   "geoserver_info"
   end
 
@@ -371,17 +300,18 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
 
   create_table "roles", force: true do |t|
-    t.string   "nombre_rol",                                 null: false
-    t.text     "atributos_base"
-    t.text     "tablas_adicionales"
-    t.string   "permisos"
-    t.text     "taxonomia_especifica"
-    t.text     "usuarios_especificos"
-    t.integer  "es_admin",             limit: 2, default: 0, null: false
-    t.integer  "es_super_usuario",     limit: 2, default: 0, null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
-    t.integer  "prioridad",                      default: 0, null: false
+    t.string   "nombre_rol",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.string   "ancestry"
+    t.string   "observaciones"
+  end
+
+  create_table "roles_categorias_contenido", force: true do |t|
+    t.integer  "categorias_contenido_id"
+    t.integer  "rol_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sessions", force: true do |t|
@@ -393,17 +323,6 @@ ActiveRecord::Schema.define(version: 20160824004141) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at"
-
-  create_table "taxon_photos", force: true do |t|
-    t.integer  "especie_id", null: false
-    t.integer  "photo_id",   null: false
-    t.integer  "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "taxon_photos", ["especie_id"], name: "index_taxon_photos_on_taxon_id"
-  add_index "taxon_photos", ["photo_id"], name: "index_taxon_photos_on_photo_id"
 
   create_table "tipos_distribuciones", force: true do |t|
     t.string   "descripcion", limit: 100, null: false
@@ -427,14 +346,11 @@ ActiveRecord::Schema.define(version: 20160824004141) do
   add_index "tipos_regiones", ["descripcion"], name: "index_descripcion_tipos_regiones"
 
   create_table "usuarios", force: true do |t|
-    t.string   "usuario",                               null: false
     t.string   "nombre",                                null: false
     t.string   "apellido",                              null: false
-    t.string   "institucion",                           null: false
-    t.string   "grado_academico",                       null: false
+    t.string   "institucion"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.integer  "rol_id",                 default: 1,    null: false
     t.string   "locale",                 default: "es", null: false
     t.string   "email",                  default: "",   null: false
     t.string   "encrypted_password",     default: "",   null: false
@@ -453,13 +369,19 @@ ActiveRecord::Schema.define(version: 20160824004141) do
     t.integer  "failed_attempts",        default: 0,    null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.string   "observaciones"
   end
 
-  create_table "validaciones", force: true do |t|
-    t.integer  "usuario_id",                           null: false
-    t.string   "nombre_archivo",                       null: false
-    t.integer  "enviado",        limit: 2, default: 0, null: false
-    t.datetime "fecha_envio"
+  create_table "usuarios_especie", force: true do |t|
+    t.integer  "usuario_id"
+    t.integer  "especie_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "usuarios_roles", force: true do |t|
+    t.integer  "usuario_id"
+    t.integer  "rol_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

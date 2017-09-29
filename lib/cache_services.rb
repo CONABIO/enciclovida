@@ -1,118 +1,32 @@
 module CacheServices
-  # Actualiza los diferentes servicios a nivel taxon unos minutos despues que el usuario vio el taxon y
-  # si es que caduco el cache
-  def cache_services
-    ns = naturalista_service
-    #bi_service
-    foto_principal_service
-    nombre_comun_principal_service
-    #snib_service  # De momento hasta que Everardo actualize su servicio
-
-    if ns[:valido]
-      naturalista_observaciones_service(ns[:proveedor])
-    end
-
-    puts "\t\tTermino satisfactoriamente"
-  end
-
-  def naturalista_service
-    puts "\t\tGenerando la información de NaturaLista"
-
+  def guarda_observaciones_naturalista
     if p = proveedor
-      p.info_naturalista
+      p.guarda_observaciones_naturalista
     else
-      p = Proveedor.crea_info_naturalista(self)
+      # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
+      escribe_cache('observaciones_naturalista', eval(CONFIG.cache.observaciones_naturalista)) if Rails.env.production?
     end
-
-    return {valido: false} unless p.instance_of?(Proveedor)
-    return {valido: false} unless p.changed?
-    return {valido: false} unless p.save
-
-    puts "\t\tCambios en naturalista_info"
-
-    # Para guardar las fotos nuevas de naturalista
-    usuario = Usuario.where(usuario: CONFIG.usuario).first
-    p.fotos(usuario.id)
-    puts "\t\tProceso fotos de NaturaLista"
-
-    return {valido: true, proveedor: p}
   end
 
-  # Se tuvo que separar, para correr las observaciones al final cuando ya se tiene la foto y los nombres comunes
-  def naturalista_observaciones_service(proveedor)
-    puts "\t\tGenerando las observaicones de NaturaLista"
-    # Para las nuevas observaciones
-    proveedor.kml_naturalista
-    return unless proveedor.naturalista_kml.present?
-    proveedor.kmz_naturalista
-    puts "\t\tCon KMZ naturalista"
-  end
-
-  def snib_service
-    puts "\t\tGenerando los registros del SNIB"
+  def guarda_ejemplares_snib
     if p = proveedor
-      p.kml
-
-      if p.snib_kml.present?
-        if p.kmz
-          puts "\t\tCon KMZ SNIB"
-        end
-      end
+      p.guarda_ejemplares_snib
+    else
+      # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
+      escribe_cache('ejemplares_snib', eval(CONFIG.cache.ejemplares_snib)) if Rails.env.production?
     end
-  end
-
-  def foto_principal_service
-    puts "\t\tGenerando la foto principal"
-    adicional = asigna_foto
-
-    if adicional[:cambio]
-      if adicional[:adicional].save
-        puts "\t\tFoto principal cambio"
-      end
-    end
-  end
-
-  def nombre_comun_principal_service
-    puts "\t\tGenerando el nombre común principal"
-    adicional = asigna_nombre_comun
-
-    if adicional[:cambio]
-      if adicional[:adicional].save
-        puts "\t\tNombre comun principal cambio"
-
-        # Para crear el nombres comun y cientifico en redis (si hubo cambios)
-        adicional[:adicional].actualiza_o_crea_nom_com_en_redis
-        puts "\t\tNombres procesados en redis"
-
-        # Para volver a poner los nombres comunes (catalogos) en el fuzzy match
-        # puede que no hayan cambiado.
-        blurrily_service
-        puts "\t\tNombres procesados en blurrily"
-      end
-    end
-  end
-
-  # Servicios del fuzzy match
-  def blurrily_service
-    nombres_comunes.each do |nombre_comun|
-      nombre_comun.completa_blurrily
-    end
-  end
-
-  # Falta implementar el servicio del banco de imagenes
-  def bi_service
   end
 
   # Los servicios no se actualizaran en menos de un dia
-  def escribe_cache
-    Rails.cache.write("cache_service_#{id}", true, :expires_in => 1.week)
+  def escribe_cache(recurso, tiempo = 1.day)
+    Rails.cache.write("#{recurso}_#{id}", true, :expires_in =>tiempo)
   end
 
-  def existe_cache?
-    Rails.cache.exist?("cache_service_#{id}")
+  def existe_cache?(recurso)
+    Rails.cache.exist?("#{recurso}_#{id}")
   end
 
-  def borra_cache
-    Rails.cache.delete("cache_service_#{id}")
+  def borra_cache(recurso)
+    Rails.cache.delete("#{recurso}_#{id}")
   end
 end

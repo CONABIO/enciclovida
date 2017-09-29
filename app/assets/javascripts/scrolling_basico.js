@@ -28,7 +28,7 @@
 			var busy = false; // Checks if the scroll action is happening
 			                  // so we don't run it multiple times
 
-            if(settings.scroll == true) initmessage = 'Cargando... Por favor, espera <i class="spin6-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
+            if(settings.scroll == true) initmessage = 'Cargando... Por favor, espera <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
             else initmessage = 'Click for more';
 
 			
