@@ -68,10 +68,16 @@ class ValidacionAvanzada < Validacion
       encuentra_por_nombre
 
       if validacion[:estatus]  # Encontro un unico nombe valido
-        validacion[:taxon].asigna_categorias
-        validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
-        validacion[:valido_hasta] = true
-        break
+        #puts '----------' + validacion[:taxon].x_categoria_taxonomica.inspect
+          validacion[:taxon].asigna_categorias
+        if I18n.transliterate(validacion[:taxon].x_categoria_taxonomica).gsub(' ','_').downcase.strip == categoria
+          validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
+          validacion[:valido_hasta] = true
+          break
+        else
+          self.validacion[:estatus] = false
+          next
+        end
       end
     end
 
