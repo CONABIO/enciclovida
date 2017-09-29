@@ -50,7 +50,8 @@
     function setPaddingHeader(){
 	    var vacio = $(window).height()-$('#brandBar').height();
 	    $('header').css('padding-bottom', (vacio));
-	    $('#news').css('margin-top', (100-vacio));
+	    $('#news').css('margin-top', (30-vacio));
+	    $('#news').css('height', (vacio-120));
     }
     $(window).on('load', function(){
         vidRescale();
