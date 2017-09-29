@@ -1,7 +1,5 @@
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
-class Validacion < ActiveRecord::Base
-
-  belongs_to :usuario
+class Validacion
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
   attr_accessor :nombre_cientifico, :archivo_copia, :correo, :excel_url, :nombre_archivo, :sheet, :recurso_validado, :cabecera, :validacion
