@@ -27,6 +27,7 @@ header {
   color: #fafafa;
   position: relative;
   height: 200px;
+  padding: 0;
   overflow: hidden;
 }
 #news > h5{
@@ -35,7 +36,7 @@ header {
   position: absolute;
   right: 0px;
   left: 0px;
-  margin: 0 10px;
+  margin: 0;
   padding: 0 10px;
   line-height: 30px;
   font-weight: bold;
@@ -56,8 +57,8 @@ header {
   100% {margin-top: 30px;}
 }
 .issue{
-  height: 200px;
-  padding: 0 25px;
+  height: 100%;
+  padding: 10px 25px;
   background-color: rgba(130, 158, 61, 0.5);
 }
 
