@@ -4,6 +4,7 @@ class GithubService
 
     url = CONFIG.github.api << "/#{type}?state=closed"
     url = url << '&labels=new feature' if type == 'issues'
+    url = url << '&sort=updated' if type == 'issues'
 
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
