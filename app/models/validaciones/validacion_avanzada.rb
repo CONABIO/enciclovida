@@ -68,8 +68,9 @@ class ValidacionAvanzada < Validacion
       encuentra_por_nombre
 
       if validacion[:estatus]  # Encontro un unico nombe valido
-        #puts '----------' + validacion[:taxon].x_categoria_taxonomica.inspect
-          validacion[:taxon].asigna_categorias
+        validacion[:taxon].asigna_categorias
+
+        # Compara que la categoria taxonomica de la coincidencia sea la misma que la categoria que del ciclo
         if I18n.transliterate(validacion[:taxon].x_categoria_taxonomica).gsub(' ','_').downcase.strip == categoria
           validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
           validacion[:valido_hasta] = true
@@ -317,7 +318,7 @@ class ValidacionAvanzada < Validacion
 
       validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || (fila['categoria_taxonomica'].present? ? [fila['categoria_taxonomica'], INFORMACION_ORIG] : '')
       validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || (fila['nombre_autoridad_infraespecie'].present? ? [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG] : '')
-      validacion_interna_hash['SCAT_NombreCient_valido'] = [fila['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
 
       # Para la NOM
       nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
