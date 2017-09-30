@@ -69,9 +69,16 @@ class ValidacionAvanzada < Validacion
 
       if validacion[:estatus]  # Encontro un unico nombe valido
         validacion[:taxon].asigna_categorias
-        validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
-        validacion[:valido_hasta] = true
-        break
+
+        # Compara que la categoria taxonomica de la coincidencia sea la misma que la categoria que del ciclo
+        if I18n.transliterate(validacion[:taxon].x_categoria_taxonomica).gsub(' ','_').downcase.strip == categoria
+          validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
+          validacion[:valido_hasta] = true
+          break
+        else
+          self.validacion[:estatus] = false
+          next
+        end
       end
     end
 
@@ -91,7 +98,7 @@ class ValidacionAvanzada < Validacion
       coincide_familia_orden?
 
       if validacion[:estatus]  # Puede que se quede con el primer caso que coincida la familia o el orden
-        validacion[:msg] = "Orig: #{nombre_cientifico}; Enciclo: #{taxon.nombre_cientifico}"
+        validacion[:msg] = 'Búsqueda similar'
         return
       end
     end
@@ -188,7 +195,7 @@ class ValidacionAvanzada < Validacion
       end
     else  # No tiene ni familia ni orden, entonces lo regreso false, ya que es ambiguo y no se puede decidir
       validacion[:estatus] = false
-      validacion[:msg] = 'El resultado es ambiguo, buscamos más arriba'
+      validacion[:msg] = 'Sin coincidencias'
     end
 
     puts "\n\n\nResultado en familia u orden: #{validacion[:estatus].to_s}"
@@ -311,7 +318,7 @@ class ValidacionAvanzada < Validacion
 
       validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || (fila['categoria_taxonomica'].present? ? [fila['categoria_taxonomica'], INFORMACION_ORIG] : '')
       validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || (fila['nombre_autoridad_infraespecie'].present? ? [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG] : '')
-      validacion_interna_hash['SCAT_NombreCient_valido'] = [fila['nombre_cientifico'], INFORMACION_ORIG]
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
 
       # Para la NOM
       nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct

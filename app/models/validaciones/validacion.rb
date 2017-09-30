@@ -1,7 +1,5 @@
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
-class Validacion < ActiveRecord::Base
-
-  belongs_to :usuario
+class Validacion
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
   attr_accessor :nombre_cientifico, :archivo_copia, :correo, :excel_url, :nombre_archivo, :sheet, :recurso_validado, :cabecera, :validacion
@@ -33,7 +31,7 @@ class Validacion < ActiveRecord::Base
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
-      self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
+      self.validacion = {taxones: taxones, msg: ''}
       return
 
     else
@@ -42,19 +40,19 @@ class Validacion < ActiveRecord::Base
       nombres = nombre_cientifico.limpiar.downcase.split(' ')
 
       taxones = if nombres.length == 2  # Especie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
-              elsif nombres.length == 3  # Infraespecie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
-              elsif nombres.length == 1 # Genero o superior
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
-              end
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
+                elsif nombres.length == 3  # Infraespecie
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+                elsif nombres.length == 1 # Genero o superior
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
+                end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
         self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {taxones: taxones, msg: 'Coincidio más de uno'}
+        self.validacion = {taxones: taxones, msg: ''}
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
@@ -81,7 +79,7 @@ class Validacion < ActiveRecord::Base
               self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
               return
             else
-              self.validacion = {taxones: taxones_con_distancia, msg: 'Coincidio más de uno'}
+              self.validacion = {taxones: taxones_con_distancia, msg: ''}
             end
           end
 
@@ -140,7 +138,7 @@ class Validacion < ActiveRecord::Base
     end
 
     if validos.count == 1
-      self.validacion = {estatus: true, taxon: validos.first, msg: 'Coincidio más de uno, pero solo hubo un taxon válido'}
+      self.validacion = {estatus: true, taxon: validos.first, msg: 'Búsqueda similar'}
     end
   end
 

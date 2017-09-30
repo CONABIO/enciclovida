@@ -91,6 +91,9 @@ base: &base
     api: http://apiv3.iucnredlist.org
     token: 999999999999999999999999999999999999999999999999
 
+  github:
+    api: https://api.github.com/repos/calonso-conabio/buscador
+
 ###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation

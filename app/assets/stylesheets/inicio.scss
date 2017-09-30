@@ -23,6 +23,50 @@ header {
   background-size: cover;
   -o-background-size: cover;
 }
+#news{
+  color: #fafafa;
+  position: relative;
+  height: 200px;
+  padding: 0;
+  overflow: hidden;
+}
+#news > h5{
+  background-color: #333333;
+  display: block;
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  margin: 0;
+  padding: 0 10px;
+  line-height: 30px;
+  font-weight: bold;
+}
+#news a{
+  color: #d5e3e6;
+  font-weight: bold;
+  text-decoration: underline;
+}
+#issues{
+  margin-top: 30px;
+  animation-name: example;
+  animation-duration: 30s;
+  animation-iteration-count: infinite;
+  animation-delay: 10s;
+}
+@keyframes example {
+  0%   {margin-top: 30px;}
+  20%  {margin-top: -170px;}
+  40%  {margin-top: -370px;}
+  60%  {margin-top: -570px;}
+  80% {margin-top: -770px;}
+  100% {margin-top: 30px;}
+}
+.issue{
+  height: 100%;
+  padding: 10px 25px;
+  background-color: rgba(51, 51, 51, 0.75);
+}
+
 @media(min-width:768px){
   .btn-circle {
     visibility:visible !important;
