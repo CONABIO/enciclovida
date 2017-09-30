@@ -21,6 +21,8 @@ class Especie < ActiveRecord::Base
                 :x_nombre_autoridad, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
                 :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
+  attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
+             :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
 
   has_one :proveedor
   has_one :adicional
