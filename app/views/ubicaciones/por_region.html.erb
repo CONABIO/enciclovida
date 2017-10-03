@@ -285,7 +285,8 @@
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
-            $.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
+            //$.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
+            $.getJSON('/prueba_topojson.json').done(addTopoData);
             cargaGrupos($(this).attr('region_id'));
             return false;
         });
