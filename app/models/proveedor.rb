@@ -366,13 +366,23 @@ class Proveedor < ActiveRecord::Base
       return {estatus: 'error', msg: e}
     end
 
-    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless res.any?
+    if res.blank?
+      borrar_geodata('observaciones_')
+      return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'}
+    end
 
     self.totales = res['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
     resultados = res['results'] if res['results'].any?
 
-    return {estatus: 'error', msg: 'No hay observaciones'} if totales.blank? || (totales.present? && totales <= 0)
-    return {estatus: 'error', msg: 'No hay observaciones'} if resultados.blank? || resultados.count == 0
+    if totales.blank? || (totales.present? && totales <= 0)
+      borrar_geodata('observaciones_')
+      return {estatus: 'error', msg: 'No hay observaciones'}
+    end
+
+    if resultados.blank? || resultados.count == 0
+      borrar_geodata('observaciones_')
+      return {estatus: 'error', msg: 'No hay observaciones'}
+    end
 
     resultados.each do |observacion|
       self.observacion = observacion
@@ -479,9 +489,17 @@ class Proveedor < ActiveRecord::Base
       return {estatus: 'error', msg: e}
     end
 
-    return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'} unless resultados.present?
+    if resultados.blank?
+      borrar_geodata('ejemplares_')
+      return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'}
+    end
+
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
-    return {estatus: 'error', msg: 'No hay ejemplares'} if totales.blank? || (totales.present? && totales <= 0)
+
+    if totales.blank? || (totales.present? && totales <= 0)
+      borrar_geodata('ejemplares_')
+      return {estatus: 'error', msg: 'No hay ejemplares'}
+    end
 
     self.ejemplares_mapa = []
 
@@ -562,6 +580,16 @@ class Proveedor < ActiveRecord::Base
     archvo_zip = "#{nombre}.zip"
     system "zip -j #{archvo_zip} #{nombre}.kml"
     File.rename(archvo_zip, "#{nombre}.kmz")
+  end
+
+  # Borra el json, kml, kmz del taxon en cuestion, ya sea observaciones o ejemplares
+  def borrar_geodata(tipo)
+    ruta = Rails.root.join('public', 'geodatos', especie_id.to_s, "#{tipo}*")
+    archivos = Dir.glob(ruta)
+
+    archivos.each do |a|
+      File.delete(a)
+    end
   end
 
   def photo_type(url)
