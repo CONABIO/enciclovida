@@ -30,8 +30,8 @@ header {
   padding: 0;
   overflow: hidden;
 }
-#news > h5{
-  background-color: #333333;
+#news > h4{
+  background-color: #829E3D;
   display: block;
   position: absolute;
   right: 0px;
@@ -43,27 +43,34 @@ header {
 }
 #news a{
   color: #d5e3e6;
-  font-weight: bold;
   text-decoration: underline;
+  text-shadow: #CCCCCC;
 }
 #issues{
-  margin-top: 30px;
+  margin-top: 20px;
   animation-name: example;
-  animation-duration: 30s;
+  animation-duration: 40s;
   animation-iteration-count: infinite;
   animation-delay: 10s;
 }
+#issues:hover{
+  -webkit-animation-play-state: paused;
+  -moz-animation-play-state: paused;
+  -o-animation-play-state: paused;
+  animation-play-state: paused;
+}
 @keyframes example {
-  0%   {margin-top: 30px;}
-  20%  {margin-top: -170px;}
-  40%  {margin-top: -370px;}
-  60%  {margin-top: -570px;}
-  80% {margin-top: -770px;}
-  100% {margin-top: 30px;}
+  0%   {margin-top: 20px;}
+  20%  {margin-top: -230px;}
+  40%  {margin-top: -170px;}
+  60%  {margin-top: -720px;}
+  80% {margin-top: -980px;}
+  100% {margin-top: 20px;}
 }
 .issue{
   height: 100%;
-  padding: 10px 25px;
+  min-height: 250px;
+  padding: 5px 10px;
   background-color: rgba(51, 51, 51, 0.75);
 }
 
