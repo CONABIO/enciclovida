@@ -376,7 +376,7 @@ class Proveedor < ActiveRecord::Base
 
     if totales.blank? || (totales.present? && totales <= 0)
       borrar_geodata('observaciones_')
-      return {estatus: 'error', msg: 'No hay observaciones'}
+      return {estatus: 'error', msg: 'No hay observaciones pero existe el array'}
     end
 
     if resultados.blank? || resultados.count == 0
