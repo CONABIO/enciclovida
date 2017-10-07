@@ -28,7 +28,6 @@ header {
   //position: relative;
   /*height: 200px;*/
   padding: 0;
-  overflow-y: hidden;
 }
 #news > h4{
   background-color: #829E3D;
@@ -43,7 +42,8 @@ header {
   text-decoration: underline;
 }
 #issues{
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .issue{
   border-bottom: 1px solid rgba(213, 227, 230, 0.51);

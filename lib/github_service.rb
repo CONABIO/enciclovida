@@ -10,6 +10,7 @@ class GithubService
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     req['Accept'] = 'application/vnd.github.v3+json'
+    jres = []
 
     begin
       http = Net::HTTP.new(uri.host, uri.port)
@@ -17,10 +18,10 @@ class GithubService
       res = http.request(req)
 
       jres = JSON.parse(res.body)
-      jres[0..4] if jres.any?
     rescue => e
-      nil
+      jres = [{"title" => "No hay nuevas noticias", "body" => "Servicio de noticias abajo"}]
     end
+    jres[0..4]
   end
 
 end
