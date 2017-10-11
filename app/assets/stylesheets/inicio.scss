@@ -26,7 +26,6 @@ header {
 #news{
   color: #fafafa;
   padding: 0;
-  font-size: 15px;
 }
 #news > h4{
   background-color: #829E3D;
@@ -34,10 +33,7 @@ header {
   margin: 0;
   padding: 0 10px;
   line-height: 30px;
-  font-weight: bold;  
-}
-#news h5{
-  font-size: 15px;
+  font-weight: bold;
 }
 #news a{
   color: #d5e3e6;
@@ -50,7 +46,7 @@ header {
 .issue{
   border-bottom: 1px solid rgba(213, 227, 230, 0.51);
   padding: 5px 15px 5px 10px;
-  background-color: #333333;
+  background-color: rgba(51, 51, 51, 0.75);
 }
 @media(min-width:768px){
   .btn-circle {
