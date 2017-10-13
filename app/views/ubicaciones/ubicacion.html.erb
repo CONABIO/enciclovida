@@ -1,7 +1,7 @@
 <% content_for(:extrajs) do %>
-    <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
-    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js" data-turbolinks-track="true"></script>
-    <%= javascript_include_tag "Control.FullScreen.js", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
+    <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script>
+    <%= javascript_include_tag 'Control.FullScreen.js', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% content_for(:extracss) do %>
@@ -13,8 +13,8 @@
     </style>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
-    <%= stylesheet_link_tag "MarkerCluster.Default", "data-turbolinks-track" => true %>
-    <%= stylesheet_link_tag "Control.FullScreen.css", "data-turbolinks-track" => true %>
+    <%= stylesheet_link_tag 'MarkerCluster.Default', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'Control.FullScreen.css', 'data-turbolinks-track' => true %>
 <% end %>
 
 
@@ -26,6 +26,8 @@
     var loadMap = function (id)
     {
         var place = [19.29568189, -99.1843784];
+        var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+
         var map = L.map(id, {
             zoomControl: false
         });
@@ -45,7 +47,6 @@
         map.addControl(zoom);
         map.addControl(fullscreen);
 
-        var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
         var layer = L.tileLayer(tile_url, {
             attribution: 'OSM',
             noWrap: true
@@ -54,10 +55,10 @@
         map.addLayer(layer);
         map.setView(place, 5);  // Default place and zoom
 
-        map.locate({enableHighAccuracy: true})
+        map.locate({setView: true, maxZoom: 16})
                 .on('locationfound', function(e){
 
-                    var marker = L.marker([e.latitude, e.longitude], {draggable: true}).bindPopup('Tu ubicación aproximada, puede arrastrar este marcador');
+                    var marker = L.marker([e.latitude, e.longitude], {draggable: true}).bindPopup('Tu ubicación aproximada, puedes arrastrar este marcador');
                     var circle = L.circle([e.latitude, e.longitude], 1*1000, {
                         weight: 1,
                         color: 'blue',
@@ -80,7 +81,7 @@
                         console.log('dragend');
                     });
 
-                    console.log(e);
+                    //console.log(e);
                 })
                 .on('locationerror', function(e){
                     console.log(e);

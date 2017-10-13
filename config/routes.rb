@@ -1,5 +1,11 @@
 Buscador::Application.routes.draw do
 
+  resources :regiones_mapas do
+    collection do
+      get 'dame-region' => :dame_region
+    end
+  end
+
   get 'usuarios/conabio'
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
@@ -12,8 +18,9 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  get 'explora_por_ubicacion' => 'ubicaciones#ubicacion'
-  get 'explora_por_region' => 'ubicaciones#region'
+  get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
+  get 'explora-por-region' => 'ubicaciones#por_region'
+  get 'especies-por-catalogo-id' => 'ubicaciones#especies_por_catalogo_id'
 
   get "busquedas/basica"
   get "busquedas/avanzada"

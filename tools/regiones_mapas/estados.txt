@@ -1,0 +1,33 @@
+entidad	entid
+Chihuahua	1
+Chiapas	3
+Quintana Roo	4
+Sonora	5
+Durango	6
+Zacatecas	7
+Michoacán	8
+Hidalgo	9
+San Luis Potosí	10
+Sinaloa	11
+Campeche	12
+Colima	13
+Yucatán	14
+Guerrero	15
+Oaxaca	16
+Nayarit	17
+Jalisco	18
+Baja California	19
+Nuevo León	20
+Puebla	21
+México	22
+Tabasco	23
+Baja California Sur	24
+Aguascalientes	2
+Guanajuato	25
+Querétaro	26
+Veracruz	27
+Coahuila	28
+Tamaulipas	29
+Distrito Federal	30
+Tlaxcala	31
+Morelos	32

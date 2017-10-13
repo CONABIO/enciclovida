@@ -1,0 +1,8 @@
+"desecon1"	"ecorid"
+"Selvas Calido-Secas"	"1"
+"Grandes Planicies"	"2"
+"Elevaciones Semiaridas Meridionales"	"3"
+"Sierras Templadas"	"4"
+"Selvas Calido-Humedas"	"5"
+"Desiertos de America del Norte"	"6"
+"California Mediterranea"	"7"
