@@ -1,7 +1,7 @@
 class RegionesMapasController < ApplicationController
   skip_before_filter :verify_authenticity_token, :set_locale
   before_action :set_region_mapa, only: [:show, :edit, :update, :destroy]
-  layout false, :only => [:dame_region]
+  layout false, :only => [:dame_region, :dame_ancestry]
 
   # GET /regiones_mapas
   # GET /regiones_mapas.json
@@ -111,6 +111,36 @@ class RegionesMapasController < ApplicationController
       end
     end
   end
+
+  # Devuelve el geo_id e los ancestros para poder consultar el servicio de abraham
+  def dame_ancestry
+    resp = if params[:region_id].present?
+             begin
+               region = RegionMapa.find(params[:region_id])
+             rescue
+               region = RegionMapa.none
+             end
+
+             if region.present?
+               regiones = {}
+
+               region.path.each do |r|
+
+                 geo_id = r.tipo_region == 'municipio' ? r.geo_id.to_s.rjust(3,'0') : r.geo_id.to_s.rjust(2,'0')
+                 regiones[r.tipo_region] = geo_id
+               end
+
+               {estatus: true, regiones: regiones, tipo_region: region.tipo_region}
+             else
+               {estatus: false, msg: "No hay regiones con region_id = #{params[:region_id]}"}
+             end
+           else
+             {estatus: false, msg: 'El atributo "region_id" no esta presente'}
+           end
+
+    render json: resp
+  end
+
 
   private
 
