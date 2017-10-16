@@ -2,7 +2,7 @@ Buscador::Application.routes.draw do
 
   resources :regiones_mapas do
     collection do
-      get 'dame-region' => :dame_region
+      get 'dame-tipo-region' => :dame_tipo_region
       get 'dame-ancestry' => :dame_ancestry
     end
   end
