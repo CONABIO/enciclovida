@@ -4,8 +4,8 @@
 
 <% @region_mapa.each do |region| %>
     <li class="list-group-item">
-      <% ancestros = region.ancestors.reverse.map(&:nombre_region).join(', ') %>
-      <%= link_to "#{region.nombre_region}, #{ancestros}", nil, region_id: region.id, class: 'region_id' %>
+      <%# ancestros = region.ancestors.reverse.map(&:nombre_region).join(', ') %>
+      <%= link_to "#{region.entidad}", nil, region_id: region.entid, class: 'region_id' %>
     </li>
 <% end %>
 

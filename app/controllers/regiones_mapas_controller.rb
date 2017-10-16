@@ -1,7 +1,7 @@
 class RegionesMapasController < ApplicationController
   skip_before_filter :verify_authenticity_token, :set_locale
   before_action :set_region_mapa, only: [:show, :edit, :update, :destroy]
-  layout false, :only => [:dame_region, :dame_ancestry]
+  layout false, :only => [:dame_tipo_region, :dame_ancestry]
 
   # GET /regiones_mapas
   # GET /regiones_mapas.json
@@ -63,51 +63,27 @@ class RegionesMapasController < ApplicationController
     end
   end
 
-  # Devuelve varias regiones o una región si es una hoja
-  def dame_region
+  # Devuelve varias regiones
+  def dame_tipo_region
     # Para la paginacion
     pagina = params[:pagina] ||= 1
     pagina = pagina.to_i
     por_pagina = 15
     offset = por_pagina*(pagina-1)
+    @region_mapa = {}
 
-    if params[:id].present?
-      begin
-        set_region_mapa
-
-        if @region_mapa.has_children?
-          @region_mapa = @region_mapa.children
-        end
-      rescue
-        error = true
-      end
-
-    else  # La region a mostrar si da clic en alguna pestaña
-      if params[:tipo_region].present?
-        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region])
-      else
-        @region_mapa = RegionMapa.where(tipo_region: 'estado')
-      end
-    end
-
-    if @region_mapa
-      @region_mapa = @region_mapa.offset(offset).limit(por_pagina).order(nombre_region: :asc)
+    begin
+      @region_mapa[:estatus] = true
+      @region_mapa[:resultados] = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
+    rescue
+      @region_mapa[:estatus] = false
+      @region_mapa[:msg] = "No existe nada con el tipo de region: #{params[:tipo_region]}"
     end
 
     respond_to do |format|
       format.html
       format.json do
-        @res = {}
-
-        if error.blank?
-          @res[:estatus] = true
-          @res[:resultados] = @region_mapa
-        else
-          @res[:estatus] = false
-          @res[:msg] = "No existe una región con el ID: #{params[:id]}"
-        end
-
-        render json: @res
+        render json: @region_mapa
       end
     end
   end

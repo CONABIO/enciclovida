@@ -195,14 +195,15 @@
             };
         };
 
-        var cargaRegion = function(tipo_region, region_id, pagina)
+        var cargaRegion = function()
         {
             $.ajax({
-                url: '/regiones_mapas/dame-region',
-                data: {id: region_id, tipo_region: tipo_region, pagina: pagina}
+                url: '/regiones_mapas/dame-tipo-region.json',
+                data: {tipo_region: tipo_region, pagina: pagina}
 
             }).done(function(resp) {
-                if (pagina != undefined)
+                console.log(resp);
+                if (pagina != undefined && pagina > 1)
                     $('.contenedor_regiones').append(resp);
                 else
                     $('.contenedor_regiones').empty().append(resp);
@@ -323,7 +324,7 @@
 
         $('#lista_tipos_regiones li a').on('click', function(){
             tipo_region = $(this).attr('tipo_region');
-            cargaRegion(tipo_region);
+            cargaRegion();
             pagina = 1;
         });
 
@@ -347,7 +348,7 @@
             if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
             {
                 pagina++;
-                cargaRegion(tipo_region , null, pagina);
+                cargaRegion(pagina);
             }
         });
     </script>
