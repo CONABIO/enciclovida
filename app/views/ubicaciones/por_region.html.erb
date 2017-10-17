@@ -193,8 +193,6 @@
                 opacity: 1,
                 fillOpacity: 0.6
             };
-
-
         };
 
         var cargaRegion = function(tipo_region, region_id, pagina)
@@ -228,10 +226,55 @@
             grupos["Hongos"] = 31;
             grupos["Camarones, cangrejos y parientes"] = 46;
 
+            // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
+            var especies = {};
+            especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
+                "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
+
+            var url = dame_url_carga_grupos(region_id);
+            if (url != '')
+            {
+                console.log(url);
+                // Pregunto por la URL del servicio de abraham
+                $.ajax({
+                    url: url
+                }).done(function(resp) {
+                    var numero_especies = resp.length;
+                    console.log(resp);
+                    console.log(numero_especies);
+                }).fail(function() {
+                    console.log('falló');
+                });
+            }
+
             $('#contenedor_grupos').empty();
             $.each(grupos, function(grupo, valor){
                 $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
             });
+        };
+
+        var dame_url_carga_grupos = function(region_id)
+        {
+            var url = '';
+            // Pregunto por los ancestros de la region
+            $.ajax({
+                async: false,
+                url: '/regiones_mapas/dame-ancestry',
+                data: {region_id: region_id}
+            }).done(function(resp) {
+                if (resp.estatus) {
+                    if (resp.tipo_region == 'municipio')  // De momento solo funciona para aves
+                    {
+                        url = 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + resp.regiones.estado + '/' + resp.regiones.municipio + '/edomun/aves?apiKey=enciclovida';
+                        console.log(url);
+                    }
+
+                }
+
+            }).fail(function() {
+            });
+
+            return url;
         };
 
         var cargaEspecies = function(elemento, pagina, por_pagina)
@@ -285,7 +328,7 @@
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
-            $.getJSON('https://gist.githubusercontent.com/moklick/c1cc83e18a6fafd9af81/raw/990220dca05c16bb80041f4306cfb3179aa8d88b/countries.topo.json').done(addTopoData);
+            $.getJSON('/prueba_topojson.json').done(addTopoData);
             cargaGrupos($(this).attr('region_id'));
             return false;
         });
@@ -300,7 +343,7 @@
             return false;
         });
 
-        $('#contenedor_regiones').on('scroll', function(){
+        $('.contenedor_regiones').on('scroll', function(){
             if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
             {
                 pagina++;
