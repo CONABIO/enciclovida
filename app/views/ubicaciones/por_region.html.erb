@@ -221,35 +221,28 @@
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
             var grupos = {};
-            grupos["Aves"] = 547;
-            grupos["Mamíferos"] = 356;
-            grupos["Anfibios"] = 234;
-            grupos["Arácnidos"] = 134;
-            grupos["Reptiles"] = 491;
-            grupos["Peces con aletas radiadas"] = 346;
-            grupos["Insectos"] = 643;
-            grupos["Plantas"] = 531;
-            grupos["Hongos"] = 31;
-            grupos["Camarones, cangrejos y parientes"] = 46;
-
-            // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
-            var especies = {};
-            especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
-                "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
+            grupos["Algas"] = 0;
+            grupos["Anfibios"] = 0;
+            grupos["Aves"] = 0;
+            grupos["Hongos"] = 0;
+            grupos["Insectos"] = 0;
+            grupos["Mamífeross"] = 0;
+            grupos["Musgos"] = 0;
+            grupos["Peces"] = 0;
+            grupos["Plantas"] = 0;
+            grupos["Reptiles"] = 0;
 
             var url = dameUrlCargaGrupos(region);
             if (url != '')
             {
-                console.log(url);
                 // Pregunto por la URL del servicio de abraham
                 $.ajax({
-                    url: url
+                    url: url,
+                    async: false
                 }).done(function(resp) {
-                    var numero_especies = resp.length;
-                    console.log(resp);
-                    console.log(numero_especies);
+                    grupos["Aves"] = resp.length;
                 }).fail(function() {
-                    console.log('falló');
+                    console.log('falló el servicio de conteo de Abraham');
                 });
             }
 
@@ -277,7 +270,7 @@
             especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
                 "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
 
-            // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos
+            // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
             $.ajax({
                 url: '/especies-por-catalogo-id',
                 data: {catalogo_id: especies["resultados"]}
