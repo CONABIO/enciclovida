@@ -316,8 +316,8 @@
 
         $('#lista_tipos_regiones li a').on('click', function(){
             tipo_region = $(this).attr('tipo_region');
-            cargaTipoRegion();
             pagina = 1;
+            cargaTipoRegion();
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){

@@ -84,15 +84,10 @@ class RegionesMapasController < ApplicationController
       end
     rescue
       region_mapa[:estatus] = false
-      region_mapa[:msg] = "No existe nada con el tipo de region: #{params[:tipo_region]}"
+      region_mapa[:msg] = "No existe nada con el tipo de región: #{params[:tipo_region]}"
     end
 
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: region_mapa
-      end
-    end
+    render json: region_mapa
   end
 
   # Devuelve el geo_id e los ancestros para poder consultar el servicio de abraham
