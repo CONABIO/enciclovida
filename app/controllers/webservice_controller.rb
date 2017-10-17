@@ -1,4 +1,5 @@
 class WebserviceController < ApplicationController
+  protect_from_forgery with: :null_session
 
   def bdi_nombre_cientifico
 
@@ -21,4 +22,26 @@ class WebserviceController < ApplicationController
       render :_error and return
     end
   end
+
+  def geojson_to_topojson
+
+    collection = params[:geojson]
+    puts collection.inspect
+    #collection = open('/home/ggonzalez/Descargas/geojson_estados.json').read
+
+    source = open('./lib/assets/topojson.js').read
+    ExecJS.runtime = ExecJS::Runtimes::Node
+    context = ExecJS.compile(source)
+
+    topojson = context.eval("topojson.topology({collection: #{collection} }, 1e4)")
+
+    respond_to do |format|
+      format.json {render json: topojson}
+      format.html do
+
+      end  # End format html
+    end
+
+  end
+
 end
