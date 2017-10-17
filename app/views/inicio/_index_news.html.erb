@@ -1,12 +1,10 @@
-<div id="news" class="hidden-xs hidden-sm col-md-3 col-lg-2">
-	<h5>Últimas noticias <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></h5>
+<div id="news" class="hidden-xs hidden-sm col-md-3 col-lg-3">
+	<h4>Últimas noticias <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></h4>
 	<div id="issues">
 	  <% dameNews.each do |v,k| %>
 	    <div class="issue">
-
-	      <strong class="text-info"><%= v %></strong><br />
-	      <small><%= k %></small>
-
+	      <h5 class="text-info"><strong><%= v %></strong></h5>
+	      <p><%= k %></p>
 	    </div>
 	  <% end %>
   </div>
