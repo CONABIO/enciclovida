@@ -195,7 +195,7 @@
             };
         };
 
-        var cargaRegion = function()
+        var cargaTipoRegion = function()
         {
             $.ajax({
                 url: '/regiones_mapas/dame-tipo-region.json',
@@ -217,7 +217,7 @@
             });
         };
 
-        var cargaGrupos = function(region_id)
+        var cargaGrupos = function(region)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
             var grupos = {};
@@ -237,7 +237,7 @@
             especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
                 "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
 
-            var url = dame_url_carga_grupos(region_id);
+            var url = dameUrlCargaGrupos(region);
             if (url != '')
             {
                 console.log(url);
@@ -259,28 +259,15 @@
             });
         };
 
-        var dame_url_carga_grupos = function(region_id)
+        var dameUrlCargaGrupos = function(region)
         {
-            var url = '';
-            // Pregunto por los ancestros de la region
-            $.ajax({
-                async: false,
-                url: '/regiones_mapas/dame-ancestry',
-                data: {region_id: region_id}
-            }).done(function(resp) {
-                if (resp.estatus) {
-                    if (resp.tipo_region == 'municipio')  // De momento solo funciona para aves
-                    {
-                        url = 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + resp.regiones.estado + '/' + resp.regiones.municipio + '/edomun/aves?apiKey=enciclovida';
-                        console.log(url);
-                    }
+            if (tipo_region == 'estado')
+                return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + region.attr('region_id') + '/edomun/aves?apiKey=enciclovida';
 
-                }
-
-            }).fail(function() {
-            });
-
-            return url;
+            else if (tipo_region == 'municipio')
+                return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + region.attr('parent_id') + '/' + region.attr('region_id') + '/edomun/aves?apiKey=enciclovida';
+            else
+                return '';
         };
 
         var cargaEspecies = function(elemento, pagina, por_pagina)
@@ -325,17 +312,17 @@
         tipo_region = 'estado';
 
         cargaMapa('map');
-        cargaRegion();
+        cargaTipoRegion();
 
         $('#lista_tipos_regiones li a').on('click', function(){
             tipo_region = $(this).attr('tipo_region');
-            cargaRegion();
+            cargaTipoRegion();
             pagina = 1;
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             $.getJSON('/prueba_topojson.json').done(addTopoData);
-            cargaGrupos($(this).attr('region_id'));
+            cargaGrupos($(this));
             return false;
         });
 
@@ -353,7 +340,7 @@
             if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
             {
                 pagina++;
-                cargaRegion(pagina);
+                cargaTipoRegion(pagina);
             }
         });
     </script>

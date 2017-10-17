@@ -80,7 +80,7 @@ class RegionesMapasController < ApplicationController
         estado = t("estados.#{regiones.last.estandariza}", default: regiones.last)
         nombre_region = (regiones[0..-2].push(estado)).join(', ')
 
-         {region_id: r.region_id, nombre_region: nombre_region, parent_id: r.try(:parent_id)}
+         {region_id: r.region_id.to_s.rjust(2,'0'), nombre_region: nombre_region, parent_id: r.try(:parent_id)}
       end
     rescue
       region_mapa[:estatus] = false
