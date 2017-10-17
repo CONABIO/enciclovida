@@ -200,13 +200,18 @@
             $.ajax({
                 url: '/regiones_mapas/dame-tipo-region.json',
                 data: {tipo_region: tipo_region, pagina: pagina}
-
             }).done(function(resp) {
-                console.log(resp);
-                if (pagina != undefined && pagina > 1)
-                    $('.contenedor_regiones').append(resp);
-                else
-                    $('.contenedor_regiones').empty().append(resp);
+                if (pagina == 1)
+                    $('.contenedor_regiones').empty().append('<ul class="list-group" id="tipo_region_' + tipo_region + '">');
+
+                $.each(resp.resultados, function (index, region) {
+                    $('#tipo_region_'+tipo_region).append('<li class="list-group-item"><a href="" class="region_id" region_id="'+region.region_id+'" parent_id="'+region.parent_id+'">'+region.nombre_region+'</a></li>');
+                });
+
+                if (pagina != undefined && pagina > 1) {
+                    $('.contenedor_regiones').append('</ul>');
+                }
+
             }).fail(function() {
                 $('.contenedor_regiones').empty().html('Lo sentimos esa búsqueda no dio ningún resultado');
             });

@@ -70,20 +70,20 @@ class RegionesMapasController < ApplicationController
     pagina = pagina.to_i
     por_pagina = 15
     offset = por_pagina*(pagina-1)
-    @region_mapa = {}
+    region_mapa = {}
 
     begin
-      @region_mapa[:estatus] = true
-      @region_mapa[:resultados] = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
+      region_mapa[:estatus] = true
+      region_mapa[:resultados] = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
     rescue
-      @region_mapa[:estatus] = false
-      @region_mapa[:msg] = "No existe nada con el tipo de region: #{params[:tipo_region]}"
+      region_mapa[:estatus] = false
+      region_mapa[:msg] = "No existe nada con el tipo de region: #{params[:tipo_region]}"
     end
 
     respond_to do |format|
       format.html
       format.json do
-        render json: @region_mapa
+        render json: region_mapa
       end
     end
   end
