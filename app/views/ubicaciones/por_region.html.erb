@@ -217,6 +217,18 @@
             });
         };
 
+        var cargaTopojson = function(region_id){
+            // Cargo la capa de topojson en el mapa
+            $.ajax({
+                url: url
+            }).done(function(topojson) {
+
+            }).fail(function() {
+                console.log('Fallo la conversion del geojson a topojson');
+            });
+        };
+
+
         var cargaGrupos = function(region)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
@@ -226,7 +238,7 @@
             grupos["Aves"] = 0;
             grupos["Hongos"] = 0;
             grupos["Insectos"] = 0;
-            grupos["Mamífeross"] = 0;
+            grupos["Mamíferos"] = 0;
             grupos["Musgos"] = 0;
             grupos["Peces"] = 0;
             grupos["Plantas"] = 0;
@@ -315,6 +327,7 @@
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             $.getJSON('/prueba_topojson.json').done(addTopoData);
+            cargaTopojson($(this).attr('region_id'));
             cargaGrupos($(this));
             return false;
         });

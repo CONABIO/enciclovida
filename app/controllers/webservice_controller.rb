@@ -2,7 +2,6 @@ class WebserviceController < ApplicationController
   protect_from_forgery with: :null_session
 
   def bdi_nombre_cientifico
-
     @nombre = params['nombre']
     bdi = BDIService.new.dameFotos({nombre: @nombre, campo: 528})
 
@@ -23,25 +22,35 @@ class WebserviceController < ApplicationController
     end
   end
 
-  def geojson_to_topojson
+  def geojson_a_topojson
+    topo = GeoATopo.new
+    topojson = {}
+    topojson[:estatus] = false
 
-    collection = params[:geojson]
-    puts collection.inspect
-    #collection = open('/home/ggonzalez/Descargas/geojson_estados.json').read
+    if params[:region_id].present? && params[:tipo_region].present?
+      begin
+        reg = params[:tipo_region].camelize.constantize
+        res = params[:tipo_region] == 'municipio' ? reg.geojson(params[:region_id], params[:parent_id]) : reg.geojson(params[:region_id])
 
-    source = open('./lib/assets/topojson.js').read
-    ExecJS.runtime = ExecJS::Runtimes::Node
-    context = ExecJS.compile(source)
+        if res.length == 1
+          topojson[:estatus] = true
+          topojson[:topojson] = topo.dame_topojson(res.first.geojson)
+        else
+          topojson[:msg] = "No hubo resultados en la base para el geojson con la region: #{params[:region_id]}"
+        end
 
-    topojson = context.eval("topojson.topology({collection: #{collection} }, 1e4)")
+      rescue => e
+        topojson[:msg] = "No pudo generar el topojson: #{e.message}"
+      end
 
-    respond_to do |format|
-      format.json {render json: topojson}
-      format.html do
-
-      end  # End format html
+    elsif params[:geojson]
+      topojson[:estatus] = true
+      topojson[:topojson] = topo.dame_topojson(params[:geojson])
+    else
+      topojson[:msg] = 'Los parametros mínimos no fueron mandados'
     end
 
+    render json: topojson
   end
 
 end
