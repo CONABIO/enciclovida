@@ -74,7 +74,14 @@ class RegionesMapasController < ApplicationController
 
     begin
       region_mapa[:estatus] = true
-      region_mapa[:resultados] = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
+      res = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
+      region_mapa[:resultados] = res.map do |r|
+        regiones = r.nombre_region.split(',')
+        estado = t("estados.#{regiones.last.estandariza}", default: regiones.last)
+        nombre_region = (regiones[0..-2].push(estado)).join(', ')
+
+         {region_id: r.region_id, nombre_region: nombre_region, parent_id: r.try(:parent_id)}
+      end
     rescue
       region_mapa[:estatus] = false
       region_mapa[:msg] = "No existe nada con el tipo de region: #{params[:tipo_region]}"
