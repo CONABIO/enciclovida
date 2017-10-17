@@ -194,4 +194,7 @@ Buscador::Application.routes.draw do
 
   get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
 
+  get 'geojson_to_topojson' => 'webservice#geojson_to_topojson'
+  post 'geojson_to_topojson' => 'webservice#geojson_to_topojson'
+
 end
