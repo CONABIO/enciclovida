@@ -208,7 +208,7 @@
                     $('#tipo_region_'+tipo_region).append('<li class="list-group-item"><a href="" class="region_id" region_id="'+region.region_id+'" parent_id="'+region.parent_id+'">'+region.nombre_region+'</a></li>');
                 });
 
-                if (pagina != undefined && pagina > 1) {
+                if (pagina == 1) {
                     $('.contenedor_regiones').append('</ul>');
                 }
 
