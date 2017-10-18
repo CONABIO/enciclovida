@@ -1,5 +1,7 @@
 class WebserviceController < ApplicationController
+  skip_before_filter :set_locale
   protect_from_forgery with: :null_session
+  layout false, :only => [:geojson_a_topojson]
 
   def bdi_nombre_cientifico
     @nombre = params['nombre']
@@ -29,15 +31,33 @@ class WebserviceController < ApplicationController
 
     if params[:region_id].present? && params[:tipo_region].present?
       begin
-        res = params[:tipo_region].camelize.constantize
-        res = params[:tipo_region] == 'municipio' ? res.geojson(params[:region_id], params[:parent_id]) : res.geojson(params[:region_id])
 
-        if res.length == 1
-          topojson[:estatus] = true
-          topojson[:topojson] = topo.dame_topojson(res.first.geojson)
+        if Rails.env.development?
+          ruta = Rails.root.join('public', 'topojson')
+          archivo = if params[:tipo_region] == 'municipio'
+                      nombre = "#{params[:tipo_region]}_#{params[:region_id]}_#{params[:parent_id]}.json"
+                      ruta.join(nombre)
+                    else
+                      nombre = "#{params[:tipo_region]}_#{params[:region_id].to_i}.json"
+                      ruta.join(nombre)
+                    end
+
+          # res = File.read(archivo) if File.exists?(archivo)
+          #send_file archivo and return
+          #exit(0)
+
+          if File.exists?(archivo)
+            res = "/topojson/#{nombre}"
+            topojson[:cache] = true
+          end
         else
-          topojson[:msg] = "No hubo resultados en la base para el geojson con la region: #{params[:region_id]}"
+          res = params[:tipo_region].camelize.constantize
+          res = params[:tipo_region] == 'municipio' ? res.geojson(params[:region_id], params[:parent_id]) : res.geojson(params[:region_id])
+          res = topo.dame_topojson(res.first.geojson) if res.length == 1
         end
+
+        topojson[:estatus] = true
+        topojson[:topojson] = res
 
       rescue => e
         topojson[:msg] = "No pudo generar el topojson: #{e.message}"

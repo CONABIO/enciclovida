@@ -28,11 +28,11 @@ def guarda_topojson
       puts "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
       topojson = topo.dame_topojson(reg.geojson)
       archivo = if region == 'municipio'
-                  ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}")
+                  ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}.json")
                 else
-                  ruta.join("#{region}_#{reg.region_id}")
+                  ruta.join("#{region}_#{reg.region_id}.json")
                 end
-      File.write(archivo, topojson)
+      File.write(archivo, topojson.to_json)
     end  # End cada region each
   end  # End tipos regiones each
 end

@@ -224,7 +224,12 @@
                 data: {region_id: region.attr('region_id'), tipo_region: tipo_region, parent_id: region.attr('parent_id')}
             }).done(function(res) {
                 if (res.estatus)
-                    addTopoData(res.topojson);
+                {
+                    if (res.cache)
+                        $.getJSON(res.topojson).done(addTopoData);
+                    else
+                        addTopoData(res.topojson);
+                }
             }).fail(function() {
                 console.log('Fallo la conversion del geojson a topojson');
             });
@@ -251,19 +256,18 @@
             {
                 // Pregunto por la URL del servicio de abraham
                 $.ajax({
-                    url: url,
-                    async: false
+                    url: url
                 }).done(function(resp) {
                     grupos["Aves"] = resp.length;
+
+                    $('#contenedor_grupos').empty();
+                    $.each(grupos, function(grupo, valor){
+                        $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
+                    });
                 }).fail(function() {
                     console.log('falló el servicio de conteo de Abraham');
                 });
             }
-
-            $('#contenedor_grupos').empty();
-            $.each(grupos, function(grupo, valor){
-                $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
-            });
         };
 
         var dameUrlCargaGrupos = function(region)
