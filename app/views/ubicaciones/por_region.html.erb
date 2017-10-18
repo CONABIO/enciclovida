@@ -217,12 +217,14 @@
             });
         };
 
-        var cargaTopojson = function(region_id){
+        var cargaTopojson = function(region){
             // Cargo la capa de topojson en el mapa
             $.ajax({
-                url: url
-            }).done(function(topojson) {
-
+                url: '/geojson-a-topojson',
+                data: {region_id: region.attr('region_id'), tipo_region: tipo_region, parent_id: region.attr('parent_id')}
+            }).done(function(res) {
+                if (res.estatus)
+                    addTopoData(res.topojson);
             }).fail(function() {
                 console.log('Fallo la conversion del geojson a topojson');
             });
@@ -326,8 +328,7 @@
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
-            $.getJSON('/prueba_topojson.json').done(addTopoData);
-            cargaTopojson($(this).attr('region_id'));
+            cargaTopojson($(this));
             cargaGrupos($(this));
             return false;
         });

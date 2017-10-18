@@ -29,8 +29,8 @@ class WebserviceController < ApplicationController
 
     if params[:region_id].present? && params[:tipo_region].present?
       begin
-        reg = params[:tipo_region].camelize.constantize
-        res = params[:tipo_region] == 'municipio' ? reg.geojson(params[:region_id], params[:parent_id]) : reg.geojson(params[:region_id])
+        res = params[:tipo_region].camelize.constantize
+        res = params[:tipo_region] == 'municipio' ? res.geojson(params[:region_id], params[:parent_id]) : res.geojson(params[:region_id])
 
         if res.length == 1
           topojson[:estatus] = true
