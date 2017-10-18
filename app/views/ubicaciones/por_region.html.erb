@@ -315,7 +315,7 @@
             }).done(function(res) {
                 if (res.estatus)
                 {
-                    $('#municipio').empty();
+                    $('#municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
                     $.each(res.resultados, function(index, municipio){
                         $('#municipio').append('<option value="'+municipio.region_id+'" parent_id="'+municipio.parent_id+'">'+municipio.nombre_region+'</option>');
                     });
