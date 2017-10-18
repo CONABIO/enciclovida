@@ -22,6 +22,7 @@ Buscador::Application.routes.draw do
   get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
   get 'explora-por-region' => 'ubicaciones#por_region'
   get 'especies-por-catalogo-id' => 'ubicaciones#especies_por_catalogo_id'
+  get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
 
   get "busquedas/basica"
   get "busquedas/avanzada"

@@ -10,6 +10,7 @@ class UbicacionesController < ApplicationController
 
   # /explora-por-region
   def por_region
+    @estados = Estado.all.order(entidad: :asc).collect{ |e| [t("estados.#{e.entidad.estandariza}", default: e.entidad), e.entid] }
   end
 
   def especies_por_catalogo_id
@@ -34,6 +35,22 @@ class UbicacionesController < ApplicationController
     else
       render json: {estatus: false, msg: 'No hubo especies que '}
     end  # End catalogo_id present
+  end
+
+  # Devuelve los municipios por el estado seleccionado
+  def municipios_por_estado
+    resp = {}
+    resp[:estatus] = false
+
+    if params[:region_id].present?
+      resp[:estatus] = true
+      municipios = Municipio.campos_min.where(cve_ent: Estado::CORRESPONDENCIA[params[:region_id].to_i])
+      resp[:resultados] = municipios.map{|m| {region_id: m.region_id, parent_id: m.parent_id, nombre_region: m.nombre_region}}
+    else
+      resp[:msg] = 'El argumento region_id está vacio'
+    end
+
+    render json: resp
   end
 
 

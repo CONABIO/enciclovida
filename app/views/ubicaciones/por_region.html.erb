@@ -306,6 +306,26 @@
 
             });
         };
+
+        // Cargo las regiones en la lista de municipios
+        var regionesPorMunicipio = function(estado){
+            $.ajax({
+                url: '/municipios-por-estado',
+                data: {region_id: estado.val()}
+            }).done(function(res) {
+                if (res.estatus)
+                {
+                    $('#municipio').empty();
+                    $.each(res.resultados, function(index, municipio){
+                        $('#municipio').append('<option value="'+municipio.region_id+'" parent_id="'+municipio.parent_id+'">'+municipio.nombre_region+'</option>');
+                    });
+
+                    $('#municipio').prop('disabled', false);
+                }
+            }).fail(function() {
+                console.log('Fallo la conversion del geojson a topojson');
+            });
+        };
     </script>
 
 <% end %>
@@ -353,6 +373,15 @@
                 pagina++;
                 cargaTipoRegion(pagina);
             }
+        });
+
+        /*
+            Funciones con las listas y los checkbox
+             */
+
+        $('#regiones').on('change', '#estado', function(){
+            regionesPorMunicipio($(this));
+            //regionesAnp($(this));
         });
     </script>
 <% end %>
