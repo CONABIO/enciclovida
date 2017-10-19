@@ -379,8 +379,15 @@
              */
 
         $('#regiones').on('change', '#region_estado', function(){
-            regionesPorMunicipio($(this));
-            //regionesAnp($(this));
+            if ($(this).val() == '')
+            {
+                $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+                $('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+
+            } else {
+                regionesPorMunicipio($(this));
+                //regionesAnp($(this));
+            }
         });
     </script>
 <% end %>
