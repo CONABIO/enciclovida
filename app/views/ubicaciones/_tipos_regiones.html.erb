@@ -9,9 +9,9 @@ ANP<%= check_box_tag 'anp', '0' %>
 
 <hr />
 
-<%= select_tag 'estado', options_for_select(@estados), prompt: '- - - Escoge un estado - - -' %>
-<%= select_tag 'municipio', nil, prompt: '- - - - - -', disabled: true %>
-<%= select_tag 'anp', nil, prompt: '- - - - - -', disabled: true %>
+<%= select_tag 'region_estado', options_for_select(@estados), prompt: '- - - Escoge un estado - - -' %>
+<%= select_tag 'region_municipio', nil, prompt: '- - - - - -', disabled: true %>
+<%= select_tag 'region_anp', nil, prompt: '- - - - - -', disabled: true %>
 
 <ul class="nav nav-tabs" id="lista_tipos_regiones">
   <li class="nav-item dropdown">

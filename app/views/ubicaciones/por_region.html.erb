@@ -235,7 +235,6 @@
             });
         };
 
-
         var cargaGrupos = function(region)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
@@ -315,12 +314,12 @@
             }).done(function(res) {
                 if (res.estatus)
                 {
-                    $('#municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
+                    $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
                     $.each(res.resultados, function(index, municipio){
-                        $('#municipio').append('<option value="'+municipio.region_id+'" parent_id="'+municipio.parent_id+'">'+municipio.nombre_region+'</option>');
+                        $('#region_municipio').append('<option value="'+municipio.region_id+'" parent_id="'+municipio.parent_id+'">'+municipio.nombre_region+'</option>');
                     });
 
-                    $('#municipio').prop('disabled', false);
+                    $('#region_municipio').prop('disabled', false);
                 }
             }).fail(function() {
                 console.log('Fallo la conversion del geojson a topojson');
@@ -379,7 +378,7 @@
             Funciones con las listas y los checkbox
              */
 
-        $('#regiones').on('change', '#estado', function(){
+        $('#regiones').on('change', '#region_estado', function(){
             regionesPorMunicipio($(this));
             //regionesAnp($(this));
         });
