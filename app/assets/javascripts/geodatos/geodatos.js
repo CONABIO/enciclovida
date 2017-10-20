@@ -51,43 +51,37 @@ $(document).ready(function(){
         fillOpacity: 0.6
     };
 
-    var customOptions ={
-        'maxWidth': '500',
-        'className' : 'custom'
-    };
-
     /***************************************************************** Layer creation */
-    var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
-
+    var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
+        zIndex: 1
+    });
 
     // Google terrain map layer
     var GTM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
+        subdomains:['mt0','mt1','mt2','mt3'],
+        zIndex: 2
     });
     // Google Hybrid
     var GHM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
+        subdomains:['mt0','mt1','mt2','mt3'],
+        zIndex: 3
     });
-    var drawnItems = new L.FeatureGroup();
-
-    var milliseconds = new Date().getTime();
 
     var species_layer;
     var markersLayer;
 
     /***************************************************************** map switcher */
-    /* Quite var, para poder tener acceso a la variable fuera del scope*/
+
     map = L.map('map', {
         center: [23.79162789, -102.04376221],
         fullscreenControl: true,
         zoom: 5,
-        //maxBounds: L.latLngBounds(L.latLng(14.3227,-86.4236),L.latLng(32.4306,-118.2727)),
         layers: [
             OSM_layer,
             GTM_layer,
             GHM_layer
+
+              // Existe un bug poniendo primero los layes de google
         ]
     });
 
@@ -98,7 +92,7 @@ $(document).ready(function(){
         "Vista Híbrida": GHM_layer
     };
 
-    var layer_control = L.control.layers(baseMaps).addTo(map);
+    L.control.layers(baseMaps).addTo(map);
     var legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     /***************************************************************** aditional controls */
@@ -183,15 +177,22 @@ $(document).ready(function(){
 
     function wms_distribucion_potencial() {
         var distribucion_potencial = L.tileLayer.wms(GEO.geoserver_url, {
-            layers: GEO.geoserver_layer,
+            layers: 'panoncagw',
             format: 'image/png',
             transparent: true,
             opacity:.5,
-            maxZoom: 20
+            zIndex: 4
         });
 
-        map.addLayer(distribucion_potencial);
+        distribucion_potencial.addTo(map);
         legend_control.addOverlay(distribucion_potencial, "<b>Distribución potencial (CONABIO)</b>");
+
+        // Para cuando se cambie de layer ponga enfrente el mapa de distribucion
+        map.addEventListener('baselayerchange', function(){
+            distribucion_potencial.bringToFront();
+        });
+
+        distribucion_potencial.bringToFront();  // Para desde un inicio que se muestre el mapa de distribucion
     }
 
     function ejemplar_snib(layer, id){
