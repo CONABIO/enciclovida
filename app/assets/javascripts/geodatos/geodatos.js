@@ -177,7 +177,7 @@ $(document).ready(function(){
 
     function wms_distribucion_potencial() {
         var distribucion_potencial = L.tileLayer.wms(GEO.geoserver_url, {
-            layers: 'panoncagw',
+            layers: GEO.geoserver_layer,
             format: 'image/png',
             transparent: true,
             opacity:.5,
