@@ -221,7 +221,7 @@
             // Cargo la capa de topojson en el mapa
             $.ajax({
                 url: '/geojson-a-topojson',
-                data: {region_id: region.attr('region_id'), tipo_region: tipo_region, parent_id: region.attr('parent_id')}
+                data: {region_id: region.val(), tipo_region: region.attr('id'), parent_id: region.attr('parent_id')}
             }).done(function(res) {
                 if (res.estatus)
                 {
@@ -351,7 +351,7 @@
         });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
-            cargaTopojson($(this));
+            //cargaTopojson($(this));
             cargaGrupos($(this));
             return false;
         });
@@ -386,9 +386,11 @@
 
             } else {
                 regionesPorMunicipio($(this));
+                cargaTopojson($(this));
                 //regionesAnp($(this));
             }
         });
+
     </script>
 <% end %>
 

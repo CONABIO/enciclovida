@@ -34,11 +34,13 @@ class WebserviceController < ApplicationController
 
         if Rails.env.development?
           ruta = Rails.root.join('public', 'topojson')
-          archivo = if params[:tipo_region] == 'municipio'
-                      nombre = "#{params[:tipo_region]}_#{params[:region_id]}_#{params[:parent_id]}.json"
+          tipo_region = params[:tipo_region].split('_').last.estandariza
+          
+          archivo = if tipo_region == 'municipio'
+                      nombre = "#{tipo_region}_#{params[:region_id]}_#{params[:parent_id]}.json"
                       ruta.join(nombre)
                     else
-                      nombre = "#{params[:tipo_region]}_#{params[:region_id].to_i}.json"
+                      nombre = "#{tipo_region}_#{params[:region_id].to_i}.json"
                       ruta.join(nombre)
                     end
 
@@ -51,8 +53,8 @@ class WebserviceController < ApplicationController
             topojson[:cache] = true
           end
         else
-          res = params[:tipo_region].camelize.constantize
-          res = params[:tipo_region] == 'municipio' ? res.geojson(params[:region_id], params[:parent_id]) : res.geojson(params[:region_id])
+          res = tipo_region.camelize.constantize
+          res = tipo_region == 'municipio' ? res.geojson(params[:region_id], params[:parent_id]) : res.geojson(params[:region_id])
           res = topo.dame_topojson(res.first.geojson) if res.length == 1
         end
 
