@@ -1,9 +1,9 @@
 
-function addTopoData(topoData){
-    topoLayer.clearLayers();
-    topoLayer.addData(topoData);
-    topoLayer.addTo(map);
-    handleLayer(topoLayer);
+function addTopoData(topoData, layer, clean){
+    if (clean) layer.clearLayers();
+    layer.addData(topoData);
+    layer.addTo(map);
+    handleLayer(layer);
 }
 
 function handleLayer(layer){
@@ -24,8 +24,7 @@ function enterLayer(){
     this.bringToFront();
     this.setStyle({
         weight:3,
-        opacity:.5,
-        color: '#2d4c2d'
+        opacity:.5
     });
 }
 

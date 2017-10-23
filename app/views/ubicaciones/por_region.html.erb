@@ -160,12 +160,8 @@
             map.addLayer(layer);
             map.setView(place, 5);  // Default place and zoom
 
-            // variables de topjson
-            topoLayer = new L.TopoJSON();
-            $countryName = $('.country-name');
-            colorScale = chroma
-                    .scale(['#D5E3FF', '#003171'])
-                    .domain([0,1]);
+            topoLayer = new L.TopoJSON();  // Los layers de las regiones
+            topoLayerDivision = new L.TopoJSON();  // Los layers de las divisiones estatales, municipales y ANP
         };
 
         var cargaRegistros = function(){
@@ -204,9 +200,12 @@
                 if (res.estatus)
                 {
                     if (res.cache)
-                        $.getJSON(res.topojson).done(addTopoData);
+                        $.getJSON(res.topojson, function(topojson){
+                            addTopoData(topojson, topoLayer, true);
+                        });
+
                     else
-                        addTopoData(res.topojson);
+                        addTopoData(res.topojson, topoLayer, true);
                 }
             }).fail(function() {
                 console.log('Fallo la conversion del geojson a topojson');
@@ -312,14 +311,7 @@
         // variables del mapa y topojson
         map = null;
         topoLayer = null;
-        $countryName = null;
-        colorScale = null;
-
-        // variables del scrolling de las regiones
-        pagina = 1;
-
         cargaMapa('map');
-
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             //cargaTopojson($(this));
@@ -338,10 +330,7 @@
         });
 
         $('.contenedor_regiones').on('scroll', function(){
-            if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
-            {
-                pagina++;
-            }
+            //if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
         });
 
         /*
@@ -359,6 +348,11 @@
                 cargaTopojson($(this));
                 //regionesAnp($(this));
             }
+        });
+
+        // Inicia la division estatal de la republica; default
+        $.getJSON('/topojson/division_estatal.json', function(topojson){
+            addTopoData(topojson, topoLayerDivision);
         });
 
     </script>
