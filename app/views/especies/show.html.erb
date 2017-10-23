@@ -83,8 +83,8 @@
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a></li>
     <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
-    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de la especie</small></strong></a></li>
-    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Ficha técnica </small></strong></a></li>
+    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
+    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
     <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
 
@@ -99,19 +99,28 @@
           <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
             <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-link', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
           <% else %>
-            <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-link', id: :boton_pdf, target: '_blank') %>
+		        <%= link_to("Descargar <i class ='file-pdf-ev-icon''></i><sub>PDF</sub>".html_safe, '', id: :boton_pdf, class: 'noLoad', title: 'Descargar en formato PDF')  %>
           <% end %>
         </li>
-
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> &middot; Consultar en: </li>
         <li>
-          <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-link',
-                         onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
-                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
+          <%= link_to(' BHL'.html_safe, '', class: 'noLoad',onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}','_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
         </li>
-
+        <li>
+          <%= link_to(' Google Académico'.html_safe, '', class: 'noLoad',onClick: "window.open('https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}','_blank', 'status=no', 'menubar=no')", title: 'Búsqueda en Google Académico (Schoolar)') %>
+        </li>
+        <li>
+	        <%= link_to(' ResearchGate'.html_safe, '', class: 'noLoad',onClick: "window.open('https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}','_blank', 'status=no', 'menubar=no')", title: 'Búsqueda en el portal científico ResearchGate') %>
+        </li>
         <% if @con_naturalista %>
+          <li role="separator" class="divider"></li>
+          <li class="dropdown-header"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span><small> &middot; <%= imagotipo_naturalista_nombre.html_safe %></small></li>
           <li>
-            <%= link_to("Añade una obs. en: #{imagotipo_naturalista_nombre}".html_safe, "#{CONFIG.naturalista_url}/observations/new?taxon_id=#{@con_naturalista}", class: 'noLoad btn btn-link', target: '_blank') %>
+            <%= link_to('Visita grupo/especie', "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
+          </li>
+          <li>
+            <%= link_to('Añadir observación', "#{CONFIG.naturalista_url}/observations/new?taxon_id=#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
           </li>
         <% end %>
       </ul>
