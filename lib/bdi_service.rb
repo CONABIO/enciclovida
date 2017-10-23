@@ -33,7 +33,8 @@ class BDIService
 
   # Compruebo en los albunes para mandar una respuesta no vacia
   def tiene_fotos?(opts)
-    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{opts[:nombre]}'"
+    nombre = opts[:nombre].limpiar(true)
+    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
