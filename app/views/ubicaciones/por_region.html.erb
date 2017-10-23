@@ -195,46 +195,6 @@
             };
         };
 
-        var cargaTipoRegion = function()
-        {
-            $.ajax({
-                url: '/regiones_mapas/dame-tipo-region.json',
-                data: {tipo_region: tipo_region, pagina: pagina}
-            }).done(function(resp) {
-                if (pagina == 1)
-                    $('.contenedor_regiones').empty().append('<ul class="list-group" id="tipo_region_' + tipo_region + '">');
-
-                $.each(resp.resultados, function (index, region) {
-                    $('#tipo_region_'+tipo_region).append('<li class="list-group-item"><a href="" class="region_id" region_id="'+region.region_id+'" parent_id="'+region.parent_id+'">'+region.nombre_region+'</a></li>');
-                });
-
-                if (pagina == 1) {
-                    $('.contenedor_regiones').append('</ul>');
-                }
-
-            }).fail(function() {
-                $('.contenedor_regiones').empty().html('Lo sentimos esa búsqueda no dio ningún resultado');
-            });
-        };
-
-        var cargaTopojson = function(region){
-            // Cargo la capa de topojson en el mapa
-            $.ajax({
-                url: '/geojson-a-topojson',
-                data: {region_id: region.val(), tipo_region: region.attr('id'), parent_id: region.attr('parent_id')}
-            }).done(function(res) {
-                if (res.estatus)
-                {
-                    if (res.cache)
-                        $.getJSON(res.topojson).done(addTopoData);
-                    else
-                        addTopoData(res.topojson);
-                }
-            }).fail(function() {
-                console.log('Fallo la conversion del geojson a topojson');
-            });
-        };
-
         var cargaGrupos = function(region)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
@@ -339,16 +299,9 @@
 
         // variables del scrolling de las regiones
         pagina = 1;
-        tipo_region = 'estado';
 
         cargaMapa('map');
-        cargaTipoRegion();
 
-        $('#lista_tipos_regiones li a').on('click', function(){
-            tipo_region = $(this).attr('tipo_region');
-            pagina = 1;
-            cargaTipoRegion();
-        });
 
         $('.contenedor_regiones').on('click', '.region_id', function(){
             //cargaTopojson($(this));
@@ -364,14 +317,6 @@
         $('#contenedor_especies').on('click', '.especie_id', function(){
             //cargaRegistros($(this));
             return false;
-        });
-
-        $('.contenedor_regiones').on('scroll', function(){
-            if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
-            {
-                pagina++;
-                cargaTipoRegion(pagina);
-            }
         });
 
         /*
