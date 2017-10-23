@@ -103,7 +103,7 @@
           <% end %>
         </li>
         <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Consultar en <sup><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></sup></li>
+        <li class="dropdown-header"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> &middot; Consultar en: </li>
         <li>
           <%= link_to(' BHL'.html_safe, '', class: 'noLoad',onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}','_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
         </li>
@@ -115,7 +115,7 @@
         </li>
         <% if @con_naturalista %>
           <li role="separator" class="divider"></li>
-          <li class="dropdown-header"><%= imagotipo_naturalista_nombre.html_safe %></li>
+          <li class="dropdown-header"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span><small> &middot; <%= imagotipo_naturalista_nombre.html_safe %></small></li>
           <li>
             <%= link_to('Visita grupo/especie', "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
           </li>
