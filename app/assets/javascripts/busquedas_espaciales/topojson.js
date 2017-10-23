@@ -1,17 +1,16 @@
+
 function addTopoData(topoData){
+    topoLayer.clearLayers();
     topoLayer.addData(topoData);
     topoLayer.addTo(map);
-    topoLayer.eachLayer(handleLayer);
+    handleLayer(topoLayer);
 }
 
 function handleLayer(layer){
-    var randomValue = Math.random(),
-        fillColor = colorScale(randomValue).hex();
-
     layer.setStyle({
-        fillColor : fillColor,
-        fillOpacity: 1,
-        color:'#555',
+        fillColor : '#99FF99',
+        fillOpacity:.5,
+        color:'#2d4c2d',
         weight:1,
         opacity:.5
     });
@@ -22,18 +21,15 @@ function handleLayer(layer){
 }
 
 function enterLayer(){
-    var countryName = this.feature.properties.name;
-    $countryName.text(countryName).show();
-
     this.bringToFront();
     this.setStyle({
-        weight:2,
-        opacity: 1
+        weight:3,
+        opacity:.5,
+        color: '#2d4c2d'
     });
 }
 
 function leaveLayer(){
-    $countryName.hide();
     this.bringToBack();
     this.setStyle({
         weight:1,

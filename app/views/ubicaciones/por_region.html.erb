@@ -195,6 +195,24 @@
             };
         };
 
+        var cargaTopojson = function(region){
+            // Cargo la capa de topojson en el mapa
+            $.ajax({
+                url: '/geojson-a-topojson',
+                data: {region_id: region.val(), tipo_region: region.attr('id'), parent_id: region.attr('parent_id')}
+            }).done(function(res) {
+                if (res.estatus)
+                {
+                    if (res.cache)
+                        $.getJSON(res.topojson).done(addTopoData);
+                    else
+                        addTopoData(res.topojson);
+                }
+            }).fail(function() {
+                console.log('Fallo la conversion del geojson a topojson');
+            });
+        };
+
         var cargaGrupos = function(region)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
@@ -317,6 +335,13 @@
         $('#contenedor_especies').on('click', '.especie_id', function(){
             //cargaRegistros($(this));
             return false;
+        });
+
+        $('.contenedor_regiones').on('scroll', function(){
+            if ($(this).height() + $(this).scrollTop() >= $(this)[0].scrollHeight)
+            {
+                pagina++;
+            }
         });
 
         /*
