@@ -26,13 +26,20 @@ def guarda_topojson
 
     region.camelize.constantize.select('ST_AsGeoJSON(the_geom) AS geojson').campos_min.all.each do |reg|
       puts "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
-      topojson = topo.dame_topojson(reg.geojson)
+
+      geojson = {"type" => "FeatureCollection", "features" => []}
+      feature = {"type" =>"Feature", "properties" => {"nombre_region" => reg.nombre_region}, "geometry" => JSON.parse(reg.geojson)}
+      geojson["features"] << feature
+      topojson = topo.dame_topojson(geojson.to_json)
+
       archivo = if region == 'municipio'
                   ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}.json")
                 else
                   ruta.join("#{region}_#{reg.region_id}.json")
                 end
+
       File.write(archivo, topojson.to_json)
+      
     end  # End cada region each
   end  # End tipos regiones each
 end
