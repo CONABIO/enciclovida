@@ -1,20 +1,23 @@
 
-function addTopoData(topoData, layer, clean){
-    if (clean) layer.clearLayers();
-    layer.addData(topoData);
-    layer.addTo(map);
-    handleLayer(layer);
+function addTopoData(opts){
+    if (opts.clean) opts.layer.clearLayers();
+    opts.layer.addData(opts.topojson);
+    opts.layer.addTo(map);
+
+    if (opts.fillColor == undefined) opts.fillColor = '#d8d8d8';
+    if (opts.color == undefined) opts.color = '#808080';
+    handleLayer(opts);
 }
 
-function handleLayer(layer){
-    layer.setStyle({
-        fillColor : '#99FF99',
+function handleLayer(opts){
+    opts.layer.setStyle({
+        fillColor : opts.fillColor,
         fillOpacity:.5,
-        color:'#2d4c2d',
+        color: opts.color,
         weight:1,
         opacity:.5
     });
-    layer.on({
+    opts.layer.on({
         mouseover : enterLayer,
         mouseout: leaveLayer
     });

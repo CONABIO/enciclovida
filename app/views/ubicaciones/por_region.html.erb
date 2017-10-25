@@ -201,11 +201,11 @@
                 {
                     if (res.cache)
                         $.getJSON(res.topojson, function(topojson){
-                            addTopoData(topojson, topoLayer, true);
+                            addTopoData({topojson: topojson, layer: topoLayer, clean: true, fillColor: '#99ccff', color: '#3232ff'});
                         });
 
                     else
-                        addTopoData(res.topojson, topoLayer, true);
+                        addTopoData({topojson: res.topojson, layer: topoLayer, clean: true});
                 }
             }).fail(function() {
                 console.log('Fallo la conversion del geojson a topojson');
@@ -352,7 +352,7 @@
 
         // Inicia la division estatal de la republica; default
         $.getJSON('/topojson/division_estatal.json', function(topojson){
-            addTopoData(topojson, topoLayerDivision);
+            addTopoData({topojson: topojson, layer: topoLayerDivision});
         });
 
     </script>
