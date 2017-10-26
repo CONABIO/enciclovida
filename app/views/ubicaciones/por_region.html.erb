@@ -160,8 +160,50 @@
             map.addLayer(layer);
             map.setView(place, 5);  // Default place and zoom
 
-            topoLayer = new L.TopoJSON();  // Los layers de las regiones
-            topoLayerDivision = new L.TopoJSON();  // Los layers de las divisiones estatales, municipales y ANP
+            // El layer general de las regiones
+            topoLayer = new L.TopoJSON();
+
+            // Para los controles de las divisiones
+            cargaControlDivisiones();
+        };
+
+        // Los controles de las divisiones politicas
+        var cargaControlDivisiones = function ()
+        {
+            var topoLayerEstatal = new L.TopoJSON();
+            var topoLayerMunicipal = new L.TopoJSON();
+            var topoLayerAnp = new L.TopoJSON();
+            var divisiones_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+
+            $.getJSON('/topojson/division_estatal.json', function(topojson){
+                addTopoData({topojson: topojson, layer: topoLayerEstatal});
+                divisiones_control.addOverlay(topoLayerEstatal, "Estatal");
+            });
+
+            divisiones_control.addOverlay(topoLayerMunicipal, "Municipal");
+            divisiones_control.addOverlay(topoLayerAnp, "ANP");
+
+            map.on('overlayadd', function(eo) {
+
+                if (eo.layer.options.municipal == undefined)
+                {
+                    if (eo.name === 'Municipal'){
+                        $.getJSON('/topojson/division_estatal.json', function(topojson){
+                            topoLayerMunicipal.options.municipal = true;
+                            addTopoData({topojson: topojson, layer: topoLayerMunicipal});
+                        });
+                    }
+                }
+
+                if (eo.layer.options.anp == undefined) {
+                    if (eo.name === 'ANP') {
+                        $.getJSON('/topojson/division_estatal.json', function (topojson) {
+                            topoLayerAnp.options.anp = true;
+                            addTopoData({topojson: topojson, layer: topoLayerAnp});
+                        });
+                    }
+                }
+            });
         };
 
         var cargaRegistros = function(){
@@ -342,6 +384,7 @@
             {
                 $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
                 $('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+                topoLayer.clearLayers();
 
             } else {
                 regionesPorMunicipio($(this));
@@ -351,9 +394,7 @@
         });
 
         // Inicia la division estatal de la republica; default
-        $.getJSON('/topojson/division_estatal.json', function(topojson){
-            addTopoData({topojson: topojson, layer: topoLayerDivision});
-        });
+
 
     </script>
 <% end %>

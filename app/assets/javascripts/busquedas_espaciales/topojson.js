@@ -1,6 +1,7 @@
 
 function addTopoData(opts){
     if (opts.clean) opts.layer.clearLayers();
+
     opts.layer.addData(opts.topojson);
     opts.layer.addTo(map);
 
