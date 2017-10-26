@@ -206,7 +206,8 @@
             });
         };
 
-        var cargaRegistros = function(){
+        var cargaRegistros = function()
+        {
             var geojsonFeature = [];
             var allowedPoints = d3.map([]);
             var geoportal_count = 0;
@@ -233,7 +234,8 @@
             };
         };
 
-        var cargaTopojson = function(region){
+        var cargaTopojson = function(region)
+        {
             // Cargo la capa de topojson en el mapa
             $.ajax({
                 url: '/geojson-a-topojson',
@@ -283,7 +285,7 @@
                         $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
                     });
                 }).fail(function() {
-                    console.log('falló el servicio de conteo de Abraham');
+                    console.log('Falló el servicio de conteo de Abraham');
                 });
             }
         };
@@ -318,7 +320,7 @@
                     });
                 }
                 else
-                    console.log('algo salio mal');
+                    console.log('Falló la carga de especies de enciclovida');
 
             }).fail(function() {
 
@@ -326,7 +328,7 @@
         };
 
         // Cargo las regiones en la lista de municipios
-        var regionesPorMunicipio = function(estado){
+        var municipiosPorEstado = function(estado){
             $.ajax({
                 url: '/municipios-por-estado',
                 data: {region_id: estado.val()}
@@ -335,13 +337,13 @@
                 {
                     $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
                     $.each(res.resultados, function(index, municipio){
-                        $('#region_municipio').append('<option value="'+municipio.region_id+'" parent_id="'+municipio.parent_id+'">'+municipio.nombre_region+'</option>');
+                        $('#region_municipio').append('<option value="' + municipio.region_id + '">' + municipio.nombre_region + '</option>');
                     });
 
-                    $('#region_municipio').prop('disabled', false);
+                    $('#region_municipio').prop('disabled', false).attr('parent_id', res.parent_id);
                 }
             }).fail(function() {
-                console.log('Fallo la conversion del geojson a topojson');
+                console.log('Falló al cargar los municipios por estado');
             });
         };
     </script>
@@ -387,14 +389,18 @@
                 topoLayer.clearLayers();
 
             } else {
-                regionesPorMunicipio($(this));
+                municipiosPorEstado($(this));
                 cargaTopojson($(this));
                 //regionesAnp($(this));
             }
         });
 
-        // Inicia la division estatal de la republica; default
-
+        $('#regiones').on('change', '#region_municipio', function(){
+            if ($(this).val() == '')
+                topoLayer.clearLayers();
+            else
+                cargaTopojson($(this));
+        });
 
     </script>
 <% end %>

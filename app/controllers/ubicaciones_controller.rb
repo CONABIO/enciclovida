@@ -42,8 +42,10 @@ class UbicacionesController < ApplicationController
 
     if params[:region_id].present?
       resp[:estatus] = true
-      municipios = Municipio.campos_min.where(cve_ent: Estado::CORRESPONDENCIA[params[:region_id].to_i])
-      resp[:resultados] = municipios.map{|m| {region_id: m.region_id, parent_id: m.parent_id, nombre_region: m.nombre_region}}
+      parent_id = Estado::CORRESPONDENCIA[params[:region_id].to_i]
+      municipios = Municipio.campos_min.where(cve_ent: parent_id)
+      resp[:resultados] = municipios.map{|m| {region_id: m.region_id, nombre_region: m.nombre_region}}
+      resp[:parent_id] = parent_id
     else
       resp[:msg] = 'El argumento region_id está vacio'
     end
