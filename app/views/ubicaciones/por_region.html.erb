@@ -3,6 +3,7 @@
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
     <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script>
+    <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'busquedas_espaciales/topojson', 'data-turbolinks-track' => true %>
 
@@ -409,38 +410,22 @@
             var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
             var path = d3.geo.path().projection(projectPoint);
 
-            var feature = g.selectAll('.entity')
+            var feature = g.selectAll('.estatal')
                     .data(topojson.feature(collection, collection.objects['collection']).features)
                     .enter()
                     .append('path')
-                    .attr('class', 'entity leaflet-clickable')
+                    .attr('class', 'estatal leaflet-clickable')
                     .on('mouseover', function(d){
                         var name = d.properties.nombre_region;
-                        console.log(name);
+                        $('#nombre_region').html(name);
                     });
-
-            /*g.selectAll('.states')
-                    .data(topojson.feature(collection, collection.objects.collection).features)
-                //.enter()
-                //.append('path')
-                    .attr('class', 'states')
-                //.attr('d', path)
-                    .on('mouseover', function(d){
-                        var name = d.properties.nombre_region;
-                        console.log('aqui');
-                    });*/
-
-            /*var label = g.selectAll('.entity-label')
-             .data(topojson.feature(collection, collection.objects['collection']).features)
-             .enter()
-             .append('text')
-             .attr('class', 'entity-label');*/
 
             map.on('viewreset', reset);
             reset();
 
             // Reposition the SVG to cover the features.
-            function reset() {
+            function reset()
+            {
                 var bottomLeft = projectPoint(bounds[0]);
                 var topRight = projectPoint(bounds[1]);
 
@@ -451,22 +436,15 @@
 
                 var translation = -bottomLeft[0] + ',' + -topRight[1];
                 g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
-
                 feature.attr('d', path);
-
-                /*label.attr('id', function (d) { return d.id; })
-                 .attr('class', 'entity-label')
-                 .attr('transform', function (d) { return 'translate(' + path.centroid(d) + ')'; })
-                 .attr('x', -20)
-                 .attr('dy', '.35em')
-                 .text(function (d) { return 'aqui' });*/
             }
 
             /*
              Preserve keywords (CUB, COBAN, COBAS, CDC) in uppercase.
              @return {string}
              */
-            function toProperCase(str) {
+            function toProperCase(str)
+            {
                 var pc =  str.replace(/\w\S*/g, function (s) {
                     return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
                 });
@@ -487,6 +465,7 @@
 
 <% content_for(:extracss) do %>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
     <%= stylesheet_link_tag 'geodatos/MarkerCluster.Default', 'data-turbolinks-track' => true %>
     <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
@@ -502,13 +481,13 @@
         #contenedor_especies img {
             height: 150px;
         }
-        .entity {
+        .estatal {
             fill: #e5e5e5;
             stroke: black;
             stroke-width:1px;
             opacity: .5;
         }
-        .entity:hover {
+        .estatal:hover {
             fill: steelblue;
         }
     </style>
@@ -519,6 +498,7 @@
   <div class="contenedor_regiones"></div>
 </div>
 
+<div><h1 id="nombre_region"></h1></div>
 <div id="contenedor_mapa" class="col-md-8">
   <div id="map"></div>
 </div>
