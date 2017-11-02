@@ -439,20 +439,6 @@
                 feature.attr('d', path);
             }
 
-            /*
-             Preserve keywords (CUB, COBAN, COBAS, CDC) in uppercase.
-             @return {string}
-             */
-            function toProperCase(str)
-            {
-                var pc =  str.replace(/\w\S*/g, function (s) {
-                    return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
-                });
-                return pc.replace(/cub|coban|cobas|cdc/i, function (m) {
-                    return m.toUpperCase();
-                });
-            };
-
             // Use Leaflet to implement a D3 geographic projection.
             function projectPoint(x) {
                 var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));

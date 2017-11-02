@@ -16,7 +16,7 @@ end
 def guarda_topojson
   puts 'Generando los topojson' if OPTS[:debug]
 
-  regiones = %w(estado municipio anp ecorregion)
+  #regiones = %w(estado municipio anp ecorregion)
   regiones = %w(municipio)
   ruta = Rails.root.join('public', 'topojson')
   Dir.mkdir(ruta) unless File.exists?(ruta)
@@ -59,9 +59,9 @@ def guarda_topojson
       File.write(archivo, topojson.to_json)
     end  # End cada region each
 
+    File.write(ruta.join("#{region}_geo.json"), geojson_region.to_json)
     topojson = topo.dame_topojson(geojson_region.to_json)
     File.write(ruta.join("#{region}.json"), topojson.to_json)
-    File.write(ruta.join("#{region}_geo.json"), geojson_region.to_json)
   end  # End tipos regiones each
 end
 
