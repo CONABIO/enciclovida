@@ -15,7 +15,7 @@ class GithubService
       escribe_cache('github_issues', CONFIG.github.issues)
       jres = lee_issues
 
-      FileUtils.mkpath(path, :mode => 0755) unless File.exists?(ruta)
+      FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
       File.open(archivo, 'w') { |f| f.write(jres.to_json) }
       jres
     end
