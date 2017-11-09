@@ -370,7 +370,7 @@
                         })
                         .on('click', function(d){
                             $('#svg-division-municipal').remove();
-                            map.flyTo([28.8083714409744, -106.469116282776], 12);
+                            map.flyTo(d.properties.centroide, 7);
                             cargaDivisionMunicipal(d);
                         });
 
@@ -423,7 +423,7 @@
                             cargaDivisionMunicipal(d);
                         });*/
 
-                map.on('viewreset', reset);
+                map.on('zoom', reset);
                 reset();
 
                 // Reposition the SVG to cover the features.
