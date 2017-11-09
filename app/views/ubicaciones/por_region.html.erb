@@ -2,7 +2,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/0.5.9/chroma.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
-    <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script>
+    <!--script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script-->
     <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'busquedas_espaciales/topojson', 'data-turbolinks-track' => true %>
@@ -347,6 +347,108 @@
                 console.log('Falló al cargar los municipios por estado');
             });
         };
+
+        // Carga la division estatal de un inicio
+        var cargaDivisionEstatal = function(d)
+        {
+            var svg = d3.select(map.getPanes().overlayPane).append('svg');
+            var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+            d3.json('/topojson/estado.json', function (error, collection) {
+                var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
+                var path = d3.geo.path().projection(projectPoint);
+
+                var feature = g.selectAll('.estatal')
+                        .data(topojson.feature(collection, collection.objects['collection']).features)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'estatal leaflet-clickable')
+                        .on('mouseover', function(d){
+                            var name = d.properties.nombre_region;
+                            $('#nombre_region').html(name);
+                        })
+                        .on('click', function(d, e){
+                            $('#svg-division-municipal').remove();
+                            map.flyTo([28.8083714409744, -106.469116282776], 12);
+                            //console.log(e);
+                            cargaDivisionMunicipal(d);
+                        });
+
+                map.on('viewreset', reset);
+                reset();
+
+                // Reposition the SVG to cover the features.
+                function reset()
+                {
+                    var bottomLeft = projectPoint(bounds[0]);
+                    var topRight = projectPoint(bounds[1]);
+
+                    svg.attr('width', topRight[0] - bottomLeft[0])
+                            .attr('height', bottomLeft[1] - topRight[1])
+                            .style('margin-left', bottomLeft[0] + 'px')
+                            .style('margin-top', topRight[1] + 'px');
+
+                    var translation = -bottomLeft[0] + ',' + -topRight[1];
+                    g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
+                    feature.attr('d', path);
+                }
+
+                // Use Leaflet to implement a D3 geographic projection.
+                function projectPoint(x) {
+                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
+                    return [point.x, point.y];
+                }
+            });
+        };
+
+        // Carga todos los municipios de cierto estado
+        var cargaDivisionMunicipal = function(d){
+            var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
+            var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+            d3.json('/topojson/estado_' + d.properties.region_id + '_division_municipal.json', function (error, collection) {
+                var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
+                var path = d3.geo.path().projection(projectPoint);
+
+                var feature = g.selectAll('.estatal')
+                        .data(topojson.feature(collection, collection.objects['collection']).features)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'estatal leaflet-clickable')
+                        .on('mouseover', function(d){
+                            var name = d.properties.nombre_region;
+                            $('#nombre_region').html(name);
+                        });
+                        /*.on('click', function(d){
+                            cargaDivisionMunicipal(d);
+                        });*/
+
+                map.on('viewreset', reset);
+                reset();
+
+                // Reposition the SVG to cover the features.
+                function reset()
+                {
+                    var bottomLeft = projectPoint(bounds[0]);
+                    var topRight = projectPoint(bounds[1]);
+
+                    svg.attr('width', topRight[0] - bottomLeft[0])
+                            .attr('height', bottomLeft[1] - topRight[1])
+                            .style('margin-left', bottomLeft[0] + 'px')
+                            .style('margin-top', topRight[1] + 'px');
+
+                    var translation = -bottomLeft[0] + ',' + -topRight[1];
+                    g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
+                    feature.attr('d', path);
+                }
+
+                // Use Leaflet to implement a D3 geographic projection.
+                function projectPoint(x) {
+                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
+                    return [point.x, point.y];
+                }
+            });
+        };
     </script>
 
 <% end %>
@@ -403,48 +505,7 @@
                 cargaTopojson($(this));
         });
 
-        var svg = d3.select(map.getPanes().overlayPane).append('svg');
-        var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
-
-        d3.json('/topojson/estado.json', function (error, collection) {
-            var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
-            var path = d3.geo.path().projection(projectPoint);
-
-            var feature = g.selectAll('.estatal')
-                    .data(topojson.feature(collection, collection.objects['collection']).features)
-                    .enter()
-                    .append('path')
-                    .attr('class', 'estatal leaflet-clickable')
-                    .on('mouseover', function(d){
-                        var name = d.properties.nombre_region;
-                        $('#nombre_region').html(name);
-                    });
-
-            map.on('viewreset', reset);
-            reset();
-
-            // Reposition the SVG to cover the features.
-            function reset()
-            {
-                var bottomLeft = projectPoint(bounds[0]);
-                var topRight = projectPoint(bounds[1]);
-
-                svg.attr('width', topRight[0] - bottomLeft[0])
-                        .attr('height', bottomLeft[1] - topRight[1])
-                        .style('margin-left', bottomLeft[0] + 'px')
-                        .style('margin-top', topRight[1] + 'px');
-
-                var translation = -bottomLeft[0] + ',' + -topRight[1];
-                g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
-                feature.attr('d', path);
-            }
-
-            // Use Leaflet to implement a D3 geographic projection.
-            function projectPoint(x) {
-                var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
-                return [point.x, point.y];
-            }
-        });
+        cargaDivisionEstatal();
 
     </script>
 <% end %>
