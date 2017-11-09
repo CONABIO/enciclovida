@@ -1,8 +1,9 @@
 <% content_for(:extrajs) do %>
     <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/0.5.9/chroma.min.js"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
     <!--script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script-->
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'busquedas_espaciales/topojson', 'data-turbolinks-track' => true %>
@@ -155,7 +156,7 @@
 
             var layer = L.tileLayer(tile_url, {
                 attribution: 'OSM',
-                noWrap: true
+                noWrap: true,
             });
 
             map.addLayer(layer);
@@ -367,14 +368,13 @@
                             var name = d.properties.nombre_region;
                             $('#nombre_region').html(name);
                         })
-                        .on('click', function(d, e){
+                        .on('click', function(d){
                             $('#svg-division-municipal').remove();
                             map.flyTo([28.8083714409744, -106.469116282776], 12);
-                            //console.log(e);
                             cargaDivisionMunicipal(d);
                         });
 
-                map.on('viewreset', reset);
+                map.on('zoom', reset);
                 reset();
 
                 // Reposition the SVG to cover the features.
@@ -511,7 +511,8 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
     <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
     <%= stylesheet_link_tag 'geodatos/MarkerCluster.Default', 'data-turbolinks-track' => true %>
@@ -533,6 +534,8 @@
             stroke: black;
             stroke-width:1px;
             opacity: .5;
+	        pointer-events: all!important;
+
         }
         .estatal:hover {
             fill: steelblue;
