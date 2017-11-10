@@ -258,7 +258,7 @@
             });
         };
 
-        var cargaGrupos = function(region)
+        var cargaGrupos = function(properties)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
             var grupos = {};
@@ -273,10 +273,9 @@
             grupos["Plantas"] = 0;
             grupos["Reptiles"] = 0;
 
-            var url = dameUrlCargaGrupos(region);
-            if (url != '')
+            var url = dameUrlCargaGrupos(properties);
+            if (url != undefined)
             {
-                // Pregunto por la URL del servicio de abraham
                 $.ajax({
                     url: url
                 }).done(function(resp) {
@@ -292,15 +291,22 @@
             }
         };
 
-        var dameUrlCargaGrupos = function(region)
+        var dameUrlCargaGrupos = function(properties)
         {
-            if (tipo_region == 'estado')
-                return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + region.attr('region_id') + '/edomun/aves?apiKey=enciclovida';
+            switch (properties.tipo_region)
+            {
+                case 'estado':
+                    if (properties.region_id < 10) var region_id = '0' + properties.region_id;
+                    else var region_id = properties.region_id;
 
-            else if (tipo_region == 'municipio')
-                return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + region.attr('parent_id') + '/' + region.attr('region_id') + '/edomun/aves?apiKey=enciclovida';
-            else
-                return '';
+                    return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + region_id + '/edomun/aves?apiKey=enciclovida';
+                    break;
+                case 'municipio':
+                    return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + properties.parent_id + '/' + properties.region_id + '/edomun/aves?apiKey=enciclovida';
+                    break;
+                default:
+                    return undefined;
+            }
         };
 
         var cargaEspecies = function(elemento, pagina, por_pagina)
@@ -329,7 +335,7 @@
             });
         };
 
-        // Cargo las regiones en la lista de municipios
+        // Cargo los municipios en la busqueda por lista
         var municipiosPorEstado = function(estado){
             $.ajax({
                 url: '/municipios-por-estado',
@@ -350,7 +356,7 @@
         };
 
         // Carga la division estatal de un inicio
-        var cargaDivisionEstatal = function(d)
+        var cargaDivisionEstatal = function()
         {
             var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-estatal');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
@@ -369,9 +375,13 @@
                             $('#nombre_region').html(name);
                         })
                         .on('click', function(d){
+                            d.properties.tipo_region = 'estado';
+                            cargaGrupos(d.properties);
+
                             $('#svg-division-municipal').remove();
                             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
                             $(this).attr('class', 'selecciona-region');
+
                             map.flyTo(d.properties.centroide, 7);
                             cargaDivisionMunicipal(d);
                         });
@@ -386,7 +396,6 @@
                 // Reposition the SVG to cover the features.
                 function reset()
                 {
-                    console.log('entro a reset');
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
 
@@ -430,9 +439,13 @@
                             $('#nombre_region').html(name);
                         })
                         .on('click', function(d){
+                            d.properties.tipo_region = 'municipio';
+                            cargaGrupos(d.properties);
+
                             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
                             $('#svg-division-municipal .selecciona-region').attr('class', 'region');
                             $(this).attr('class', 'selecciona-region');
+
                             map.flyTo(d.properties.centroide, 9);
                         });
 
@@ -445,7 +458,6 @@
                 // Reposition the SVG to cover the features.
                 function reset()
                 {
-                    console.log('reset mun');
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
 
