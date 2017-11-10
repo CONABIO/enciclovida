@@ -372,11 +372,15 @@
                             $('#svg-division-municipal').remove();
                             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
                             $(this).attr('class', 'selecciona-region');
-                            map.flyTo(d.properties.centroide, 7, {animate: false});
+                            map.flyTo(d.properties.centroide, 7);
                             cargaDivisionMunicipal(d);
                         });
 
-                map.on('zoom', reset);
+                map.on('zoomend', reset);
+                map.on('zoomstart', function(){
+                    $('#svg-division-estatal').css('visibility', 'hidden');
+                    $('#svg-division-municipal').css('visibility', 'hidden');
+                });
                 reset();
 
                 // Reposition the SVG to cover the features.
@@ -394,6 +398,9 @@
                     var translation = -bottomLeft[0] + ',' + -topRight[1];
                     g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
                     feature.attr('d', path);
+
+                    $('#svg-division-estatal').css('visibility', 'visible');
+                    $('#svg-division-municipal').css('visibility', 'visible');
                 }
 
                 // Use Leaflet to implement a D3 geographic projection.
@@ -426,15 +433,19 @@
                             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
                             $('#svg-division-municipal .selecciona-region').attr('class', 'region');
                             $(this).attr('class', 'selecciona-region');
-                            map.flyTo(d.properties.centroide, 9, {animate: false});
+                            map.flyTo(d.properties.centroide, 9);
                         });
 
-                map.on('zoom', reset);
-                reset();
+                map.on('zoomend', reset);
+                map.on('zoomstart', function(){
+                    $('#svg-division-estatal').css('visibility', 'hidden');
+                    $('#svg-division-municipal').css('visibility', 'hidden');
+                });
 
                 // Reposition the SVG to cover the features.
                 function reset()
                 {
+                    console.log('reset mun');
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
 
@@ -446,6 +457,9 @@
                     var translation = -bottomLeft[0] + ',' + -topRight[1];
                     g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
                     feature.attr('d', path);
+
+                    $('#svg-division-estatal').css('visibility', 'visible');
+                    $('#svg-division-municipal').css('visibility', 'visible');
                 }
 
                 // Use Leaflet to implement a D3 geographic projection.
