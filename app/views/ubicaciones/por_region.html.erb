@@ -261,17 +261,11 @@
         var cargaGrupos = function(properties)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
-            var grupos = {};
-            grupos["Algas"] = 0;
-            grupos["Anfibios"] = 0;
-            grupos["Aves"] = 0;
-            grupos["Hongos"] = 0;
-            grupos["Insectos"] = 0;
-            grupos["Mamíferos"] = 0;
-            grupos["Musgos"] = 0;
-            grupos["Peces"] = 0;
-            grupos["Plantas"] = 0;
-            grupos["Reptiles"] = 0;
+            var grupos = [{"nombre": "Algas", "conteo": 0, "icono": "protoctista-ev-icon"}, {"nombre": "Anfibios", "conteo": 0, "icono": "amphibia-ev-icon"},
+                {"nombre": "Hongos", "conteo": 0, "icono": "fungi-ev-icon"},
+                {"nombre": "Insectos", "conteo": 0, "icono": "insecta-ev-icon"}, {"nombre": "Mamíferos", "conteo": 0, "icono": "mammalia-ev-icon"},
+                {"nombre": "Musgos", "conteo": 0, "icono": "bryophyta-ev-icon"}, {"nombre": "Peces", "conteo": 0, "icono": "actinopterygii-ev-icon"},
+                {"nombre": "Plantas", "conteo": 0, "icono": "plantae-ev-icon"}, {"nombre": "Reptiles", "conteo": 0, "icono": "reptilia-ev-icon"}];
 
             var url = dameUrlCargaGrupos(properties);
             if (url != undefined)
@@ -279,14 +273,14 @@
                 $.ajax({
                     url: url
                 }).done(function(resp) {
-                    grupos["Aves"] = resp.length;
+                    grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
 
                     $('#contenedor_grupos').empty();
-                    $.each(grupos, function(grupo, valor){
-                        $('#contenedor_grupos').append('<li class="list-group-item"><a href="" class="grupo_id" grupo_id="'+grupo+'">' + grupo + '</a><span class="badge">' + valor + '</span></li>');
+                    $.each(grupos, function(index, prop){
+                        $('#contenedor_grupos').append('<li class="list-group-item"><i class="' + prop.icono + '"></i> <a href="" class="grupo_id" grupo_id="'+prop.nombre+'">' + prop.nombre + '</a><span class="badge">' + prop.conteo + '</span></li>');
                     });
                 }).fail(function() {
-                    console.log('Falló el servicio de conteo de Abraham');
+                    console.log('Falló el servicio de conteo del SNIB');
                 });
             }
         };
@@ -554,10 +548,6 @@
             height: 700px;
             width: 100%;
         }
-        .contenedor_regiones {
-            height: 600px;
-            overflow: scroll;
-        }
         #contenedor_especies img {
             height: 150px;
         }
@@ -582,18 +572,18 @@
 
 <div id="regiones" class="col-md-4">
   <%= render partial: 'tipos_regiones' %>
-  <div class="contenedor_regiones"></div>
 </div>
 
-<div><h1 id="nombre_region"></h1></div>
+<div id="contenedor-nombre-region"><h3 id="nombre_region" class="col-md-push-4"></h3></div>
+
 <div id="contenedor_mapa" class="col-md-8">
   <div id="map"></div>
 </div>
 
-<div id="grupos" class="col-md-12">
+<div id="grupos" class="col-md-6">
   <%= render partial: 'grupos' %>
 </div>
 
-<div id="especies" class="col-md-12">
+<div id="especies" class="col-md-6">
   <%= render partial: 'especies' %>
 </div>
