@@ -27,11 +27,11 @@ def topojson_por_region
     topo = GeoATopo.new
     geojson_region = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
-    region.camelize.constantize.select('ST_AsGeoJSON(the_geom) AS geojson').campos_min.all.each do |reg|
+    region.camelize.constantize.campos_min.campos_geom.all.each do |reg|
       puts "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
 
       geojson = {type: 'FeatureCollection', features: []}
-      feature = {type: 'Feature', properties:{region_id: reg.region_id}, geometry: JSON.parse(reg.geojson)}
+      feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
 
       case region
         when 'estado'
@@ -80,12 +80,13 @@ def topojson_municipios_por_estado
     estado_id = Estado::CORRESPONDENCIA[e.region_id]
     estado_nombre = I18n.t("estados.#{e.nombre_region.estandariza}")
 
-    Municipio.select('ST_AsGeoJSON(the_geom) AS geojson').campos_min.where(cve_ent: estado_id).each do |m|
+    Municipio.campos_min.campos_geom.where(cve_ent: estado_id).each do |m|
       puts "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
       feature = {type: 'Feature', properties:{}}
       feature[:properties][:region_id] = m.region_id
       feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}, MX"
       feature[:properties][:parent_id] = m.parent_id
+      feature[:properties][:centroide] = [m.lat, m.long]
       feature[:geometry] = JSON.parse(m.geojson)
       geojson[:features] << feature
     end
@@ -102,7 +103,7 @@ end
 
 start_time = Time.now
 
-#topojson_por_region
+topojson_por_region
 topojson_municipios_por_estado
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
