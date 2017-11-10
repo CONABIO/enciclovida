@@ -352,25 +352,27 @@
         // Carga la division estatal de un inicio
         var cargaDivisionEstatal = function(d)
         {
-            var svg = d3.select(map.getPanes().overlayPane).append('svg');
+            var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-estatal');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
             d3.json('/topojson/estado.json', function (error, collection) {
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
 
-                var feature = g.selectAll('.estatal')
+                var feature = g.selectAll('.region')
                         .data(topojson.feature(collection, collection.objects['collection']).features)
                         .enter()
                         .append('path')
-                        .attr('class', 'estatal leaflet-clickable')
+                        .attr('class', 'region leaflet-clickable')
                         .on('mouseover', function(d){
                             var name = d.properties.nombre_region;
                             $('#nombre_region').html(name);
                         })
                         .on('click', function(d){
                             $('#svg-division-municipal').remove();
-                            map.flyTo(d.properties.centroide, 7);
+                            $('#svg-division-estatal .selecciona-region').attr('class', 'region');
+                            $(this).attr('class', 'selecciona-region');
+                            map.flyTo(d.properties.centroide, 7, {animate: false});
                             cargaDivisionMunicipal(d);
                         });
 
@@ -380,6 +382,7 @@
                 // Reposition the SVG to cover the features.
                 function reset()
                 {
+                    console.log('entro a reset');
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
 
@@ -410,18 +413,21 @@
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
 
-                var feature = g.selectAll('.estatal')
+                var feature = g.selectAll('.region')
                         .data(topojson.feature(collection, collection.objects['collection']).features)
                         .enter()
                         .append('path')
-                        .attr('class', 'estatal leaflet-clickable')
+                        .attr('class', 'region leaflet-clickable')
                         .on('mouseover', function(d){
                             var name = d.properties.nombre_region;
                             $('#nombre_region').html(name);
+                        })
+                        .on('click', function(d){
+                            $('#svg-division-estatal .selecciona-region').attr('class', 'region');
+                            $('#svg-division-municipal .selecciona-region').attr('class', 'region');
+                            $(this).attr('class', 'selecciona-region');
+                            map.flyTo(d.properties.centroide, 9, {animate: false});
                         });
-                        /*.on('click', function(d){
-                            cargaDivisionMunicipal(d);
-                        });*/
 
                 map.on('zoom', reset);
                 reset();
@@ -529,16 +535,21 @@
         #contenedor_especies img {
             height: 150px;
         }
-        .estatal {
+        .region, .selecciona-region {
             fill: #e5e5e5;
+            opacity: .5;
+            pointer-events: all!important;
+        }
+        .region {
             stroke: black;
             stroke-width:1px;
-            opacity: .5;
-	        pointer-events: all!important;
-
         }
-        .estatal:hover {
+        .region:hover {
             fill: steelblue;
+        }
+        .selecciona-region {
+            stroke: green;
+            stroke-width:3px;
         }
     </style>
 <% end %>
