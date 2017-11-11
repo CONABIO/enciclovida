@@ -98,19 +98,30 @@
             }
         };
 
-        var dameUrlCargaGrupos = function(properties)
+        var dameUrlCargaGrupos = function(prop)
         {
-            switch (properties.tipo_region)
+            switch (prop.tipo_region)
             {
                 case 'estado':
-                    if (properties.region_id < 10) var region_id = '0' + properties.region_id;
-                    else var region_id = properties.region_id;
+                    if (prop.region_id < 10) var region_id = '0' + prop.region_id;
+                    else var region_id = prop.region_id;
 
                     return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + region_id + '/edomun/aves?apiKey=enciclovida';
-                    break;
                 case 'municipio':
-                    return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + properties.parent_id + '/' + properties.region_id + '/edomun/aves?apiKey=enciclovida';
-                    break;
+                    return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + prop.parent_id + '/' + prop.region_id + '/edomun/aves?apiKey=enciclovida';
+                default:
+                    return undefined;
+            }
+        };
+
+        var dameUrlTopojson = function(prop)
+        {
+            switch (prop.tipo_region)
+            {
+                case 'estado':
+                    return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '.json';
+                case 'municipio':
+                    return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_' + prop.parent_id + '.json';
                 default:
                     return undefined;
             }
@@ -228,7 +239,8 @@
         };
 
         // Carga todos los municipios de cierto estado
-        var cargaDivisionMunicipal = function(d){
+        var cargaDivisionMunicipal = function(d)
+        {
             var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
@@ -255,6 +267,58 @@
 
                             map.flyTo(d.properties.centroide, 9);
                         });
+
+                map.on('zoomend', reset);
+                map.on('zoomstart', function(){
+                    $('#svg-division-estatal').css('visibility', 'hidden');
+                    $('#svg-division-municipal').css('visibility', 'hidden');
+                });
+
+                // Reposition the SVG to cover the features.
+                function reset()
+                {
+                    var bottomLeft = projectPoint(bounds[0]);
+                    var topRight = projectPoint(bounds[1]);
+
+                    svg.attr('width', topRight[0] - bottomLeft[0])
+                            .attr('height', bottomLeft[1] - topRight[1])
+                            .style('margin-left', bottomLeft[0] + 'px')
+                            .style('margin-top', topRight[1] + 'px');
+
+                    var translation = -bottomLeft[0] + ',' + -topRight[1];
+                    g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
+                    feature.attr('d', path);
+
+                    $('#svg-division-estatal').css('visibility', 'visible');
+                    $('#svg-division-municipal').css('visibility', 'visible');
+                }
+
+                // Use Leaflet to implement a D3 geographic projection.
+                function projectPoint(x) {
+                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
+                    return [point.x, point.y];
+                }
+            });
+        };
+
+        // Carga una sola region en especifico, estado, municipio, anp o ecoregion
+        var cargaRegion = function(prop)
+        {
+            var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-region');
+            var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+            var url = dameUrlTopojson(prop);
+            if (url == undefined) return;
+
+            d3.json(url, function (error, collection) {
+                var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
+                var path = d3.geo.path().projection(projectPoint);
+
+                var feature = g.selectAll('.region')
+                        .data(topojson.feature(collection, collection.objects['collection']).features)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'region leaflet-clickable');
 
                 map.on('zoomend', reset);
                 map.on('zoomstart', function(){
@@ -316,6 +380,9 @@
             } else {
                 municipiosPorEstado($(this));
                 //regionesAnp($(this));
+
+                cargaRegion({"tipo_region": "estado", "region_id": $(this).val()});
+                map.flyTo(d.properties.centroide, 9);
             }
         });
 
@@ -339,7 +406,7 @@
     <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
     <style>
         #map {
-            height: 700px;
+            height: 600px;
             width: 100%;
         }
         #contenedor_especies img {
@@ -366,6 +433,10 @@
 
 <div id="regiones" class="col-md-4">
   <%= render partial: 'tipos_regiones' %>
+
+  <div id="grupos" >
+    <%= render partial: 'grupos' %>
+  </div>
 </div>
 
 <div id="contenedor-nombre-region"><h3 id="nombre_region" class="col-md-push-4"></h3></div>
@@ -374,10 +445,6 @@
   <div id="map"></div>
 </div>
 
-<div id="grupos" class="col-md-6">
-  <%= render partial: 'grupos' %>
-</div>
-
-<div id="especies" class="col-md-6">
+<div id="especies" class="col-md-12">
   <%= render partial: 'especies' %>
 </div>
