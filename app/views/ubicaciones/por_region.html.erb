@@ -119,7 +119,7 @@
 
                     $('#contenedor_grupos').empty();
                     $.each(grupos, function(index, prop){
-                        $('#contenedor_grupos').append('<li class="list-group-item"><i class="' + prop.icono + '"></i> <a href="" class="grupo_id" grupo_id="'+prop.nombre+'">' + prop.nombre + '</a><span class="badge">' + prop.conteo + '</span></li>');
+                        $('#contenedor_grupos').append('<label><span title="' + prop.nombre + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.nombre+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge">' + prop.conteo + '</sub>');
                     });
                 }).fail(function() {
                     console.log('Falló el servicio de conteo del SNIB');
@@ -142,9 +142,18 @@
                 if (resp.estatus)
                 {
                     $.each(resp.resultados, function(index, taxon){
-                        $('#contenedor_especies').append('<li class="list-group-item" snib_url="' + taxon.snib_mapa_json + '"><a href="" class="especie_id"><img src="' + taxon.foto+'"/>' + taxon.nombre_comun + ' (' + taxon.nombre_cientifico + ')</a></li>');
+                        $('#contenedor_especies').append('<div class="result-img-container" snib_url="' + taxon.snib_mapa_json + '">' +
+                        '<a href class="especie_id"><img src="' + taxon.foto+'"/></a>' +
+                        '<div class="result-nombre-container">' +
+                        '<h5>' + taxon.nombre_comun + ' </h5>' +
+                        '<h5><a href class="especie_id"><i>(' + taxon.nombre_cientifico + ')</i></a></h5>' +
+                        '</div>' +
+                        '</div>');
                     });
                 }
+
+
+
                 else
                     console.log('Falló la carga de especies de enciclovida');
 
@@ -399,19 +408,23 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-    <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
-    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
-    <%= stylesheet_link_tag 'geodatos/MarkerCluster.Default', 'data-turbolinks-track' => true %>
-    <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
+  <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
+  <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
+  <%= stylesheet_link_tag 'geodatos/MarkerCluster.Default', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
     <style>
         #map {
-            height: 600px;
+            min-height: 800px;
             width: 100%;
         }
-        #contenedor_especies img {
-            height: 150px;
+        #especies img{
+	        max-height: 100px;
+        }
+        #especies h5{
+	        font-size: small;
         }
         .region, .selecciona-region {
             fill: #e5e5e5;
@@ -430,26 +443,24 @@
             stroke-width:3px;
         }
         #contenedor-nombre-region {
-            background-color: grey;
-            color: white;
-            font-size: 24px;
-        }
+	        /*background-color: grey;*/
+	        /*color: white;*/
+	        font-weight: bold        }
     </style>
 <% end %>
 
-<div id="regiones" class="col-md-4">
+
+<div id="regiones" class="col-md-6">
   <%= render partial: 'tipos_regiones' %>
-
-  <div id="grupos" >
-    <%= render partial: 'grupos' %>
-  </div>
 </div>
-
+<div id="grupos" class="col-md-6">
+  <%= render partial: 'grupos' %>
+</div>
 <div id="contenedor_mapa" class="col-md-8">
-  <div id="contenedor-nombre-region"> </div>
+  <h4 class="text-left text-success" id="contenedor-nombre-region">Selecciona un estado</h4>
   <div id="map"></div>
 </div>
 
-<div id="especies" class="col-md-12">
+<div id="especies" class="col-md-4">
   <%= render partial: 'especies' %>
 </div>
