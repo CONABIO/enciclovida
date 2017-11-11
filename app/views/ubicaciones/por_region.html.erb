@@ -71,33 +71,6 @@
             };
         };
 
-        var cargaGrupos = function(properties)
-        {
-            // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
-            var grupos = [{"nombre": "Algas", "conteo": 0, "icono": "protoctista-ev-icon"}, {"nombre": "Anfibios", "conteo": 0, "icono": "amphibia-ev-icon"},
-                {"nombre": "Hongos", "conteo": 0, "icono": "fungi-ev-icon"},
-                {"nombre": "Insectos", "conteo": 0, "icono": "insecta-ev-icon"}, {"nombre": "Mamíferos", "conteo": 0, "icono": "mammalia-ev-icon"},
-                {"nombre": "Musgos", "conteo": 0, "icono": "bryophyta-ev-icon"}, {"nombre": "Peces", "conteo": 0, "icono": "actinopterygii-ev-icon"},
-                {"nombre": "Plantas", "conteo": 0, "icono": "plantae-ev-icon"}, {"nombre": "Reptiles", "conteo": 0, "icono": "reptilia-ev-icon"}];
-
-            var url = dameUrlCargaGrupos(properties);
-            if (url != undefined)
-            {
-                $.ajax({
-                    url: url
-                }).done(function(resp) {
-                    grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
-
-                    $('#contenedor_grupos').empty();
-                    $.each(grupos, function(index, prop){
-                        $('#contenedor_grupos').append('<li class="list-group-item"><i class="' + prop.icono + '"></i> <a href="" class="grupo_id" grupo_id="'+prop.nombre+'">' + prop.nombre + '</a><span class="badge">' + prop.conteo + '</span></li>');
-                    });
-                }).fail(function() {
-                    console.log('Falló el servicio de conteo del SNIB');
-                });
-            }
-        };
-
         var dameUrlCargaGrupos = function(prop)
         {
             switch (prop.tipo_region)
@@ -124,6 +97,33 @@
                     return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_' + prop.parent_id + '.json';
                 default:
                     return undefined;
+            }
+        };
+
+        var cargaGrupos = function(properties)
+        {
+            // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
+            var grupos = [{"nombre": "Algas", "conteo": 0, "icono": "protoctista-ev-icon"}, {"nombre": "Anfibios", "conteo": 0, "icono": "amphibia-ev-icon"},
+                {"nombre": "Hongos", "conteo": 0, "icono": "fungi-ev-icon"},
+                {"nombre": "Insectos", "conteo": 0, "icono": "insecta-ev-icon"}, {"nombre": "Mamíferos", "conteo": 0, "icono": "mammalia-ev-icon"},
+                {"nombre": "Musgos", "conteo": 0, "icono": "bryophyta-ev-icon"}, {"nombre": "Peces", "conteo": 0, "icono": "actinopterygii-ev-icon"},
+                {"nombre": "Plantas", "conteo": 0, "icono": "plantae-ev-icon"}, {"nombre": "Reptiles", "conteo": 0, "icono": "reptilia-ev-icon"}];
+
+            var url = dameUrlCargaGrupos(properties);
+            if (url != undefined)
+            {
+                $.ajax({
+                    url: url
+                }).done(function(resp) {
+                    grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
+
+                    $('#contenedor_grupos').empty();
+                    $.each(grupos, function(index, prop){
+                        $('#contenedor_grupos').append('<li class="list-group-item"><i class="' + prop.icono + '"></i> <a href="" class="grupo_id" grupo_id="'+prop.nombre+'">' + prop.nombre + '</a><span class="badge">' + prop.conteo + '</span></li>');
+                    });
+                }).fail(function() {
+                    console.log('Falló el servicio de conteo del SNIB');
+                });
             }
         };
 
@@ -359,6 +359,7 @@
 <% content_for(:delayedjs) do %>
     <script>
         map = null;
+        especies = null;
         cargaMapa('map');
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
