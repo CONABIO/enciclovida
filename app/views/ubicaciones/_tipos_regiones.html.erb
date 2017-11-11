@@ -1,5 +1,5 @@
 <h3>Regiones</h3>
-<small>Selecciona una región de la lista, o encuentrala directo en el mapa</small>
+<p><small>Selecciona una región de la lista o encuentrala directo en el mapa</small></p>
 
 <!--hr />
 
@@ -7,10 +7,8 @@ estatal<%#= check_box_tag 'division_estatal', '0' %>
 municipal<%#= check_box_tag 'division_municipal', '0' %>
 ANP<%#= check_box_tag 'division_anp', '0' %>-->
 
-<hr />
-
 <%= select_tag 'region_estado', options_for_select(@estados), prompt: '- - - Escoge un estado - - -' %>
 <%= select_tag 'region_municipio', nil, prompt: '- - - - - -', disabled: true %>
-<%= select_tag 'region_anp', nil, prompt: '- - - - - -', disabled: true %>
+<%#= select_tag 'region_anp', nil, prompt: '- - - - - -', disabled: true %>
 
 <hr />
