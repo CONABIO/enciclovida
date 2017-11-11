@@ -423,7 +423,7 @@
         #especies img{
 	        max-height: 100px;
         }
-        #especies h5{
+        #contenedor_especies h5{
 	        font-size: small;
         }
         .region, .selecciona-region {
@@ -450,17 +450,16 @@
 <% end %>
 
 
-<div id="regiones" class="col-md-6">
-  <%= render partial: 'tipos_regiones' %>
-</div>
-<div id="grupos" class="col-md-6">
-  <%= render partial: 'grupos' %>
-</div>
-<div id="contenedor_mapa" class="col-md-8">
+<div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
   <h4 class="text-left text-success" id="contenedor-nombre-region">Selecciona un estado</h4>
   <div id="map"></div>
 </div>
-
-<div id="especies" class="col-md-4">
+<div id="regiones" class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+  <%= render partial: 'tipos_regiones' %>
+</div>
+<div id="grupos" class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+  <%= render partial: 'grupos' %>
+</div>
+<div id="especies" class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
   <%= render partial: 'especies' %>
 </div>
