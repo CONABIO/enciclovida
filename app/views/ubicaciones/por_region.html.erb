@@ -1,10 +1,12 @@
 <% content_for(:extrajs) do %>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/0.5.9/chroma.min.js"></script>
+
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <!--script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script-->
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-    <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
+
+    <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
+    <%#= javascript_include_tag 'geodatos/leaflet.markercluster-src.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'busquedas_espaciales/topojson', 'data-turbolinks-track' => true %>
 
@@ -43,16 +45,17 @@
             map.setView(place, 5);  // Default place and zoom
         };
 
-        var cargaRegistros = function()
+        var cargaRegistros = function(url)
         {
-            var geojsonFeature = [];
-            var allowedPoints = d3.map([]);
-            var geoportal_count = 0;
+            geojsonFeature = [];
+            allowedPoints = d3.map([]);
+            geoportal_count = 0;
 
-            var species_layer;
-            var markersLayer;
+            species_layer = null;
+            markersLayer = null;
+            legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
-            var geojsonMarkerGeoportalOptions = {
+            geojsonMarkerGeoportalOptions = {
                 radius: 5,
                 fillColor: "#ff0000",
                 color: "white",
@@ -61,7 +64,7 @@
                 fillOpacity: 0.6
             };
 
-            var geojsonMarkerGeoportalAveravesOptions = {
+            geojsonMarkerGeoportalAveravesOptions = {
                 radius: 5,
                 fillColor: "#FFA500",
                 color: "black",
@@ -69,6 +72,143 @@
                 opacity: 1,
                 fillOpacity: 0.6
             };
+
+            geojson_geoportal(url);
+        };
+
+        function addPointLayerGeoportal(){
+            geojsonFeature =  { "type": "FeatureCollection",
+                "features": allowedPoints.values()};
+
+            markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
+
+            species_layer = L.geoJson(geojsonFeature, {
+                pointToLayer: function (feature, latlng) {
+                    // Este campos quiere decir que es de aves aves
+                    if (feature.properties.d[1])
+                        return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
+                    //else if (fosil != undefined && fosil != "")
+                    //  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
+                    else  // de lo contrario es un registro rojo normal
+                        return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.on("click", function (e) {
+                        ejemplar_snib(layer, feature.properties.d[0]);
+                    });
+                }
+            });
+
+            markersLayer.addLayer(species_layer);
+            map.addLayer(markersLayer);
+
+            /*
+             var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/>';
+             punto_rojo+= '<text x="20" y="13">Registros del SNIB</text>';
+
+             var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
+             punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
+
+             var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
+             punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';
+
+             legend_control.addOverlay(markersLayer,
+             "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
+             "<p>"+punto_naranja+"</p>"
+             );*/
+        }
+
+        function ejemplar_snib(layer, id){
+            $.ajax({
+                url: "/especies/" + TAXON.id + "/ejemplar-snib/" + id,
+                dataType : "json",
+                success : function (res){
+                    if (res.estatus == 'OK')
+                    {
+                        var ejemplar = res.ejemplar;
+                        var contenido = "";
+
+                        contenido += "<h4>" + name() + "</h4>";
+                        contenido += "<dt>Localidad: </dt><dd>" + ejemplar.localidad + "</dd>";
+                        contenido += "<dt>Municipio: </dt><dd>" + ejemplar.municipiomapa + "</dd>";
+                        contenido += "<dt>Estado: </dt><dd>" + ejemplar.estadomapa + "</dd>";
+                        contenido += "<dt>País: </dt><dd>" + ejemplar.paismapa + "</dd>";
+                        contenido += "<dt>Fecha: </dt><dd>" + ejemplar.fechacolecta + "</dd>";
+                        contenido += "<dt>Colector: </dt><dd>" + ejemplar.colector + "</dd>";
+                        contenido += "<dt>Colección: </dt><dd>" + ejemplar.coleccion + "</dd>";
+                        contenido += "<dt>Institución: </dt><dd>" + ejemplar.institucion + "</dd>";
+                        contenido += "<dt>País de la colección: </dt><dd>" + ejemplar.paiscoleccion + "</dd>";
+
+                        if (ejemplar.proyecto.length > 0 && ejemplar.urlproyecto.length > 0)
+                            contenido += "<dt>Proyecto: </dt><dd><a href='" + ejemplar.urlproyecto + "' target='_blank'>" + ejemplar.proyecto + "</a></dd>";
+
+                        contenido += "<dt>Más información: </dt><dd><a href='http://" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
+
+                        // Para enviar un comentario acerca de un registro en particular
+                        contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + ejemplar.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+
+                        contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + ejemplar.idejemplar;
+                    } else {
+                        var contenido = "Hubo un error al retraer el ejemplar: " + res.msg;
+                    }
+
+                    // Pone el popup arriba del punto
+                    var popup = new L.Popup();
+                    var bounds = layer.getBounds();
+
+                    popup.setLatLng(bounds.getCenter());
+                    popup.setContent(contenido);
+                    map.openPopup(popup);
+                },
+                error: function( jqXHR ,  textStatus,  errorThrown ){
+                    console.log("error: " + textStatus);
+                    console.log(errorThrown);
+                    console.log(jqXHR.responseText);
+                }
+            });  // termina ajax
+        }
+
+        function name()
+        {
+            if (I18n.locale == 'es')
+            {
+                if (NOMBRE_COMUN_PRINCIPAL.length > 0)
+                    return NOMBRE_COMUN_PRINCIPAL + " <a href='/especies/" + TAXON.id + "'><i>(" + TAXON.nombre_cientifico + ")</i></a>";
+                else
+                    return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+            } else {
+                return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+            }
+        }
+
+        var geojson_geoportal = function(url)
+        {
+            $.ajax({
+                url: url,
+                dataType : "json",
+                success : function (d){
+                    geoportal_count = d.length;
+                    allowedPoints = d3.map([]);
+
+                    for(i=0;i<d.length;i++)
+                    {
+                        var item_id = 'geo-' + i.toString();
+
+                        allowedPoints.set(item_id, {
+                            "type"      : "Feature",
+                            "properties": {d: d[i]}, // El ID y si es de aver aves
+                            "geometry"  : JSON.parse(d[i].json_geom)
+                        });
+                    }
+
+                    addPointLayerGeoportal();
+                },
+                error: function( jqXHR ,  textStatus,  errorThrown ){
+                    console.log("error: " + textStatus);
+                    console.log(errorThrown);
+                    console.log(jqXHR.responseText);
+                }
+            });  // termina ajax
         };
 
         var dameUrlCargaGrupos = function(prop)
@@ -115,9 +255,11 @@
                 $.ajax({
                     url: url
                 }).done(function(resp) {
+                    especies = resp.slice(0,30).map(a => a.especievalidabusqueda + '-' + a.nregistros);
                     grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
 
                     $('#contenedor_grupos').empty();
+                    $('#contenedor_especies').empty();
                     $.each(grupos, function(index, prop){
                         $('#contenedor_grupos').append('<label><span title="' + prop.nombre + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.nombre+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge">' + prop.conteo + '</sub>');
                     });
@@ -130,22 +272,25 @@
         var cargaEspecies = function(elemento, pagina, por_pagina)
         {
             // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
-            var especies = {};
-            especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
-                "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];
+            /*var especies = {};
+             especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
+             "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];*/
 
             // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
             $.ajax({
-                url: '/especies-por-catalogo-id',
-                data: {catalogo_id: especies["resultados"]}
+                //url: '/especies-por-catalogo-id',
+                url: '/especies-por-nombre-cientifico',
+                //data: {catalogo_id: especies["resultados"]}
+                data: {especies: especies}
             }).done(function(resp) {
                 if (resp.estatus)
                 {
+                    $('#contenedor_especies').empty();
                     $.each(resp.resultados, function(index, taxon){
                         $('#contenedor_especies').append('<div class="result-img-container" snib_url="' + taxon.snib_mapa_json + '">' +
-                        '<a href class="especie_id"><img src="' + taxon.foto+'"/></a>' +
+                        '<a href class="especie_id" snib_url="http://200.12.166.190:9000/snib?qtype=getSpecies&rd=animalia&id='+taxon.catalogo_id+'&clayer='+tipo_region_se+'&cvalue='+region_id_se+'"><img src="' + taxon.foto+'"/></a>' +
                         '<div class="result-nombre-container">' +
-                        '<h5>' + taxon.nombre_comun + ' </h5>' +
+                        '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
                         '<h5><a href class="especie_id"><i>(' + taxon.nombre_cientifico + ')</i></a></h5>' +
                         '</div>' +
                         '</div>');
@@ -202,6 +347,9 @@
                             $('#contenedor-nombre-region').html(name);
                         })
                         .on('click', function(d){
+                            tipo_region_se = 'estados';
+                            region_id_se = d.properties.region_id;
+
                             d.properties.tipo_region = 'estado';
                             cargaGrupos(d.properties);
 
@@ -369,15 +517,16 @@
     <script>
         map = null;
         especies = null;
+        region_id_se = null;
         cargaMapa('map');
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
-            cargaEspecies($(this));
+            cargaEspecies();
             return false;
         });
 
         $('#contenedor_especies').on('click', '.especie_id', function(){
-            //cargaRegistros($(this));
+            cargaRegistros($(this).attr('snib_url'));
             return false;
         });
 
@@ -408,23 +557,22 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-  <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-  <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
-  <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" />
-  <%= stylesheet_link_tag 'geodatos/MarkerCluster.Default', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+    <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
+    <%#= stylesheet_link_tag 'MarkerCluster.Default', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
     <style>
         #map {
             min-height: 800px;
             width: 100%;
         }
         #especies img{
-	        max-height: 100px;
+            max-height: 100px;
         }
         #contenedor_especies h5{
-	        font-size: small;
+            font-size: small;
         }
         .region, .selecciona-region {
             fill: #e5e5e5;
@@ -443,9 +591,9 @@
             stroke-width:3px;
         }
         #contenedor-nombre-region {
-	        /*background-color: grey;*/
-	        /*color: white;*/
-	        font-weight: bold        }
+            /*background-color: grey;*/
+            /*color: white;*/
+            font-weight: bold        }
     </style>
 <% end %>
 

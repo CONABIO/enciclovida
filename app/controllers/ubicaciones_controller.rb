@@ -35,6 +35,22 @@ class UbicacionesController < ApplicationController
     end  # End catalogo_id present
   end
 
+  def especies_por_nombre_cientifico
+    especies_hash = {}
+    params[:especies].each do |e|
+      cad = e.split('-')
+      especies_hash[cad.first] = cad.last.to_i  
+    end
+
+    taxones = Especie.select('especies.id, nombre_cientifico, catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)     
+    resultados = []
+    taxones.each do |taxon|
+      resultados << {nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}   
+    end
+ 
+    render json: {estatus: true, resultados: resultados}
+  end	
+
   # Devuelve los municipios por el estado seleccionado
   def municipios_por_estado
     resp = {}
