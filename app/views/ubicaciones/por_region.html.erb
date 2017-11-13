@@ -216,10 +216,7 @@
             switch (prop.tipo_region)
             {
                 case 'estado':
-                    if (prop.region_id < 10) var region_id = '0' + prop.region_id;
-                    else var region_id = prop.region_id;
-
-                    return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + region_id + '/edomun/aves?apiKey=enciclovida';
+                    return 'http://www.enciclovida.mx:9002/taxonEdo/conteo/' + CORRESP[prop.region_id] + '/edomun/aves?apiKey=enciclovida';
                 case 'municipio':
                     return 'http://www.enciclovida.mx:9002/taxonMuni/listado/' + prop.parent_id + '/' + prop.region_id + '/edomun/aves?apiKey=enciclovida';
                 default:
@@ -269,7 +266,7 @@
             }
         };
 
-        var cargaEspecies = function(elemento, pagina, por_pagina)
+        var cargaEspecies = function()
         {
             // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
             /*var especies = {};
@@ -295,11 +292,7 @@
                         '</div>' +
                         '</div>');
                     });
-                }
-
-
-
-                else
+                } else
                     console.log('Falló la carga de especies de enciclovida');
 
             }).fail(function() {
@@ -518,6 +511,8 @@
         map = null;
         especies = null;
         region_id_se = null;
+        tipo_region_se = null;
+        CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         cargaMapa('map');
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
