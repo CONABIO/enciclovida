@@ -37,6 +37,7 @@ class UbicacionesController < ApplicationController
 
   def especies_por_nombre_cientifico
     especies_hash = {}
+
     params[:especies].each do |e|
       cad = e.split('-')
       especies_hash[cad.first] = cad.last.to_i  
