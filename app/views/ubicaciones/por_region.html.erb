@@ -38,7 +38,7 @@
 
             var layer = L.tileLayer(tile_url, {
                 attribution: 'OSM',
-                noWrap: true,
+                noWrap: true
             });
 
             map.addLayer(layer);
@@ -47,14 +47,6 @@
 
         var cargaRegistros = function(url)
         {
-            geojsonFeature = [];
-            allowedPoints = d3.map([]);
-            geoportal_count = 0;
-
-            species_layer = null;
-            markersLayer = null;
-            legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
-
             geojsonMarkerGeoportalOptions = {
                 radius: 5,
                 fillColor: "#ff0000",
@@ -77,12 +69,9 @@
         };
 
         function addPointLayerGeoportal(){
-            geojsonFeature =  { "type": "FeatureCollection",
-                "features": allowedPoints.values()};
+            var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
 
-            markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
-
-            species_layer = L.geoJson(geojsonFeature, {
+            var species_layer = L.geoJson(geojsonFeature, {
                 pointToLayer: function (feature, latlng) {
                     // Este campos quiere decir que es de aves aves
                     if (feature.properties.d[1])
@@ -99,6 +88,7 @@
                 }
             });
 
+
             markersLayer.addLayer(species_layer);
             map.addLayer(markersLayer);
 
@@ -113,7 +103,7 @@
              punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';
 
              legend_control.addOverlay(markersLayer,
-             "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
+             "<b>Registros del SNIB <sub>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>" +
              "<p>"+punto_naranja+"</p>"
              );*/
         }
@@ -187,10 +177,10 @@
                 url: url,
                 dataType : "json",
                 success : function (d){
-                    geoportal_count = d.length;
+                    registros_conteo = d.length;
                     allowedPoints = d3.map([]);
 
-                    for(i=0;i<d.length;i++)
+                    for(var i=0;i<d.length;i++)
                     {
                         var item_id = 'geo-' + i.toString();
 
@@ -514,6 +504,7 @@
         tipo_region_se = null;
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         cargaMapa('map');
+        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
             cargaEspecies();
@@ -521,6 +512,7 @@
         });
 
         $('#contenedor_especies').on('click', '.especie_id', function(){
+            //$('.leaflet-marker-pane').empty();
             cargaRegistros($(this).attr('snib_url'));
             return false;
         });
