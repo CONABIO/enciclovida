@@ -65,10 +65,21 @@
                 fillOpacity: 0.6
             };
 
+            borraRegistrosAnteriores();
             geojson_geoportal(url);
         };
 
-        function addPointLayerGeoportal(){
+        var borraRegistrosAnteriores = function()
+        {
+            if (map.hasLayer(markersLayer))
+            {
+                map.removeLayer(markersLayer);
+                markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
+            }
+        };
+
+        var addPointLayerGeoportal = function()
+        {
             var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
 
             var species_layer = L.geoJson(geojsonFeature, {
@@ -108,7 +119,8 @@
              );*/
         }
 
-        function ejemplar_snib(layer, id){
+        var ejemplar_snib = function(layer, id)
+        {
             $.ajax({
                 url: "/especies/" + TAXON.id + "/ejemplar-snib/" + id,
                 dataType : "json",
@@ -118,7 +130,7 @@
                         var ejemplar = res.ejemplar;
                         var contenido = "";
 
-                        contenido += "<h4>" + name() + "</h4>";
+                        contenido += "<h4>" + nombre() + "</h4>";
                         contenido += "<dt>Localidad: </dt><dd>" + ejemplar.localidad + "</dd>";
                         contenido += "<dt>Municipio: </dt><dd>" + ejemplar.municipiomapa + "</dd>";
                         contenido += "<dt>Estado: </dt><dd>" + ejemplar.estadomapa + "</dd>";
@@ -158,7 +170,7 @@
             });  // termina ajax
         }
 
-        function name()
+        var nombre = function()
         {
             if (I18n.locale == 'es')
             {
@@ -310,6 +322,27 @@
             });
         };
 
+        // Para cuando se hace una animacion con flyTo, los svgs de estatal o municipal o region sola
+        var muestraOcultaSvg = function(caso)
+        {
+            if (caso)
+            {
+                $('#svg-division-estatal').css('visibility', 'visible');
+                $('#svg-division-municipal').css('visibility', 'visible');
+                $('#svg-region').css('visibility', 'visible');
+            } else {
+                $('#svg-division-estatal').css('visibility', 'hidden');
+                $('#svg-division-municipal').css('visibility', 'hidden');
+                $('#svg-region').css('visibility', 'hidden');
+            }
+        };
+
+        // Hace la projecccion de los puntos en D3 cuando se hace un zoom
+        function projectPoint(x) {
+            var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
+            return [point.x, point.y];
+        }
+
         // Carga la division estatal de un inicio
         var cargaDivisionEstatal = function()
         {
@@ -345,13 +378,10 @@
                         });
 
                 map.on('zoomend', reset);
-                map.on('zoomstart', function(){
-                    $('#svg-division-estatal').css('visibility', 'hidden');
-                    $('#svg-division-municipal').css('visibility', 'hidden');
-                });
-                reset();
+                map.on('zoomstart', function(){muestraOcultaSvg();});
+                reset(); // Lo inicializa
 
-                // Reposition the SVG to cover the features.
+                // Reposiciona el svg si se realiza un zoom
                 function reset()
                 {
                     var bottomLeft = projectPoint(bounds[0]);
@@ -362,18 +392,9 @@
                             .style('margin-left', bottomLeft[0] + 'px')
                             .style('margin-top', topRight[1] + 'px');
 
-                    var translation = -bottomLeft[0] + ',' + -topRight[1];
                     g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
                     feature.attr('d', path);
-
-                    $('#svg-division-estatal').css('visibility', 'visible');
-                    $('#svg-division-municipal').css('visibility', 'visible');
-                }
-
-                // Use Leaflet to implement a D3 geographic projection.
-                function projectPoint(x) {
-                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
-                    return [point.x, point.y];
+                    muestraOcultaSvg(true);
                 }
             });
         };
@@ -409,10 +430,7 @@
                         });
 
                 map.on('zoomend', reset);
-                map.on('zoomstart', function(){
-                    $('#svg-division-estatal').css('visibility', 'hidden');
-                    $('#svg-division-municipal').css('visibility', 'hidden');
-                });
+                map.on('zoomstart', function(){muestraOcultaSvg();});
 
                 // Reposition the SVG to cover the features.
                 function reset()
@@ -425,18 +443,9 @@
                             .style('margin-left', bottomLeft[0] + 'px')
                             .style('margin-top', topRight[1] + 'px');
 
-                    var translation = -bottomLeft[0] + ',' + -topRight[1];
                     g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
                     feature.attr('d', path);
-
-                    $('#svg-division-estatal').css('visibility', 'visible');
-                    $('#svg-division-municipal').css('visibility', 'visible');
-                }
-
-                // Use Leaflet to implement a D3 geographic projection.
-                function projectPoint(x) {
-                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
-                    return [point.x, point.y];
+                    muestraOcultaSvg(true);
                 }
             });
         };
@@ -461,10 +470,7 @@
                         .attr('class', 'region leaflet-clickable');
 
                 map.on('zoomend', reset);
-                map.on('zoomstart', function(){
-                    $('#svg-division-estatal').css('visibility', 'hidden');
-                    $('#svg-division-municipal').css('visibility', 'hidden');
-                });
+                map.on('zoomstart', function(){muestraOcultaSvg();});
 
                 // Reposition the SVG to cover the features.
                 function reset()
@@ -477,18 +483,9 @@
                             .style('margin-left', bottomLeft[0] + 'px')
                             .style('margin-top', topRight[1] + 'px');
 
-                    var translation = -bottomLeft[0] + ',' + -topRight[1];
                     g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
                     feature.attr('d', path);
-
-                    $('#svg-division-estatal').css('visibility', 'visible');
-                    $('#svg-division-municipal').css('visibility', 'visible');
-                }
-
-                // Use Leaflet to implement a D3 geographic projection.
-                function projectPoint(x) {
-                    var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
-                    return [point.x, point.y];
+                    muestraOcultaSvg(true);
                 }
             });
         };
@@ -505,6 +502,7 @@
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         cargaMapa('map');
         markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
+        cargaDivisionEstatal();
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
             cargaEspecies();
@@ -537,8 +535,6 @@
                 topoLayer.clearLayers();
 
         });
-
-        cargaDivisionEstatal();
 
     </script>
 <% end %>
@@ -578,8 +574,6 @@
             stroke-width:3px;
         }
         #contenedor-nombre-region {
-            /*background-color: grey;*/
-            /*color: white;*/
             font-weight: bold        }
     </style>
 <% end %>
