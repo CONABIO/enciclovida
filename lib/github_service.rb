@@ -12,7 +12,7 @@ class GithubService
       end
 
     else
-      escribe_cache('github_issues', CONFIG.github.issues)
+      escribe_cache('github_issues', CONFIG.cache.github.issues)
       jres = lee_issues
 
       FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
