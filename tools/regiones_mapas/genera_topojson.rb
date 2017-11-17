@@ -41,7 +41,7 @@ def topojson_por_region
           estado_nombre = I18n.t("estados.#{Estado.find(estado_id).entidad.estandariza}")
           feature[:properties][:nombre_region] = "#{reg.nombre_region}, #{estado_nombre}, MX"
           feature[:properties][:parent_id] = reg.parent_id
-          feature[:properties][:region_id_se] = reg.parent_id
+          feature[:properties][:region_id_se] = reg.region_id_se
         when 'anp'
           feature[:properties][:nombre_region] = "#{reg.nombre_region}, ANP"
         else
@@ -88,6 +88,7 @@ def topojson_municipios_por_estado
       feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}, MX"
       feature[:properties][:parent_id] = m.parent_id
       feature[:properties][:centroide] = [m.lat, m.long]
+      feature[:properties][:region_id_se] = m.region_id_se
       feature[:geometry] = JSON.parse(m.geojson)
       geojson[:features] << feature
     end
