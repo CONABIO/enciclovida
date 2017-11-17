@@ -41,6 +41,7 @@ def topojson_por_region
           estado_nombre = I18n.t("estados.#{Estado.find(estado_id).entidad.estandariza}")
           feature[:properties][:nombre_region] = "#{reg.nombre_region}, #{estado_nombre}, MX"
           feature[:properties][:parent_id] = reg.parent_id
+          feature[:properties][:region_id_se] = reg.parent_id
         when 'anp'
           feature[:properties][:nombre_region] = "#{reg.nombre_region}, ANP"
         else

@@ -117,7 +117,7 @@
              "<b>Registros del SNIB <sub>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>" +
              "<p>"+punto_naranja+"</p>"
              );*/
-        }
+        };
 
         var ejemplar_snib = function(layer, id)
         {
@@ -168,7 +168,7 @@
                     console.log(jqXHR.responseText);
                 }
             });  // termina ajax
-        }
+        };
 
         var nombre = function()
         {
@@ -181,7 +181,7 @@
             } else {
                 return "<i>(" + TAXON.nombre_cientifico + ")</i>";
             }
-        }
+        };
 
         var geojson_geoportal = function(url)
         {
@@ -239,6 +239,11 @@
             }
         };
 
+        var dameUrlServicioSnib = function(prop)
+        {
+            return 'http://200.12.166.190:9000/snib?qtype=getSpecies&rd=animalia&id='+prop.catalogo_id+'&clayer='+tipo_region_se+'&cvalue='+region_id_se;
+        };
+
         var cargaGrupos = function(properties)
         {
             // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
@@ -285,9 +290,13 @@
                 if (resp.estatus)
                 {
                     $('#contenedor_especies').empty();
+
                     $.each(resp.resultados, function(index, taxon){
+                        var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id});
+                        if (url == undefined) return;
+
                         $('#contenedor_especies').append('<div class="result-img-container" snib_url="' + taxon.snib_mapa_json + '">' +
-                        '<a href class="especie_id" snib_url="http://200.12.166.190:9000/snib?qtype=getSpecies&rd=animalia&id='+taxon.catalogo_id+'&clayer='+tipo_region_se+'&cvalue='+region_id_se+'"><img src="' + taxon.foto+'"/></a>' +
+                        '<a href class="especie_id" snib_url="' + url + '"><img src="' + taxon.foto+'"/></a>' +
                         '<div class="result-nombre-container">' +
                         '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
                         '<h5><a href class="especie_id"><i>(' + taxon.nombre_cientifico + ')</i></a></h5>' +
@@ -419,6 +428,9 @@
                             $('#contenedor-nombre-region').html(name);
                         })
                         .on('click', function(d){
+                            tipo_region_se = 'municipios';
+                            region_id_se = d.properties.region_id;
+
                             d.properties.tipo_region = 'municipio';
                             cargaGrupos(d.properties);
 
