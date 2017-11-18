@@ -66,7 +66,7 @@
             };
 
             borraRegistrosAnteriores();
-            geojson_geoportal(url);
+            geojsonGeoportal(url);
         };
 
         var borraRegistrosAnteriores = function()
@@ -94,11 +94,10 @@
                 },
                 onEachFeature: function (feature, layer) {
                     layer.on("click", function (e) {
-                        ejemplar_snib(layer, feature.properties.d[0]);
+                        ejemplarSnib(layer, feature.properties);
                     });
                 }
             });
-
 
             markersLayer.addLayer(species_layer);
             map.addLayer(markersLayer);
@@ -119,7 +118,10 @@
              );*/
         };
 
-        var ejemplar_snib = function(layer, id)
+        /**
+         * Hace una ajax request para la obtener la información de un taxon, esto es más rapido para muchos registros
+         * */
+        var ejemplarSnibGeojson = function(layer, id)
         {
             $.ajax({
                 url: "/especies/" + TAXON.id + "/ejemplar-snib/" + id,
@@ -170,6 +172,35 @@
             });  // termina ajax
         };
 
+        /**
+         * Lanza el pop up con la inforamcion del taxon, ya esta cargado; este metodo es lento con muchos registros
+         * */
+        var ejemplarSnib = function(prop)
+        {
+            var contenido = "";
+
+            contenido += "<h4>" + nombre() + "</h4>";
+            contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
+            contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
+            contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
+            contenido += "<dt>País: </dt><dd>" + prop.paismapa + "</dd>";
+            contenido += "<dt>Fecha: </dt><dd>" + prop.fechacolecta + "</dd>";
+            contenido += "<dt>Colector: </dt><dd>" + prop.colector + "</dd>";
+            contenido += "<dt>Colección: </dt><dd>" + prop.coleccion + "</dd>";
+            contenido += "<dt>Institución: </dt><dd>" + prop.institucion + "</dd>";
+            contenido += "<dt>País de la colección: </dt><dd>" + prop.paiscoleccion + "</dd>";
+
+            if (prop.proyecto.length > 0 && prop.urlproyecto.length > 0)
+                contenido += "<dt>Proyecto: </dt><dd><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a></dd>";
+
+            contenido += "<dt>Más información: </dt><dd><a href='http://" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
+
+            // Para enviar un comentario acerca de un registro en particular
+            contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+
+            return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + prop.idejemplar;
+        };
+
         var nombre = function()
         {
             if (I18n.locale == 'es')
@@ -183,7 +214,7 @@
             }
         };
 
-        var geojson_geoportal = function(url)
+        var geojsonGeoportal = function(url)
         {
             $.ajax({
                 url: url,
@@ -386,12 +417,12 @@
                             cargaDivisionMunicipal(d);
                         });
 
-                map.on('zoomend', reset);
+                map.on('zoomend', reinicia);
                 map.on('zoomstart', function(){muestraOcultaSvg();});
-                reset(); // Lo inicializa
+                reinicia(); // Lo inicializa
 
                 // Reposiciona el svg si se realiza un zoom
-                function reset()
+                function reinicia()
                 {
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
@@ -441,11 +472,11 @@
                             map.flyTo(d.properties.centroide, 9);
                         });
 
-                map.on('zoomend', reset);
+                map.on('zoomend', reinicia);
                 map.on('zoomstart', function(){muestraOcultaSvg();});
 
                 // Reposition the SVG to cover the features.
-                function reset()
+                function reinicia()
                 {
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
@@ -481,11 +512,11 @@
                         .append('path')
                         .attr('class', 'region leaflet-clickable');
 
-                map.on('zoomend', reset);
+                map.on('zoomend', reinicia);
                 map.on('zoomstart', function(){muestraOcultaSvg();});
 
                 // Reposition the SVG to cover the features.
-                function reset()
+                function reinicia()
                 {
                     var bottomLeft = projectPoint(bounds[0]);
                     var topRight = projectPoint(bounds[1]);
@@ -509,6 +540,7 @@
     <script>
         map = null;
         especies = null;
+        taxon = {};
         region_id_se = null;
         tipo_region_se = null;
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
@@ -522,8 +554,16 @@
         });
 
         $('#contenedor_especies').on('click', '.especie_id', function(){
-            //$('.leaflet-marker-pane').empty();
             cargaRegistros($(this).attr('snib_url'));
+
+            var foto = $(this).children()[0];
+            var nombre_comun = $(this).next().children()[0].innerText
+            var nombre_cientifico = $(this).next().children()[1].innerText
+            taxon["nombre_comun"] = nombre_comun;
+            taxon["nombre_cientifico"] = nombre_cientifico;
+            console.log(foto);
+            //var div = $(this).parent();
+            //console.log($(div+'.result-img-container'))
             return false;
         });
 
