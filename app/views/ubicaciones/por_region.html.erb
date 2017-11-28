@@ -403,6 +403,7 @@
                             $('#contenedor-nombre-region').html(name);
                         })
                         .on('click', function(d){
+                            borraRegistrosAnteriores();
                             tipo_region_se = 'estados';
                             region_id_se = d.properties.region_id;
 
@@ -459,6 +460,7 @@
                             $('#contenedor-nombre-region').html(name);
                         })
                         .on('click', function(d){
+                            borraRegistrosAnteriores();
                             tipo_region_se = 'municipios';
                             region_id_se = d.properties.region_id_se;
 
