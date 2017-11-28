@@ -179,7 +179,7 @@
         {
             var contenido = "";
 
-            contenido += "<h4>" + nombre() + "</h4>";
+            contenido += "<h4 class='text-center'>" + nombre() + "</h4>";
             contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
             contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
             contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
@@ -190,27 +190,27 @@
             contenido += "<dt>Institución: </dt><dd>" + prop.institucion + "</dd>";
             contenido += "<dt>País de la colección: </dt><dd>" + prop.paiscoleccion + "</dd>";
 
-            if (prop.proyecto != undefined && prop.urlproyecto != undefined)
+            if (prop.proyecto.length > 0 && prop.urlproyecto.length > 0)
                 contenido += "<dt>Proyecto: </dt><dd><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a></dd>";
 
-            contenido += "<dt>Más información: </dt><dd><a href='http://" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
+            contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-            // Para enviar un comentario acerca de un registro en particular
-            /*contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";*/
+             //Para enviar un comentario acerca de un registro en particular
+            contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + taxon.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
-            return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + prop.idejemplar;
+            return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
         };
 
         var nombre = function()
         {
             if (I18n.locale == 'es')
             {
-                if (taxon.nombre_comun != undefined)
-                    return taxon.nombre_comun + " <a href='/especies/'><i>" + taxon.nombre_cientifico + "</i></a>";
+                if (taxon.nombre_comun.length > 0)
+                    return taxon.nombre_comun.replace(/[0-9]/g, '') + "<br /><a href='/especies/" + taxon.id + "'><i>" + taxon.nombre_cientifico + "</i></a>";
                 else
-                    return "<i>" + taxon.nombre_cientifico + "</i>";
+                    return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
             } else {
-                return "<i>" + taxon.nombre_cientifico + "</i>";
+                return "<a href='/especies/" + taxon.id + "' target='_blank's><i>" + taxon.nombre_cientifico + "</i></a>";
             }
         };
 
@@ -326,11 +326,11 @@
                         var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id});
                         if (url == undefined) return;
 
-                        $('#contenedor_especies').append('<div class="result-img-container" snib_url="' + taxon.snib_mapa_json + '">' +
-                        '<a href class="especie_id" snib_url="' + url + '"><img src="' + taxon.foto+'"/></a>' +
+                        $('#contenedor_especies').append('<div class="result-img-container">' +
+                        '<a href class="especie_id" snib_url="' + url + '" especie_id="'+taxon.id+'"><img src="' + taxon.foto+'"/></a>' +
                         '<div class="result-nombre-container">' +
                         '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
-                        '<h5><a href class="especie_id"><i>(' + taxon.nombre_cientifico + ')</i></a></h5>' +
+                        '<h5><a href class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></h5>' +
                         '</div>' +
                         '</div>');
                     });
@@ -558,7 +558,7 @@
         $('#contenedor_especies').on('click', '.especie_id', function(){
             cargaRegistros($(this).attr('snib_url'));
 
-            //var foto = $(this).children()[0];
+            taxon["id"] = $(this).attr('especie_id');
             taxon["nombre_comun"] = $(this).next().children()[0].innerText;
             taxon["nombre_cientifico"] = $(this).next().children()[1].innerText;
             return false;
