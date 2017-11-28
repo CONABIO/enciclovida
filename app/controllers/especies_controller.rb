@@ -29,7 +29,7 @@ class EspeciesController < ApplicationController
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
+  #caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
@@ -100,6 +100,8 @@ class EspeciesController < ApplicationController
       end
 
       format.pdf do
+        @photos = @especie.fotos_bdi[:fotos]
+
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
                         CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
@@ -132,6 +134,7 @@ class EspeciesController < ApplicationController
         FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
 
         render :pdf => @especie.nombre_cientifico.parameterize,
+               :object => @photos,
                #:save_to_file => pdf,
                #:save_only => true,
                :wkhtmltopdf => CONFIG.wkhtmltopdf_path,

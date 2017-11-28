@@ -73,7 +73,7 @@ $(document).ready(function(){
     };
 
     $(document).on('click', '#boton_pdf', function(){
-        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha,'_blank');
+        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
     });
 
     $(document).on('change', '#from', function(){
