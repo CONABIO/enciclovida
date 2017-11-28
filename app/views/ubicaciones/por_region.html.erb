@@ -92,9 +92,9 @@
                     else  // de lo contrario es un registro rojo normal
                         return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
                 },
-                onEachFeature: function (feature, layer) {
-                    layer.on("click", function (e) {
-                        ejemplarSnib(layer, feature.properties);
+                onEachFeature: function (prop, layer) {
+                    layer.on("click", function () {
+                        layer.bindPopup(ejemplarSnib(prop.properties.d));
                     });
                 }
             });
@@ -190,13 +190,13 @@
             contenido += "<dt>Institución: </dt><dd>" + prop.institucion + "</dd>";
             contenido += "<dt>País de la colección: </dt><dd>" + prop.paiscoleccion + "</dd>";
 
-            if (prop.proyecto.length > 0 && prop.urlproyecto.length > 0)
+            if (prop.proyecto != undefined && prop.urlproyecto != undefined)
                 contenido += "<dt>Proyecto: </dt><dd><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a></dd>";
 
             contenido += "<dt>Más información: </dt><dd><a href='http://" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
             // Para enviar un comentario acerca de un registro en particular
-            contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+            /*contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";*/
 
             return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + prop.idejemplar;
         };
@@ -205,12 +205,12 @@
         {
             if (I18n.locale == 'es')
             {
-                if (NOMBRE_COMUN_PRINCIPAL.length > 0)
-                    return NOMBRE_COMUN_PRINCIPAL + " <a href='/especies/" + TAXON.id + "'><i>(" + TAXON.nombre_cientifico + ")</i></a>";
+                if (taxon.nombre_comun != undefined)
+                    return taxon.nombre_comun + " <a href='/especies/'><i>" + taxon.nombre_cientifico + "</i></a>";
                 else
-                    return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+                    return "<i>" + taxon.nombre_cientifico + "</i>";
             } else {
-                return "<i>(" + TAXON.nombre_cientifico + ")</i>";
+                return "<i>" + taxon.nombre_cientifico + "</i>";
             }
         };
 
@@ -558,14 +558,9 @@
         $('#contenedor_especies').on('click', '.especie_id', function(){
             cargaRegistros($(this).attr('snib_url'));
 
-            var foto = $(this).children()[0];
-            var nombre_comun = $(this).next().children()[0].innerText
-            var nombre_cientifico = $(this).next().children()[1].innerText
-            taxon["nombre_comun"] = nombre_comun;
-            taxon["nombre_cientifico"] = nombre_cientifico;
-            console.log(foto);
-            //var div = $(this).parent();
-            //console.log($(div+'.result-img-container'))
+            //var foto = $(this).children()[0];
+            taxon["nombre_comun"] = $(this).next().children()[0].innerText;
+            taxon["nombre_cientifico"] = $(this).next().children()[1].innerText;
             return false;
         });
 
