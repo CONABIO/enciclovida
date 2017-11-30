@@ -2,11 +2,8 @@
 
     <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <!--script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js' data-turbolinks-track='true'></script-->
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-
     <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
-    <%#= javascript_include_tag 'geodatos/leaflet.markercluster-src.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'busquedas_espaciales/topojson', 'data-turbolinks-track' => true %>
 
@@ -48,12 +45,12 @@
         var cargaRegistros = function(url)
         {
             geojsonMarkerGeoportalOptions = {
-                radius: 5,
+                radius: 6,
                 fillColor: "#ff0000",
                 color: "white",
                 weight: 2,
                 opacity: 1,
-                fillOpacity: 0.6
+                fillOpacity: 1
             };
 
             geojsonMarkerGeoportalAveravesOptions = {
@@ -74,11 +71,11 @@
             if (map.hasLayer(markersLayer))
             {
                 map.removeLayer(markersLayer);
-                markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
+                markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, which_layer: 'geoportal'});
             }
         };
 
-        var addPointLayerGeoportal = function()
+        var aniadePuntosGeoportal = function()
         {
             var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
 
@@ -93,8 +90,10 @@
                         return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
                 },
                 onEachFeature: function (prop, layer) {
+                    layer.bindPopup(ejemplarSnib(prop.properties.d));
                     layer.on("click", function () {
-                        layer.bindPopup(ejemplarSnib(prop.properties.d));
+                        //layer.bindPopup(ejemplarSnib(prop.properties.d));
+                        console.log(prop);
                     });
                 }
             });
@@ -209,9 +208,8 @@
                     return taxon.nombre_comun.replace(/[0-9]/g, '') + "<br /><a href='/especies/" + taxon.id + "'><i>" + taxon.nombre_cientifico + "</i></a>";
                 else
                     return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
-            } else {
-                return "<a href='/especies/" + taxon.id + "' target='_blank's><i>" + taxon.nombre_cientifico + "</i></a>";
-            }
+            } else
+                return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
         };
 
         var geojsonGeoportal = function(url)
@@ -234,7 +232,7 @@
                         });
                     }
 
-                    addPointLayerGeoportal();
+                    aniadePuntosGeoportal();
                 },
                 error: function( jqXHR ,  textStatus,  errorThrown ){
                     console.log("error: " + textStatus);
@@ -547,7 +545,7 @@
         tipo_region_se = null;
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         cargaMapa('map');
-        markersLayer = L.markerClusterGroup({ maxClusterRadius: 30, chunkedLoading: true, which_layer: 'geoportal', chunkInterval: '2000', chunkDelay: 1});
+        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, which_layer: 'geoportal'});
         cargaDivisionEstatal();
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
@@ -589,10 +587,9 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-    <!--link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
-    <%#= stylesheet_link_tag 'MarkerCluster.Default', 'data-turbolinks-track' => true %>
     <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
     <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
     <style>
