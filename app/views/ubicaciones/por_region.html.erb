@@ -49,7 +49,7 @@
                 fillColor: "#ff0000",
                 color: "white",
                 weight: 2,
-                opacity: 1,
+                //opacity: 1,
                 fillOpacity: 1
             };
 
@@ -84,10 +84,11 @@
                     // Este campos quiere decir que es de aves aves
                     if (feature.properties.d[1])
                         return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
+                        //return "<i class='feather-ev-icon'></i>";
                     //else if (fosil != undefined && fosil != "")
                     //  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
                     else  // de lo contrario es un registro rojo normal
-                        return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
+                        return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-leaflet', html: '<i class="feather-ev-icon"></i>'})});
                 },
                 onEachFeature: function (prop, layer) {
                     layer.bindPopup(ejemplarSnib(prop.properties.d));
@@ -620,7 +621,14 @@
             stroke-width:3px;
         }
         #contenedor-nombre-region {
-            font-weight: bold        }
+            font-weight: bold
+        }
+        .div-icon-leaflet {
+        }
+        .feather-ev-icon {
+            color: #800000;
+            font-size: 2em;
+        }
     </style>
 <% end %>
 
