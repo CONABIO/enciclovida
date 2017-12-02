@@ -15,7 +15,8 @@
             var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 
             map = L.map(id, {
-                zoomControl: false
+                zoomControl: false,
+                doubleClickZoom: false
             });
 
             var zoom = L.control.zoom({
@@ -261,7 +262,7 @@
             switch (prop.tipo_region)
             {
                 case 'estado':
-                    return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '.json';
+                    return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_division_municipal.json';
                 case 'municipio':
                     return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_' + prop.parent_id + '.json';
                 default:
@@ -341,26 +342,6 @@
             });
         };
 
-        // Cargo los municipios en la busqueda por lista
-        var municipiosPorEstado = function(estado){
-            $.ajax({
-                url: '/municipios-por-estado',
-                data: {region_id: estado.val()}
-            }).done(function(res) {
-                if (res.estatus)
-                {
-                    $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                    $.each(res.resultados, function(index, municipio){
-                        $('#region_municipio').append('<option value="' + municipio.region_id + '">' + municipio.nombre_region + '</option>');
-                    });
-
-                    $('#region_municipio').prop('disabled', false).attr('parent_id', res.parent_id);
-                }
-            }).fail(function() {
-                console.log('Falló al cargar los municipios por estado');
-            });
-        };
-
         // Para cuando se hace una animacion con flyTo, los svgs de estatal o municipal o region sola
         var muestraOcultaSvg = function(caso)
         {
@@ -401,7 +382,7 @@
                             var name = d.properties.nombre_region;
                             $('#contenedor-nombre-region').html(name);
                         })
-                        .on('click', function(d){
+                        .on('dblclick', function(d){
                             borraRegistrosAnteriores();
                             tipo_region_se = 'estados';
                             region_id_se = d.properties.region_id;
@@ -409,7 +390,8 @@
                             d.properties.tipo_region = 'estado';
                             cargaGrupos(d.properties);
 
-                            $('#svg-division-municipal').remove();
+                            //$('#svg-division-municipal').remove();
+
                             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
                             $(this).attr('class', 'selecciona-region');
 
@@ -445,6 +427,8 @@
             var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
+            g.selectAll('.region').remove();  // antes borra anteriores divisiones municipales
+
             d3.json('/topojson/estado_' + d.properties.region_id + '_division_municipal.json', function (error, collection) {
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
@@ -458,7 +442,7 @@
                             var name = d.properties.nombre_region;
                             $('#contenedor-nombre-region').html(name);
                         })
-                        .on('click', function(d){
+                        .on('dblclick', function(d){
                             borraRegistrosAnteriores();
                             tipo_region_se = 'municipios';
                             region_id_se = d.properties.region_id_se;
@@ -491,6 +475,26 @@
                     feature.attr('d', path);
                     muestraOcultaSvg(true);
                 }
+            });
+        };
+
+        // Cargo los municipios en la busqueda por lista
+        var municipiosPorEstado = function(estado){
+            $.ajax({
+                url: '/municipios-por-estado',
+                data: {region_id: estado.val()}
+            }).done(function(res) {
+                if (res.estatus)
+                {
+                    $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
+                    $.each(res.resultados, function(index, municipio){
+                        $('#region_municipio').append('<option value="' + municipio.region_id + '">' + municipio.nombre_region + '</option>');
+                    });
+
+                    $('#region_municipio').prop('disabled', false).attr('parent_id', res.parent_id);
+                }
+            }).fail(function() {
+                console.log('Falló al cargar los municipios por estado');
             });
         };
 
@@ -573,8 +577,11 @@
                 municipiosPorEstado($(this));
                 //regionesAnp($(this));
 
+                var centroide = $('option:selected', this).attr('centroide');
+                map.flyTo(eval(centroide), 7);
+
+                borraRegistrosAnteriores();
                 cargaRegion({"tipo_region": "estado", "region_id": $(this).val()});
-                map.flyTo(d.properties.centroide, 9);
             }
         });
 
