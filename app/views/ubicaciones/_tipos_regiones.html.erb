@@ -1,13 +1,10 @@
 <legend><h5 class="text-primary"><strong>Selecciona una región de la lista o encuentrala directo en el mapa</strong></h5></legend>
 
-<!--hr />
-estatal<%#= check_box_tag 'division_estatal', '0' %>
-municipal<%#= check_box_tag 'division_municipal', '0' %>
-ANP<%#= check_box_tag 'division_anp', '0' %>-->
 <div class="form-group">
 	<div class="row">
 		<div class="col-md-6">
 		  <%= select_tag 'region_estado', options_for_select(@estados), prompt: '- - - Escoge un estado - - -', :class => 'busquedas form-control' %>
+          <%#= select_tag 'region_estado', @estados, {prompt: '- - - Escoge un estado - - -', :class => 'busquedas form-control'} %>
 		</div>
 	  <div class="col-md-6">
 	    <%= select_tag 'region_municipio', nil, prompt: '- - - - - -', disabled: true, :class => 'busquedas form-control' %>
