@@ -8,7 +8,7 @@ class UbicacionesController < ApplicationController
 
   # /explora-por-region
   def por_region
-    @estados = Estado.all.order(entidad: :asc).collect{ |e| [t("estados.#{e.entidad.estandariza}", default: e.entidad), e.entid] }
+    @estados = Estado.campos_min.centroide.all.collect{ |e| [t("estados.#{e.nombre_region.estandariza}", default: e.nombre_region), e.region_id, {centroide: "[#{e.lat},#{e.long}]"}]}
   end
 
   def especies_por_catalogo_id
