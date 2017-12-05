@@ -357,6 +357,12 @@
             }
         };
 
+        // Rellena las opciones de region-estado
+        var completaSelectEstado = function(prop)
+        {
+            
+        };
+
         // Hace la projecccion de los puntos en D3 cuando se hace un zoom
         function projectPoint(x) {
             var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
@@ -383,21 +389,11 @@
                             $('#contenedor-nombre-region').html(name);
                         })
                         .on('dblclick', function(d){
-                            borraRegistrosAnteriores();
-                            tipo_region_se = 'estados';
-                            region_id_se = d.properties.region_id;
-
-                            d.properties.tipo_region = 'estado';
-                            cargaGrupos(d.properties);
-
-                            //$('#svg-division-municipal').remove();
-
-                            $('#svg-division-estatal .selecciona-region').attr('class', 'region');
-                            $(this).attr('class', 'selecciona-region');
-
-                            map.flyTo(d.properties.centroide, 7);
-                            cargaDivisionMunicipal(d);
+                            d.properties.layer = $(this);
+                            cargaRegion(d.properties);
                         });
+
+                completaSelectEstado();
 
                 map.on('zoomend', reinicia);
                 map.on('zoomstart', function(){muestraOcultaSvg();});
@@ -422,14 +418,12 @@
         };
 
         // Carga todos los municipios de cierto estado
-        var cargaDivisionMunicipal = function(d)
+        var cargaDivisionMunicipal = function()
         {
             var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
-            g.selectAll('.region').remove();  // antes borra anteriores divisiones municipales
-
-            d3.json('/topojson/estado_' + d.properties.region_id + '_division_municipal.json', function (error, collection) {
+            d3.json('/topojson/estado_' + region_id_se + '_division_municipal.json', function (error, collection) {
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
 
@@ -498,9 +492,25 @@
             });
         };
 
-        // Carga una sola region en especifico, estado, municipio, anp o ecoregion
+        // Carga una sola region en especifico, municipios por estado; reutilizando esta funcion
+        // se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
         var cargaRegion = function(prop)
         {
+            borraRegistrosAnteriores();
+            tipo_region_se = 'estados';
+            region_id_se = prop.region_id;
+
+            prop.tipo_region = 'estado';
+            cargaGrupos(prop);
+
+            $('#svg-division-municipal').remove();
+
+            $('#svg-division-estatal .selecciona-region').attr('class', 'region');
+            if (prop.layer != undefined) prop.layer.attr('class', 'selecciona-region');
+
+            map.flyTo(prop.centroide, 7);
+            cargaDivisionMunicipal();
+            /*
             var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-region');
             var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
@@ -535,7 +545,7 @@
                     feature.attr('d', path);
                     muestraOcultaSvg(true);
                 }
-            });
+            });*/
         };
     </script>
 
@@ -567,6 +577,7 @@
             return false;
         });
 
+        // Para escoger con las listas
         $('#regiones').on('change', '#region_estado', function(){
             if ($(this).val() == '')
             {
@@ -577,11 +588,16 @@
                 municipiosPorEstado($(this));
                 //regionesAnp($(this));
 
-                var centroide = $('option:selected', this).attr('centroide');
-                map.flyTo(eval(centroide), 7);
+                var prop = {};
+                prop.centroide = eval($('option:selected', this).attr('centroide'));
+                prop.region_id = $(this).val();
+                cargaRegion(prop);
+                return false;
+
+                /*map.flyTo(eval(centroide), 7);
 
                 borraRegistrosAnteriores();
-                cargaRegion({"tipo_region": "estado", "region_id": $(this).val()});
+                cargaRegion({"tipo_region": "estado", "region_id": $(this).val()});*/
             }
         });
 
