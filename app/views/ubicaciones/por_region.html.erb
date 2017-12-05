@@ -360,7 +360,9 @@
         // Rellena las opciones de region-estado
         var completaSelectEstado = function(prop)
         {
-            
+            layer = {};
+            layer_obj[prop.region_id] = prop.layer;
+            $('#region_estado').append('<option value="' + prop.region_id +'" centroide="[' + prop.centroide + ']">' + prop.nombre_region + '</option>');
         };
 
         // Hace la projecccion de los puntos en D3 cuando se hace un zoom
@@ -378,7 +380,6 @@
             d3.json('/topojson/estado.json', function (error, collection) {
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
-
                 var feature = g.selectAll('.region')
                         .data(topojson.feature(collection, collection.objects['collection']).features)
                         .enter()
@@ -391,9 +392,11 @@
                         .on('dblclick', function(d){
                             d.properties.layer = $(this);
                             cargaRegion(d.properties);
+                        })
+                        .each(function(d){
+                            d.properties.layer = $(this);
+                            completaSelectEstado(d.properties);
                         });
-
-                completaSelectEstado();
 
                 map.on('zoomend', reinicia);
                 map.on('zoomstart', function(){muestraOcultaSvg();});
@@ -556,6 +559,7 @@
         map = null;
         especies = null;
         taxon = {};
+        layer_obj = {};
         region_id_se = null;
         tipo_region_se = null;
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
@@ -590,14 +594,11 @@
 
                 var prop = {};
                 prop.centroide = eval($('option:selected', this).attr('centroide'));
+                prop.layer = layer_obj[$(this).val()];
                 prop.region_id = $(this).val();
+
                 cargaRegion(prop);
                 return false;
-
-                /*map.flyTo(eval(centroide), 7);
-
-                borraRegistrosAnteriores();
-                cargaRegion({"tipo_region": "estado", "region_id": $(this).val()});*/
             }
         });
 
