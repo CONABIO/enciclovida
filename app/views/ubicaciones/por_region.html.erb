@@ -360,9 +360,8 @@
         // Rellena las opciones de region-estado
         var completaSelect = function(prop)
         {
-            layer_obj = {};
             layer_obj[prop.region_id] = prop.layer;
-            $('#region_estado').append('<option value="' + prop.region_id +'" centroide="[' + prop.centroide + ']">' + prop.nombre_region + '</option>');
+            $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]">' + prop.nombre_region + '</option>');
         };
 
         // Hace la projecccion de los puntos en D3 cuando se hace un zoom
@@ -381,8 +380,6 @@
                 var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
                 var path = d3.geo.path().projection(projectPoint);
 
-                console.log(bounds);
-
                 var feature = g.selectAll('.region')
                         .data(topojson.feature(collection, collection.objects['collection']).features)
                         .enter()
@@ -395,12 +392,17 @@
                         .on('dblclick', function(d){
                             d.properties.layer = $(this);
                             d.properties.tipo_region = 'estado';
+                            d.properties.bounds = d3.geo.bounds(d);
                             cargaRegion(d.properties);
+
+                            $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
+                            $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.parent_id);
+                            layer_obj = {};
                         })
                         .each(function(d){
-                            console.log(d3.geo.bounds(d));
                             d.properties.layer = $(this);
                             d.properties.tipo_region = 'estado';
+                            d.properties.bounds = d3.geo.bounds(d);
                             completaSelect(d.properties);
                         });
 
@@ -448,11 +450,13 @@
                         .on('dblclick', function(d){
                             d.properties.layer = $(this);
                             d.properties.tipo_region = 'municipio';
+                            d.properties.bounds = d3.geo.bounds(d);
                             cargaRegion(d.properties);
                         })
                         .each(function(d){
                             d.properties.layer = $(this);
                             d.properties.tipo_region = 'municipio';
+                            d.properties.bounds = d3.geo.bounds(d);
                             completaSelect(d.properties);
                         });
 
@@ -477,26 +481,6 @@
             });
         };
 
-        // Cargo los municipios en la busqueda por lista
-        var municipiosPorEstado = function(estado){
-            $.ajax({
-                url: '/municipios-por-estado',
-                data: {region_id: estado.val()}
-            }).done(function(res) {
-                if (res.estatus)
-                {
-                    $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                    $.each(res.resultados, function(index, municipio){
-                        $('#region_municipio').append('<option value="' + municipio.region_id + '">' + municipio.nombre_region + '</option>');
-                    });
-
-                    $('#region_municipio').prop('disabled', false).attr('parent_id', res.parent_id);
-                }
-            }).fail(function() {
-                console.log('Falló al cargar los municipios por estado');
-            });
-        };
-
         // Carga una sola region en especifico, municipios o estado; reutilizando esta funcion
         // se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
         var cargaRegion = function(prop)
@@ -506,22 +490,21 @@
                 case 'estado':
                     tipo_region_se = 'estados';
                     region_id_se = prop.region_id;
-                    map.flyTo(prop.centroide, 7);
                     $('#svg-division-municipal').remove();
                     cargaDivisionMunicipal();
                     break;
                 case 'municipio':
                     tipo_region_se = 'municipios';
                     region_id_se = prop.region_id_se;
-                    map.flyTo(prop.centroide, 9);
                     break;
             }
 
+            map.flyToBounds([prop.bounds[0].reverse(), prop.bounds[1].reverse()]);
             cargaGrupos(prop);
             borraRegistrosAnteriores();
             $('#svg-division-estatal .selecciona-region').attr('class', 'region');
             $('#svg-division-municipal .selecciona-region').attr('class', 'region');
-            if (prop.layer != undefined) prop.layer.attr('class', 'selecciona-region');
+            prop.layer.attr('class', 'selecciona-region');
         };
     </script>
 
@@ -562,17 +545,16 @@
                 $('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
 
             } else {
-                municipiosPorEstado($(this));
-                //regionesAnp($(this));
+                $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
+                $('#region_municipio').prop('disabled', false);
+                        //.attr('parent_id', d.properties.parent_id);
 
                 var prop = {};
-                prop.centroide = eval($('option:selected', this).attr('centroide'));
+                prop.bounds = eval($('option:selected', this).attr('bounds'));
                 prop.layer = layer_obj[$(this).val()];
                 prop.region_id = $(this).val();
                 prop.tipo_region = 'estado';
-
                 cargaRegion(prop);
-                return false;
             }
         });
 
