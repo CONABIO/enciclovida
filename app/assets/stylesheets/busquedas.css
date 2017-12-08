@@ -113,7 +113,7 @@ div.result-img-container{
     background-image: linear-gradient(to bottom, #cfe7f5 0%, #d9f1ff 30%);
     font-size: 2.75em;
 }
-.mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontida-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon{
+.mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon{
     background-image: linear-gradient(to bottom, #f5e1cb 0%, #ffebd4 40%);
     font-size: 2em;
 }
@@ -131,7 +131,7 @@ div.result-img-container{
 .reptilia-ev-icon{color: #999744}
 .amphibia-ev-icon{color: #7a9944}
 .actinopterygii-ev-icon{color: #44997d}
-.petromyzontida-ev-icon{color: #449999}
+.petromyzontidae-ev-icon{color: #449999}
 .myxini-ev-icon{color: #437395}
 .chondrichthyes-ev-icon{color: #284559}
 .cnidaria-ev-icon{color: #56686f}
