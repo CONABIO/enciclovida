@@ -13,7 +13,7 @@ module BusquedasHelper
   def radioGruposIconicos
     radios = ''
     ir=%w(Animalia Plantae Fungi Prokaryotae Protoctista)
-    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontida Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
     ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
     reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
