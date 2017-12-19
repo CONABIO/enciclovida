@@ -219,7 +219,7 @@ $(document).ready(function(){
                     if (ejemplar.proyecto.length > 0 && ejemplar.urlproyecto.length > 0)
                         contenido += "<dt>Proyecto: </dt><dd><a href='" + ejemplar.urlproyecto + "' target='_blank'>" + ejemplar.proyecto + "</a></dd>";
 
-                    contenido += "<dt>Más información: </dt><dd><a href='http://" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
+                    contenido += "<dt>Más información: </dt><dd><a href='" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
                     // Para enviar un comentario acerca de un registro en particular
                     contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + ejemplar.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
@@ -268,7 +268,7 @@ $(document).ready(function(){
                     contenido += "<dt>Fecha: </dt><dd>" + observacion.observed_on + "</dd>";
                     contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (observacion.captive == true ? 'sí' : 'no') + "</dd>";
                     contenido += "<dt>Grado de calidad: </dt><dd>" + observacion.quality_grade + "</dd>";
-                    contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ observacion.uri +"' target='_blank'>ver la observación</a></dd>";
+                    contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ observacion.uri.replace("https", "http") +"' target='_blank'>ver la observación</a></dd>";
 
                     // Para enviar un comentario acerca de un registro en particular
                     contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + observacion.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
