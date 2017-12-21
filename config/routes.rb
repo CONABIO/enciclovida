@@ -1,5 +1,12 @@
 Buscador::Application.routes.draw do
 
+  resources :regiones_mapas do
+    collection do
+      get 'dame-tipo-region' => :dame_tipo_region
+      get 'dame-ancestry' => :dame_ancestry
+    end
+  end
+
   get 'usuarios/conabio'
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
@@ -12,8 +19,11 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  get 'explora_por_ubicacion' => 'ubicaciones#ubicacion'
-  get 'explora_por_region' => 'ubicaciones#region'
+  get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
+  get 'explora-por-region' => 'ubicaciones#por_region'
+  get 'especies-por-catalogo-id' => 'ubicaciones#especies_por_catalogo_id'
+  get 'especies-por-nombre-cientifico' => 'ubicaciones#especies_por_nombre_cientifico'
+  get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
 
   get "busquedas/basica"
   get "busquedas/avanzada"
@@ -94,6 +104,7 @@ Buscador::Application.routes.draw do
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
+      post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
     end
   end
 
@@ -186,5 +197,8 @@ Buscador::Application.routes.draw do
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
 
   get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
+
+  get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
+  post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
 end
