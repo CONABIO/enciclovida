@@ -34,6 +34,7 @@ class BDIService
   # Compruebo en los albunes para mandar una respuesta no vacia
   def tiene_fotos?(opts)
     nombre = opts[:nombre].limpiar(true)
+    opts[:campo] = 'q' if nombre == "Suaeda torreyana" #TODO, revisar si 'q' funciona con todos los nombres o solo con plantas, se realiza por publicación de romeritos en redes los días siguientes, PARCHE FEO!!!!
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
