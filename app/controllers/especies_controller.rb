@@ -5,28 +5,26 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib]
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib]
+                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
 
-  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
-  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados] do
-    permiso = tiene_permiso?(2)  #TODO Minimo administrador (ajustar bien el permiso necesario)
-    render :_error unless permiso
-  end
+  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
+
+  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] {tiene_permiso?('Administrador')}  # Minimo administrador
 
   before_action :servicios, only: [:show]
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
                           :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
-                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista]
+                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
@@ -626,6 +624,28 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def cambia_id_naturalista
+    puts'--------'+params[:new_url]
+    new_id = params[:new_url].gsub(/\D/, '').to_i
+    puts'--------'+new_id.to_s
+
+    if p = @especie.proveedor
+      puts 'existe proveedor'
+      p.naturalista_id = new_id
+    else
+      puts 'NO existe proveedor'
+      p = @especie.proveedor.new({naturalista_id: new_id})
+    end
+
+    if p.changed? && p.save
+      puts 'cambio, y salvo'
+      @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
+      redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
+    else
+      puts 'no cambio y no salvo'
+      redirect_to especie_path(@especie), notice: 'No se logro el cambio, el id era el mismo, hubo un error en la url proporcionada, contactar programadores con pantallazo.'
+    end
+  end
 
   private
 
