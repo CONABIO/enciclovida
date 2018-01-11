@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
     return if roles_usuario.map(&:depth).any?{|d| d < 1}
     rol = Rol.find_by_nombre_rol(nombre_rol)
     #Revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
-    render 'shared/sin_permiso' unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.subtree_ids.flatten).any?
+    render 'shared/sin_permiso' unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.path_ids).any?
   end
 
   def es_propietario?(obj)

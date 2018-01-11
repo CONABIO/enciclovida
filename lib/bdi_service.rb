@@ -33,25 +33,31 @@ class BDIService
 
   # Compruebo en los albunes para mandar una respuesta no vacia
   def tiene_fotos?(opts)
+    jres = arma_y_consulta_url(opts)
+    if !jres['data'].present?
+      opts[:campo] = 'q'
+      jres = arma_y_consulta_url(opts)
+      jres = {'data' => []} unless jres['data'].present?
+    end
+    jres
+  end
+
+  def arma_y_consulta_url(opts)
     nombre = opts[:nombre].limpiar(true)
-    opts[:campo] = 'q' if nombre == "Suaeda torreyana" #TODO, revisar si 'q' funciona con todos los nombres o solo con plantas, se realiza por publicación de romeritos en redes los días siguientes, PARCHE FEO!!!!
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
-
     req = Net::HTTP::Get.new(uri.to_s)
     req['Accept'] = 'application/vnd.fotoware.assetlist+json'
 
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
-      jres = JSON.parse(res.body)
-      jres = {'data' => []} unless jres['data'].present?
+      JSON.parse(res.body)
     rescue
-      jres = {'data' => []}
+      {'data' => []}
     end
 
-    jres
   end
 
   # Las fotos de acuerdo al album al que pertenece en BDI

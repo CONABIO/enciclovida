@@ -347,6 +347,10 @@ module EspeciesHelper
     response
   end
 
+  def ponBotonEditaIDNaturalista
+    button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe, id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
+  end
+
   def dameEspecieBibliografia(taxon)
     biblio=''
     taxon.especies_bibliografias.each do |bib|
