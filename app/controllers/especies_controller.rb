@@ -625,24 +625,21 @@ class EspeciesController < ApplicationController
   end
 
   def cambia_id_naturalista
-    puts'--------'+params[:new_url]
     new_id = params[:new_url].gsub(/\D/, '').to_i
-    puts'--------'+new_id.to_s
-
     if p = @especie.proveedor
-      puts 'existe proveedor'
+      # existe proveedor'
       p.naturalista_id = new_id
     else
-      puts 'NO existe proveedor'
+      # NO existe proveedor
       p = @especie.proveedor.new({naturalista_id: new_id})
     end
 
     if p.changed? && p.save
-      puts 'cambio, y salvo'
+      # 'cambio, y salvó
       @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
       redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
     else
-      puts 'no cambio y no salvo'
+      # no cambio y no salvó
       redirect_to especie_path(@especie), notice: 'No se logro el cambio, el id era el mismo, hubo un error en la url proporcionada, contactar programadores con pantallazo.'
     end
   end
