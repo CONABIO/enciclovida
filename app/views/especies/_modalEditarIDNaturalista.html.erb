@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modal_cambia_id_naturalista_label"><%= @con_naturalista ? "Esta es la URL que se tiene asociada actualmente: #{CONFIG.naturalista_url}/taxa/#{@con_naturalista}" : "El taxón actualmente no tiene ID de Naturalista asociado"%></h4>
+        <h4 class="modal-title" id="modal_cambia_id_naturalista_label"><%= @con_naturalista ? "Esta es la URL que se tiene asociada actualmente: #{link_to CONFIG.naturalista_url+"/taxa/"+@con_naturalista.to_s, CONFIG.naturalista_url+"/taxa/"+@con_naturalista.to_s}".html_safe : "El taxón actualmente no tiene ID de Naturalista asociado"%></h4>
       </div>
       <%= form_tag "/especies/#{@especie.id}/guarda-id-naturalista", :method => :post, :role => 'form' do %>
         <div class="modal-body">
