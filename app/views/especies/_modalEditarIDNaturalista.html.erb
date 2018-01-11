@@ -1,0 +1,19 @@
+<div class="modal fade" id="modal_cambia_id_naturalista" tabindex="-1" role="dialog" aria-labelledby="modal_cambia_id_naturalista_label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal_cambia_id_naturalista_label"><%= @con_naturalista ? "Esta es la URL que se tiene asociada actualmente: #{link_to CONFIG.naturalista_url+"/taxa/"+@con_naturalista.to_s, CONFIG.naturalista_url+"/taxa/"+@con_naturalista.to_s}".html_safe : "El taxón actualmente no tiene ID de Naturalista asociado"%></h4>
+      </div>
+      <%= form_tag "/especies/#{@especie.id}/guarda-id-naturalista", :method => :post, :role => 'form' do %>
+        <div class="modal-body">
+          <%= text_field_tag :new_url, nil, :maxlength => 255, :placeholder => 'Escribe la nueva URL de Naturalista', :autocomplete => :off, :class => 'form-control', :required => "required"  %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-title" data-dismiss="modal" title="Siempre no (No modificar)">Cerrar</button>
+          <%= button_tag "Guardar cambios", data: { disable_with: 'Procesando...' }, :class => "btn btn-success btn-title", :title=>'Guardar el nuevo id de Naturalista' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
