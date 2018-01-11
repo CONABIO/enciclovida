@@ -70,8 +70,6 @@ DROP TABLE IF EXISTS `peces`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `peces` (
   `especie_id` int(11) NOT NULL,
-  `tipo_arte` varchar(255) DEFAULT NULL,
-  `destribución` varchar(255) DEFAULT NULL,
   `valor_total_promedio` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`especie_id`),
   CONSTRAINT `FK_IDES4` FOREIGN KEY (`especie_id`) REFERENCES `especies` (`id`)
@@ -174,4 +172,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-10 21:37:37
+-- Dump completed on 2018-01-10 21:43:30
