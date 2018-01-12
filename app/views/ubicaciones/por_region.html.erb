@@ -546,8 +546,7 @@
 
             } else {
                 $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                $('#region_municipio').prop('disabled', false);
-                        //.attr('parent_id', d.properties.parent_id);
+                $('#region_municipio').prop('disabled', false).attr('parent_id', $(this).val());
 
                 var prop = {};
                 prop.bounds = eval($('option:selected', this).attr('bounds'));
@@ -561,6 +560,9 @@
         $('#regiones').on('change', '#region_municipio', function(){
             if ($(this).val() == '')
                 topoLayer.clearLayers();
+            else {
+
+            }
 
         });
 
