@@ -559,9 +559,17 @@
 
         $('#regiones').on('change', '#region_municipio', function(){
             if ($(this).val() == '')
-                topoLayer.clearLayers();
-            else {
+                console.log('esta vacio');
+                //$('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
 
+            else {
+                var prop = {};
+                prop.bounds = eval($('option:selected', this).attr('bounds'));
+                prop.layer = layer_obj[$(this).val()];
+                prop.region_id = $(this).val();
+                prop.parent_id = $(this).attr('parent_id');
+                prop.tipo_region = 'municipio';
+                cargaRegion(prop);
             }
 
         });
