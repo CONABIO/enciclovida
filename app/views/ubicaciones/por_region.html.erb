@@ -395,6 +395,7 @@
                             d.properties.bounds = d3.geo.bounds(d);
                             cargaRegion(d.properties);
 
+                            $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
                             $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
                             $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.parent_id);
                             layer_obj = {};
@@ -452,6 +453,8 @@
                             d.properties.tipo_region = 'municipio';
                             d.properties.bounds = d3.geo.bounds(d);
                             cargaRegion(d.properties);
+
+                            $('#region_municipio').val(d.properties.region_id);  // Selecciona el municipio correspondiente en el select
                         })
                         .each(function(d){
                             d.properties.layer = $(this);
