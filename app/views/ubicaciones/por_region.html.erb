@@ -625,7 +625,6 @@
     </style>
 <% end %>
 
-
 <div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
   <h4 class="text-left text-success" id="contenedor-nombre-region">Selecciona una región (doble clic)</h4>
   <div id="map"></div>
@@ -636,6 +635,9 @@
 <div id="grupos" class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
   <%= render partial: 'grupos' %>
 </div>
-<div id="especies" class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+<div id="grupos" class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+  <%= render partial: 'filtros_avanzada' %>
+</div>
+<div id="especies" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <%= render partial: 'especies' %>
 </div>
