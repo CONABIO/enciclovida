@@ -483,7 +483,7 @@ class Proveedor < ActiveRecord::Base
 
   def valida_ejemplares_snib
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 3)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}&fields=all", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}
