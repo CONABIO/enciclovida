@@ -1,9 +1,11 @@
-<legend><h5 class="text-primary">4) <strong>Aplica más filtros (opcional)</strong></h5></legend>
+<legend><h5 class="text-primary">4) <strong>Aplica más filtros (opcional) <i class="glyphicon glyphicon-resize-vertical" id="toggle-ba-icon"></i></strong></h5></legend>
 
-<%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
-    <div class="" id="panelFiltrosPt">
-      <div class="text-left" id="panelFiltros">
-        <%= render :partial => 'busquedas/busqueda_avanzada_vista_basica_default' %>
+<div id="toggle-ba-content" style="display: none;">
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+      <div class="" id="panelFiltrosPt">
+        <div class="text-left" id="panelFiltros">
+          <%= render :partial => 'busquedas/busqueda_avanzada_vista_basica_default' %>
+        </div>
       </div>
-    </div>
-<% end %>
+  <% end %>
+</div>
