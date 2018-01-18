@@ -26,11 +26,11 @@ CREATE TABLE `criterios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_criterio` varchar(255) NOT NULL,
   `valor` tinyint(2) NOT NULL DEFAULT '0',
-  `propiedad_id` int(11) NOT NULL,
+  `propiedad_id` int(11) NOT NULL COMMENT 'Corresponde al año de la Carta Nacional',
   PRIMARY KEY (`id`),
   KEY `fk_criterios_propiedades1_idx` (`propiedad_id`),
   CONSTRAINT `fk_criterios_propiedades1` FOREIGN KEY (`propiedad_id`) REFERENCES `propiedades` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contiene los criterios principales para el semaforo: nom, iucn, selectiva, nacional, CNP (por estado), veda (por tipo de veda y mes), pesqeria en sustentabilidad';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contiene los criterios principales para el semaforo: nom 059, iucn lista roja , selectiva, nacional o internacional, CNP (por estado), veda (por tipo de veda), pesqeria en sustentabilidad';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,4 +175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-10 21:52:39
+-- Dump completed on 2018-01-18 13:25:59
