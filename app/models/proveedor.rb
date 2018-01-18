@@ -76,7 +76,7 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas del SNIB
-    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/ejemplares-snib"
+    url = "#{CONFIG.site_url}especies/#{especie_id}/ejemplares-snib"
 
     resp = ejemplares_snib('.json')
     if resp[:estatus] == 'OK'
@@ -99,11 +99,11 @@ class Proveedor < ActiveRecord::Base
     resp = ejemplares_snib('.json', true)
     if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "#{url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
-    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/observaciones-naturalista"
+    url = "#{CONFIG.site_url}/especies/#{especie_id}/observaciones-naturalista"
 
     resp = observaciones_naturalista('.json')
     if resp[:estatus] == 'OK'
@@ -126,7 +126,7 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json', true)
     if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "#{url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
