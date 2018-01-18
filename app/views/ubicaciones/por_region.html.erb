@@ -577,6 +577,10 @@
 
         });
 
+        $( "#toggle-ba-icon" ).click(function() {
+            $( "#toggle-ba-content" ).slideToggle( "fast", function() {});
+        });
+
     </script>
 <% end %>
 
@@ -621,6 +625,10 @@
         .feather-ev-icon {
             color: #800000;
             font-size: 2em;
+        }
+        #toggle-ba-icon {
+            font-size: 1.4em;
+            cursor: pointer;
         }
     </style>
 <% end %>
