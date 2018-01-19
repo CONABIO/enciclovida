@@ -142,7 +142,6 @@ class Proveedor < ActiveRecord::Base
     return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
     obs = output.gsub('[{', '{').gsub('},', '}').gsub('}]', '}')
 
-    puts obs.inspect + '--------'
     begin
       resp.merge({observacion: JSON.parse(obs)})
     rescue
@@ -162,7 +161,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo) || !Rails.env.production?
+    if File.exist?(archivo)
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay observaciones'}
@@ -267,7 +266,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo) || !Rails.env.production?
+    if File.exist?(archivo)
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay ejemplares en el SNIB'}
