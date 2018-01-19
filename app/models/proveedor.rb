@@ -140,8 +140,9 @@ class Proveedor < ActiveRecord::Base
 
     output = `grep :#{observacion_id}, #{resp[:ruta]}`
     return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
-    obs = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
+    obs = output.gsub('[{', '{').gsub('},', '}').gsub('}]', '}')
 
+    puts obs.inspect + '--------'
     begin
       resp.merge({observacion: JSON.parse(obs)})
     rescue
