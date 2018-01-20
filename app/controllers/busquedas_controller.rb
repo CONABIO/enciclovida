@@ -284,16 +284,18 @@ class BusquedasController < ApplicationController
   end
 
   def avanzada
-    condiciones = []
-    joins = []
-    busqueda = 'Especie.datos_basicos'
+    #condiciones = []
+    #joins = []
+    #busqueda = 'Especie.datos_basicos'
+    _busqueda = Especie
 
     conID = params[:id]
 
     # Para hacer la condicion con el nombre_comun
     if conID.blank? && params[:nombre].present?
-      condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
-      joins << '.nombres_comunes_join'
+      #condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
+      #joins << '.nombres_comunes_join'
+      _busqueda = _busqueda.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comues_join
     end
 
     # Parte de la categoria taxonomica
@@ -301,72 +303,86 @@ class BusquedasController < ApplicationController
       taxon = Especie.find(conID)
 
       if taxon.is_root?
-        condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
+        #condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
+        _busqueda = _busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
       else
         ancestros = taxon.ancestry_ascendente_directo
-        condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
+        #condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
+        _busqueda = _busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
       end
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
+      #condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
+      _busqueda = _busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
     end
 
     # Parte del estatus
     if I18n.locale.to_s == 'es-cientifico'
       # Si escogio uno lo pone, si escogio los dos es como no poner esta condicion
-      if params[:estatus].present? && params[:estatus].length == 1
-        condiciones << ".where('estatus=#{params[:estatus].first}')"
+      if params[:estatus].present? && params[:estatus].length > 0
+        #condiciones << ".where('estatus=#{params[:estatus].first}')"
+        _busqueda = _busqueda.where(estatus: params[:estatus])
       end
     else  # En la busqueda general solo el valido
-      condiciones << ".where('estatus=2')"
+      #condiciones << ".where('estatus=2')"
+      _busqueda = _busqueda.where(estatus: 2)
     end
 
     # Parte del tipo de ditribucion
     if params[:dist].present?
       #######################  Quitar cuando se arregle en la base
       if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        condiciones << ".where('especies.invasora IS NOT NULL')"
+        #condiciones << ".where('especies.invasora IS NOT NULL')"
+        _busqueda = _busqueda.where('especies.invasora IS NOT NULL')
       elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
         params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        joins << '.tipo_distribucion_join'
-        condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
+        #joins << '.tipo_distribucion_join'
+        #condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
+        _busqueda = _busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
       else  # Selecciono cualquiera menos invasora
-        joins << '.tipo_distribucion_join'
-        condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+        #joins << '.tipo_distribucion_join'
+        #condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
+        _busqueda = _busqueda.where("tipos_distribuciones.descripcion" => params[:dist]).tipo_distribucion_join
       end
       #######################
     end
 
     # Parte del edo. de conservacion
-    if params[:edo_cons].present?
-      joins << '.catalogos_join'
-      condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+    if params[:edo_cons].present? || params[:prior].present?
+      _busqueda = _busqueda.catalogos_join
+      #joins << '.catalogos_join'
+      #condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
+      _busqueda = _busqueda.where("catalogos.descripcion" => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
+      _busqueda = _busqueda.where("catalogos.descripcion" => params[:prior]).catalogos_join if params[:prior].present?
     end
 
     # Para las especies prioritarias
-    if params[:prior].present?
-      joins << '.catalogos_join'
-      condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prior].join("','")}'\")"
-    end
+    #if params[:prior].present?
+      #joins << '.catalogos_join'
+      #condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prior].join("','")}'\")"
+    #  _busqueda = _busqueda.where("catalogos.descripcion" => params[:edo_prior]).catalogos_join
+    #end
 
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
     if params[:solo_categoria]
-      condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI\")"
+      #condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI\")"
+      _busqueda = _busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
     end
 
     # Quita las condiciones y los joins repetidos
-    condiciones_unicas = condiciones.uniq.join('')
-    joins_unicos = joins.uniq.join('')
-    busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
+    #condiciones_unicas = condiciones.uniq.join('')
+    #joins_unicos = joins.uniq.join('')
+    #busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
     # Para sacar los resultados por categoria
-    @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
+    @por_categoria = Busqueda.por_categoria(_busqueda, request.original_url) if params[:solo_categoria].blank?
 
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-    @totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+    #@totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+    @totales = _busqueda.datos_count[0].totales
 
     if @totales > 0
 
@@ -375,7 +391,8 @@ class BusquedasController < ApplicationController
 
         checklist
       else
-        query = eval(busqueda).distinct.to_sql
+        #query = eval(busqueda).distinct.to_sql
+        query = _busqueda.datos_basicos.distinct.to_sql
         consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
         @taxones = Especie.find_by_sql(consulta)
 

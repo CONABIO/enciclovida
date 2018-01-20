@@ -20,14 +20,16 @@ class Busqueda
 
   def self.por_categoria(busqueda, original_url)
     # Las condiciones y el join son los mismos pero cambia el select
-    sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
-    sql << '.categoria_taxonomica_join.adicional_join'
+    #sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
+    #sql << '.categoria_taxonomica_join.adicional_join'
 
-    busq = busqueda.gsub('datos_basicos', sql)
-    busq << ".group('nombre_categoria_taxonomica')"
-    busq << ".order('nombre_categoria_taxonomica')"
+    #busq = busqueda.gsub('datos_basicos', sql)
+    #busq << ".group('nombre_categoria_taxonomica')"
+    #busq << ".order('nombre_categoria_taxonomica')"
 
-    query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
+    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').categoria_taxonomica_join.adicional_join
+    busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
+    query_limpio = Bases.distinct_limpio(busqueda.to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
     Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
                                                cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
