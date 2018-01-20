@@ -353,8 +353,7 @@ class BusquedasController < ApplicationController
     if @totales > 0
 
       if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        @taxones = Busqueda.por_arbol(busqueda)
-
+        @taxones = _busqueda.datos_arbol_con_filtros
         checklist
       else
         query = _busqueda.datos_basicos.distinct.to_sql
