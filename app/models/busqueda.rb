@@ -18,6 +18,32 @@ class Busqueda
       ['superior a', '<']
   ]
 
+  # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+  def self.filtros_default(busqueda, params = {})
+    # Parte del tipo de ditribucion
+    if params[:dist].present?
+      #######################  Quitar cuando se arregle en la base
+      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
+        busqueda = busqueda.where('especies.invasora IS NOT NULL')
+      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
+        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
+        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
+      else  # Selecciono cualquiera menos invasora
+        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
+      end
+      #######################
+    end
+
+    # Parte del edo. de conservacion y el nivel de prioritaria
+    if params[:edo_cons].present? || params[:prior].present?
+      busqueda = busqueda.catalogos_join
+      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
+      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
+    end
+
+    busqueda
+  end
+
   def self.por_categoria(busqueda, original_url)
     busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').adicional_join
     busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
