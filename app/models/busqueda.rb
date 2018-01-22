@@ -19,7 +19,7 @@ class Busqueda
   ]
 
   def self.por_categoria(busqueda, original_url)
-    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').categoria_taxonomica_join.adicional_join
+    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').adicional_join
     busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
     query_limpio = Bases.distinct_limpio(busqueda.to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'

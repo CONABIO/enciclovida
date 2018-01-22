@@ -284,13 +284,13 @@ class BusquedasController < ApplicationController
   end
 
   def avanzada
-    _busqueda = Especie
+    busqueda = Especie
 
     conID = params[:id]
 
     # Para hacer la condicion con el nombre_comun
     if conID.blank? && params[:nombre].present?
-      _busqueda = _busqueda.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
+      busqueda = busqueda.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
     end
 
     # Parte de la categoria taxonomica
@@ -298,65 +298,65 @@ class BusquedasController < ApplicationController
       taxon = Especie.find(conID)
 
       if taxon.is_root?
-        _busqueda = _busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
       else
         ancestros = taxon.ancestry_ascendente_directo
-        _busqueda = _busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
       end
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      _busqueda = _busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
+      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'").categoria_taxonomica_join
     end
 
     # Parte del estatus
     if I18n.locale.to_s == 'es-cientifico'
-      _busqueda = _busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
+      busqueda = busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
     else  # En la busqueda general solo el valido
-      _busqueda = _busqueda.where(estatus: 2)
+      busqueda = busqueda.where(estatus: 2)
     end
 
     # Parte del tipo de ditribucion
     if params[:dist].present?
       #######################  Quitar cuando se arregle en la base
       if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        _busqueda = _busqueda.where('especies.invasora IS NOT NULL')
+        busqueda = busqueda.where('especies.invasora IS NOT NULL')
       elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
         params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        _busqueda = _busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
+        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
       else  # Selecciono cualquiera menos invasora
-        _busqueda = _busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
+        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
       end
       #######################
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
     if params[:edo_cons].present? || params[:prior].present?
-      _busqueda = _busqueda.catalogos_join
-      _busqueda = _busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
-      _busqueda = _busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
+      busqueda = busqueda.catalogos_join
+      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
+      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
     end
 
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
     if params[:solo_categoria]
-      _busqueda = _busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
+      busqueda = busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
     end
 
     # Para sacar los resultados por categoria
-    @por_categoria = Busqueda.por_categoria(_busqueda, request.original_url) if params[:solo_categoria].blank?
+    @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
 
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-    @totales = _busqueda.datos_count[0].totales
+    @totales = busqueda.datos_count[0].totales
 
     if @totales > 0
 
       if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        @taxones = _busqueda.datos_arbol_con_filtros
+        @taxones = busqueda.datos_arbol_con_filtros
         checklist
       else
-        query = _busqueda.datos_basicos.distinct.to_sql
+        query = busqueda.datos_basicos.distinct.to_sql
         consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
         @taxones = Especie.find_by_sql(consulta)
 
@@ -468,7 +468,7 @@ class BusquedasController < ApplicationController
         if basica
           taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
         else  # Para la avanzada
-          query = eval(busqueda).distinct.to_sql
+          query = busqueda.distinct.to_sql
           consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
           taxones = Especie.find_by_sql(consulta)
         end
