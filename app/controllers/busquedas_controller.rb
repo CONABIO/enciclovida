@@ -315,26 +315,8 @@ class BusquedasController < ApplicationController
       busqueda = busqueda.where(estatus: 2)
     end
 
-    # Parte del tipo de ditribucion
-    if params[:dist].present?
-      #######################  Quitar cuando se arregle en la base
-      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        busqueda = busqueda.where('especies.invasora IS NOT NULL')
-      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
-        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
-      else  # Selecciono cualquiera menos invasora
-        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
-      end
-      #######################
-    end
-
-    # Parte del edo. de conservacion y el nivel de prioritaria
-    if params[:edo_cons].present? || params[:prior].present?
-      busqueda = busqueda.catalogos_join
-      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
-      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
-    end
+    # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+    busqueda = Busqueda.filtros_default(busqueda, params)
 
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
