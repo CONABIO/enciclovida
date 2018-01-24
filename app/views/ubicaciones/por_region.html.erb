@@ -290,7 +290,7 @@
                 $.ajax({
                     url: url
                 }).done(function(resp) {
-                    especies = resp.slice(0,30).map(a => a.especievalidabusqueda + '-' + a.nregistros);
+                    especies = resp.map(a => a.especievalidabusqueda + '-' + a.nregistros);
                     grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
 
                     $('#contenedor_grupos').empty();
@@ -315,8 +315,9 @@
             $.ajax({
                 //url: '/especies-por-catalogo-id',
                 url: '/especies-por-nombre-cientifico',
+                method: 'POST',
                 //data: {catalogo_id: especies["resultados"]}
-                data: {especies: especies}
+                data: $('#b_avanzada').serialize() + '&' + $.param({especies: especies})
             }).done(function(resp) {
                 if (resp.estatus)
                 {
@@ -579,6 +580,11 @@
 
         $( "#toggle-ba-icon" ).click(function() {
             $( "#toggle-ba-content" ).slideToggle( "fast", function() {});
+        });
+
+        $('#b_avanzada').on('change', ".checkbox input", function()
+        {
+            cargaEspecies();
         });
 
     </script>

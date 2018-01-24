@@ -30,20 +30,22 @@ class UbicacionesController < ApplicationController
       render json: {estatus: true, resultados: resultados}
 
     else
-      render json: {estatus: false, msg: 'No hubo especies que '}
+      render json: {estatus: false, msg: 'No hubo especies'}
     end  # End catalogo_id present
   end
 
   def especies_por_nombre_cientifico
     especies_hash = {}
+    resultados = []
 
     params[:especies].each do |e|
       cad = e.split('-')
       especies_hash[cad.first] = cad.last.to_i  
     end
 
-    taxones = Especie.select('especies.id, nombre_cientifico, catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)     
-    resultados = []
+    taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
+    taxones = Busqueda.filtros_default(taxones, params)
+
     taxones.each do |taxon|
       resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
     end
@@ -67,6 +69,12 @@ class UbicacionesController < ApplicationController
     end
 
     render json: resp
+  end
+
+  def busquedas_avanzada
+    busqueda = Especie
+    busqueda = Busqueda.filtros_default(busqueda, params)
+    puts busqueda.to_sql
   end
 
 
