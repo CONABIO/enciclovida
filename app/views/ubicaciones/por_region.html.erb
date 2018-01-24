@@ -296,7 +296,7 @@
                     $('#contenedor_grupos').empty();
                     $('#contenedor_especies').empty();
                     $.each(grupos, function(index, prop){
-                        $('#contenedor_grupos').append('<label><span title="' + prop.nombre + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.nombre+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge">' + prop.conteo + '</sub>');
+                        $('#contenedor_grupos').append('<label><span title="' + prop.nombre + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.nombre+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.nombre +'">' + prop.conteo + '</sub>');
                     });
                 }).fail(function() {
                     console.log('Falló el servicio de conteo del SNIB');
@@ -321,6 +321,10 @@
             }).done(function(resp) {
                 if (resp.estatus)
                 {
+                    // Cambiar esto para cada grupo
+                    $('#grupos').find("[grupo_id_badge='Aves']").text(resp.resultados.length);
+                    console.log(resp.resultados.length);
+                    console.log($('#grupos').find("[grupo_id_badge='Aves']").text());
                     $('#contenedor_especies').empty();
 
                     $.each(resp.resultados, function(index, taxon){

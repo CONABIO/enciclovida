@@ -44,7 +44,7 @@ class UbicacionesController < ApplicationController
     end
 
     taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
-    taxones = Busqueda.filtros_default(taxones, params)
+    taxones = Busqueda.filtros_default(taxones, params).distinct
 
     taxones.each do |taxon|
       resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
