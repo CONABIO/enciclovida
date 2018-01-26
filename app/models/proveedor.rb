@@ -76,7 +76,7 @@ class Proveedor < ActiveRecord::Base
     end
 
     # Para las descargas del SNIB
-    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/ejemplares-snib"
+    url = "#{CONFIG.site_url}especies/#{especie_id}/ejemplares-snib"
 
     resp = ejemplares_snib('.json')
     if resp[:estatus] == 'OK'
@@ -99,11 +99,11 @@ class Proveedor < ActiveRecord::Base
     resp = ejemplares_snib('.json', true)
     if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
-    url = "#{CONFIG.enciclovida_url}/especies/#{especie_id}/observaciones-naturalista"
+    url = "#{CONFIG.site_url}especies/#{especie_id}/observaciones-naturalista"
 
     resp = observaciones_naturalista('.json')
     if resp[:estatus] == 'OK'
@@ -126,7 +126,7 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json', true)
     if resp[:estatus] == 'OK'
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "#{CONFIG.enciclovida_url}/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
@@ -140,7 +140,7 @@ class Proveedor < ActiveRecord::Base
 
     output = `grep :#{observacion_id}, #{resp[:ruta]}`
     return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
-    obs = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
+    obs = output.gsub('[{', '{').gsub('},', '}').gsub('}]', '}')
 
     begin
       resp.merge({observacion: JSON.parse(obs)})
@@ -161,7 +161,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo) || !Rails.env.production?
+    if File.exist?(archivo)
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay observaciones'}
@@ -266,7 +266,7 @@ class Proveedor < ActiveRecord::Base
 
     archivo = "#{nombre}#{formato}"
 
-    if File.exist?(archivo) || !Rails.env.production?
+    if File.exist?(archivo)
       {estatus: 'OK', ruta: archivo}
     else
       {estatus: 'error', msg: 'No hay ejemplares en el SNIB'}
@@ -483,7 +483,7 @@ class Proveedor < ActiveRecord::Base
 
   def valida_ejemplares_snib
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}", timeout: 3)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}&fields=all", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: 'error', msg: e}
