@@ -62,6 +62,11 @@ class EspeciesController < ApplicationController
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
         end
 
+        #para saber si es Ave TODO (parche feito)
+        if proveedor = @especie.proveedor
+          @con_ebird = proveedor.cornell_id if proveedor.cornell_id.present?
+        end
+
         # Para los comentarios
         @cuantos = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
       end
@@ -380,6 +385,23 @@ class EspeciesController < ApplicationController
 
     else  # End estatus OK
       render :_error and return
+    end
+  end
+
+  #servicio Macaulas Library (eBird)
+  def fotos_ebird
+    @especie = Especie.find(params['id'])
+    if proveedor = @especie.proveedor
+      taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
+      mc = MacaulayService.new
+      @hash = mc.dameFotos(taxonCode)
+
+      respond_to do |format|
+        format.html do
+
+        end
+      end
+
     end
   end
 
