@@ -328,35 +328,6 @@
   </div>
 
 </div>
+
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Descarga resultados</h4>
-      </div>
-      <div class="modal-body">
-        <p>
-          Para resultados mayores a <strong>200</strong> es necesario proporcionar un correo electrónico, al cual
-          se te enviará un archivo excel (.xlsx) con la busqueda correspondiente.
-
-        <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de resultados</small></p>
-        </p>
-        <div class="form-group has-feedback">
-          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo', style: ('display:none;' if @totales <= 200) %>
-          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales <= 200) %>
-          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-          <span id="inputSuccess2Status" class="sr-only">(success)</span>
-
-          <span id="estatus_descargar_taxa"></span>
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-success" id="boton_enviar_descarga" <%= 'disabled="disabled"' if @totales > 200 %>">Enviar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render :partial => 'shared/descarga_taxa' %>
