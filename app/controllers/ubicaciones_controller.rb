@@ -40,7 +40,7 @@ class UbicacionesController < ApplicationController
 
     params[:especies].each do |e|
       cad = e.split('-')
-      especies_hash[cad.first] = cad.last.to_i  
+      especies_hash[cad.first] = cad.last.to_i
     end
 
     taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
@@ -49,9 +49,9 @@ class UbicacionesController < ApplicationController
     taxones.each do |taxon|
       resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
     end
- 
+
     render json: {estatus: true, resultados: resultados}
-  end	
+  end
 
   # Devuelve los municipios por el estado seleccionado
   def municipios_por_estado
@@ -75,6 +75,47 @@ class UbicacionesController < ApplicationController
     busqueda = Especie
     busqueda = Busqueda.filtros_default(busqueda, params)
     puts busqueda.to_sql
+  end
+
+  # Descarga el listado de especies por region
+  def descarga_taxa
+    lista = Lista.new
+    columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
+    lista.columnas = columnas.join(',')
+    lista.formato = 'xlsx'
+    lista.cadena_especies = params[:especies].join(',')
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+
+    # Si es una descarga de la busqueda basica y viene del fuzzy match
+    if params[:especies].length <= 200
+      @atributos = columnas
+      @taxones = lista.datos_descarga(Especie.where(id: params[:especies]))
+
+      # el nombre de la lista es cuando la bajo ya que no metio un correo
+      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+      render(xlsx: 'resultados') if lista.save
+
+    elsif params[:especies].length > 200
+      # Para saber si el correo es correcto y poder enviar la descarga
+      if  Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+        # el nombre de la lista es cuando la solicito y el correo
+        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+
+        if Rails.env.production?
+          lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
+        else  # Para develpment o test
+          lista.to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
+        end
+
+        render json: {estatus: true}
+
+      else  # Por si no puso un correo valido
+        render json: {estatus: false, msg: 'El correo no es válido.'}
+      end
+
+    else  # No entro a ningun condicional, es un error
+      render json: {estatus: false, msg: 'No hubo '}
+    end  # end totales > 0
   end
 
 

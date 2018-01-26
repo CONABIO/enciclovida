@@ -321,10 +321,11 @@
             }).done(function(resp) {
                 if (resp.estatus)
                 {
+                    // Para asignar los resultados con o sin filtros
+                    especies_con_filtro = resp.resultados.map(a => a.id);
+                    console.log(especies_con_filtro);
                     // Cambiar esto para cada grupo
                     $('#grupos').find("[grupo_id_badge='Aves']").text(resp.resultados.length);
-                    console.log(resp.resultados.length);
-                    console.log($('#grupos').find("[grupo_id_badge='Aves']").text());
                     $('#contenedor_especies').empty();
 
                     $.each(resp.resultados, function(index, taxon){
@@ -522,6 +523,7 @@
     <script>
         map = null;
         especies = null;
+        especies_con_filtro = null;
         taxon = {};
         layer_obj = {};
         region_id_se = null;
@@ -589,6 +591,62 @@
         $('#b_avanzada').on('change', ".checkbox input", function()
         {
             cargaEspecies();
+        });
+
+        // JS para la descraga de taxa
+        // Para enviar la descarga o que se envie correo
+        $(document).on('keyup', '#correo', function(){
+            if( !isValidEmailAddress($(this).val()) )
+            {
+                $(this).parent().addClass("has-error");
+                $(this).parent().removeClass("has-success");
+
+                $(this).siblings("span:first").addClass("glyphicon-remove");
+                $(this).siblings("span:first").removeClass("glyphicon-ok");
+                $('#boton_enviar_descarga').attr('disabled', 'disabled')
+            } else {
+                $(this).parent().removeClass("has-error");
+                $(this).parent().addClass("has-success");
+                $(this).siblings("span:first").addClass("glyphicon-ok");
+                $(this).siblings("span:first").removeClass("glyphicon-remove");
+                $('#boton_enviar_descarga').removeAttr('disabled')
+            }
+        });
+
+        // Para validar una ultima vez cuando paso la validacion del boton
+        $(document).on('click', '#boton_enviar_descarga', function(){
+            var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
+
+            // No datos mayores a 200
+            if (datos_descarga.cuantos > 200)
+            {
+                var correo = $('#correo').val();
+
+                if(isValidEmailAddress(correo))
+                {
+                    $.ajax({
+                        url: url_xlsx + "&correo=" + correo,
+                        type: 'GET',
+                        dataType: "json"
+                    }).done(function(resp) {
+                        if (resp.estatus == 1)
+                        {
+                            $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
+                        } else {
+                            $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                        }
+
+                    }).fail(function(){
+                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    });
+
+                } else {
+                    return false;
+                }
+            } else {
+                window.location.replace(url_xlsx);
+                $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
+            }
         });
 
     </script>

@@ -83,6 +83,9 @@ class Lista < ActiveRecord::Base
       consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
       r = Especie.find_by_sql(consulta)
       datos_descarga(r)
+    elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
+      r = Especie.where(id: cadena_especies.split(','))
+      datos_descarga(r)
     end
 
     taxones.each do |taxon|
