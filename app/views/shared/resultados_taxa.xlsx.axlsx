@@ -1,0 +1,20 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: 'Taxa de EncicloVida') do |sheet|
+
+    # Para la cabecera
+    sheet.add_row @atributos.map{|a| I18n.t("listas_columnas.generales.#{a}", default: I18n.t("listas_columnas.categorias.#{a}", default: a))}
+
+    @taxones.each do |t|
+        data = []
+
+        @atributos.each do |a|
+            begin
+              data << t.try(a)
+            rescue  # Por si existe algun error en la evaluacion de algun campo
+              data << '¡Hubo un error!'
+            end
+        end
+
+        sheet.add_row data
+    end
+end
