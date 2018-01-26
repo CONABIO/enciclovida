@@ -63,11 +63,11 @@
   <div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
     <h3>
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
-      <%= link_to('Edita el nombre común principal', edita_nombre_comun_principal_path(@especie.id), :class => 'btn btn-xs btn-link') if usuario_signed_in? %>
-      <span id="edita_nom_com_principal" class="dialog" style="display: none"></span>
       <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
+	    <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
+	<%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
   <% if (@species_or_lower) %>
     <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
@@ -79,43 +79,49 @@
   </div>
 </div>
 <hr/>
+<div class="btn-group pull-right" style="z-index: 1;">
+  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Más info...  <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" style="z-index: 1001;">
+    <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
+    <%#Todo if ESPANTOSO, arreglar cuando ya se arregle el PDF (comentado con sintaxis ERB para q no salga en el html) %>
+    <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
+      <li>
+        <%= button_tag("<b>Descargar &middot; <i class ='file-pdf-ev-icon'></i><sub>PDF</sub></b>".html_safe, :class => 'btn btn-link', :type => :button, :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+      </li>
+    <% else %>
+      <li>
+        <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
+      </li>
+    <% end %>
+    <li role="separator" class="divider"></li>
+    <li class="dropdown-header">Consultar en: <sup><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></sup></li>
+    <li>
+      <%= link_to('BHL', "http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'noLoad', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+    </li>
+    <li>
+      <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+    </li>
+    <li>
+      <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+    </li>
+    <li role="separator" class="divider"></li>
+    <% if @con_naturalista %>
+      <li>
+        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
+      </li>
+    <% end %>
+  </ul>
+</div>
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a></li>
     <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
-    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Fichas</small></strong></a></li>
-    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Información <%= t(:del_taxon) %></small></strong></a></li>
+    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
+    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
     <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
     <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
-
-
-    <div class="btn-group pull-right">
-      <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Más recursos...  <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" style="z-index: 1001;">
-        <li>
-          <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
-          <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-            <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, :type => :button, :class => 'noLoad btn btn-link', :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
-          <% else %>
-            <%= button_tag("<i class ='file-pdf-ev-icon''></i>Descargar PDF".html_safe, type: :button, class: 'noLoad btn btn-link', id: :boton_pdf, target: '_blank') %>
-          <% end %>
-        </li>
-
-        <li>
-          <%= button_tag('Consulta en BHL', type: :button, class: 'noLoad btn btn-link',
-                         onClick: "window.open('http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}',
-                     '_blank', 'status=no', 'menubar=no')", title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)') %>
-        </li>
-
-        <% if @con_naturalista %>
-          <li>
-            <%= link_to("Añade una obs. en: #{imagotipo_naturalista_nombre}".html_safe, "#{CONFIG.naturalista_url}/observations/new?taxon_id=#{@con_naturalista}", class: 'noLoad btn btn-link', target: '_blank') %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
   </ul>
 
 

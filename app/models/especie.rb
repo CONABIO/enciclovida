@@ -22,7 +22,7 @@ class Especie < ActiveRecord::Base
                 :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
-             :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
+                :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
 
   has_one :proveedor
   has_one :adicional
@@ -211,6 +211,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
   def nom_cites_iucn_ambiente_prioritaria(ws=false)
     response = []
+
+    if ws
+      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
+        if iucn = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico)
+          iucn_ws = I18n.t("cat_riesgo.iucn_ws.#{iucn.parameterize}", :default => iucn).parameterize
+
+          if iucn_ws.blank?
+            nil
+          else
+            iucn_ws
+          end
+        else
+          nil
+        end
+      end
+    end
+
+    fetch.present? ? response << fetch : ws = false
 
     especies_catalogos.each do |e|
       cat = e.catalogo
@@ -434,11 +452,11 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     bdi = BDIService.new
 
     if species_or_lower? || categoria_taxonomica.nombre_categoria_taxonomica == 'género'
-      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 528}))
+      bdi.dameFotos(opts.merge({taxon: self, campo: 528}))
     elsif is_root?
-      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 15}))
+      bdi.dameFotos(opts.merge({taxon: self, campo: 15}))
     else
-      bdi.dameFotos(opts.merge({nombre: x_nombre_cientifico, campo: 20}))
+      bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
     end
 
   end
