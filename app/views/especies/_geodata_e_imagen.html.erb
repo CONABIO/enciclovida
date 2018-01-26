@@ -48,6 +48,7 @@
             <li><%= link_to("#{icono_globo} KML".html_safe, @geo[:snib_kml], :target => :_blank) if @geo[:snib_kml].present? %></li>
             <li><%= link_to("#{icono_globo} KMZ".html_safe, @geo[:snib_kmz], :target => :_blank) if @geo[:snib_kmz].present? %></li>
             <li><%= link_to("#{icono_globo} JSON".html_safe, @geo[:snib_json], :target => :_blank) if @geo[:snib_json].present? %></li>
+            <li><%= link_to('Diccionario de datos', 'http://www.snib.mx/d/CONABIO-SNIB-DiccionarioDatos2015-11.pdf', :target => :_blank) %></li>
         <% end %>
 
         <% if @geo[:cuales].include?('geoserver') %>

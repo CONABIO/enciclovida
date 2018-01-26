@@ -292,17 +292,11 @@ module EspeciesHelper
     response = []
     caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria(true),taxon.tipo_distribucion].flatten
 
-    if iucn = IUCNService.new.dameRiesgo(:nombre => taxon.nombre_cientifico)
-      iucn_ws = t("cat_riesgo.iucn_ws.#{iucn.parameterize}", :default => iucn).parameterize
-    end
-
-
-    caracteristicas.push(iucn_ws) if iucn_ws.present?
-
     caracteristicas.each{ |x|
       n = t("cat_riesgo.#{x.parameterize}.nombre", :default => (t("tipo_distribucion.#{x.parameterize}.nombre", :default => (t("ambiente.#{x.parameterize}.nombre", :default => (t("prioritaria.#{x.parameterize}.nombre", :default => '')))))))
       response << "<span class='btn-title' title='#{n}'><i class = '#{x}-ev-icon'></i></span>"
     }
+
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
     response.join.html_safe
   end
