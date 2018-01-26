@@ -104,6 +104,7 @@ Buscador::Application.routes.draw do
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
+      post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
     end
   end
 

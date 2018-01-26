@@ -66,6 +66,8 @@ base: &base
     fichas: 1.week
     estadisticas:
       cuantas_especies_inferiores: 1.week
+    github:
+      issues: 1.hour
 
   # Ruta del programa que genera los PDF's
   wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf

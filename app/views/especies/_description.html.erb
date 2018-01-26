@@ -1,0 +1,38 @@
+<% css_class = "clear taxon_description" %>
+<% if @describer %>
+  <% css_class += " #{@describer.name.split('::').last.underscore}_description" %>
+  <% css_class += " wikipedia_description" if @describer.ancestors.include?(TaxonDescribers::Wikipedia) %>
+<% end %>
+<div class="<%= css_class %>" id="taxon_description">
+  <div class="row">
+    <div class="col-xs-2">
+      <h4>Descripción de:</h4>
+    </div>
+    <div class="col-xs-3">
+      <% if @describer %>
+        <%= select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control", :onchange => 'getDescription("/especies/'+@especie.id.to_s+'/describe?from="+$(this).val())'; %>
+        <% if page_url = @describer.page_url(@especie) %>
+          <div class="text-center col-xs-12">
+            <%= link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => 'externallink ui', :target => :_blank %>
+          </div>
+        <% else %>
+          <div class="text-center col-xs-12"></div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% if @description.blank? %>
+    <p class="nocontent meta">
+      <% if @describer == TaxonDescribers::Wikipedia || @describer.blank? %>
+        <%= t :no_matching_article_from_x_to_y, :x => 'CONABIO', :y => @especie.nombre_cientifico %>
+      <% elsif @describer %>
+        <%= t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico %>
+      <% end %>
+    </p>
+  <% else %>
+    <% if @describer.describer_name.downcase.include?('wikipedia') %>
+      <div id="section_SpokenWikipedia" class="infobox sisterproject plainlinks bg-warning"><strong>NOTA:</strong> La clasificación taxonómica de Wikpedia puede diferir de la que se considera en CONABIO</div>
+    <% end %>
+    <%= raw @description %>
+  <% end  %>
+</div>

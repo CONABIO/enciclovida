@@ -39,9 +39,6 @@
   <%= dameStatus(@especie).html_safe %>
 </div>
 
-<% dameCaracteristicaDistribucionAmbienteJS(@especie).each do |c| %>
-        <i class = '<%= c %>-ev-icon'></i>
-<% end %>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
   <p><span>¿Tienes alguna duda, sugerencia o corrección acerca de este taxón? <%= link_to('Envíanosla', new_especie_comentario_path(@especie.id) ) %> y con gusto la atenderemos.</span></p>
@@ -51,9 +48,9 @@
   <div id="photos">
     <%-
         taxon ||= @especie
-        photos ||= @photos || taxon.photos.limit(24)
+        photos ||= @photos
     -%>
-    <% unless photos.size == 0 %>
+    <% unless photos.nil? %>
         <% if taxon.species_or_lower? %>
             <% Rails.logger.info "#{photos[0].class}-#{photos.to_json}" %>
             <% if [Photo, Photo.descendent_classes].flatten.include?(photos[0].class) %>
@@ -99,7 +96,7 @@
         </div>
     <% end %>
 
-    <% if photos.size > 0 && taxon.species_or_lower? %>
+    <% if !photos.nil? && taxon.species_or_lower? %>
         <div style="margin-top: 10px">
           <% unless photos[1..-1].size == 0 %>
               <div class="clear photos_wrapper">
@@ -141,14 +138,14 @@
   <% end %>
   <div class="<%= css_class %>" id="taxon_description">
     <h3>
-      Descripción de
+      Descripción de <%= params[:from] %>
       <% if @describer %>
-          <%= @describer.name.split('::').last.upcase %>
+          <%# @describer.name.split('::').last.upcase %>
           <% if page_url = @describer.page_url(@especie) %>
-              <%= link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui" %>
+              <%# link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => "externallink ui" %>
           <% end %>
       <% else %>
-          <a href="http://en.wikipedia.org/wiki/<%= @especie.nombre_cientifico %>">Wikipedia</a>
+          <%#TODO revisar el describer y las fotos%>
       <% end %>
     </h3>
     <% if @description.blank? %>
