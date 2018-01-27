@@ -23,7 +23,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :fotos_ebird, :videos_ebird, :audios_ebird, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
@@ -388,20 +388,46 @@ class EspeciesController < ApplicationController
     end
   end
 
-  #servicio Macaulas Library (eBird)
+  #servicio Macaulay Library (eBird)
   def fotos_ebird
     @especie = Especie.find(params['id'])
     if proveedor = @especie.proveedor
       taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
       mc = MacaulayService.new
-      @hash = mc.dameFotos(taxonCode)
+      @array = mc.dameFotos(taxonCode)
 
       respond_to do |format|
         format.html do
-
         end
       end
+    end
+  end
 
+  def videos_ebird
+    @especie = Especie.find(params['id'])
+    if proveedor = @especie.proveedor
+      taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
+      mc = MacaulayService.new
+      @array = mc.dameVideos(taxonCode)
+
+      respond_to do |format|
+        format.html do
+        end
+      end
+    end
+  end
+
+  def audios_ebird
+    @especie = Especie.find(params['id'])
+    if proveedor = @especie.proveedor
+      taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
+      mc = MacaulayService.new
+      @array = mc.dameAudios(taxonCode)
+
+      respond_to do |format|
+        format.html do
+        end
+      end
     end
   end
 
