@@ -24,6 +24,8 @@ Buscador::Application.routes.draw do
   get 'especies-por-catalogo-id' => 'ubicaciones#especies_por_catalogo_id'
   post 'especies-por-nombre-cientifico' => 'ubicaciones#especies_por_nombre_cientifico'
   get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
+  post 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
+  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
 
   get "busquedas/basica"
   get "busquedas/avanzada"
