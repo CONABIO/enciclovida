@@ -86,16 +86,7 @@ class UbicacionesController < ApplicationController
     lista.cadena_especies = params[:especies].join(',')
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
 
-    # Si es una descarga de la busqueda basica y viene del fuzzy match
-    if params[:especies].length <= 200
-      @atributos = columnas
-      @taxones = lista.datos_descarga(Especie.where(id: params[:especies]))
-
-      # el nombre de la lista es cuando la bajo ya que no metio un correo
-      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-      render(xlsx: 'resultados') if lista.save
-
-    elsif params[:especies].length > 200
+    if params[:especies].length > 0
       # Para saber si el correo es correcto y poder enviar la descarga
       if  Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
         # el nombre de la lista es cuando la solicito y el correo
@@ -114,8 +105,8 @@ class UbicacionesController < ApplicationController
       end
 
     else  # No entro a ningun condicional, es un error
-      render json: {estatus: false, msg: 'No hubo '}
-    end  # end totales > 0
+      render json: {estatus: false, msg: 'No hubo especies para descarga'}
+    end  # end especies > 0
   end
 
 
