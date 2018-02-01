@@ -1,13 +1,4 @@
-/**
- * Created with JetBrains RubyMine.
- * User: calonso
- * Date: 1/27/14
- * Time: 4:11 PM
- * To change this template use File | Settings | File Templates.
- */
-
 $(document).ready(function(){
-
     $.fn.loadingShades = function(e, options){
         options = options || {};
         if (e && e == 'close') {
@@ -88,36 +79,13 @@ $(document).ready(function(){
             });
         return false;
     };
-});
 
-var fondo = 1;
-cambiaFondo = function(){
-    fondo = ((fondo < 16) ? fondo+1 : 1);//ya q puede darse el caso de q aumente mientras esta la transición
-    url = "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")";
-    $('#img-fondo').css('background-image',url);
-};
+    //Pequeño hack para mejorar el title de los iconos, (agregar solo clase .btn-title
+    $('.btn-title').attr('tooltip-title', function(){return $(this).attr('title');}).removeAttr('title');
 
+    // Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR TODO
+    // Tambien para deshacer lo pestañoso de as pestañas, IDEM 210416
 
-/*$(document).ready(function (){
-    var bgrotater = setInterval(function() {
-        if (fondo==16) fondo=0;
-        $('#img-fondo').animate({opacity: 0}, 1500, function(){
-            $("#img-fondo").css("background-image", "url(\"/fondos/"+((fondo < 10) ? "0"+fondo : fondo)+".jpg\")");
-        }).animate({opacity: 1}, 1500);
-        fondo++;
-    }, 60000);
-});*/
-
-$(document).ready(function(){
-    $('.btn-title').attr('tooltip-title', function(){return $(this).attr('title');});
-    $('.btn-title').removeAttr('title');
-});
-//Variable para ofuscar correo
-var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
-
-//Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
-//Tambien para deshacer lo pestañoso de as pestañas, IDEM 210416
-$(document).ready(function(){
     if (window.innerWidth < 992){
         $('#b_cientifico .input-group, #b_comun .input-group').addClass('input-group-lg');
         $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
@@ -134,4 +102,9 @@ $(document).ready(function(){
             $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
         }
     });
+
 });
+
+//Variable para ofuscar correo
+var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
+
