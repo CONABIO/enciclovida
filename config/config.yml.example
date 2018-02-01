@@ -25,6 +25,9 @@ base: &base
   geoserver_url: http://localhost:9001/mapcache/wms
   geoserver_descarga_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?format=kmz&height=1024&width=1024&request=GetMap&service=wms
 
+  # Servicio de busquedas por region
+  ssig_api: http://www.enciclovida.mx:9002
+
   # URL BDI y URL basico para imagen
   bdi_imagenes: http://bdi.conabio.gob.mx
   bdi_fotoweb: http://bdi2.conabio.gob.mx/fotoweb/archives/5000-Banco%20de%20Imágenes/
