@@ -100,6 +100,15 @@ $(document).ready(function(){
     });
 
     $('#pestañas').tabs(); // Inicia los tabs
+    $('#modal_reproduce').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var url = button.data('url');
+        var title = button.data('title');
+        var video = $(document.createElement("video")).append($(document.createElement("source")).attr('src', url));
+        $('#modal_reproduce_label').text(title);
+        $('#modal_reproduce_body').append(video);
+    });
+    $('#modal_reproduce').on('hide.bs.modal', function(e){$('#modal_reproduce_body').html('');});// eliminar contenido del body en la reproduccion de los videos
 
     $('#pestañas > .nav a').click(function(){
         $('#pestañas > .nav li').removeClass("active");
