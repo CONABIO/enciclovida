@@ -109,10 +109,8 @@ cambiaFondo = function(){
 });*/
 
 $(document).ready(function(){
-    $('.btn-title').each(function(){
-        $(this).attr('tooltip-title', $(this).attr('title'));
-        $(this).removeAttr('title');
-    });
+    $('.btn-title').attr('tooltip-title', function(){return $(this).attr('title');});
+    $('.btn-title').removeAttr('title');
 });
 //Variable para ofuscar correo
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
