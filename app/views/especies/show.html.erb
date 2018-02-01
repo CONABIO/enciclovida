@@ -170,12 +170,35 @@
     </div>
     <div id="audios-ebird" class="tab-pane panel-body">
       <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+        <i class="spin3-ev-icon animate-spin" style="font-style: oblique;nt-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
       </p>
     </div>
   <% end %>
 
-     <div id="arbol" class="tab-pane panel-body"></div>
+  <div id="arbol" class="tab-pane panel-body"></div>
   <div id="comentario" class="tab-pane panel-body"></div>
+
+  <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modal_reproduce_label"></h4>
+        </div>
+
+        <div class="modal-body" id="modal_reproduce_body">
+          <p class="text-center">
+            <i class="spin3-ev-icon animate-spin" style="font-style: oblique;nt-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+          <h4>Cargando... Por favor, espera</h4>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
