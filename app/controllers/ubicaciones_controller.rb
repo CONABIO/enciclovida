@@ -13,17 +13,26 @@ class UbicacionesController < ApplicationController
   # Regresa el conteo por grupo del servicio de Abraham, no lo hago directo porque lo guardo en cache ya que
   # algunas peticiones tardan 20 segundos
   def conteo_por_grupo
-    begin
-      rest = RestClient.get "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id]}?apiKey=enciclovida"
-      conteo = JSON.parse(rest)
 
-      if conteo.kind_of?(Hash) && conteo['error'].present?
-        resp = {estatus: false, msg: conteo['error']}
+    if params[:tipo_region].present?
+      if params[:tipo_region] == 'estado' && params[:region_id].present?
+        key = "conteo_grupo_#{params[:region_id]}"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id]}?apiKey=enciclovida"
+      elsif params[:tipo_region] == 'municipio' && params[:region_id].present? && params[:parent_id].present?
+        key = "conteo_grupo_#{params[:parent_id]}_#{params[:region_id]}"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:parent_id]}/#{params[:region_id]}?apiKey=enciclovida"
       else
-        resp = {estatus: true, resultados: conteo}
+        resp = {estatus: false, msg: "El parámetro 'tipo_region' no es el correcto."}
       end
-    rescue => e
-      resp =  {estatus: false, msg: e.message}
+
+      if key.present?
+        resp = Rails.cache.fetch(key, expires_in: CONFIG.cache.conteo_grupo) do
+          respuesta_conteo_por_grupo(url)
+        end
+      end
+
+    else
+      resp = {estatus: false, msg: "El parámetro 'tipo_region' esta vacío."}
     end
 
     render json: resp
@@ -130,6 +139,21 @@ class UbicacionesController < ApplicationController
 
 
   private
+
+  def respuesta_conteo_por_grupo(url)
+    begin
+      rest = RestClient.get(url)
+      conteo = JSON.parse(rest)
+
+      if conteo.kind_of?(Hash) && conteo['error'].present?
+        {estatus: false, msg: conteo['error']}
+      else
+        {estatus: true, resultados: conteo}
+      end
+    rescue => e
+      {estatus: false, msg: e.message}
+    end
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_ubicacion
