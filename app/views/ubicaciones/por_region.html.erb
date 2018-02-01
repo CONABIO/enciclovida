@@ -95,7 +95,6 @@
                     layer.bindPopup(ejemplarSnib(prop.properties.d));
                     layer.on("click", function () {
                         //layer.bindPopup(ejemplarSnib(prop.properties.d));
-                        console.log(prop);
                     });
                 }
             });
@@ -365,7 +364,7 @@
         var completaSelect = function(prop)
         {
             layer_obj[prop.region_id] = prop.layer;
-            $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]">' + prop.nombre_region + '</option>');
+            $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]" region_id_se="' + prop.region_id_se + '">' + prop.nombre_region + '</option>');
         };
 
         // Hace la projecccion de los puntos en D3 cuando se hace un zoom
@@ -401,13 +400,14 @@
 
                             $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
                             $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                            $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.parent_id);
+                            $('#region_municipio').prop('disabled', false).attr('parent_id', CORRESP[d.properties.region_id]);
                             layer_obj = {};
                         })
                         .each(function(d){
                             d.properties.layer = $(this);
                             d.properties.tipo_region = 'estado';
                             d.properties.bounds = d3.geo.bounds(d);
+                            d.properties.region_id_se = d.properties.region_id;
                             completaSelect(d.properties);
                         });
 
@@ -568,6 +568,7 @@
                 prop.layer = layer_obj[$(this).val()];
                 prop.region_id = $(this).val();
                 prop.tipo_region = 'estado';
+                prop.region_id_se = $('option:selected', this).attr('region_id_se');
                 cargaRegion(prop);
             }
         });
@@ -582,8 +583,9 @@
                 prop.bounds = eval($('option:selected', this).attr('bounds'));
                 prop.layer = layer_obj[$(this).val()];
                 prop.region_id = $(this).val();
-                prop.parent_id = $(this).attr('parent_id');
+                prop.parent_id = CORRESP[$(this).attr('parent_id')];
                 prop.tipo_region = 'municipio';
+                prop.region_id_se = $('option:selected', this).attr('region_id_se');
                 cargaRegion(prop);
             }
 
