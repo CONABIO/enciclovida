@@ -10,6 +10,25 @@ class UbicacionesController < ApplicationController
   def por_region
   end
 
+  # Regresa el conteo por grupo del servicio de Abraham, no lo hago directo porque lo guardo en cache ya que
+  # algunas peticiones tardan 20 segundos
+  def conteo_por_grupo
+    begin
+      rest = RestClient.get "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id]}?apiKey=enciclovida"
+      conteo = JSON.parse(rest)
+
+      if conteo.kind_of?(Hash) && conteo['error'].present?
+        resp = {estatus: false, msg: conteo['error']}
+      else
+        resp = {estatus: true, resultados: conteo}
+      end
+    rescue => e
+      resp =  {estatus: false, msg: e.message}
+    end
+
+    render json: resp
+  end
+
   def especies_por_catalogo_id
     if params[:catalogo_id].present?
       resultados = []

@@ -26,6 +26,7 @@ Buscador::Application.routes.draw do
   get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
   post 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
   get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
+  get 'explora-por-region/conteo-por-grupo' => 'ubicaciones#conteo_por_grupo'
 
   get "busquedas/basica"
   get "busquedas/avanzada"
