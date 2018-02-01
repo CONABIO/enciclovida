@@ -400,7 +400,7 @@
 
                             $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
                             $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                            $('#region_municipio').prop('disabled', false).attr('parent_id', CORRESP[d.properties.region_id]);
+                            $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.region_id);
                             layer_obj = {};
                         })
                         .each(function(d){
@@ -568,7 +568,7 @@
                 prop.layer = layer_obj[$(this).val()];
                 prop.region_id = $(this).val();
                 prop.tipo_region = 'estado';
-                prop.region_id_se = $('option:selected', this).attr('region_id_se');
+                prop.region_id_se = $(this).val();
                 cargaRegion(prop);
             }
         });
