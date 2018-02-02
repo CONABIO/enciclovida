@@ -17,7 +17,7 @@ class UbicacionesController < ApplicationController
     if params[:tipo_region].present?
       if params[:tipo_region] == 'estado' && params[:region_id].present?
         key = "conteo_grupo_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id]}?apiKey=enciclovida"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id].rjust(2, '0')}?apiKey=enciclovida"
       elsif params[:tipo_region] == 'municipio' && params[:region_id].present? && params[:parent_id].present?
         key = "conteo_grupo_#{params[:parent_id]}_#{params[:region_id]}"
         url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:parent_id]}/#{params[:region_id]}?apiKey=enciclovida"
@@ -26,7 +26,7 @@ class UbicacionesController < ApplicationController
       end
 
       if key.present?
-        resp = Rails.cache.fetch(key, expires_in: CONFIG.cache.conteo_grupo) do
+        resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.conteo_grupo)) do
           respuesta_conteo_por_grupo(url)
         end
       end
@@ -148,11 +148,43 @@ class UbicacionesController < ApplicationController
       if conteo.kind_of?(Hash) && conteo['error'].present?
         {estatus: false, msg: conteo['error']}
       else
+        conteo = icono_grupo(conteo)
         {estatus: true, resultados: conteo}
       end
     rescue => e
       {estatus: false, msg: e.message}
     end
+  end
+
+  # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
+  def icono_grupo(grupos)
+    grupos.each do |g|
+
+      case g['grupo']
+        when 'Anfibios'
+          g.merge!({'icono' => 'amphibia-ev-icon'})
+        when 'Aves'
+          g.merge!({'icono' => 'aves-ev-icon'})
+        when 'Bacterias'
+          g.merge!({'icono' => 'prokaryotae-ev-icon'})
+        when 'Hongos'
+          g.merge!({'icono' => 'fungi-ev-icon'})
+        when 'Invertebrados'
+          g.merge!({'icono' => 'annelida-ev-icon'})
+        when 'Mamíferos'
+          g.merge!({'icono' => 'mammalia-ev-icon'})
+        when 'Peces'
+          g.merge!({'icono' => 'actinopterygii-ev-icon'})
+        when 'Plantas'
+          g.merge!({'icono' => 'plantae-ev-icon'})
+        when 'Protoctistas'
+          g.merge!({'icono' => 'protoctista-ev-icon'})
+        when 'Reptiles'
+          g.merge!({'icono' => 'reptilia-ev-icon'})
+      end
+    end
+
+    grupos
   end
 
   # Use callbacks to share common setup or constraints between actions.
