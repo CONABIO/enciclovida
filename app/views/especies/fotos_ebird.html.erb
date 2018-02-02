@@ -1,8 +1,7 @@
-<% @array.each_with_index do |x, index|  %>
-	<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-	  <img class="img-responsive" src="<%= x['mediaUrl'].html_safe %>" alt="<%= x['commonName'].html_safe %>"/>
-	</div>
-  <%= "<div class='clearfix visible-sm hidden-md hidden-lg'></div>".html_safe if((index+1) % 2) == 0 %>
-  <%= "<div class='clearfix hidden-sm visible-md hidden-lg'></div>".html_safe if((index+1) % 3) == 0 %>
-  <%= "<div class='clearfix hidden-sm hidden-md visible-lg'></div>".html_safe if((index+1) % 4) == 0 %>
+<% @array.each_with_index do |item, index|  %>
+  <div class="result-img-container">
+    <a href="<%= item['specimenUrl'] %>" target="_blank">
+      <img class="img-responsive" src="<%= item['mediaUrl'].html_safe %>" alt="<%= item['commonName']%>"/>
+    </a>
+  </div>
 <% end %>

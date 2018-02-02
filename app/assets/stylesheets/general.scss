@@ -269,30 +269,30 @@ ul.social-buttons li a:active {
 }
 
 /*TODO tengo entendido esto debería estar en especies.scss*/
-#fotos-bdi{
+.media-tabs{
     text-align: center;
 }
-#fotos-bdi div.result-img-container{
+.media-tabs div.result-img-container{
   display: inline-block;
   overflow: hidden;
   max-width: 100%;
   margin: 0px;
   position: relative;
 }
-#fotos-bdi div.result-img-container img{
+.media-tabs div.result-img-container img{
   max-height: 300px;
   margin: -25px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
   vertical-align: middle;
   font-size: 3.75em;
 }
-#fotos-bdi div.result-img-container img:hover{
+.media-tabs div.result-img-container img:hover{
   transform:scale(.8);
   -ms-transform:scale(.8); /* IE 9 */
   -moz-transform:scale(.8); /* Firefox */
   -webkit-transform:scale(.8); /* Safari and Chrome */
   -o-transform:scale(.8); /* Opera */
 }
-#fotos-bdi div.result-img-container a{
+.media-tabs div.result-img-container a{
   cursor: pointer;
 }

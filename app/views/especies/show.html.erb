@@ -148,7 +148,7 @@
     </p>
   </div>
 
-  <div id="fotos-bdi" class="tab-pane panel-body">
+  <div id="fotos-bdi" class="tab-pane panel-body media-tabs">
     <p class="text-center">
       <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
@@ -156,46 +156,47 @@
   </div>
 
   <% if @con_ebird %>
-	  <div id="fotos-ebird" class="tab-pane panel-body">
+	  <div id="fotos-ebird" class="tab-pane panel-body media-tabs">
 	    <p class="text-center">
 	      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
 	    <h4>Cargando... Por favor, espera</h4>
 	    </p>
 	  </div>
-    <div id="videos-ebird" class="tab-pane panel-body">
+    <div id="videos-ebird" class="tab-pane panel-body media-tabs">
       <p class="text-center">
         <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
       </p>
     </div>
-    <div id="audios-ebird" class="tab-pane panel-body">
+    <div id="audios-ebird" class="tab-pane panel-body media-tabs">
       <p class="text-center">
         <i class="spin3-ev-icon animate-spin" style="font-style: oblique;nt-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
       </p>
     </div>
+
+    <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
+          </div>
+
+          <div class="modal-body text-center" id="modal_reproduce_body">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   <% end %>
 
   <div id="arbol" class="tab-pane panel-body"></div>
   <div id="comentario" class="tab-pane panel-body"></div>
-
-  <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="modal_reproduce_label"></h4>
-        </div>
-
-        <div class="modal-body" id="modal_reproduce_body">
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
 
 </div>
