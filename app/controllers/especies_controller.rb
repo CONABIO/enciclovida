@@ -407,11 +407,8 @@ class EspeciesController < ApplicationController
     @especie = Especie.find(params['id'])
     if proveedor = @especie.proveedor
       taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
-      puts '--------------------'+taxonCode.inspect
       mc = MacaulayService.new
-
       @array = mc.dameVideos(taxonCode)
-
       respond_to do |format|
         format.html do
         end
@@ -425,7 +422,6 @@ class EspeciesController < ApplicationController
       taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
       mc = MacaulayService.new
       @array = mc.dameAudios(taxonCode)
-
       respond_to do |format|
         format.html do
         end
