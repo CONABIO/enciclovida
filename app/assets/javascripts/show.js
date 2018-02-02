@@ -101,15 +101,12 @@ $(document).ready(function(){
 
     $('#pestañas').tabs(); // Inicia los tabs
     $('#modal_reproduce').on('show.bs.modal', function (event) {
-//        $('#modal_reproduce_body').html("<p class='text-center'><i class='spin3-ev-icon animate-spin' style='font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);'></i><b>Cargando... Por favor, espera</b></p>");
-
         var button = $(event.relatedTarget); // Button that triggered the modal
-        var url = button.data('url');
-        var title = button.data('title');
-        var video = $(document.createElement("video")).append($(document.createElement("source")).attr('src', url));
+        var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
+        var source = $(document.createElement("source")).attr('src', button.data('url'));
 
-        $('#modal_reproduce_label').text(title);
-        $('#modal_reproduce_body').append(video);
+        $('#modal_reproduce_label > a').attr('href', button.data('title'));
+        $('#modal_reproduce_body').append(video.append(source));
     });
 
     $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body').empty()});// eliminar contenido del body en la reproduccion de los videos
