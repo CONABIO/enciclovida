@@ -276,31 +276,27 @@
 
         var cargaGrupos = function(properties)
         {
-            // Aqui pregunto con el servio de conteo de Abraham, y recibo una respuesta similar, espero
-            var grupos = [{"nombre": "Algas", "conteo": 0, "icono": "protoctista-ev-icon"}, {"nombre": "Anfibios", "conteo": 0, "icono": "amphibia-ev-icon"},
-                {"nombre": "Hongos", "conteo": 0, "icono": "fungi-ev-icon"},
-                {"nombre": "Insectos", "conteo": 0, "icono": "insecta-ev-icon"}, {"nombre": "Mamíferos", "conteo": 0, "icono": "mammalia-ev-icon"},
-                {"nombre": "Musgos", "conteo": 0, "icono": "bryophyta-ev-icon"}, {"nombre": "Peces", "conteo": 0, "icono": "actinopterygii-ev-icon"},
-                {"nombre": "Plantas", "conteo": 0, "icono": "plantae-ev-icon"}, {"nombre": "Reptiles", "conteo": 0, "icono": "reptilia-ev-icon"}];
+            $.ajax({
+                url: '/explora-por-region/conteo-por-grupo',
+                data: {tipo_region: properties.tipo_region, region_id: properties.region_id, parent_id: properties.parent_id}
+            }).done(function(resp) {
+                //especies = resp.map(a => a.especievalidabusqueda + '-' + a.nregistros);
 
-            var url = dameUrlCargaGrupos(properties);
-            if (url != undefined)
-            {
-                $.ajax({
-                    url: url
-                }).done(function(resp) {
-                    especies = resp.map(a => a.especievalidabusqueda + '-' + a.nregistros);
-                    grupos.push({"nombre": "Aves", "conteo": resp.length, "icono": "aves-ev-icon"});
-
+                if (resp.estatus)
+                {
                     $('#contenedor_grupos').empty();
                     $('#contenedor_especies').empty();
-                    $.each(grupos, function(index, prop){
-                        $('#contenedor_grupos').append('<label><span title="' + prop.nombre + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.nombre+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.nombre +'">' + prop.conteo + '</sub>');
+
+                    $.each(resp.resultados, function(index, prop){
+                        console.log(prop.grupo);
+                        $('#contenedor_grupos').append('<label><span title="' + prop.grupo + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
                     });
-                }).fail(function() {
+                } else
                     console.log('Falló el servicio de conteo del SNIB');
-                });
-            }
+
+            }).fail(function() {
+                console.log('Falló el servicio de conteo del SNIB');
+            });
         };
 
         var cargaEspecies = function()
