@@ -1,10 +1,5 @@
 <% @array.each_with_index do |item, index|  %>
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-    <%= button_tag("<img class='img-responsive' src='#{item['previewUrl']}' />".html_safe, "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "tooltip-title" => item['commonName'], "data-title"=> item['commonName'], "data-url" => item['mediaUrl'], :type => 'button') %>
-
-  </div>
-
-  <%= "<div class='clearfix visible-sm hidden-md hidden-lg'></div>".html_safe if((index+1) % 2) == 0 %>
-  <%= "<div class='clearfix hidden-sm visible-md hidden-lg'></div>".html_safe if((index+1) % 3) == 0 %>
-  <%= "<div class='clearfix hidden-sm hidden-md visible-lg'></div>".html_safe if((index+1) % 4) == 0 %>
+  <div class="result-img-container">
+    <%= link_to("<img class='img-responsive img-thumbnail' src='#{item['previewUrl']}' /><span class='glyphicon glyphicon-facetime-video' aria-hidden='true'></span>".html_safe, item['specimenUrl'], "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "tooltip-title" => item['commonName'], "data-title"=> item['specimenUrl'], "data-url" => item['mediaUrl'], :target => 'blank') %>
+	  </div>
 <% end %>
