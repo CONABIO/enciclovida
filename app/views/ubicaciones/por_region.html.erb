@@ -288,7 +288,6 @@
                     $('#contenedor_especies').empty();
 
                     $.each(resp.resultados, function(index, prop){
-                        console.log(prop.grupo);
                         $('#contenedor_grupos').append('<label><span title="' + prop.grupo + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
                     });
                 } else
@@ -301,24 +300,16 @@
 
         var cargaEspecies = function()
         {
-            // Aqui pregunto por la segunda parte del servicio de Abraham, esperando una respuesta similar
-            /*var especies = {};
-             especies["resultados"] = ["1077REPTI", "12780ANFIB", "12109MAMIF", "938REPTI", "19405GIMNO", "923REPTI",
-             "1211REPTI", "491REPTI", "11881MAMIF", "963REPTI", "40198ANGIO", "14269AVES", "571REPTI", "13478AVES", "3659LEPID"];*/
-
             // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
             $.ajax({
-                //url: '/especies-por-catalogo-id',
                 url: '/especies-por-nombre-cientifico',
-                method: 'POST',
-                //data: {catalogo_id: especies["resultados"]}
-                data: $('#b_avanzada').serialize() + '&' + $.param({especies: especies})
+                method: 'GET',
+                data: $('#b_avanzada').serialize() + '&' + $.param({grupo_id: grupo_id_seleccionado})
             }).done(function(resp) {
                 if (resp.estatus)  // Para asignar los resultados con o sin filtros
                 {
-                    especies_con_filtro = resp.resultados.map(a => a.id);
-                    // Cambiar esto para cada grupo
-                    $('#grupos').find("[grupo_id_badge='Aves']").text(resp.resultados.length);
+                    //especies_con_filtro = resp.resultados.map(a => a.id);
+                    $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.resultados.length);
                     $('#contenedor_especies').empty();
 
                     $.each(resp.resultados, function(index, taxon){
@@ -527,15 +518,17 @@
         especies_con_filtro = null;
         taxon = {};
         layer_obj = {};
+        grupo_id_seleccionado = null;
         region_id_se = null;
         tipo_region_se = null;
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);  // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         cargaMapa('map');
-        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2, which_layer: 'geoportal'});
         cargaDivisionEstatal();
 
         $('#contenedor_grupos').on('click', '.grupo_id', function(){
             cargaEspecies();
+            grupo_id_seleccionado = $(this).attr('grupo_id');
             return false;
         });
 
