@@ -300,17 +300,25 @@
 
         var cargaEspecies = function()
         {
+            if ($('#region_municipio').val() == '')
+            {
+                var region_id = $('option:selected', $('#region_estado')).val();
+                var parent_id = '';
+            } else {
+                var region_id = $('option:selected', $('#region_municipio')).val();
+                var parent_id = CORRESP[$('#region_municipio').attr('parent_id')];
+            }
+
             // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
             $.ajax({
                 url: '/explora-por-region/especies-por-grupo',
                 method: 'GET',
                 data: $('#b_avanzada').serialize() + '&' + $.param({grupo_id: grupo_id_seleccionado,
-                region_id: $('option:selected', $('#region_estado')).val(), parent_id: $('option:selected', $('#region_municipio')).val()})
+                region_id: region_id, parent_id: parent_id})
             }).done(function(resp) {
                 if (resp.estatus)  // Para asignar los resultados con o sin filtros
                 {
                     //especies_con_filtro = resp.resultados.map(a => a.id);
-                    console.log(grupo_id_seleccionado);
                     $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.resultados.length);
                     $('#contenedor_especies').empty();
 
@@ -327,7 +335,7 @@
                         '</div>');
                     });
                 } else
-                    console.log('Falló la carga de especies de enciclovida');
+                    console.log(resp.msg);
 
             }).fail(function() {
                 console.log('Falló la carga de especies de enciclovida');
