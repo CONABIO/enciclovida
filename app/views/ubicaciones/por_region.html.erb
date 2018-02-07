@@ -325,23 +325,28 @@
                 data: $('#b_avanzada').serialize() + '&' + $.param({grupo_id: grupo_id_seleccionado,
                 region_id: region_id, parent_id: parent_id})
             }).done(function(resp) {
+                var cuantos = 0
                 if (resp.estatus)  // Para asignar los resultados con o sin filtros
                 {
                     //especies_con_filtro = resp.resultados.map(a => a.id);
-                    $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.resultados.length);
                     $('#contenedor_especies').empty();
 
                     $.each(resp.resultados, function(index, taxon){
-                        var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id});
-                        if (url == undefined) return;
+                        if (taxon.catalogo_id != undefined) {  // Por si algunos de los taxones no coincidieron con catalogos
+                            cuantos++;
+                            var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id});
+                            if (url == undefined) return;
 
-                        $('#contenedor_especies').append('<div class="result-img-container">' +
-                        '<a href class="especie_id" snib_url="' + url + '" especie_id="'+taxon.id+'"><img src="' + taxon.foto+'"/></a>' +
-                        '<div class="result-nombre-container">' +
-                        '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
-                        '<h5><a href class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></h5>' +
-                        '</div>' +
-                        '</div>');
+                            $('#contenedor_especies').append('<div class="result-img-container">' +
+                            '<a href class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '"><img src="' + taxon.foto + '"/></a>' +
+                            '<div class="result-nombre-container">' +
+                            '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
+                            '<h5><a href class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></h5>' +
+                            '</div>' +
+                            '</div>');
+                        }
+
+                        $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(cuantos);
                     });
                 } else
                     console.log(resp.msg);

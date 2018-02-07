@@ -65,14 +65,18 @@ class UbicacionesController < ApplicationController
         especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
       end
 
+      especies_hash_ordenado = especies_hash.sort_by {|key, value| value}.reverse.to_h
+
       taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
       taxones = Busqueda.filtros_default(taxones, params).distinct
 
       taxones.each do |taxon|
-        resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
+        #resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
+        especies_hash_ordenado[taxon.nombre_cientifico] = {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
       end
 
-      resp = {estatus: true, resultados: resultados}
+      resp = {estatus: true, resultados: especies_hash_ordenado.values}
+      #resp = {estatus: true, resultados: resultados}
     end
 
     render json: resp
