@@ -42,7 +42,7 @@ class UbicacionesController < ApplicationController
     if params[:grupo_id].present? && params[:region_id].present?
       if params[:parent_id].present?
         key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:region_id]}/#{params[:parent_id]}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:parent_id]}/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
       else
         key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
         url = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
