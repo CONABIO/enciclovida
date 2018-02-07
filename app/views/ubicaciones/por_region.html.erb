@@ -276,9 +276,18 @@
 
         var cargaGrupos = function(properties)
         {
+            if (properties.tipo_region == 'estado')
+            {
+                var region_id = CORRESP[properties.region_id];
+                var parent_id = '';
+            } else {
+                var region_id = properties.region_id;
+                var parent_id = properties.parent_id;
+            }
+
             $.ajax({
                 url: '/explora-por-region/conteo-por-grupo',
-                data: {tipo_region: properties.tipo_region, region_id: properties.region_id, parent_id: properties.parent_id}
+                data: {tipo_region: properties.tipo_region, region_id: region_id, parent_id: parent_id}
             }).done(function(resp) {
                 //especies = resp.map(a => a.especievalidabusqueda + '-' + a.nregistros);
 
@@ -302,7 +311,7 @@
         {
             if ($('#region_municipio').val() == '')
             {
-                var region_id = $('option:selected', $('#region_estado')).val();
+                var region_id = CORRESP[$('option:selected', $('#region_estado')).val()];
                 var parent_id = '';
             } else {
                 var region_id = $('option:selected', $('#region_municipio')).val();
