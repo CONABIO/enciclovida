@@ -67,7 +67,9 @@ base: &base
     ficha_naturalista: 1.day
     ejemplares_snib: 1.day
     fichas: 1.week
-    conteo_grupo: 1.week
+    busquedas_region:
+      conteo_grupo: 1.minute
+      especies_grupo: 1.minute
     estadisticas:
       cuantas_especies_inferiores: 1.week
     github:

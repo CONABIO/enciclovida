@@ -26,7 +26,7 @@ class UbicacionesController < ApplicationController
       end
 
       if key.present?
-        resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.conteo_grupo)) do
+        resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
           respuesta_conteo_por_grupo(url)
         end
       end
@@ -38,47 +38,44 @@ class UbicacionesController < ApplicationController
     render json: resp
   end
 
-  def especies_por_catalogo_id
-    if params[:catalogo_id].present?
-      resultados = []
+  def especies_por_grupo
+    if params[:grupo_id].present? && params[:region_id].present?
+      if params[:parent_id].present?
+        key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:region_id]}/#{params[:parent_id]}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
+      else
+        key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
+      end
 
-      Especie.where(catalogo_id: params[:catalogo_id]).each do |taxon|
-        next unless p = taxon.proveedor
-        geodatos = p.geodatos
-        next unless geodatos.any?
-
-        resultados << {nombre_cientifico: taxon.nombre_cientifico, snib_mapa_json: geodatos[:snib_mapa_json]}
-
-        if a = taxon.adicional
-          resultados.last.merge!(nombre_comun: a.nombre_comun_principal, foto: a.foto_principal)
-        end
-
-      end  # each taxon
-
-      render json: {estatus: true, resultados: resultados}
+      resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
+        respuesta_especies_por_grupo(url)
+      end
 
     else
-      render json: {estatus: false, msg: 'No hubo especies'}
-    end  # End catalogo_id present
-  end
-
-  def especies_por_nombre_cientifico
-    especies_hash = {}
-    resultados = []
-
-    params[:especies].each do |e|
-      cad = e.split('-')
-      especies_hash[cad.first] = cad.last.to_i
+      resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo_id' y 'region_id' son obligatorios"}
     end
 
-    taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
-    taxones = Busqueda.filtros_default(taxones, params).distinct
+    # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
+    if resp[:estatus]
+      especies_hash = {}
+      resultados = []
 
-    taxones.each do |taxon|
-      resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
+      resp[:resultados].each do |r|
+        especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
+      end
+
+      taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
+      taxones = Busqueda.filtros_default(taxones, params).distinct
+
+      taxones.each do |taxon|
+        resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
+      end
+
+      resp = {estatus: true, resultados: resultados}
     end
 
-    render json: {estatus: true, resultados: resultados}
+    render json: resp
   end
 
   # Devuelve los municipios por el estado seleccionado
@@ -139,6 +136,18 @@ class UbicacionesController < ApplicationController
 
 
   private
+
+  def respuesta_especies_por_grupo(url)
+    begin
+      rest = RestClient.get(url)
+      especies = JSON.parse(rest)
+
+      {estatus: true, resultados: especies}
+
+    rescue => e
+      {estatus: false, msg: e.message}
+    end
+  end
 
   def respuesta_conteo_por_grupo(url)
     begin
