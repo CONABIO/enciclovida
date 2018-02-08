@@ -94,30 +94,39 @@ class UbicacionesController < ApplicationController
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
     lista.formato = 'xlsx'
-    lista.cadena_especies = params[:especies].join(',')
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
 
-    if params[:especies].length > 0
-      # Para saber si el correo es correcto y poder enviar la descarga
-      if  Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
-        # el nombre de la lista es cuando la solicito y el correo
-        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+    # Para saber si el correo es correcto y poder enviar la descarga
+    if  Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+      # el nombre de la lista es cuando la solicito y el correo
+      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+
+      br = BusquedaRegion.new
+      br.params = params
+      resp = br.cache_especies_por_grupo
+
+      # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
+      if resp[:estatus]
+        br.nombres_cientificos = resp[:resultados].map{|r| r['especievalidabusqueda']}
+        taxones = br.cache_especies_por_grupo_con_filtros
+        lista.cadena_especies = taxones.map{|t| t[:id]}.join(',')
 
         if Rails.env.production?
-          lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
+          lista.delay(queue: 'descargar_taxa').to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
         else  # Para develpment o test
           lista.to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
         end
 
         render json: {estatus: true}
 
-      else  # Por si no puso un correo valido
-        render json: {estatus: false, msg: 'El correo no es válido.'}
+      else
+        render json: {estatus: false, msg: 'Falló el cache de especies_por_grupo'}
       end
 
-    else  # No entro a ningun condicional, es un error
-      render json: {estatus: false, msg: 'No hubo especies para la descarga'}
-    end  # end especies > 0
+    else  # Por si no puso un correo valido
+      render json: {estatus: false, msg: 'El correo no es válido.'}
+    end
+
   end
 
 
