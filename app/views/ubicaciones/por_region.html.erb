@@ -274,6 +274,31 @@
             return 'http://200.12.166.190:9000/snib?qtype=getSpecies&rd=animalia&id='+prop.catalogo_id+'&clayer='+tipo_region_se+'&cvalue='+region_id_se;
         };
 
+        /**
+         * Devuelve los parametros de acuerdo a los filtros, grupo y region
+         * @param prop
+         * @returns {string}
+         */
+        var parametrosCargaEspecies = function(prop)
+        {
+            if ($('#region_municipio').val() == '')
+            {
+                var region_id = CORRESP[$('option:selected', $('#region_estado')).val()];
+                var parent_id = '';
+            } else {
+                var region_id = $('option:selected', $('#region_municipio')).val();
+                var parent_id = CORRESP[$('#region_municipio').attr('parent_id')];
+            }
+
+            var params_generales = {grupo_id: grupo_id_seleccionado,
+                region_id: region_id, parent_id: parent_id};
+
+            if (prop != undefined)
+                params_generales = Object.assign({},params_generales, prop);
+
+            return $('#b_avanzada').serialize() + '&' + $.param(params_generales);
+        };
+
         var cargaGrupos = function(properties)
         {
             if (properties.tipo_region == 'estado')
@@ -309,21 +334,11 @@
 
         var cargaEspecies = function()
         {
-            if ($('#region_municipio').val() == '')
-            {
-                var region_id = CORRESP[$('option:selected', $('#region_estado')).val()];
-                var parent_id = '';
-            } else {
-                var region_id = $('option:selected', $('#region_municipio')).val();
-                var parent_id = CORRESP[$('#region_municipio').attr('parent_id')];
-            }
-
             // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
             $.ajax({
                 url: '/explora-por-region/especies-por-grupo',
                 method: 'GET',
-                data: $('#b_avanzada').serialize() + '&' + $.param({grupo_id: grupo_id_seleccionado,
-                region_id: region_id, parent_id: parent_id})
+                data: parametrosCargaEspecies()
             }).done(function(resp) {
                 var cuantos = 0
                 if (resp.estatus)  // Para asignar los resultados con o sin filtros
@@ -641,9 +656,9 @@
             {
                 $.ajax({
                     url: '/explora-por-region/descarga-taxa',
-                    type: 'POST',
+                    type: 'GET',
                     dataType: "json",
-                    data: {especies: especies_con_filtro, correo: correo}
+                    data: parametrosCargaEspecies({correo: correo})
                 }).done(function(resp) {
                     if (resp.estatus == 1)
                     {

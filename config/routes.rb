@@ -23,7 +23,7 @@ Buscador::Application.routes.draw do
   get 'explora-por-region' => 'ubicaciones#por_region'
   get 'explora-por-region/especies-por-grupo' => 'ubicaciones#especies_por_grupo'
   get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
-  post 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
+  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
   get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
   get 'explora-por-region/conteo-por-grupo' => 'ubicaciones#conteo_por_grupo'
 
