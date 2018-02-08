@@ -284,7 +284,7 @@ class BusquedasController < ApplicationController
   end
 
   def avanzada
-    busqueda = Especie
+    busqueda = Especie.categoria_taxonomica_join
 
     conID = params[:id]
 
@@ -305,7 +305,7 @@ class BusquedasController < ApplicationController
       end
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'").categoria_taxonomica_join
+      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
     end
 
     # Parte del estatus

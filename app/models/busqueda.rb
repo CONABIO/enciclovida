@@ -19,7 +19,7 @@ class Busqueda
   ]
 
   # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-  def filtros_default(busqueda, params = {})
+  def self.filtros_default(busqueda, params = {})
     # Parte del tipo de ditribucion
     if params[:dist].present?
       #######################  Quitar cuando se arregle en la base
