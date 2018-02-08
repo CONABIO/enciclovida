@@ -1,7 +1,8 @@
+<div class="result-img-container" style="font-size: 3em; float: left;">
+  <span class='glyphicon glyphicon-camera' aria-hidden='true'></span>
+</div>
 <% @array.each_with_index do |item, index|  %>
   <div class="result-img-container">
-    <a href="<%= item['specimenUrl'] %>" target="_blank">
-      <img class="img-responsive" src="<%= item['mediaUrl'].html_safe %>" alt="<%= item['commonName']%>"/>
-    </a>
+    <%= link_to("<img class='img-responsive' src='#{item['mediaUrl']}' />".html_safe, item['specimenUrl'], "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "tooltip-title" => item['commonName'], "data-title"=> item['specimenUrl'], "data-url" => item['mediaUrl'], "data-type" => 'p') %>
   </div>
 <% end %>
