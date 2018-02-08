@@ -13,28 +13,9 @@ class UbicacionesController < ApplicationController
   # Regresa el conteo por grupo del servicio de Abraham, no lo hago directo porque lo guardo en cache ya que
   # algunas peticiones tardan 20 segundos
   def conteo_por_grupo
-
-    if params[:tipo_region].present?
-      if params[:tipo_region] == 'estado' && params[:region_id].present?
-        key = "conteo_grupo_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id].rjust(2, '0')}?apiKey=enciclovida"
-      elsif params[:tipo_region] == 'municipio' && params[:region_id].present? && params[:parent_id].present?
-        key = "conteo_grupo_#{params[:parent_id]}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:parent_id]}/#{params[:region_id]}?apiKey=enciclovida"
-      else
-        resp = {estatus: false, msg: "El parámetro 'tipo_region' no es el correcto."}
-      end
-
-      if key.present?
-        resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-          respuesta_conteo_por_grupo(url)
-        end
-      end
-
-    else
-      resp = {estatus: false, msg: "El parámetro 'tipo_region' esta vacío."}
-    end
-
+    br = BusquedaRegion.new
+    br.params = params
+    resp = br.cache_conteo_por_grupo
     render json: resp
   end
 
@@ -83,11 +64,6 @@ class UbicacionesController < ApplicationController
     render json: resp
   end
 
-  def busquedas_avanzada
-    busqueda = Especie
-    Busqueda.filtros_default(busqueda, params)
-  end
-
   # Descarga el listado de especies por region
   def descarga_taxa
     lista = Lista.new
@@ -126,59 +102,11 @@ class UbicacionesController < ApplicationController
     else  # Por si no puso un correo valido
       render json: {estatus: false, msg: 'El correo no es válido.'}
     end
-
   end
 
 
   private
 
-  # Es el servicio de conteo de Abraham
-  def respuesta_conteo_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      conteo = JSON.parse(rest)
-
-      if conteo.kind_of?(Hash) && conteo['error'].present?
-        {estatus: false, msg: conteo['error']}
-      else
-        conteo = icono_grupo(conteo)
-        {estatus: true, resultados: conteo}
-      end
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
-  # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
-  def icono_grupo(grupos)
-    grupos.each do |g|
-
-      case g['grupo']
-        when 'Anfibios'
-          g.merge!({'icono' => 'amphibia-ev-icon'})
-        when 'Aves'
-          g.merge!({'icono' => 'aves-ev-icon'})
-        when 'Bacterias'
-          g.merge!({'icono' => 'prokaryotae-ev-icon'})
-        when 'Hongos'
-          g.merge!({'icono' => 'fungi-ev-icon'})
-        when 'Invertebrados'
-          g.merge!({'icono' => 'annelida-ev-icon'})
-        when 'Mamíferos'
-          g.merge!({'icono' => 'mammalia-ev-icon'})
-        when 'Peces'
-          g.merge!({'icono' => 'actinopterygii-ev-icon'})
-        when 'Plantas'
-          g.merge!({'icono' => 'plantae-ev-icon'})
-        when 'Protoctistas'
-          g.merge!({'icono' => 'protoctista-ev-icon'})
-        when 'Reptiles'
-          g.merge!({'icono' => 'reptilia-ev-icon'})
-      end
-    end
-
-    grupos
-  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_ubicacion
