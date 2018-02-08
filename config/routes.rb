@@ -101,7 +101,7 @@ Buscador::Application.routes.draw do
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
-      get ':id/fotos-ebird' => 'especies#fotos_ebird'
+      get ':id/media-ebird' => 'especies#media_ebird'
       get ':id/videos-ebird' => 'especies#videos_ebird'
       get ':id/audios-ebird' => 'especies#audios_ebird'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
