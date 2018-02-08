@@ -1,5 +1,6 @@
+<span class='glyphicon glyphicon-volume-up' aria-hidden='true' style="font-size: 3em; float: left;"></span>
 <% @array.each_with_index do |item, index|  %>
-  <div class="result-img-container">
-    <%= link_to("<img class='img-responsive img-thumbnail' src='#{item['previewUrl']}' /><span class='glyphicon glyphicon-volume-up' aria-hidden='true'></span>".html_safe, item['specimenUrl'], "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "tooltip-title" => item['commonName'], "data-title"=> item['specimenUrl'], "data-url" => item['mediaUrl'], :target => 'blank') %>
+  <div class="result-img-container cornell-audios">
+    <%= link_to("<img class='img-thumbnail img-responsive' src='#{item['previewUrl']}' /><br><b>#{item['behaviors'] ||= 'NA'}</b>".html_safe, item['specimenUrl'], "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "tooltip-title" => item['commonName'], "data-title"=> item['specimenUrl'], "data-url" => item['mediaUrl']) %>
   </div>
 <% end %>
