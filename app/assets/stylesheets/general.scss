@@ -286,12 +286,15 @@ ul.social-buttons li a:active {
   vertical-align: middle;
   font-size: 3.75em;
 }
+.media-tabs div.result-img-container.cornell-audios img{
+  max-height: 180px;
+}
 .media-tabs div.result-img-container img:hover{
-  transform:scale(.8);
-  -ms-transform:scale(.8); /* IE 9 */
-  -moz-transform:scale(.8); /* Firefox */
-  -webkit-transform:scale(.8); /* Safari and Chrome */
-  -o-transform:scale(.8); /* Opera */
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
 }
 .media-tabs div.result-img-container a{
   cursor: pointer;
