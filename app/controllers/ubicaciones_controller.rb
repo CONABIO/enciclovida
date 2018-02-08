@@ -39,22 +39,9 @@ class UbicacionesController < ApplicationController
   end
 
   def especies_por_grupo
-    if params[:grupo_id].present? && params[:region_id].present?
-      if params[:parent_id].present?
-        key = "especies_grupo_municipio_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:parent_id]}/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
-      else
-        key = "especies_grupo_estado_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
-      end
-
-      resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-        respuesta_especies_por_grupo(url)
-      end
-
-    else
-      resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo_id' y 'region_id' son obligatorios"}
-    end
+    br = BusquedaRegion.new
+    br.params = params
+    resp = br.cache_especies_por_grupo
 
     # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
     if resp[:estatus]
@@ -63,17 +50,10 @@ class UbicacionesController < ApplicationController
       resp[:resultados].each do |r|
         especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
       end
-
       especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
 
-      edo_cons = params[:edo_cons].present? ? params[:edo_cons].join('-') : ''
-      dist = params[:dist].present? ? params[:dist].join('-') : ''
-      prior = params[:prior].present? ? params[:prior].join('-') : ''
-      key = "#{key}_#{edo_cons}_#{dist}_#{prior}".estandariza
-
-      taxones = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-        Busqueda.busqueda_por_region(params, especies_hash.keys)
-      end
+      br.nombres_cientificos = especies_hash.keys
+      taxones = br.cache_especies_por_grupo_con_filtros
 
       taxones.each do |taxon|
         especies_hash[taxon[:nombre_cientifico]] = taxon.merge({nregistros: especies_hash[taxon[:nombre_cientifico]]})
@@ -143,18 +123,7 @@ class UbicacionesController < ApplicationController
 
   private
 
-  def respuesta_especies_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      especies = JSON.parse(rest)
-
-      {estatus: true, resultados: especies}
-
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
+  # Es el servicio de conteo de Abraham
   def respuesta_conteo_por_grupo(url)
     begin
       rest = RestClient.get(url)
