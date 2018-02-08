@@ -41,10 +41,10 @@ class UbicacionesController < ApplicationController
   def especies_por_grupo
     if params[:grupo_id].present? && params[:region_id].present?
       if params[:parent_id].present?
-        key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
+        key = "especies_grupo_municipio_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
         url = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:parent_id]}/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
       else
-        key = "especies_grupo_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
+        key = "especies_grupo_estado_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
         url = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
       end
 
@@ -59,24 +59,27 @@ class UbicacionesController < ApplicationController
     # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
     if resp[:estatus]
       especies_hash = {}
-      resultados = []
 
       resp[:resultados].each do |r|
         especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
       end
 
-      especies_hash_ordenado = especies_hash.sort_by {|key, value| value}.reverse.to_h
+      especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
 
-      taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
-      taxones = Busqueda.filtros_default(taxones, params).distinct
+      edo_cons = params[:edo_cons].present? ? params[:edo_cons].join('-') : ''
+      dist = params[:dist].present? ? params[:dist].join('-') : ''
+      prior = params[:prior].present? ? params[:prior].join('-') : ''
+      key = "#{key}_#{edo_cons}_#{dist}_#{prior}".estandariza
 
-      taxones.each do |taxon|
-        #resultados << {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
-        especies_hash_ordenado[taxon.nombre_cientifico] = {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal, nregistros: especies_hash[taxon.nombre_cientifico]}
+      taxones = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
+        Busqueda.busqueda_por_region(params, especies_hash.keys)
       end
 
-      resp = {estatus: true, resultados: especies_hash_ordenado.values}
-      #resp = {estatus: true, resultados: resultados}
+      taxones.each do |taxon|
+        especies_hash[taxon[:nombre_cientifico]] = taxon.merge({nregistros: especies_hash[taxon[:nombre_cientifico]]})
+      end
+
+      resp = {estatus: true, resultados: especies_hash.values}
     end
 
     render json: resp
@@ -102,8 +105,7 @@ class UbicacionesController < ApplicationController
 
   def busquedas_avanzada
     busqueda = Especie
-    busqueda = Busqueda.filtros_default(busqueda, params)
-    puts busqueda.to_sql
+    Busqueda.filtros_default(busqueda, params)
   end
 
   # Descarga el listado de especies por region
@@ -134,7 +136,7 @@ class UbicacionesController < ApplicationController
       end
 
     else  # No entro a ningun condicional, es un error
-      render json: {estatus: false, msg: 'No hubo especies para descarga'}
+      render json: {estatus: false, msg: 'No hubo especies para la descarga'}
     end  # end especies > 0
   end
 

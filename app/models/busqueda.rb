@@ -18,6 +18,13 @@ class Busqueda
       ['superior a', '<']
   ]
 
+  # Es la busqueda con los filtros, regio y grupo de la busqueda por region
+  def self.busqueda_por_region(params, especies)
+    taxones = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies)
+    res = filtros_default(taxones, params).distinct
+    res.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
+  end
+
   # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
   def self.filtros_default(busqueda, params = {})
     # Parte del tipo de ditribucion
