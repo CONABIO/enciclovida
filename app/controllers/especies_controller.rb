@@ -409,16 +409,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-
-  def fotos_ebird
-  end
-
-  def videos_ebird
-  end
-
-  def audios_ebird
-  end
-
   def fotos_naturalista
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
