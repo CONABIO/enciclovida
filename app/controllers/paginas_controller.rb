@@ -6,7 +6,7 @@ class PaginasController < ApplicationController
   # La pagina cuando entran por get
   def exoticas_invasoras
     lee_csv
-    @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Nombre común', 'Familia', 'Grupo', 'Ambiente',
+    @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Familia', 'Grupo', 'Ambiente',
                                    'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha']
   end
 
@@ -53,7 +53,6 @@ class PaginasController < ApplicationController
         t = Especie.find(id)
         datos << t.adicional.try(:foto_principal)
         datos << t
-        datos << (row['Nombre comun'].present? ? row['Nombre comun'] : t.adicional.try(:nombre_comun_principal))
 
         if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'")
           datos << familia.first.nombre_cientifico
@@ -83,7 +82,6 @@ class PaginasController < ApplicationController
         end
 
         datos << row['Nombre científico']
-        datos << row['Nombre comun']
         datos << row['Familia']
         datos << row['OrdenfiloWEB']
 
