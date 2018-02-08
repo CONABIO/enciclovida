@@ -32,7 +32,7 @@ class BusquedaRegion < Busqueda
 
     taxones = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
       consulta = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: nombres_cientificos)
-      res = filtros_default(consulta, params).distinct
+      res = filtros_default(consulta).distinct
       res.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
     end
 
@@ -41,6 +41,10 @@ class BusquedaRegion < Busqueda
 
 
   private
+
+  def filtros_default(consulta)
+    Busqueda.filtros_default(consulta, params)
+  end
 
   def respuesta_especies_por_grupo(url)
     begin
