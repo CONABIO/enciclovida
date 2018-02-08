@@ -102,11 +102,16 @@ $(document).ready(function(){
     $('#pestañas').tabs(); // Inicia los tabs
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
-        var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
-        var source = $(document.createElement("source")).attr('src', button.data('url'));
-
+        var media;
+        if(button.data('type') == 'p'){
+            media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
+        }else{
+            var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
+            var source = $(document.createElement("source")).attr('src', button.data('url'));
+            media = video.append(source);
+        }
         $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        $('#modal_reproduce_body').append(video.append(source));
+        $('#modal_reproduce_body').append(media);
     });
 
     $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body').empty()});// eliminar contenido del body en la reproduccion de los videos
@@ -116,9 +121,9 @@ $(document).ready(function(){
         $(this).parent().addClass("active");
     }).one('click',function(){
         if (!Boolean($(this).hasClass('noLoad'))){
-            idPestaña = this.getAttribute('href');
-            pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('#','');
-            $(idPestaña).load(pestaña);
+            idPestaña = this.getAttribute('href').replace('#','');
+            pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
+            $(document.getElementById(idPestaña)).load(pestaña);
         }
     });
 

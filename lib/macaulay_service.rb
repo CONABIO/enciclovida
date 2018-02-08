@@ -1,9 +1,9 @@
 class MacaulayService
 
-  def dameFotos(taxonCode)
+  def dameMedia(taxonCode, type)
     ebird = CONFIG.ebird.api
 
-    url = "#{ebird}#{taxonCode}&mediaType=p"
+    url = "#{ebird}#{taxonCode}&mediaType=#{type}"
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
