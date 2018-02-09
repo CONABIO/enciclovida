@@ -15,35 +15,17 @@ class UbicacionesController < ApplicationController
   def conteo_por_grupo
     br = BusquedaRegion.new
     br.params = params
-    resp = br.cache_conteo_por_grupo
-    render json: resp
+    br.cache_conteo_por_grupo
+
+    render json: br.resp
   end
 
   def especies_por_grupo
     br = BusquedaRegion.new
     br.params = params
-    resp = br.cache_especies_por_grupo
+    br.especie_por_grupo
 
-    # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
-    if resp[:estatus]
-      especies_hash = {}
-
-      resp[:resultados].each do |r|
-        especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
-      end
-      especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
-
-      br.nombres_cientificos = especies_hash.keys
-      taxones = br.cache_especies_por_grupo_con_filtros
-
-      taxones.each do |taxon|
-        especies_hash[taxon[:nombre_cientifico]] = taxon.merge({nregistros: especies_hash[taxon[:nombre_cientifico]]})
-      end
-
-      resp = {estatus: true, resultados: especies_hash.values}
-    end
-
-    render json: resp
+    render json: br.resp
   end
 
   # Devuelve los municipios por el estado seleccionado
@@ -106,7 +88,6 @@ class UbicacionesController < ApplicationController
 
 
   private
-
 
   # Use callbacks to share common setup or constraints between actions.
   def set_ubicacion
