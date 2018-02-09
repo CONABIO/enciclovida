@@ -15,7 +15,7 @@ $(document).ready(function(){
         fillOpacity: 0.6
     };
 
-    var geojsonMarkerGeoportalFosilOptions = {
+    var geojsonMarkerGeoportalLocalidadNoCampoOptions = {
         radius: 5,
         fillColor: "#2a2a2a",
         color: "white",
@@ -104,11 +104,10 @@ $(document).ready(function(){
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                // Este campos quiere decir que es de aves aves
-                if (feature.properties.d[1])
+                if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
                     return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
-                //else if (fosil != undefined && fosil != "")
-                  //  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
+                else if (feature.properties.d[2])  // Este campo quiere decir que es de localidad no de campo
+                    return L.circleMarker(latlng, geojsonMarkerGeoportalLocalidadNoCampoOptions);
                 else  // de lo contrario es un registro rojo normal
                     return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
             },
@@ -128,12 +127,12 @@ $(document).ready(function(){
         var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
         punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
 
-        /*var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
-        punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';*/
+        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
+        punto_gris+= '<text x="20" y="43">Registro probabl. no de campo</text></svg>';
 
         legend_control.addOverlay(markersLayer,
             "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
-            "<p>"+punto_naranja+"</p>"
+            "<p>"+punto_gris+"</p>"
         );
     }
 
@@ -213,6 +212,7 @@ $(document).ready(function(){
                     contenido += "<dt>Fecha: </dt><dd>" + ejemplar.fechacolecta + "</dd>";
                     contenido += "<dt>Colector: </dt><dd>" + ejemplar.colector + "</dd>";
                     contenido += "<dt>Colección: </dt><dd>" + ejemplar.coleccion + "</dd>";
+                    contenido += "<dt>Probabl. no de campo: </dt><dd>" + ejemplar.probablelocnodecampo + "</dd>";
                     contenido += "<dt>Institución: </dt><dd>" + ejemplar.institucion + "</dd>";
                     contenido += "<dt>País de la colección: </dt><dd>" + ejemplar.paiscoleccion + "</dd>";
 
@@ -322,7 +322,7 @@ $(document).ready(function(){
 
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: [d[i][2], d[i][3]]}, // El ID y si es de aver aves
+                        "properties": {d: [d[i][2], d[i][3], d[i][4]]}, // El ID y si es de aver aves
                         "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 }
