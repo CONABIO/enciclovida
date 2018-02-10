@@ -15,9 +15,9 @@ $(document).ready(function(){
         fillOpacity: 0.6
     };
 
-    var geojsonMarkerGeoportalFosilOptions = {
+    var geojsonMarkerGeoportalLocalidadNoCampoOptions = {
         radius: 5,
-        fillColor: "#2a2a2a",
+        fillColor: "#d8ebff",
         color: "white",
         weight: 2,
         opacity: 1,
@@ -104,11 +104,10 @@ $(document).ready(function(){
 
         species_layer = L.geoJson(geojsonFeature, {
             pointToLayer: function (feature, latlng) {
-                // Este campos quiere decir que es de aves aves
-                if (feature.properties.d[1])
+                if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
                     return L.circleMarker(latlng, geojsonMarkerGeoportalAveravesOptions);
-                //else if (fosil != undefined && fosil != "")
-                  //  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
+                else if (feature.properties.d[2])  // Este campo quiere decir que es de localidad no de campo
+                    return L.circleMarker(latlng, geojsonMarkerGeoportalLocalidadNoCampoOptions);
                 else  // de lo contrario es un registro rojo normal
                     return L.circleMarker(latlng, geojsonMarkerGeoportalOptions);
             },
@@ -122,18 +121,18 @@ $(document).ready(function(){
         markersLayer.addLayer(species_layer);
         map.addLayer(markersLayer);
 
-        var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/>';
+        var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="white" stroke-width="2" fill="#FF0000"/>';
         punto_rojo+= '<text x="20" y="13">Registros del SNIB</text>';
 
-        var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
+        var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="2" fill="#FFA500"/>';
         punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
 
-        /*var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
-        punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';*/
+        var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="white" stroke-width="2" fill="#d8ebff"/>';
+        punto_gris+= '<text x="20" y="43">Registro probabl. no de campo</text></svg>';
 
         legend_control.addOverlay(markersLayer,
             "<b>Registros del SNIB <sub>" + geoportal_count + "</sub><br /> (museos, colectas y proyectos)</b>" +
-            "<p>"+punto_naranja+"</p>"
+            "<p>"+punto_gris+"</p>"
         );
     }
 
@@ -163,15 +162,14 @@ $(document).ready(function(){
         map.addLayer(markersLayer);
 
         // Para la legenda de la simbologia
-        var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#0b9c31" />';
+        var punto_verde = '<svg height="35" width="200"><circle cx="10" cy="10" r="6" stroke="white" stroke-width="2" fill="#0b9c31" />';
         punto_verde+= '<text x="20" y="13" >Grado de investigación</text>';
 
-        var punto_amarillo = punto_verde + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFFF00" />';
+        var punto_amarillo = punto_verde + '<circle cx="10" cy="25" r="6" stroke="white" stroke-width="2" fill="#FFFF00" />';
         punto_amarillo+= '<text x="20" y="28">Grado casual</text></svg>';
 
         legend_control.addOverlay(markersLayer,
-            "<b>Obs. de  <i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i><sub>" + naturalista_count + "</sub></b>" +
-            "<p>"+punto_amarillo+"</p>"
+            "<b>Obs. de  <i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i><sub>" + naturalista_count + "</sub></b>" + "<p>"+punto_amarillo+"</p>"
         );
     }
 
@@ -213,6 +211,7 @@ $(document).ready(function(){
                     contenido += "<dt>Fecha: </dt><dd>" + ejemplar.fechacolecta + "</dd>";
                     contenido += "<dt>Colector: </dt><dd>" + ejemplar.colector + "</dd>";
                     contenido += "<dt>Colección: </dt><dd>" + ejemplar.coleccion + "</dd>";
+                    contenido += "<dt>Probabl. no de campo: </dt><dd>" + ejemplar.probablelocnodecampo + "</dd>";
                     contenido += "<dt>Institución: </dt><dd>" + ejemplar.institucion + "</dd>";
                     contenido += "<dt>País de la colección: </dt><dd>" + ejemplar.paiscoleccion + "</dd>";
 
@@ -322,7 +321,7 @@ $(document).ready(function(){
 
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: [d[i][2], d[i][3]]}, // El ID y si es de aver aves
+                        "properties": {d: [d[i][2], d[i][3], d[i][4]]}, // El ID y si es de aver aves
                         "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 }
