@@ -43,5 +43,9 @@ class String
     return self unless self.present?
     self.sub(/^(.)/) { $1.mb_chars.capitalize }
   end
+
+  def estandariza
+    I18n.transliterate(self).strip.gsub(' ', '_').downcase
+  end
 end
 
