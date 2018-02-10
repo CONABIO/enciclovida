@@ -99,7 +99,34 @@ $(document).ready(function(){
         return false;
     });
 
-    $('#pestañas').tabs(); // Inicia los tabs
+    //$('#pestañas').tabs(); // Inicia los tabs
+    /*$('#pestañas > .nav a').click(function(){
+        $('#pestañas > .nav li').removeClass("active");
+        console.log(this);
+        $(this).parent().addClass("active");
+    }).one('click',function(){
+        console.log(this);
+        if (!Boolean($(this).hasClass('noLoad'))){
+            console.log('WTF!!');
+            idPestaña = this.getAttribute('href').replace('#','');
+            pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
+            $(document.getElementById(idPestaña)).load(pestaña);
+            console.log('WTF!!x2');
+        }
+    });*/
+    $('#pestañas > .nav a').click(function(){
+        //$('#pestañas > .nav li').removeClass("active");
+        //console.log(this);
+        //$(this).parent().addClass("active");
+    }).one('click',function(){
+
+        if (!Boolean($(this).hasClass('noLoad'))){
+            idPestaña = this.getAttribute('href').replace('#','');
+            pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('_','?type=');
+            $(document.getElementById(idPestaña)).load(pestaña);
+        }
+
+    });
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;
@@ -116,77 +143,4 @@ $(document).ready(function(){
 
     $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body').empty()});// eliminar contenido del body en la reproduccion de los videos
 
-    $('#pestañas > .nav a').click(function(){
-        $('#pestañas > .nav li').removeClass("active");
-        $(this).parent().addClass("active");
-    }).one('click',function(){
-        if (!Boolean($(this).hasClass('noLoad'))){
-            idPestaña = this.getAttribute('href').replace('#','');
-            pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
-            $(document.getElementById(idPestaña)).load(pestaña);
-        }
-    });
-
-    // Inicia los proveedores de fotos
-    $('#edit_photos_dialog').dialog({
-        modal: true,
-        title: 'Escoge las fotos para este grupo o especie',
-        autoOpen: false,
-        width: 700,
-        open: function( event, ui ) {
-            $('#edit_photos_dialog').loadingShades('Cargando...', {cssClass: 'smallloading'});
-            $('#edit_photos_dialog').load('/especies/'+TAXON.id+'/edit_photos', function(){
-                var photoSelectorOptions = {
-                    defaultQuery: TAXON.nombre_cientifico,
-                    skipLocal: true,
-                    baseURL: '/conabio/photo_fields',
-                    taxon_id: TAXON.id,
-                    urlParams: {
-                        authenticity_token: $('meta[name=csrf-token]').attr('content'),
-                        limit: 14
-                    },
-                    afterQueryPhotos: function(q, wrapper, options) {
-                        $(wrapper).imagesLoaded(function() {
-                            $('#edit_photos_dialog').centerDialog()
-                        })
-                    }
-                };
-
-                $('.tabs', this).tabs({
-                    beforeActivate: function( event, ui ) {
-                        if ($(ui.newPanel).attr('id') == 'flickr_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                            //$('.taxon_photos', ui.newPanel).photoSelector(photoSelectorOptions)
-                            $('.taxon_photos', ui.newPanel).photoSelector(
-                                $.extend(true, {}, photoSelectorOptions, {baseURL: '/flickr/photo_fields'})
-                            )
-                        } else if ($(ui.newPanel).attr('id') == 'inat_obs_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                            $('.taxon_photos', ui.newPanel).photoSelector(
-                                $.extend(true, {}, photoSelectorOptions, {baseURL: '/taxa/'+TAXON.id+'/observation_photos'})
-                            )
-                        } else if ($(ui.newPanel).attr('id') == 'eol_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                            $('.taxon_photos', ui.newPanel).photoSelector(
-                                $.extend(true, {}, photoSelectorOptions, {baseURL: '/eol/photo_fields'})
-                            )
-                        } else if ($(ui.newPanel).attr('id') == 'wikimedia_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                            $('.taxon_photos', ui.newPanel).photoSelector(
-                                $.extend(true, {}, photoSelectorOptions, {baseURL: '/wikimedia_commons/photo_fields'})
-                            )
-                        } else if ($(ui.newPanel).attr('id') == 'conabio_taxon_photos' && !$(ui.newPanel).hasClass('loaded')) {
-                            $('.taxon_photos', ui.newPanel).photoSelector(
-                                $.extend(true, {}, photoSelectorOptions, {taxon_id: TAXON.id, baseURL: '/conabio/photo_fields'})
-                            )
-                        }
-
-                        $(ui.newPanel).addClass('loaded')
-                        $('#edit_photos_dialog').centerDialog()
-                    },
-                    create: function( event, ui) {
-                        $('.taxon_photos', ui.panel).photoSelector(photoSelectorOptions);
-                        $(ui.panel).addClass('loaded')
-                        $('#edit_photos_dialog').centerDialog()
-                    }
-                })
-            })
-        }
-    });
 });

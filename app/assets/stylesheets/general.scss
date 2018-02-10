@@ -170,7 +170,7 @@ ul.social-buttons li a:active {
 
 /* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
 #pestañas{
-  background-color: transparent;
+  /*background-color: transparent;*/
 }
 .panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
   border-left: 1px solid #d3d3d3;
@@ -184,11 +184,11 @@ ul.social-buttons li a:active {
   background-color: #ececec;
 }
 .panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
-  filter: drop-shadow(5px -5px 4px #cecece)
+  /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
   background-color: #ececec;
-  padding: 1.5em;
+  /*padding: 1.5em;*/
   margin-top: -1px;
   border-left: 1px solid #d3d3d3;
   filter: drop-shadow(5px 5px 5px #cecece)
