@@ -23,7 +23,7 @@ class UbicacionesController < ApplicationController
   def especies_por_grupo
     br = BusquedaRegion.new
     br.params = params
-    br.especie_por_grupo
+    br.especies_por_grupo
 
     render json: br.resp
   end
@@ -61,13 +61,26 @@ class UbicacionesController < ApplicationController
 
       br = BusquedaRegion.new
       br.params = params
-      resp = br.cache_especies_por_grupo
+      br.especies_por_grupo
+
+      puts br.resp
 
       # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
-      if resp[:estatus]
-        br.nombres_cientificos = resp[:resultados].map{|r| r['especievalidabusqueda']}
-        taxones = br.cache_especies_por_grupo_con_filtros
-        lista.cadena_especies = taxones.map{|t| t[:id]}.join(',')
+      if br.resp[:estatus]
+        #puts br.resp[:resultados].inspect
+=begin
+
+        ids = []
+        br.resp[:resultados].each do |r|
+          #puts r[:id].class
+          begin
+          ids << r[:id]
+          rescue
+            next
+          end
+        end
+=end
+        lista.cadena_especies = br.resp[:resultados].map{|t| t[:id]}.join(',')
 
         if Rails.env.production?
           lista.delay(queue: 'descargar_taxa').to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
@@ -78,7 +91,7 @@ class UbicacionesController < ApplicationController
         render json: {estatus: true}
 
       else
-        render json: {estatus: false, msg: 'Falló el cache de especies_por_grupo'}
+        render json: br.resp
       end
 
     else  # Por si no puso un correo valido

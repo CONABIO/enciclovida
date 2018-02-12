@@ -2,7 +2,7 @@ class BusquedaRegion < Busqueda
   attr_accessor :params, :key_especies, :key_especies_con_filtro, :url_especies, :resp
 
   # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
-  def especie_por_grupo
+  def especies_por_grupo
     key = existe_cache_especies_por_grupo_con_filtros?
 
     if resp[:estatus]  # Para ver si los parametros son correctos
@@ -52,16 +52,16 @@ class BusquedaRegion < Busqueda
         especies_hash = {}
 
         resp[:resultados].each do |r|
-          especies_hash[r['especievalidabusqueda']] = r['nregistros'].to_i
+          especies_hash[r['idnombrecatvalido']] = r['nregistros'].to_i
         end
         especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
 
-        consulta = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(nombre_cientifico: especies_hash.keys)
+        consulta = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(catalogo_id: especies_hash.keys)
         consulta = filtros_default(consulta).distinct
         taxones = consulta.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
 
         taxones.each do |taxon|
-          especies_hash[taxon[:nombre_cientifico]] = taxon.merge({nregistros: especies_hash[taxon[:nombre_cientifico]]})
+          especies_hash[taxon[:catalogo_id]] = taxon.merge({nregistros: especies_hash[taxon[:catalogo_id]]})
         end
 
         {estatus: true, resultados: especies_hash.values}
