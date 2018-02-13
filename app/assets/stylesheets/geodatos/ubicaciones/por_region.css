@@ -1,0 +1,43 @@
+#map {
+    min-height: 800px;
+    width: 100%;
+}
+#especies img{
+    max-height: 100px;
+}
+#contenedor_especies h5{
+    font-size: small;
+}
+.region, .selecciona-region {
+    fill: #e5e5e5;
+    opacity: .5;
+    pointer-events: all!important;
+}
+.region {
+    stroke: black;
+    stroke-width:1px;
+}
+.region:hover {
+    fill: steelblue;
+}
+.selecciona-region {
+    stroke: green;
+    stroke-width:3px;
+}
+#contenedor-nombre-region {
+    font-weight: bold
+}
+.div-icon-leaflet {
+}
+.feather-ev-icon {
+    color: #800000;
+    font-size: 2em;
+}
+#toggle-ba-icon {
+    font-size: 1.4em;
+    cursor: pointer;
+}
+#contenedor_grupos sub {
+    bottom: -2.2em;
+    left: -3.0em;
+}
