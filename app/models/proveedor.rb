@@ -477,8 +477,11 @@ class Proveedor < ActiveRecord::Base
       es_averaves = true if aves.include?(col)
     end
 
+    # Para ver si la locacion no es de campo
+    locacion_no_campo = ejemplar['probablelocnodecampo'].estandariza == 'si' ? 1 : 0
+
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0]
+    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0, locacion_no_campo]
   end
 
   def valida_ejemplares_snib

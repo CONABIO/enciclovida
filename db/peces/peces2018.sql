@@ -24,7 +24,6 @@ DROP TABLE IF EXISTS `criterios`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `criterios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_criterio` varchar(255) NOT NULL,
   `valor` tinyint(2) NOT NULL DEFAULT '0',
   `propiedad_id` int(11) NOT NULL COMMENT 'Corresponde al año de la Carta Nacional',
   PRIMARY KEY (`id`),
@@ -175,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-18 13:25:59
+-- Dump completed on 2018-01-30 17:26:43
