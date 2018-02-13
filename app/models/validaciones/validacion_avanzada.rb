@@ -27,6 +27,14 @@ class ValidacionAvanzada < Validacion
       next if index == 0
       self.fila = f
       self.nombre_cientifico = f['nombre_cientifico']
+
+      if nombre_cientifico.blank?
+        self.validacion[:estatus] = false
+        self.validacion[:msg] = 'El nombre cientifico esta vacio.'
+        self.recurso_validado << asocia_respuesta
+        next
+      end
+
       encuentra_por_nombre
 
       if validacion[:estatus]  # Encontro solo un nombre cientifico
@@ -136,7 +144,11 @@ class ValidacionAvanzada < Validacion
 
           # Para los datos abajo de la cabecera
           if dato.class == String
-            sheet_p.add_cell(fila,columna,dato)
+            begin  # Revisar posteriormente esta linea, por si no tiene nombre cientifico
+              sheet_p.add_cell(fila,columna,dato)
+            rescue
+              puts "@@@#{dato.inspect}"
+            end
           elsif dato.class == Hash  # Es la cabecera
             sheet_p.add_cell(fila,columna,dato[:valor]).change_fill(dato[:color])
           elsif dato.class == Array  # Es de la validación de conabio y tiene un datos desl usuario original
