@@ -2,6 +2,7 @@ $(document).ready(function(){
 
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
         grupo_id_seleccionado = $(this).attr('grupo_id');
+        pagina_especies = 1
         cargaEspecies();
         return false;
     });
@@ -15,7 +16,9 @@ $(document).ready(function(){
         return false;
     });
 
-// Para escoger con las listas
+    /**
+     *  Para escoger con las listas
+     */
     $('#regiones').on('change', '#region_estado', function(){
         if ($(this).val() == '')
         {
@@ -63,8 +66,9 @@ $(document).ready(function(){
         cargaEspecies();
     });
 
-// JS para la descarga de taxa
-// Para enviar la descarga o que se envie correo
+    /**
+     * Para enviar la descarga o que se envie correo
+     */
     $(document).on('keyup', '#correo', function(){
         if( !correoValido($(this).val()) )
         {
@@ -83,7 +87,9 @@ $(document).ready(function(){
         }
     });
 
-// Para validar una ultima vez cuando paso la validacion del boton
+    /**
+     * Para validar una ultima vez cuando paso la validacion del boton
+     */
     $(document).on('click', '#boton_enviar_descarga', function(){
         var correo = $('#correo').val();
 
@@ -107,5 +113,11 @@ $(document).ready(function(){
 
         } else
             $('#estatus_descargar_taxa').empty().html('El correo no parece válido, por favor verifica.');
+    });
+
+    $('#carga_mas_especies').on('click', function(){
+        pagina_especies++;
+        cargaEspecies();
+        return false;
     });
 });

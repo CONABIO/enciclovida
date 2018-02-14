@@ -30,6 +30,7 @@
         grupo_id_seleccionado = null;
         region_id_se = null;
         tipo_region_se = null;
+        pagina_especies = 1;
 
         // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);
@@ -56,4 +57,5 @@
 </div>
 <div id="especies" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <%= render partial: 'especies' %>
+  <%= link_to 'Carga más', '', id: 'carga_mas_especies' %>
 </div>

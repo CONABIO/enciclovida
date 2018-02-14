@@ -33,7 +33,7 @@ var cargaMapa = function (id)
 };
 
 /**
- * Devuelve los parametros de acuerdo a los filtros, grupo y region
+ * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado
  * @param prop
  * @returns {string}
  */
@@ -49,7 +49,7 @@ var parametrosCargaEspecies = function(prop)
     }
 
     var params_generales = {grupo_id: grupo_id_seleccionado,
-        region_id: region_id, parent_id: parent_id};
+        region_id: region_id, parent_id: parent_id, pagina: pagina_especies};
 
     if (prop != undefined)
         params_generales = Object.assign({},params_generales, prop);
@@ -72,8 +72,6 @@ var cargaGrupos = function(properties)
         url: '/explora-por-region/conteo-por-grupo',
         data: {tipo_region: properties.tipo_region, region_id: region_id, parent_id: parent_id}
     }).done(function(resp) {
-        //especies = resp.map(a => a.especievalidabusqueda + '-' + a.nregistros);
-
         if (resp.estatus)
         {
             $('#contenedor_grupos').empty();
@@ -98,37 +96,31 @@ var cargaEspecies = function()
         method: 'GET',
         data: parametrosCargaEspecies()
     }).done(function(resp) {
-        var cuantos = 0
         if (resp.estatus)  // Para asignar los resultados con o sin filtros
         {
-            //especies_con_filtro = resp.resultados.map(a => a.id);
-            $('#contenedor_especies').empty();
+            if (pagina_especies == 1) $('#contenedor_especies').empty();
+            $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.totales);
 
             $.each(resp.resultados, function(index, taxon){
-                if (taxon.catalogo_id != undefined) {  // Por si algunos de los taxones no coincidieron con catalogos
-                    cuantos++;
-                    var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se});
-                    if (url == undefined) return;
+                var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se});
+                if (url == undefined) return;
 
-                    // Las que no tiene imagen se le pega la fuente
-                    if (taxon.foto == null)
-                        var recurso = '<i class="ev1-ev-icon"></i>';
-                    else
-                        var recurso = '<img src="' + taxon.foto + '"/>';
+                // Las que no tiene imagen se le pega la fuente
+                if (taxon.foto == null)
+                    var recurso = '<i class="ev1-ev-icon"></i>';
+                else
+                    var recurso = '<img src="' + taxon.foto + '"/>';
 
-                    // Las que no tienen nombre común se le pondra vacío
-                    if (taxon.nombre_comun == null) taxon.nombre_comun = '';
+                // Las que no tienen nombre común se le pondra vacío
+                if (taxon.nombre_comun == null) taxon.nombre_comun = '';
 
-                    $('#contenedor_especies').append('<div class="result-img-container">' +
-                    '<a href class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '</a>' +
-                    '<div class="result-nombre-container">' +
-                    '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
-                    '<h5><a href class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></h5>' +
-                    '</div>' +
-                    '</div>');
-                }
-
-                $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(cuantos);
+                $('#contenedor_especies').append('<div class="result-img-container">' +
+                '<a href class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '</a>' +
+                '<div class="result-nombre-container">' +
+                '<h5>' + taxon.nombre_comun + ' <sub class="badge">' + taxon.nregistros + '</sub></h5>' +
+                '<h5><a href class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></h5>' +
+                '</div>' +
+                '</div>');
             });
         } else
             console.log(resp.msg);
