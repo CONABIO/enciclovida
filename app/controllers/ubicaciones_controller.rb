@@ -25,6 +25,20 @@ class UbicacionesController < ApplicationController
     br.params = params
     br.especies_por_grupo
 
+    # El paginado para que no se atasque
+    por_pagina = 10
+    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    rango_inferior = por_pagina*(pagina - 1)
+    rango_superior = por_pagina*pagina - 1
+
+    br.resp[:totales] = br.resp[:resultados].count
+    br.resp[:resultados] = br.resp[:resultados][rango_inferior..rango_superior]
+
+    if br.resp[:resultados].nil?
+      br.resp[:estatus] = false
+      br.resp[:msg] = 'No hay más resultados'
+    end
+
     render json: br.resp
   end
 
