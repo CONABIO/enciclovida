@@ -138,9 +138,9 @@ $(document).ready(function(){
             media = video.append(source);
         }
         $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        $('#modal_reproduce_body').append(media);
+        $('#modal_reproduce_body .col-md-9').append(media);
     });
 
-    $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body').empty()});// eliminar contenido del body en la reproduccion de los videos
+    $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body .col-md-9').empty()});// eliminar contenido del body en la reproduccion de los videos
 
 });
