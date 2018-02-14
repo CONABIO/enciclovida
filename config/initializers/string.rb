@@ -49,7 +49,7 @@ class String
   end
 
   def sin_acentos
-    I18n.transliterate(self).strip.gsub(' ', '_').downcase
+    I18n.transliterate(self).strip.downcase
   end
 end
 
