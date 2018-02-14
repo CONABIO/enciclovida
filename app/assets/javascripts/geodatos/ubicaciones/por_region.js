@@ -49,7 +49,7 @@ var parametrosCargaEspecies = function(prop)
     }
 
     var params_generales = {grupo_id: grupo_id_seleccionado,
-        region_id: region_id, parent_id: parent_id, pagina: pagina_especies};
+        region_id: region_id, parent_id: parent_id, pagina: pagina_especies, nombre: $('#nombre').val()};
 
     if (prop != undefined)
         params_generales = Object.assign({},params_generales, prop);

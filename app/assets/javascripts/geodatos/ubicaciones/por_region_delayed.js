@@ -115,9 +115,18 @@ $(document).ready(function(){
             $('#estatus_descargar_taxa').empty().html('El correo no parece válido, por favor verifica.');
     });
 
+    /**
+     * Esta funcion se sustituirá por el scrolling
+     */
     $('#carga_mas_especies').on('click', function(){
         pagina_especies++;
         cargaEspecies();
         return false;
     });
+
+    $('#especies').on('keyup', '#nombre', function(){
+        console.log($(this).val());
+        cargaEspecies();
+    });
+
 });

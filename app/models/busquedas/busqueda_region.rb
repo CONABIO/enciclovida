@@ -12,6 +12,9 @@ class BusquedaRegion < Busqueda
         cache_especies_por_grupo
         cache_especies_por_grupo_con_filtros
       end  # End key
+
+      # Esta consulta no va en el cache para poder manejarla de mi aldo y sea mas rapida la respuesta
+      filtro_con_nombre
     end  # End resp[:estatus]
   end
 
@@ -74,7 +77,6 @@ class BusquedaRegion < Busqueda
 
   private
 
-
   # Es el servicio de conteo de Abraham
   def respuesta_conteo_por_grupo(url)
     begin
@@ -126,6 +128,14 @@ class BusquedaRegion < Busqueda
     else
       self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo_id' y 'region_id' son obligatorios"}
       false
+    end
+  end
+
+  def filtro_con_nombre
+    if params[:nombre].present?
+      if resp[:estatus]
+        self.resp[:resultados] = resp[:resultados].map{|t| t if (/#{params[:nombre].sin_acentos}/.match(t[:nombre_cientifico].sin_acentos) || /#{params[:nombre].sin_acentos}/.match(t[:nombre_comun].try(:sin_acentos)))}.compact
+      end
     end
   end
 
