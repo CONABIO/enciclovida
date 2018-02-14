@@ -10,19 +10,19 @@
 }
 .region, .selecciona-region {
     fill: #e5e5e5;
-    opacity: .5;
+    opacity: .4;
     pointer-events: all!important;
 }
 .region {
     stroke: black;
-    stroke-width:1px;
+    stroke-width: 1px;
 }
 .region:hover {
-    fill: steelblue;
+    fill: #707070;
 }
 .selecciona-region {
-    stroke: green;
-    stroke-width:3px;
+    stroke: black;
+    stroke-width: 4px;
 }
 #contenedor-nombre-region {
     font-weight: bold
