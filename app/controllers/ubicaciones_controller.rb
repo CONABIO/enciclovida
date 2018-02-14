@@ -77,24 +77,9 @@ class UbicacionesController < ApplicationController
       br = BusquedaRegion.new
       br.params = params
       br.especies_por_grupo
-
-      puts br.resp
-
+      
       # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
       if br.resp[:estatus]
-        #puts br.resp[:resultados].inspect
-=begin
-
-        ids = []
-        br.resp[:resultados].each do |r|
-          #puts r[:id].class
-          begin
-          ids << r[:id]
-          rescue
-            next
-          end
-        end
-=end
         lista.cadena_especies = br.resp[:resultados].map{|t| t[:id]}.join(',')
 
         if Rails.env.production?

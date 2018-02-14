@@ -67,7 +67,10 @@ class BusquedaRegion < Busqueda
           especies_hash[taxon[:catalogo_id]] = taxon.merge({nregistros: especies_hash[taxon[:catalogo_id]]})
         end
 
-        {estatus: true, resultados: especies_hash.values}
+        # Para dejar solo lo que coincidio con la consulta
+        especies_hash = especies_hash.map{|k, v| v if v.class == Hash}
+
+        {estatus: true, resultados: especies_hash.compact}
       else
         resp
       end
