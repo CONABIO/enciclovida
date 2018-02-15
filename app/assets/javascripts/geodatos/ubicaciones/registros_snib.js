@@ -42,14 +42,13 @@ var aniadePuntosSnib = function()
 
     var species_layer = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-// Este campos quiere decir que es de aves aves
-            if (feature.properties.d[1])
-                return L.circleMarker(latlng, geojsonMarkerSnibAveravesOptions);
-//return "<i class='feather-ev-icon'></i>";
-//else if (fosil != undefined && fosil != "")
-//  return L.circleMarker(latlng, geojsonMarkerGeoportalFosilOptions);
-            else  // de lo contrario es un registro rojo normal
-                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-leaflet', html: '<i class="feather-ev-icon"></i>'})});
+
+            if (feature.properties.d.ejemplarfosil == 'SI')  // Este campos quiere decir que es un fosil
+                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+            else if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
+                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+            else  // de lo contrario es un registro normal
+                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
         },
         onEachFeature: function (prop, layer) {
             layer.bindPopup(ejemplarSnib(prop.properties.d));

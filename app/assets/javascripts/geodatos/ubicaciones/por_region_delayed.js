@@ -125,7 +125,6 @@ $(document).ready(function(){
     });
 
     $('#especies').on('keyup', '#nombre', function(){
-        console.log($(this).val());
         cargaEspecies();
     });
 
