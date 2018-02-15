@@ -105,7 +105,7 @@ var cargaGrupos = function(properties)
             $('#contenedor_especies').empty();
 
             $.each(resp.resultados, function(index, prop){
-                $('#contenedor_grupos').append('<label><span title="' + prop.grupo + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
+                $('#contenedor_grupos').append('<label><span title="' + prop.grupo + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'" reino="' + prop.reino + '"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
             });
         } else
             console.log('Falló el servicio de conteo del SNIB');
@@ -129,7 +129,7 @@ var cargaEspecies = function()
             $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.totales);
 
             $.each(resp.resultados, function(index, taxon){
-                var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se});
+                var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se, geoportal_url: geoportal_url, reino: $('#grupos').find("[grupo_id='" + grupo_id_seleccionado + "']").attr('reino')});
                 if (url == undefined) return;
 
                 // Las que no tiene imagen se le pega la fuente

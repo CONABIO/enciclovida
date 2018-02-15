@@ -1,28 +1,10 @@
 var dameUrlServicioSnib = function(prop)
 {
-    return 'http://200.12.166.190:9000/snib?qtype=getSpecies&rd=animalia&id=' + prop.catalogo_id+'&clayer=' + prop.tipo_region_se+'&cvalue=' + prop.region_id_se;
+    return prop.geoportal_url + '&rd=' + prop.reino + '&id=' + prop.catalogo_id + '&clayer=' + prop.tipo_region_se + '&cvalue=' + prop.region_id_se;
 };
 
 var cargaRegistros = function(url)
 {
-    geojsonMarkerSnibOptions = {
-        radius: 6,
-        fillColor: "#ff0000",
-        color: "white",
-        weight: 2,
-//opacity: 1,
-        fillOpacity: 1
-    };
-
-    geojsonMarkerSnibAveravesOptions = {
-        radius: 5,
-        fillColor: "#FFA500",
-        color: "black",
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.6
-    };
-
     borraRegistrosAnteriores();
     geojsonSnib(url);
 };

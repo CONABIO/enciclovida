@@ -152,25 +152,25 @@ class BusquedaRegion < Busqueda
 
       case g['grupo']
         when 'Anfibios'
-          g.merge!({'icono' => 'amphibia-ev-icon'})
+          g.merge!({'icono' => 'amphibia-ev-icon', 'reino' => 'animalia'})
         when 'Aves'
-          g.merge!({'icono' => 'aves-ev-icon'})
+          g.merge!({'icono' => 'aves-ev-icon', 'reino' => 'animalia'})
         when 'Bacterias'
-          g.merge!({'icono' => 'prokaryotae-ev-icon'})
+          g.merge!({'icono' => 'prokaryotae-ev-icon', 'reino' => 'prokaryotae'})
         when 'Hongos'
-          g.merge!({'icono' => 'fungi-ev-icon'})
+          g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
         when 'Invertebrados'
-          g.merge!({'icono' => 'annelida-ev-icon'})
+          g.merge!({'icono' => 'annelida-ev-icon', 'reino' => 'animalia'})
         when 'Mamíferos'
-          g.merge!({'icono' => 'mammalia-ev-icon'})
+          g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
         when 'Peces'
-          g.merge!({'icono' => 'actinopterygii-ev-icon'})
+          g.merge!({'icono' => 'actinopterygii-ev-icon', 'reino' => 'animalia'})
         when 'Plantas'
-          g.merge!({'icono' => 'plantae-ev-icon'})
+          g.merge!({'icono' => 'plantae-ev-icon', 'reino' => 'plantae'})
         when 'Protoctistas'
-          g.merge!({'icono' => 'protoctista-ev-icon'})
+          g.merge!({'icono' => 'protoctista-ev-icon', 'reino' => 'protoctista'})
         when 'Reptiles'
-          g.merge!({'icono' => 'reptilia-ev-icon'})
+          g.merge!({'icono' => 'reptilia-ev-icon', 'reino' => 'animalia'})
       end
     end
 
