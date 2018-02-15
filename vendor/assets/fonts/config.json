@@ -1337,6 +1337,18 @@
       ]
     },
     {
+      "uid": "130380e481a7defc690dfb24123a1f0c",
+      "css": "circle",
+      "code": 61713,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "d61be837c725a299b432dcbee2ecdae6",
+      "css": "certificate",
+      "code": 61603,
+      "src": "fontawesome"
+    },
+    {
       "uid": "bd05a113b498a5dcd0962a59c1570ea8",
       "css": "biomex",
       "code": 59474,

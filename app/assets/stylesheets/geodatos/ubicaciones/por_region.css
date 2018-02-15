@@ -24,15 +24,6 @@
     stroke: black;
     stroke-width: 4px;
 }
-#contenedor-nombre-region {
-    font-weight: bold
-}
-.div-icon-leaflet {
-}
-.feather-ev-icon {
-    color: #800000;
-    font-size: 2em;
-}
 #toggle-ba-icon {
     font-size: 1.4em;
     cursor: pointer;
@@ -40,4 +31,15 @@
 #contenedor_grupos sub {
     bottom: -2.2em;
     left: -3.0em;
+}
+#contenedor-nombre-region {
+    font-weight: bold
+}
+.div-icon-snib {
+    color: #800000;
+    font-size: 1.5em;
+}
+.div-icon-snib-default {
+    color: #800000;
+    font-size: 1.2em;
 }

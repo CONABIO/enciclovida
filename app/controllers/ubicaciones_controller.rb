@@ -77,7 +77,7 @@ class UbicacionesController < ApplicationController
       br = BusquedaRegion.new
       br.params = params
       br.especies_por_grupo
-      
+
       # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
       if br.resp[:estatus]
         lista.cadena_especies = br.resp[:resultados].map{|t| t[:id]}.join(',')
