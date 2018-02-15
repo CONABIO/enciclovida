@@ -31,7 +31,7 @@ $(document).ready(function(){
 
             var prop = {};
             prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj[$(this).val()];
+            prop.layer = layer_obj['estado'][$(this).val()];
             prop.region_id = $(this).val();
             prop.tipo_region = 'estado';
             prop.region_id_se = $(this).val();
@@ -47,7 +47,7 @@ $(document).ready(function(){
         else {
             var prop = {};
             prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj[$(this).val()];
+            prop.layer = layer_obj['municipio'][$(this).val()];
             prop.region_id = $(this).val();
             prop.parent_id = CORRESP[$(this).attr('parent_id')];
             prop.tipo_region = 'municipio';
