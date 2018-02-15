@@ -26,7 +26,6 @@ var cargaDivisionEstatal = function()
                 $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
                 $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
                 $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.region_id);
-                layer_obj = {};
             })
             .each(function(d){
                 d.properties.layer = $(this);

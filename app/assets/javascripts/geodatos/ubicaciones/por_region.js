@@ -160,6 +160,8 @@ var cargaEspecies = function()
 // Rellena las opciones de region-estado
 var completaSelect = function(prop)
 {
-    layer_obj[prop.region_id] = prop.layer;
+    if (layer_obj[prop.tipo_region] == undefined) layer_obj[prop.tipo_region] = {};
+    layer_obj[prop.tipo_region][prop.region_id] = prop.layer;
+
     $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]" region_id_se="' + prop.region_id_se + '">' + prop.nombre_region + '</option>');
 };
