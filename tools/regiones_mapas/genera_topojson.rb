@@ -62,15 +62,15 @@ def topojson_por_region
       end
 
       # Escribe a disco el archivo geojson
-      File.write(archivo_geo, geojson.to_json)
+      #File.write(archivo_geo, geojson.to_json)
 
       # Convierte a topojson
-      topojson = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo, o: archivo_topo, tmp: archivo_tmp})
-      puts "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
+      #topojson = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo, o: archivo_topo, tmp: archivo_tmp})
+      #puts "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
     end  # End cada region each
 
     archivo_topo_todos = ruta.join("#{region}.json")
-    archivo_geo_todos = ruta.join("#{region}_geo.json")
+    archivo_geo_todos = ruta.join('collection.json')
     archivo_tmp_todos = ruta.join("#{region}_tmp.json")
 
     # Escribe a disco el archivo geojson
@@ -111,7 +111,7 @@ def topojson_municipios_por_estado
     end
 
     archivo_topo = ruta.join("estado_#{e.region_id}_division_municipal.json")
-    archivo_geo = ruta.join("estado_#{e.region_id}_division_municipal_geo.json")
+    archivo_geo = ruta.join('collection.json')
     archivo_tmp = ruta.join("estado_#{e.region_id}_division_municipal_tmp.json")
 
     # Escribe a disco el archivo geojson
@@ -125,7 +125,7 @@ end
 
 start_time = Time.now
 
-#topojson_por_region
+topojson_por_region
 topojson_municipios_por_estado
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
