@@ -14,7 +14,7 @@ var borraRegistrosAnteriores = function()
     if (map.hasLayer(markersLayer))
     {
         map.removeLayer(markersLayer);
-        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
     }
 };
 
