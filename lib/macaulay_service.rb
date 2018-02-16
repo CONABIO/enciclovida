@@ -27,13 +27,15 @@ class MacaulayService
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
+    puts '.............'+uri.to_s
     req['key'] = CONFIG.cornell.key
     begin
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = http.request(req)
       jres = res.body.present? ? JSON.parse(res.body) : [{msg: 'No se encontraron coincidencias'}]
-      jres if jres.any?
+      #Parche feo TODO, solicitar respuesta nueva a macaulay
+      jres.any? && jres[0]['sciName']==taxonNC ? jres : [{msg: 'No se encontraron coincidencias'}]
     rescue => e
       nil
     end

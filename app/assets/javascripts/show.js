@@ -109,8 +109,10 @@ $(document).ready(function(){
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;
-        $('#modal_reproduce_body .col-md-3 > h4').text(button.data('author'));
-        $('#modal_reproduce_body .col-md-3 > h5').text(button.data('date'));
+        $('#modal_reproduce_body .col-md-3 > h3').text(button.data('author'));
+        $('#modal_reproduce_body .col-md-3 > h4').text(button.data('date'));
+        $('#modal_reproduce_body .col-md-3 > h5').text(button.data('country'));
+        $('#modal_reproduce_body .col-md-3 > p').text(button.data('location'));
         $('#modal_reproduce_label > a').attr('href', button.data('title'));
         if(button.data('type') == 'photo'){
             media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
