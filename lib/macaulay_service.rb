@@ -37,7 +37,7 @@ class MacaulayService
       #Parche feo TODO, solicitar respuesta nueva a macaulay
       jres.any? && jres[0]['sciName']==taxonNC ? jres : [{msg: 'No se encontraron coincidencias'}]
     rescue => e
-      nil
+      [{msg: '¡No se encontraron coincidencias!'}]
     end
   end
 
