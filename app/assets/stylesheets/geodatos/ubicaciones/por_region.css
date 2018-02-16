@@ -9,20 +9,24 @@
     font-size: small;
 }
 .region, .selecciona-region {
-    fill: #e5e5e5;
-    opacity: .4;
+    fill: black;
+    opacity: .2;
+
     pointer-events: all!important;
 }
 .region {
-    stroke: black;
+    stroke: #ffff00;
     stroke-width: 1px;
 }
 .region:hover {
-    fill: #707070;
+    stroke: #ffff00;
+    opacity: .3;
+    stroke-width: 4px;
 }
 .selecciona-region {
-    stroke: black;
+    stroke: #ffff00;
     stroke-width: 4px;
+    opacity: .3;
 }
 #toggle-ba-icon {
     font-size: 1.4em;
