@@ -23,7 +23,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_ebird, :videos_ebird, :audios_ebird, :media_ebird, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
@@ -64,7 +64,7 @@ class EspeciesController < ApplicationController
 
         #para saber si es Ave TODO (parche feito)
         if proveedor = @especie.proveedor
-          @con_ebird = proveedor.cornell_id if proveedor.cornell_id.present?
+          @con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
         end
 
         # Para los comentarios
@@ -389,20 +389,20 @@ class EspeciesController < ApplicationController
   end
 
   #servicio Macaulay Library (eBird)
-  def media_ebird
-    type = params['type'] || 'p'
+  def media_cornell
+    type = params['type'] || 'photo'
     @especie = Especie.find(params['id'])
     if proveedor = @especie.proveedor
       taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
       mc = MacaulayService.new
       @array = mc.dameMedia(taxonCode, type)
       case type
-        when 'p'
-          render 'fotos_ebird'
-        when 'v'
-          render 'videos_ebird'
-        when 'a'
-          render 'audios_ebird'
+        when 'photo'
+          render 'fotos_cornell'
+        when 'video'
+          render 'videos_cornell'
+        when 'audio'
+          render 'audios_cornell'
         else
           render html: "<strong>Not Found</strong>".html_safe
       end

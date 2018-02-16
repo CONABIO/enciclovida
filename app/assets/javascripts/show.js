@@ -99,38 +99,20 @@ $(document).ready(function(){
         return false;
     });
 
-    //$('#pestañas').tabs(); // Inicia los tabs
-    /*$('#pestañas > .nav a').click(function(){
-        $('#pestañas > .nav li').removeClass("active");
-        console.log(this);
-        $(this).parent().addClass("active");
-    }).one('click',function(){
-        console.log(this);
+    $('#pestañas > .nav a').one('click',function(){
         if (!Boolean($(this).hasClass('noLoad'))){
-            console.log('WTF!!');
-            idPestaña = this.getAttribute('href').replace('#','');
+            idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
             pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
-            $(document.getElementById(idPestaña)).load(pestaña);
-            console.log('WTF!!x2');
+            $(this.getAttribute('href')).load(pestaña);
         }
-    });*/
-    $('#pestañas > .nav a').click(function(){
-        //$('#pestañas > .nav li').removeClass("active");
-        //console.log(this);
-        //$(this).parent().addClass("active");
-    }).one('click',function(){
-
-        if (!Boolean($(this).hasClass('noLoad'))){
-            idPestaña = this.getAttribute('href').replace('#','');
-            pestaña = '/especies/'+TAXON.id+'/'+idPestaña.replace('_','?type=');
-            $(document.getElementById(idPestaña)).load(pestaña);
-        }
-
     });
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;
-        if(button.data('type') == 'p'){
+        $('#modal_reproduce_body .col-md-3 > h4').text(button.data('author'));
+        $('#modal_reproduce_body .col-md-3 > h5').text(button.data('date'));
+        $('#modal_reproduce_label > a').attr('href', button.data('title'));
+        if(button.data('type') == 'photo'){
             media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
         }else{
             var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
@@ -138,9 +120,15 @@ $(document).ready(function(){
             media = video.append(source);
         }
         $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        $('#modal_reproduce_body .col-md-9').append(media);
+        $('#modal_reproduce_body').append(media);
     });
-
-    $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body .col-md-9').empty()});// eliminar contenido del body en la reproduccion de los videos
-
+    //Deshabilitar clicks derechos en ALL el modal
+    $('#modal_reproduce_body').bind('contextmenu', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    });
+    //Eliminar contenido del modal-body (necesario para q deje de reproducirse el video/audio cuando se cierra modal)
+    $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body .col-md-9').empty()});
 });
