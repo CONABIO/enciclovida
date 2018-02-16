@@ -102,7 +102,7 @@ def topojson_municipios_por_estado
       puts "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
       feature = {type: 'Feature', properties:{}}
       feature[:properties][:region_id] = m.region_id
-      feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}, MX"
+      feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}"
       feature[:properties][:parent_id] = m.parent_id
       feature[:properties][:centroide] = [m.lat, m.long]
       feature[:properties][:region_id_se] = m.region_id_se
