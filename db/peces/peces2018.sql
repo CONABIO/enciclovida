@@ -97,6 +97,7 @@ DROP TABLE IF EXISTS `peces_criterios`;
 CREATE TABLE `peces_criterios` (
   `especie_id` int(11) NOT NULL,
   `criterio_id` int(11) NOT NULL,
+  `anio_CNP` smallint(4) NOT NULL,
   PRIMARY KEY (`criterio_id`,`especie_id`),
   KEY `fk_criterios_categorias_criterios1_idx` (`criterio_id`),
   KEY `fk_peces_criterios_peces1_idx` (`especie_id`),
@@ -174,4 +175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-30 17:26:43
+-- Dump completed on 2018-02-16 12:52:35
