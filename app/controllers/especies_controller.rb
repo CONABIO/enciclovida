@@ -64,7 +64,8 @@ class EspeciesController < ApplicationController
 
         #para saber si es Ave TODO (parche feito)
         if proveedor = @especie.proveedor
-          @con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
+          #@con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
+          @con_cornell = true
         end
 
         # Para los comentarios
@@ -392,11 +393,18 @@ class EspeciesController < ApplicationController
   def media_cornell
     type = params['type'] || 'photo'
     @especie = Especie.find(params['id'])
-    if proveedor = @especie.proveedor
-      taxonCode = proveedor.cornell_id if proveedor.cornell_id.present?
-      mc = MacaulayService.new
+    mc = MacaulayService.new
+    proveedor = @especie.proveedor
+    if  taxonCode = proveedor.cornell_id
       @array = mc.dameMedia(taxonCode, type)
-      case type
+    else
+      taxon = @especie.nombre_cientifico
+      @array = mc.dameMedia_nc(taxon, type)
+    end
+
+     render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
+
+    case type
         when 'photo'
           render 'fotos_cornell'
         when 'video'
@@ -404,9 +412,9 @@ class EspeciesController < ApplicationController
         when 'audio'
           render 'audios_cornell'
         else
-          render html: "<strong>Not Found</strong>".html_safe
+          render text: "<strong>No se encontraron coincidencias</strong>"
       end
-    end
+
   end
 
   def fotos_naturalista

@@ -120,7 +120,7 @@ $(document).ready(function(){
             media = video.append(source);
         }
         $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        $('#modal_reproduce_body').append(media);
+        $('#modal_reproduce_body .col-md-9').append(media);
     });
     //Deshabilitar clicks derechos en ALL el modal
     $('#modal_reproduce_body').bind('contextmenu', function(e) {
