@@ -133,6 +133,10 @@ footer.legal p {
   font-size: 4.5em;
   width: 2em !important;
 }
+.conabio_bdi-ev-icon:before{
+  font-size: 3em;
+  width: 6em !important;
+}
 .ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
 .enciclo-ev-icon:before, .conabio_blanco-ev-icon:before{
   color: #fdfdfd;
@@ -166,7 +170,7 @@ ul.social-buttons li a:active {
 
 /* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
 #pestañas{
-  background-color: transparent;
+  /*background-color: transparent;*/
 }
 .panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
   border-left: 1px solid #d3d3d3;
@@ -180,11 +184,11 @@ ul.social-buttons li a:active {
   background-color: #ececec;
 }
 .panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
-  filter: drop-shadow(5px -5px 4px #cecece)
+  /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
   background-color: #ececec;
-  padding: 1.5em;
+  /*padding: 1.5em;*/
   margin-top: -1px;
   border-left: 1px solid #d3d3d3;
   filter: drop-shadow(5px 5px 5px #cecece)
@@ -269,30 +273,33 @@ ul.social-buttons li a:active {
 }
 
 /*TODO tengo entendido esto debería estar en especies.scss*/
-#fotos-bdi{
+.media-tabs{
     text-align: center;
 }
-#fotos-bdi div.result-img-container{
+.media-tabs div.result-img-container{
   display: inline-block;
   overflow: hidden;
   max-width: 100%;
   margin: 0px;
   position: relative;
 }
-#fotos-bdi div.result-img-container img{
+.media-tabs div.result-img-container img{
   max-height: 300px;
   margin: -25px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
   vertical-align: middle;
   font-size: 3.75em;
 }
-#fotos-bdi div.result-img-container img:hover{
-  transform:scale(.8);
-  -ms-transform:scale(.8); /* IE 9 */
-  -moz-transform:scale(.8); /* Firefox */
-  -webkit-transform:scale(.8); /* Safari and Chrome */
-  -o-transform:scale(.8); /* Opera */
+.media-tabs div.result-img-container.cornell-audios img{
+  max-height: 180px;
 }
-#fotos-bdi div.result-img-container a{
+.media-tabs div.result-img-container img:hover{
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
+}
+.media-tabs div.result-img-container a{
   cursor: pointer;
 }

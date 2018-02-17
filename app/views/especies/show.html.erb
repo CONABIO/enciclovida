@@ -114,42 +114,128 @@
     <% end %>
   </ul>
 </div>
+
 <div id="pestañas" class="panel row">
-  <ul class="nav nav-tabs" data-tabs="tabs">
-    <li id="geodata_e_imagen_li" class="active"><a href="#geodata_e_imagen" class="noLoad"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a></li>
-    <li id="fotos-bdi_li"><a href="#fotos-bdi"><i class="picture-ev-icon"></i><strong><small>  Banco de imágenes</small></strong></a></li>
-    <li id="describe_li"><a href="#describe"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
-    <li id="descripcion_catalogos_li"><a href="#descripcion_catalogos"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
-    <li id="arbol_li"><a href="#arbol"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
-    <li id="comentario_li"><a href="#comentario"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
+
+  <ul class="nav nav-tabs" role="tablist">
+
+    <li role="presentation" class="active">
+      <a href="#geodata_e_imagen" class="noLoad" aria-controls="geodata_e_imagen" role="tab" data-toggle="pill"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a>
+    </li>
+
+    <li role="presentation" class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="picture-ev-icon"></i><strong><small> Media </small></strong><span class="caret"></span></a>
+
+      <ul class="dropdown-menu" style="z-index: 1001;">
+        <li class="dropdown-header">CONABIO - Bando de imágenes</li>
+
+        <li role="presentation">
+          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
+        </li>
+        <% if @con_cornell %>
+          <li role="separator" class="divider"></li>
+
+          <li class="dropdown-header">Macaulay Library</li>
+          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
+          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
+          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
+
+
+        <% end %>
+
+      </ul>
+    </li>
+
+
+    <li role="presentation" ><a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
+    <li role="presentation" ><a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
+    <li role="presentation" ><a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
+    <li role="presentation" ><a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
   </ul>
 
+  <div class="tab-content">
+    <div id="geodata_e_imagen" role="tabpanel" class="tab-pane fade in panel-body active">
+      <%= render :partial => 'geodata_e_imagen' %>
+    </div>
 
-  <div id="geodata_e_imagen" class="tab-pane panel-body">
-    <%= render :partial => 'geodata_e_imagen' %>
-  </div>
-
-  <div id="descripcion_catalogos" class="tab-pane panel-body">
-    <p class="text-center">
-      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-    <h4>Cargando... Por favor, espera</h4>
-    </p>
-  </div>
-
-  <div id="describe" class="tab-pane panel-body">
-    <p class="text-center">
-      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-    <h4>Cargando... Por favor, espera</h4>
-    </p>
-  </div>
-
-  <div id="fotos-bdi" class="tab-pane panel-body">
-    <p class="text-center">
-      <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+    <div id="descripcion_catalogos" role="tabpanel" class="tab-pane fade panel-body">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>
-    </p>
+      </p>
+    </div>
+
+    <div id="describe" role="tabpanel" class="tab-pane fade panel-body">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+
+    <div id="fotos-bdi" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>bdi
+      </p>
+    </div>
+
+    <% if @con_cornell %>
+      <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+        <p class="text-center">
+          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+        <h4>Cargando... Por favor, espera</h4>
+        </p>
+      </div>
+      <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+        <p class="text-center">
+          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+        <h4>Cargando... Por favor, espera</h4>
+        </p>
+      </div>
+      <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+        <p class="text-center">
+          <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+        <h4>Cargando... Por favor, espera</h4>
+        </p>
+      </div>
+
+      <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content" style="background-color: #c5c5c5;">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+
+            <div class="modal-body text-center" id="modal_reproduce_body">
+	            <div class="row">
+		            <div class="col-md-3">
+		              <h3></h3>
+		              <h4></h4>
+			            <h5></h5>
+			            <p></p>
+		            </div>
+	              <div class="col-md-9">
+
+	              </div>
+	            </div>
+            </div>
+
+            <div class="modal-footer">
+              <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
+              <!--button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button-->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
+    <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
   </div>
-  
-  <div id="arbol" class="tab-pane panel-body"></div>
-  <div id="comentario" class="tab-pane panel-body"></div>
+
+
+
 </div>

@@ -23,7 +23,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
@@ -60,6 +60,12 @@ class EspeciesController < ApplicationController
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
+        end
+
+        #para saber si es Ave TODO (parche feito)
+        if proveedor = @especie.proveedor
+          #@con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
+          @con_cornell = true
         end
 
         # Para los comentarios
@@ -381,6 +387,34 @@ class EspeciesController < ApplicationController
     else  # End estatus OK
       render :_error and return
     end
+  end
+
+  #servicio Macaulay Library (eBird)
+  def media_cornell
+    type = params['type'] || 'photo'
+    @especie = Especie.find(params['id'])
+    mc = MacaulayService.new
+    proveedor = @especie.proveedor
+    if  taxonCode = proveedor.cornell_id
+      @array = mc.dameMedia(taxonCode, type)
+    else
+      taxon = @especie.nombre_cientifico
+      @array = mc.dameMedia_nc(taxon, type)
+    end
+
+     render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
+
+    case type
+        when 'photo'
+          render 'fotos_cornell'
+        when 'video'
+          render 'videos_cornell'
+        when 'audio'
+          render 'audios_cornell'
+        else
+          render text: "<strong>No se encontraron coincidencias</strong>"
+      end
+
   end
 
   def fotos_naturalista
