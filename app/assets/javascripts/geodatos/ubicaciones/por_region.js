@@ -104,7 +104,7 @@ var cargaGrupos = function(properties)
             $('#contenedor_especies').empty();
 
             $.each(resp.resultados, function(index, prop){
-                $('#contenedor_grupos').append('<label><span title="' + prop.grupo + '" class="grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'" reino="' + prop.reino + '"><i class="' + prop.icono + '"></i></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
+                $('#contenedor_grupos').append('<label><input type="radio" name="id"><span title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'" reino="' + prop.reino + '"></span></label><sub class="badge" grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub>');
             });
         } else
             console.log('Falló el servicio de conteo del SNIB');
