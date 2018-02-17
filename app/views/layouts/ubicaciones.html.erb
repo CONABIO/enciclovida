@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
+      xmlns:fb="http://www.facebook.com/2008/fbml"
+      xmlns:og="http://ogp.me/ns#">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
+  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
+  <%= favicon_link_tag '/favicon.ico' %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+	  TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
+	  IP = "<%= IP %>";
+	  PORT = "<%= PORT %>";
+  </script>
+
+
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag 'geodatos/d3.v3.min', 'data-turbolinks-track' => true %>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
+  <%= javascript_include_tag 'geodatos/Control.FullScreen.js', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'geodatos/ubicaciones/topojson', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'geodatos/ubicaciones/registros_snib', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'geodatos/ubicaciones/por_region', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+	  I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+	  I18n.locale = "<%= I18n.locale %>";
+	  I18n.fallbacks = true;
+  </script>
+
+  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
+  <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag "geodatos/ubicaciones/por_region", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
+
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+
+
+<header class="container-fluid">
+  <%= render :partial => 'shared/brandBar' %>
+</header>
+
+<section id="content">
+  <div class="container-fluid">
+    <div class="row">
+        <%= yield %>
+    </div>
+  </div>
+</section>
+
+<footer class="social">
+  <%= render :partial => 'shared/footer_social' %>
+</footer>
+
+<footer class="legal">
+  <%= render :partial => 'shared/footer_legal' %>
+</footer>
+
+<%#TODO bitacora.html_safe if bitacora.present? %>
+
+<%= yield :delayedjs %>
+
+<% if Rails.env == 'production'  %>
+  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
+<% end %>
+</body>
+</html>
