@@ -2,9 +2,8 @@ $(document).ready(function(){
 
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
         grupo_id_seleccionado = $(this).attr('grupo_id');
-        pagina_especies = 1
+        pagina_especies = 1;
         cargaEspecies();
-        return false;
     });
 
     $('#contenedor_especies').on('click', '.especie_id', function(){
@@ -125,6 +124,7 @@ $(document).ready(function(){
     });
 
     $('#especies').on('keyup', '#nombre', function(){
+        pagina_especies = 1;
         cargaEspecies();
     });
 
