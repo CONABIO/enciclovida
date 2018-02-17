@@ -1,10 +1,16 @@
-<legend><h5 class="text-primary">3) <strong>Elige una especie para visualizarla en el mapa.</strong></h5></legend>
-<button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#myModal">
-  Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
-</button>
+<h5>
+  <span class="badge">3</span>
+  <a href class="btn btn-link btn-sm disabled"><b>Elige una especie para visualizarla en el mapa.</b></a>
+</h5>
+
 <div class="panel-resultados col-xs-12 col-sm-12 col-md-12 col-lg-12" id="contenedor_especies"></div>
 
 <!-- Modal -->
 <%= render :partial => 'descarga_taxa' %>
-<%= search_field_tag 'nombre' %> <hr />
-<%= link_to 'Carga más', '', id: 'carga_mas_especies' %>
+<%= search_field_tag 'nombre', nil, :class => 'form-control' %>
+
+<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#myModal">
+  Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
+</button>
+
+<%= link_to "Carga más <span class='glyphicon glyphicon-plus'></span>".html_safe, '', id: 'carga_mas_especies', class: 'btn btn-link btn-xs' %>

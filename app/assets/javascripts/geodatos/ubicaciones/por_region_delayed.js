@@ -56,9 +56,9 @@ $(document).ready(function(){
 
     });
 
-    $( "#toggle-ba-icon" ).click(function() {
+    /*$( "#toggle-ba-icon" ).click(function() {
         $( "#toggle-ba-content" ).slideToggle( "fast", function() {});
-    });
+    });*/
 
     $('#b_avanzada').on('change', ".checkbox input", function()
     {

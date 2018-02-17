@@ -1,6 +1,12 @@
-<legend><h5 class="text-primary">4) <strong>Aplica más filtros (opcional) <i class="glyphicon glyphicon-resize-vertical" id="toggle-ba-icon"></i></strong></h5></legend>
+<h5>
+  <span class="badge">4</span>
+  <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#toggle-ba-content" aria-expanded="false" aria-controls="toggle-ba-content">
+  <b>Aplica más filtros (opcional). </b><span class="caret"></span>
+</button>
+</h5>
 
-<div id="toggle-ba-content" style="display: none;">
+<div id="toggle-ba-content" class="collapse">
+  <div class="well">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
       <div class="" id="panelFiltrosPt">
         <div class="text-left" id="panelFiltros">
@@ -8,4 +14,5 @@
         </div>
       </div>
   <% end %>
+  </div>
 </div>
