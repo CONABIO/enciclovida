@@ -26,13 +26,13 @@ var leyendaSNIB = function(con_conteo)
     if (con_conteo == undefined)
         var conteo = "<b>Registros del SNIB <br /> (museos, colectas y proyectos)</b>";
     else
-        var conteo = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>";
+        var conteo = "<b>Registros del SNIB <sub class='badge'>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>";
 
-    var marker_default = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/> <text x="20" y="13">Registros del SNIB</text>';
+    var marker_default = '&nbsp;&nbsp;<i class="circle-ev-icon div-icon-snib-default"></i> Registros del SNIB<br />';
 
-    var marker_averaves = '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/> <text x="20" y="28">Registros de AverAves</text>';
+    var marker_averaves = '<i class="feather-ev-icon div-icon-snib"></i>Registros de AverAves<br />';
 
-    var marker_fosil = '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/> <text x="20" y="43">Registros de Fósiles</text></svg>';
+    var marker_fosil = '<i class="bone-ev-icon div-icon-snib"></i>Registros de Fósiles';
 
     legend_control.addOverlay(markersLayer,
         conteo + "<p>" + marker_default + marker_averaves + marker_fosil + "</p>"
