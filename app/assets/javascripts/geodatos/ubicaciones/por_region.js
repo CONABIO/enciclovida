@@ -56,7 +56,6 @@ var cargaMapa = function (id)
     };
 
     L.control.layers(baseMaps).addTo(map);
-    L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 };
 
 /**

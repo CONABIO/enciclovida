@@ -160,7 +160,7 @@ class BusquedaRegion < Busqueda
         when 'Hongos'
           g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
         when 'Invertebrados'
-          g.merge!({'icono' => 'annelida-ev-icon', 'reino' => 'animalia'})
+          g.merge!({'icono' => 'invertebrados-ev-icon', 'reino' => 'animalia'})
         when 'Mamíferos'
           g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
         when 'Peces'

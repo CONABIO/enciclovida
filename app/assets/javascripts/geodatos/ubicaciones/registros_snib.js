@@ -13,9 +13,30 @@ var borraRegistrosAnteriores = function()
 {
     if (map.hasLayer(markersLayer))
     {
+        map.removeControl(legend_control);
         map.removeLayer(markersLayer);
         markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
     }
+};
+
+var leyendaSNIB = function(con_conteo)
+{
+    legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+
+    if (con_conteo == undefined)
+        var conteo = "<b>Registros del SNIB <br /> (museos, colectas y proyectos)</b>";
+    else
+        var conteo = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>";
+
+    var marker_default = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/> <text x="20" y="13">Registros del SNIB</text>';
+
+    var marker_averaves = '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/> <text x="20" y="28">Registros de AverAves</text>';
+
+    var marker_fosil = '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/> <text x="20" y="43">Registros de Fósiles</text></svg>';
+
+    legend_control.addOverlay(markersLayer,
+        conteo + "<p>" + marker_default + marker_averaves + marker_fosil + "</p>"
+    );
 };
 
 var aniadePuntosSnib = function()
@@ -35,7 +56,6 @@ var aniadePuntosSnib = function()
         onEachFeature: function (prop, layer) {
             layer.bindPopup(ejemplarSnib(prop.properties.d));
             layer.on("click", function () {
-//layer.bindPopup(ejemplarSnib(prop.properties.d));
             });
         }
     });
@@ -43,20 +63,7 @@ var aniadePuntosSnib = function()
     markersLayer.addLayer(species_layer);
     map.addLayer(markersLayer);
 
-    /*
-     var punto_rojo = '<svg height="50" width="200"><circle cx="10" cy="10" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FF0000"/>';
-     punto_rojo+= '<text x="20" y="13">Registros del SNIB</text>';
-
-     var punto_naranja = punto_rojo + '<circle cx="10" cy="25" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#FFA500"/>';
-     punto_naranja+= '<text x="20" y="28">Registros de AverAves</text>';
-
-     var punto_gris = punto_naranja + '<circle cx="10" cy="40" r="6" stroke="black" stroke-width="1" stroke-opacity="1" fill="#888888"/>';
-     punto_gris+= '<text x="20" y="43">Registros de Fósiles</text></svg>';
-
-     legend_control.addOverlay(markersLayer,
-     "<b>Registros del SNIB <sub>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>" +
-     "<p>"+punto_naranja+"</p>"
-     );*/
+    leyendaSNIB(true);
 };
 
 /**
