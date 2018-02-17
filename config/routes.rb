@@ -103,6 +103,7 @@ Buscador::Application.routes.draw do
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/media-cornell' => 'especies#media_cornell'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
