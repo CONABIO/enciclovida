@@ -31,12 +31,12 @@
   </script>
 
   <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
   <%= stylesheet_link_tag 'geodatos/Control.FullScreen.css', 'data-turbolinks-track' => true %>
   <%= stylesheet_link_tag "geodatos/ubicaciones/por_region", media: "all", "data-turbolinks-track" => true %>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
 
   <%= csrf_meta_tags %>
@@ -49,7 +49,7 @@
   <%= render :partial => 'shared/brandBar' %>
 </header>
 
-<section id="content">
+<section id="content" class="main">
   <div class="container-fluid">
     <div class="row">
         <%= yield %>
