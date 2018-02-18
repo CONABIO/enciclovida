@@ -154,7 +154,7 @@ var nombre = function()
     if (I18n.locale == 'es')
     {
         if (taxon.nombre_comun.length > 0)
-            return taxon.nombre_comun.replace(/[0-9]/g, '') + "<br /><a href='/especies/" + taxon.id + "'><i>" + taxon.nombre_cientifico + "</i></a>";
+            return taxon.nombre_comun + "<br /><a href='/especies/" + taxon.id + "'><i>" + taxon.nombre_cientifico + "</i></a>";
         else
             return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
     } else

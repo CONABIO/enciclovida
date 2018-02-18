@@ -23,20 +23,24 @@
 <% end %>
 <h4 class="text-left text-success" id="contenedor-nombre-region">Selecciona una región (doble clic)</h4>
 
-<div id="regiones" class="col-md-3">
-  <%= render partial: 'tipos_regiones' %>
+<div class="col-xs-12 col-md-4">
+  <div id="regiones" class="col-md-12">
+    <%= render partial: 'tipos_regiones' %>
+  </div>
+  <div id="grupos" class="col-md-12">
+    <%= render partial: 'grupos' %>
+  </div>
+  <div id="especies" class="col-md-12">
+    <%= render partial: 'especies' %>
+  </div>
 </div>
-<div id="contenedor_mapa" class="col-md-9 pull-right">
+<div id="contenedor_mapa" class="col-xs-12 col-md-8">
+  <div id="busqueda_avanzada" class="col-md-12">
+    <%= render partial: 'filtros_busqueda_avanzada_bis' %>
+  </div>
   <div id="map"></div>
 </div>
-<div id="grupos" class="col-md-3">
-  <%= render partial: 'grupos' %>
-</div>
-<div id="especies" class="col-md-3">
-  <%= render partial: 'especies' %>
-</div>
-<div id="busqueda_avanzada" class="col-md-3">
-  <%= render partial: 'filtros_busqueda_avanzada' %>
-</div>
+
+
 
 
