@@ -155,6 +155,7 @@ div.result-img-container{
 
 .checkbox label, .radio label{
     padding-left: 2px;
+    position: relative;
 }
 .checkbox input, .radio input{
     display: none;
@@ -167,8 +168,8 @@ div.result-img-container{
 }
 
 .checkbox i{
-    font-size: 2em;
+    font-size: 1.7em;
 }
-.checkbox span{
+.checkbox:not(.explora_por) span{
     background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
 }
