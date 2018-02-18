@@ -2,8 +2,28 @@
     min-height: 600px;
     width: 100%;
 }
+.panel-resultados {
+    text-align: left;
+}
+.panel-resultados div.result-img-container .result-nombre-container {
+    margin: -5px 0px 0 0;
+    opacity: 0.85;
+    line-height: 12px;
+    min-height: 30px;
+}
+.panel-resultados div.result-img-container sup{
+    border-radius: 8px;
+    color: #333333;
+    background-color: #ececec;
+    padding: 2px 4px;
+    margin-left: 2px;
+    top: -2.5em;
+}
+div.result-img-container {
+   margin: 5px 2px;
+}
 #especies img{
-    max-height: 100px;
+    max-height: 130px;
 }
 #contenedor_especies h5{
     font-size: small;
@@ -56,4 +76,23 @@
 }
 .marker-cluster-small div span, .marker-cluster-medium div span, .marker-cluster-large div span{
     color: white;
+}
+
+
+
+.checkbox input:checked{/*, .radio input:checked{*/
+    display: block;
+    right: 0;
+}
+
+.explora_por{
+    /*display: inline-block;*/
+    float: left;
+    /*box-shadow: 2px 2px #d5d5d5;*/
+    margin-right: 10px;
+}
+
+.animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon, .mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon, .bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon{
+    background-image: none;!important;
+    font-size: 1.5em;
 }
