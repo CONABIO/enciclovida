@@ -44,11 +44,12 @@ module BusquedasHelper
   end
 
   # Filtros para Categorías de riesgo y comercio internacional
-  def checkboxEstadoConservacion
+  def checkboxEstadoConservacion(explora_por=false)
     checkBoxes=''
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes << "<h6><strong>#{t(k)}</strong><h6>"
+      checkBoxes << "<div class='explora_por'>" if explora_por
+      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" unless explora_por
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
         checkBoxes << "<label>"
@@ -58,6 +59,8 @@ module BusquedasHelper
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
+      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" if explora_por
+      checkBoxes << "</div>" if explora_por
     end
 
     checkBoxes.html_safe
