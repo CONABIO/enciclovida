@@ -9,19 +9,19 @@
   <div class="well row">
     <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
 
-      <div class="checkbox col-xs-12 col-sm-5 col-md-4 col-lg-5">
-        <h5><strong>Categorías de riesgo y comercio internacional</strong></h5>
-        <%= checkboxEstadoConservacion %>
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h6>
+        <%= checkboxEstadoConservacion(true).gsub('btn-basica ', '').html_safe %>
       </div>
 
-      <div class="checkbox col-xs-12 col-sm-4 col-md-3 col-lg-3">
-        <h5><strong>Tipo de distribución</strong></h5>
-        <%= checkboxTipoDistribucion %>
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Tipo de distribución</strong></h6>
+        <%= checkboxTipoDistribucion.gsub('btn-basica ', '').html_safe %>
       </div>
 
-      <div class="checkbox col-xs-12 col-sm-4 col-md-3 col-lg-3">
-        <h5><strong>Especies prioritarias para la conservación</strong></h5>
-        <%= checkboxPrioritaria %>
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Especies prioritarias para la conservación</strong></h6>
+        <%= checkboxPrioritaria.gsub('btn-basica ', '').html_safe %>
       </div>
 
     <% end %>

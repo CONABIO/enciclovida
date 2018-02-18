@@ -3,8 +3,6 @@
   <a href class="btn btn-link btn-sm disabled"><b>Elige una especie para visualizarla en el mapa.</b></a>
 </h5>
 
-<div class="panel-resultados col-xs-12 col-sm-12 col-md-12 col-lg-12" id="contenedor_especies"></div>
-
 <!-- Modal -->
 <%= render :partial => 'descarga_taxa' %>
 <%= search_field_tag 'nombre', nil, :class => 'form-control' %>
@@ -14,3 +12,5 @@
 </button>
 
 <%= link_to "Carga más <span class='glyphicon glyphicon-plus'></span>".html_safe, '', id: 'carga_mas_especies', class: 'btn btn-link btn-xs' %>
+
+<div class="panel-resultados col-xs-12 col-sm-12 col-md-12 col-lg-12" id="contenedor_especies"></div>
