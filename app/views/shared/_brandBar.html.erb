@@ -9,6 +9,8 @@
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
       <li><%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b><i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil, :name => I18n.locale.to_s, :onClick => 'return cambia_locale(this.name);'%></li>
       <li role="separator" class="divider"></li>
+      <li><%= link_to "<b class='text-success'>¿Búsqueda por estado/municipio?</b>".html_safe, '/explora-por-region', :role => 'button' %></li>
+      <li role="separator" class="divider"></li>
       <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button' %></li>
       <li role="separator" class="divider"></li>
       <li><%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs' %></li>
