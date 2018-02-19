@@ -1,9 +1,11 @@
 #map {
-    min-height: 600px;
+    min-height: 750px;
     width: 100%;
 }
 .panel-resultados {
     text-align: left;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 .result-nombre-container {
     margin: -5px 0px 0 0;
@@ -24,7 +26,7 @@ sub{
     font-weight: bold;
 }
 div.result-img-container {
-   margin: 0 4px 3px 0;
+   margin: 0 2px;
 }
 #especies img{max-height: 120px;}
 
