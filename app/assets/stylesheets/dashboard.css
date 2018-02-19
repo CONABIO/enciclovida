@@ -93,7 +93,7 @@
  */
 
 .main {
-    padding: 25px;
+    padding: 10px 25px;
     background-color: #ececec;
 }
 @media (min-width: 872px) {

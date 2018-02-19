@@ -5,29 +5,29 @@
 .panel-resultados {
     text-align: left;
 }
-.panel-resultados div.result-img-container .result-nombre-container {
+.result-nombre-container {
     margin: -5px 0px 0 0;
     opacity: 0.85;
-    line-height: 12px;
-    min-height: 30px;
+    line-height: 11px;
+    min-height: 28px;
+    font-size: 11px;
+    /*font-weight: bold;*/
 }
-.panel-resultados div.result-img-container sup{
+sub{
     border-radius: 8px;
     color: #333333;
-    background-color: #ececec;
+    background-color: #dddddd;
     padding: 2px 4px;
-    margin-left: 2px;
-    top: -2.5em;
+    margin-left: -10px;
+    bottom: -2em;
+    font-size: .8em;
+    font-weight: bold;
 }
 div.result-img-container {
-   margin: 5px 2px;
+   margin: 0 4px 3px 0;
 }
-#especies img{
-    max-height: 130px;
-}
-#contenedor_especies h5{
-    font-size: small;
-}
+#especies img{max-height: 120px;}
+
 .region, .selecciona-region {
     fill: black;
     opacity: .2;
@@ -53,8 +53,8 @@ div.result-img-container {
 /*    cursor: pointer;*/
 }
 #contenedor_grupos sub {
-    bottom: -2.2em;
-    left: -3.0em;
+    bottom: -.75em;
+/*    left: -3.0em;*/
 }
 #contenedor-nombre-region {
     font-weight: bold
