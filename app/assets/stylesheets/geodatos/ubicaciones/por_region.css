@@ -20,8 +20,8 @@ sub{
     color: #333333;
     background-color: #dddddd;
     padding: 2px 4px;
-    margin-left: -10px;
-    bottom: -2em;
+    margin-left: -2px;
+    /*bottom: -2em;*/
     font-size: .8em;
     font-weight: bold;
 }

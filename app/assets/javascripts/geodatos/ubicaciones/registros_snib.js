@@ -24,15 +24,15 @@ var leyendaSNIB = function(con_conteo)
     legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     if (con_conteo == undefined)
-        var conteo = "<b>Registros del SNIB <br /> (museos, colectas y proyectos)</b>";
+        var conteo = "<b>Registros del SNIB</b>";
     else
-        var conteo = "<b>Registros del SNIB <sub class='badge'>" + registros_conteo + "</sub><br /> (museos, colectas y proyectos)</b>";
+        var conteo = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
 
-    var marker_default = '&nbsp;&nbsp;<i class="circle-ev-icon div-icon-snib-default"></i> Registros del SNIB<br />';
+    var marker_default = '&nbsp;&nbsp;<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones<br />';
 
-    var marker_averaves = '<i class="feather-ev-icon div-icon-snib"></i>Registros de AverAves<br />';
+    var marker_averaves = '<i class="feather-ev-icon div-icon-snib"></i>Observaciones<br />';
 
-    var marker_fosil = '<i class="bone-ev-icon div-icon-snib"></i>Registros de Fósiles';
+    var marker_fosil = '<i class="bone-ev-icon div-icon-snib"></i>Fósiles';
 
     legend_control.addOverlay(markersLayer,
         conteo + "<p>" + marker_default + marker_averaves + marker_fosil + "</p>"
