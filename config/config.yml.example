@@ -102,6 +102,18 @@ base: &base
   github:
     api: https://api.github.com/repos/calonso-conabio/buscador
 
+  # Url del api de ebird (proxima a desaparecer)
+  ebird:
+    api: https://ebird.org/media/averaves/catalog.json?taxonCode=
+
+  # Url del partner's api de cornell
+  cornell:
+    api: https://api.macaulaylibrary.org/ml-catalog-api/ws3.0/partner/search/assets?
+    key: 9999999999999999999999999999
+    api_old: https://search.macaulaylibrary.org/catalog.json?taxonCode=
+    taxonCode: https://search.macaulaylibrary.org//api/v1/find/taxon?q=
+
+
 ###--------------------Aun no se ocupan------------------------###
 
   # site contact, mainly just used for GBIF archive generation
