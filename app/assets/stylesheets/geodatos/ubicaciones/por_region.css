@@ -1,5 +1,5 @@
 #map {
-    min-height: 750px;
+    min-height: 620px;
     width: 100%;
 }
 .panel-resultados {
@@ -21,7 +21,6 @@ sub{
     background-color: #dddddd;
     padding: 2px 4px;
     margin-left: -2px;
-    /*bottom: -2em;*/
     font-size: .8em;
     font-weight: bold;
 }
@@ -33,7 +32,6 @@ div.result-img-container {
 .region, .selecciona-region {
     fill: black;
     opacity: .2;
-
     pointer-events: all!important;
 }
 .region {
@@ -55,8 +53,8 @@ div.result-img-container {
 /*    cursor: pointer;*/
 }
 #contenedor_grupos sub {
-    bottom: -.75em;
-/*    left: -3.0em;*/
+    bottom: -1.25em;
+    left: -1.0em;
 }
 #contenedor-nombre-region {
     font-weight: bold
@@ -81,7 +79,10 @@ div.result-img-container {
 }
 
 
-
+.checkbox label, .radio label{
+    padding-left: 0px;
+    margin-left: -10px;
+}
 .checkbox input:checked{/*, .radio input:checked{*/
     display: block;
     right: 0;
@@ -98,4 +99,13 @@ div.result-img-container {
     background-image: none;!important;
     font-size: 1.5em;
     border-radius: 25px;
+}
+
+div.checkbox.explora_por h6{
+    margin: 3px 6px 0 0;
+    font-size: 10px;
+    text-align: center;
+}
+div.checkbox.explora_por{
+    text-align: center;
 }
