@@ -145,7 +145,7 @@ var cargaEspecies = function()
                 '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
                 '<div class="result-nombre-container">' +
                 '<b>' + taxon.nombre_comun + '</b><br />' +
-                '<b><a class="especie_id"><i>' + taxon.nombre_cientifico + '</i></a></b>' +
+                '<b><a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a></b>' +
                 '</div>' +
                 '</div>');
             });
