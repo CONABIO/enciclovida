@@ -3,7 +3,11 @@
   <a class="btn btn-link btn-sm"><b>Selecciona una región de la lista o el mapa (doble clic).</b></a>
 </h5>
 <div class="form-group">
-          <%= select_tag 'region_estado', nil, prompt: '- Escoge un estado -', :class => 'busquedas form-control input-sm' %>
-	    <%= select_tag 'region_municipio', nil, prompt: '- - - - - -', disabled: true, :class => 'busquedas form-control input-sm' %>
-<%#= select_tag 'region_anp', nil, prompt: '- - - - - -', disabled: true %>
+	<div class="col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-ofset-0 col-sm-offset-1 col-md-offset-1 col-lg-offset-0">
+	  <%= select_tag 'region_estado', nil, prompt: '- Escoge un estado -', :class => 'busquedas form-control input-sm' %>
+	</div>
+  <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 col-xs-ofset-0 col-sm-offset-1 col-md-offset-0 col-lg-offset-2">
+    <%= select_tag 'region_municipio', nil, prompt: '- - - - - -', disabled: true, :class => 'busquedas form-control input-sm' %>
+  </div>
+  <%#= select_tag 'region_anp', nil, prompt: '- - - - - -', disabled: true %>
 </div>
