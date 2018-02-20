@@ -11,7 +11,7 @@ $(document).ready(function(){
         taxon["id"] = $(this).attr('especie_id');
         taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('b')[0].innerText;
         taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('b')[1].innerText;
-        return false;
+        //return false;
     });
 
     /**
@@ -127,4 +127,14 @@ $(document).ready(function(){
         cargaEspecies();
     });
 
+/*    window.scroll({
+        top: 120,
+        left: 0,
+        behavior: 'smooth'
+    });*/
+    $(window).load(function()
+    {
+        $("html,body").animate({scrollTop: 122}, 1000);
+    });
 });
+
