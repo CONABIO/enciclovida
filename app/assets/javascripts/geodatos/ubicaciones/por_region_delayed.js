@@ -9,8 +9,8 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaRegistros($(this).attr('snib_url'));
         taxon["id"] = $(this).attr('especie_id');
-        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('b')[0].innerText;
-        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('b')[1].innerText;
+        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
+        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
         //return false;
     });
 

@@ -143,7 +143,7 @@ var cargaEspecies = function()
                 $('#contenedor_especies').append('<div class="result-img-container">' +
                 '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
                 '<div class="result-nombre-container">' +
-                taxon.nombre_comun + '<br />' +
+                '<span>' + taxon.nombre_comun + '</span><br />' +
                 '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
                 '</div>' +
                 '</div>');
