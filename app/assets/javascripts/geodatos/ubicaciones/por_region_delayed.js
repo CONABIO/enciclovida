@@ -127,4 +127,14 @@ $(document).ready(function(){
         cargaEspecies();
     });
 
+/*    window.scroll({
+        top: 120,
+        left: 0,
+        behavior: 'smooth'
+    });*/
+    $(window).load(function()
+    {
+        $("html,body").animate({scrollTop: 122}, 1000);
+    });
 });
+
