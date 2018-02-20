@@ -7,13 +7,18 @@
     max-height: 400px;
     overflow-y: scroll;
 }
-.result-nombre-container {
+.panel-resultados div.result-img-container .result-nombre-container{
     margin: -5px 0px 0 0;
     opacity: 0.85;
     line-height: 11px;
     min-height: 28px;
     font-size: 11px;
+    background-color: #ecececce;
+    color: #332222;
     /*font-weight: bold;*/
+}
+.panel-resultados div.result-img-container {
+    margin: 0 2px;
 }
 sub{
     border-radius: 8px;
@@ -23,9 +28,6 @@ sub{
     margin-left: -2px;
     font-size: .8em;
     font-weight: bold;
-}
-div.result-img-container {
-   margin: 0 2px;
 }
 #especies img{max-height: 120px;}
 
