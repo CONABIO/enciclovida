@@ -11,7 +11,7 @@ $(document).ready(function(){
         taxon["id"] = $(this).attr('especie_id');
         taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('b')[0].innerText;
         taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('b')[1].innerText;
-        return false;
+        //return false;
     });
 
     /**
