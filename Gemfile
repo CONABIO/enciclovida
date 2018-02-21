@@ -27,7 +27,7 @@ gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'magick-metadata'  # maneja metadatos
 gem 'mime-types', '1.25.1'
 gem 'mysql2'
-gem 'nokogiri', '1.5.11'  # hacer un parse con xml
+gem 'nokogiri'  # hacer un parse con xml
 gem 'pg'
 gem 'rack-contrib'
 gem 'rack-google-analytics'
@@ -39,6 +39,7 @@ gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'  # extiende el metodo auto_link
 gem 'roo', :require => 'roo'  # Solo lectura excel, open office, google docs
 gem 'rubyXL', :require => 'rubyXL'  # Crea archivos xlsx, con formato
+gem 'rubyzip', '1.2.1'
 gem 'sass-rails', '~> 4.0.0'
 gem 'savon', '2.4.0'  # para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # extrae las tuplas de un modelo o de toda la base
