@@ -22,20 +22,20 @@
     <%= javascript_include_tag 'geodatos/ubicaciones/por_region_delayed', 'data-turbolinks-track' => true %>
 <% end %>
 
-<div class="col-xs-12 col-md-3">
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
   <h5 class="text-left text-success" id="contenedor-nombre-region">Selecciona una región (doble clic)</h5>
-  <div id="regiones" class="col-md-12"><!-- 1 -->
+  <div id="regiones" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 1 -->
     <%= render partial: 'tipos_regiones' %>
   </div>
-  <div id="grupos" class="col-md-12"><!-- 2 -->
+  <div id="grupos" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 2 -->
     <%= render partial: 'grupos' %>
   </div>
-  <div id="especies" class="col-md-12"><!-- 3 -->
+  <div id="especies" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 3 -->
     <%= render partial: 'especies' %>
   </div>
 </div>
 
-<div id="contenedor_mapa" class="col-xs-12 col-md-9"><!-- 4 -->
+<div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-6 col-lg-7"><!-- 4 -->
   <div id="busqueda_avanzada" class="col-md-12">
     <%= render partial: 'filtros_busqueda_avanzada_bis' %>
   </div>
