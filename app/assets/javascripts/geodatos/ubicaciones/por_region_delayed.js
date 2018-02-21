@@ -9,9 +9,9 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaRegistros($(this).attr('snib_url'));
         taxon["id"] = $(this).attr('especie_id');
-        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('b')[0].innerText;
-        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('b')[1].innerText;
-        return false;
+        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
+        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
+        //return false;
     });
 
     /**
@@ -127,4 +127,14 @@ $(document).ready(function(){
         cargaEspecies();
     });
 
+/*    window.scroll({
+        top: 120,
+        left: 0,
+        behavior: 'smooth'
+    });*/
+    $(window).load(function()
+    {
+        $("html,body").animate({scrollTop: 122}, 1000);
+    });
 });
+
