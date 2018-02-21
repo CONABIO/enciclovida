@@ -79,10 +79,10 @@ class Lista < ActiveRecord::Base
       datos_descarga(r)
 
     elsif opts[:avanzada]  # Busqueda avanzada
-      query = opts[:busqueda].distinct.to_sql
-      consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
+      consulta = Bases.distinct_limpio(opts[:busqueda]) << ' ORDER BY nombre_cientifico ASC'
       r = Especie.find_by_sql(consulta)
       datos_descarga(r)
+
     elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
       r = Especie.where(id: cadena_especies.split(','))
       datos_descarga(r)
