@@ -416,7 +416,6 @@ class BusquedasController < ApplicationController
   end
 
   def descargar_taxa_excel(busqueda=nil)
-
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
@@ -466,15 +465,15 @@ class BusquedasController < ApplicationController
 
       else  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
         if con_correo
-          if Rails.env.production?
-            # el nombre de la lista es cuando la solicito? y el correo
-            lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+          # el nombre de la lista es cuando la solicito? y el correo
+          lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
+          if Rails.env.production?
             if basica
               opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
+              lista.delay(queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
             else
-              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
+              lista.delay(queue: 'descargar_taxa').to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
             end
 
           else  # Para develpment o test
@@ -482,7 +481,7 @@ class BusquedasController < ApplicationController
               opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
               lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
             else
-              lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+              lista.to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
             end
           end
 
