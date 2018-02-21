@@ -22,7 +22,7 @@ gem 'haml'
 gem 'htmlentities'
 gem 'i18n-js'
 gem 'jbuilder', '~> 1.0.1'
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 3.1.3'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'magick-metadata'  # maneja metadatos
 gem 'mime-types', '1.25.1'
