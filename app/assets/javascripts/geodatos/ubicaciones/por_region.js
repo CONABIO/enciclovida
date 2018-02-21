@@ -102,8 +102,8 @@ var cargaGrupos = function(properties)
         {
             $('#contenedor_grupos').empty();
             $('#contenedor_especies').empty();
-            var lol = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],resp.resultados[6],resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
-            $.each(lol, function(index, prop){
+            var grupos_orden = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],resp.resultados[6],resp.resultados[4], resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
+            $.each(grupos_orden, function(index, prop){
                 $('#contenedor_grupos').append('<label><input type="radio" name="id"><span tooltip-title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'" reino="' + prop.reino + '"></span><sub grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub></label>');
             });
         } else
