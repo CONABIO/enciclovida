@@ -3,8 +3,8 @@ class UsuariosController < ApplicationController
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   layout :false, :only => [:cambia_locale]
-  before_action :only => [:index, :show, :destroy] {tiene_permiso?('Administrador')} # Minimo administrador
-  before_action :only => [:conabio] {tiene_permiso?('AdminComentarios')} # Minimo administrador de comentarios de área
+  before_action :only => [:index, :destroy] {tiene_permiso?('Administrador')} # Minimo administrador
+  before_action :only => [:conabio] {tiene_permiso?('AdminComentarios', true)} # Minimo administrador de comentarios de área
   before_action do
     @no_render_busqueda_basica = true
   end
