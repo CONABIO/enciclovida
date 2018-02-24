@@ -5,8 +5,8 @@ class ComentariosController < ApplicationController
   end
   skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
-  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :extrae_comentarios_generales]
-  before_action :only => [:index, :show, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?('AdminComentarios', true)}  # Minimo administrador de comentarios
+  before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :show, :extrae_comentarios_generales]
+  before_action :only => [:index, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?('AdminComentarios', true)}  # Minimo administrador de comentarios
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
@@ -22,9 +22,7 @@ class ComentariosController < ApplicationController
     @comentarios = Comentario.all
   end
 
-  # GET /comentarios/1
-  # GET /comentarios/1.json
-  # Show de la vista de admins
+  #Show de los comentarios SIN LAYOUT (fichas, respuesta externa y admin)
   def show
     @ficha = (params[:ficha].present? && params[:ficha] == '1')
 
@@ -53,7 +51,7 @@ class ComentariosController < ApplicationController
     @comentario = Comentario.children_of(ultimo_comentario).new
 
     # El ID del administrador
-    @comentario.usuario_id = current_usuario.id
+    @comentario.usuario_id = current_usuario.id unless @ficha
 
     # Estatus 6 quiere decir que es parte del historial de un comentario
     @comentario.estatus = Comentario::RESPUESTA
