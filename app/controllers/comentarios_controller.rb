@@ -260,6 +260,10 @@ class ComentariosController < ApplicationController
         #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
         #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
         #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
+
+        #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
+        #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
+
         #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
         EnviaCorreo.avisar_responsable_contenido(@comentario, CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:email)).deliver
       end
