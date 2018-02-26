@@ -4,6 +4,7 @@ gem 'actionpack-action_caching'
 gem 'activerecord-session_store'
 #gem 'activerecord-sqlserver-adapter', git: 'https://github.com/calonso-conabio/activerecord-sqlserver-adapter.git', branch: '4-0-stable', ref: '47b6d7b'
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
 gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa'  # forza a blurrily a usar rails 5
 gem 'bootstrap-sass', '~> 3.3.6'
@@ -39,7 +40,7 @@ gem 'rest-client', :require => 'rest_client'
 gem 'rinku', :require => 'rails_rinku'  # extiende el metodo auto_link
 gem 'roo', :require => 'roo'  # Solo lectura excel, open office, google docs
 gem 'rubyXL', :require => 'rubyXL'  # Crea archivos xlsx, con formato
-gem 'rubyzip'
+gem 'rubyzip', :require => 'zip'
 gem 'sass-rails', '~> 5.0'
 gem 'savon'  # para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # extrae las tuplas de un modelo o de toda la base
