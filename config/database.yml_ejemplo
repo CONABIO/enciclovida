@@ -1,44 +1,36 @@
 login: &login
-  adapter: sqlserver
+  adapter: mysql
   pool: 5
-  username: tu_usuario
-  password: tu_passwd
-  host: tu_host
-  port: 5050
+  username:
+  password:
+  host:
+  port: 3306
 
 development:
   <<: *login
-  database: buscador_development
+  database: enciclovida_development
   timeout: 200
 
 test:
   <<: *login
-  database: buscador_test
+  database: enciclovida_test
   timeout: 200
 
 production:
   <<: *login
-  database: buscador
+  database: enciclovida
   timeout: 5
 
 snib:
   adapter: postgresql
-  database: la-base
+  database: snib
   pool: 5
-  username: tu-usuario
-  password: tu-password
-  host: tu-host
-  port: 9999
+  username:
+  password:
+  host:
+  port: 5434
 
-#conexiones para cada base
-<% CONFIG.bases.each do |base| %>
-<%= base %>:
+catalogos:
   <<: *login
-  database: <%= base %>
+  database: catalogocentralizado
   timeout: 5
-<% end %>
-
-
-
-
-
