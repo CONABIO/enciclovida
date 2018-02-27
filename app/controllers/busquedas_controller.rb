@@ -6,7 +6,7 @@ class BusquedasController < ApplicationController
     @no_render_busqueda_basica = true
   end
 
-  skip_before_filter :set_locale, only: [:cat_tax_asociadas]
+  skip_before_action :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]
 
   def resultados
