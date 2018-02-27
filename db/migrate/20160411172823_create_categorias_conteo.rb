@@ -1,4 +1,4 @@
-class CreateCategoriasConteo < ActiveRecord::Migration
+class CreateCategoriasConteo < ActiveRecord::Migration[5.1]
   def change
     create_table :categorias_conteo do |t|
       t.integer :especie_id, :null => false

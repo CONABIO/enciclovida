@@ -1,4 +1,4 @@
-class AddPhotosTable < ActiveRecord::Migration
+class AddPhotosTable < ActiveRecord::Migration[5.1]
   def change
     create_table "photos", force: true do |t|
       t.integer  "usuario_id"

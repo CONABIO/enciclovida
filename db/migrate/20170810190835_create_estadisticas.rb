@@ -1,4 +1,4 @@
-class CreateEstadisticas < ActiveRecord::Migration
+class CreateEstadisticas < ActiveRecord::Migration[5.1]
   def up
     create_table :estadisticas do |t|
       t.string :descripcion_estadistica

@@ -1,4 +1,4 @@
-class MejoraAdicionalesProveedores < ActiveRecord::Migration
+class MejoraAdicionalesProveedores < ActiveRecord::Migration[5.1]
   def change
     change_table(:adicionales) do |t|
       t.remove :justificacion_nombre

@@ -1,4 +1,4 @@
-class DropUsuarioFromUsuarios < ActiveRecord::Migration
+class DropUsuarioFromUsuarios < ActiveRecord::Migration[5.1]
   def change
     change_table(:usuarios) do |t|
       t.remove :usuario

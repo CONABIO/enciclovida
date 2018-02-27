@@ -1,4 +1,4 @@
-class AddCategoriaComentarioIdToComentarios < ActiveRecord::Migration
+class AddCategoriaComentarioIdToComentarios < ActiveRecord::Migration[5.1]
   def change
     change_table(:comentarios) do |t|
       t.remove :especie_comentario_id

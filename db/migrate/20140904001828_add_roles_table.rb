@@ -1,4 +1,4 @@
-class AddRolesTable < ActiveRecord::Migration
+class AddRolesTable < ActiveRecord::Migration[5.1]
   def change
     create_table "roles", force: true do |t|
       t.string   "nombre_rol",                                 null: false
