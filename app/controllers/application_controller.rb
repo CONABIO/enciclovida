@@ -22,13 +22,6 @@ class ApplicationController < ActionController::Base
   end
 
 
-  private
-
-  def dameLocaleFiltro
-    return unless filtro = Filtro.where(:sesion => request.session_options[:id]).first
-    filtro.locale
-  end
-
   protected
 
   # Limita la aplicacion a un usuario y contrasenia general
