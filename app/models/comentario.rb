@@ -34,10 +34,10 @@ class Comentario < ActiveRecord::Base
   validates_presence_of :comentario
   validates_presence_of :especie_id
   validates_presence_of :categorias_contenido_id
-  validates_presence_of :nombre, :if => 'usuario_id.blank?'
+  validates_presence_of :nombre, :if => 'usuario_id.blank?'.to_sym
 
-  validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => 'usuario_id.blank?'
-  validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'
+  validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => 'usuario_id.blank?'.to_sym
+  validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'.to_sym
 
   after_create :idABase32
 
