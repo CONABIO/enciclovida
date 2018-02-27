@@ -2,9 +2,11 @@ class Especie < ActiveRecord::Base
   include CacheServices
 
   establish_connection(:catalogos)
-  self.table_name='Nombre'
-  self.primary_key='idNombre'
-  alias_attribute :id, :idNombre
+  self.table_name = 'catalogocentralizado.Nombre'
+  self.primary_key = 'IdNombre'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdNombre
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
