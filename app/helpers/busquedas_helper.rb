@@ -9,22 +9,17 @@ module BusquedasHelper
     opciones
   end
 
-  # Filtros para los grupos icónicos en la búsqueda avanzada vista básica
+  # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos
-    radios = ''
-    ir=%w(Animalia Plantae Fungi Prokaryotae Protoctista)
-    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
-    ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
-
-    reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
-    animales = Especie.select_grupos_iconicos.where(:nombre_cientifico => ia)
-    plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => ip)
+    reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+    animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
 
     def arma_span(taxon)
       "<label>#{radio_button_tag('', taxon.id, false, id: nil)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
     end
 
-    radios << '<h6><strong>Reinos</strong></h6>'
+    radios = '<h6><strong>Reinos</strong></h6>'
     reinos.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end

@@ -18,6 +18,10 @@ class Busqueda
       ['superior a', '<']
   ]
 
+  GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
+  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+  GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+
   # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
   def self.filtros_default(busqueda, params = {})
     # Parte del tipo de ditribucion
