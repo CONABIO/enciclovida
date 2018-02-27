@@ -1,8 +1,10 @@
 class Especie < ActiveRecord::Base
   include CacheServices
 
-  self.table_name='especies'
-  self.primary_key='id'
+  establish_connection(:catalogos)
+  self.table_name='Nombre'
+  self.primary_key='idNombre'
+  alias_attribute :id, :idNombre
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
@@ -34,7 +36,7 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
-  has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
+  #has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
   has_many :photos, :through => :taxon_photos
   has_many :bibliografias, :through => :especies_bibliografias
   has_many :regiones, :through => :nombres_regiones
