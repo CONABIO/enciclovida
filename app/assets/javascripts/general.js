@@ -5,6 +5,21 @@ var correoValido = function (correo)
     return pattern.test(correo);
 };
 
+var cambiaLocale = function(locale){
+    $.ajax(
+        {
+            url: "/usuarios/cambia_locale",
+            type: 'POST',
+            data: {
+                locale: locale
+            }
+        }).done(function(resp){
+            if (resp.estatus) location.reload(true);
+            return false;
+        });
+    return false;
+};
+
 $(document).ready(function(){
 
     $.fn.loadingShades = function(e, options){
@@ -71,21 +86,6 @@ $(document).ready(function(){
         }
         $(this).dialog('option', 'height', newHeight);
         $(this).dialog('option', 'position', {my: 'center', at: 'center', of: $(window)});
-    };
-
-    cambia_locale = function(locale){
-        $.ajax(
-            {
-                url: "/usuarios/cambia_locale",
-                type: 'POST',
-                data: {
-                    locale: locale
-                }
-            }).done(function(){
-                location.reload(true);
-                return false;
-            });
-        return false;
     };
 });
 
@@ -190,21 +190,6 @@ $(document).ready(function(){
         }
         $(this).dialog('option', 'height', newHeight);
         $(this).dialog('option', 'position', {my: 'center', at: 'center', of: $(window)});
-    };
-
-    cambia_locale = function(locale){
-        $.ajax(
-            {
-                url: "/usuarios/cambia_locale",
-                type: 'POST',
-                data: {
-                    locale: locale
-                }
-            }).done(function(){
-                location.reload(true);
-                return false;
-            });
-        return false;
     };
 
     //Pequeño hack para mejorar el title de los iconos, (agregar solo clase .btn-title
