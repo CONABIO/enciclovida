@@ -1,4 +1,8 @@
 class Adicional < ActiveRecord::Base
+
+  establish_connection(:development)
+  self.table_name='enciclovida.adicionales'
+
   belongs_to :especie
   belongs_to :icono
 

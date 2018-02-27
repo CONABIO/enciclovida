@@ -1,7 +1,15 @@
 class Catalogo < ActiveRecord::Base
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.CatalogoNombre'
+  self.primary_key = 'IdCatNombre'
 
-  self.table_name = 'catalogos'
-  self.primary_key = 'id'
+  # Los alias con las tablas de catalogos
+  alias_attribute :descripcion, :Descripcion
+  alias_attribute :nivel1, :Nivel1
+  alias_attribute :nivel2, :Nivel2
+  alias_attribute :nivel3, :Nivel3
+  alias_attribute :nivel4, :Nivel4
+  alias_attribute :nivel5, :Nivel5
 
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo'
   #has_one :especie, :through => :especies_catalogos, :class_name => 'EspecieCatalogo', :foreign_key => 'catalogo_id'

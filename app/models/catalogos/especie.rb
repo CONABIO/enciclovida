@@ -1,12 +1,27 @@
 class Especie < ActiveRecord::Base
-  include CacheServices
 
   establish_connection(:catalogos)
   self.table_name = 'catalogocentralizado.Nombre'
   self.primary_key = 'IdNombre'
 
+  include CacheServices
+
   # Los alias con las tablas de catalogos
   alias_attribute :id, :IdNombre
+  alias_attribute :categoria_taxonomica_id, :IdCategoriaTaxonomica
+  alias_attribute :id_nombre_ascendente, :IdNombreAscendente
+  alias_attribute :id_ascend_obligatorio, :IdAscendObligatorio
+  alias_attribute :nombre, :Nombre
+  alias_attribute :estatus, :Estatus
+  alias_attribute :fuente, :Fuente
+  alias_attribute :nombre_autoridad, :NombreAutoridad
+  alias_attribute :numero_filogenetico, :NumeroFilogenetico
+  alias_attribute :cita_nomenclatural, :CitaNomenclatural
+  alias_attribute :sis_clas_cat_dicc, :SisClasCatDicc
+  alias_attribute :anotacion, :Anotacion
+  alias_attribute :ancestry_ascendente_directo, :Ascendentes
+  alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
+  alias_attribute :nombre_cientifico, :NombreCompleto
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
@@ -112,8 +127,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
-  scope :select_grupos_iconicos, -> {select('especies.id, nombre_cientifico, nombre_comun_principal').adicional_join}
-
+  scope :select_grupos_iconicos, -> {select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional)}
 
   CON_REGION = [19, 50]
 

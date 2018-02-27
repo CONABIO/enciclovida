@@ -2,6 +2,7 @@ class Proveedor < ActiveRecord::Base
 
   establish_connection(:development)
   self.table_name='enciclovida.proveedores'
+
   belongs_to :especie
   attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
 

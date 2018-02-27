@@ -1,6 +1,11 @@
 class CategoriaTaxonomica < ActiveRecord::Base
-  self.table_name = 'categorias_taxonomicas'
-  self.primary_key = 'id'
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.CategoriaTaxonomica'
+  self.primary_key = 'idCategoriaTaxonomica'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :nombre_categoria_taxonomica, :NombreCategoriaTaxonomica
+
   has_many :especies
 
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
