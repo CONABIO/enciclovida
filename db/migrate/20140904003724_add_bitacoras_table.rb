@@ -1,4 +1,4 @@
-class AddBitacorasTable < ActiveRecord::Migration
+class AddBitacorasTable < ActiveRecord::Migration[5.1]
   def change
     create_table "bitacoras", force: true do |t|
       t.text     "descripcion"

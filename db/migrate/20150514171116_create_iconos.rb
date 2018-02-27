@@ -1,4 +1,4 @@
-class CreateIconos < ActiveRecord::Migration
+class CreateIconos < ActiveRecord::Migration[5.1]
   def change
     create_table :iconos do |t|
       t.string :taxon_icono, :null => false

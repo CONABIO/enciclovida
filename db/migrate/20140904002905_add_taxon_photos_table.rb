@@ -1,4 +1,4 @@
-class AddTaxonPhotosTable < ActiveRecord::Migration
+class AddTaxonPhotosTable < ActiveRecord::Migration[5.1]
   def change
     create_table "taxon_photos", force: true do |t|
       t.integer  "especie_id", null: false

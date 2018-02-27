@@ -1,4 +1,4 @@
-class AlterUsuarios < ActiveRecord::Migration
+class AlterUsuarios < ActiveRecord::Migration[5.1]
   def self.up
     change_table(:usuarios) do |t|
       ## Campos no necesarios de la gema devise

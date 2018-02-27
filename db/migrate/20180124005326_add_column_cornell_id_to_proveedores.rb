@@ -1,4 +1,4 @@
-class AddColumnCornellIdToProveedores < ActiveRecord::Migration
+class AddColumnCornellIdToProveedores < ActiveRecord::Migration[5.1]
 
   def up
     change_table(:proveedores) do |t|

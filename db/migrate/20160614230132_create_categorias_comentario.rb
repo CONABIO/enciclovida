@@ -1,4 +1,4 @@
-class CreateCategoriasComentario < ActiveRecord::Migration
+class CreateCategoriasComentario < ActiveRecord::Migration[5.1]
   def change
     create_table :categorias_comentario do |t|
       t.string :nombre, null: false

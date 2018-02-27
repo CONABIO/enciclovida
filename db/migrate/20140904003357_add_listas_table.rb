@@ -1,4 +1,4 @@
-class AddListasTable < ActiveRecord::Migration
+class AddListasTable < ActiveRecord::Migration[5.1]
   def change
     create_table "listas", force: true do |t|
       t.string   "nombre_lista",                                                                     null: false
