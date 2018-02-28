@@ -130,21 +130,16 @@ footer.legal p {
 }
 .enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 4.5em;
+  font-size: 4em;
   width: 2em !important;
 }
-.bdi-ev-icon:before{
+.media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before, .macaulay_library-ev-icon:before, .cornell_lab-ev-icon:before{
   font-size: 3em;
-  width: 6em !important;
+  width: 4em !important;
 }
 .ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
-.enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{
-  color: #fdfdfd;
-}
-.vida-ev-icon:before{
-  color: #889b45;
-}
-.vida-ev-icon:before{margin-left: -2em;}
+.enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
+.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
 .ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
