@@ -113,7 +113,7 @@ div.result-img-container{
     background-image: linear-gradient(to bottom, #cfe7f5 0%, #d9f1ff 30%);
     font-size: 2.75em;
 }
-.mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon{
+.mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon{
     background-image: linear-gradient(to bottom, #f5e1cb 0%, #ffebd4 40%);
     font-size: 2em;
 }
@@ -150,10 +150,12 @@ div.result-img-container{
 .liliopsida-ev-icon{color: #114722}
 .coniferophyta-ev-icon{color: #788c4a}
 .magnoliopsida-ev-icon{color: #495925}
+.invertebrados-ev-icon{color: #6c4e30}
 
 
 .checkbox label, .radio label{
     padding-left: 2px;
+    position: relative;
 }
 .checkbox input, .radio input{
     display: none;
@@ -166,8 +168,8 @@ div.result-img-container{
 }
 
 .checkbox i{
-    font-size: 2em;
+    font-size: 1.7em;
 }
-.checkbox span{
+.checkbox:not(.explora_por) span{
     background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
 }

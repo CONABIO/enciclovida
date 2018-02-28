@@ -293,6 +293,15 @@ ActiveRecord::Schema.define(version: 20180124005326) do
   add_index "regiones", ["nombre_region"], name: "index_nombre_region_tipos_regiones"
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
 
+  create_table "regiones_mapas", force: true do |t|
+    t.string   "nombre_region"
+    t.integer  "geo_id"
+    t.string   "ancestry"
+    t.string   "tipo_region"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "roles", force: true do |t|
     t.string   "nombre_rol",    null: false
     t.datetime "created_at",    null: false

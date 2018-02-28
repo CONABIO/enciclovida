@@ -1,0 +1,17 @@
+<%= form_for(@region_mapa) do |f| %>
+  <% if @region_mapa.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@region_mapa.errors.count, "error") %> prohibited this region_mapa from being saved:</h2>
+
+      <ul>
+      <% @region_mapa.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

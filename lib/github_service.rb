@@ -4,6 +4,7 @@ class GithubService
     ruta = Rails.root.join('tmp', 'cache')
     archivo = ruta.join('github_issues')
 
+
     if existe_cache?('github_issues')
       if File.exist?(archivo)
         JSON.parse(File.read(archivo))
@@ -12,7 +13,7 @@ class GithubService
       end
 
     else
-      escribe_cache('github_issues', CONFIG.cache.github.issues)
+      escribe_cache('github_issues', eval(CONFIG.cache.github.issues))
       jres = lee_issues
 
       FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
@@ -47,7 +48,7 @@ class GithubService
   # Este servicio se actualizará una vez cada hora, ya que github permite solo 60 request/hr sin autenticar,
   # y 5k/hr con el metodo de autenticación
   def escribe_cache(recurso, tiempo = 1.hour)
-    Rails.cache.write(recurso, true, expires_in: tiempo)
+    Rails.cache.write(recurso, expires_in: tiempo)
   end
 
   def existe_cache?(recurso)
