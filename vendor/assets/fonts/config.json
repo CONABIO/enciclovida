@@ -1212,7 +1212,7 @@
     },
     {
       "uid": "934d858f25b06feaf2155ce4fd2674a0",
-      "css": "conabio_blanco_xxv",
+      "css": "conabio_xxv",
       "code": 59485,
       "src": "custom_icons",
       "selected": true,
@@ -1221,7 +1221,7 @@
         "width": 2671
       },
       "search": [
-        "CONABIO blanco XXV"
+        "CONABIO XXV"
       ]
     },
     {
@@ -1316,7 +1316,7 @@
     },
     {
       "uid": "b9c6be881ed8846245881c5a3f4b45e3",
-      "css": "conabio_blanco",
+      "css": "conabio_completo",
       "code": 59500,
       "src": "custom_icons",
       "selected": true,
@@ -1325,7 +1325,7 @@
         "width": 3611
       },
       "search": [
-        "conabio blanco"
+        "conabio completo"
       ]
     },
     {
