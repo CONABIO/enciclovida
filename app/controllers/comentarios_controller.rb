@@ -265,7 +265,8 @@ class ComentariosController < ApplicationController
         #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
 
         #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
-        EnviaCorreo.avisar_responsable_contenido(@comentario, CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:email)).deliver
+        categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
+        EnviaCorreo.avisar_responsable_contenido(@comentario, Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables).map(&:email)).deliver
       end
       render json: {estatus: 1}.to_json
     else
@@ -308,7 +309,6 @@ class ComentariosController < ApplicationController
       else
         consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
       end
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
