@@ -15,6 +15,8 @@ class BusquedasController < ApplicationController
     @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
 
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+
+    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
   end
 
   def resultados

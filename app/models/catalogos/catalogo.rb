@@ -1,4 +1,5 @@
 class Catalogo < ActiveRecord::Base
+
   establish_connection(:catalogos)
   self.table_name = 'catalogocentralizado.CatalogoNombre'
   self.primary_key = 'IdCatNombre'
