@@ -9,14 +9,20 @@ class BusquedasController < ApplicationController
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]
 
+  def avanzada
+    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+  end
+
   def resultados
     # Por si no coincidio nada
     @taxones = Especie.none
 
     if params[:busqueda] == 'basica'
-      basica
+      resultados_basica
     elsif params[:busqueda] == 'avanzada'
-      avanzada
+      resultados_avanzada
     else  # Default, error
       respond_to do |format|
         format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
@@ -106,7 +112,7 @@ class BusquedasController < ApplicationController
   private
 
   # Busqueda basica
-  def basica
+  def resultados_basica
     arbol = params[:arbol].present? && params[:arbol].to_i == 1
     vista_general = I18n.locale.to_s == 'es' ? true : false
 
@@ -284,7 +290,7 @@ class BusquedasController < ApplicationController
     end  # end respond_to
   end
 
-  def avanzada
+  def resultados_avanzada
     busqueda = Especie.categoria_taxonomica_join
 
     conID = params[:id]
