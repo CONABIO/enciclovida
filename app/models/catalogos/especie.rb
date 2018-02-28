@@ -732,7 +732,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # REVISADO: Despleiga las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
   def cat_tax_asociadas
-    nivel2 = root.nombre_cientifico == 'Animalia' ? 1 : 0
+    nivel2 = root.nombre_cientifico.strip == 'Animalia' ? 1 : 0
     cats = CategoriaTaxonomica.cat_tax_asociadas(nivel2)
 
     if I18n.locale.to_s != 'es-cientifico'
