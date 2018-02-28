@@ -13,6 +13,9 @@ class Catalogo < ActiveRecord::Base
 
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo'
   #has_one :especie, :through => :especies_catalogos, :class_name => 'EspecieCatalogo', :foreign_key => 'catalogo_id'
+  scope :nom, -> { where(nivel1: 4, nivel2: 1).where("#{attribute_alias(:nivel3)} > 0") }
+  scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
+  scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
 
   IUCN_QUITAR_EN_FICHA = []#['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)','Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
@@ -57,13 +60,13 @@ class Catalogo < ActiveRecord::Base
     ambiente.delete_if{|a| AMBIENTE_EQUIV_MARINO.include?(a)}
   end
 
+  # REVISADO: Las categorias de conservacion para la busqueda avanzada
   def self.nom_cites_iucn_todos
-    nom = where(:nivel1 => 4, :nivel2=> 1).where('nivel3 > 0').map(&:descripcion).uniq
-    nom = [nom[3],nom[1],nom[0],nom[2]]#Orden propuesto por cgalindo
-    # Esta categoria de IUCN esta repetida y no tenia nada asociado
-    iucn = where(:nivel1 => 4, :nivel2=> 2).where("nivel3 > 0 AND descripcion != 'Riesgo bajo (LR): Casi amenazada (nt)'").map(&:descripcion).uniq
-    iucn = [iucn[7],iucn[6],iucn[9],iucn[8],iucn[4],iucn[3],iucn[2],iucn[1],iucn[0],iucn[5]]#IDEM, el iucn[5] se quita en el helper, consultar con dhernandez ASAP
-    cites = where(:nivel1 => 4, :nivel2=> 3).where('nivel3 > 0').map(&:descripcion).uniq #Esta ya viene en orden (I,II,III)
+    nom = self.nom.map(&:descripcion)
+    nom = [nom[3],nom[1],nom[0],nom[2]]  # Orden propuesto por cgalindo
+    iucn = self.iucn.map(&:descripcion)
+    iucn = [iucn[6],iucn[5],iucn[8],iucn[7],iucn[4],iucn[3],iucn[2],iucn[1],iucn[0]]  # Orden propuesto por cgalindo
+    cites = self.cites.map(&:descripcion) #Esta ya viene en orden (I,II,III)
     {:nom => nom, :iucn => iucn, :cites => cites}
   end
 end

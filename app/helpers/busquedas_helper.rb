@@ -34,11 +34,11 @@ module BusquedasHelper
     "<div>#{radios}</div>"
   end
 
-  # Filtros para Categorías de riesgo y comercio internacional
+  # REVISADO: Filtros para Categorías de riesgo y comercio internacional
   def checkboxEstadoConservacion(explora_por=false)
     checkBoxes=''
 
-    Catalogo.nom_cites_iucn_todos.each do |k, valores|
+    @nom_cites_iucn_todos.each do |k, valores|
       checkBoxes << "<div class='explora_por'>" if explora_por
       checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" unless explora_por
       valores.each do |edo|
@@ -54,7 +54,7 @@ module BusquedasHelper
       checkBoxes << "</div>" if explora_por
     end
 
-    checkBoxes.html_safe
+    checkBoxes
   end
 
   # Filtros para "Tipo de distribución" (nativa, endémica, shalalala)
