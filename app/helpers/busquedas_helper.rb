@@ -41,12 +41,12 @@ module BusquedasHelper
     @nom_cites_iucn_todos.each do |k, valores|
       checkBoxes << "<div class='explora_por'>" if explora_por
       checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" unless explora_por
+
       valores.each do |edo|
-        next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag('edo_cons[]', edo, false, :id => "edo_cons_#{edo.parameterize}")
-        checkBoxes << "<span title = '#{t('cat_riesgo.' << edo.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>"
+        checkBoxes << check_box_tag('edo_cons[]', edo.id, false, :id => "edo_cons_#{edo.id}")
+        checkBoxes << "<span title = '#{edo.descripcion}' class = 'btn btn-xs btn-basica btn-title'>"
+        checkBoxes << "<i class = '#{edo.descripcion.estandariza}-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
@@ -76,7 +76,6 @@ module BusquedasHelper
         checkBoxes << "<i class = '#{tipoDist.descripcion.estandariza}-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
-
       end
     end
 

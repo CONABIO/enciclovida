@@ -63,11 +63,11 @@ class Catalogo < ActiveRecord::Base
 
   # REVISADO: Las categorias de conservacion para la busqueda avanzada
   def self.nom_cites_iucn_todos
-    nom = self.nom.map(&:descripcion)
+    nom = self.nom#.map(&:descripcion)
     nom = [nom[3],nom[1],nom[0],nom[2]]  # Orden propuesto por cgalindo
-    iucn = self.iucn.map(&:descripcion)
+    iucn = self.iucn#.map(&:descripcion)
     iucn = [iucn[6],iucn[5],iucn[8],iucn[7],iucn[4],iucn[3],iucn[2],iucn[1],iucn[0]]  # Orden propuesto por cgalindo
-    cites = self.cites.map(&:descripcion) #Esta ya viene en orden (I,II,III)
+    cites = self.cites#.map(&:descripcion) #Esta ya viene en orden (I,II,III)
     {:nom => nom, :iucn => iucn, :cites => cites}
   end
 end

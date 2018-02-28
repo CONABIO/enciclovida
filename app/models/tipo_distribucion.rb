@@ -19,7 +19,8 @@ class TipoDistribucion < ActiveRecord::Base
     if vista_especialistas
       all
     else
-      distribuciones_vista_general
+      d = distribuciones_vista_general
+      [d[0], d[2], d[3], d[1]]  # Acomodo sugerido de cgalindo
     end
   end
 end
