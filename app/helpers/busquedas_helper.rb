@@ -34,7 +34,7 @@ module BusquedasHelper
     "<div>#{radios}</div>"
   end
 
-  # REVISADO: Filtros para Categorías de riesgo y comercio internacional
+  # REVISADO: Filtros para Categorías de riesgo y comercio internacional en la busqueda avanzada
   def checkboxEstadoConservacion(explora_por=false)
     checkBoxes=''
 
@@ -57,30 +57,30 @@ module BusquedasHelper
     checkBoxes
   end
 
-  # Filtros para "Tipo de distribución" (nativa, endémica, shalalala)
+  # REVISADO: Filtros para Tipos de distribuciónes en la busqueda avanzada
   def checkboxTipoDistribucion
     checkBoxes = ''
+
     if I18n.locale.to_s == 'es-cientifico'
-      TipoDistribucion::DISTRIBUCIONES.each do |tipoDist|
-        next if TipoDistribucion::QUITAR_DIST.include?(tipoDist)
+      @distribuciones.each do |tipoDist|
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
-        checkBoxes << "<span title = '#{t('distribucion.' << tipoDist.gsub(' ', '_'))}' class='btn btn-xs btn-basica '>#{t('distribucion.' << tipoDist.gsub(' ', '_'))}</span>"
+        checkBoxes << check_box_tag('dist[]', tipoDist.id, false, id: "dist_#{tipoDist.id}")
+        checkBoxes << "<span title = '#{t('distribucion.' << tipoDist.descripcion.estandariza)}' class='btn btn-xs btn-basica '>#{tipoDist.descripcion}</span>"
         checkBoxes << "</label>"
       end
     else
-      TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+      @distribuciones.each do |tipoDist|
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag('dist[]', t('distribucion.' + tipoDist.gsub(' ', '_')), false, id: "dist_#{tipoDist}")
-        checkBoxes << "<span title = '#{t('tipo_distribucion.' << tipoDist.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
+        checkBoxes << check_box_tag('dist[]', tipoDist.id, false, id: "dist_#{tipoDist.id}")
+        checkBoxes << "<span title = '#{tipoDist.descripcion}' class = 'btn btn-xs btn-basica btn-title'>"
+        checkBoxes << "<i class = '#{tipoDist.descripcion.estandariza}-ev-icon'></i>"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
 
       end
     end
 
-    checkBoxes.html_safe
+    checkBoxes
   end
 
   # Filtros para Estatus taxonómico

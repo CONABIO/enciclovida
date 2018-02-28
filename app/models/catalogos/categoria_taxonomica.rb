@@ -1,4 +1,5 @@
 class CategoriaTaxonomica < ActiveRecord::Base
+
   establish_connection(:catalogos)
   self.table_name = 'catalogocentralizado.CategoriaTaxonomica'
   self.primary_key = 'idCategoriaTaxonomica'

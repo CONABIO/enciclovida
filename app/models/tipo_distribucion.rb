@@ -1,21 +1,25 @@
 class TipoDistribucion < ActiveRecord::Base
 
-  self.table_name='tipos_distribuciones'
-  self.primary_key='id'
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.TipoDistribucion'
+  self.primary_key = 'IdTipoDistribucion'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdTipoDistribucion
+  alias_attribute :descripcion, :Descripcion
 
   has_many :especies_regiones
 
-  # De esta forma las acomodo a como me convenga
-  #IDEM as below, se sustituye introducida por exotica y exotica-invasora
-  DISTRIBUCIONES = %w(nativa endemica no-endemica cuasiendemica semiendemica exotica exotica-invasora actual original)
+  scope :distribuciones_vista_general, -> { where(descripcion: DISTRIBUCIONES_VISTA_GENERAL) }
 
-  # Quita algunos tipos de distribucion que no son validos
-  QUITAR_DIST = %w(actual original invasora)
+  DISTRIBUCIONES_VISTA_GENERAL = %w(Endémica Nativa Exótica Exótica-Invasora)
 
-  # Quita algunos tipos de distribucion que quiere Carlos G.
-  QUITAR_DIST_SOLO_BASICA = %w(no-endemica cuasiendemica semiendemica)
-
-  # Ponerlos en un orden muy específico unicamente para la vista general tal cual como lo pide Carlos G.
-  #Se agrego exótica y exótica-invasora en lugar de introducida
-  DISTRIBUCIONES_SOLO_BASICA = %w(endemica nativa exotica exotica-invasora)
+  # REVISADO: Los tipos de distribucion de acuerdo a la vista
+  def self.distribuciones(vista_especialistas = true)
+    if vista_especialistas
+      all
+    else
+      distribuciones_vista_general
+    end
+  end
 end
