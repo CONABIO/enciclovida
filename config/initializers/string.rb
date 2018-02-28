@@ -45,7 +45,7 @@ class String
   end
 
   def estandariza
-    sin_acentos.gsub(' ', '_')
+    sin_acentos.parameterize
   end
 
   def sin_acentos
