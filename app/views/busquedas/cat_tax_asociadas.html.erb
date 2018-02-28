@@ -1,9 +1,8 @@
 <%= select_tag :nivel, options_for_select(Busqueda::NIVEL_CATEGORIAS, (params[:nivel].present? ? params[:nivel] : '>=')), :class => 'form-control' %>
 <% if (params[:cat].present? && params[:cat] != '') %>
-    <%= select_tag :cat, options_for_select(@especie.cat_tax_asociadas.collect{ |u| [u.nombre_categoria_taxonomica, u.nivel] },params[:cat]), :class => 'form-control' %>
+    <%= select_tag :cat, options_for_select(@categorias.collect{ |u| [u.nombre_categoria_taxonomica, u.nivel] },params[:cat]), :class => 'form-control' %>
 <% else %>
-    <% cats = @especie.cat_tax_asociadas %>
     <%= select_tag :cat, options_for_select(
-                           cats.collect{ |u| [u.nombre_categoria_taxonomica, u.nivel] },
-                           cats.collect{ |u| u.nivel if u.nombre_categoria_taxonomica == 'especie' }), :class => 'form-control' %>
+                           @categorias.collect{ |u| [u.nombre_categoria_taxonomica, u.nivel] },
+                           @categorias.collect{ |u| u.nivel if u.nombre_categoria_taxonomica == 'especie' }), :class => 'form-control' %>
 <% end %>

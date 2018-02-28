@@ -95,7 +95,8 @@ class BusquedasController < ApplicationController
 
   # Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
-    @especie = Especie.find(params[:id])
+    especie = Especie.find(params[:id])
+    @categorias = especie.cat_tax_asociadas
   end
 
   def tabs
