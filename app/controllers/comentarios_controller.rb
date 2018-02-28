@@ -345,6 +345,7 @@ class ComentariosController < ApplicationController
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
+          or_taxa << " especies.id = #{e.especie_id}"
           or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
           end
         consulta = consulta.where(or_taxa.join(' OR '))
