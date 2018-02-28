@@ -45,7 +45,11 @@ class String
   end
 
   def estandariza
-    I18n.transliterate(self).strip.gsub(' ', '_').downcase
+    sin_acentos.gsub(' ', '_')
+  end
+
+  def sin_acentos
+    I18n.transliterate(self).strip.downcase
   end
 end
 

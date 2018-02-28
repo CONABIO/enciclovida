@@ -1,0 +1,16 @@
+<h5>
+  <span class="badge">3</span>
+  <a href class="btn btn-link btn-sm disabled"><b>Elige una especie para visualizarla en el mapa.</b></a>
+</h5>
+
+<!-- Modal -->
+<%= render :partial => 'descarga_taxa' %>
+<%= search_field_tag 'nombre', nil, :class => 'form-control input-sm' %>
+
+<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#myModal">
+  Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
+</button>
+
+<%= link_to "Carga más <span class='glyphicon glyphicon-plus'></span>".html_safe, '', id: 'carga_mas_especies', class: 'btn btn-link btn-xs' %>
+
+<div class="panel-resultados" id="contenedor_especies"></div>

@@ -18,16 +18,36 @@ class Busqueda
       ['superior a', '<']
   ]
 
+  # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+  def self.filtros_default(busqueda, params = {})
+    # Parte del tipo de ditribucion
+    if params[:dist].present?
+      #######################  Quitar cuando se arregle en la base
+      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
+        busqueda = busqueda.where('especies.invasora IS NOT NULL')
+      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
+        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
+        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
+      else  # Selecciono cualquiera menos invasora
+        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
+      end
+      #######################
+    end
+
+    # Parte del edo. de conservacion y el nivel de prioritaria
+    if params[:edo_cons].present? || params[:prior].present?
+      busqueda = busqueda.catalogos_join
+      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
+      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
+    end
+
+    busqueda
+  end
+
   def self.por_categoria(busqueda, original_url)
-    # Las condiciones y el join son los mismos pero cambia el select
-    sql = "select('nombre_categoria_taxonomica,count(DISTINCT especies.id) as cuantos')"
-    sql << '.categoria_taxonomica_join.adicional_join'
-
-    busq = busqueda.gsub('datos_basicos', sql)
-    busq << ".group('nombre_categoria_taxonomica')"
-    busq << ".order('nombre_categoria_taxonomica')"
-
-    query_limpio = Bases.distinct_limpio(eval(busq).to_sql)
+    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').adicional_join
+    busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
+    query_limpio = Bases.distinct_limpio(busqueda.to_sql)
     query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
     Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
                                                cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
@@ -136,18 +156,6 @@ WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
     query = 'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
     res = Especie.find_by_sql(query)
     res[0].totales
-  end
-
-  def self.por_arbol(busqueda, sin_filtros=false)
-    if sin_filtros # La búsqueda que realizaste no contiene filtro alguno
-      busq = busqueda.gsub("datos_basicos", "datos_arbol_sin_filtros")
-      busq = busq.sub(/\.where\(\"CONCAT.+/,'')
-      busq << ".order('arbol')"
-      eval(busq)
-    else # Las condiciones y el join son los mismos pero cambia el select, para desplegar el checklist
-      busq = busqueda.gsub("datos_basicos", "datos_arbol_con_filtros")
-      eval(busq)
-    end
   end
 
   def self.asigna_grupo_iconico
