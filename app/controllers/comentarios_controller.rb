@@ -312,13 +312,14 @@ class ComentariosController < ApplicationController
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
+          or_taxa << " especies.id = #{e.especie_id}"
           or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
         end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
       end
 
       # Comentarios totales
@@ -352,7 +353,7 @@ class ComentariosController < ApplicationController
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
       end
 
       # Comentarios totales
