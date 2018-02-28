@@ -4,12 +4,18 @@ class CategoriaTaxonomica < ActiveRecord::Base
   self.primary_key = 'idCategoriaTaxonomica'
 
   # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdCategoriaTaxonomica
   alias_attribute :nombre_categoria_taxonomica, :NombreCategoriaTaxonomica
+  alias_attribute :nivel1, :IdNivel1
+  alias_attribute :nivel2, :IdNivel2
+  alias_attribute :nivel3, :IdNivel3
+  alias_attribute :nivel4, :IdNivel4
 
   has_many :especies
 
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :cat_taxonom, ->(valor) { find(valor).nombre_categoria_taxonomica }
+  scope :cat_tax_asociadas, ->(nivel2) { select(:id, :nombre_categoria_taxonomica).select("CONCAT(#{attribute_alias(:nivel1)},#{attribute_alias(:nivel2)},#{attribute_alias(:nivel3)},#{attribute_alias(:nivel4)}) AS nivel").where(nivel2: nivel2).order(:nivel1, :nivel2, :nivel3, nivel4: :asc) }
 
   # Todas las categorias
   CATEGORIAS  = self.all.map{|cat| I18n.transliterate(cat.nombre_categoria_taxonomica).gsub(' ','_').downcase.strip}.uniq

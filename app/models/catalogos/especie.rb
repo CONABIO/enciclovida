@@ -67,7 +67,7 @@ class Especie < ActiveRecord::Base
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
   has_many :estadisticas, :class_name => 'EspecieEstadistica'
 
-  has_ancestry :ancestry_column => :ancestry_ascendente_directo
+  #has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -128,6 +128,30 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
   scope :select_grupos_iconicos, -> {select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional)}
+
+  # Scopes y metodos para ancestry, TODO: ponerlo en una gema
+
+  # REVISADO: Para ver si un taxon es roott
+  def is_root?
+    return false unless ancestry_ascendente_directo.present?
+    ancestros = ancestry_ascendente_directo.split(',').map{|a| a if a.present?}.compact
+    return false unless ancestros.any?
+
+    ancestros.count == 1 ? true : false
+  end
+
+  # REVISADO: Devuelve el taxon root con active record
+  def root
+    if is_root?
+      self
+    else
+      return Especie.none unless ancestry_ascendente_directo.present?
+      ancestros = ancestry_ascendente_directo.split(',').map{|a| a if a.present?}.compact
+      return Especie.none unless ancestros.any?
+
+      Especie.find(ancestros.first)
+    end
+  end
 
   CON_REGION = [19, 50]
 
@@ -706,23 +730,13 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     (nombres_inicio + nombres_mitad + nombres_final).compact
   end
 
+  # REVISADO: Despleiga las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
   def cat_tax_asociadas
-    limites = Bases.limites(id)
-    rama = %w(0)
+    nivel2 = root.nombre_cientifico == 'Animalia' ? 1 : 0
+    cats = CategoriaTaxonomica.cat_tax_asociadas(nivel2)
 
-    # Quiere decir que es con las categorias de phylum, clasificadas por el nivel2
-    if ancestry_ascendente_directo.include?('1000001') || id == 1000001
-      rama = %w(1 2)
-    end
-
-    if I18n.locale.to_s == 'es-cientifico'
-      CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-          where(:id => limites[:limite_inferior]..limites[:limite_superior]).where("nivel2 IN (#{rama.join(',')}) OR nombre_categoria_taxonomica='Reino'").order('nivel')
-    else # Con las categorias de division
-      CategoriaTaxonomica.select('id,nombre_categoria_taxonomica,CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-          where(:id => limites[:limite_inferior]..limites[:limite_superior]).
-          caso_rango_valores('nombre_categoria_taxonomica', CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.map{|c| "'#{c}'"}.join(',')).
-          where("nivel2 IN (#{rama.join(',')}) OR nombre_categoria_taxonomica='Reino'").order('nivel')
+    if I18n.locale.to_s != 'es-cientifico'
+      cats.where(nivel3: 0, nivel4: 0)
     end
   end
 
