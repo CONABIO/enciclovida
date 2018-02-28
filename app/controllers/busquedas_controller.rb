@@ -13,6 +13,8 @@ class BusquedasController < ApplicationController
     @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
     @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
     @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+
+    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
   end
 
   def resultados
