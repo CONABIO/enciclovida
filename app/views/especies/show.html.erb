@@ -208,23 +208,31 @@
 
             </div>
 
-            <div class="modal-body text-center" id="modal_reproduce_body">
+            <div class="modal-body text-success" id="modal_reproduce_body">
 	            <div class="row">
-		            <div class="col-md-3">
-		              <h3></h3>
-		              <h4></h4>
-			            <h5></h5>
-			            <p></p>
-		            </div>
 	              <div class="col-md-9">
-
+	                <div class="embed-responsive embed-responsive-16by9">
+	                </div>
 	              </div>
+	              <div class="col-md-3">
+
+			            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+	                <b id="modal_localidad"></b>
+		              <h5 id="modal_ubicacion"></h5>
+		              <small id="modal_fecha"></small>
+			            <hr>
+		              <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+		            </div>
+
 	            </div>
             </div>
 
             <div class="modal-footer">
-              <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
-              <!--button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button-->
+              <h5 class="modal-title">
+                <i class="copyright-ev-icon"></i>
+                <b id="modal_autor"></b>
+                <span>, Macaulay Library at The Cornell Lab of Ornithology</span>
+              </h5>
             </div>
 
           </div>
