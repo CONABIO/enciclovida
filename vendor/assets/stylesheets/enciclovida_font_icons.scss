@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?92378327');
-  src: font-url('enciclovida_font_icons.eot?92378327#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?92378327') format('woff2'),
-       font-url('enciclovida_font_icons.woff?92378327') format('woff'),
-       font-url('enciclovida_font_icons.ttf?92378327') format('truetype'),
-       font-url('enciclovida_font_icons.svg?92378327#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?18242368');
+  src: font-url('enciclovida_font_icons.eot?18242368#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?18242368') format('woff2'),
+       font-url('enciclovida_font_icons.woff?18242368') format('woff'),
+       font-url('enciclovida_font_icons.ttf?18242368') format('truetype'),
+       font-url('enciclovida_font_icons.svg?18242368#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?92378327#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?18242368#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -116,11 +116,8 @@
 .bajo-ev-icon:before { content: '\e83a'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83c'; } /* '' */
-.flow-tree-ev-icon:before { content: '\e83d'; } /* '' */
 .doc-text-ev-icon:before { content: '\e83e'; } /* '' */
-.sitemap-ev-icon:before { content: '\e83f'; } /* '' */
 .file-pdf-ev-icon:before { content: '\e840'; } /* '' */
-.spin3-1-ev-icon:before { content: '\e841'; } /* '' */
 .vista-especialista-ev-icon:before { content: '\e842'; } /* '' */
 .archive-ev-icon:before { content: '\e843'; } /* '' */
 .marino-ev-icon:before { content: '\e844'; } /* '' */
@@ -130,7 +127,6 @@
 .pdf-ev-icon:before { content: '\e848'; } /* '' */
 .enciclovida_correo-ev-icon:before { content: '\e849'; } /* '' */
 .kml-ev-icon:before { content: '\e84a'; } /* '' */
-.spin4-ev-icon:before { content: '\e84b'; } /* '' */
 .flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
 .kmz-ev-icon:before { content: '\e84d'; } /* '' */
 .conabio-ev-icon:before { content: '\e84e'; } /* '' */
@@ -148,14 +144,12 @@
 .soundcloud-ev-icon:before { content: '\e85a'; } /* '' */
 .twitter-1-ev-icon:before { content: '\e85b'; } /* '' */
 .semarnat-ev-icon:before { content: '\e85c'; } /* '' */
-.conabio_blanco-ev-icon:before { content: '\e85d'; } /* '' */
+.conabio_xxv-ev-icon:before { content: '\e85d'; } /* '' */
 .instagram-ev-icon:before { content: '\e85e'; } /* '' */
-.globe-ev-icon:before { content: '\e85f'; } /* '' */
 .enciclo-ev-icon:before { content: '\e860'; } /* '' */
 .ev2-ev-icon:before { content: '\e861'; } /* '' */
 .map-ev-icon:before { content: '\e862'; } /* '' */
 .feather-ev-icon:before { content: '\e863'; } /* '' */
-.globe-2-ev-icon:before { content: '\e864'; } /* '' */
 .naturalista-2-ev-icon:before { content: '\e865'; } /* '' */
 .block-ev-icon:before { content: '\e866'; } /* '' */
 .biomex-ev-icon:before { content: '\e867'; } /* '' */
@@ -163,5 +157,11 @@
 .exotica-invasora-ev-icon:before { content: '\e869'; } /* '' */
 .exotica-invasora-2-ev-icon:before { content: '\e86a'; } /* '' */
 .invertebrados-ev-icon:before { content: '\e86b'; } /* '' */
-.certificate-ev-icon:before { content: '\f0a3'; } /* '' */
+.conabio_completo-ev-icon:before { content: '\e86c'; } /* '' */
+.cornell_lab-ev-icon:before { content: '\e86d'; } /* '' */
+.cornell_lab_red-ev-icon:before { content: '\e86e'; } /* '' */
+.cornell_lab_yellow-ev-icon:before { content: '\e86f'; } /* '' */
+.macaulay_library-ev-icon:before { content: '\e870'; } /* '' */
+.bdi-ev-icon:before { content: '\e871'; } /* '' */
 .circle-ev-icon:before { content: '\f111'; } /* '' */
+.copyright-ev-icon:before { content: '\f1f9'; } /* '' */
