@@ -5,6 +5,7 @@ class Catalogo < ActiveRecord::Base
   self.primary_key = 'IdCatNombre'
 
   # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdCatNombre
   alias_attribute :descripcion, :Descripcion
   alias_attribute :nivel1, :Nivel1
   alias_attribute :nivel2, :Nivel2
