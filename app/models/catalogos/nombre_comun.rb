@@ -1,7 +1,14 @@
 class NombreComun < ActiveRecord::Base
 
-  self.table_name='nombres_comunes'
-  self.primary_key = 'id'
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.NomComun'
+  self.primary_key = 'IdNomComun'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdNomComun
+  alias_attribute :nombre_comun, :NomComun
+  alias_attribute :observaciones, :Observaciones
+  alias_attribute :lengua, :Lengua
 
   has_many :nombres_regiones, :class_name => 'NombreRegion'
   has_many :especies, :through => :nombres_regiones, :class_name => 'Especie'
