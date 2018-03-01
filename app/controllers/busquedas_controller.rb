@@ -17,6 +17,8 @@ class BusquedasController < ApplicationController
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
 
     @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+
+    @prioritarias = Catalogo.prioritarias
   end
 
   def resultados
