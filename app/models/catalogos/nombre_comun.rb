@@ -11,7 +11,7 @@ class NombreComun < ActiveRecord::Base
   alias_attribute :lengua, :Lengua
 
   has_many :nombres_regiones, :class_name => 'NombreRegion'
-  has_many :especies, :through => :nombres_regiones, :class_name => 'Especie'
+  has_many :especies, :through => :nombres_regiones, :class_name => 'Especie', :foreign_key => Especie.attribute_alias(:id)
 
   scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('%#{valor}%')") }
   scope :caso_empieza_con, ->(columna, valor) { where("#{columna} LIKE '#{valor}%'") }

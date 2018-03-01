@@ -13,7 +13,7 @@ class NombreRegion < ActiveRecord::Base
   attr_accessor :nombre_comun_id_falso
   belongs_to :region
   belongs_to :especie
-  belongs_to :nombre_comun
+  belongs_to :nombre_comun, :foreign_key => NombreComun.attribute_alias(:id)
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :foreign_key => 'especie_id'
   has_many :especies, :class_name => 'Especie', :foreign_key => 'id'    #para los asociados de las especies a traves del nombre_comun
 
