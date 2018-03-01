@@ -1,7 +1,15 @@
 class NombreRegion < ActiveRecord::Base
 
-  self.table_name='nombres_regiones'
-  self.primary_keys= :especie_id, :region_id, :nombre_comun_id
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.RelNomNomComunRegion'
+  self.primary_keys = :IdNomComun, :IdNombre, :IdRegion
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :nombre_comun_id, :IdNomComun
+  alias_attribute :especie_id, :IdNombre
+  alias_attribute :region_id, :IdRegion
+  alias_attribute :observaciones, :Observaciones
+
   attr_accessor :nombre_comun_id_falso
   belongs_to :region
   belongs_to :especie
