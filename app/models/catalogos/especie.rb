@@ -45,16 +45,14 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
+  belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => 'especie_id', :dependent => :destroy
-  belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
-  #has_many :taxon_photos, :order => 'position ASC, id ASC', :dependent => :destroy
-  has_many :photos, :through => :taxon_photos
   has_many :bibliografias, :through => :especies_bibliografias
   has_many :regiones, :through => :nombres_regiones
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
@@ -66,8 +64,6 @@ class Especie < ActiveRecord::Base
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
   has_many :estadisticas, :class_name => 'EspecieEstadistica'
-
-  #has_ancestry :ancestry_column => :ancestry_ascendente_directo
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -83,8 +79,8 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(nombre_comun) LIKE LOWER('%#{nombre}%') OR LOWER(nombre_cientifico) LIKE LOWER('%#{nombre}%')
-  OR LOWER(nombre_comun_principal) LIKE LOWER('%#{nombre}%')") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(#{NombreComun.attribute_alias(:nombre_comun)}) LIKE LOWER('%#{nombre}%') OR LOWER(#{attribute_alias(:nombre_cientifico)}) LIKE LOWER('%#{nombre}%')
+  OR LOWER(#{:nombre_comun_principal}) LIKE LOWER('%#{nombre}%')") }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
@@ -98,7 +94,7 @@ class Especie < ActiveRecord::Base
       joins('LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones_bibliografias.nombre_comun_id')}
   scope :catalogos_join, -> { joins('LEFT JOIN especies_catalogos ON especies_catalogos.especie_id=especies.id').
       joins('LEFT JOIN catalogos ON catalogos.id=especies_catalogos.catalogo_id') }
-  scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
+  #scope :categoria_taxonomica_join, -> { joins('LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id') }
   scope :adicional_join, -> { joins('LEFT JOIN adicionales ON adicionales.especie_id=especies.id') }
   scope :categoria_conteo_join, -> { joins('LEFT JOIN categorias_conteo ON categorias_conteo.especie_id=especies.id') }
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }

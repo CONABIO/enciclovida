@@ -88,7 +88,7 @@ module BusquedasHelper
     checkBoxes
   end
 
-  # Filtros para sstatus taxonómico en la busqueda avanzada
+  # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
   def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes = ''
 

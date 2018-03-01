@@ -1,4 +1,6 @@
 class Busqueda
+  attr_accessor :params, :resp
+
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
 
@@ -21,6 +23,58 @@ class Busqueda
   GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
   GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
   GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+
+  # Inicializa los objetos busqueda
+  def initialize
+    self.resp = Especie.left_joins(:categoria_taxonomica)
+  end
+
+  # Regresa la busqueda avanzada
+  def avanzada
+    # Para hacer la condicion con el nombre_comun
+    if params[:id].blank? && params[:nombre].present?
+      self.resp = resp.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
+    end
+
+    # Parte de la categoria taxonomica
+    if conID.present? && params[:cat].present? && params[:nivel].present?
+      taxon = Especie.find(conID)
+
+      if taxon.is_root?
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
+      else
+        ancestros = taxon.ancestry_ascendente_directo
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
+      end
+
+      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
+      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
+    end
+
+    # Parte del estatus
+    if I18n.locale.to_s == 'es-cientifico'
+      busqueda = busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
+    else  # En la busqueda general solo el valido
+      busqueda = busqueda.where(estatus: 2)
+    end
+
+    # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+    busqueda = Busqueda.filtros_default(busqueda, params)
+
+    # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
+    # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
+    if params[:solo_categoria]
+      busqueda = busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
+    end
+
+    # Para sacar los resultados por categoria
+    @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
+
+    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
+
+    @totales = busqueda.datos_count[0].totales
+  end
 
   # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
   def self.filtros_default(busqueda, params = {})
