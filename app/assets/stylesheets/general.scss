@@ -283,15 +283,12 @@ ul.social-buttons li a:active {
   position: relative;
 }
 .media-tabs div.result-img-container img{
-  max-height: 300px;
-  margin: -25px;
+  max-height: 210px;
+  margin: -20px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
   vertical-align: middle;
-  font-size: 3.75em;
 }
-.media-tabs div.result-img-container.cornell-audios img{
-  max-height: 180px;
-}
+.media-tabs div.result-img-container.cornell-audios img{max-height: 180px;}
 .media-tabs div.result-img-container img:hover{
   transform:scale(.75);
   -ms-transform:scale(.75); /* IE 9 */
