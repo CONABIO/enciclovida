@@ -17,10 +17,10 @@ class Catalogo < ActiveRecord::Base
   scope :nom, -> { where(nivel1: 4, nivel2: 1).where("#{attribute_alias(:nivel3)} > 0") }
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
+  scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
 
   IUCN_QUITAR_EN_FICHA = []#['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)','Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
-  NIVELES_PRIORITARIAS = %w(alto medio bajo)
 
   def nom_cites_iucn(cat_actual = false, ws = false)
     condicion =  ws ?  (nivel2 == 1 || nivel2 == 3) : (nivel2 > 0)

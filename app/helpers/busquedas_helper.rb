@@ -1,14 +1,4 @@
 module BusquedasHelper
-
-  # NPI
-  def busquedas(iterador)
-    opciones=''
-    iterador.each do |valor, nombre|
-      opciones+="<option value=\"#{valor}\">#{nombre}</option>"
-    end
-    opciones
-  end
-
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos
     def arma_span(taxon)
@@ -82,33 +72,33 @@ module BusquedasHelper
     checkBoxes
   end
 
-  # Filtros para Estatus taxonómico
+  # REVISADO: Filtros para Especies prioritarias para la conservación en la busqueda avanzada
+  def checkboxPrioritaria
+    checkBoxes = ''
+
+    @prioritarias.each do |prior|
+      checkBoxes << '<label>'
+      checkBoxes << check_box_tag('prior[]', prior.id, false, :id => "prior_#{prior.id}")
+      checkBoxes << "<span title = 'Prioritaria con grado #{prior.descripcion.estandariza}' class = 'btn btn-xs btn-basica btn-title' >"
+      checkBoxes << "<i class = '#{prior.descripcion.estandariza}-ev-icon'></i>"
+      checkBoxes << '</span>'
+      checkBoxes << '</label>'
+    end
+
+    checkBoxes
+  end
+
+  # Filtros para sstatus taxonómico en la busqueda avanzada
   def checkboxValidoSinonimo (busqueda=nil)
     checkBoxes = ''
-    Especie::ESTATUS_BUSQUEDA.each do |e|
 
+    Especie::ESTATUS_BUSQUEDA.each do |e|
       checkBoxes += case busqueda
                       when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
                       else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
-    checkBoxes.html_safe
-  end
-
-  # Filtros para "Especies prioritarias para la conservaciónEspecies prioritarias para la conservación"
-  def checkboxPrioritaria
-    checkBoxes = ''
-
-    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
-      checkBoxes << '<label>'
-      checkBoxes << check_box_tag('prior[]', prior, false, :id => "prior_#{prior.parameterize}")
-      checkBoxes << "<span title = '#{t('prioritaria.' << prior.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title' >"
-      checkBoxes << "<i class = '#{prior.parameterize}-ev-icon'></i>"
-      checkBoxes << '</span>'
-      checkBoxes << '</label>'
-    end
-
-    checkBoxes.html_safe
+    checkBoxes
   end
 
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual
