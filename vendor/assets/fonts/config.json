@@ -1405,6 +1405,12 @@
       "src": "fontelico"
     },
     {
+      "uid": "4a74a0f87d4089efe7aba1825bff4193",
+      "css": "copyright",
+      "code": 61945,
+      "src": "fontawesome"
+    },
+    {
       "uid": "bd05a113b498a5dcd0962a59c1570ea8",
       "css": "biomex",
       "code": 59474,
