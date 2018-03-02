@@ -1,5 +1,5 @@
 class BusquedaRegion < Busqueda
-  attr_accessor :key_especies, :key_especies_con_filtro, :url_especies
+  attr_accessor :resp, :key_especies, :key_especies_con_filtro, :url_especies
 
   # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
   def especies_por_grupo
