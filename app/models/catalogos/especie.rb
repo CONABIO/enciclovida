@@ -45,16 +45,14 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
+
   belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
+
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
-  has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
+  has_many :especies_regiones, :class_name => 'EspecieRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
-
-
-
-
 
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
 
