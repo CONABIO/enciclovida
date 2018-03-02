@@ -54,19 +54,18 @@ class Especie < ActiveRecord::Base
   has_many :especies_regiones, :class_name => 'EspecieRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
 
+  has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
+  has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
+
+
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
 
-  has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :bibliografias, :through => :especies_bibliografias
   has_many :regiones, :through => :nombres_regiones
 
-
-  has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
-  has_many :metadatos_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'especie_id'
-  has_many :metadatos, :through => :metadatos_especies#, :source => :metadato
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
