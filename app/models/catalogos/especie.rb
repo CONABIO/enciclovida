@@ -49,8 +49,15 @@ class Especie < ActiveRecord::Base
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
 
-  has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
+  has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
+
+
+
+
+
+  has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
+
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
   has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
@@ -58,7 +65,7 @@ class Especie < ActiveRecord::Base
   has_many :bibliografias, :through => :especies_bibliografias
   has_many :regiones, :through => :nombres_regiones
 
-  has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
+
   has_many :estados_conservacion, :through => :especies_catalogos, :source => :catalogo
   has_many :metadatos_especies, :class_name => 'MetadatoEspecie', :foreign_key => 'especie_id'
   has_many :metadatos, :through => :metadatos_especies#, :source => :metadato
@@ -125,7 +132,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
-  scope :select_grupos_iconicos, -> {select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional)}
+  scope :select_grupos_iconicos, -> { select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional) }
+  scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 

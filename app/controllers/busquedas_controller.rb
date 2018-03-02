@@ -299,8 +299,9 @@ class BusquedasController < ApplicationController
   def resultados_avanzada
     busqueda = Busqueda.new
     busqueda.params = params
+    busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
 
-    resultado = Especie.left_joins(:categoria_taxonomica)
+    resultado = busqueda.resp
 
 
     if @totales > 0

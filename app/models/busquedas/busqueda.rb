@@ -1,5 +1,5 @@
 class Busqueda
-  attr_accessor :params, :resp
+  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -26,40 +26,42 @@ class Busqueda
 
   # Inicializa los objetos busqueda
   def initialize
-    self.resp = Especie.left_joins(:categoria_taxonomica)
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional)
   end
 
   # Regresa la busqueda avanzada
   def avanzada
     # Para hacer la condicion con el nombre_comun
     if params[:id].blank? && params[:nombre].present?
-      self.resp = resp.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
+      self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
     end
 
     # Parte de la categoria taxonomica
-    if conID.present? && params[:cat].present? && params[:nivel].present?
-      taxon = Especie.find(conID)
-
-      if taxon.is_root?
-        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
-      else
-        ancestros = taxon.ancestry_ascendente_directo
-        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
+    if params[:id].present? && params[:cat].present? && params[:nivel].present?
+      begin
+        taxon = Especie.find(params[:id])
+      rescue
+        self.taxones = Especie.none
+        return
       end
 
-      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
+      # Aplica el query para los descendientes
+      ancestros = taxon.ancestry_ascendente_directo.split(',').join(',')
+      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '#{ancestros}%'")
+
+      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
+      self.taxones = taxones.nivel_categoria
     end
 
     # Parte del estatus
     if I18n.locale.to_s == 'es-cientifico'
-      busqueda = busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
+      self.taxones = taxones.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
     else  # En la busqueda general solo el valido
-      busqueda = busqueda.where(estatus: 2)
+      self.taxones = taxones.where(estatus: 2)
     end
 
     # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-    busqueda = Busqueda.filtros_default(busqueda, params)
+    filtros_default
 
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
@@ -77,19 +79,10 @@ class Busqueda
   end
 
   # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-  def self.filtros_default(busqueda, params = {})
+  def filtros_default
     # Parte del tipo de ditribucion
-    if params[:dist].present?
-      #######################  Quitar cuando se arregle en la base
-      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        busqueda = busqueda.where('especies.invasora IS NOT NULL')
-      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
-        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
-      else  # Selecciono cualquiera menos invasora
-        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
-      end
-      #######################
+    if params[:dist].present? && params[:dist].any?
+      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).tipo_distribucion_join
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
