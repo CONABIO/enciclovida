@@ -300,6 +300,7 @@ class BusquedasController < ApplicationController
     busqueda = Busqueda.new
     busqueda.params = params
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
+    busqueda.original_url = request.original_url
 
     resultado = busqueda.resp
 
