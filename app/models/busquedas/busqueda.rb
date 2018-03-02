@@ -82,17 +82,14 @@ class Busqueda
   def filtros_default
     # Parte del tipo de ditribucion
     if params[:dist].present? && params[:dist].any?
-      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).tipo_distribucion_join
+      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_join(:tipos_distribuciones)
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
     if params[:edo_cons].present? || params[:prior].present?
-      busqueda = busqueda.catalogos_join
-      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
-      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
+      catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
+      self.resp = resp.where("#{Catalogo.attribute_alias(:id)}" => catalogos).left_join(:catalogos)
     end
-
-    busqueda
   end
 
   def self.por_categoria(busqueda, original_url)
