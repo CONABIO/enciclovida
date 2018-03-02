@@ -1,5 +1,5 @@
 class Busqueda
-  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico
+  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -24,12 +24,12 @@ class Busqueda
   GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
   GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
-  # Inicializa los objetos busqueda
+  # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional)
   end
 
-  # Regresa la busqueda avanzada
+  # REVISADO: Regresa la busqueda avanzada
   def avanzada
     # Para hacer la condicion con el nombre_comun
     if params[:id].blank? && params[:nombre].present?
@@ -54,23 +54,22 @@ class Busqueda
     end
 
     # Parte del estatus
-    if I18n.locale.to_s == 'es-cientifico'
+    if es_cientifico
       self.taxones = taxones.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
     else  # En la busqueda general solo el valido
       self.taxones = taxones.where(estatus: 2)
     end
 
     # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-    filtros_default
+    filtros_compartidos
 
-    # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
-    # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
+    # Solo la categoria que escogi, en caso de
     if params[:solo_categoria]
-      busqueda = busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
+      self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
     end
 
     # Para sacar los resultados por categoria
-    @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
+    por_categoria if params[:solo_categoria].blank?
 
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
@@ -78,27 +77,28 @@ class Busqueda
     @totales = busqueda.datos_count[0].totales
   end
 
-  # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-  def filtros_default
+  # REVISADO: Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+  def filtros_compartidos
     # Parte del tipo de ditribucion
     if params[:dist].present? && params[:dist].any?
-      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_join(:tipos_distribuciones)
+      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_joins(:tipos_distribuciones)
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
     if params[:edo_cons].present? || params[:prior].present?
       catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
-      self.resp = resp.where("#{Catalogo.attribute_alias(:id)}" => catalogos).left_join(:catalogos)
+      self.resp = resp.where("#{Catalogo.attribute_alias(:id)}" => catalogos).left_joins(:catalogos)
     end
   end
 
-  def self.por_categoria(busqueda, original_url)
-    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').adicional_join
-    busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
-    query_limpio = Bases.distinct_limpio(busqueda.to_sql)
-    query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
-    Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
-                                               cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
+  def por_categoria
+    self.por_categoria = taxones.
+        select("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.attribute_alias(:id)}) AS cuantos").
+        group(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
+        order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
+
+    self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
+                                                  cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.nombre_categoria_taxonomica.estandariza}"}}
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
