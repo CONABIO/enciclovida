@@ -263,10 +263,27 @@ class ComentariosController < ApplicationController
 
         #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
         #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
+        #CategoriasContenido.find(params[:categorias_contenido_id]).especies
+        path_especie = @comentario.especie.path_ids
+        usuarios_taxonomia = []
+        categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
+
+        usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
+        puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
+
+        usuarios_categorias.each do |u|
+          puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
+          usuarios_taxonomia << u unless u.especies.any?
+          puts '+++++++++++++path+++++++'+path_especie.inspect
+          usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
+        end
+        puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
+
+        usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
+        puts '-----------------------------------------'+usuarios_envio.inspect
 
         #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
-        categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
-        EnviaCorreo.avisar_responsable_contenido(@comentario, Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables).map(&:email)).deliver
+        EnviaCorreo.avisar_responsable_contenido(@comentario, usuarios_envio).deliver
       end
       render json: {estatus: 1}.to_json
     else
@@ -292,7 +309,7 @@ class ComentariosController < ApplicationController
     @por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Comentario::POR_PAGINA_PREDETERMINADO
     offset = (@pagina-1)*@por_pagina
 
-    tax_especifica = current_usuario.usuario_especies
+    tax_especifica = []#current_usuario.usuario_especies
     contenido_especifico = current_usuario.categorias_contenidos
 
     consulta = Comentario.datos_basicos
