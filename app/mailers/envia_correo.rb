@@ -9,22 +9,22 @@ class EnviaCorreo < Devise::Mailer
 
   def respuesta_comentario(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba") || @comentario_root.correo.include?("mailinator"))
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if debo_enviar_correos?(@comentario_root.correo)
   end
 
   def comentario_resuelto(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba") || @comentario_root.correo.include?("mailinator"))
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') if debo_enviar_correos?(@comentario_root.correo)
   end
 
   def confirmacion_comentario(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba") || @comentario_root.correo.include?("mailinator"))
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if debo_enviar_correos?(@comentario_root.correo)
   end
 
   def confirmacion_comentario_general(comentario)
     completa_datos_comentario(comentario)
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if (Rails.env.production? || @comentario_root.correo.include?("ggonzalez") || @comentario_root.correo.include?("calonso") || @comentario_root.correo.include?("albertoglezba") || @comentario_root.correo.include?("mailinator"))
+    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if debo_enviar_correos?(@comentario_root.correo)
   end
 
   def descargar_taxa(ruta, correo)
@@ -34,7 +34,7 @@ class EnviaCorreo < Devise::Mailer
 
   def avisar_responsable_contenido(comentario,correos)
     completa_datos_comentario(comentario)
-    mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if (Rails.env.production? || correos.join(',').include?("ggonzalez") || correos.join(',').include?("calonso") || correos.join(',').include?("albertoglezba") || correos.join(',').include?("mailinator"))
+    mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if debo_enviar_correos?(correos)
   end
 
   private
@@ -54,5 +54,10 @@ class EnviaCorreo < Devise::Mailer
 
     @comentario_root.completa_info(@comentario_root.usuario_id)
     @created_at = @comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
+  end
+
+  def debo_enviar_correos?(correos)
+    correos = [correos] ##Por si recibo un string solamente
+    Rails.env.production? || correos.join.include?("ggonzalez") || correos.join.include?("calonso") || correos.join.include?("albertoglezba") || correos.join.include?("mailinator")
   end
 end
