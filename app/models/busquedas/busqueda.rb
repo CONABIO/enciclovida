@@ -27,15 +27,11 @@ class Busqueda
   # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional)
+    self.totales = 0
   end
 
   # REVISADO: Regresa la busqueda avanzada
   def avanzada
-    # Para hacer la condicion con el nombre_comun
-    if params[:id].blank? && params[:nombre].present?
-      self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
-    end
-
     # Parte de la categoria taxonomica
     if params[:id].present? && params[:cat].present? && params[:nivel].present?
       begin
@@ -72,9 +68,29 @@ class Busqueda
     por_categoria if params[:solo_categoria].blank?
 
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
+    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
+    offset = (pagina-1)*por_pagina
 
-    @totales = busqueda.datos_count[0].totales
+    self.totales = taxones.datos_count[0].totales
+
+    if totales > 0
+      if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
+        self.taxones = taxones.datos_arbol_con_filtros
+        checklist
+      else
+        self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina)
+
+        # Si solo escribio un nombre
+        if params[:id].blank? && params[:nombre].present?
+          self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
+
+          taxones.each do |t|
+            t.cual_nombre_comun_coincidio(params[:nombre])
+          end
+        end
+      end
+
+    end  # End totales > 0
   end
 
   # REVISADO: Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
@@ -92,7 +108,7 @@ class Busqueda
   end
 
   def por_categoria
-    self.por_categoria = taxones.
+    por_categoria = taxones.
         select("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.attribute_alias(:id)}) AS cuantos").
         group(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
