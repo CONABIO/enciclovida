@@ -10,15 +10,7 @@ class BusquedasController < ApplicationController
   layout false, :only => [:cat_tax_asociadas]
 
   def avanzada
-    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
-    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-
-    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-
-    @prioritarias = Catalogo.prioritarias
+    filtros_iniciales
   end
 
   def resultados
@@ -28,6 +20,7 @@ class BusquedasController < ApplicationController
     if params[:busqueda] == 'basica'
       resultados_basica
     elsif params[:busqueda] == 'avanzada'
+      filtros_iniciales
       resultados_avanzada
     else  # Default, error
       respond_to do |format|
@@ -117,6 +110,19 @@ class BusquedasController < ApplicationController
 
 
   private
+
+  # Los filtros de la busqueda avanzada y de los resultados
+  def filtros_iniciales
+    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+
+    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+
+    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+
+    @prioritarias = Catalogo.prioritarias
+  end
 
   # Busqueda basica
   def resultados_basica
@@ -298,14 +304,19 @@ class BusquedasController < ApplicationController
   end
 
   def resultados_avanzada
+    pagina = params[:pagina].to_i
+
     busqueda = Busqueda.new
     busqueda.params = params
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
     busqueda.original_url = request.original_url
-    pagina = params[:pagina].to_i
+    busqueda.avanzada
 
     @totales = busqueda.totales
     @taxones = busqueda.taxones
+    puts @taxones.to_sql.inspect
+
+    #@taxones = Especie.none
 
     response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 

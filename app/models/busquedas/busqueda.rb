@@ -42,11 +42,10 @@ class Busqueda
       end
 
       # Aplica el query para los descendientes
-      ancestros = taxon.ancestry_ascendente_directo.split(',').join(',')
-      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '#{ancestros}%'")
+      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
-      self.taxones = taxones.nivel_categoria
+      self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
     end
 
     # Parte del estatus
@@ -71,7 +70,7 @@ class Busqueda
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
     offset = (pagina-1)*por_pagina
 
-    self.totales = taxones.datos_count[0].totales
+    self.totales = taxones.datos_count[0].totales if pagina == 1
 
     if totales > 0
       if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
@@ -97,19 +96,19 @@ class Busqueda
   def filtros_compartidos
     # Parte del tipo de ditribucion
     if params[:dist].present? && params[:dist].any?
-      self.resp = resp.where("#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_joins(:tipos_distribuciones)
+      self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_joins(:tipos_distribuciones)
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
     if params[:edo_cons].present? || params[:prior].present?
       catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
-      self.resp = resp.where("#{Catalogo.attribute_alias(:id)}" => catalogos).left_joins(:catalogos)
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)}" => catalogos).left_joins(:catalogos)
     end
   end
 
   def por_categoria
     por_categoria = taxones.
-        select("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.attribute_alias(:id)}) AS cuantos").
+        select("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
         group(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
