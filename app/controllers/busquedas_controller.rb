@@ -84,7 +84,8 @@ class BusquedasController < ApplicationController
     render json: @data.to_json
   end
 
-  def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
+  # Acción que genera los checklists de acuerdo a un set de resultados
+  def checklist(sin_filtros=false)
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
@@ -301,30 +302,12 @@ class BusquedasController < ApplicationController
     busqueda.params = params
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
     busqueda.original_url = request.original_url
+    pagina = params[:pagina].to_i
 
-    resultado = busqueda.resp
+    @totales = busqueda.totales
+    @taxones = busqueda.taxones
 
-
-    if @totales > 0
-
-      if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        @taxones = busqueda.datos_arbol_con_filtros
-        checklist
-      else
-        query = busqueda.datos_basicos.distinct.to_sql
-        consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-        @taxones = Especie.find_by_sql(consulta)
-
-        # Si solo escribio un nombre
-        if conID.blank? && params[:nombre].present?
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
-          end
-        end
-      end
-    end
-
-    response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
+    response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 
     respond_to do |format|
       # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
