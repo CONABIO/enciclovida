@@ -81,7 +81,7 @@
         /**
          *  Carga los taxones de la categoria dada
          **/
-        $("[id^='nivel_']").click(function ()
+        $("[class^='tab_por_categoria']").click(function ()
         {
             var nivel = $(this).attr('id').substring(6);
             var id_div = '#' + $(this).attr('id_div');
@@ -303,16 +303,12 @@
         <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" url="<%= request.url %>">Todos (<%= @totales if @totales.present? %>)</a>
       </li>
 
-      <% if @por_categoria.present? && @por_categoria.length > 0 %>
-          <% @por_categoria.each do |categoria| %>
-              <li>
-                <a href="#<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"
-                   data-toggle="tab" id="<%= "nivel_#{categoria[:nombre_categoria_taxonomica].parameterize}" %>" url="<%= request.url %>"
-                   id_div="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>">
-                  <%= "#{categoria[:nombre_categoria_taxonomica]} (#{categoria[:cuantos]})" %>
-                </a>
-              </li>
-          <% end %>
+      <% @por_categoria.each do |cat| %>
+          <li>
+            <a href="" data-toggle="tab" class="tab_por_categoria" url="<%= cat[:url] %>">
+              <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
+            </a>
+          </li>
       <% end %>
     </ul>
 
@@ -320,10 +316,8 @@
       <%= render :partial => 'busquedas/resultados' %>
     </div>
 
-    <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-            <div class="tab-pane panel-body panel-resultados" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
-        <% end %>
+    <% @por_categoria.each do |cat| %>
+        <div class="tab-pane panel-body panel-resultados" id="<%= cat[:nombre_categoria_taxonomica].estandariza %>"></div>
     <% end %>
   </div>
 
