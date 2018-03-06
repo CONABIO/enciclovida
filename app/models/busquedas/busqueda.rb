@@ -32,6 +32,11 @@ class Busqueda
 
   # REVISADO: Regresa la busqueda avanzada
   def avanzada
+    # Para el paginado
+    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
+    offset = (pagina-1)*por_pagina
+
     # Parte de la categoria taxonomica
     if params[:id].present? && params[:cat].present? && params[:nivel].present?
       begin
@@ -63,33 +68,31 @@ class Busqueda
       self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
     end
 
-    # Para sacar los resultados por categoria
-    por_categoria if params[:solo_categoria].blank?
+    # Por si carga la pagina de un inicio, /busquedas/resultados
+    if pagina == 1
+      # Para sacar los resultados por categoria
+      por_categoria_taxonomica if params[:solo_categoria].blank?
 
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
-    offset = (pagina-1)*por_pagina
+      # Los totales del query
+      self.totales = taxones.datos_count[0].totales
+    end
 
-    self.totales = taxones.datos_count[0].totales if pagina == 1
+    if params[:checklist] == '1'
+      self.taxones = taxones.datos_arbol_con_filtros
+      checklist
+    else
+      self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina)
 
-    if totales > 0
-      if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        self.taxones = taxones.datos_arbol_con_filtros
-        checklist
-      else
-        self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina)
+      # Si solo escribio un nombre
+      if params[:id].blank? && params[:nombre].present?
+        self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
 
-        # Si solo escribio un nombre
-        if params[:id].blank? && params[:nombre].present?
-          self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
-
-          taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
-          end
+        taxones.each do |t|
+          t.cual_nombre_comun_coincidio(params[:nombre])
         end
       end
+    end
 
-    end  # End totales > 0
   end
 
   # REVISADO: Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
@@ -106,7 +109,7 @@ class Busqueda
     end
   end
 
-  def por_categoria
+  def por_categoria_taxonomica
     por_categoria = taxones.
         select("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
         group(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).

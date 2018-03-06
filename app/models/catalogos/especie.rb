@@ -108,7 +108,7 @@ class Especie < ActiveRecord::Base
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   # Datos sacar los IDs unicos de especies
