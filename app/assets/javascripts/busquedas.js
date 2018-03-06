@@ -6,7 +6,7 @@ function firstToUpperCase( str ) {
     return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
-por_nombre = function()
+var por_nombre = function()
 {
     $("#id").val("");
     $("#datos_cat").html("");
@@ -19,7 +19,7 @@ por_nombre = function()
     $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
-por_gi = function()
+var por_gi = function()
 {
     $("#id").val("");
     $("#nombre").val('');
@@ -29,7 +29,40 @@ por_gi = function()
     $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 };
 
-soulmate_asigna = function(tipo_busqueda)
+var cat_tax_asociadas = function(id,nivel,cat)
+{
+    $.ajax(
+        {
+            url: "/cat_tax_asociadas",
+            type: 'GET',
+            data: {
+                id: id,
+                nivel: nivel,
+                cat: cat
+            }
+        }).done(function(html)
+        {
+            $('#datos_cat').html('').html(html);
+            $('#panelCategoriaTaxonomicaPt').show();
+        });
+};
+
+var scrolling_page = function(objeto, por_pagina, url)
+{
+    $(objeto).scrollPagination({
+        nop     : por_pagina, // The number of posts per scroll to be loaded
+        offset  : 2, // Initial offset, begins at 0 in this case
+        error   : '', // When the user reaches the end this is the message that is
+        // displayed. You can change this if you want.
+        delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
+                       // This is mainly for usability concerns. You can alter this as you see fit
+        scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
+        // but will still load if the user clicks.
+        url     : url
+    });
+};
+
+var soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
     {
@@ -93,39 +126,6 @@ soulmate_asigna = function(tipo_busqueda)
 
 $(document).ready(function()
 {
-    cat_tax_asociadas = function(id,nivel,cat)
-    {
-        $.ajax(
-            {
-                url: "/cat_tax_asociadas",
-                type: 'GET',
-                data: {
-                    id: id,
-                    nivel: nivel,
-                    cat: cat
-                }
-            }).done(function(html)
-            {
-                $('#datos_cat').html('').html(html);
-                $('#panelCategoriaTaxonomicaPt').show();
-            });
-    };
-
-    scrolling_page = function(objeto, por_pagina, url)
-    {
-        $(objeto).scrollPagination({
-            nop     : por_pagina, // The number of posts per scroll to be loaded
-            offset  : 2, // Initial offset, begins at 0 in this case
-            error   : '', // When the user reaches the end this is the message that is
-            // displayed. You can change this if you want.
-            delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-                           // This is mainly for usability concerns. You can alter this as you see fit
-            scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
-            // but will still load if the user clicks.
-            url     : url
-        });
-    };
-
     $(document).on('change', ".radio input", function()
     {
         // El ID del grupo iconico
@@ -151,7 +151,7 @@ $(document).ready(function()
     $(document).on('click', '#boton_checklist', function(){
         var url = $(this).attr('url');
 
-        if (url == "") return false
+        if (url == "") return false;
         else window.open(url, '_blank');
     });
 });

@@ -312,7 +312,7 @@ class BusquedasController < ApplicationController
     busqueda.avanzada
 
     @totales = busqueda.totales
-    @por_categoria = busqueda.por_categoria
+    @por_categoria = busqueda.por_categoria || []
     @taxones = busqueda.taxones
 
     response.headers['x-total-entries'] = @totales.to_s if @totales > 0
