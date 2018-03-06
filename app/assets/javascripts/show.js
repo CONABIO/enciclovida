@@ -109,23 +109,14 @@ $(document).ready(function(){
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;
-        var ubicacion;
-        $('#modal_localidad').text(button.data('locality'));
-        if ((button.data('state') == '') && (button.data('country') == '')){
-            ubicacion = '';
-        }else{
-            if((button.data('state') == '')){
-                ubicacion = button.data('country');
-            }else{
-                if((button.data('country') == '')){
-                    ubicacion = button.data('state');
-                }else{
-                    ubicacion = [button.data('state'),button.data('country')].join(',');
-                }
-            }
-        }
-        $('#modal_ubicacion').text(ubicacion);
 
+        var ubicacion = [];
+        [button.data('state'),button.data('country')].forEach(function(cValue){
+            if(cValue != ''){ubicacion.push(cValue)}
+        });
+
+        $('#modal_localidad').text(button.data('locality'));
+        $('#modal_ubicacion').text(ubicacion.join(', '));
         $('#modal_fecha').text(button.data('date'));
         $('#modal_observacion').attr('href', button.data('observation'));
         $('#modal_autor').text(button.data('author'));
