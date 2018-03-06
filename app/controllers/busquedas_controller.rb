@@ -20,7 +20,6 @@ class BusquedasController < ApplicationController
     if params[:busqueda] == 'basica'
       resultados_basica
     elsif params[:busqueda] == 'avanzada'
-      filtros_iniciales
       resultados_avanzada
     else  # Default, error
       respond_to do |format|
@@ -313,24 +312,22 @@ class BusquedasController < ApplicationController
     busqueda.avanzada
 
     @totales = busqueda.totales
+    @por_categoria = busqueda.por_categoria
     @taxones = busqueda.taxones
-    puts @taxones.to_sql.inspect
-
-    #@taxones = Especie.none
 
     response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 
     respond_to do |format|
       # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-      if params[:solo_categoria].present? && @taxones.any? && pagina == 1
+      if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1
         # Imprime el inicio de un TAB
         format.html { render :partial => 'busquedas/resultados' }
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel(busqueda) }
-      elsif pagina > 1 && @taxones.any?
+      elsif pagina > 1 && @taxones.length > 0
         format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
-      elsif @taxones.empty? && pagina > 1
+      elsif @totales == 0 && pagina > 1
         format.html { render text: '' }
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1
@@ -353,6 +350,8 @@ class BusquedasController < ApplicationController
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
         end
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
+        filtros_iniciales
+
         # Parametros para poner en los filtros y saber cual escogio
         @setParams = {}
 
