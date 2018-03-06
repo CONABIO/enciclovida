@@ -264,26 +264,27 @@ class ComentariosController < ApplicationController
         #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
         #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
         #CategoriasContenido.find(params[:categorias_contenido_id]).especies
-        path_especie = @comentario.especie.path_ids
-        usuarios_taxonomia = []
-        categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
-
-        usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
-        puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
-
-        usuarios_categorias.each do |u|
-          puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
-          usuarios_taxonomia << u unless u.especies.any?
-          puts '+++++++++++++path+++++++'+path_especie.inspect
-          usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
-        end
-        puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
-
-        usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
-        puts '-----------------------------------------'+usuarios_envio.inspect
+        # path_especie = @comentario.especie.path_ids
+        # usuarios_taxonomia = []
+        # categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
+        #
+        # usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
+        # puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
+        #
+        # usuarios_categorias.each do |u|
+        #   puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
+        #   usuarios_taxonomia << u unless u.especies.any?
+        #   puts '+++++++++++++path+++++++'+path_especie.inspect
+        #   usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
+        # end
+        # puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
+        #
+        # usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
+        # puts '-----------------------------------------'+usuarios_envio.inspect
 
         #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
-        EnviaCorreo.avisar_responsable_contenido(@comentario, usuarios_envio).deliver
+        #EnviaCorreo.avisar_responsable_contenido(@comentario, usuarios_envio).deliver
+        EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio(@comentario)).deliver
       end
       render json: {estatus: 1}.to_json
     else
@@ -532,4 +533,34 @@ class ComentariosController < ApplicationController
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categorias_contenido_id,
                                        :ajax, :nombre_cientifico, :created_at)
   end
+
+  #Dado un comentario, regresa un array con los correos a los cuales se tiene q enviar de acuerdo a los responsables tanto del contenido como de taxonomía específica
+  def dame_usuarios_envio(comentario)
+    #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
+    #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
+    #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
+
+    #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
+    #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
+    #CategoriasContenido.find(params[:categorias_contenido_id]).especies
+    path_especie = comentario.especie.path_ids
+    usuarios_taxonomia = []
+    categorias_responsables = CategoriasContenido.find(comentario.categorias_contenido_id).path_ids
+
+    usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
+    puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
+
+    usuarios_categorias.each do |u|
+      puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
+      usuarios_taxonomia << u unless u.especies.any?
+      puts '+++++++++++++path+++++++'+path_especie.inspect
+      usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
+    end
+    puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
+
+    usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
+    puts '-----------------------------------------'+usuarios_envio.inspect
+    usuarios_envio
+  end
+
 end
