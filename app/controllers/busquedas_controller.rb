@@ -325,7 +325,7 @@ class BusquedasController < ApplicationController
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel(busqueda) }
       elsif pagina > 1 && @taxones.length > 0
-        format.html { render :partial => 'busquedas/_resultados', layout: false }
+        format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
       elsif (@taxones.length == 0 || @totales == 0) && pagina > 1
         format.html { render plain: '' }
@@ -351,27 +351,7 @@ class BusquedasController < ApplicationController
         end
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
         filtros_iniciales
-
-        # Parametros para poner en los filtros y saber cual escogio
-        @setParams = {}
-
-        params.each do |k,v|
-          # Evitamos valores vacios
-          next unless v.present?
-
-          case k
-            when 'id', 'nombre', 'por_pagina'
-              @setParams[k] = v
-            when 'edo_cons', 'dist', 'prior', 'estatus'
-              if @setParams[k].present?
-                @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-              else
-                @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-              end
-            else
-              next
-          end
-        end
+        set_filtros
 
         format.html { render action: 'resultados' }
         format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
@@ -462,4 +442,27 @@ class BusquedasController < ApplicationController
       render json: {estatus: 0}
     end  # end totales > 0
   end  # end metodo
+
+  # REVISADO: Parametros para poner en los filtros y saber cual escogio
+  def set_filtros
+    @setParams = {}
+
+    params.each do |k,v|
+      # Evitamos valores vacios
+      next unless v.present?
+
+      case k
+        when 'id', 'nombre', 'por_pagina'
+          @setParams[k] = v
+        when 'edo_cons', 'dist', 'prior', 'estatus'
+          if @setParams[k].present?
+            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+          else
+            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+          end
+        else
+          next
+      end
+    end
+  end
 end

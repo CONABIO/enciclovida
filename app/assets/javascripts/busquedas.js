@@ -129,7 +129,7 @@ $(document).ready(function()
     $(document).on('change', ".radio input", function()
     {
         // El ID del grupo iconico
-        var id_gi = $(this).attr('value');
+        var id_gi = $(this).val();
         $('#id').val(id_gi);
         cat_tax_asociadas(id_gi,'','');
     });
