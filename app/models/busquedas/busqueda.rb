@@ -69,19 +69,19 @@ class Busqueda
     end
 
     # Por si carga la pagina de un inicio, /busquedas/resultados
-    if pagina == 1
+    if pagina == 1 && params[:solo_categoria].blank?
       # Para sacar los resultados por categoria
-      por_categoria_taxonomica if params[:solo_categoria].blank?
+      por_categoria_taxonomica
 
       # Los totales del query
-      self.totales = taxones.datos_count[0].totales
+      self.totales = taxones.count
     end
 
     if params[:checklist] == '1'
       self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
-      self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina)
+      self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina).distinct
 
       # Si solo escribio un nombre
       if params[:id].blank? && params[:nombre].present?
@@ -99,13 +99,13 @@ class Busqueda
   def filtros_compartidos
     # Parte del tipo de ditribucion
     if params[:dist].present? && params[:dist].any?
-      self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)}" => params[:dist]).left_joins(:tipos_distribuciones)
+      self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)} IN (?)", params[:dist]).left_joins(:tipos_distribuciones)
     end
 
     # Parte del edo. de conservacion y el nivel de prioritaria
     if params[:edo_cons].present? || params[:prior].present?
       catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
-      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)}" => catalogos).left_joins(:catalogos)
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", catalogos).left_joins(:catalogos)
     end
   end
 
