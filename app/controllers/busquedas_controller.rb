@@ -325,10 +325,10 @@ class BusquedasController < ApplicationController
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel(busqueda) }
       elsif pagina > 1 && @taxones.length > 0
-        format.html { render :partial => 'busquedas/_resultados' }
+        format.html { render :partial => 'busquedas/_resultados', layout: false }
         format.json { render json: {taxa: @taxones} }
-      elsif @totales == 0 && pagina > 1
-        format.html { render text: '' }
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1
+        format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1
         format.html { render 'busquedas/checklists' }
