@@ -34,6 +34,8 @@ class EnviaCorreo < Devise::Mailer
 
   def avisar_responsable_contenido(comentario,correos)
     completa_datos_comentario(comentario)
+    @correos = correos
+    #mail(:to => "ggonzalez@conabio.gob.mx calonso@conabio.gob.mx", :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') #Linea para debuggear los envios personalizados
     mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if debo_enviar_correos?(correos)
   end
 
