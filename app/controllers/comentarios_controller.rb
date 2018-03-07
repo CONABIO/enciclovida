@@ -206,6 +206,10 @@ class ComentariosController < ApplicationController
             end
 
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
+
+            #Y si no me equivoco, Aquí (y SÓLO aquí) es donde hay q poner el envio a los responsables de contenido
+            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+            
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
 
@@ -224,7 +228,7 @@ class ComentariosController < ApplicationController
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if @comentario.root.general  # Si es comentario general
             envia_correo(@comentario)
-          else  # Si fue un comentario en la plataforma
+          else  # Si fue un comentario en la plataforma de administración de comentarios (IMPORTANTE!!)
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
           if usuario=@comentario.usuario
@@ -257,11 +261,7 @@ class ComentariosController < ApplicationController
         EnviaCorreo.comentario_resuelto(@comentario).deliver unless ya_estaba_resuelto #Solo envia correo cuando cambia el estatus
       end
       if params[:categorias_contenido_id].present?
-        #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
-        #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
-        #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
-        #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
-        EnviaCorreo.avisar_responsable_contenido(@comentario, CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:email)).deliver
+        EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
       end
       render json: {estatus: 1}.to_json
     else
@@ -304,17 +304,17 @@ class ComentariosController < ApplicationController
       else
         consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
       end
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
+          or_taxa << " especies.id = #{e.especie_id}"
           or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
         end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
       end
 
       # Comentarios totales
@@ -341,13 +341,14 @@ class ComentariosController < ApplicationController
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
+          or_taxa << " especies.id = #{e.especie_id}"
           or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
           end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(" comentarios.categorias_contenido_id IN (#{contenido_especifico.map(&:subtree_ids).join(',')}) ")
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
       end
 
       # Comentarios totales
@@ -509,4 +510,29 @@ class ComentariosController < ApplicationController
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categorias_contenido_id,
                                        :ajax, :nombre_cientifico, :created_at)
   end
+
+  #Dado un comentario, regresa un array con los correos a los cuales se tiene q enviar de acuerdo a los responsables tanto del contenido como de taxonomía específica
+  # Por último, TODO, All this debería ir en el modelo de comentarios!!!!!!
+  def dame_usuarios_envio
+
+    #Dado una categorias_contenido_id, dame esa y las catagorías papás (las categorias responsables de dicho comentario)
+    categorias_responsables = CategoriasContenido.find(@comentario.categorias_contenido_id).path_ids
+
+    #Dame los ascendientes de la especie del comentario si es que tiene una taxonomía asignada, asigno [0] si es comentario general (no tiene un taxon asignado el comentario y sólo se envien a quien son sabelotodos)
+    path_especie = @comentario.especie.present? ? @comentario.especie.path_ids : [0]
+
+    #Dame los usuarios que son responsables de dichas CategoriasContenidos (Los objeto Usuarios ya que abajo requiero distintos para sacar la taxonomia asociada)
+    usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
+
+    #Si de los encargados de las categorias, no tienen ninguna taxonomía especifica, entonces es sabelotodo y lo agregamos o lo agregamos si su taxonomía específica pertenece al path de la especie del comentario, (si el usuario tiene taxonomía especifica y es comentario general, entonces dicho usuario se skippea)
+    usuarios_envio = usuarios_categorias.map{|u| u if( u.especies.empty? || path_especie.include?(u.id_especie) ) }.compact.map(&:email).uniq
+
+    #Alternativamente se puede realizar UN SÓLO query a la BD, pero creo que aún hay q probar exhaustivamente
+    #En tal caso, usuarios_categorias no se ocuparía
+    #usuarios_envio = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables).where.not("especies.id NOT IN (?) AND especies.id IS NOT NULL", path_especie).map(&:email).uniq
+
+    #puts '------------------UE-----------------------'+usuarios_envio.inspect
+    usuarios_envio
+  end
+
 end
