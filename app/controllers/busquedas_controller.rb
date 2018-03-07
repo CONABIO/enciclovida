@@ -303,7 +303,7 @@ class BusquedasController < ApplicationController
   end
 
   def resultados_avanzada
-    pagina = params[:pagina].to_i
+    pagina = (params[:pagina] || 1).to_i
 
     busqueda = Busqueda.new
     busqueda.params = params

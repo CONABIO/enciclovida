@@ -116,7 +116,8 @@ class Busqueda
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
     self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
-                                                  cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}"}}
+                                                  cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}",
+                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id}}
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
