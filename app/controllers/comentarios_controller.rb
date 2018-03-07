@@ -257,34 +257,7 @@ class ComentariosController < ApplicationController
         EnviaCorreo.comentario_resuelto(@comentario).deliver unless ya_estaba_resuelto #Solo envia correo cuando cambia el estatus
       end
       if params[:categorias_contenido_id].present?
-        #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
-        #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
-        #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
-
-        #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
-        #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
-        #CategoriasContenido.find(params[:categorias_contenido_id]).especies
-        # path_especie = @comentario.especie.path_ids
-        # usuarios_taxonomia = []
-        # categorias_responsables = CategoriasContenido.find(params[:categorias_contenido_id]).path_ids
-        #
-        # usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
-        # puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
-        #
-        # usuarios_categorias.each do |u|
-        #   puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
-        #   usuarios_taxonomia << u unless u.especies.any?
-        #   puts '+++++++++++++path+++++++'+path_especie.inspect
-        #   usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
-        # end
-        # puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
-        #
-        # usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
-        # puts '-----------------------------------------'+usuarios_envio.inspect
-
-        #si se cumple entonces a los q quedaron, a esos hazles el map(&:email) y pasaselos al EnviaCorreo.avisar_responsable_contenido
-        #EnviaCorreo.avisar_responsable_contenido(@comentario, usuarios_envio).deliver
-        EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio(@comentario)).deliver
+        EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
       end
       render json: {estatus: 1}.to_json
     else
@@ -311,7 +284,7 @@ class ComentariosController < ApplicationController
     offset = (@pagina-1)*@por_pagina
 
     tax_especifica = []#current_usuario.usuario_especies
-    contenido_especifico = current_usuario.categorias_contenidos
+    contenido_especifico = []#current_usuario.categorias_contenidos
 
     consulta = Comentario.datos_basicos
 
@@ -535,7 +508,7 @@ class ComentariosController < ApplicationController
   end
 
   #Dado un comentario, regresa un array con los correos a los cuales se tiene q enviar de acuerdo a los responsables tanto del contenido como de taxonomía específica
-  def dame_usuarios_envio(comentario)
+  def dame_usuarios_envio
     #TODO aqui primero (y tamién debe ir algo muy similar en el create), se debe de preguntar primero por la categoria_contenido (usuarios), y despues por la taxonomia _especifica(i.e. si los usuarios q me regreso la consulta anterior cumplen con la condicion de taxa del comentario):
     #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios # dame todos los usuarios de esta categoría (array)
     #Conservar en el array si el usuario NO esta en la relacion usuarios_especie o Sí está y su taxa_especfica pertenece a lo ancestros(o es ella misma) del comentario.especie_id
@@ -543,23 +516,33 @@ class ComentariosController < ApplicationController
     #tentativbamente, ESTA linea xD (especies papás (usuarios_especies) relacionadas a los usuarios q cumplen con esa cat cont)
     #CategoriasContenido.find(params[:categorias_contenido_id]).usuarios.map(&:especies).flatten.map(&:id)
     #CategoriasContenido.find(params[:categorias_contenido_id]).especies
-    path_especie = comentario.especie.path_ids
-    usuarios_taxonomia = []
-    categorias_responsables = CategoriasContenido.find(comentario.categorias_contenido_id).path_ids
 
+    #Dado una categorias_contenido_id, dame esa y las catagorías papás (las categorias responsables de dicho comentario)
+    categorias_responsables = CategoriasContenido.find(@comentario.categorias_contenido_id).path_ids
+
+    #Dame los usuarios que son responsables de dichas CategoriasContenidos (Los objeto Usuarios ya que abajo requiero distintos para sacar la taxonomia asociada)
     usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
-    puts '-----------------------------------------'+usuarios_categorias.map(&:email).inspect
 
-    usuarios_categorias.each do |u|
-      puts '+++++++++++++cat+++++++'+u.especies.map(&:id).inspect
-      usuarios_taxonomia << u unless u.especies.any?
-      puts '+++++++++++++path+++++++'+path_especie.inspect
-      usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
-    end
-    puts '-----------------------------------------'+usuarios_taxonomia.map(&:email).inspect
+    #Dame los ascendientes de la especie del comentario si es que tiene una taxonomía asignada
+    path_especie = @comentario.especie.present? ? @comentario.especie.path_ids : []
+
+
+    puts '----------------UC-------------------------'+usuarios_categorias.map(&:email).inspect
+    # usuarios_taxonomia = []
+    #
+    # usuarios_categorias.each do |u|
+    #   #Si de los encargados de las categorias, no tienen ninguna taxonomía especifica, entonces es sabelotodo y lo agregamos
+    #   usuarios_taxonomia << u unless u.especies.any?
+    #
+    #   usuarios_taxonomia << u if(path_especie & u.especies.map(&:id)).any?
+    # end
+
+    usuarios_taxonomia = usuarios_categorias.map{|u| u if( u.especies.empty? || path_especie.include?(u.id_especie) ) }.compact
+    puts '------------------UT-----------------------'+usuarios_taxonomia.map(&:email).inspect
+
 
     usuarios_envio = (usuarios_categorias.map(&:email))&(usuarios_taxonomia.map(&:email))
-    puts '-----------------------------------------'+usuarios_envio.inspect
+    puts '------------------UE-----------------------'+usuarios_envio.inspect
     usuarios_envio
   end
 
