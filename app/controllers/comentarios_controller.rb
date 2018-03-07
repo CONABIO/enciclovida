@@ -206,6 +206,10 @@ class ComentariosController < ApplicationController
             end
 
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
+
+            #Y si no me equivoco, Aquí (y SÓLO aquí) es donde hay q poner el envio a los responsables de contenido
+            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+            
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end
 
@@ -224,7 +228,7 @@ class ComentariosController < ApplicationController
         if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
           if @comentario.root.general  # Si es comentario general
             envia_correo(@comentario)
-          else  # Si fue un comentario en la plataforma
+          else  # Si fue un comentario en la plataforma de administración de comentarios (IMPORTANTE!!)
             EnviaCorreo.respuesta_comentario(@comentario).deliver
           end
           if usuario=@comentario.usuario
@@ -508,6 +512,7 @@ class ComentariosController < ApplicationController
   end
 
   #Dado un comentario, regresa un array con los correos a los cuales se tiene q enviar de acuerdo a los responsables tanto del contenido como de taxonomía específica
+  # Por último, TODO, All this debería ir en el modelo de comentarios!!!!!!
   def dame_usuarios_envio
 
     #Dado una categorias_contenido_id, dame esa y las catagorías papás (las categorias responsables de dicho comentario)

@@ -1,3 +1,4 @@
+<%= @correos.inspect  if !Rails.env.production? %>
 <p>
   Se te ha asignado el siguiente comentario:
   <% con_taxon = @nombre_cientifico.present? %>
@@ -13,7 +14,7 @@
 </p>
 
 <blockquote style="font-style: italic;">
-  <%= @comentario.comentario %>
+  <%= @comentario.comentario.html_safe %>
 </blockquote>
 
 <p>
