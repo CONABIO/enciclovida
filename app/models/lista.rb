@@ -206,22 +206,6 @@ class Lista < ActiveRecord::Base
           if proveedor = taxon.proveedor
             self.taxon.x_naturalista_id = proveedor.naturalista_id
           end
-        when 'x_naturalista_obs'
-          if proveedor = taxon.proveedor
-            self.taxon.x_naturalista_id = proveedor.naturalista_id
-          end
-        when 'x_snib_registros'
-          if proveedor = taxon.proveedor
-            self.taxon.x_naturalista_id = proveedor.naturalista_id
-          end
-        when 'x_geoportal_mapa'
-          if proveedor = taxon.proveedor
-            self.taxon.x_naturalista_id = proveedor.naturalista_id
-          end
-        when 'x_categoria_taxonomica'
-          self.taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
-        when 'x_estatus'
-          self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
         when 'x_foto_principal'
           if adicional = taxon.adicional
             self.taxon.x_foto_principal = adicional.foto_principal
@@ -230,6 +214,10 @@ class Lista < ActiveRecord::Base
           if adicional = taxon.adicional
             self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
           end
+        when 'x_categoria_taxonomica'
+          self.taxon.x_categoria_taxonomica = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+        when 'x_estatus'
+          self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
         when 'x_nombres_comunes'
           nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
           next unless nombres_comunes.any?
@@ -239,16 +227,16 @@ class Lista < ActiveRecord::Base
           next unless tipos_distribuciones.any?
           self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
         when 'x_nom'
-          nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
-          next unless nom.length == 1
+          nom = taxon.catalogos.nom.distinct
+          next unless nom.any?
           self.taxon.x_nom = nom[0].descripcion
         when 'x_iucn'
-          iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
-          next unless iucn.length == 1
+          iucn = taxon.catalogos.iucn.distinct
+          next unless iucn.any?
           self.taxon.x_iucn = iucn[0].descripcion
         when 'x_cites'
-          cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
-          next unless cites.length == 1
+          cites = taxon.catalogos.cites.distinct
+          next unless cites.any?
           self.taxon.x_cites = cites[0].descripcion
         else
           next
@@ -259,7 +247,7 @@ class Lista < ActiveRecord::Base
     cats = COLUMNAS_CATEGORIAS & cols
 
     if cats.any?
-      return unless taxon.ancestry_ascendente_directo.present?
+      return if taxon.is_root?  # No hay categorias que completar
       ids = taxon.path_ids
 
       Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.where(id: ids).each do |ancestro|

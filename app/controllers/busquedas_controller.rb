@@ -309,6 +309,7 @@ class BusquedasController < ApplicationController
     busqueda.params = params
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
     busqueda.original_url = request.original_url
+    busqueda.formato = request.format.symbol.to_s
     busqueda.avanzada
 
     @totales = busqueda.totales
@@ -318,19 +319,17 @@ class BusquedasController < ApplicationController
     response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 
     respond_to do |format|
-      # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-      if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1
-        # Imprime el inicio de un TAB
+      if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
         format.html { render :partial => 'busquedas/resultados' }
         format.json { render json: {taxa: @taxones} }
-        format.xlsx { descargar_taxa_excel(busqueda) }
-      elsif pagina > 1 && @taxones.length > 0
+        format.xlsx { descargar_taxa_excel }
+      elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
         format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
-      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1  # Cuando no hay resultados en la busqueda o el scrolling
         format.html { render plain: '' }
         format.json { render json: {taxa: []} }
-      elsif params[:checklist].present? && params[:checklist].to_i == 1
+      elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
         format.html { render 'busquedas/checklists' }
         format.pdf do  #Para imprimir el listado en PDF
           ruta = Rails.root.join('public', 'pdfs').to_s
@@ -355,13 +354,13 @@ class BusquedasController < ApplicationController
 
         format.html { render action: 'resultados' }
         format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
-        format.xlsx { descargar_taxa_excel(busqueda) }
+        format.xlsx { descargar_taxa_excel }
       end
 
     end  # end respond_to
   end
 
-  def descargar_taxa_excel(busqueda=nil)
+  def descargar_taxa_excel
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
@@ -394,13 +393,9 @@ class BusquedasController < ApplicationController
 
         if basica
           taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-        else  # Para la avanzada
-          query = busqueda.distinct.to_sql
-          consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-          taxones = Especie.find_by_sql(consulta)
         end
 
-        @taxones = lista.datos_descarga(taxones)
+        @taxones = lista.datos_descarga(@taxones)
         @atributos = columnas
 
         if Rails.env.production?  # Solo en produccion la guardo

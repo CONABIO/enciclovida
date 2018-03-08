@@ -1,5 +1,5 @@
 class Busqueda
-  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url
+  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -26,7 +26,7 @@ class Busqueda
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize
-    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional)
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional).distinct
     self.totales = 0
   end
 
@@ -69,9 +69,9 @@ class Busqueda
     end
 
     # Por si carga la pagina de un inicio, /busquedas/resultados
-    if pagina == 1 && params[:solo_categoria].blank?
+    if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
       # Para sacar los resultados por categoria
-      por_categoria_taxonomica
+      por_categoria_taxonomica if formato != 'xlsx'
 
       # Los totales del query
       self.totales = taxones.count
@@ -81,7 +81,10 @@ class Busqueda
       self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
-      self.taxones = taxones.select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina).distinct
+      self.taxones = taxones.select_basico.order(:nombre_cientifico).distinct
+      return if formato == 'xlsx'
+
+      self.taxones = taxones.offset(offset).limit(por_pagina)
 
       # Si solo escribio un nombre
       if params[:id].blank? && params[:nombre].present?
