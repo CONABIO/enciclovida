@@ -250,8 +250,8 @@ class Lista < ActiveRecord::Base
       return if taxon.is_root?  # No hay categorias que completar
       ids = taxon.path_ids
 
-      Especie.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.where(id: ids).each do |ancestro|
-        categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
+      Especie.select(:nombre, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).where(id: ids).each do |ancestro|
+        categoria = 'x_' << ancestro.nombre_categoria_taxonomica.estandariza
         next unless COLUMNAS_CATEGORIAS.include?(categoria)
         eval("self.taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
       end

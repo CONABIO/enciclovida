@@ -146,11 +146,16 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       self
     else
       return Especie.none unless ancestry_ascendente_directo.present?
-      ancestros = ancestry_ascendente_directo.split(',').map{|a| a if a.present?}.compact
+      ancestros = ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
       return Especie.none unless ancestros.any?
 
       Especie.find(ancestros.first)
     end
+  end
+
+  # REVISADO: Devuelve los ancestros y el taxon en cuestion
+  def path_ids
+    ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
   end
 
   CON_REGION = [19, 50]
