@@ -7,6 +7,7 @@
         <div id="comentario_categorias_contenido_id_div_<%= c.id %>" style="display: none;"></div>
       </td>
       <td width="52%">
+        ID: <%= c.id %><br />
         <% if c.general %>
             <b>Asunto: </b><i><%= Base64.decode64(c.general.subject).force_encoding('UTF-8').gsub(/###\[[[:alnum:]]+\]###/, "") %></i><br />
             <%= render 'historial', c: c %>
