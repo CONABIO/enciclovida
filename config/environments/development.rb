@@ -28,4 +28,6 @@ Buscador::Application.configure do
   config.assets.debug = true
 
   config.assets.initialize_on_precompile = true
+
+  config.web_console.whitelisted_ips = '172.16.3.222'
 end
