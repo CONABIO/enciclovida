@@ -81,7 +81,7 @@ class Busqueda
       self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
-      self.taxones = taxones.select_basico.order(:nombre_cientifico).distinct
+      self.taxones = taxones.select_basico.order(:nombre_cientifico)
       return if formato == 'xlsx'
 
       self.taxones = taxones.offset(offset).limit(por_pagina)

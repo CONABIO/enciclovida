@@ -422,7 +422,7 @@ class BusquedasController < ApplicationController
               opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
               lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
             else
-              lista.to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
+              lista.to_excel({busqueda: @taxones.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
             end
           end
 
