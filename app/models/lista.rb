@@ -59,28 +59,29 @@ class Lista < ActiveRecord::Base
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
+    cols = columnas  # Para no sobreescribir el atributo original columnas
 
     # Por si es un string
     if columnas.is_a?(String)
-      self.columnas = columnas.split(',')
+      cols = columnas.split(',')
     end
 
+    #puts self.columnas.class
     # Para la cabecera
-    columnas.each do |a|
+    cols.each do |a|
       sheet.add_cell(0,columna,I18n.t("listas_columnas.generales.#{a}", default: I18n.t("listas_columnas.categorias.#{a}", default: a)))
       columna+= 1
     end
 
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
-    columnas.slice!(0..2) if opts[:asignar]
+    cols.slice!(0..2) if opts[:asignar]
 
     if opts[:basica]  # Busqueda basica
       r = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
       datos_descarga(r)
 
     elsif opts[:avanzada]  # Busqueda avanzada
-      consulta = Bases.distinct_limpio(opts[:busqueda]) << ' ORDER BY nombre_cientifico ASC'
-      r = Especie.find_by_sql(consulta)
+      r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
 
     elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
@@ -123,7 +124,7 @@ class Lista < ActiveRecord::Base
         columna = 0
       end
 
-      columnas.each do |a|
+      cols.each do |a|
         begin
           sheet.add_cell(fila,columna,self.taxon.try(a))
         rescue  # Por si existe algun error en la evaluacion de algun campo
