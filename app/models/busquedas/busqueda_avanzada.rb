@@ -7,7 +7,7 @@ class BusquedaAvanzada < Busqueda
     tipo_distribucion
     solo_categoria
 
-    return unless por_id
+    return unless por_id_o_nombre
     categoria_por_nivel
 
     conteo_por_categoria_taxonomica
@@ -39,8 +39,6 @@ class BusquedaAvanzada < Busqueda
 
       # Si solo escribio un nombre
       if params[:id].blank? && params[:nombre].present?
-        self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).left_joins(:nombres_comunes)
-
         taxones.each do |t|
           t.cual_nombre_comun_coincidio(params[:nombre])
         end
