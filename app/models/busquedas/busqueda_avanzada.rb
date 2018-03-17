@@ -8,8 +8,15 @@ class BusquedaAvanzada < Busqueda
     solo_categoria
 
     return unless por_id
+    categoria_por_nivel
 
-    # Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el ID que escogio
+    conteo_por_categoria_taxonomica
+    totales
+    resultados
+  end
+
+  # REVISADO: Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el ID que escogio
+  def categoria_por_nivel
     if taxon.present? && params[:cat].present? && params[:nivel].present?
       # Aplica el query para los descendientes
       self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
@@ -17,15 +24,10 @@ class BusquedaAvanzada < Busqueda
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
       self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
     end
+  end
 
-    # Por si carga la pagina de un inicio, /busquedas/resultados
-    if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
-      por_categoria_taxonomica if formato != 'xlsx'
-
-      # Los totales del query
-      self.totales = taxones.count
-    end
-
+  # REVISADO: Regresa en formato de cheklist o para consulta en busqueda avanzada
+  def resultados
     if params[:checklist] == '1'
       self.taxones = taxones.datos_arbol_con_filtros
       checklist
@@ -44,7 +46,6 @@ class BusquedaAvanzada < Busqueda
         end
       end
     end  # End checklist
-
   end
 
 end
