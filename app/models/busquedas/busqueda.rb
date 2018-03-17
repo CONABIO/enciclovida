@@ -62,7 +62,9 @@ class Busqueda
   end
 
   # REVISADO: Los resultados por categoria taxonomica de acuerdo a las pestañas
-  def por_categoria_taxonomica
+  def conteo_por_categoria_taxonomica
+    return if !(pagina == 1 && params[:solo_categoria].blank? && formato != 'xlsx')
+
     por_categoria = taxones.
         select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
         group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
@@ -94,6 +96,13 @@ class Busqueda
     self.pagina = (params[:pagina] || 1).to_i
     self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
     self.offset = (pagina-1)*por_pagina
+  end
+
+  # REVISADO: Por si carga la pagina de un inicio, o es una descarga
+  def totales
+    if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
+      self.totales = taxones.count
+    end
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
