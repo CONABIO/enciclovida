@@ -1,5 +1,6 @@
 class Busqueda
-  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato
+  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato,
+                :pagina, :por_pagina, :offset
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -31,11 +32,12 @@ class Busqueda
   end
 
   # REVISADO: Regresa la busqueda avanzada
-  def avanzada
-    # Para el paginado
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
-    offset = (pagina-1)*por_pagina
+  def resultados_avanzada
+    paginado_y_offset
+    estatus
+    estados_conservacion
+    tipo_distribucion
+    solo_categoria
 
     # Parte de la categoria taxonomica
     if params[:id].present? && params[:cat].present? && params[:nivel].present?
@@ -53,24 +55,8 @@ class Busqueda
       self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
     end
 
-    # Parte del estatus
-    if es_cientifico
-      self.taxones = taxones.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
-    else  # En la busqueda general solo el valido
-      self.taxones = taxones.where(estatus: 2)
-    end
-
-    # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-    filtros_compartidos
-
-    # Solo la categoria que escogi, en caso de haber escogido una pestaña en busqueda avanzada
-    if params[:solo_categoria]
-      self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
-    end
-
     # Por si carga la pagina de un inicio, /busquedas/resultados
     if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
-      # Para sacar los resultados por categoria
       por_categoria_taxonomica if formato != 'xlsx'
 
       # Los totales del query
@@ -98,20 +84,22 @@ class Busqueda
 
   end
 
-  # REVISADO: Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-  def filtros_compartidos
-    # Parte del tipo de ditribucion
+  # REVISADO: Filtros de tipos de distribucion
+  def tipo_distribucion
     if params[:dist].present? && params[:dist].any?
       self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)} IN (?)", params[:dist]).left_joins(:tipos_distribuciones)
     end
+  end
 
-    # Parte del edo. de conservacion y el nivel de prioritaria
+  # REVISADO: filtros de categorias de riesgo, nivel de prioridad
+  def estados_conservacion
     if params[:edo_cons].present? || params[:prior].present?
       catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
       self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", catalogos).left_joins(:catalogos)
     end
   end
 
+  # REVISADO: Los resultados por categoria taxonomica de acuerdo a las pestañas de la busqueda avanzada
   def por_categoria_taxonomica
     por_categoria = taxones.
         select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
@@ -121,6 +109,29 @@ class Busqueda
     self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
                                                   cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}",
                                                   categoria_taxonomica_id: cat.categoria_taxonomica_id}}
+  end
+
+  # REVISADO: Solo la categoria que escogi, en caso de haber escogido una pestaña en especifico
+  def solo_categoria
+    if params[:solo_categoria]
+      self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
+    end
+  end
+
+  # REVISADO: Pone el estatus de acuerdo a la vista
+  def estatus
+    if es_cientifico
+      self.taxones = taxones.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
+    else  # En la vista general solo el valido
+      self.taxones = taxones.where(estatus: 2)
+    end
+  end
+
+  # REVISADO: ALgunos valores como el offset, pagina y por pagina
+  def paginado_y_offset
+    self.pagina = (params[:pagina] || 1).to_i
+    self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
+    self.offset = (pagina-1)*por_pagina
   end
 
   # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
