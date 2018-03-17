@@ -57,7 +57,7 @@ class Busqueda
         false
       end
     elsif params[:nombre].present?
-      self.taxones = taxones.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '%?%' OR nombres_comunes LIKE '%?%'", params[:nombre].strip, params[:nombre].strip)
+      self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].strip).left_joins(:nombres_comunes)
       true
     else  # Si no esta presente que siga con el flujo del programa
       true

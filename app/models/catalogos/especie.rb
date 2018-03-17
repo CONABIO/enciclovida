@@ -87,8 +87,8 @@ class Especie < ActiveRecord::Base
   scope :caso_rango_valores, ->(columna, rangos) { where("#{columna} IN (#{rangos})") }
   scope :caso_status, ->(status) { where(:estatus => status.to_i) }
   scope :ordenar, ->(columna, orden) { order("#{columna} #{orden}") }
-  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(#{NombreComun.attribute_alias(:nombre_comun)}) LIKE LOWER('%#{nombre}%') OR LOWER(#{attribute_alias(:nombre_cientifico)}) LIKE LOWER('%#{nombre}%')
-  OR LOWER(#{:nombre_comun_principal}) LIKE LOWER('%#{nombre}%')") }
+  scope :caso_nombre_comun_y_cientifico, ->(nombre) { where("LOWER(#{attribute_alias(:nombre_cientifico)}) LIKE LOWER('%?%')
+  OR LOWER(#{:nombres_comunes}) LIKE LOWER('%?%')", nombre, nombre) }
 
   # Los joins explicitos fueron necesarios ya que por default "joins", es un RIGHT JOIN
   scope :especies_regiones_join, -> { joins('LEFT JOIN especies_regiones ON especies_regiones.especie_id=especies.id') }
