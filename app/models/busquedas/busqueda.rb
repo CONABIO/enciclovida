@@ -1,6 +1,6 @@
 class Busqueda
   attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato,
-                :pagina, :por_pagina, :offset
+                :pagina, :por_pagina, :offset, :taxon
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -35,19 +35,14 @@ class Busqueda
   def resultados_avanzada
     paginado_y_offset
     estatus
-    estados_conservacion
+    estado_conservacion
     tipo_distribucion
     solo_categoria
 
-    # Parte de la categoria taxonomica
-    if params[:id].present? && params[:cat].present? && params[:nivel].present?
-      begin
-        taxon = Especie.find(params[:id])
-      rescue
-        self.taxones = Especie.none
-        return
-      end
+    return unless por_id
 
+    # Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el ID que escogio
+    if taxon.present? && params[:cat].present? && params[:nivel].present?
       # Aplica el query para los descendientes
       self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
 
@@ -92,10 +87,25 @@ class Busqueda
   end
 
   # REVISADO: filtros de categorias de riesgo, nivel de prioridad
-  def estados_conservacion
+  def estado_conservacion
     if params[:edo_cons].present? || params[:prior].present?
       catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
       self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", catalogos).left_joins(:catalogos)
+    end
+  end
+
+  # Por si selecciono un grupo iconico o eligio del autocomplete un taxon
+  def por_id
+    if params[:id].present?
+      begin
+        self.taxon = Especie.find(params[:id])
+        true
+      rescue
+        self.taxones = Especie.none
+        false
+      end
+    else  # Si no esta presente que siga con el flujo del programa
+      true
     end
   end
 
