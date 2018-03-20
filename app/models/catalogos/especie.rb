@@ -31,13 +31,13 @@ class Especie < ActiveRecord::Base
                 :x_nombres_comunes_catalogos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
-                :x_familia, :x_subfamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
+                :x_familia, :x_subfamilia, :x_epifamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
-                :x_infraphylum, :x_epiclase, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
-                :x_subgrupo, :x_hiporden,
-                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie,  # Para que en el excel sea mas facil la consulta
+                :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
+                :x_subgrupo, :x_hiporden, :x_infraserie,
+                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :suprafamilia  # Para que en el excel sea mas facil la consulta
                 :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,

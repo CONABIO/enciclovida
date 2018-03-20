@@ -250,10 +250,10 @@ class BusquedasController < ApplicationController
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
     vista_general = I18n.locale.to_s == 'es' ? true : false
     basica = params[:busqueda] == 'basica' ? true : false
+    @atributos = columnas
 
     # Si es una descarga de la busqueda basica y viene del fuzzy match
-    if basica  && @taxones.present? && @taxones.any?
-      @atributos = columnas
+    if basica  && @totales > 0
       @taxones = lista.datos_descarga(@taxones)
       # el nombre de la lista es cuando la bajo ya que no metio un correo
       lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
@@ -277,7 +277,6 @@ class BusquedasController < ApplicationController
         end
 
         @taxones = lista.datos_descarga(@taxones)
-        @atributos = columnas
 
         if Rails.env.production?  # Solo en produccion la guardo
           render(xlsx: 'resultados') if lista.save

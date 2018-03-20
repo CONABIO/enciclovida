@@ -1,5 +1,7 @@
 class BusquedaBasica < Busqueda
 
+  attr_accessor :fuzzy_match
+
   # REVISADO: Regresa la busqueda basica
   def resultados_basica
     paginado_y_offset
@@ -10,12 +12,9 @@ class BusquedaBasica < Busqueda
 
     conteo_por_categoria_taxonomica
     dame_totales
+    resultados
 
-    if dame_totales > 0
-      resultados
-    else
-      resultados_fuzzy_match
-    end
+    resultados_fuzzy_match if totales == 0 && pagina == 1 && params[:solo_categoria].blank?
   end
 
   # Devuelve los resultados de una busqueda normal
@@ -38,7 +37,7 @@ class BusquedaBasica < Busqueda
     ids_comun = FUZZY_NOM_COM.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).flatten.compact.uniq.sort.reverse
     ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).flatten.compact.uniq.sort.reverse
     ids_totales = []
-    
+
     if ids_comun.empty? && ids_cientifico.empty?
       self.taxones = Especie.none
       self.totales = 0
@@ -74,8 +73,7 @@ class BusquedaBasica < Busqueda
       t.cual_nombre_comun_coincidio(params[:nombre], true)
     end
 
-    #@fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-
+    self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'
     self.totales = taxones.length
   end
 
