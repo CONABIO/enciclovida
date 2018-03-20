@@ -6,7 +6,7 @@ gem 'activerecord-session_store'
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
-gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa'  # forza a blurrily a usar rails 5
+gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # forza a blurrily a usar rails 5
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'carrierwave'
 gem 'cocoon'

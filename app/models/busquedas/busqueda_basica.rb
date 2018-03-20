@@ -11,70 +11,72 @@ class BusquedaBasica < Busqueda
     conteo_por_categoria_taxonomica
     dame_totales
 
-    if totales > 0
+    if dame_totales > 0
       resultados
+    else
+      resultados_fuzzy_match
+    end
+  end
+
+  # Devuelve los resultados de una busqueda normal
+  def resultados
+    self.taxones = taxones.select_basico.order(:nombre_cientifico)
+    return if formato == 'xlsx'
+
+    self.taxones = taxones.offset(offset).limit(por_pagina)
+
+    # Si solo escribio un nombre
+    if params[:id].blank? && params[:nombre].present?
+      taxones.each do |t|
+        t.cual_nombre_comun_coincidio(params[:nombre])
+      end
+    end
+  end
+
+  # REVISADO: Si no hubo resultados, tratamos de encontrarlos con el fuzzy match
+  def resultados_fuzzy_match
+    ids_comun = FUZZY_NOM_COM.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).flatten.compact.uniq.sort.reverse
+    ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).flatten.compact.uniq.sort.reverse
+    ids_totales = []
+    
+    if ids_comun.empty? && ids_cientifico.empty?
+      self.taxones = Especie.none
+      self.totales = 0
       return
     end
 
-##########################
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional).select_basico(["#{NombreComun.table_name}.#{NombreComun.attribute_alias(:nombre_comun)}"]).order(:nombre_cientifico).offset(offset).limit(por_pagina).left_joins(:nombres_comunes).distinct
 
-    arbol = params[:arbol].present? && params[:arbol].to_i == 1
-    vista_general = I18n.locale.to_s == 'es' ? true : false
-
-
-# Si no hubo resultados, tratamos de encontrarlos con el fuzzy match
-    ids_comun = FUZZY_NOM_COM.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy)
-    ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy)
-
-    if ids_comun.any? || ids_cientifico.any?
-      sql = "Especie.datos_basicos(['nombre_comun', 'ancestry_ascendente_directo', 'cita_nomenclatural']).nombres_comunes_join"
-
-      # Parte del estatus
-      if vista_general
-        sql << ".where('estatus=2')"
-      end
-
-      if ids_comun.any? && ids_cientifico.any?
-        sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
-      elsif ids_comun.any?
-        sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
-      elsif ids_cientifico.any?
-        sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
-      end
-
-      query = eval(sql).distinct.to_sql
-      consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-      taxones = Especie.find_by_sql(consulta)
-
-      ids_totales = []
-
-      taxones.each do |taxon|
-        # Para evitar que se repitan los taxones con los joins
-        next if ids_totales.include?(taxon.id)
-        ids_totales << taxon.id
-
-        # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-        if taxon.nombre_comun.present?
-          distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
-          @taxones <<= taxon if distancia < 3
-        end
-
-        distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
-        @taxones <<= taxon if distancia < 3
-      end
+    if ids_comun.any?
+      self.taxones =  taxones.where("#{NombreComun.table_name}.#{NombreComun.attribute_alias(:id)} IN (?)", ids_comun.join(','))
     end
 
-# Para que saga el total tambien con el fuzzy match
-    if @taxones.any?
-      @taxones.each do |t|
-        t.cual_nombre_comun_coincidio(params[:nombre], true)
-      end
-
-      @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+    if ids_cientifico.any?
+      self.taxones =  taxones.where(id: ids_cientifico)
     end
 
-    @totales = @taxones.length
+    taxones.each do |taxon|
+      # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
+      if taxon.nombre_comun.present?
+        distancia = Levenshtein.distance(params[:nombre].strip.downcase, taxon.nombre_comun.downcase)
+        ids_totales << taxon if distancia < 3
+      end
 
+      distancia = Levenshtein.distance(params[:nombre].strip.downcase, taxon.nombre_cientifico.limpiar.downcase)
+      ids_totales <<= taxon if distancia < 3
+    end
+
+    # Para mantener el valor en taxones
+    self.taxones = ids_totales
+
+    # Para que saga el total tambien con el fuzzy match
+    taxones.each do |t|
+      t.cual_nombre_comun_coincidio(params[:nombre], true)
+    end
+
+    #@fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
+
+    self.totales = taxones.length
   end
 
 end
