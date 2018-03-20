@@ -70,7 +70,7 @@
 				$(window).scroll(function() {
 					
 					// Check the user is at the bottom of the element
-                    if($(window).scrollTop() + $(window).height() == $(document).height() && !settings.busy) {
+                    if(Math.ceil($(window).scrollTop()) + $(window).height() == $(document).height() && !settings.busy) {
 						
 						// Now we are working, so busy is true
 						busy = true;
