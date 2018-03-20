@@ -11,7 +11,7 @@ class BusquedaAvanzada < Busqueda
     categoria_por_nivel
 
     conteo_por_categoria_taxonomica
-    totales
+    dame_totales
     resultados
   end
 

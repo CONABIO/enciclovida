@@ -9,7 +9,7 @@ class BusquedaBasica < Busqueda
     return unless por_id_o_nombre
 
     conteo_por_categoria_taxonomica
-    totales
+    dame_totales
 
     if totales > 0
       resultados

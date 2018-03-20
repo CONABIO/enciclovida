@@ -102,7 +102,7 @@ class Busqueda
   end
 
   # REVISADO: Por si carga la pagina de un inicio, o es una descarga
-  def totales
+  def dame_totales
     if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
       self.totales = taxones.count
     end
