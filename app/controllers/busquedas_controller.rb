@@ -1,7 +1,9 @@
 class BusquedasController < ApplicationController
+
   before_action only: :resultados, if: -> {params[:busqueda] == 'avanzada'} do
     @no_render_busqueda_basica = true
   end
+
   before_action only: :avanzada do
     @no_render_busqueda_basica = true
   end
@@ -78,7 +80,7 @@ class BusquedasController < ApplicationController
     render json: @data.to_json
   end
 
-  # Acción que genera los checklists de acuerdo a un set de resultados
+  # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
   def checklist(sin_filtros=false)
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
@@ -100,7 +102,7 @@ class BusquedasController < ApplicationController
     end
   end
 
-  # Las categoras asociadas de acuerdo al taxon que escogio
+  # REVISADO: Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
     especie = Especie.find(params[:id])
     @categorias = especie.cat_tax_asociadas
@@ -112,7 +114,7 @@ class BusquedasController < ApplicationController
 
   private
 
-  # Los filtros de la busqueda avanzada y de los resultados
+  # REVISADO: Los filtros de la busqueda avanzada y de los resultados
   def filtros_iniciales
     @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
     @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
@@ -125,11 +127,11 @@ class BusquedasController < ApplicationController
     @prioritarias = Catalogo.prioritarias
   end
 
-  # Los resultados de la busqueda basica
+  # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
   def resultados_basica
     pagina = (params[:pagina] || 1).to_i
 
-    busqueda = Busqueda.new
+    busqueda = BusquedaBasica.new
     busqueda.params = params
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
     busqueda.original_url = request.original_url
@@ -139,10 +141,7 @@ class BusquedasController < ApplicationController
     @totales = busqueda.totales
     @por_categoria = busqueda.por_categoria || []
     @taxones = busqueda.taxones
-
-
-
-
+    arbol = false
 
     response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
 
@@ -164,18 +163,16 @@ class BusquedasController < ApplicationController
 
         format.json { render json: @arboles.to_json }
 
-      elsif params[:solo_categoria].present? && @taxones.any? && pagina == 1
-        # Despliega el inicio de un TAB que no sea el default
+      elsif params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
         format.html { render :partial => 'busquedas/resultados' }
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel }
-      elsif pagina > 1 && @taxones.any?
+      elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
         # Despliega el paginado del TAB que tiene todos
         format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
-      elsif @taxones.empty? && pagina > 1
-        # Quiere decir que el paginado acabo en algun TAB
-        format.html { render text: '' }
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1  # Cuando no hay resultados en la busqueda o el scrolling
+        format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
         format.html { render action: 'resultados' }

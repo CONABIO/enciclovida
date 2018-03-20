@@ -5,14 +5,6 @@ class Busqueda
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
 
-  NIVEL_CATEGORIAS_HASH = {
-      '>' => 'inferiores a',
-      '>=' => 'inferiores o iguales a',
-      '=' => 'iguales a',
-      '<=' => 'superiores o iguales a',
-      '<' => 'superiores a'
-  }
-
   NIVEL_CATEGORIAS = [
       ['inferior o igual a', '>='],
       ['inferior a', '>'],
