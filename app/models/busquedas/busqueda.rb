@@ -72,7 +72,7 @@ class Busqueda
 
   # REVISADO: Solo la categoria que escogi, en caso de haber escogido una pestaña en especifico
   def solo_categoria
-    if params[:solo_categoria]
+    if params[:solo_categoria].present?
       self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
     end
   end
