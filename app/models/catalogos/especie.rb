@@ -128,6 +128,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
   scope :select_grupos_iconicos, -> { select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional) }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
+  # Para que regrese las especies
+  scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
+  # Para que regrese las especies
+  scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
+  scope :path, -> {where(id: path_ids)}
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 
@@ -153,9 +158,22 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
-  # REVISADO: Devuelve los ancestros y el taxon en cuestion
+  # REVISADO: Devuelve un array de los ancestros y el taxon en cuestion
   def path_ids
     ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
+  end
+
+  # REVISADO: Devuelve el active record de los ancestros y el taxon en cuestion
+  def path
+    Especie.where(id: path_ids)
+  end
+
+  def descendant_ids
+    descendants.map(&:id)
+  end
+
+  def descendants
+    Especie.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", id).where.not(id: id)
   end
 
   CON_REGION = [19, 50]
@@ -194,11 +212,11 @@ Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhach
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def cuantas_especies
-    descendants.where(estatus: 2).categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', %w(especie)).count
+    descendants.solo_especies.count
   end
 
   def cuantas_especies_e_inferiores
-    descendants.categoria_taxonomica_join.where('nombre_categoria_taxonomica IN (?)', SPECIES_OR_LOWER).count
+    descendants.especies_e_inferiores.count
   end
 
   def cuantas_especies_inferiores(opc = {})
