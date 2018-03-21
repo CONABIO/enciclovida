@@ -192,8 +192,9 @@ module EspeciesHelper
     distribucion.sort
   end
 
-  def dameStatus(taxon, opciones={})
+  def dameEstatus(taxon, opciones={})
     estatus_a = []
+
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
       begin
         taxSinonimo = Especie.find(estatus.especie_id2)

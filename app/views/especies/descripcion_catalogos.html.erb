@@ -11,7 +11,7 @@
           <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
         </p>
 
-        <%= dameStatus(@especie, :tab_catalogos => true).html_safe %>
+        <%= dameEstatus(@especie, :tab_catalogos => true).html_safe %>
         <%= dameCaracteristica(@especie, :tab_catalogos => true).html_safe %>
 
         <% nombres_comunes = dameNomComunesBiblio(@especie) %>
