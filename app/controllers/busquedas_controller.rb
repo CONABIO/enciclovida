@@ -241,6 +241,7 @@ class BusquedasController < ApplicationController
     end  # end respond_to
   end
 
+  # REVISADO: La descarga de taxa en busqueda basica o avanzada
   def descargar_taxa_excel
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
@@ -248,15 +249,12 @@ class BusquedasController < ApplicationController
     lista.formato = 'xlsx'
     lista.cadena_especies = request.original_url
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
-    vista_general = I18n.locale.to_s == 'es' ? true : false
-    basica = params[:busqueda] == 'basica' ? true : false
     @atributos = columnas
 
-    # Si es una descarga de la busqueda basica y viene del fuzzy match
-    if basica  && @totales > 0
-      @taxones = lista.datos_descarga(@taxones)
+    if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
       # el nombre de la lista es cuando la bajo ya que no metio un correo
       lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+      @taxones = lista.datos_descarga(@taxones)
 
       if Rails.env.production?  # Solo en produccion la guardo
         render(xlsx: 'resultados') if lista.save
@@ -264,58 +262,26 @@ class BusquedasController < ApplicationController
         render xlsx: 'resultados'
       end
 
-    elsif @totales > 0
+    elsif @totales > 200  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
       # Para saber si el correo es correcto y poder enviar la descarga
-      con_correo = Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+      if Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+        # el nombre de la lista es cuando la solicito? y el correo
+        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
-      if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
-        # el nombre de la lista es cuando la bajo ya que no metio un correo
-        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-
-        if basica
-          taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
+        if Rails.env.production?
+          lista.delay(queue: 'descargar_taxa').to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
+        else  # Para develpment o test
+          lista.to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
         end
 
-        @taxones = lista.datos_descarga(@taxones)
-
-        if Rails.env.production?  # Solo en produccion la guardo
-          render(xlsx: 'resultados') if lista.save
-        else
-          render xlsx: 'resultados'
-        end
-
-      else  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
-        if con_correo
-          # el nombre de la lista es cuando la solicito? y el correo
-          lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
-
-          if Rails.env.production?
-            if basica
-              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.delay(queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
-            else
-              lista.delay(queue: 'descargar_taxa').to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
-            end
-
-          else  # Para develpment o test
-            if basica  # si es busqueda basica
-              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
-            else
-              lista.to_excel({busqueda: @taxones.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
-            end
-          end
-
-          render json: {estatus: 1}
-        else  # Por si no puso un correo valido
-          render json: {estatus: 0}
-        end
-
+        render json: {estatus: 1}
+      else  # Por si no puso un correo valido
+        render json: {estatus: 0}
       end
 
     else  # No entro a ningun condicional, es un error
       render json: {estatus: 0}
-    end  # end totales > 0
+    end  # end totoales
   end  # end metodo
 
   # REVISADO: Parametros para poner en los filtros y saber cual escogio
