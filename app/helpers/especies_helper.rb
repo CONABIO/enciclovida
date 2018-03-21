@@ -309,7 +309,6 @@ module EspeciesHelper
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
-        next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
         nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
         name = "edo_cons_#{edo.parameterize}"
         icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
@@ -317,7 +316,7 @@ module EspeciesHelper
       end
     end
 
-    TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
+    TipoDistribucion::distribuciones.each do |tipoDist|
       nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
       name = "dist_#{tipoDist}"
       icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
@@ -332,7 +331,7 @@ module EspeciesHelper
       response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, name, icono)
     end
 
-    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
+    Catalogo.prioritaria_todas.each do |prior|
       icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
       name = "prio_#{prior}"
       nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')

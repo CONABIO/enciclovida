@@ -44,13 +44,6 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       format.html do
 
-        if @species_or_lower = @especie.species_or_lower?
-          if proveedor = @especie.proveedor
-            geodatos = proveedor.geodatos
-            @geo = geodatos if geodatos[:cuales].any?
-          end
-        end
-
         if adicional = @especie.adicional
           @nombre_comun_principal = adicional.nombre_comun_principal
         end
@@ -58,12 +51,12 @@ class EspeciesController < ApplicationController
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
-        end
+          @con_cornell = true   # Para saber si es Ave TODO (parche feito)
 
-        #para saber si es Ave TODO (parche feito)
-        if proveedor = @especie.proveedor
-          #@con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
-          @con_cornell = true
+          if @especie_o_inferior = @especie.especie_o_inferior?
+            geodatos = proveedor.geodatos
+            @geo = geodatos if geodatos[:cuales].any?
+          end
         end
 
         # Para los comentarios

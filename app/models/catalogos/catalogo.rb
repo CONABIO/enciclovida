@@ -18,7 +18,6 @@ class Catalogo < ActiveRecord::Base
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
 
-  IUCN_QUITAR_EN_FICHA = []#['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)','Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
 
   # REVISADO: Devuelve el valor si pertenece a nom, cites o iucn, o solo devuelve el titulo del valor, para el show de especie
@@ -65,5 +64,9 @@ class Catalogo < ActiveRecord::Base
     iucn = [iucn[6],iucn[5],iucn[8],iucn[7],iucn[4],iucn[3],iucn[2],iucn[1],iucn[0]]  # Orden propuesto por cgalindo
     cites = self.cites#.map(&:descripcion) #Esta ya viene en orden (I,II,III)
     {:nom => nom, :iucn => iucn, :cites => cites}
+  end
+
+  def self.prioritaria_todas
+    prioritarias
   end
 end
