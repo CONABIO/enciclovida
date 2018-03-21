@@ -82,35 +82,6 @@
             }
         });
 
-        $(document).on('click', "#box_especie", function()
-        {
-            checaCaja = $(this).is(":checked") ? true : false
-            if (checaCaja)
-            {
-                $(":input[class='especies']").prop("checked", true);
-            } else {
-                $(":input[class='especies']").prop("checked", false);
-            }
-        });
-
-        $("#muestra_listas").click(function ()
-        {
-            $('#widget_listas').slideToggle("fast", function(){
-                if ($(this).html().length == 0)
-                {
-                    $.ajax({
-                        url: "/listas/dame_listas",
-                        type: 'POST'
-                    }).done(function(html) {
-                        $('#widget_listas').html(html);
-                    }).fail(function(){
-                        $('#widget_listas').html('<h4>Hubo un error al cargar los datos.</h4>');
-                    });
-                }
-            });
-            return false;
-        });
-
         // Para validar en vivo el correo
         $(document).on('keyup', '#correo', function(){
             if( !isValidEmailAddress($(this).val()) )
@@ -209,14 +180,15 @@
 
               // Escogio de grupo iconico
               if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
-                  $('#id_' + SET_PARAMS.id).prop('checked', true);
-              else if (SET_PARAMS.nombre != undefined) {
+              {
+                  $('#id_gi_' + SET_PARAMS.id).prop('checked', true);
+                  $('#id').val(SET_PARAMS.id);
+
+              } else if (SET_PARAMS.nombre != undefined) {
                   por_nombre();
                   $('#nombre').val(SET_PARAMS.nombre);
               }
 
-              if (SET_PARAMS.id != undefined)
-                  $('#id').val(SET_PARAMS.id);
               if (SET_PARAMS.por_pagina != undefined)
                   $('#por_pagina').val(SET_PARAMS.por_pagina);
               if (SET_PARAMS.dist != undefined)

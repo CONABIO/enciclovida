@@ -154,5 +154,10 @@ $(document).ready(function()
         if (url == "") return false;
         else window.open(url, '_blank');
     });
+
+
+    $("#busqueda_avanzada").on('submit', '#b_avanzada', function() {
+        $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI
+    });
 });
 
