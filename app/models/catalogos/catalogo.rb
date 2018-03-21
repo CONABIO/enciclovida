@@ -13,8 +13,6 @@ class Catalogo < ActiveRecord::Base
   alias_attribute :nivel4, :Nivel4
   alias_attribute :nivel5, :Nivel5
 
-  has_many :especies_catalogos, :class_name => 'EspecieCatalogo'
-  #has_one :especie, :through => :especies_catalogos, :class_name => 'EspecieCatalogo', :foreign_key => 'catalogo_id'
   scope :nom, -> { where(nivel1: 4, nivel2: 1).where("#{attribute_alias(:nivel3)} > 0") }
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
@@ -23,24 +21,21 @@ class Catalogo < ActiveRecord::Base
   IUCN_QUITAR_EN_FICHA = []#['Riesgo bajo (LR): Dependiente de conservación (cd)', 'No evaluado (NE)', 'Datos insuficientes (DD)','Riesgo bajo (LR): Preocupación menor (lc)', 'Riesgo bajo (LR): Casi amenazado (nt)']
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
 
-  def nom_cites_iucn(cat_actual = false, ws = false)
-    condicion =  ws ?  (nivel2 == 1 || nivel2 == 3) : (nivel2 > 0)
+  # REVISADO: Devuelve el valor si pertenece a nom, cites o iucn, o solo devuelve el titulo del valor, para el show de especie
+  def nom_cites_iucn?(valor_actual = false, ws = false)
+    condicion =  ws ? (nivel2 == 1 || nivel2 == 3) : (nivel2 > 0)
     if nivel1 == 4 && condicion && nivel3 > 0
-      return descripcion if cat_actual
+      return descripcion if valor_actual
 
-      limites = Bases.limites(id)
-      id_inferior = limites[:limite_inferior]
-      id_superior = limites[:limite_superior]
-
-      edo_conservacion = Catalogo.where(:nivel1 => nivel1, :nivel2 => nivel2, :nivel3 => 0).where(:id => id_inferior..id_superior).first   #el nombre del edo. de conservacion
+      edo_conservacion = Catalogo.where(:nivel1 => nivel1, :nivel2 => nivel2, :nivel3 => 0).first   #el nombre del edo. de conservacion
       edo_conservacion ? edo_conservacion.descripcion : nil
     else
       nil
     end
   end
 
-  # Saco el nombre del ambiente ya que al unir los catalogos, los nombres aveces no coinciden
-  def ambiente
+  # REVISADO: Devuelve el valor si pertence a ambiente, para el show de especie
+  def ambiente?
     if nivel1 == 2 && nivel2 == 6 && nivel3 > 0   #se asegura que el valor pertenece al ambiente
       descripcion
     else
@@ -48,11 +43,11 @@ class Catalogo < ActiveRecord::Base
     end
   end
 
-  # Saco el nivel de la especie prioritaria
-  def prioritaria
+  # REVISADO: Devuelve el valor si pertenece a especie prioritaria, para le show de especie
+  def prioritaria?
     if nivel1 == 4 && nivel2 == 4 && nivel3 > 0   #se asegura que el valor pertenece a prioritaria del diario oficial (DOF)
       descripcion
-    elsif nivel1 == 4 && nivel2 == 5 && nivel3 > 0   #se asegura que el valor pertenece a prioritaria de de la CONABIO
+    else
       nil
     end
   end
