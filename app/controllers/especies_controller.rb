@@ -2,7 +2,7 @@
 # encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
+  skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
@@ -17,7 +17,9 @@ class EspeciesController < ApplicationController
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
-  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] {tiene_permiso?('Administrador')}  # Minimo administrador
+  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] do
+    tiene_permiso?('Administrador')  # Minimo administrador
+  end
 
   before_action :servicios, only: [:show]
 
@@ -28,10 +30,6 @@ class EspeciesController < ApplicationController
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
-
-  #c.session.blank? || c.session['warden.user.user.key'].blank?
-  #}
-  #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
 
   # GET /especies
   # GET /especies.json
@@ -402,18 +400,18 @@ class EspeciesController < ApplicationController
       @array = mc.dameMedia_nc(taxon, type)
     end
 
-     render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
+    render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
 
     case type
-        when 'photo'
-          render 'fotos_cornell'
-        when 'video'
-          render 'videos_cornell'
-        when 'audio'
-          render 'audios_cornell'
-        else
-          render text: "<strong>No se encontraron coincidencias</strong>"
-      end
+      when 'photo'
+        render 'fotos_cornell'
+      when 'video'
+        render 'videos_cornell'
+      when 'audio'
+        render 'audios_cornell'
+      else
+        render text: "<strong>No se encontraron coincidencias</strong>"
+    end
 
   end
 
@@ -681,7 +679,7 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
-    begin
+    #begin
       @especie = Especie.find(params[:id])
       suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
       cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
@@ -712,12 +710,12 @@ class EspeciesController < ApplicationController
           end
         end
       end
-    rescue    #si no encontro el taxon
-      render :_error and return
-    end
+    #rescue    #si no encontro el taxon
+    #  render :_error and return
+    #end
   end
 
-  # Suma una visita a la estadisticas
+  # REVISADO: Suma una visita a la estadisticas
   def suma_visita
     # Me aseguro que viene de la ficha, para poner el contador y que es solo del formato html
     if params[:action] == 'show' && request.format.html?
@@ -729,7 +727,7 @@ class EspeciesController < ApplicationController
     end  # if show
   end
 
-  # Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
+  # REVISADO: Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
   def cuantas_especies_inferiores(opc = {})
     if params[:action] == 'show'
       if Rails.env.production?

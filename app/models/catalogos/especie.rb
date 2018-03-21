@@ -349,6 +349,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
+  def especie_o_inferior?
+    if cat = categoria_taxonomica
+      return true if cat.nivel1 == 7 && cat.nivel3 > 0
+    end
+
+    false
+  end
+
   def apta_con_geodatos?
     CategoriaTaxonomica::CATEGORIAS_GEODATOS.include? categoria_taxonomica.nombre_categoria_taxonomica
   end
