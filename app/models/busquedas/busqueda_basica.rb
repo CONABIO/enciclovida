@@ -73,8 +73,8 @@ class BusquedaBasica < Busqueda
       t.cual_nombre_comun_coincidio(params[:nombre], true)
     end
 
-    self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'
     self.totales = taxones.length
+    self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?' if totales > 0
   end
 
 end

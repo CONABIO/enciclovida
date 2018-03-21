@@ -76,14 +76,9 @@ class Lista < ActiveRecord::Base
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
     cols.slice!(0..2) if opts[:asignar]
 
-    if opts[:basica]  # Busqueda basica
-      r = Busqueda.basica(opts[:nombre], {vista_general: opts[:vista_general], todos: opts[:todos], solo_categoria: opts[:solo_categoria]})
-      datos_descarga(r)
-
-    elsif opts[:avanzada]  # Busqueda avanzada
+    if opts[:es_busqueda]  # Busqueda basica o avanzada
       r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
-
     elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
       r = Especie.where(id: cadena_especies.split(','))
       datos_descarga(r)

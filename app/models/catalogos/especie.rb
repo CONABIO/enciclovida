@@ -37,7 +37,7 @@ class Especie < ActiveRecord::Base
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden, :x_infraserie,
-                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :suprafamilia  # Para que en el excel sea mas facil la consulta
+                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
                 :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
