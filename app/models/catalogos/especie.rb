@@ -107,8 +107,7 @@ class Especie < ActiveRecord::Base
   scope :categoria_conteo_join, -> { joins('LEFT JOIN categorias_conteo ON categorias_conteo.especie_id=especies.id') }
   scope :icono_join, -> { joins('LEFT JOIN iconos ON iconos.id=adicionales.icono_id') }
 
-  # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
+
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   #Select para el Checklist (por_arbol)
@@ -125,6 +124,10 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
+
+
+  # Select basico que contiene los campos a mostrar por ponNombreCientifico
+  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')) }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
   scope :select_grupos_iconicos, -> { select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional) }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
@@ -295,22 +298,21 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     fetch.present? ? response << fetch : ws = false
 
-    especies_catalogos.each do |e|
-      cat = e.catalogo
+    catalogos.each do |cat|
 
-      nom_cites_iucn = cat.nom_cites_iucn(true, ws)
+      nom_cites_iucn = cat.nom_cites_iucn?(true, ws)
       if nom_cites_iucn.present?
-        response << nom_cites_iucn.parameterize
+        response << nom_cites_iucn.estandariza
       end
 
-      amb = cat.ambiente
+      amb = cat.ambiente?
       if amb.present?
-        response << amb.parameterize
+        response << amb.estandariza
       end
 
-      prio = cat.prioritaria
+      prio = cat.prioritaria?
       if prio.present?
-        response << prio.parameterize
+        response << prio.estandariza
       end
     end  #Fin each
 
