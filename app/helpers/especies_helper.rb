@@ -193,7 +193,18 @@ module EspeciesHelper
   end
 
   def dameEstatus(taxon, opciones={})
+    def creaContenedor(recurso, tipo)
+      "<strong>#{tipo}: </strong><small>#{recurso.map(&:des).join(', ')}</small>"
+    end
+
+    def creaLista
+
+    end
     estatus_a = []
+
+    taxon.especies_estatus.sinonimos.each do |sinonimo|
+
+    end
 
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
       begin
