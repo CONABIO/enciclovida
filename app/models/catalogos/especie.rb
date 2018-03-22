@@ -59,11 +59,14 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
 
+  has_many :especies_estatus, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => attribute_alias(:id)
+  has_many :estatuses, :through => :especies_estatus, :source => :estatus
+
 
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
 
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-  has_many :especies_estatus, :class_name => 'EspecieEstatus', :foreign_key => :especie_id1, :dependent => :destroy
+
   has_many :especies_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy
   has_many :bibliografias, :through => :especies_bibliografias
   has_many :regiones, :through => :nombres_regiones
