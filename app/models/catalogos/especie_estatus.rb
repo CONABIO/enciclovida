@@ -13,6 +13,7 @@ class EspecieEstatus < ActiveRecord::Base
   belongs_to :especie, :foreign_key => :especie_id2
   belongs_to :estatus, :foreign_key => attribute_alias(:estatus_id)
 
-  scope :sinonimos, -> {where(estatus_id: 1)}
-  scope :homonimos, -> {where(estatus_id: 8)}
+  scope :sinonimos, -> { where(estatus_id: 1) }
+  scope :homonimos, -> { where(estatus_id: 8) }
+
 end

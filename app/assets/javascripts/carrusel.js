@@ -138,7 +138,3 @@ function inicia_carrusel()
     }
 }
 
-
-if (INATURALIST_API != undefined) fotos_naturalista();
-else fotos_bdi();
-

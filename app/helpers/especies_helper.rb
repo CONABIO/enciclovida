@@ -52,6 +52,7 @@ module EspeciesHelper
         elsif params[:link]
           nombre.present? ? "<h5>#{nombre}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
         elsif params[:show]
+          puts 'por aqui'
           nombre.present? ? "#{nombre} (#{ponItalicas(taxon)})".html_safe : ponItalicas(taxon).html_safe
         else
           'Ocurrio un error en el nombre'.html_safe
@@ -192,19 +193,49 @@ module EspeciesHelper
     distribucion.sort
   end
 
-  def dameEstatus(taxon, opciones={})
-    def creaContenedor(recurso, tipo)
-      "<strong>#{tipo}: </strong><small>#{recurso.map(&:des).join(', ')}</small>"
+  def dameSinonimosUhomonimos(taxon, opciones={})
+    def creaContenedor(recurso, opciones={})
+      "<strong>#{opciones[:tipo_recurso]}: </strong><small>#{recurso.join(', ')}</small>"
     end
 
+    def creaLista(recurso, opciones={})
+      "<p><strong>#{opciones[:tipo_recurso]} </strong></p><ul>#{recurso.join('')}</ul>"
+    end
+
+    ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).sinonimos.map(&:especie_id2)
+    return '' unless ids.any?
+    taxones = Especie.find(ids)
+
+    if opciones[:tab_catalogos]
+      recurso = taxones.map{ |t| "<li>#{tituloNombreCientifico(t, show: true)}</li>" }
+      creaLista(recurso, opciones)
+    else
+      recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
+      creaContenedor(recurso, opciones)
+    end
+  end
+
+  def dameHomonimos
     def creaLista
-
     end
+  end
+
+  def dameEstatus(taxon, opciones={})
+
+
+
+
     estatus_a = []
 
-    taxon.especies_estatus.sinonimos.each do |sinonimo|
 
-    end
+
+=begin
+    ids = taxon.especies_estatus.homonimos.map(&:especie_id2)
+    #return '' unless ids.any?
+    taxones = Especie.find(ids)
+    recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
+    opciones[:tab_catalogos] ? creaLista(recurso, 'Homónimos') : creaContenedor(recurso, 'Homónimos')
+
 
     taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
       begin
@@ -246,6 +277,7 @@ module EspeciesHelper
     else
       ''
     end
+=end
   end
 
   def dameCaracteristica(taxon, opciones={})

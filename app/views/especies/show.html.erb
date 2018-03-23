@@ -1,11 +1,27 @@
 <% content_for(:extrajs) do %>
+    <script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
+        TAXON = {id: "<%= @especie.id %>"};
+        NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
+        SPECIES_OR_LOWER = <%=raw @especie_o_inferior || false %>;
+        GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
+        BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
+
+        <% if @con_naturalista.present? %>
+        INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
+        <% else %>
+        INATURALIST_API = undefined;
+        <% end %>
+    </script>
+
     <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
     <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'carrusel', 'data-turbolinks-track' => true %>
 <% end %>
 
 <%= content_for(:delayedjs) do %>
     <script>
+
         function paginado_fotos(paginas, pagina)
         {
             var es_primero = null;
@@ -40,16 +56,16 @@
 
         // Para correr los nobres comunes del lado del cliente
         nombres_comunes_todos();
+
+        // Para correr las imagenes principales
+        if (INATURALIST_API != undefined) fotos_naturalista();
+        else fotos_bdi();
     </script>
 <% end %>
 
-<script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
-    var TAXON = <%=raw @especie.to_json %>;
-    var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
-    var SPECIES_OR_LOWER = <%=raw @especie_o_inferior %>;
-    var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
-    var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
-</script>
+<% content_for(:extracss) do %>
+    <%= stylesheet_link_tag 'carrusel', media: 'all', 'data-turbolinks-track' => true %>
+<% end %>
 
 <% if notice.present? %>
     <div class="row alert alert-success" role="alert"><%= notice %></div>
@@ -64,18 +80,19 @@
     <h3>
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-	    <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
+      <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
-	<%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
+  <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
   <% if (@especie_o_inferior) %>
-    <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
-      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-    </div>
+      <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
+        <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+      </div>
   <% end %>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
-    <%= dameEstatus(@especie).html_safe %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}).html_safe %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}).html_safe %>
   </div>
 </div>
 <hr/>
@@ -87,13 +104,13 @@
     <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
     <%#Todo if ESPANTOSO, arreglar cuando ya se arregle el PDF (comentado con sintaxis ERB para q no salga en el html) %>
     <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-      <li>
-        <%= button_tag("<b>Descargar &middot; <i class ='file-pdf-ev-icon'></i><sub>PDF</sub></b>".html_safe, :class => 'btn btn-link', :type => :button, :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
-      </li>
+        <li>
+          <%= button_tag("<b>Descargar &middot; <i class ='file-pdf-ev-icon'></i><sub>PDF</sub></b>".html_safe, :class => 'btn btn-link', :type => :button, :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
+        </li>
     <% else %>
-      <li>
-        <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
-      </li>
+        <li>
+          <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
+        </li>
     <% end %>
     <li role="separator" class="divider"></li>
     <li class="dropdown-header">Consultar en: <sup><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></sup></li>
@@ -108,9 +125,9 @@
     </li>
     <li role="separator" class="divider"></li>
     <% if @con_naturalista %>
-      <li>
-        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
-      </li>
+        <li>
+          <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
+        </li>
     <% end %>
   </ul>
 </div>
@@ -133,12 +150,12 @@
           <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
         </li>
         <% if @con_cornell %>
-          <li role="separator" class="divider"></li>
+            <li role="separator" class="divider"></li>
 
-          <li class="dropdown-header">Macaulay Library</li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
+            <li class="dropdown-header">Macaulay Library</li>
+            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
+            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
+            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
 
 
         <% end %>
@@ -180,56 +197,56 @@
     </div>
 
     <% if @con_cornell %>
-      <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
+        <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+          <p class="text-center">
+            <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+          <h4>Cargando... Por favor, espera</h4>
+          </p>
+        </div>
+        <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+          <p class="text-center">
+            <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+          <h4>Cargando... Por favor, espera</h4>
+          </p>
+        </div>
+        <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+          <p class="text-center">
+            <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+          <h4>Cargando... Por favor, espera</h4>
+          </p>
+        </div>
 
-      <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content" style="background-color: #c5c5c5;">
+        <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="background-color: #c5c5c5;">
 
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+              </div>
+
+              <div class="modal-body text-center" id="modal_reproduce_body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <h3></h3>
+                    <h4></h4>
+                    <h5></h5>
+                    <p></p>
+                  </div>
+                  <div class="col-md-9">
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button-->
+              </div>
 
             </div>
-
-            <div class="modal-body text-center" id="modal_reproduce_body">
-	            <div class="row">
-		            <div class="col-md-3">
-		              <h3></h3>
-		              <h4></h4>
-			            <h5></h5>
-			            <p></p>
-		            </div>
-	              <div class="col-md-9">
-
-	              </div>
-	            </div>
-            </div>
-
-            <div class="modal-footer">
-              <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
-              <!--button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button-->
-            </div>
-
           </div>
         </div>
-      </div>
     <% end %>
 
     <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>

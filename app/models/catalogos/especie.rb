@@ -356,7 +356,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def especie_o_inferior?
     if cat = categoria_taxonomica
-      return true if cat.nivel1 == 7 && cat.nivel3 > 0
+      return true if cat.nivel1 == 7
     end
 
     false
