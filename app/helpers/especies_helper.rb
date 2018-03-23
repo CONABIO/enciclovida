@@ -345,42 +345,40 @@ module EspeciesHelper
     response.join.html_safe
   end
 
+  # REVISADO: Pone la simbologia en la ficha de la especie
   def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
-    def creaSpan(nombre, name, icono)
-      "<span title='#{nombre}' class='btn-title' alt='#{name}'>#{icono}</span>"
+
+    def creaSpan(nombre, icono)
+      "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
-        nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        name = "edo_cons_#{edo.parameterize}"
-        icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
-        response[k]  = response[k].to_a << creaSpan(nombre, name, icono)
+        nombre = edo.descripcion
+        icono  = "<i class = '#{edo.descripcion.parameterize}-ev-icon'></i>"
+        response[k]  = response[k].to_a << creaSpan(nombre, icono)
       end
     end
 
-    TipoDistribucion::distribuciones.each do |tipoDist|
-      nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-      name = "dist_#{tipoDist}"
-      icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
-
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, name, icono)
+    TipoDistribucion.distribuciones.each do |tipoDist|
+      nombre = tipoDist.descripcion
+      icono =  "<i class = '#{tipoDist.descripcion.parameterize}-ev-icon'></i>"
+      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, icono)
     end
 
     Catalogo.ambiente_todos.each do |amb|
-      icono =  "<i class = 'ambiente #{amb.parameterize}-ev-icon'></i>"
-      name = "amb_#{amb}"
-      nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, name, icono)
+      nombre = amb.descripcion
+      icono =  "<i class = 'ambiente #{amb.descripcion.parameterize}-ev-icon'></i>"
+      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, icono)
     end
 
     Catalogo.prioritaria_todas.each do |prior|
-      icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
-      name = "prio_#{prior}"
-      nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
-      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, name, icono)
+      nombre = prior.descripcion
+      icono =  "<i class = '#{prior.descripcion.parameterize}-ev-icon'></i>"
+      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, icono)
     end
+
     response
   end
 
