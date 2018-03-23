@@ -349,34 +349,32 @@ module EspeciesHelper
   def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
 
-    def creaSpan(nombre, icono)
+    def creaSpan(recurso)
+      nombre = recurso.descripcion
+      icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
       "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
-        nombre = edo.descripcion
-        icono  = "<i class = '#{edo.descripcion.parameterize}-ev-icon'></i>"
-        response[k]  = response[k].to_a << creaSpan(nombre, icono)
+        response[k] ||=[]
+        response[k] << creaSpan(edo)
       end
     end
 
     TipoDistribucion.distribuciones.each do |tipoDist|
-      nombre = tipoDist.descripcion
-      icono =  "<i class = '#{tipoDist.descripcion.parameterize}-ev-icon'></i>"
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, icono)
+      response[:tipoDistribucion] ||= []
+      response[:tipoDistribucion] << creaSpan(tipoDist)
     end
 
     Catalogo.ambiente_todos.each do |amb|
-      nombre = amb.descripcion
-      icono =  "<i class = 'ambiente #{amb.descripcion.parameterize}-ev-icon'></i>"
-      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, icono)
+      response[:ambiente] ||=[]
+      response[:ambiente] << creaSpan(amb)
     end
 
     Catalogo.prioritaria_todas.each do |prior|
-      nombre = prior.descripcion
-      icono =  "<i class = '#{prior.descripcion.parameterize}-ev-icon'></i>"
-      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, icono)
+      response[:prioritaria] ||=[]
+      response[:prioritaria] << creaSpan(prior)
     end
 
     response
