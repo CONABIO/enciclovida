@@ -194,6 +194,9 @@ class ComentariosController < ApplicationController
             comentario_root = @comentario.root
             @comentario.completa_info(comentario_root.usuario_id)
 
+            # Enviar a los responsables de contenido si es que el usuario siguio la charla
+            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+
             format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
                                        nombre: @comentario.nombre}.to_json}
           else
@@ -207,7 +210,7 @@ class ComentariosController < ApplicationController
 
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
 
-            #Y si no me equivoco, Aquí (y SÓLO aquí) es donde hay q poner el envio a los responsables de contenido
+            #No  SÓLO aquí es donde hay q poner el envio a los responsables de contenido (también allá arriba cuando un usuario responde)
             EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
             
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
@@ -525,14 +528,18 @@ class ComentariosController < ApplicationController
     usuarios_categorias = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables)
 
     #Si de los encargados de las categorias, no tienen ninguna taxonomía especifica, entonces es sabelotodo y lo agregamos o lo agregamos si su taxonomía específica pertenece al path de la especie del comentario, (si el usuario tiene taxonomía especifica y es comentario general, entonces dicho usuario se skippea)
-    usuarios_envio = usuarios_categorias.map{|u| u if( u.especies.empty? || path_especie.include?(u.id_especie) ) }.compact.map(&:email).uniq
+    usuarios_especie = usuarios_categorias.map{|u| u if( u.especies.empty? || path_especie.include?(u.id_especie) ) }.compact.map(&:email)
+
+    #Si te metiste en la conversacion tambien te envio correo
+    usuarios_metiches =  @comentario.is_root? ? [] : Usuario.where('id' => @comentario.ancestors.drop(1).map(&:usuario_id)).map(&:email)
+
 
     #Alternativamente se puede realizar UN SÓLO query a la BD, pero creo que aún hay q probar exhaustivamente
     #En tal caso, usuarios_categorias no se ocuparía
     #usuarios_envio = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables).where.not("especies.id NOT IN (?) AND especies.id IS NOT NULL", path_especie).map(&:email).uniq
 
     #puts '------------------UE-----------------------'+usuarios_envio.inspect
-    usuarios_envio
+    (usuarios_especie + usuarios_metiches).uniq
   end
 
 end
