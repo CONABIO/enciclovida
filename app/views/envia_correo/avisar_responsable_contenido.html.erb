@@ -1,6 +1,6 @@
 <%= @correos.inspect  if !Rails.env.production? %>
 <p>
-  Se te ha asignado el siguiente comentario:
+  <%= @comentario.is_root? ? "Se te ha asignado el siguiente comentario:" : "Te han contestado el siguiente comentario:" %>
   <% con_taxon = @nombre_cientifico.present? %>
   <span style="font-size: 1.2em;">
   <% if con_taxon %>
@@ -18,5 +18,5 @@
 </blockquote>
 
 <p>
-  Para poder contestarlo, ingresa al <%= link_to 'panel de administracion de comentarios', admin_path %>.
+  Para poder contestarlo, ingresa al <%= link_to 'panel de administracion de comentarios', CONFIG.site_url+admin_path %>.
 </p>
