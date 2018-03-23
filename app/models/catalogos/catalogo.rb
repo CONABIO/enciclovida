@@ -17,6 +17,7 @@ class Catalogo < ActiveRecord::Base
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
+  scope :ambientes, -> { where(:nivel1 => 2, :nivel2 => 6).where('nivel3 > 0').where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
 
@@ -51,9 +52,9 @@ class Catalogo < ActiveRecord::Base
     end
   end
 
+  # REVISADO:
   def self.ambiente_todos
-    ambiente = Catalogo.where(:nivel1 => 2, :nivel2 => 6).where('nivel3 > 0').map(&:descripcion).uniq
-    ambiente.delete_if{|a| AMBIENTE_EQUIV_MARINO.include?(a)}
+    ambientes
   end
 
   # REVISADO: Las categorias de conservacion para la busqueda avanzada
