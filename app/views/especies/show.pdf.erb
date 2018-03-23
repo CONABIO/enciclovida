@@ -36,7 +36,8 @@
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <div id="nombres_comunes_todos"></div>
-  <%= dameEstatus(@especie).html_safe %>
+  <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}).html_safe %>
+  <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}).html_safe %>
 </div>
 
 

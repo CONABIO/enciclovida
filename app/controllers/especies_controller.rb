@@ -48,12 +48,14 @@ class EspeciesController < ApplicationController
           @nombre_comun_principal = adicional.nombre_comun_principal
         end
 
+        @especie_o_inferior = @especie.especie_o_inferior?
+
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
           @con_cornell = true   # Para saber si es Ave TODO (parche feito)
 
-          if @especie_o_inferior = @especie.especie_o_inferior?
+          if @especie_o_inferior
             geodatos = proveedor.geodatos
             @geo = geodatos if geodatos[:cuales].any?
           end
