@@ -14,7 +14,7 @@ class TipoDistribucion < ActiveRecord::Base
 
   DISTRIBUCIONES_VISTA_GENERAL = %w(Endémica Nativa Exótica Exótica-Invasora)
 
-  # REVISADO: Los tipos de distribucion de acuerdo a la vista y tambien en el show de especies
+  # REVISADO: Los tipos de distribucion de acuerdo a la vista y tambien en el show de especies en la simbologia de ayuda
   def self.distribuciones(vista_especialistas = true)
     if vista_especialistas
       all
@@ -23,4 +23,5 @@ class TipoDistribucion < ActiveRecord::Base
       [d[0], d[2], d[3], d[1]]  # Acomodo sugerido de cgalindo
     end
   end
+
 end
