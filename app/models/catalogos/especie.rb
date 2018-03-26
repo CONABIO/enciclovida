@@ -38,7 +38,7 @@ class Especie < ActiveRecord::Base
                 :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden, :x_infraserie,
                 :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
-                :x_distancia
+  :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
@@ -279,7 +279,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     estadistica.save
   end
 
-  # Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array
+  # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array con las descripciones
   def nom_cites_iucn_ambiente_prioritaria(ws=false)
     response = []
 
@@ -301,59 +301,43 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     fetch.present? ? response << fetch : ws = false
 
-    catalogos.each do |cat|
+    catalogos.uniq.each do |cat|
 
       nom_cites_iucn = cat.nom_cites_iucn?(true, ws)
       if nom_cites_iucn.present?
-        response << nom_cites_iucn.estandariza
+        response << nom_cites_iucn
       end
 
       amb = cat.ambiente?
       if amb.present?
-        response << amb.estandariza
+        response << amb
       end
 
       prio = cat.prioritaria?
       if prio.present?
-        response << prio.estandariza
+        response << prio
       end
     end  #Fin each
 
-    response.uniq
+    response
   end
 
+  # REVISADO: Devuelve el tipo de distribución para colocar en la simbologia del show de especies
   def tipo_distribucion
     response = []
 
-    tipos_distribuciones.uniq.each do |distribucion|
-      next if distribucion.descripcion.parameterize == 'original'  # Quitamos el tipo de dist. original
-
-      if distribucion.descripcion.parameterize.downcase == 'no-endemica'
-        response << I18n.t("tipo_distribucion.#{distribucion.descripcion.parameterize.downcase}.nombre").downcase
-      else
-        response << distribucion.descripcion.parameterize
-      end
-
+    tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
+      response << distribucion.descripcion
     end
 
-    response.uniq
-  end
-
-  # Override assignment method provided by has_many to ensure that all
-  # callbacks on photos and taxon_photos get called, including after_destroy
-  def photos=(new_photos)
-    taxon_photos.each do |taxon_photo|
-      taxon_photo.destroy unless new_photos.detect{|p| p.id == taxon_photo.photo_id}
-    end
-    new_photos.each do |photo|
-      taxon_photos.build(:photo => photo) unless photos.detect{|p| p.id == photo.id}
-    end
+    response
   end
 
   def species_or_lower?
     SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
+  # REVISADO: Regresa si un taxon es especie o inferior
   def especie_o_inferior?
     if cat = categoria_taxonomica
       return true if cat.nivel1 == 7
