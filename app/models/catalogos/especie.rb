@@ -52,6 +52,7 @@ class Especie < ActiveRecord::Base
 
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
+  has_many :bibliografias_nombres_comunes, :through => :nombres_regiones, :source => :bibliografia
 
   has_many :especies_regiones, :class_name => 'EspecieRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion

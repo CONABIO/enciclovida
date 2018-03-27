@@ -8,7 +8,7 @@
 
         <p>
           <strong>Estatus taxonómico:</strong>
-          <%= Especie::ESTATUS.select{ |k, v| k === @especie.estatus }.first.last %>
+          <%= Especie::ESTATUS_SIGNIFICADO[@especie.estatus] %>
         </p>
 
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}).html_safe %>
