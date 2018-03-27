@@ -1,7 +1,12 @@
 class Bibliografia < ActiveRecord::Base
 
-  self.table_name='bibliografias'
-  self.primary_key='id'
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.Bibliografia'
+  self.primary_key = 'IdBibliografia'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdBibliografia
+
 
   has_many :nombres_regiones_bibligrafias
   has_many :especies_bibliografias
