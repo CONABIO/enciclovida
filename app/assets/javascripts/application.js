@@ -24,7 +24,7 @@
 //= require jQuery-Autocomplete.js
 //= require typeahead.js
 //= require cocoon.js
-//= require general.js
+//= require general
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require "i18n/translations"

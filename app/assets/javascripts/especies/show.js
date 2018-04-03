@@ -1,22 +1,15 @@
 //= require ../photo_selectors.js
 
+// Inicializa las funciones del show de especies
+var showEspecies  =function()
+{
+    tooltip();
+    refreshMediaQueries();
+};
+
 var nombres_comunes_todos = function(id)
 {
     $('#nombres_comunes_todos').load("/especies/" + id + "/nombres-comunes-todos");
-};
-
-var imagenes_taxon = function(p)
-{
-    $.ajax(
-        {
-            url: BDI_API,
-            type: 'GET',
-            data: {p: p}
-        }).done(function (fotos) {
-
-        }).error(function (error) {
-            $('#imagenes_taxon').html('Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>');
-        });
 };
 
 var paginado_fotos = function(paginas, pagina)

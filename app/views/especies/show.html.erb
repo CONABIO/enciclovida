@@ -13,7 +13,6 @@
         <% end %>
     </script>
 
-    <script src=""></script>
 <% end %>
 
 <%= content_for(:delayedjs) do %>
@@ -24,6 +23,8 @@
         // Para correr las imagenes principales
         if (INATURALIST_API != undefined) fotos_naturalista();
         else fotos_bdi();
+
+        showEspecies();
     </script>
 <% end %>
 
