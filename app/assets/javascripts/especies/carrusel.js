@@ -1,4 +1,4 @@
-//=require sly
+//=require ../sly.js
 
 function fotos_naturalista()
 {

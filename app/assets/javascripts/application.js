@@ -10,10 +10,10 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
+//= require turbolinks
 //= require jquery
 //= require jquery-ui.js
 //= require jquery_ujs
-//= require turbolinks
 //= require adicional.js
 //= require bootstrap-sprockets
 //= require comentarios.js
@@ -28,3 +28,4 @@
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require "i18n/translations"
+//= require "especies/obligatorios"
