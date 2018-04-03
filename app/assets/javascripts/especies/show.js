@@ -1,11 +1,11 @@
-//= require photo_selectors
+//= require ../photo_selectors.js
 
-function nombres_comunes_todos()
+var nombres_comunes_todos = function(id)
 {
-    $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
-}
+    $('#nombres_comunes_todos').load("/especies/" + id + "/nombres-comunes-todos");
+};
 
-function imagenes_taxon(p)
+var imagenes_taxon = function(p)
 {
     $.ajax(
         {
@@ -17,6 +17,38 @@ function imagenes_taxon(p)
         }).error(function (error) {
             $('#imagenes_taxon').html('Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>');
         });
+};
+
+var paginado_fotos = function(paginas, pagina)
+{
+    var es_primero = null;
+
+    $('.paginado_1, .paginado_2').bootpag({
+        total: paginas,          // total pages
+        page: pagina,            // default page
+        maxVisible: 5,     // visible pagination
+        leaps: true,         // next/prev leaps through maxVisible
+        firstLastUse: true,
+        first: '←',
+        last: '→'
+    }).on("page", function (event, pag) {
+        if (es_primero == pag)
+            return;
+        else {
+            $.ajax(
+                {
+                    url: '/especies/' + TAXON.id + '/fotos-bdi.html',
+                    type: 'GET',
+                    data: {
+                        pagina: pag
+                    }
+                }).done(function (res) {
+                    $('#paginado_fotos').empty().append(res);
+                });
+        }
+
+        es_primero = pag;
+    });
 }
 
 $(document).ready(function(){

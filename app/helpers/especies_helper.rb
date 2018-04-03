@@ -52,7 +52,6 @@ module EspeciesHelper
         elsif params[:link]
           nombre.present? ? "<h5>#{nombre}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
         elsif params[:show]
-          puts 'por aqui'
           nombre.present? ? "#{nombre} (#{ponItalicas(taxon)})".html_safe : ponItalicas(taxon).html_safe
         else
           'Ocurrio un error en el nombre'.html_safe

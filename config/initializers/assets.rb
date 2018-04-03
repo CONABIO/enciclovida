@@ -1,1 +1,1 @@
-Rails.application.config.assets.precompile += %w(inicio.css busquedas.css scrolling.js show.js geodatos/d3.v3.min jquery.bootpag.min.js carrusel.css carrusel.js)
+Rails.application.config.assets.precompile += %w(inicio.css busquedas.css scrolling.js carrusel.css especies/obligatorios.js)
