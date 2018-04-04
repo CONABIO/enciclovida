@@ -10,7 +10,7 @@
     </div>
     <div class="col-xs-3">
       <% if @describer %>
-        <%= select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control", :onchange => 'getDescription("/especies/'+@especie.id.to_s+'/describe?from="+$(this).val())'; %>
+        <%= select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control" %>
         <% if page_url = @describer.page_url(@especie) %>
           <div class="text-center col-xs-12">
             <%= link_to "Ver en #{@describer.describer_name} &rarr;".html_safe, page_url, :class => 'externallink ui', :target => :_blank %>
@@ -36,3 +36,12 @@
     <%= raw @description %>
   <% end  %>
 </div>
+
+<script>
+    // Se llama en esta vista para que el evento lo ponga cuando el elemento ya se creo
+    $(document).ready(function(){
+        eventoFichas();
+    });
+</script>
+
+

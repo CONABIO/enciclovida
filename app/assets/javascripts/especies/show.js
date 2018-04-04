@@ -3,15 +3,16 @@ var showEspecies  =function()
 {
     tooltip();
     refreshMediaQueries();
-    nombres_comunes_todos();
-    iniciaPestañas();
+    nombresComunes();
+    eventoPestañas();
+    eventoFichaPDF();
 
     // Para correr las imagenes principales
     if (INATURALIST_API != undefined) fotos_naturalista(); else fotos_bdi();
 };
 
 // Pone el evento en las pestañas
-var iniciaPestañas = function()
+var eventoPestañas = function()
 {
     $('#pestañas > .nav a').one('click',function(){
         if (!Boolean($(this).hasClass('noLoad'))){
@@ -22,8 +23,35 @@ var iniciaPestañas = function()
     });
 };
 
-// Para correr los nobres comunes del lado del cliente
-var nombres_comunes_todos = function(id)
+// Inicializa el evento para cuando quieren cambiar de ficha; wikipedia, conabio, etc
+var eventoFichas = function()
+{
+    $('#taxon_description').on('change', '#from', function(){
+        cual_ficha = $(this).val();
+
+        $.ajax({
+            url: "/especies/"+TAXON.id+"/describe?from="+cual_ficha,
+            method: 'get',
+            success: function(data, status) {
+                $('.taxon_description').replaceWith(data);
+            },
+            error: function(request, status, error) {
+                $('.taxon_description').loadingShades('close');
+            }
+        });
+    });
+};
+
+// Para cuando quieren bajar la ficha en PDF
+var eventoFichaPDF = function()
+{
+    $('#content').on('click', '#boton_pdf', function(){
+        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
+    });
+};
+
+// Para correr los nobres comunes del lado del cliente, pone de catalogos y naturalista
+var nombresComunes = function()
 {
     $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
 };
@@ -80,25 +108,6 @@ $(document).ready(function(){
         }
         return false;
     };
-
-    $('#content').on('click', '#boton_pdf', function(){
-        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
-    });
-
-    $('#taxon_description').on('change', '#from', function(){
-        cual_ficha = $(this).val();
-
-        $.ajax({
-            url: "/especies/"+TAXON.id+"/describe?from="+cual_ficha,
-            method: 'get',
-            success: function(data, status) {
-                $('.taxon_description').replaceWith(data);
-            },
-            error: function(request, status, error) {
-                $('.taxon_description').loadingShades('close');
-            }
-        });
-    });
 
     $(document).on('click', '.historial_ficha', function(){
         var comentario_id = $(this).attr('comentario_id');
