@@ -338,10 +338,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
   end
 
-  # REVISADO: Regresa si un taxon es especie o inferior
-  def especie_o_inferior?
+  # REVISADO: Regresa si un taxon es especie o inferior o genero
+  def especie_o_inferior?(opc = {})
     if cat = categoria_taxonomica
-      return true if cat.nivel1 == 7
+      if opc[:con_genero]
+        return true if cat.nivel1 == 7 || (cat.nivel1 == 6 && cat.nivel3 == 0 && cat.nivel4 == 0)
+      else
+        return true if cat.nivel1 == 7
+      end
     end
 
     false
@@ -514,7 +518,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def fotos_bdi(opts={})
     bdi = BDIService.new
 
-    if species_or_lower? || categoria_taxonomica.nombre_categoria_taxonomica == 'género'
+    if especie_o_inferior?({con_genero: true})
       bdi.dameFotos(opts.merge({taxon: self, campo: 528}))
     elsif is_root?
       bdi.dameFotos(opts.merge({taxon: self, campo: 15}))
