@@ -35,6 +35,8 @@ FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientifi
 
 module Buscador
   class Application < Rails::Application
+    Encoding.default_external = Encoding::UTF_8
+    Encoding.default_internal = Encoding::UTF_8
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
