@@ -17,13 +17,6 @@
 
 <%= content_for(:delayedjs) do %>
     <script>
-        // Para correr los nobres comunes del lado del cliente
-        nombres_comunes_todos(TAXON.id);
-
-        // Para correr las imagenes principales
-        if (INATURALIST_API != undefined) fotos_naturalista();
-        else fotos_bdi();
-
         showEspecies();
     </script>
 <% end %>
