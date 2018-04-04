@@ -3,16 +3,29 @@ var showEspecies  =function()
 {
     tooltip();
     refreshMediaQueries();
-    nombres_comunes_todos(TAXON.id);
+    nombres_comunes_todos();
+    iniciaPestañas();
 
     // Para correr las imagenes principales
     if (INATURALIST_API != undefined) fotos_naturalista(); else fotos_bdi();
 };
 
+// Pone el evento en las pestañas
+var iniciaPestañas = function()
+{
+    $('#pestañas > .nav a').one('click',function(){
+        if (!Boolean($(this).hasClass('noLoad'))){
+            var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
+            var pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
+            $(this.getAttribute('href')).load(pestaña);
+        }
+    });
+};
+
 // Para correr los nobres comunes del lado del cliente
 var nombres_comunes_todos = function(id)
 {
-    $('#nombres_comunes_todos').load("/especies/" + id + "/nombres-comunes-todos");
+    $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
 };
 
 $(document).ready(function(){
@@ -93,13 +106,5 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).load("/especies/"+especie_id+"/comentarios/"+comentario_id+"/respuesta_externa?ficha=1");
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
-    });
-
-    $('#pestañas > .nav a').one('click',function(){
-        if (!Boolean($(this).hasClass('noLoad'))){
-            idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
-            pestaña = '/especies/'+TAXON.id+'/'+idPestaña;
-            $(this.getAttribute('href')).load(pestaña);
-        }
     });
 });
