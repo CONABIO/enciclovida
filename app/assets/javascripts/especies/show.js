@@ -1,71 +1,42 @@
-//= require ../photo_selectors.js
-
 // Inicializa las funciones del show de especies
 var showEspecies  =function()
 {
     tooltip();
     refreshMediaQueries();
+    nombres_comunes_todos(TAXON.id);
+
+    // Para correr las imagenes principales
+    if (INATURALIST_API != undefined) fotos_naturalista(); else fotos_bdi();
 };
 
+// Para correr los nobres comunes del lado del cliente
 var nombres_comunes_todos = function(id)
 {
     $('#nombres_comunes_todos').load("/especies/" + id + "/nombres-comunes-todos");
 };
 
-var paginado_fotos = function(paginas, pagina)
-{
-    var es_primero = null;
-
-    $('.paginado_1, .paginado_2').bootpag({
-        total: paginas,          // total pages
-        page: pagina,            // default page
-        maxVisible: 5,     // visible pagination
-        leaps: true,         // next/prev leaps through maxVisible
-        firstLastUse: true,
-        first: '←',
-        last: '→'
-    }).on("page", function (event, pag) {
-        if (es_primero == pag)
-            return;
-        else {
-            $.ajax(
-                {
-                    url: '/especies/' + TAXON.id + '/fotos-bdi.html',
-                    type: 'GET',
-                    data: {
-                        pagina: pag
-                    }
-                }).done(function (res) {
-                    $('#paginado_fotos').empty().append(res);
-                });
-        }
-
-        es_primero = pag;
-    });
-}
-
 $(document).ready(function(){
     cual_ficha = '';
 
-    info = function(){
+    var info = function(){
         $('#ficha-div').slideUp();
         $('#info-div').slideDown();
         return false;
     };
 
-    ficha = function(){
+    var ficha = function(){
         $('#info-div').slideUp();
         $('#ficha-div').slideDown();
         return false;
     };
 
-    muestraBibliografiaNombres = function(ident){
+    var muestraBibliografiaNombres = function(ident){
         var id=ident.split('_')[2];
         $("#biblio_"+id).dialog();
         return false;
     };
 
-    despliegaOcontrae = function(id)
+    var despliegaOcontrae = function(id)
     {
         var sufijo = id.substring(5);
 
@@ -97,11 +68,11 @@ $(document).ready(function(){
         return false;
     };
 
-    $(document).on('click', '#boton_pdf', function(){
+    $('#content').on('click', '#boton_pdf', function(){
         window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
     });
 
-    $(document).on('change', '#from', function(){
+    $('#taxon_description').on('change', '#from', function(){
         cual_ficha = $(this).val();
 
         $.ajax({
@@ -131,31 +102,4 @@ $(document).ready(function(){
             $(this.getAttribute('href')).load(pestaña);
         }
     });
-    $('#modal_reproduce').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var media;
-        $('#modal_reproduce_body .col-md-3 > h3').text(button.data('author'));
-        $('#modal_reproduce_body .col-md-3 > h4').text(button.data('date'));
-        $('#modal_reproduce_body .col-md-3 > h5').text(button.data('country'));
-        $('#modal_reproduce_body .col-md-3 > p').text(button.data('location'));
-        $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        if(button.data('type') == 'photo'){
-            media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
-        }else{
-            var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
-            var source = $(document.createElement("source")).attr('src', button.data('url'));
-            media = video.append(source);
-        }
-        $('#modal_reproduce_label > a').attr('href', button.data('title'));
-        $('#modal_reproduce_body .col-md-9').append(media);
-    });
-    //Deshabilitar clicks derechos en ALL el modal
-    $('#modal_reproduce_body').bind('contextmenu', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return false;
-    });
-    //Eliminar contenido del modal-body (necesario para q deje de reproducirse el video/audio cuando se cierra modal)
-    $('#modal_reproduce').on('hide.bs.modal', function(){$('#modal_reproduce_body .col-md-9').empty()});
 });
