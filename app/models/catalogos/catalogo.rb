@@ -21,37 +21,6 @@ class Catalogo < ActiveRecord::Base
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
 
-  # REVISADO: Devuelve el valor si pertenece a nom, cites o iucn, o solo devuelve el titulo del valor, para el show de especie
-  def nom_cites_iucn?(valor_actual = false, ws = false)
-    condicion =  ws ? (nivel2 == 1 || nivel2 == 3) : (nivel2 > 0)
-    if nivel1 == 4 && condicion && nivel3 > 0
-      return descripcion if valor_actual
-
-      edo_conservacion = Catalogo.where(:nivel1 => nivel1, :nivel2 => nivel2, :nivel3 => 0).first   #el nombre del edo. de conservacion
-      edo_conservacion ? edo_conservacion.descripcion : nil
-    else
-      nil
-    end
-  end
-
-  # REVISADO: Devuelve el valor si pertence a ambiente, para el show de especie
-  def ambiente?
-    if nivel1 == 2 && nivel2 == 6 && nivel3 > 0   #se asegura que el valor pertenece al ambiente
-      descripcion
-    else
-      nil
-    end
-  end
-
-  # REVISADO: Devuelve el valor si pertenece a especie prioritaria, para le show de especie
-  def prioritaria?
-    if nivel1 == 4 && nivel2 == 4 && nivel3 > 0   #se asegura que el valor pertenece a prioritaria del diario oficial (DOF)
-      descripcion
-    else
-      nil
-    end
-  end
-
   # REVISADO:
   def self.ambiente_todos
     ambientes

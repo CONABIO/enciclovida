@@ -281,46 +281,29 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array con las descripciones
-  def nom_cites_iucn_ambiente_prioritaria(ws=false)
+  def nom_cites_iucn_ambiente_prioritaria(opc={})
     response = []
 
-    if ws
-      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
+    if opc[:iucn_ws]
+      iucn_ws = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
         if iucn = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico)
-          iucn_ws = I18n.t("cat_riesgo.iucn_ws.#{iucn.parameterize}", :default => iucn).parameterize
-
-          if iucn_ws.blank?
-            nil
-          else
-            iucn_ws
-          end
-        else
-          nil
+          I18n.t("iucn_ws.#{iucn.estandariza}", :default => iucn)
         end
       end
     end
 
-    fetch.present? ? response << fetch : ws = false
+    response << catalogos.nom.map(&:descripcion)
 
-    catalogos.uniq.each do |cat|
+    if !opc[:iucn_ws] || (opc[:iucn_ws] && iucn_ws.blank?)
+      response << catalogos.iucn.map(&:descripcion)
+    else
+      response << iucn_ws
+    end
 
-      nom_cites_iucn = cat.nom_cites_iucn?(true, ws)
-      if nom_cites_iucn.present?
-        response << nom_cites_iucn
-      end
-
-      amb = cat.ambiente?
-      if amb.present?
-        response << amb
-      end
-
-      prio = cat.prioritaria?
-      if prio.present?
-        response << prio
-      end
-    end  #Fin each
-
-    response
+    response << catalogos.cites.map(&:descripcion)
+    response << catalogos.prioritarias.map(&:descripcion)
+    response << catalogos.ambientes.map(&:descripcion)
+    response.flatten.compact.uniq
   end
 
   # REVISADO: Devuelve el tipo de distribución para colocar en la simbologia del show de especies
@@ -452,7 +435,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
-    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria(true)
+    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
     cons_amb_dist << tipo_distribucion
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 

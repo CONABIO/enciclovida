@@ -1,4 +1,3 @@
-# coding: utf-8
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
@@ -214,11 +213,6 @@ module EspeciesHelper
     end
   end
 
-  def dameHomonimos
-    def creaLista
-    end
-  end
-
   def dameEstatus(taxon, opciones={})
 
 
@@ -331,12 +325,12 @@ module EspeciesHelper
     end
   end
 
+  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria(true),taxon.tipo_distribucion].flatten
+    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}),taxon.tipo_distribucion].flatten
 
     caracteristicas.each{ |x|
-      #n = t("cat_riesgo.#{x.parameterize}.nombre", :default => (t("tipo_distribucion.#{x.parameterize}.nombre", :default => (t("ambiente.#{x.parameterize}.nombre", :default => (t("prioritaria.#{x.parameterize}.nombre", :default => '')))))))
       response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
     }
 

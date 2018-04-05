@@ -309,6 +309,17 @@ es:
       submit: Guardar %{model}
       update: Actualizar %{model}
   iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
+  iucn_ws:
+    ex: Extinto (EX)
+    ew: Extinto en estado silvestre (EW)
+    cr: En peligro crítico (CR)
+    en: En peligro (EN)
+    vu: Vulnerable (VU)
+    cd: "Riesgo bajo (LR): Dependiente de conservación (cd)"
+    dd: Datos insuficientes (DD)
+    ne: No evaluado (NE)
+    nt: "Riesgo bajo (LR): Casi amenazado (nt)"
+    lc: "Riesgo bajo (LR): Preocupación menor (lc)"
   lenguas:
     afrikaans: Afrikáans
     bengali: Bengalí
