@@ -392,17 +392,11 @@ class EspeciesController < ApplicationController
   #servicio Macaulay Library (eBird)
   def media_cornell
     type = params['type'] || 'photo'
+    page = params['page']
     @especie = Especie.find(params['id'])
     mc = MacaulayService.new
-    proveedor = @especie.proveedor
-    if  taxonCode = proveedor.cornell_id
-      @array = mc.dameMedia(taxonCode, type)
-    else
-      taxon = @especie.nombre_cientifico
-      @array = mc.dameMedia_nc(taxon, type)
-    end
-
-     render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
+    taxon = @especie.nombre_cientifico
+    @array = mc.dameMedia_nc(taxon, type, page)
 
     case type
         when 'photo'
@@ -412,7 +406,7 @@ class EspeciesController < ApplicationController
         when 'audio'
           render 'audios_cornell'
         else
-          render text: "<strong>No se encontraron coincidencias</strong>"
+          render text: "<div class='result-img-container'><strong>No se encontraron coincidencias</strong></div>"
       end
 
   end

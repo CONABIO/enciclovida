@@ -11,14 +11,23 @@
   </div>
 </div>
 
-<% @array.each_with_index do |item, index|  %>
-  <div class="result-img-container">
-    <%= link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='') %>
+<% if @array[0][:msg].present? %>
+  <div class='result-img-container'>
+    <strong><%= @array[0][:msg]%></strong>
   </div>
+<% else %>
+	<div class="inner_media">
+		<% @array.each_with_index do |item, index|  %>
+			<div class="result-img-container">
+			  <%= link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='') %>
+			</div>
+		<% end %>
+	</div>
+
+	<nav aria-label="...">
+	  <ul class="pager">
+	    <li class="previous disabled"><a data-params="media-cornell?type=video" data-direccion="-1"><span aria-hidden="true">&larr;</span> </a></li>
+	    <li class="next"><a data-params="media-cornell?type=video" data-direccion="1"> <span aria-hidden="true">&rarr;</span></a></li>
+	  </ul>
+	</nav>
 <% end %>
-<nav aria-label="...">
-  <ul class="pager">
-    <li class="previous"><a href="#mediaCornell_v" data-params="media-cornell?type=video" data-direccion="<"><span aria-hidden="true">&larr;</span> </a></li>
-    <li class="next"><a href="#mediaCornell_v" data-params="media-cornell?type=video" data-direccion=">"> <span aria-hidden="true">&rarr;</span></a></li>
-  </ul>
-</nav>
