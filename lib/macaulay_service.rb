@@ -18,6 +18,7 @@ class MacaulayService
       jres = [{msg: "No hay más resultados para #{taxonNC}", length: res.header['content-length']}] if res.header['content-length'] == "0"
       #Si la  especie no es encontrada, Macaulay arroja un 404 :D
       jres = [{msg: "No se encontró coincidencia para #{taxonNC}", code: res.code}] if res.code == "404"
+      jres
     rescue => e
       [{msg: "Hubo algun error en la solicitud: #{e} \n intente de nuevo más tarde"}]
     end
