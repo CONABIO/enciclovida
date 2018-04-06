@@ -191,6 +191,7 @@ module EspeciesHelper
     distribucion.sort
   end
 
+  # REVISADO: Una misma funcion para sinonimos u homnimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
       "<strong>#{opciones[:tipo_recurso]}: </strong><small>#{recurso.join(', ')}</small>"
@@ -273,62 +274,29 @@ module EspeciesHelper
 =end
   end
 
-  def dameCaracteristica(taxon, opciones={})
-    catalogos = ''
-    comercio_int = ''
-    ambiente = []
-    prioritaria = []
-    cat_riesgo = Hash.new
+  def dameCaracteristica(taxon)
+    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})].flatten
+    html = ''
 
-    taxon.especies_catalogos.each do |e|
-      cat = e.catalogo
-      edo_conserv_nombre = cat.nom_cites_iucn
-      ambiente_nombre = cat.ambiente
-
-      if edo_conserv_nombre.present?
-        if opciones[:tab_catalogos]
-          catalogos << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
-        else # Para ordenar las categorias de riesgo y comercio
-
-          if cat.nivel1 == 4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            cat_riesgo[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 == 4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            cat_riesgo[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 == 4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            comercio_int << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-
-          elsif cat.nivel1 == 4 && cat.nivel2 == 4 && cat.nivel3 > 0  # Prioritarias, DOF, CONABIO
-            prioritaria << "#{image_tag('app/prioritarias/' << t("cat_riesgo.#{cat.descripcion.downcase}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          end
-        end
-      end
-
-      if ambiente_nombre.present?
-        if opciones[:tab_catalogos]
-          catalogos << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
-        else
-          ambiente << cat.descripcion
-        end
-      end
-    end  #Fin each
-
-    if catalogos.present?
-      "<p><strong>Característica del taxón:</strong><ul>#{catalogos}</ul></p>"
-    elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
-      res = Hash.new
-      res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(' ')
-      res[:comercio_int] = comercio_int
-      res[:ambiente] = ambiente.join(', ')
-      res
-    else
-      catalogos
+    def creaCaracteristica(nom_caract, valores)
+      lista = valores.map{|c| "<li>#{c}</li>"}
+      "<p><strong>#{nom_caract}</strong><ul>#{lista.join('')}</ul></p>"
     end
+
+    caracteristicas.each do |caract|
+      nom_caract = caract.keys.join('')
+      valores = caract.values.flatten
+      next unless valores.any?
+      html << creaCaracteristica(nom_caract, valores)
+    end
+
+    html.html_safe
   end
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}),taxon.tipo_distribucion].flatten
+    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values},taxon.tipo_distribucion].flatten
 
     caracteristicas.each{ |x|
       response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
