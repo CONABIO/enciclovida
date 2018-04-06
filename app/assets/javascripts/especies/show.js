@@ -5,7 +5,7 @@ var showEspecies  =function()
     refreshMediaQueries();
     nombresComunes();
     eventoPestañas();
-    eventoFichaPDF();
+    eventoFichasPDF();
 
     // Para correr las imagenes principales
     if (INATURALIST_API != undefined) fotos_naturalista(); else fotos_bdi();
@@ -43,7 +43,7 @@ var eventoFichas = function()
 };
 
 // Para cuando quieren bajar la ficha en PDF
-var eventoFichaPDF = function()
+var eventoFichasPDF = function()
 {
     $('#content').on('click', '#boton_pdf', function(){
         window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
