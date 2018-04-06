@@ -285,11 +285,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     response = []
 
     if opc[:iucn_ws]
-      iucn_ws = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
-        if iucn = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico)
-          I18n.t("iucn_ws.#{iucn.estandariza}", :default => iucn)
-        end
-      end
+      iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
     end
 
     response << catalogos.nom.map(&:descripcion)
