@@ -37,7 +37,7 @@ class Validacion
     else
       puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = nombre_cientifico.limpiar.downcase.split(' ')
+      nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
       taxones = if nombres.length == 2  # Especie
                   Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
