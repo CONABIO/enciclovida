@@ -48,8 +48,8 @@
   <% end %>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}).html_safe %>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}).html_safe %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
   </div>
 </div>
 <hr/>

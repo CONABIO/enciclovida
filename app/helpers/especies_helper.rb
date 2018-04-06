@@ -207,10 +207,10 @@ module EspeciesHelper
 
     if opciones[:tab_catalogos]
       recurso = taxones.map{ |t| "<li>#{tituloNombreCientifico(t, show: true)}</li>" }
-      creaLista(recurso, opciones)
+      creaLista(recurso, opciones).html_safe
     else
       recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
-      creaContenedor(recurso, opciones)
+      creaContenedor(recurso, opciones).html_safe
     end
   end
 
@@ -274,6 +274,7 @@ module EspeciesHelper
 =end
   end
 
+  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
     caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})].flatten
     html = ''
