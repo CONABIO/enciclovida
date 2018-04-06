@@ -280,30 +280,34 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     estadistica.save
   end
 
-  # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array con las descripciones
+  # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array de hashes
   def nom_cites_iucn_ambiente_prioritaria(opc={})
     response = []
 
+    response << {'NOM-059-SEMARNAT 2010' => catalogos.nom.map(&:descripcion).uniq}
+
     if opc[:iucn_ws]
       iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
-    end
 
-    response << catalogos.nom.map(&:descripcion)
+      if iucn_ws.present?
+        response << {'IUCN Red List of Threatened Species 2017-1' => iucn_ws}
+      else
+        response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
+      end
 
-    if !opc[:iucn_ws] || (opc[:iucn_ws] && iucn_ws.blank?)
-      response << catalogos.iucn.map(&:descripcion)
     else
-      response << iucn_ws
+      response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
     end
 
-    response << catalogos.cites.map(&:descripcion)
-    response << catalogos.prioritarias.map(&:descripcion)
-    response << catalogos.ambientes.map(&:descripcion)
-    response.flatten.compact.uniq
+    response << {'CITES 2016' => catalogos.cites.map(&:descripcion)}
+    response << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
+    response << {'Tipo de ambiente' => catalogos.ambientes.map(&:descripcion)}
+    puts response.inspect
+    response
   end
 
   # REVISADO: Devuelve el tipo de distribución para colocar en la simbologia del show de especies
-  def tipo_distribucion
+  def tipo_distribucion(opc={})
     response = []
 
     tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
@@ -431,7 +435,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
-    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
+    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}.flatten
     cons_amb_dist << tipo_distribucion
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
