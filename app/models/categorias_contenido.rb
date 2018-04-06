@@ -7,6 +7,9 @@ class CategoriasContenido < ActiveRecord::Base
   has_many :roles, :through => :roles_categorias_contenidos, :source => :rol
   has_many :usuarios, :through => :roles, :source => :usuarios
 
+  #Segundo breaktrough, dame las especies atachadas a los usuarios q tienen el rol atachado a una categoria contenido
+  has_many :especies, :through => :usuarios, :source => :especies
+
   REGISTROS_SNIB = [6, 32, 33, 34]
   REGISTROS_NATURALISTA = [7]
   REGISTROS_GEODATA = [REGISTROS_SNIB, REGISTROS_NATURALISTA].flatten  # De momento puede haber comentarios asociados a un ID para el snib y naturalista

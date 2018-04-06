@@ -26,6 +26,7 @@ CREATE TABLE `criterios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `valor` tinyint(2) NOT NULL DEFAULT '0',
   `propiedad_id` int(11) NOT NULL COMMENT 'Corresponde al año de la Carta Nacional',
+  `anio` smallint(4) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_criterios_propiedades1_idx` (`propiedad_id`),
   CONSTRAINT `fk_criterios_propiedades1` FOREIGN KEY (`propiedad_id`) REFERENCES `propiedades` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -97,7 +98,6 @@ DROP TABLE IF EXISTS `peces_criterios`;
 CREATE TABLE `peces_criterios` (
   `especie_id` int(11) NOT NULL,
   `criterio_id` int(11) NOT NULL,
-  `anio_CNP` smallint(4) NOT NULL,
   PRIMARY KEY (`criterio_id`,`especie_id`),
   KEY `fk_criterios_categorias_criterios1_idx` (`criterio_id`),
   KEY `fk_peces_criterios_peces1_idx` (`especie_id`),
@@ -153,6 +153,7 @@ CREATE TABLE `propiedades` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_propiedad` varchar(255) NOT NULL,
   `tipo_propiedad` varchar(255) NOT NULL,
+  `ancestry` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tipo de propiedades como: distribucion, arte de pesca, grupos y demas que apliquen';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -175,4 +176,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-16 12:52:35
+-- Dump completed on 2018-03-16 17:12:24
