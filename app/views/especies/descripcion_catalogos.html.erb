@@ -6,11 +6,7 @@
       <fieldset>
         <legend class="leyenda">Información del taxón</legend>
 
-        <p>
-          <strong>Estatus taxonómico:</strong>
-          <%= Especie::ESTATUS_SIGNIFICADO[@especie.estatus] %>
-        </p>
-
+        <%= dameEstatus(@especie) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
         <%= dameCaracteristica(@especie) %>

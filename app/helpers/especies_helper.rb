@@ -214,64 +214,8 @@ module EspeciesHelper
     end
   end
 
-  def dameEstatus(taxon, opciones={})
-
-
-
-
-    estatus_a = []
-
-
-
-=begin
-    ids = taxon.especies_estatus.homonimos.map(&:especie_id2)
-    #return '' unless ids.any?
-    taxones = Especie.find(ids)
-    recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
-    opciones[:tab_catalogos] ? creaLista(recurso, 'Homónimos') : creaContenedor(recurso, 'Homónimos')
-
-
-    taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
-      begin
-        taxSinonimo = Especie.find(estatus.especie_id2)
-      rescue
-        break
-      end
-
-      if opciones[:tab_catalogos]
-        if taxon.estatus == 2                                              # Valido
-          est = "<li>#{tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)}"
-          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-          estatus_a << "#{est} #{obs}"
-        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
-          est = tituloNombreCientifico(taxSinonimo, :link => true)
-          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}" : ''
-          estatus_a << "#{est} #{obs}"
-        else
-          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
-        end
-      else   # En esta no los pongo en lista
-        if taxon.estatus == 2                                              # Valido
-          estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
-        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
-          estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
-        else
-          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
-        end
-      end
-    end
-
-    if estatus_a.present?
-      if opciones[:tab_catalogos]
-        titulo = taxon.estatus == 2 ? '<strong>Sinónimos: </strong>' : '<strong>Aceptado como: </strong>'
-        taxon.estatus == 2 ? titulo << "<p><ul>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join('')}</ul></p>" : "<p>#{titulo}#{estatus_a.join('')}</p>"
-      else
-        taxon.estatus == 2 ? "<strong>Sinónimos: </strong><small>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}</small>" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
-      end
-    else
-      ''
-    end
-=end
+  def dameEstatus(taxon)
+    "<p><strong>Estatus taxonómico</strong><ul><li>#{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</li></ul></p>".html_safe
   end
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
