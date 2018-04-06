@@ -302,7 +302,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     response << {'CITES 2016' => catalogos.cites.map(&:descripcion)}
     response << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
     response << {'Tipo de ambiente' => catalogos.ambientes.map(&:descripcion)}
-    puts response.inspect
     response
   end
 
@@ -310,8 +309,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def tipo_distribucion(opc={})
     response = []
 
-    tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-      response << distribucion.descripcion
+    if opc[:tab_catalogos]
+      tipos_distribuciones.uniq.each do |distribucion|
+        response << {'Tipo de distribución' => distribucion.descripcion}
+      end
+    else
+      tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
+        response << {'Tipo de distribución' => distribucion.descripcion}
+      end
     end
 
     response
@@ -436,7 +441,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = []
     cons_amb_dist << nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}.flatten
-    cons_amb_dist << tipo_distribucion
+    cons_amb_dist << tipo_distribucion.map{|h| h.values}
     datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
 
     # Para saber cuantas fotos tiene
