@@ -106,16 +106,13 @@
         <li role="presentation">
           <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
         </li>
-        <% if @con_cornell %>
-            <li role="separator" class="divider"></li>
 
-            <li class="dropdown-header">Macaulay Library</li>
-            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
-            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
-            <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
+        <li role="separator" class="divider"></li>
 
-
-        <% end %>
+        <li class="dropdown-header">Macaulay Library</li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
 
       </ul>
     </li>
@@ -153,72 +150,64 @@
       </p>
     </div>
 
-    <% if @con_cornell %>
+    <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+    <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+    <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
 
-      <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
+    <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color: #c5c5c5;">
 
-        <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="background-color: #c5c5c5;">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
 
+          <div class="modal-body text-success" id="modal_reproduce_body">
+            <div class="row">
+              <div class="col-md-9">
+                <div class="embed-responsive embed-responsive-16by9">
+                </div>
               </div>
+              <div class="col-md-3">
 
-            <div class="modal-body text-success" id="modal_reproduce_body">
-	            <div class="row">
-	              <div class="col-md-9">
-	                <div class="embed-responsive embed-responsive-16by9">
-	                </div>
-	              </div>
-	              <div class="col-md-3">
-
-			            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-	                <b id="modal_localidad"></b>
-		              <h5 id="modal_ubicacion"></h5>
-		              <small id="modal_fecha"></small>
-			            <hr>
-		              <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
-		            </div>
-
-	            </div>
-            </div>
-
-            <div class="modal-footer">
-              <h5 class="modal-title">
-                <i class="copyright-ev-icon"></i>
-                <b id="modal_autor"></b>
-                <span>, Macaulay Library at The Cornell Lab of Ornithology</span>
-              </h5>
-            </div>
-
-              <div class="modal-footer">
-                <h4 class="modal-title" id="modal_reproduce_label"><a class="btn btn-link" target="_blank">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></h4>
-                <!--button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button-->
+                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                <b id="modal_localidad"></b>
+                <h5 id="modal_ubicacion"></h5>
+                <small id="modal_fecha"></small>
+                <hr>
+                <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
               </div>
 
             </div>
           </div>
+
+          <div class="modal-footer">
+            <h5 class="modal-title">
+              <i class="copyright-ev-icon"></i>
+              <b id="modal_autor"></b>
+              <span>, Macaulay Library at The Cornell Lab of Ornithology</span>
+            </h5>
+          </div>
+
         </div>
-    <% end %>
+      </div>
+    </div>
 
     <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>

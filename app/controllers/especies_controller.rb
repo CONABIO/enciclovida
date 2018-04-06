@@ -53,7 +53,6 @@ class EspeciesController < ApplicationController
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
-          @con_cornell = true   # Para saber si es Ave TODO (parche feito)
 
           if @especie_o_inferior
             geodatos = proveedor.geodatos
@@ -386,7 +385,6 @@ class EspeciesController < ApplicationController
   def media_cornell
     type = params['type']
     page = params['page']
-    #@especie = Especie.find(params['id']) #no necesito pasar @especie a la vista
     taxonNC = Especie.find(params['id']).nombre_cientifico
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
