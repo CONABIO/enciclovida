@@ -106,6 +106,30 @@ $(document).ready(function(){
             $(this.getAttribute('href')).load(pestaña);
         }
     });
+
+    $("[id^='mediaCornell_']").on('click','nav a',function(){
+        divDestino = $(this).parents("[id^='mediaCornell_']");//jQueryObj
+
+        urlParams = $(this).data('params');
+        numPage = divDestino.data('page') + $(this).data('direccion');
+
+        if(numPage < 1){
+            $('.previous a').addClass('disabled');
+            return false;
+        }
+        if(divDestino.find('.result-img-container').length < 20){
+            $('.next a').addClass('disabled');
+            return false;
+        }
+
+        urlRequest= '/especies/'+TAXON.id+'/'+urlParams+'&page='+numPage;
+        divDestino.children('.inner_media').load(urlRequest, function(){
+            divDestino.find('nav a').removeClass('disabled');
+        });
+        divDestino.data('page', numPage);
+        return false;
+    });
+
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;

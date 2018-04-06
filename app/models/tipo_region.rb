@@ -7,7 +7,7 @@ class TipoRegion < ActiveRecord::Base
   TIPOS_REGIONES = ['ESTADO', 'REGIONES HIDROLÓGICAS PRIORITARIAS', 'REGIONES MARINAS PRIORITARIAS',
                     'REGIONES TERRESTRES PRIORITARIAS', 'ECORREGIONES MARINAS', 'REGIONES MORFOLÓGICAS', 'REGIONES COSTERAS']
 
-  REGION_POR_NIVEL = {'100' => 'Presente en México', '110' => 'Estatal', '111' => 'Municipal',
+  REGION_POR_NIVEL = {'100' => 'País', '110' => 'Estatal', '111' => 'Municipal',
                       '200' => 'Regiones hidrólogicas prioritarias', '300' => 'Regiones Marinas prioritarias',
                       '400' => 'Regiones terrestres prioritarias', '500' => 'Ecorregiones marinas',
                       '510' => 'Regiones morfológicas', '511' => 'Regiones costeras'}
