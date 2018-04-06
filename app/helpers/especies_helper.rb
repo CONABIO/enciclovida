@@ -393,4 +393,16 @@ module EspeciesHelper
     n = e == 1 ? "<s>#{taxon.nombre_cientifico}</s>" : taxon.nombre_cientifico
     n.html_safe
   end
+
+  def imprimeMediaCornell(item,type)
+    case type
+      when 'photo'
+        link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900", "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
+      when 'video'
+        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+      when 'audio'
+        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    end
+  end
+
 end
