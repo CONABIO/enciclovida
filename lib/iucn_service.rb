@@ -1,6 +1,6 @@
 class IUCNService
 
-  def dameRiesgo(opts)
+  def consultaRiesgo(opts)
     @iucn = CONFIG.iucn.api
     @token = CONFIG.iucn.token
 
@@ -15,6 +15,15 @@ class IUCNService
     rescue => e
       nil
     end
+  end
+
+  def dameRiesgo(opc={})
+    resp = Rails.cache.fetch("iucn_#{opc[:id]}", expires_in: CONFIG.cache.iucn) do
+      iucn = consultaRiesgo(opc)
+      I18n.t("iucn_ws.#{iucn.estandariza}", :default => iucn)
+    end
+
+    resp
   end
 
 end
