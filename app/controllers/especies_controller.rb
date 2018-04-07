@@ -1,5 +1,3 @@
-#!/bin/env ruby
-# encoding: utf-8
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
@@ -730,9 +728,6 @@ class EspeciesController < ApplicationController
       if !@especie.existe_cache?('ejemplares_snib')
         @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
       end
-
-    else
-      @especie.guarda_redis
     end
   end
 

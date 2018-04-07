@@ -214,6 +214,7 @@ module EspeciesHelper
     end
   end
 
+  # REVISADO: Pone el estatus taxonómico de la especie, si no existe en la variable ESTATUS_SIGNIFICADO ponerla
   def dameEstatus(taxon)
     "<p><strong>Estatus taxonómico</strong><ul><li>#{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</li></ul></p>".html_safe
   end
