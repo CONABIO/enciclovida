@@ -10,6 +10,7 @@ class NombreComun < ActiveRecord::Base
   alias_attribute :observaciones, :Observaciones
   alias_attribute :lengua, :Lengua
 
+  has_many :bibliografias, :class_name => 'Bibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :nombres_regiones, :class_name => 'NombreRegion'
   has_many :especies, :through => :nombres_regiones, :class_name => 'Especie', :foreign_key => Especie.attribute_alias(:id)
 

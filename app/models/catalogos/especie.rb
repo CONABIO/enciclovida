@@ -52,7 +52,6 @@ class Especie < ActiveRecord::Base
 
   has_many :nombres_regiones, :class_name => 'NombreRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :nombres_comunes, :through => :nombres_regiones, :source => :nombre_comun
-  has_many :bibliografias_nombres_comunes, :through => :nombres_regiones, :source => :bibliografia
 
   has_many :especies_regiones, :class_name => 'EspecieRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
@@ -139,7 +138,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
   # Para que regrese las especies
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
-  scope :path, -> {where(id: path_ids)}
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 
