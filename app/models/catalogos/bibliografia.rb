@@ -18,6 +18,8 @@ class Bibliografia < ActiveRecord::Base
   alias_attribute :cita_completa, :CitaCompleta
   alias_attribute :orden_cita_completa, :OrdenCitaCompleta
 
+  scope :con_especie, ->(id) { where("#{NombreRegionBibliografia.table_name}.#{Especie.attribute_alias(:id)}=?", id).distinct }
+
   def personalizaBusqueda
     "#{self.autor} - #{self.titulo_publicacion} (#{self.anio})"
   end

@@ -10,29 +10,8 @@
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
         <%= dameCaracteristica(@especie) %>
+        <%= dameNomComunesBiblio(@especie) %>
 
-        <% nombres_comunes = dameNomComunesBiblio(@especie) %>
-        <% if nombres_comunes.any? %>
-            <p>
-              <strong>Nombres comunes:</strong>
-            <ul>
-              <% nombres_comunes.each do |id, datos| %>
-                  <li>
-                    <%= datos[:nombre] %> (<%= datos[:lengua] %>)
-
-                    <% biblioCont = 1 %>
-                    <% datos[:bibliografia].each do |b| %>
-                        <%= link_to('Bibliografía', '', :id => "link_dialog_#{biblioCont}", :onClick => 'return muestraBibliografiaNombres(this.id);', :class => 'link_azul', :style => 'font-size:11px;') %>
-
-                        <div id="biblio_<%= biblioCont %>" title="Bibliografía" class="biblio" style="display: none"><%= b %></div>
-                        <% biblioCont+= 1 %>
-                    <% end %>
-
-                  </li>
-              <% end %>
-            </ul>
-            </p>
-        <% end %>
 
         <% tipo_distribucion = @especie.tipos_distribuciones.uniq %>
         <% if tipo_distribucion.any? %>

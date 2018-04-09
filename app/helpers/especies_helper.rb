@@ -131,29 +131,21 @@ module EspeciesHelper
     end
   end
 
-  # Nombres comunes con su bibliografia como referencia
+  # REVISADO: Nombres comunes con su bibliografia como referencia
   def dameNomComunesBiblio(taxon)
-    nombres_comunes = {}
+    html = ''
 
-    taxon.especies_regiones.each do |er|
+    def creaLista(nombre, opc={})
+      # TODO: Poner las bibliografias en un modal, el actual esta roto
+      bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
+      "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
+    end
 
-      # Parte de los nombres comunes con la bibliografia
-      er.nombres_regiones.where(:region_id => er.region_id).each do |nombre|
-        if nombres_comunes[nombre.nombre_comun.id].nil?
-          # Nombre comun con su lengua
-          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.capitalize, lengua: nombre.nombre_comun.lengua.downcase }
+    taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
+      html << creaLista(nom, taxon: taxon)
+    end
 
-          # Para una o mas bibliografias
-          nombres_comunes[nombre.nombre_comun.id][:bibliografia] = []
-          nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-            nombres_comunes[nombre.nombre_comun.id][:bibliografia] << biblio.bibliografia.cita_completa
-          end
-        end
-      end  # End each nombre
-    end  # End each especie_region
-
-    # Ordena por el nombre
-    nombres_comunes.sort_by {|k,v| v[:nombre]}
+    "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe
   end
 
   # La distribucion agrupada por el tipo de region
