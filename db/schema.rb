@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180124005326) do
+ActiveRecord::Schema.define(version: 20180406230347) do
 
   create_table "adicionales", force: true do |t|
     t.integer  "especie_id",             null: false
@@ -276,7 +276,6 @@ ActiveRecord::Schema.define(version: 20180124005326) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "geoserver_info"
-    t.text     "cornell_id"
   end
 
   create_table "regiones", force: true do |t|
@@ -292,15 +291,6 @@ ActiveRecord::Schema.define(version: 20180124005326) do
   add_index "regiones", ["ancestry"], name: "index_ancestry_tipos_regiones"
   add_index "regiones", ["nombre_region"], name: "index_nombre_region_tipos_regiones"
   add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
-
-  create_table "regiones_mapas", force: true do |t|
-    t.string   "nombre_region"
-    t.integer  "geo_id"
-    t.string   "ancestry"
-    t.string   "tipo_region"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "roles", force: true do |t|
     t.string   "nombre_rol",    null: false
