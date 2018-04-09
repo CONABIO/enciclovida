@@ -306,13 +306,15 @@ module EspeciesHelper
     button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe, id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
   end
 
-  def dameEspecieBibliografia(taxon)
-    biblio=''
-    taxon.especies_bibliografias.each do |bib|
-      biblio_comp = bib.bibliografia.cita_completa
-      biblio+="<li>#{bib.bibliografia.cita_completa}</li>" if biblio_comp.present?
+  # REVISADO: Regresa las bibliografias de la especie en el show de especies, pestaña de catalogos
+  def dameEspecieBibliografias(taxon)
+    html = []
+
+    taxon.bibliografias.each do |bib|
+      html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
     end
-    biblio.present? ? "<b>Bibliografía:</b><ul>#{biblio}</ul>" : biblio
+
+    html.any? ? "<p><strong>Bibliografía</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
   end
 
   def dameTaxonesInferiores(taxon)
