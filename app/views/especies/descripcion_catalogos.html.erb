@@ -1,5 +1,3 @@
-<%# regNomBib=dameRegionesNombresBibliografia(@especie) %>
-
 <table>
   <tr>
     <td width="40%" valign="top">
@@ -11,54 +9,13 @@
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
         <%= dameCaracteristica(@especie) %>
         <%= dameNomComunesBiblio(@especie) %>
+        <%= dameOtrosAtributos(@especie) %>
 
-
-        <% tipo_distribucion = @especie.tipos_distribuciones.uniq %>
-        <% if tipo_distribucion.any? %>
-            <p>
-              <strong>Tipo de distribución</strong>
-            <ul>
-              <% tipo_distribucion.each do |td| %>
-                  <li>
-                    <%= td.descripcion %>
-                  </li>
-              <% end %>
-            </ul>
-            </p>
-        <% end %>
-
-        <% if @especie.cita_nomenclatural.present? %>
-            <p>
-              <strong>Cita nomenclatural:</strong>
-              <%= @especie.cita_nomenclatural %>
-            </p>
-        <% end %>
-
-        <p>
-          <strong>Fuente de la información:</strong>
-          <%= @especie.sis_clas_cat_dicc %>
-        </p>
-
-        <% if @especie.anotacion.present? %>
-            <p>
-              <strong>Anotación:</strong>
-              <%= @especie.anotacion %>
-            </p>
-        <% end %>
 
         <p>
           <%= dameEspecieBibliografia(@especie).html_safe %>
         </p>
 
-        <p>
-          <strong>Identificador único:</strong>
-          <%= @especie.catalogo_id %>
-        </p>
-
-        <p>
-          <strong>Fecha de modificación:</strong>
-          <%= @especie.updated_at %>
-        </p>
       </fieldset>
     </td>
 

@@ -17,11 +17,13 @@ class Especie < ActiveRecord::Base
   alias_attribute :nombre_autoridad, :NombreAutoridad
   alias_attribute :numero_filogenetico, :NumeroFilogenetico
   alias_attribute :cita_nomenclatural, :CitaNomenclatural
-  alias_attribute :sis_clas_cat_dicc, :SisClasCatDicc
+  alias_attribute :sist_clas_cat_dicc, :SistClasCatDicc
   alias_attribute :anotacion, :Anotacion
   alias_attribute :ancestry_ascendente_directo, :Ascendentes
   alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
   alias_attribute :nombre_cientifico, :NombreCompleto
+  alias_attribute :created_at, :FechaCaptura
+  alias_attribute :updated_at, :FechaModificacion
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
