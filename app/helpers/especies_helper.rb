@@ -148,6 +148,29 @@ module EspeciesHelper
     "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe
   end
 
+  # REVISADO: Otros atributos simples del modelo especie
+  def dameOtrosAtributos(taxon)
+    otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
+    'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
+    html = ''
+
+    def creaContenedor(taxon, opc={})
+      valor = taxon.send(opc[:attr])
+
+      if valor.present?
+        "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
+      else
+        ''
+      end
+    end
+
+    otros_attr.each do |nom, attr|
+      html << creaContenedor(taxon, {nom: nom, attr: attr})
+    end
+
+    html.html_safe
+  end
+
   # La distribucion agrupada por el tipo de region
   def dameDistribucion(taxon)
     distribucion = {}
