@@ -81,11 +81,7 @@ Buscador::Application.routes.draw do
 
   resources :estatuses
 
-  resources :especies_catalogo do
-    collection do
-      get :autocomplete_catalogo_descripcion
-    end
-  end
+  resources :especies_catalogo
 
   resources :especies, as: :especie do
     resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
@@ -117,38 +113,21 @@ Buscador::Application.routes.draw do
 
   resources :tipos_regiones
 
-  resources :regiones do
-    collection do
-      post :regiones
-    end
-  end
+  resources :regiones
 
-  resources :especies_regiones do
-    collection do
-      get :autocomplete_region_nombre
-    end
-  end
+  resources :especies_regiones
 
   resources :tipos_distribuciones
 
   resources :especies_estatus_bibliografia
 
-  resources :nombres_comunes do
-    collection do
-      get :buscar
-      get :autocomplete_nombre_comun_comun
-    end
-  end
+  resources :nombres_comunes
 
   resources :nombres_regiones
 
   resources :nombre_regiones_bibliografias
 
-  resources :bibliografias do
-    collection do
-      get :autocomplete_bibliografia_autor
-    end
-  end
+  resources :bibliografias
 
   match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get

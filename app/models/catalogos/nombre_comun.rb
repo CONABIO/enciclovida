@@ -50,8 +50,5 @@ adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_co
   def completa_blurrily
     FUZZY_NOM_COM.put(nombre_comun, id)
   end
-
-  def personalizaBusqueda
-    "#{self.nombre_comun} (#{self.lengua})".html_safe
-  end
+  
 end

@@ -20,8 +20,4 @@ class Bibliografia < ActiveRecord::Base
 
   scope :con_especie, ->(id) { where("#{NombreRegionBibliografia.table_name}.#{Especie.attribute_alias(:id)}=?", id).distinct }
 
-  def personalizaBusqueda
-    "#{self.autor} - #{self.titulo_publicacion} (#{self.anio})"
-  end
-
 end

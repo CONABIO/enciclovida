@@ -1,6 +1,5 @@
 class RegionesController < ApplicationController
   before_action :set_region, only: [:show, :edit, :update, :destroy]
-  layout :false, only: :regiones
 
   # GET /regiones
   # GET /regiones.json
@@ -59,19 +58,6 @@ class RegionesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to regiones_url }
       format.json { head :no_content }
-    end
-  end
-
-  def regiones
-    @nivel=params[:region_nivel].to_i
-    @regiones = case @nivel
-      when 1
-        Region.regiones_principales(params[:region])
-      when 2, 3
-        region = Region.find(params[:region])
-        region.regiones_especificas
-      else
-        nil
     end
   end
 
