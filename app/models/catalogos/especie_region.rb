@@ -10,6 +10,7 @@ class EspecieRegion < ActiveRecord::Base
 
   attr_accessor :region_id_falso
   validates_presence_of :especie_id, :region_id
+
   belongs_to :region
   belongs_to :especie
   belongs_to :tipo_distribucion, :foreign_key => TipoDistribucion.attribute_alias(:id)
