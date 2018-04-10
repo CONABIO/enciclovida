@@ -1,11 +1,17 @@
 class Region < ActiveRecord::Base
 
-  self.table_name='regiones'
-  self.primary_key='id'
+  establish_connection(:catalogos)
+  self.table_name = 'catalogocentralizado.Region'
+  self.primary_key = 'IdRegion'
+
+  # Los alias con las tablas de catalogos
+  alias_attribute :id, :IdRegion
+  alias_attribute :nombre_region, :NombreRegion
+  alias_attribute :tipo_region_id, :IdTipoRegion
+  alias_attribute :clave_region, :ClaveRegion
+  alias_attribute :id_region_asc, :IdReionAsc
 
   belongs_to :tipo_region
-  has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'region_id'
-  has_ancestry
 
   def self.regiones_principales(id)
     limites = Bases.limites(1000000)  #por default toma la primera

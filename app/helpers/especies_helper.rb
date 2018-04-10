@@ -317,39 +317,6 @@ module EspeciesHelper
     html.any? ? "<p><strong>Bibliografía</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
   end
 
-  def dameTaxonesInferiores(taxon)
-    hijos=''
-    child_ids = taxon.child_ids
-    return hijos unless child_ids.present?
-
-    Especie.datos_basicos.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
-      hijos << "<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
-    end
-    hijos.present? ? "<fieldset><legend class='leyenda'>Taxones Inferiores</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
-  end
-
-  def photo_providers(licensed=false, photo_providers=nil)
-    providers=CONFIG.photo_providers ||= photo_providers || %W(conabio flickr eol wikimedia)
-    html='<ul>'
-    providers.each do |prov|
-      prov=prov.to_s.downcase
-
-      case prov
-        when 'flickr'
-          html+="<li>#{link_to("<span>De #{prov.titleize}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'wikimedia'
-          html+="<li>#{link_to("<span>De #{prov.titleize} Commons</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'eol', 'conabio'
-          html+="<li>#{link_to("<span>De #{prov.upcase}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'inat_obs'
-          title=licensed ? "#{t(:from_licensed_site_observations, :site_name => SITE_NAME_SHORT)}" :
-              "#{t(:from_your_site_observations, :site_name => SITE_NAME_SHORT)}"
-          html+="<li>#{link_to("<span>#{title}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-      end
-    end
-    "#{html}</ul>".html_safe
-  end
-
   def esSinonimo (taxon)
     e = (taxon.instance_of? NombreComun) ? Especie.find(taxon.id).estatus : taxon.estatus #Debido a que se reemplaza
     # el id de NombreComun
