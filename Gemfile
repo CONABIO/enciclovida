@@ -27,7 +27,7 @@ gem 'magick-metadata'  # maneja metadatos
 gem 'mime-types', '1.25.1'
 gem 'mysql2'
 gem 'nokogiri'  # hacer un parse con xml
-gem 'pg'
+gem 'pg', '0.21.0'
 gem 'rack-contrib'
 gem 'rack-google-analytics'
 gem 'rails', '4.0.8'
