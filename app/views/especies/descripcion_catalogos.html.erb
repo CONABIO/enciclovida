@@ -8,33 +8,18 @@
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
         <%= dameCaracteristica(@especie) %>
-        <%= dameNomComunesBiblio(@especie) %>
         <%= dameOtrosAtributos(@especie) %>
         <%= dameEspecieBibliografias(@especie) %>
-
       </fieldset>
     </td>
 
     <td width="60%" valign="top">
+      <fieldset>
+        <legend class="leyenda">Nombres comunes y regiones</legend>
 
-      <% distribucion = dameDistribucion(@especie) %>
-      <% if distribucion.any? %>
-          <fieldset>
-            <legend class='leyenda'>Distribución reportada en literatura:</legend>
-
-            <% distribucion.each do |tipo, regiones| %>
-                <%= tipo %>
-                <ul>
-                  <% regiones.uniq.sort.each do |r| %>
-                      <li>
-                        <%= r %>
-                      </li>
-                  <% end %>
-                </ul>
-            <% end %>
-          </fieldset>
-      <% end %>
-
+        <%= dameNomComunesBiblio(@especie) %>
+        <%= dameDistribucionLiteratura(@especie) %>
+      </fieldset>
     </td>
   </tr>
 </table>

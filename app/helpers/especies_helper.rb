@@ -111,26 +111,6 @@ module EspeciesHelper
     nodos << '</li>' if params[:son_hojas]
   end
 
-  def accionesEnlaces(modelo, accion, index=false)
-    case accion
-      when 'especies'
-        "#{link_to(image_tag('app/32x32/zoom.png'), modelo)}
-        #{link_to(image_tag('app/32x32/edit.png'), "/#{accion}/#{modelo.id}/edit")}
-        #{link_to(image_tag('app/32x32/trash.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
-      when 'listas'
-        index ?
-            "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
-            #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
-            #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
-            #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}" :
-            "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
-            #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
-            #{link_to(image_tag('app/32x32/add_page.png'), new_lista_path)}
-            #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
-            #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
-    end
-  end
-
   # REVISADO: Nombres comunes con su bibliografia como referencia
   def dameNomComunesBiblio(taxon)
     html = ''
@@ -171,39 +151,26 @@ module EspeciesHelper
     html.html_safe
   end
 
-  # La distribucion agrupada por el tipo de region
-  def dameDistribucion(taxon)
-    distribucion = {}
+  # REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
+  def dameDistribucionLiteratura(taxon)
+    def creaLista(regiones)
+      lista = []
 
-    taxon.especies_regiones.each do |er|
-      tipo_reg = er.region.tipo_region
-      nivel_numero = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
-      nivel = TipoRegion::REGION_POR_NIVEL[nivel_numero]
-      distribucion[nivel] = [] if distribucion[nivel].nil?
+      regiones.each do |id, datos|
+        lista << "<li>#{datos[:nombre]}</li>"
 
-      # Evita poner ND como una region
-      next if er.region.nombre_region.downcase == 'nd'
-
-      # Para poner los estados faltantes provenientes de municipios u otros tipos de regiones
-      if nivel_numero.to_i > 110
-        er.region.ancestors.joins(:tipo_region).where('nivel1 = ? AND nivel2 = ? AND nivel3= ?', 1,1,0).each do |r|
-          # Asigno el estado de una region menor a 110
-          distribucion[TipoRegion::REGION_POR_NIVEL['110']] = [] if distribucion[TipoRegion::REGION_POR_NIVEL['110']].nil?
-          distribucion[TipoRegion::REGION_POR_NIVEL['110']] << r.nombre_region
+        if datos[:reg_desc].any?
+          sub_reg = creaLista(datos[:reg_desc])
+          lista << sub_reg
         end
       end
 
-      distribucion[nivel] << er.region.nombre_region
+      "<ul>#{lista.join('')}</ul>"
     end
 
-    # Para quitar el presente en Mexico, si es que tiene alguna distribucion estatal, municipal, etc.
-    presente = TipoRegion::REGION_POR_NIVEL['100']
-    if distribucion.count > 1 && distribucion.key?(presente)
-      distribucion.delete(presente)
-    end
-
-    # Ordena por el titulo del tipo de region
-    distribucion.sort
+    regiones = taxon.regiones.distinct
+    reg_asignadas = Region.regiones_asignadas(regiones)
+    creaLista(reg_asignadas).html_safe
   end
 
   # REVISADO: Una misma funcion para sinonimos u homnimos
