@@ -222,11 +222,11 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
-  def cuantas_especies
+  def cuantas_especies(opc = {})
     descendants.solo_especies.count
   end
 
-  def cuantas_especies_e_inferiores
+  def cuantas_especies_e_inferiores(opc = {})
     descendants.especies_e_inferiores.count
   end
 
