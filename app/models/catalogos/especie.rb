@@ -49,6 +49,7 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
+  has_one :categoria_conteo
 
   belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
 
@@ -68,15 +69,18 @@ class Especie < ActiveRecord::Base
   has_many :especie_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :bibliografias, :through => :especie_bibliografias, :source => :bibliografia
 
+  has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy
+  has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
+
+
 
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
-
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
 
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
-  has_many :estadisticas, :class_name => 'EspecieEstadistica'
+
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -232,6 +236,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
     estadisticas = self.estadisticas
 
+    case opc[:estadistica_id]
+      when 2
+        cuantas_especies
+      when 3
+        cuantas_especies_e_inferiores
+    end
     conteo =  if opc[:estadistica_id] == 2  # Solo especies
                 cuantas_especies
               elsif opc[:estadistica_id] == 3  # Especies e inferiores
