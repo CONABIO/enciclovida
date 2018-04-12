@@ -1,1 +1,1 @@
-Rails.application.config.assets.precompile += %w(inicio.css busquedas.css scrolling.js carrusel.css especies/obligatorios.js)
+Rails.application.config.assets.precompile += %w(inicio.css busquedas.css scrolling.js carrusel.css especies/obligatorios.js arbol_nodo.css arbol_nodo.js)
