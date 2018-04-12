@@ -1,5 +1,7 @@
 class CategoriaConteo < ActiveRecord::Base
 
-  self.table_name='categorias_conteo'
+  establish_connection(:development)
+  self.table_name='enciclovida.categorias_conteo'
+
   belongs_to :especie
 end
