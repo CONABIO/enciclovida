@@ -659,6 +659,8 @@ class EspeciesController < ApplicationController
       suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
       cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
       cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+      cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
+      cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
 
       # Por si no viene del arbol, ya que no necesito encontrar el valido
       if !arbol
