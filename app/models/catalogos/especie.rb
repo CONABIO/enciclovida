@@ -208,7 +208,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   ESTATUS_SIGNIFICADO = {
       2 => 'válido',
-      1 =>'sinónimo',
+      1 => 'sinónimo',
       6 => 'No disponible',
       9 => 'No aplica'
   }
@@ -222,69 +222,62 @@ Dalbergia_tucurensis Dalbergia_granadillo Dalbergia_longepedunculata Dalbergia_l
 Dalbergia_melanocardium Dalbergia_modesta Dalbergia_palo-escrito Dalbergia_rhachiflexa
 Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
+  # REVISADO: Regresa el numero de especies
   def cuantas_especies(opc = {})
-    descendants.solo_especies.count
+    scope = descendants.solo_especies
+    scope = scope.where(estatus: 2) if opc[:validas]
+    scope.count
   end
 
+  # REVISADO: Regresa el numero de especies e inferiores
   def cuantas_especies_e_inferiores(opc = {})
-    descendants.especies_e_inferiores.count
+    scope = descendants.especies_e_inferiores
+    scope = scope.where(estatus: 2) if opc[:validas]
+    scope.count
   end
 
+  # REVISADO: Pone el conteo de las especies o inferiores de un taxon en la tabla estadisticas
   def cuantas_especies_inferiores(opc = {})
     return unless opc[:estadistica_id].present?
     puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
     escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
-    estadisticas = self.estadisticas
 
-    case opc[:estadistica_id]
-      when 2
-        cuantas_especies
-      when 3
-        cuantas_especies_e_inferiores
-    end
-    conteo =  if opc[:estadistica_id] == 2  # Solo especies
-                cuantas_especies
-              elsif opc[:estadistica_id] == 3  # Especies e inferiores
-                cuantas_especies_e_inferiores
-              else
-                0
-              end
+    conteo = case opc[:estadistica_id]
+               when 2, 22
+                 cuantas_especies(opc)
+               when 3, 23
+                 cuantas_especies_e_inferiores(opc)
+               else
+                 false
+             end
 
-    return if conteo == 0
+    return unless conteo
 
-    if estadisticas.present?
-      estadistica = self.estadisticas.where(estadistica_id: opc[:estadistica_id])
-      if estadistica.present? && estadistica.length == 1
-        estadistica = estadistica.first
-        estadistica.conteo = conteo
-        estadistica.save if estadistica.changed?
-        return
-      end
+    if estadistica = especie_estadisticas.where(estadistica_id: opc[:estadistica_id]).first
+      estadistica.conteo = conteo
+      estadistica.save if estadistica.changed?
+      return
     end
 
     # Quiere decir que no existia la estadistica
-    estadistica = self.estadisticas.new
+    estadistica = especie_estadisticas.new
     estadistica.estadistica_id = opc[:estadistica_id]
     estadistica.conteo = conteo
     estadistica.save
   end
 
+  # REVISADO: Suma la visita de una ficha en la tabla estadisticas
   def suma_visita
     puts "\n\nGuardo conteo de visitas #{id} ..."
-    estadisticas = self.estadisticas
 
-    if estadisticas.present?
-      estadistica = self.estadisticas.where(estadistica_id: 1)
-      if estadistica.present? && estadistica.length == 1
-        estadistica = estadistica.first
-        estadistica.conteo+= 1
-        estadistica.save
-        return
-      end
+    if estadistica = especie_estadisticas.where(estadistica_id: 1).first
+      estadistica.conteo+= 1
+      estadistica.save
+      return
     end
 
     # Quiere decir que no existia la estadistica
-    estadistica = self.estadisticas.new
+    estadistica = especie_estadisticas.new
     estadistica.estadistica_id = 1
     estadistica.conteo = 1
     estadistica.save
