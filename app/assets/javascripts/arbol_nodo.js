@@ -1,113 +1,103 @@
-// svg del arbol
+$(document).ready(function(){
 
-var leaft = false;
-var min_zoom = 0.1;
-var max_zoom = 7;
-var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
+    // svg del arbol
+    leaft = false;
+    root = null;
+    var min_zoom = 0.1;
+    var max_zoom = 7;
+    var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom]);
 
-var width = 900,
-    height = 500,
-    root;
+    var width = 900,
+        height = 500;
 
-var force = d3.layout.force()
-    .linkDistance(100)
-    .charge(-3000)
-    .gravity(.1)
-    .size([width, height])
-    .on("tick", tick);
+    force = d3.layout.force()
+        .linkDistance(100)
+        .charge(-3000)
+        .gravity(.1)
+        .size([width, height])
+        .on("tick", tick);
 
-var svg = d3.select("#arbol").append("svg")
-    .style("cursor","move")
-    .style("border", "2px solid black")
-    // Para la responsividad
-    .classed("svg-container_tree", true)
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 -50 1200 100")
-    .classed("svg-content-responsive", true);
+    var svg = d3.select("#arbol").append("svg")
+        .style("cursor","move")
+        .style("border", "2px solid black")
+        // Para la responsividad
+        .classed("svg-container_tree", true)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 -50 1200 100")
+        .classed("svg-content-responsive", true);
 
-var g = svg.append("g");
-var link = g.selectAll(".link");
-var node = g.selectAll(".node");
+    var g = svg.append("g");
+    link = g.selectAll(".link");
+    node = g.selectAll(".node");
 
-d3.json("/especies/" + TAXON.id + "/arbol_nodo", function(error, json) {
-    if (error) throw error;
+    d3.json("/especies/" + TAXON.id + "/arbol_nodo", function(error, json) {
+        if (error) throw error;
 
-    root = json;
-    max_value = root.especies_inferiores_conteo;
-    update();
-});
+        root = json;
+        max_value = json.especies_inferiores_conteo;
+        update();
+    });
 
-zoom.on("zoom", function() {
-    g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-});
+    zoom.on("zoom", function() {
+        g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    });
 
-svg.call(zoom);
-
-
-
-// svg de simbologia
-
-var width = 200;
-var height = 500;
-
-var svg = d3.select("#arbol").append("svg")
-    .style("border", "2px solid black")
-    // Para la responsividad
-    .classed("svg-container_sym", true)
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 -50 110 100")
-    .classed("svg-content-responsive", true);
-
-// El texto de simbologia
-svg.append("text")
-    .attr("dy", ".35em")
-    .text("Simbología").attr("x",17).attr("y",-25);
-
-// Los circulos
-//console.log(TAXON.ancestry_ascendente_directo);
-if (TAXON.ancestry_ascendente_directo == '') var reino = TAXON.id;
-else var reino = TAXON.ancestry_ascendente_directo.split("/")[0];
+    svg.call(zoom);
 
 
-if (reino == "1000001")
-    var symbol = [['R', 'Reino'],['P', 'phylum'],['C', 'clase'],
-        ['O', 'orden'],['F', 'familia'],['G', 'género'],['E', 'especie']];
-else
-    var symbol = [['R', 'Reino'],['D', 'división'],['C', 'clase'],
+    // svg de simbologia
+    var width = 200;
+    var height = 500;
+
+    var svg = d3.select("#arbol").append("svg")
+        .style("border", "2px solid black")
+        // Para la responsividad
+        .classed("svg-container_sym", true)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 -50 110 100")
+        .classed("svg-content-responsive", true);
+
+    // El texto de simbologia
+    svg.append("text")
+        .attr("dy", ".35em")
+        .text("Simbología").attr("x",17).attr("y",-25);
+
+    var symbol = [['R', 'Reino'],['P', 'phylum/división'],['C', 'clase'],
         ['O', 'orden'],['F', 'familia'],['G', 'género'],['E', 'especie']];
 
-symbol.forEach(function(array, index) {
-    symbology(svg, array, index)
+    symbol.forEach(function(array, index) {
+        symbology(svg, array, index)
+    });
+
+    // El nodo con el numero de jemplo #
+    var circle_symbol = svg.append("circle")
+        .attr("class", "g_sym")
+        .attr("r", 10);
+
+    circle_symbol.style("fill", "#C6DBEF")
+        .attr("cx", 20)
+        .attr("cy", 40*8);
+
+    svg.append("text")
+        .attr("dy", ".35em")
+        .text("#").attr("x",16).attr("y",40*8-20).attr("class", "sym_text_small");
+
+    svg.append("text")
+        .attr("dy", ".35em")
+        .attr("font", "9px sans-serif")
+        .text("# aproximado").attr("x",10).attr("y",40*8+20).attr("class", "sym_text");
+
+    svg.append("text")
+        .attr("dy", ".35em")
+        .attr("font", "9px sans-serif")
+        .text("de especies").attr("x",10).attr("y",40*8+30).attr("class", "sym_text");
+
+    svg.append("text")
+        .attr("dy", ".35em")
+        .attr("font", "9px sans-serif")
+        .text("en México").attr("x",10).attr("y",40*8+40).attr("class", "sym_text");
+
 });
-
-// El nodo con el numero
-var circle_symbol = svg.append("circle")
-    .attr("class", "g_sym")
-    .attr("r", 10);
-
-circle_symbol.style("fill", "#C6DBEF")
-    .attr("cx", 20)
-    .attr("cy", 40*9+20);
-
-svg.append("text")
-    .attr("dy", ".35em")
-    .text("#").attr("x",16).attr("y",40*9).attr("class", "sym_text_small");
-
-svg.append("text")
-    .attr("dy", ".35em")
-    .attr("font", "9px sans-serif")
-    .text("# aproximado").attr("x",10).attr("y",40*9+43).attr("class", "sym_text");
-
-svg.append("text")
-    .attr("dy", ".35em")
-    .attr("font", "9px sans-serif")
-    .text("de especies").attr("x",10).attr("y",40*9+63).attr("class", "sym_text");
-
-svg.append("text")
-    .attr("dy", ".35em")
-    .attr("font", "9px sans-serif")
-    .text("en México").attr("x",10).attr("y",40*9+83).attr("class", "sym_text");
-
 
 function update() {
     var nodes = flatten(root),
@@ -121,7 +111,6 @@ function update() {
 
     // Update links.
     link = link.data(links, function(d) { return d.target.id; });
-
     link.exit().remove();
 
     link.enter().insert("line", ".node")
@@ -129,7 +118,6 @@ function update() {
 
     // Update nodes.
     node = node.data(nodes, function(d) { return d.id; });
-
     node.exit().remove();
 
     var nodeEnter = node.enter().append("g")
@@ -139,8 +127,9 @@ function update() {
     nodeEnter.append("circle")
         .attr("r", function(d) {return d.radius_size;});
 
+    // El numero de especies arriba del nodo
     var conteo_link = nodeEnter.append("text")
-        .attr("y", function(d) {return -10 - d.radius_size})
+        .attr("y", function(d) {return -10 - d.radius_size;})
         .attr("dy", ".35em");
 
     conteo_link.append("a")
@@ -172,7 +161,7 @@ function update() {
 
     scientific_name_link.append("a")
         .attr("xlink:href", function(d) {return "/especies/" + d.especie_id} )
-        .text(function(d) { return "(" + d.nombre_cientifico + ")";})
+        .text(function(d) { return d.nombre_cientifico;})
         .attr("class", "link_scientific_name");
 
     var common_name_link = nodeEnter.append("text")
@@ -222,6 +211,7 @@ function click(d) {
 
     if (d.children)
     {
+        console.log(d.children);
         d.children = null;
         leaft = false;
         update();

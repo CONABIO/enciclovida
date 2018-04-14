@@ -257,27 +257,22 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # JSON que se ocupara para desplegar los datos en D3
+  # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
   def arbol_nodo
-    @children_array = []
+    hash_d3 = {}
+    taxones = Especie.arbol_nodo(@especie)
 
-    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
-        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-        where(estatus: 2).order_por_categoria('DESC')
-
-    taxones.each_with_index do |t, i|
-      @i = i
-      children_hash = hash_arbol_nodo(t, arbol_inicial: true)
-
-      # Acumula el resultado del json anterior una posicion antes de la actual
-      @children_array << children_hash
+    taxones.reverse.each_with_index do |t, i|
+      if hash_d3.empty?
+        hash_d3 = t.arbol_nodo_hash
+      else  # El taxon anterior la pone como hija del taxon actual
+        parent = t.arbol_nodo_hash
+        parent[:children] = [hash_d3]
+        hash_d3 = parent
+      end
     end
 
-    # Regresa el ultimo que es el mas actual
-    json_d3 = @children_array.last
-
-    render :json => json_d3.to_json
+    render :json => hash_d3
   end
 
   # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
@@ -747,87 +742,6 @@ class EspeciesController < ApplicationController
   def obj_arbol_identado
     @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
         caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
-  end
-
-  def hash_arbol_nodo(t, opts={})
-    children_hash = {}
-    categoria = t.nivel1
-
-    if categoria == 7
-      children_hash[:color] = '#748c17';
-    elsif categoria == 1
-      children_hash[:color] = '#c27113'
-    else
-      children_hash[:color] = '#C6DBEF'
-    end
-
-    radius_min_size = 8
-    radius_size = radius_min_size
-    children_hash[:radius_size] = radius_size
-
-    especies_o_inferiores = t.conteo.present? ? t.conteo : 0
-    children_hash[:especies_inferiores_conteo] = especies_o_inferiores
-
-    # Decide si es phylum o division (solo reino animalia)
-    nivel_especie = if t.root_id == 1000001
-                      children_hash[:es_phylum] = '1'
-                      '7100'
-                    else
-                      children_hash[:es_phylum] = '0'
-                      '7000'
-                    end
-
-    # URL para ver las especies o inferiores
-    url = "/busquedas/resultados?id=#{t.id}&busqueda=avanzada&por_pagina=50&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
-    children_hash[:especies_inferiores_url] = url
-
-    #  Radio de los nodos para un mejor manejo hacia D3
-    if especies_o_inferiores > 0
-
-      #  Radios varian de 60 a 40
-      if especies_o_inferiores >= 10000
-        size_per_radium_unit = (especies_o_inferiores-10000)/20
-        radius_size = ((especies_o_inferiores-10000)/size_per_radium_unit) + 40
-
-      elsif especies_o_inferiores >= 1000 && especies_o_inferiores <= 9999  # Radios varian de 40 a 30
-        radius_per_range = ((especies_o_inferiores)*10)/9999
-        radius_size = radius_per_range + 30
-
-      elsif especies_o_inferiores >= 100 && especies_o_inferiores <= 999  # Radios varian de 30 a 20
-        radius_per_range = ((especies_o_inferiores)*10)/999
-        radius_size = radius_per_range + 20
-
-      elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 13
-
-        radius_per_range = ((especies_o_inferiores)*7)/99
-        radius_size = radius_per_range + 13
-
-      elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 13 a 8
-
-        radius_per_range = ((especies_o_inferiores)*5)/9
-        radius_size = radius_per_range + radius_min_size
-
-      end  # End if especies_inferiores_conteo > 0
-
-      children_hash[:radius_size] = radius_size
-    end
-
-    children_hash[:especie_id] = t.id
-    children_hash[:nombre_cientifico] = t.nombre_cientifico
-    children_hash[:nombre_comun] = t.nombre_comun_principal.try(:capitalize)
-
-    # Pone la abreviacion de la categoria taxonomica
-    cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase
-    abreviacion_categoria = CategoriaTaxonomica::ABREVIACIONES[cat.to_sym].present? ? CategoriaTaxonomica::ABREVIACIONES[cat.to_sym] : ''
-    children_hash[:abreviacion_categoria] = abreviacion_categoria
-
-    if opts[:arbol_inicial]
-      if @i+1 != 1  # Si es taxon mas bajo no tiene hijos
-        children_hash[:children] = [@children_array[@i-1]]
-      end
-    end
-
-    children_hash
   end
 
   def retrieve_photos
