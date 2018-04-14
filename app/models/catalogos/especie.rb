@@ -142,8 +142,10 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
-  # Para que regrese las especies
+  # Para que regrese las especies e inferiores
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
+  # Scope para cargar el arbol nodo D3 en la ficha de la espcie
+  scope :arbol_nodo, ->(taxon) { Especie.select_basico(["conteo, #{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2"]).left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas).where("estadistica_id=?",22).where(id: taxon.path_ids, estatus: 2).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?",0,0).order("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}") }
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 
@@ -179,10 +181,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     Especie.where(id: path_ids)
   end
 
+  # REVISADO: Devuelve los descendentes en un array
   def descendant_ids
     descendants.map(&:id)
   end
 
+  # REVISADO: Devuelve los descendentes como active record
   def descendants
     Especie.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", id).where.not(id: id)
   end
@@ -281,6 +285,72 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     estadistica.estadistica_id = 1
     estadistica.conteo = 1
     estadistica.save
+  end
+
+  def arbol_nodo_hash(opts={})
+    children_hash = {}
+
+    case nivel1
+      when 7
+        children_hash[:color] = '#748c17';
+      when 1
+        children_hash[:color] = '#c27113'
+      else
+        children_hash[:color] = '#C6DBEF'
+    end
+
+    radius_min_size = opts[:radius_size] || 8
+    radius_size = radius_min_size
+    children_hash[:radius_size] = radius_size
+
+    especies_o_inferiores = conteo.present? ? conteo : 0
+    children_hash[:especies_inferiores_conteo] = especies_o_inferiores
+
+    # URL para ver las especies o inferiores
+    nivel_especie = "7#{nivel2}00"
+    url = "/busquedas/resultados?id=#{id}&busqueda=avanzada&por_pagina=50&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
+    children_hash[:especies_inferiores_url] = url
+
+    #  Radio de los nodos para un mejor manejo hacia D3
+    if especies_o_inferiores > 0
+
+      #  Radios varian de 60 a 40
+      if especies_o_inferiores >= 10000
+        size_per_radium_unit = (especies_o_inferiores-10000)/20
+        radius_size = ((especies_o_inferiores-10000)/size_per_radium_unit) + 40
+
+      elsif especies_o_inferiores >= 1000 && especies_o_inferiores <= 9999  # Radios varian de 40 a 30
+        radius_per_range = ((especies_o_inferiores)*10)/9999
+        radius_size = radius_per_range + 30
+
+      elsif especies_o_inferiores >= 100 && especies_o_inferiores <= 999  # Radios varian de 30 a 20
+        radius_per_range = ((especies_o_inferiores)*10)/999
+        radius_size = radius_per_range + 20
+
+      elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 13
+
+        radius_per_range = ((especies_o_inferiores)*7)/99
+        radius_size = radius_per_range + 13
+
+      elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 13 a 8
+
+        radius_per_range = ((especies_o_inferiores)*5)/9
+        radius_size = radius_per_range + radius_min_size
+
+      end  # End if especies_inferiores_conteo > 0
+
+      children_hash[:radius_size] = radius_size
+    end
+
+    children_hash[:especie_id] = id
+    children_hash[:nombre_cientifico] = nombre_cientifico
+    children_hash[:nombre_comun] = nombre_comun_principal.try(:capitalize)
+
+    # Pone la abreviacion de la categoria taxonomica
+    cat = nombre_categoria_taxonomica.estandariza
+    abreviacion_categoria = CategoriaTaxonomica::ABREVIACIONES[cat.to_sym].present? ? CategoriaTaxonomica::ABREVIACIONES[cat.to_sym] : ''
+    children_hash[:abreviacion_categoria] = abreviacion_categoria
+    children_hash
   end
 
   # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array de hashes
