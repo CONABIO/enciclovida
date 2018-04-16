@@ -260,7 +260,7 @@ class EspeciesController < ApplicationController
   # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
   def arbol_nodo
     hash_d3 = {}
-    taxones = Especie.arbol_nodo(@especie)
+    taxones = Especie.arbol_nodo_inicial(@especie)
 
     taxones.reverse.each_with_index do |t, i|
       if hash_d3.empty?
@@ -275,27 +275,10 @@ class EspeciesController < ApplicationController
     render :json => hash_d3
   end
 
-  # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
+  # REVISADO: JSON que despliega solo un nodo con sus hijos, en la ficha de la especie
   def hojas_arbol_nodo
-    children_array = []
-
-    nivel_categoria = @especie.categoria_taxonomica.nivel1
-    ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
-
-    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-        where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
-    where(estatus: 2)
-
-    taxones.each do |t|
-      children_hash = hash_arbol_nodo(t)
-
-      # Acumula el resultado del json anterior una posicion antes de la actual
-      children_array << children_hash
-    end
-
-    render :json => children_array.to_json
+    taxones = Especie.arbol_nodo_hojas(@especie)
+    render :json => taxones.map{|t| t.arbol_nodo_hash}
   end
 
   def hojas_arbol_identado
