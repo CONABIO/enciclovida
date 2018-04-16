@@ -1,9 +1,12 @@
 class Comentario < ActiveRecord::Base
-  self.table_name = :comentarios
+
+  establish_connection(:development)
+  self.table_name='enciclovida.comentarios'
   self.primary_key = 'id'
 
   belongs_to :especie
   belongs_to :usuario
+  belongs_to :usuario2, :class_name => 'Usuario', :foreign_key => 'usuario_id2', :dependent => :destroy
   belongs_to :categorias_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categorias_contenido_id', :dependent => :destroy
 
   has_ancestry
@@ -51,7 +54,7 @@ comentarios.estatus, fecha_estatus, categorias_contenido_id, comentarios.institu
 CONCAT(u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
 u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
 CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_directo") }
-  scope :datos_basicos,-> { select_basico.join_usuarios.join_usuarios2.join_especies.join_adicionales }
+  scope :datos_basicos,-> { select_basico.left_joins(:usuario, :usuario2, :especie)}
 
 
   POR_PAGINA_PREDETERMINADO = 10
