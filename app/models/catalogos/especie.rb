@@ -145,7 +145,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Para que regrese las especies e inferiores
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
   # Scope para cargar el arbol nodo D3 en la ficha de la espcie
-  scope :arbol_nodo, ->(taxon) { Especie.select_basico(["conteo, #{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2"]).left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas).where("estadistica_id=?",22).where(id: taxon.path_ids, estatus: 2).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?",0,0).order("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}") }
+  scope :arbol_nodo, -> { Especie.select_basico(["conteo, #{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2"]).left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas).where("estadistica_id=?",22).where(estatus: 2).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?",0,0) }
+  # Scope para cargar el arbol nodo inical en la ficha de la especie
+  scope :arbol_nodo_inicial, ->(taxon) { arbol_nodo.where(id: taxon.path_ids).order("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}") }
+  # Scope para cargar las hojas del arbol nodo inical en la ficha de la especie
+  scope :arbol_nodo_hojas, ->(taxon) { arbol_nodo.where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=?",taxon.categoria_taxonomica.nivel1+1).where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", taxon.id).order(:nombre_cientifico) }
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 
