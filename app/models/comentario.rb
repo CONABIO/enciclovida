@@ -44,17 +44,15 @@ class Comentario < ActiveRecord::Base
 
   after_create :idABase32
 
-  scope :join_especies,-> { joins('LEFT JOIN especies ON especies.id=comentarios.especie_id') }
-  scope :join_adicionales,-> { joins('LEFT JOIN adicionales ON adicionales.especie_id=comentarios.especie_id') }
-  scope :join_usuarios,-> { joins('LEFT JOIN usuarios u ON u.id=comentarios.usuario_id') }
+  # Este scope de usuarios2 se queda porque hago dos joins a la misma tabla y necesito diferenciar los campos
   scope :join_usuarios2,-> { joins('LEFT JOIN usuarios u2 ON u2.id=comentarios.usuario_id2') }
   scope :select_basico,-> { select("comentarios.id, comentario, correo, comentarios.nombre as c_nombre, usuario_id, usuario_id2,
 comentarios.especie_id, comentarios.ancestry, comentarios.created_at, comentarios.updated_at,
 comentarios.estatus, fecha_estatus, categorias_contenido_id, comentarios.institucion AS c_institucion,
-CONCAT(u.nombre, ' ', u.apellido) AS u_nombre, u.email AS u_email,
-u.institucion as u_institucion, nombre_cientifico, nombre_comun_principal, foto_principal,
-CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, especies.ancestry_ascendente_directo") }
-  scope :datos_basicos,-> { select_basico.left_joins(:usuario, :usuario2, :especie)}
+CONCAT(usuarios.nombre, ' ', usuarios.apellido) AS u_nombre, usuarios.email AS u_email,
+usuarios.institucion AS u_institucion, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, nombre_comun_principal, foto_principal,
+CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo") }
+  scope :datos_basicos,-> { select_basico.left_joins(:usuario, :especie => :adicional).join_usuarios2 }
 
 
   POR_PAGINA_PREDETERMINADO = 10
