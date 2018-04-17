@@ -1,5 +1,8 @@
 class Rol < ActiveRecord::Base
 
+  establish_connection(:development)
+  self.table_name='enciclovida.roles'
+
   has_ancestry
 
   has_many :roles_categorias_contenidos, :class_name=> 'RolCategoriasContenido', :foreign_key => :rol_id
