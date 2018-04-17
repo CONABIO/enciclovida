@@ -30,12 +30,8 @@ class Usuario < ActiveRecord::Base
          :lockable, :timeoutable,
          :authentication_keys => [:login]
 
-  scope :usuariosRoles,-> { joins('LEFT JOIN usuarios_roles on usuarios.id = usuarios_roles.usuario_id LEFT JOIN roles on usuarios_roles.rol_id = roles.id') }
-  scope :usuariosEspecies,-> { joins('LEFT JOIN usuarios_especie on usuarios_especie.usuario_id = usuarios.id LEFT JOIN especies on especie_id = especies.id') }
-  scope :rolesCategoriasContenido,-> { joins('LEFT JOIN roles_categorias_contenido on roles.id = roles_categorias_contenido.rol_id LEFT JOIN categorias_contenido on categorias_contenido_id = categorias_contenido.id') }
-  scope :select_para_joins, -> { select("usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.email, usuarios.institucion, usuarios.observaciones, roles.nombre_rol, especies.id as id_especie, especies.nombre_cientifico, categorias_contenido.nombre as nombre_cc")}
-  scope :join_userRolEspeciesCategoriasContenido,-> { select_para_joins.usuariosRoles.usuariosEspecies.rolesCategoriasContenido }
-
+  scope :select_para_joins, -> { select("usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.email, usuarios.institucion, usuarios.observaciones, roles.nombre_rol, #{Especie.table_name}.#{Especie.attribute_alias(:id)} AS id_especie, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, categorias_contenido.nombre AS nombre_cc")}
+  scope :join_userRolEspeciesCategoriasContenido,-> { select_para_joins.left_joins(:roles, :especies, :categorias_contenidos) }
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
