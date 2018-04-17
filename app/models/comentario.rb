@@ -37,10 +37,10 @@ class Comentario < ActiveRecord::Base
   validates_presence_of :comentario
   validates_presence_of :especie_id
   validates_presence_of :categorias_contenido_id
-  validates_presence_of :nombre, :if => 'usuario_id.blank?'.to_sym
+  validates_presence_of :nombre, :if => :inicio_sesion?
 
-  validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => 'usuario_id.blank?'.to_sym
-  validates_length_of :correo, :within => 6..100, :if => 'usuario_id.blank?'.to_sym
+  validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => :inicio_sesion?
+  validates_length_of :correo, :within => 6..100, :if => :inicio_sesion?
 
   after_create :idABase32
 
@@ -61,10 +61,17 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
   OCULTAR = 5  # Nunca se borran comentarios, a lo mas los ocualtamos de la vista
   MODERADOR = 1  # Significa que esta pendiente de mostrarse en la ficha
 
+  # REVISADO: Verifica no validar nombre si ya inicio sesion
+  def inicio_sesion?
+    usuario_id.blank?
+  end
+
+  # REVISADO: Opciones para los estatus
   def self.options_for_select
     [['No público y pendiente',1],['Público y pendiente',2],['Público y resuelto',3],['No público y resuelto',4],['Eliminar',5]]
   end
 
+  # REVISADO: Conviete a base 32 los ids de los comentarios para evitar que el numero sea muy grande
   def idABase32
     Comentario.transaction do
       idBase32 = Comentario.where(:id => '', :created_at => self.created_at.to_time, :comentario => self.comentario)[0].idConsecutivo.to_s(32)
