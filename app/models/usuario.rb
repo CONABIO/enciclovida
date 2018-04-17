@@ -2,7 +2,8 @@ require 'digest/sha2'
 
 class Usuario < ActiveRecord::Base
 
-  self.table_name='usuarios'
+  establish_connection(:development)
+  self.table_name='enciclovida.usuarios'
 
   # Para validar un correo y otros modelos lo puedan utilizar
   nombre_correo_regex  = '[\w\.%\+\-]+'.freeze
