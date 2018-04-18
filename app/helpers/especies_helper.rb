@@ -165,12 +165,12 @@ module EspeciesHelper
         end
       end
 
-      "<ul>#{lista.join('')}</ul>"
+      "</strong><ul>#{lista.join('')}</ul>"
     end
 
-    regiones = taxon.regiones.distinct
+    regiones = taxon.regiones.validas.distinct
     reg_asignadas = Region.regiones_asignadas(regiones)
-    creaLista(reg_asignadas).html_safe
+    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
   end
 
   # REVISADO: Una misma funcion para sinonimos u homnimos

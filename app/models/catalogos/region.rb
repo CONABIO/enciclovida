@@ -13,6 +13,8 @@ class Region < ActiveRecord::Base
 
   belongs_to :tipo_region
 
+  scope :validas, -> { where.not(nombre_region: 'ND') }
+
   def self.regiones_asignadas(regiones)
     resp = {}
 
