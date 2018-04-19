@@ -102,13 +102,26 @@ module EspeciesHelper
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  def construye_arbol(taxon, params={})
-    nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
-    nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
+  # REVISADO: Regresa el arbol identado inicial en la ficha de especie
+  def dameArbolIdentadoInicial(taxones, params={})
+    html = ''
 
-    nodos << '</li>' if params[:son_hojas]
+    def creaLista(taxon, lista=nil)
+      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+                        :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
+      nombre = tituloNombreCientifico(taxon, :link => true)
+      "<ul class='nodo_mayor'><li id='#{taxon.id}' class='links_arbol'>#{link} #{nombre}</li>#{lista.present? ? lista : ''}</ul>"
+    end
+
+    taxones.reverse.each do |taxon|
+      if html.present?
+        html = creaLista(taxon, html)
+      else
+        html = creaLista(taxon)
+      end
+    end
+
+    html.html_safe
   end
 
   # REVISADO: Nombres comunes con su bibliografia como referencia

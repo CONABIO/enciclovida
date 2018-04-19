@@ -250,9 +250,7 @@ class EspeciesController < ApplicationController
   # Despliega el arbol, viene de la pestaña de la ficha
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
-      obj_arbol_identado
-      @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-          caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
+      @taxones = Especie.arbol_identado_inicial(@especie)
       render :partial => 'arbol_identado'
     else
       render :partial => 'arbol_nodo'
@@ -264,11 +262,11 @@ class EspeciesController < ApplicationController
     hash_d3 = {}
     taxones = Especie.arbol_nodo_inicial(@especie)
 
-    taxones.reverse.each_with_index do |t, i|
+    taxones.reverse.each do |taxon|
       if hash_d3.empty?
-        hash_d3 = t.arbol_nodo_hash
+        hash_d3 = taxon.arbol_nodo_hash
       else  # El taxon anterior la pone como hija del taxon actual
-        parent = t.arbol_nodo_hash
+        parent = taxon.arbol_nodo_hash
         parent[:children] = [hash_d3]
         hash_d3 = parent
       end
@@ -722,11 +720,6 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
-  end
-
-  def obj_arbol_identado
-    @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-        caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
   end
 
   def retrieve_photos
