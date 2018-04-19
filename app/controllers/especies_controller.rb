@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
-  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
+  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado_hojas] do
     set_especie(true)
   end
 
@@ -22,7 +22,7 @@ class EspeciesController < ApplicationController
   before_action :servicios, only: [:show]
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
+                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
@@ -275,28 +275,17 @@ class EspeciesController < ApplicationController
     render :json => hash_d3
   end
 
-  # REVISADO: JSON que despliega solo un nodo con sus hijos, en la ficha de la especie
+  # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
   def hojas_arbol_nodo
     taxones = Especie.arbol_nodo_hojas(@especie)
     render :json => taxones.map{|t| t.arbol_nodo_hash}
   end
 
-  def hojas_arbol_identado
-    hijos = @especie.child_ids
+  # REVISADO: JSON que despliega los hijos en el arbol identado, en la ficha de la especie
+  def arbol_identado_hojas
+    @taxones = Especie.arbol_identado_hojas(@especie)
+    @hojas = true
 
-    # Quita el propio ID del taxon para que no se repita cuando se despliegan en el arbol
-    taxon_orig = Especie.find(params[:origin_id])
-    taxon_orig_ancestros = taxon_orig.path_ids
-    hijos.delete_if {|h| taxon_orig_ancestros.include?(h) }
-
-    if hijos.any?
-      @taxones = Especie.datos_basicos.
-          caso_rango_valores('especies.id', hijos.join(',')).order(:nombre_cientifico)
-    else
-      @taxones = Especie.none
-    end
-
-    @despliega_o_contrae = true
     render :partial => 'arbol_identado'
   end
 

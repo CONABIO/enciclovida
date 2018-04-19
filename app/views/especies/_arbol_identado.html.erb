@@ -1,13 +1,9 @@
 <% if @taxones.present? && @taxones.length > 0 %>
-    <% if @despliega_o_contrae %>
-        <ul>
-          <% @taxones.each do |taxon| %>
-              <%= construye_arbol(taxon, :son_hojas => 1).html_safe %>
-          <% end %>
-        </ul>
-
+    <% if @hojas %>
+        <%= dameArbolIdentadoHojas(@taxones) %>
     <% else %>
         <%= dameArbolIdentadoInicial(@taxones) %>
-
     <% end %>
 <% end %>
+
+<%= javascript_include_tag 'especies/arbol_identado' %>

@@ -103,14 +103,14 @@ module EspeciesHelper
   end
 
   # REVISADO: Regresa el arbol identado inicial en la ficha de especie
-  def dameArbolIdentadoInicial(taxones, params={})
+  def dameArbolIdentadoInicial(taxones)
     html = ''
 
     def creaLista(taxon, lista=nil)
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
+                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, :link => true)
-      "<ul class='nodo_mayor'><li id='#{taxon.id}' class='links_arbol'>#{link} #{nombre}</li>#{lista.present? ? lista : ''}</ul>"
+      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li>#{lista.present? ? lista : ''}</ul>"
     end
 
     taxones.reverse.each do |taxon|
@@ -119,6 +119,19 @@ module EspeciesHelper
       else
         html = creaLista(taxon)
       end
+    end
+
+    html.html_safe
+  end
+
+  def dameArbolIdentadoHojas(taxones)
+    html = ''
+
+    taxones.reverse.each do |taxon|
+      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
+      nombre = tituloNombreCientifico(taxon, :link => true)
+      html << "<li id='ul_#{taxon.id}' class='links_arbol'>#{link} #{nombre}</li>"
     end
 
     html.html_safe
