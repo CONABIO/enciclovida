@@ -251,6 +251,8 @@ class EspeciesController < ApplicationController
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
       obj_arbol_identado
+      @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
+          caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
       render :partial => 'arbol_identado'
     else
       render :partial => 'arbol_nodo'
