@@ -10,7 +10,7 @@ class Usuario < ActiveRecord::Base
   dominio_regex = '(?:[A-Z0-9\-]+\.)+'.freeze
   dominio_tld_regex  = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'.freeze
   CORREO_REGEX       = /\A#{nombre_correo_regex}@#{dominio_regex}#{dominio_tld_regex}\z/i
-  CORREO_INVALIDO_MSG = 'El correo no tiene la estructura apropiada.'.freeze
+  CORREO_INVALIDO_MSG = 'no tiene la estructura apropiada.'.freeze
 
   has_many :usuario_roles, :class_name=> 'UsuarioRol', :foreign_key => :usuario_id
   has_many :roles, :through => :usuario_roles, :source => :rol
@@ -19,7 +19,6 @@ class Usuario < ActiveRecord::Base
   has_many :usuario_especies, :class_name=> 'UsuarioEspecie', :foreign_key => :usuario_id
   has_many :especies, :through => :usuario_especies, :source => :especie
 
-  has_one :filtro, :class_name => 'Filtro', :foreign_key => :usuario_id
   attr_accessor :login
   validates :nombre, :apellido, presence: true
 
