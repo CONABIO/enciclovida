@@ -110,7 +110,7 @@ module EspeciesHelper
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, :link => true)
-      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li>#{lista.present? ? lista : ''}</ul>"
+      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
     end
 
     taxones.reverse.each do |taxon|
@@ -131,7 +131,7 @@ module EspeciesHelper
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, :link => true)
-      html << "<li id='ul_#{taxon.id}' class='links_arbol'>#{link} #{nombre}</li>"
+      html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
     end
 
     html.html_safe

@@ -1,16 +1,18 @@
+// REVISADO: Para desplegar o contraer el arbol identado en ficha de la espcie
 var despliegaOcontrae = function(elemento)
 {
     var id = elemento.attr('taxon_id');
-    var ul = $('ul_' + id);
+    var ul = $('#ul_' + id);
+    var hijos = $('#ul_' + id).children().children('ul');
 
-    if (ul.length > 0)
+    if (hijos.size() > 0)  // Existe algun hijo
     {
         var minus = $('#span_' + id).hasClass("glyphicon-minus");
 
         if (minus)
-            $('#span_' + sufijo).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+            $('#span_' + id).removeClass("glyphicon-minus").addClass("glyphicon-plus");
 
-        $("#nodo_" + id + " li").remove();
+        hijos.remove();
 
     } else {
         $.ajax(
@@ -20,13 +22,13 @@ var despliegaOcontrae = function(elemento)
             {
                 if (lista != '')
                 {
-                    console.log('aqui')
                     var plus = $('#span_' + id).hasClass("glyphicon-plus");
 
                     if (plus)
                         $('#span_' + id).removeClass("glyphicon-plus").addClass("glyphicon-minus");
 
-                    $("#ul_" + id).parent().append(lista);
+                    hijos.remove();  // Quita el
+                    $(elemento).parent().append(lista);
                 }
             });
     }
