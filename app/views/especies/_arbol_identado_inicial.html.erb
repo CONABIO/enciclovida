@@ -1,0 +1,6 @@
+<% if @taxones.present? && @taxones.length > 0 %>
+    <%= dameArbolIdentadoInicial(@taxones) %>
+<% end %>
+
+<%= javascript_include_tag 'especies/arbol_identado' %>
+    

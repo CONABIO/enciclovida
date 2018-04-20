@@ -251,7 +251,7 @@ class EspeciesController < ApplicationController
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
       @taxones = Especie.arbol_identado_inicial(@especie)
-      render :partial => 'arbol_identado'
+      render :partial => 'arbol_identado_inicial'
     else
       render :partial => 'arbol_nodo'
     end
@@ -286,7 +286,7 @@ class EspeciesController < ApplicationController
     @taxones = Especie.arbol_identado_hojas(@especie)
     @hojas = true
 
-    render :partial => 'arbol_identado'
+    render :partial => 'arbol_identado_hojas'
   end
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
