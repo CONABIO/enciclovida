@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
-  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado_hojas] do
+  before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
 
@@ -22,7 +22,7 @@ class EspeciesController < ApplicationController
   before_action :servicios, only: [:show]
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :arbol_identado_hojas, :comentarios,
+                          :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
@@ -247,18 +247,18 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Despliega el arbol, viene de la pestaña de la ficha
+  # REVISADO: Despliega el arbol identado o nodo
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
       @taxones = Especie.arbol_identado_inicial(@especie)
-      render :partial => 'arbol_identado_inicial'
+      render :partial => 'especies/arbol/arbol_identado_inicial'
     else
-      render :partial => 'arbol_nodo'
+      render :partial => 'especies/arbol/arbol_nodo_inicial'
     end
   end
 
   # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
-  def arbol_nodo
+  def arbol_nodo_inicial
     hash_d3 = {}
     taxones = Especie.arbol_nodo_inicial(@especie)
 
@@ -276,7 +276,7 @@ class EspeciesController < ApplicationController
   end
 
   # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
-  def hojas_arbol_nodo
+  def arbol_nodo_hojas
     taxones = Especie.arbol_nodo_hojas(@especie)
     render :json => taxones.map{|t| t.arbol_nodo_hash}
   end
@@ -286,7 +286,7 @@ class EspeciesController < ApplicationController
     @taxones = Especie.arbol_identado_hojas(@especie)
     @hojas = true
 
-    render :partial => 'arbol_identado_hojas'
+    render :partial => 'especies/arbol/arbol_identado_hojas'
   end
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi

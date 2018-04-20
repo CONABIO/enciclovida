@@ -30,7 +30,7 @@ $(document).ready(function(){
     link = g.selectAll(".link");
     node = g.selectAll(".node");
 
-    d3.json("/especies/" + TAXON.id + "/arbol_nodo", function(error, json) {
+    d3.json("/especies/" + TAXON.id + "/arbol_nodo_inicial", function(error, json) {
         if (error) throw error;
 
         root = json;
@@ -219,7 +219,7 @@ function click(d) {
 
         $.ajax({
             type: 'GET',
-            url: "/especies/" + d.especie_id + "/hojas_arbol_nodo",
+            url: "/especies/" + d.especie_id + "/arbol_nodo_hojas",
             dataType: "json"
         }).done(function(data) {
             if (data.length > 0)

@@ -4,7 +4,7 @@
 
 
 #vista_arbol ul{
-  padding-left: 25px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
+  padding-left: 100px;/* Cambios para NO mostrar el arreglo horizontal, descomentado para no afectar el funcionamiento en bios //ggonzale*/
   //padding: 0; /* Cambios para mostrar el arreglo horizontal, comentado para no afectar el funcionamiento en bios //ggonzale*/
 }
 
@@ -82,19 +82,9 @@ nested-fields
   overflow-y: scroll;
 }
 
-.links_arbol {
-  list-style-type: none;
-  list-style: none;
-}
-
 .fieldset_regiones {background-color:#E8E8E8; border-style: solid;}
 .fieldset_nombres {background-color:#F5F5F5; border-style: solid;}
 .fieldset_bibliografias {background-color:#FFFFFF; border-style: solid;}
-
-//.sub_link_taxon:link {color: #0000ff; text-decoration:none; }
-//.sub_link_taxon:active {color-background: #0000ff; text-decoration: none; }
-//.sub_link_taxon:visited {color: #0000ff; text-decoration: none; }
-//.sub_link_taxon:hover {background-color: #ffffff; text-decoration: none; }
 
 .digg_pagination {
   background: white;
@@ -141,11 +131,6 @@ nested-fields
   height: 1%; }
 *:first-child + html .digg_pagination {
   overflow: hidden; }
-
-.nodo_mayor ul{
-  padding-left: 15px;
-  list-style: none;
-}
 
 /*
 * Los diferentes tamaños de iconos
