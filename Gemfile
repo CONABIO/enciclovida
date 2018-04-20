@@ -5,7 +5,7 @@ gem 'activerecord-session_store', git: 'https://github.com/rails/activerecord-se
 gem 'activerecord-sqlserver-adapter', git: 'https://github.com/calonso-conabio/activerecord-sqlserver-adapter.git', branch: '4-0-stable', ref: '47b6d7b'
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'axlsx_rails'  # Gema para exportar en excel
-gem 'blurrily', '0.2.1'  #fuzzy match
+gem 'blurrily'#, git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # forza a blurrily a usar rails 5
 gem 'bootstrap-sass'
 gem 'carrierwave'  # form file upload
 gem 'cocoon', '=1.2.0'  # anida las formas de diferentes o del mismo modelo
