@@ -27,7 +27,7 @@ var despliegaOcontrae = function(elemento)
                     if (plus)
                         $('#span_' + id).removeClass("glyphicon-plus").addClass("glyphicon-minus");
 
-                    hijos.remove();  // Quita el
+                    hijos.remove();
                     $(elemento).parent().append(lista);
                 }
             });
