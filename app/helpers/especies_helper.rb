@@ -124,6 +124,7 @@ module EspeciesHelper
     html.html_safe
   end
 
+  # REVISADO: Regresa los taxones hijos del taxon en cuestion
   def dameArbolIdentadoHojas(taxones)
     html = ''
 
