@@ -4,8 +4,6 @@ class Adicional < ActiveRecord::Base
   self.table_name='enciclovida.adicionales'
 
   belongs_to :especie
-  belongs_to :icono
-
   attr_accessor :select_nom_comun, :text_nom_comun
 
   # Lenguas aceptadas de NaturaLista
