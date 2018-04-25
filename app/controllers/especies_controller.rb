@@ -391,30 +391,14 @@ class EspeciesController < ApplicationController
 
   #servicio Macaulay Library (eBird)
   def media_cornell
-    type = params['type'] || 'photo'
-    @especie = Especie.find(params['id'])
+    type = params['type']
+    page = params['page']
+    #@especie = Especie.find(params['id']) #no necesito pasar @especie a la vista
+    taxonNC = Especie.find(params['id']).nombre_cientifico
     mc = MacaulayService.new
-    proveedor = @especie.proveedor
-    if  taxonCode = proveedor.cornell_id
-      @array = mc.dameMedia(taxonCode, type)
-    else
-      taxon = @especie.nombre_cientifico
-      @array = mc.dameMedia_nc(taxon, type)
-    end
+    @array = mc.dameMedia_nc(taxonNC, type, page)
 
-     render text: "<strong>No se encontraron coincidencias</strong>" and return if @array[0][:msg].present?
-
-    case type
-        when 'photo'
-          render 'fotos_cornell'
-        when 'video'
-          render 'videos_cornell'
-        when 'audio'
-          render 'audios_cornell'
-        else
-          render text: "<strong>No se encontraron coincidencias</strong>"
-      end
-
+    render :locals => {type: type, page: page}
   end
 
   def fotos_naturalista

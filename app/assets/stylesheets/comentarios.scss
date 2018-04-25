@@ -36,6 +36,8 @@ a.historial.btn > span{
   max-width: 80%;
   font-size: .9em;
   border: 0px !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .comentario-burbuja.op{
   -webkit-box-shadow: -4px 4px 6px -3px rgba(100, 100, 100, 0.50);
