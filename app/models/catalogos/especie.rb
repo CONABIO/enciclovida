@@ -168,6 +168,15 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
+  # REVISADO: Regresa el id root
+  def root_id
+    if is_root?
+      id
+    else
+      root.id
+    end
+  end
+
   # REVISADO: Devuelve un array de los ancestros y el taxon en cuestion
   def path_ids
     ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
@@ -678,7 +687,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     escribe_cache('ficha_naturalista', eval(CONFIG.cache.ficha_naturalista)) if Rails.env.production?
 
     begin
-      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
+      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
       resultados = JSON.parse(respuesta)
     rescue => e
       return {estatus: false, msg: e}
@@ -689,13 +698,13 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     resultados.each do |t|
       next unless t['ancestry'].present?
-      if t['name'].downcase == nombre_cientifico.downcase
+      if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
         reino_naturalista = t['ancestry'].split('/')[1].to_i
         next unless reino_naturalista.present?
-        reino_enciclovida = is_root? ? id : ancestry_ascendente_directo.split('/').first.to_i
+        reino_enciclovida = root_id
 
-        # Si coincide el reino con animalia, plantas u hongos, OJO quitar esto en la centralizacion
-        if (reino_naturalista == 1 && reino_enciclovida == 1000001) || (reino_naturalista == 47126 && reino_enciclovida == 6000002) || (reino_naturalista == 47170 && reino_enciclovida == 3000004)
+        # Me aseguro que el reino coincida
+        if (reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
 
           if p = proveedor
             p.naturalista_id = t['id']
