@@ -32,7 +32,7 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
@@ -51,7 +51,7 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
@@ -184,7 +184,7 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     # Valida el paginado y los resultados

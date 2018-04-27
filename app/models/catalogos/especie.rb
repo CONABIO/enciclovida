@@ -551,12 +551,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Guarda el redis con todos los nombres cientificos
     loader.add(redis(opc.merge({consumir_servicios: true})))
 
-    # Guarda el redis con todos los nombres comunes
+    # Guarda el redis con todos los nombres comunes de catalogos
     nombres_comunes.each do |nc|
       loader.add(redis(opc.merge({nombre_comun: nc})))
     end
 
-    # Guarda el redis con los nombres comunes de naturalista diferentes a catalogos
+    # Guarda el redis con los nombres comunes de naturalista y diferentes a catalogos
     if x_nombres_comunes_naturalista
       primer_nombre = nil
 
@@ -674,18 +674,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
-    return {estatus: 'error', msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
+    return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
     escribe_cache('ficha_naturalista', eval(CONFIG.cache.ficha_naturalista)) if Rails.env.production?
 
     begin
       respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
       resultados = JSON.parse(respuesta)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
     # Nos aseguramos que coincide el nombre
-    return {estatus: 'error', msg: 'No hay resultados'} if resultados.count == 0
+    return {estatus: false, msg: 'No hay resultados'} if resultados.count == 0
 
     resultados.each do |t|
       next unless t['ancestry'].present?
@@ -704,13 +704,13 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
             self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
           end
 
-          return {estatus: 'OK', ficha: t}
+          return {estatus: true, ficha: t}
         end
 
       end  # End nombre cientifico
     end  # End resultados
 
-    return {estatus: 'error', msg: 'No hubo coincidencias con los resultados del servicio'}
+    return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
   # El nombre predeterminado de catalogos y la lengua
