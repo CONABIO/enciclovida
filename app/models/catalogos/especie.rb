@@ -590,7 +590,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     puts "\n\nGuardo redis #{id}"
   end
 
-  # Servicio que trae la respuesta de bdi
+  # REVISADO: Servicio que trae la respuesta de bdi
   def fotos_bdi(opts={})
     bdi = BDIService.new
 
@@ -601,7 +601,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     else
       bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
     end
-
   end
 
   # Fotos y nombres comunes de dbi, catalogos y naturalista
@@ -609,10 +608,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
 
     if p = proveedor
-      # Fotos de naturalista
       fn = p.fotos_naturalista
 
-      if fn[:estatus] == 'OK'
+      if fn[:estatus]
         self.x_fotos_totales+= fn[:fotos].count
 
         if fn[:fotos].count > 0
@@ -623,7 +621,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
       # Para guardar los nombres comunes de naturalista y el nombre comun principal
       ncn = p.nombres_comunes_naturalista
-      if ncn[:estatus] == 'OK'  # Si naturalista tiene un nombre default, le pongo ese
+      if ncn[:estatus]  # Si naturalista tiene un nombre default, le pongo ese
         ncn[:nombres_comunes].each do |nc|
           if nc['lexicon'] != 'Scientific Names'
             self.x_nombre_comun_principal = nc['name']
@@ -649,7 +647,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Fotos de bdi
     fb = fotos_bdi
-    if fb[:estatus] == 'OK'
+    if fb[:estatus]
       self.x_square_url = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
       self.x_foto_principal = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
 
@@ -657,7 +655,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_fotos_totales+= 25*(ultima-1)
         fbu = fotos_bdi({pagina: ultima})
 
-        if fbu[:estatus] == 'OK'
+        if fbu[:estatus]
           self.x_fotos_totales+= fbu[:fotos].count
         end
       else  # Solo era un paginado, las sumo inmediatamente
@@ -753,10 +751,10 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     if p = proveedor
       ncnat = p.nombres_comunes_naturalista
     else
-      ncnat = {estatus: 'error'}
+      ncnat = {estatus: false}
     end
 
-    if ncnat[:estatus] == 'OK'
+    if ncnat[:estatus]
       ncn = ncnat[:nombres_comunes].map do |nc|
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
 

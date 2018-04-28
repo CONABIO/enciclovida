@@ -371,7 +371,7 @@ class EspeciesController < ApplicationController
     nombres_comunes = if p = @especie.proveedor
                         p.nombres_comunes_naturalista
                       else
-                        {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                        {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
                       end
 
     render json: nombres_comunes
