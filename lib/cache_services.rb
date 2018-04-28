@@ -3,10 +3,10 @@ module CacheServices
   def servicios
     guarda_redis_servicio
     suma_visita_servicio
-    cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-    cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
-    cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
+    cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
     guarda_observaciones_naturalista_servicio
     guarda_ejemplares_snib_servicio
   end
@@ -31,18 +31,20 @@ module CacheServices
 
   # REVISADO: Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
   def cuantas_especies_inferiores_servicio(opc = {})
-    if !@especie.existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
+    if !existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
       if Rails.env.production?
-        @especie.delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
+        delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
       else
-        @especie.cuantas_especies_inferiores(opc)
+        cuantas_especies_inferiores(opc)
       end
+
+      escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.cuantas_especies_inferiores)) if Rails.env.production?
     end
   end
 
   # REVISADO: Guarda las observaciones desde la pagina de naturalista
   def guarda_observaciones_naturalista_servicio
-    if !@especie.existe_cache?('observaciones_naturalista')
+    if !existe_cache?('observaciones_naturalista')
       if p = proveedor
         if Rails.env.production?
           p.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
@@ -57,7 +59,7 @@ module CacheServices
 
   # REVISADO: Guarda los ejemplares del SNIB
   def guarda_ejemplares_snib_servicio
-    if !@especie.existe_cache?('observaciones_naturalista')
+    if !existe_cache?('observaciones_naturalista')
       if p = proveedor
         if Rails.env.production?
           p.delay(queue: 'observaciones_naturalista').guarda_ejemplares_snib
@@ -72,7 +74,7 @@ module CacheServices
 
   # REVISADO: Escribe un cache
   def escribe_cache(recurso, tiempo = 1.day)
-    Rails.cache.write("#{recurso}_#{id}", true, :expires_in =>tiempo)
+    Rails.cache.write("#{recurso}_#{id}", true, :expires_in => tiempo)
   end
 
   # REVISADO: Verifica que el cache exista
