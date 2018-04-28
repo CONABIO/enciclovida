@@ -25,9 +25,9 @@ class BDIService
 
     if jres['paging'].present? && jres['paging']['next'].present?
       ultima = jres['paging']['last'].split('&p=').last.to_i + 1
-      {:estatus => 'OK', :ultima => ultima, :fotos => fotos}
+      {:estatus => true, :ultima => ultima, :fotos => fotos}
     else
-      {:estatus => 'OK', :ultima => nil, :fotos => fotos}
+      {:estatus => true, :ultima => nil, :fotos => fotos}
     end
   end
 
