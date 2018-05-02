@@ -1,12 +1,6 @@
 class ValidacionesController < ApplicationController
-  # Estas validaciones son los records que provienen desde SQL Server directamente (MS Access), ademas
-  # de las validaciones de los archivos en excel, csv o taxones que copien y peguen en la caseta de texto
 
-  # El request sigue siendo inseguro, hasta no poder hacer la conexion con un webservice con WSDL
-  # desde SQL Server
-
-  #Quita estos metodos para que pueda cargar correctamente la peticion
-  skip_before_filter  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
+  skip_before_action  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
   before_action :authenticate_request!, only: [:update, :insert, :delete]
   before_action :tipo_validacion, only: [:simple, :avanzada]
   layout false, only: [:update, :insert, :delete]
@@ -132,7 +126,7 @@ class ValidacionesController < ApplicationController
       next unless c.present?  # para las columnas que son cabeceras y estan vacias
       cab = I18n.transliterate(c).gsub(' ','_').gsub('-','_').downcase.strip
       col_coincidio = columnas.map{ |k,v| v.include?(cab) ? k : nil }
-      columnas_asociadas[col_coincidio.compact.first.to_s] = "^#{c}$" if col_coincidio.compact.count == 1
+      columnas_asociadas[col_coincidio.compact.first.to_s] = c if col_coincidio.compact.count == 1
     end
 
     faltantes = columnas_obligatoraias - columnas_asociadas.keys
