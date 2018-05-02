@@ -143,6 +143,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :arbol_identado_inicial, ->(taxon) { arbol_identado_select.where(id: taxon.path_ids).order('nivel_categoria ASC') }
   # Scope para cargar las hojas del arbol identado inical en la ficha de la especie
   scope :arbol_identado_hojas, ->(taxon) { arbol_identado_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(:nombre_cientifico) }
+  # Query que saca los ancestros, nombres cientificos y sus categorias taxonomicas correspondientes
+  scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }
 
   # Scopes y metodos para ancestry, TODO: ponerlo en una gema
 
@@ -975,13 +977,13 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  # Asigna todas las categorias hacia arriba de un taxon, para poder acceder a el mas facil
+  # REVISADO Asigna todas las categorias y nombre cientificos a los ancestros de un taxon, para poder acceder a el mas facil
   def asigna_categorias
 
-    path.select('nombre, nombre_categoria_taxonomica').categoria_taxonomica_join.each do |ancestro|
+    path.select("#{Especie.attribute_alias(:nombre)} AS nombret, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).each do |ancestro|
       categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
       next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
-      eval("self.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+      eval("self.#{categoria} = ancestro.nombret")  # Asigna el nombre del ancestro si es que coincidio con la categoria
 
       # Asigna autoridades para el excel
       if categoria == 'x_especie'
