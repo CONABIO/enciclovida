@@ -609,7 +609,7 @@ class EspeciesController < ApplicationController
     end
 
     if p.changed? && p.save
-      # 'cambio, y salvó
+      # cambio, y salvó
       @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
       redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
     else
@@ -627,7 +627,7 @@ class EspeciesController < ApplicationController
       render :_error and return
     end
 
-    @especie.servicios  # Los servicios de estadisticas y cache
+    @especie.servicios if params[:action] == 'show'  # Los servicios de estadisticas y cache, solo para el show
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
