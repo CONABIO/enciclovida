@@ -50,7 +50,7 @@ class String
   end
 
   def estandariza
-    sin_acentos.parameterize
+    sin_acentos.limpia.parameterize
   end
 
   def sin_acentos
