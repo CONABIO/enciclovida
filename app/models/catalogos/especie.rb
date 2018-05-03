@@ -371,7 +371,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
 
       if iucn_ws.present?
-        response << {'IUCN Red List of Threatened Species 2017-1' => iucn_ws}
+        response << {'IUCN Red List of Threatened Species 2017-1' => [iucn_ws]}
       else
         response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
       end
@@ -392,15 +392,15 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     if opc[:tab_catalogos]
       tipos_distribuciones.uniq.each do |distribucion|
-        response << {'Tipo de distribución' => distribucion.descripcion}
+        response << distribucion.descripcion
       end
     else
       tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-        response << {'Tipo de distribución' => distribucion.descripcion}
+        response << distribucion.descripcion
       end
     end
 
-    response
+    {'Tipo de distribución' => response}
   end
 
   def species_or_lower?
@@ -529,10 +529,20 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos['data']['autoridad'] = nombre_autoridad.try(:limpia)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
-    cons_amb_dist = []
-    cons_amb_dist << nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}.flatten
-    cons_amb_dist << tipo_distribucion.map{|h| h.values}
-    datos['data']['cons_amb_dist'] = cons_amb_dist.flatten
+    cons_amb_dist = {}
+    caracteristicas = nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}) << tipo_distribucion
+
+    caracteristicas.reverse.each do |prop|
+      prop.each do |nombre, valores|
+        next unless valores.any?
+
+        valores.each do |valor|
+          cons_amb_dist[valor.estandariza] = valor
+        end
+      end
+    end
+
+    datos['data']['cons_amb_dist'] = cons_amb_dist
 
     # Para saber cuantas fotos tiene
     datos['data'][:fotos] = x_fotos_totales
