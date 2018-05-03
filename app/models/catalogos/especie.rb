@@ -503,36 +503,36 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
   def redis(opc={})
     datos = {}
-    datos['data'] = {}
+    datos[:data] = {}
 
     fotos_nombres_servicios if opc[:consumir_servicios]
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
-      datos['id'] = "#{nc.id}#{id}00000".to_i
-      datos['term'] = I18n.transliterate(nc.nombre_comun.limpia)
-      datos['data']['nombre_comun'] = nc.nombre_comun.limpia.capitalize
-      datos['data']['id'] = id
-      datos['data']['lengua'] = nc.lengua
+      datos[:id] = "#{nc.id}#{id}00000".to_i
+      datos[:term] = I18n.transliterate(nc.nombre_comun.limpia)
+      datos[:data][:nombre_comun] = nc.nombre_comun.limpia.capitalize
+      datos[:data][:id] = id
+      datos[:data][:lengua] = nc.lengua
 
     else  # Asigna si viene la peticion de nombre_cientifico
-      datos['id'] = id
-      datos['term'] = I18n.transliterate(nombre_cientifico.limpia)
-      datos['data']['nombre_comun'] = x_nombre_comun_principal.try(:limpia).try(:capitalize)
-      datos['data']['id'] = id
-      datos['data']['lengua'] = x_lengua
+      datos[:id] = id
+      datos[:term] = I18n.transliterate(nombre_cientifico.limpia)
+      datos[:data][:nombre_comun] = x_nombre_comun_principal.try(:limpia).try(:capitalize)
+      datos[:data][:id] = id
+      datos[:data][:lengua] = x_lengua
     end
 
-    datos['data']['foto'] = x_square_url  # Foto square_url
-    datos['data']['nombre_cientifico'] = nombre_cientifico.limpia
-    datos['data']['estatus'] = Especie::ESTATUS_VALOR[estatus]
-    datos['data']['autoridad'] = nombre_autoridad.try(:limpia)
+    datos[:data][:foto] = x_square_url  # Foto square_url
+    datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
+    datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]
+    datos[:data][:autoridad] = nombre_autoridad.try(:limpia)
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = {}
-    caracteristicas = nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}) << tipo_distribucion
+    caracteristicas = nom_cites_iucn_ambiente_prioritaria(iucn_ws: true) << tipo_distribucion
 
-    caracteristicas.reverse.each do |prop|
+    datos[:data][:cons_amb_dist] = caracteristicas.reverse.each do |prop|
       prop.each do |nombre, valores|
         next unless valores.any?
 
@@ -542,17 +542,15 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       end
     end
 
-    datos['data']['cons_amb_dist'] = cons_amb_dist
-
     # Para saber cuantas fotos tiene
-    datos['data'][:fotos] = x_fotos_totales
+    datos[:data][:fotos] = x_fotos_totales
 
     # Para saber si tiene algun mapa
     if p = proveedor
-      datos['data']['geodatos'] = p.geodatos[:cuales]
+      datos[:data][:geodatos] = p.geodatos[:cuales]
     end
 
-    datos
+    datos.stringify_keys
   end
 
   # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
@@ -595,7 +593,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
         nc = NombreComun.new({id: nom['id'], nombre_comun: nom['name'], lengua: I18n.t("lenguas.#{lengua}", default: lengua)})
         loader.add(redis(opc.merge({nombre_comun: nc})))
-
       end
     end
 

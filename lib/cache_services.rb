@@ -1,14 +1,14 @@
 module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
-    #guarda_observaciones_naturalista_servicio
-    #guarda_ejemplares_snib_servicio
-    guarda_redis_servicio
     #suma_visita_servicio
     #cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
     #cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
     #cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
     #cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
+    #guarda_observaciones_naturalista_servicio
+    #guarda_ejemplares_snib_servicio
+    guarda_redis_servicio
   end
 
   # REVISAO: Guarda los datos más importantes en el redis
