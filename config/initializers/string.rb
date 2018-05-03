@@ -50,11 +50,11 @@ class String
   end
 
   def estandariza
-    sin_acentos.limpia.parameterize
+    sin_acentos.limpia.parameterize.downcase
   end
 
   def sin_acentos
-    I18n.transliterate(self).strip.downcase
+    I18n.transliterate(self).strip
   end
 end
 

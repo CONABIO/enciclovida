@@ -506,6 +506,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos[:data] = {}
 
     fotos_nombres_servicios if opc[:consumir_servicios]
+    visitas = especie_estadisticas.visitas
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
@@ -515,12 +516,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       datos[:data][:id] = id
       datos[:data][:lengua] = nc.lengua
 
+      # Para el score dependiendo la lengua
+      lengua = nc.lengua.estandariza
+      index = Adicional:: LENGUAS_ACEPTADAS.reverse.index(lengua) || 0
+      datos[:score] = index*visitas
+
     else  # Asigna si viene la peticion de nombre_cientifico
       datos[:id] = id
       datos[:term] = I18n.transliterate(nombre_cientifico.limpia)
       datos[:data][:nombre_comun] = x_nombre_comun_principal.try(:limpia).try(:capitalize)
       datos[:data][:id] = id
       datos[:data][:lengua] = x_lengua
+      datos[:score] = Adicional::LENGUAS_ACEPTADAS.length*visitas
     end
 
     datos[:data][:foto] = x_square_url  # Foto square_url
