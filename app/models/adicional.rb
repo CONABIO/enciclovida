@@ -7,5 +7,5 @@ class Adicional < ActiveRecord::Base
   attr_accessor :select_nom_comun, :text_nom_comun
 
   # Lenguas aceptadas de NaturaLista
-  LENGUAS_ACEPTADAS = %w(spanish espanol_mexico huasteco maya maya_peninsular mayan_languages mazateco mixteco mixteco_de_yoloxochitl totonaco otomi nahuatl zapoteco english)
+  LENGUAS_ACEPTADAS = %w(espanol spanish espanol_mexico huasteco maya maya_peninsular mayan_languages mazateco mixteco mixteco_de_yoloxochitl totonaco otomi nahuatl zapoteco english)
 end

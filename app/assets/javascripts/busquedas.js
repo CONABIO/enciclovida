@@ -66,6 +66,7 @@ var soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
     {
+        console.log(data);
         if (I18n.locale == 'es-cientifico')
         {
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
