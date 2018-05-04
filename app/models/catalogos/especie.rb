@@ -539,15 +539,15 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     cons_amb_dist = {}
     caracteristicas = nom_cites_iucn_ambiente_prioritaria(iucn_ws: true) << tipo_distribucion
 
-    datos[:data][:cons_amb_dist] = caracteristicas.reverse.each do |prop|
-      prop.each do |nombre, valores|
-        next unless valores.any?
+    caracteristicas.reduce({}, :merge).each do |nombre, valores|
+      next unless valores.any?
 
-        valores.each do |valor|
-          cons_amb_dist[valor.estandariza] = valor
-        end
+      valores.each do |valor|
+        cons_amb_dist[valor.estandariza] = valor
       end
     end
+
+    datos[:data][:cons_amb_dist] = cons_amb_dist
 
     # Para saber cuantas fotos tiene
     datos[:data][:fotos] = x_fotos_totales
