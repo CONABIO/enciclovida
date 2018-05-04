@@ -211,7 +211,6 @@ function click(d) {
 
     if (d.children)
     {
-        console.log(d.children);
         d.children = null;
         leaft = false;
         update();

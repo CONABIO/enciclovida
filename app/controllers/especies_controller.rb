@@ -19,7 +19,7 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  before_action :servicios, only: [:show]
+  #before_action :servicios, only: [:show]
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
@@ -371,7 +371,7 @@ class EspeciesController < ApplicationController
     nombres_comunes = if p = @especie.proveedor
                         p.nombres_comunes_naturalista
                       else
-                        {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                        {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
                       end
 
     render json: nombres_comunes
@@ -609,7 +609,7 @@ class EspeciesController < ApplicationController
     end
 
     if p.changed? && p.save
-      # 'cambio, y salvó
+      # cambio, y salvó
       @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
       redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
     else
@@ -621,81 +621,37 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
-    #begin
+    begin
       @especie = Especie.find(params[:id])
-      suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
-      cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-      cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-      cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
-      cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
+    rescue    #si no encontro el taxon
+      render :_error and return
+    end
 
-      # Por si no viene del arbol, ya que no necesito encontrar el valido
-      if !arbol
-        if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
-          estatus = @especie.especies_estatus
+    @especie.servicios if params[:action] == 'show'  # Los servicios de estadisticas y cache, solo para el show
 
-          if estatus.length == 1  # Nos aseguramos que solo haya un valido
-            begin
-              @especie = Especie.find(estatus.first.especie_id2)
-              redirect_to especie_path(@especie)
-            rescue
-              render :_error and return
-            end
-          elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+    # Por si no viene del arbol, ya que no necesito encontrar el valido
+    if !arbol
+      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
+        estatus = @especie.especies_estatus
+
+        if estatus.length == 1  # Nos aseguramos que solo haya un valido
+          begin
+            @especie = Especie.find(estatus.first.especie_id2)
+            redirect_to especie_path(@especie)
+          rescue
             render :_error and return
-          else  # Es sinonimo pero no tiene un valido asociado >.>!
-            if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
-              redirect_to especie_path(@especie) and return
-            end
           end
-        else
-          if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+          render :_error and return
+        else  # Es sinonimo pero no tiene un valido asociado >.>!
+          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
             redirect_to especie_path(@especie) and return
           end
         end
-      end
-    #rescue    #si no encontro el taxon
-    #  render :_error and return
-    #end
-  end
-
-  # REVISADO: Suma una visita a la estadisticas
-  def suma_visita
-    # Me aseguro que viene de la ficha, para poner el contador y que es solo del formato html
-    if params[:action] == 'show' && request.format.html?
-      if Rails.env.production?
-        @especie.delay(queue: 'estadisticas').suma_visita
       else
-        @especie.suma_visita
-      end
-    end  # if show
-  end
-
-  # REVISADO: Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
-  def cuantas_especies_inferiores(opc = {})
-    if params[:action] == 'show'
-      if Rails.env.production?
-        if !@especie.existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
-          @especie.delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
+        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+          redirect_to especie_path(@especie) and return
         end
-      else
-        @especie.cuantas_especies_inferiores(opc)
-      end
-    end  # if show
-  end
-
-  # Actualiza las observaciones, los nombres comunes y las fotos
-  def servicios
-    # Para guardar los cambios en redis y las observacion
-    if Rails.env.production?
-      @especie.delay(queue: 'redis').guarda_redis
-
-      if !@especie.existe_cache?('observaciones_naturalista')
-        @especie.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
-      end
-
-      if !@especie.existe_cache?('ejemplares_snib')
-        @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
       end
     end
   end

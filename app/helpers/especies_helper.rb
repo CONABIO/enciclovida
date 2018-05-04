@@ -251,7 +251,7 @@ module EspeciesHelper
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    caracteristicas = [taxon.tipo_distribucion.map{|h| h.values}, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
+    caracteristicas = [taxon.tipo_distribucion.values, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
 
     caracteristicas.each{ |x|
       response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
