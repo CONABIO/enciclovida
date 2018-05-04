@@ -43,7 +43,7 @@ class BDIService
   end
 
   def arma_y_consulta_url(opts)
-    nombre = opts[:nombre].limpiar(true)
+    nombre = opts[:nombre].limpia_ws(true)
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
