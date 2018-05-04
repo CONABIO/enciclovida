@@ -18,8 +18,8 @@ class String
   end
 
   # Para cuando se quiere consultar un web service
-  def limpia_ws
-    self.limpiar.limpia
+  def limpia_ws(bdi=false)
+    self.limpiar(bdi).limpia
   end
 
   def limpia_csv

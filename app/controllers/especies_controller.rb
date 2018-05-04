@@ -317,7 +317,7 @@ class EspeciesController < ApplicationController
       bdi = @especie.fotos_bdi
     end
 
-    if bdi[:estatus] == 'OK'
+    if bdi[:estatus]
       @fotos = bdi[:fotos]
 
       respond_to do |format|
@@ -335,7 +335,7 @@ class EspeciesController < ApplicationController
               totales+= por_pagina*(bdi[:ultima]-1)
               fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
               totales+= fbu[:fotos].count if fbu[:estatus] == 'OK'
-              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) +1
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
         end  # End format html
