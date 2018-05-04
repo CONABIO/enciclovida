@@ -17,6 +17,11 @@ class String
     self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '\"').gsub("\t", ' ').strip.gsub(/\s+/,' ')
   end
 
+  # Para cuando se quiere consultar un web service
+  def limpia_ws
+    self.limpiar.limpia
+  end
+
   def limpia_csv
     return self unless self.present?
     self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '""').gsub("\t", ' ').strip.gsub(/\s+/,' ')
@@ -45,11 +50,11 @@ class String
   end
 
   def estandariza
-    sin_acentos.parameterize
+    sin_acentos.limpia.parameterize.downcase
   end
 
   def sin_acentos
-    I18n.transliterate(self).strip.downcase
+    I18n.transliterate(self).strip
   end
 end
 

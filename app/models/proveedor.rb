@@ -9,22 +9,22 @@ class Proveedor < ActiveRecord::Base
   # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
     ficha = ficha_naturalista_api_nodejs
-    return ficha unless ficha[:estatus] == 'OK'
+    return ficha unless ficha[:estatus]
 
     resultado = ficha[:ficha]['results'].first
     fotos = resultado['taxon_photos']
-    {estatus: 'OK', fotos: fotos}
+    {estatus: true, fotos: fotos}
   end
 
   # Todos los nombres comunes de la ficha de naturalista
   def nombres_comunes_naturalista
     ficha = ficha_naturalista_api
-    return ficha unless ficha[:estatus] == 'OK'
+    return ficha unless ficha[:estatus]
 
     nombres_comunes = ficha[:ficha]['taxon_names']
     # Pone en la primera posicion el deafult_name
     nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: 'OK', nombres_comunes: nombres_comunes}
+    {estatus: true, nombres_comunes: nombres_comunes}
   end
 
   # Consulta la fihca de naturalista por medio de su API nodejs
@@ -32,18 +32,18 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
       resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
       ficha = JSON.parse(resp)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: 'OK', ficha: ficha}
+    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
+    return {estatus: true, ficha: ficha}
   end
 
   # Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
@@ -51,18 +51,18 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
       resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
       ficha = JSON.parse(resp)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
-    return {estatus: 'OK', ficha: ficha}
+    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
+    return {estatus: true, ficha: ficha}
   end
 
   def geodatos
@@ -184,7 +184,7 @@ class Proveedor < ActiveRecord::Base
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     # Valida el paginado y los resultados

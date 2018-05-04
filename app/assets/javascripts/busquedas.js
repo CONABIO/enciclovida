@@ -66,6 +66,7 @@ var soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
     {
+        console.log(data);
         if (I18n.locale == 'es-cientifico')
         {
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
@@ -75,7 +76,7 @@ var soulmate_asigna = function(tipo_busqueda)
             if (data.nombre_comun == null)
                 var nombres = '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
             else
-                var nombres = '<b>' + firstToUpperCase(data.nombre_comun) + ' </b><sub>(' + data.lengua + ')</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+                var nombres = '<b>' + firstToUpperCase(data.nombre_comun) + ' </b><sub>' + data.lengua + '</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
 
             if (data.foto == null)
@@ -89,12 +90,15 @@ var soulmate_asigna = function(tipo_busqueda)
             var ev = '-ev-icon';
 
             $.each(data.cons_amb_dist, function(i, val){
-                if (val == 'no-endemica' || val =='actual'){return true}
-                iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
+                if (i == 'no-endemica' || i =='actual') return true;
+                iconos = iconos + "<span class='btn-title' tooltip-title='" + val + "'><i class='" + i + ev +"'></i></span>"
             });
 
-            if (data.geodatos != undefined && data.geodatos.length > 0){iconos = iconos + "<i class='glyphicon glyphicon-globe text-success' title='Tiene mapa'></i>"}
-            if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
+            if (data.geodatos != undefined && data.geodatos.length > 0)
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene datos geográficos'><i class='glyphicon glyphicon-globe'></i></span>";
+
+            if (data.fotos > 0)
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene imágenes'><i class='picture-ev-icon'></i><sub>" + data.fotos + "</sub></span>";
 
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
         }
