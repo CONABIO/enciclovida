@@ -19,7 +19,10 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  #before_action :servicios, only: [:show]
+  # Los servicios de estadisticas y cache, solo para el show
+  before_action only: [:show] do
+    @especie.servicios
+  end
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
@@ -626,8 +629,6 @@ class EspeciesController < ApplicationController
     rescue    #si no encontro el taxon
       render :_error and return
     end
-
-    @especie.servicios if params[:action] == 'show'  # Los servicios de estadisticas y cache, solo para el show
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
