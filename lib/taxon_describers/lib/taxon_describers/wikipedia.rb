@@ -3,7 +3,7 @@ module TaxonDescribers
   class Wikipedia < Base
     def describe(taxon)
       #title = taxon.wikipedia_title
-      title = taxon.nombre_cientifico# if title.blank?
+      title = taxon.nombre_cientifico.limpiar.limpia# if title.blank?
       decoded = ''
 
       begin
@@ -38,8 +38,8 @@ module TaxonDescribers
 
     def page_url(taxon)
       #wname = taxon.wikipedia_title
-      wname = taxon.nombre_cientifico.to_s.gsub(/\s+/, '_') if wname.blank?
-      URI.encode("http://en.wikipedia.org/wiki/#{wname}")
+      wname = taxon.nombre_cientifico.limpiar.limpia.to_s.gsub(/\s+/, '_') if wname.blank?
+      URI.encode("http://en.wikipedia.org/wiki/#{wname.limpiar.limpia}")
     end
 
     def self.describer_name

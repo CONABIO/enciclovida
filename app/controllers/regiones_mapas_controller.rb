@@ -1,7 +1,7 @@
 class RegionesMapasController < ApplicationController
   skip_before_filter :verify_authenticity_token, :set_locale
   before_action :set_region_mapa, only: [:show, :edit, :update, :destroy]
-  layout false, :only => [:dame_region]
+  layout false, :only => [:dame_tipo_region, :dame_ancestry]
 
   # GET /regiones_mapas
   # GET /regiones_mapas.json
@@ -63,54 +63,62 @@ class RegionesMapasController < ApplicationController
     end
   end
 
-  # Devuelve varias regiones o una región si es una hoja
-  def dame_region
+  # Devuelve varias regiones
+  def dame_tipo_region
     # Para la paginacion
     pagina = params[:pagina] ||= 1
     pagina = pagina.to_i
     por_pagina = 15
     offset = por_pagina*(pagina-1)
+    region_mapa = {}
 
-    if params[:id].present?
-      begin
-        set_region_mapa
+    begin
+      region_mapa[:estatus] = true
+      res = params[:tipo_region].camelize.constantize.campos_min.offset(offset).limit(por_pagina)
+      region_mapa[:resultados] = res.map do |r|
+        regiones = r.nombre_region.split(',')
+        estado = t("estados.#{regiones.last.estandariza}", default: regiones.last)
+        nombre_region = (regiones[0..-2].push(estado)).join(', ')
 
-        if @region_mapa.has_children?
-          @region_mapa = @region_mapa.children
-        end
-      rescue
-        error = true
+         {region_id: r.region_id.to_s.rjust(2,'0'), nombre_region: nombre_region, parent_id: r.try(:parent_id)}
       end
-
-    else  # La region a mostrar si da clic en alguna pestaña
-      if params[:tipo_region].present?
-        @region_mapa = RegionMapa.where(tipo_region: params[:tipo_region])
-      else
-        @region_mapa = RegionMapa.where(tipo_region: 'estado')
-      end
+    rescue
+      region_mapa[:estatus] = false
+      region_mapa[:msg] = "No existe nada con el tipo de región: #{params[:tipo_region]}"
     end
 
-    if @region_mapa
-      @region_mapa = @region_mapa.offset(offset).limit(por_pagina).order(nombre_region: :asc)
-    end
-
-    respond_to do |format|
-      format.html
-      format.json do
-        @res = {}
-
-        if error.blank?
-          @res[:estatus] = true
-          @res[:resultados] = @region_mapa
-        else
-          @res[:estatus] = false
-          @res[:msg] = "No existe una región con el ID: #{params[:id]}"
-        end
-
-        render json: @res
-      end
-    end
+    render json: region_mapa
   end
+
+  # Devuelve el geo_id e los ancestros para poder consultar el servicio de abraham
+  def dame_ancestry
+    resp = if params[:region_id].present?
+             begin
+               region = RegionMapa.find(params[:region_id])
+             rescue
+               region = RegionMapa.none
+             end
+
+             if region.present?
+               regiones = {}
+
+               region.path.each do |r|
+
+                 geo_id = r.tipo_region == 'municipio' ? r.geo_id.to_s.rjust(3,'0') : r.geo_id.to_s.rjust(2,'0')
+                 regiones[r.tipo_region] = geo_id
+               end
+
+               {estatus: true, regiones: regiones, tipo_region: region.tipo_region}
+             else
+               {estatus: false, msg: "No hay regiones con region_id = #{params[:region_id]}"}
+             end
+           else
+             {estatus: false, msg: 'El atributo "region_id" no esta presente'}
+           end
+
+    render json: resp
+  end
+
 
   private
 

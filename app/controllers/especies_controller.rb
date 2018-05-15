@@ -5,28 +5,26 @@ class EspeciesController < ApplicationController
   skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib]
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib]
+                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
     set_especie(true)
   end
 
-  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados]
-  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados] do
-    permiso = tiene_permiso?(2)  #TODO Minimo administrador (ajustar bien el permiso necesario)
-    render :_error unless permiso
-  end
+  before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
+
+  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] {tiene_permiso?('Administrador')}  # Minimo administrador
 
   before_action :servicios, only: [:show]
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :fotos_naturalista, :nombres_comunes_naturalista,
-                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista]
+                          :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
@@ -64,40 +62,50 @@ class EspeciesController < ApplicationController
           @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
         end
 
+        #para saber si es Ave TODO (parche feito)
+        if proveedor = @especie.proveedor
+          #@con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
+          @con_cornell = true
+        end
+
         # Para los comentarios
         @cuantos = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
       end
 
       format.json do
-        @especie[:geodata] = []
+        @especie.e_geodata = []
 
         if @especie.species_or_lower?
           if proveedor = @especie.proveedor
             geodatos = proveedor.geodatos
-            @especie[:geodata] = geodatos if geodatos[:cuales].any?
+            @especie.e_geodata = geodatos if geodatos[:cuales].any?
           end
         end
 
-        @especie[:nombre_comun_principal] = nil
-        @especie[:foto_principal] = nil
-        @especie[:nombres_comunes] = nil
+        @especie.e_nombre_comun_principal = nil
+        @especie.e_foto_principal = nil
+        @especie.e_nombres_comunes = nil
 
         if a = @especie.adicional
-          @especie[:nombre_comun_principal] = a.nombre_comun_principal
-          @especie[:foto_principal] = a.foto_principal
-          @especie[:nombres_comunes] = a.nombres_comunes
+          @especie.e_nombre_comun_principal = a.nombre_comun_principal
+          @especie.e_foto_principal = a.foto_principal
+          @especie.e_nombres_comunes = a.nombres_comunes
         end
 
-        @especie[:categoria_taxonomica] = @especie.categoria_taxonomica
-        @especie[:tipo_distribucion] = @especie.tipos_distribuciones
-        @especie[:estado_conservacion] = @especie.estados_conservacion
-        @especie[:bibliografia] = @especie.bibliografias
-        @especie[:fotos] = @especie.photos
+        @especie.e_categoria_taxonomica = @especie.categoria_taxonomica
+        @especie.e_tipo_distribucion = @especie.tipos_distribuciones
+        @especie.e_estado_conservacion = @especie.estados_conservacion
+        @especie.e_bibliografia = @especie.bibliografias
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
-        render json: @especie.to_json
+        render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
+                                                :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
+                                                :e_estado_conservacion, :e_bibliografia, :e_fotos])
       end
 
       format.pdf do
+        @photos = @especie.fotos_bdi[:fotos]
+
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
                         CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
@@ -130,14 +138,15 @@ class EspeciesController < ApplicationController
         FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
 
         render :pdf => @especie.nombre_cientifico.parameterize,
+               :object => @photos,
                #:save_to_file => pdf,
                #:save_only => true,
                :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
                :template => 'especies/show.pdf.erb'
-               #:encoding => 'UTF-8',
-               #:user_style_sheet => 'http://colibri.conabio.gob.mx:4000/assets/application.css'
-               #:print_media_type => false,
-               #:disable_internal_links => false,
+        #:encoding => 'UTF-8',
+        #:user_style_sheet => 'http://colibri.conabio.gob.mx:4000/assets/application.css'
+        #:print_media_type => false,
+        #:disable_internal_links => false,
       end
     end
   end
@@ -236,8 +245,8 @@ class EspeciesController < ApplicationController
     end
   end
 
-# DELETE /especies/1
-# DELETE /especies/1.json
+  # DELETE /especies/1
+  # DELETE /especies/1.json
   def destroy
     @especie.destroy
     bitacora=Bitacora.new(:descripcion => "Eliminó al taxón #{@especie.nombre_cientifico} (#{@especie.id})", :usuario_id => current_usuario.id)
@@ -292,7 +301,7 @@ class EspeciesController < ApplicationController
         categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
         where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
         where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
-        where(estatus: 2)
+    where(estatus: 2)
 
     taxones.each do |t|
       children_hash = hash_arbol_nodo(t)
@@ -378,6 +387,18 @@ class EspeciesController < ApplicationController
     else  # End estatus OK
       render :_error and return
     end
+  end
+
+  #servicio Macaulay Library (eBird)
+  def media_cornell
+    type = params['type']
+    page = params['page']
+    #@especie = Especie.find(params['id']) #no necesito pasar @especie a la vista
+    taxonNC = Especie.find(params['id']).nombre_cientifico
+    mc = MacaulayService.new
+    @array = mc.dameMedia_nc(taxonNC, type, page)
+
+    render :locals => {type: type, page: page}
   end
 
   def fotos_naturalista
@@ -621,6 +642,25 @@ class EspeciesController < ApplicationController
     end
   end
 
+  def cambia_id_naturalista
+    new_id = params[:new_url].gsub(/\D/, '').to_i
+    if p = @especie.proveedor
+      # existe proveedor'
+      p.naturalista_id = new_id
+    else
+      # NO existe proveedor
+      p = @especie.proveedor.new({naturalista_id: new_id})
+    end
+
+    if p.changed? && p.save
+      # 'cambio, y salvó
+      @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
+      redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
+    else
+      # no cambio y no salvó
+      redirect_to especie_path(@especie), notice: 'No se logro el cambio, el id era el mismo, hubo un error en la url proporcionada, contactar programadores con pantallazo.'
+    end
+  end
 
   private
 
@@ -663,8 +703,8 @@ class EspeciesController < ApplicationController
 
   # Suma una visita a la estadisticas
   def suma_visita
-    # Me aseguro que viene de la ficha, para poner el contador
-    if params[:action] == 'show'
+    # Me aseguro que viene de la ficha, para poner el contador y que es solo del formato html
+    if params[:action] == 'show' && request.format.html?
       if Rails.env.production?
         @especie.delay(queue: 'estadisticas').suma_visita
       else
@@ -705,7 +745,7 @@ class EspeciesController < ApplicationController
     end
   end
 
-# Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow the white list through.
   def especie_params
     params.require(:especie).permit(:nombre, :estatus, :fuente, :nombre_autoridad, :numero_filogenetico,
                                     :cita_nomenclatural, :sis_clas_cat_dicc, :anotacion, :categoria_taxonomica_id, :parent_id,

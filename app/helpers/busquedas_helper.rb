@@ -13,7 +13,7 @@ module BusquedasHelper
   def radioGruposIconicos
     radios = ''
     ir=%w(Animalia Plantae Fungi Prokaryotae Protoctista)
-    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontida Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+    ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
     ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
     reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
@@ -21,9 +21,8 @@ module BusquedasHelper
     plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => ip)
 
     def arma_span(taxon)
-      "<label>#{radio_button_tag('id', taxon.id, false)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
+      "<label>#{radio_button_tag('', taxon.id, false, id: nil)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
     end
-
 
     radios << '<h6><strong>Reinos</strong></h6>'
     reinos.each do |taxon|  # Para tener los grupos ordenados
@@ -45,11 +44,12 @@ module BusquedasHelper
   end
 
   # Filtros para Categorías de riesgo y comercio internacional
-  def checkboxEstadoConservacion
+  def checkboxEstadoConservacion(explora_por=false)
     checkBoxes=''
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes << "<h6><strong>#{t(k)}</strong><h6>"
+      checkBoxes << "<div class='explora_por'>" if explora_por
+      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" unless explora_por
       valores.each do |edo|
         next if edo == 'Riesgo bajo (LR): Dependiente de conservación (cd)' # Esta no esta definida en IUCN, checar con Diana
         checkBoxes << "<label>"
@@ -59,6 +59,8 @@ module BusquedasHelper
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
+      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" if explora_por
+      checkBoxes << "</div>" if explora_por
     end
 
     checkBoxes.html_safe
