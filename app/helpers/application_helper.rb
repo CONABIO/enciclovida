@@ -159,10 +159,21 @@ module ApplicationHelper
   end
 
   def icono_globo
-    "<i class='globe-ev-icon'></i>".html_safe
+    "<i class='glyphicon glyphicon-globe'></i>".html_safe
   end
 
   def icono_descarga
     "<i class='glyphicon glyphicon-save'></i>".html_safe
+  end
+
+  def tiene_permiso?(nombre_rol)
+    return false  unless usuario_signed_in? #con esto aseguramos que el usuario ya inicio sesión
+    roles_usuario = current_usuario.usuario_roles.map(&:rol)
+    return true if roles_usuario.map(&:depth).any?{|d| d < 1}
+    rol = Rol.find_by_nombre_rol(nombre_rol)
+    #Revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
+    return false unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.path_ids).any?
+
+    return true
   end
 end

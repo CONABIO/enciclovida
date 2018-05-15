@@ -40,7 +40,7 @@
 #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
   margin-top: -1px;
 }
-.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important;}
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
 #busqueda_basica{
   margin-top: 14px;
 }
@@ -128,19 +128,24 @@ footer.legal p {
   font-size: 3em;
   color: #f7f7f7;
 }
-.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_blanco-ev-icon:before{
+.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 4.5em;
+  font-size: 4em;
   width: 2em !important;
 }
+
+.media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{font-size: 3em;min-width: 4em!important;}
+
+div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{font-size: 2em;min-width: 9em!important;}
+
+.cornell_lab_colors-ev-icon:before{margin-left: -9.25em; color: #E60000; content: '\e86e';}
+.cornell_lab_colors-ev-icon:after{margin-left: -9.25em; color: #F5E614; content: '\e86f';}
+
+.media-supplier div{margin-bottom: 10px;}
+
 .ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
-.enciclo-ev-icon:before, .conabio_blanco-ev-icon:before{
-  color: #fdfdfd;
-}
-.vida-ev-icon:before{
-  color: #889b45;
-}
-.vida-ev-icon:before{margin-left: -2em;}
+.enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
+.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
 .ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
@@ -166,7 +171,7 @@ ul.social-buttons li a:active {
 
 /* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
 #pestañas{
-  background-color: transparent;
+  /*background-color: transparent;*/
 }
 .panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
   border-left: 1px solid #d3d3d3;
@@ -180,11 +185,11 @@ ul.social-buttons li a:active {
   background-color: #ececec;
 }
 .panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
-  filter: drop-shadow(5px -5px 4px #cecece)
+  /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
   background-color: #ececec;
-  padding: 1.5em;
+  /*padding: 1.5em;*/
   margin-top: -1px;
   border-left: 1px solid #d3d3d3;
   filter: drop-shadow(5px 5px 5px #cecece)
@@ -251,7 +256,7 @@ ul.social-buttons li a:active {
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
 
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -269,30 +274,30 @@ ul.social-buttons li a:active {
 }
 
 /*TODO tengo entendido esto debería estar en especies.scss*/
-#fotos-bdi{
+.media-tabs{
     text-align: center;
 }
-#fotos-bdi div.result-img-container{
+.media-tabs div.result-img-container{
   display: inline-block;
   overflow: hidden;
   max-width: 100%;
   margin: 0px;
   position: relative;
 }
-#fotos-bdi div.result-img-container img{
-  max-height: 300px;
-  margin: -25px;
+.media-tabs div.result-img-container img{
+  max-height: 210px;
+  margin: -20px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
   vertical-align: middle;
-  font-size: 3.75em;
 }
-#fotos-bdi div.result-img-container img:hover{
-  transform:scale(.8);
-  -ms-transform:scale(.8); /* IE 9 */
-  -moz-transform:scale(.8); /* Firefox */
-  -webkit-transform:scale(.8); /* Safari and Chrome */
-  -o-transform:scale(.8); /* Opera */
+.media-tabs div.result-img-container.cornell-audios img{max-height: 180px;}
+.media-tabs div.result-img-container img:hover{
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
 }
-#fotos-bdi div.result-img-container a{
+.media-tabs div.result-img-container a{
   cursor: pointer;
 }

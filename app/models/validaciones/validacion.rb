@@ -1,7 +1,5 @@
 # Modelo sin tabla, solo para automatizar la validacion de archivos excel
-class Validacion < ActiveRecord::Base
-
-  belongs_to :usuario
+class Validacion
 
   # El excel que subio, la cabecera del excel, la fila en cuestion del excel y la respuesta de alguna consulta, y el excel de respuesta
   attr_accessor :nombre_cientifico, :archivo_copia, :correo, :excel_url, :nombre_archivo, :sheet, :recurso_validado, :cabecera, :validacion
@@ -39,15 +37,15 @@ class Validacion < ActiveRecord::Base
     else
       puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
-      nombres = nombre_cientifico.limpiar.downcase.split(' ')
+      nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
       taxones = if nombres.length == 2  # Especie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
-              elsif nombres.length == 3  # Infraespecie
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
-              elsif nombres.length == 1 # Genero o superior
-                Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
-              end
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
+                elsif nombres.length == 3  # Infraespecie
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+                elsif nombres.length == 1 # Genero o superior
+                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
+                end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
         self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}

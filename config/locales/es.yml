@@ -317,6 +317,44 @@ es:
         one: No se pudo guardar este/a %{model} porque se encontró 1 error
         other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
   este_taxon_no_tiene: Esta especie o grupo no tiene una foto predeterminada
+  estados:
+    aguascalientes: Aguascalientes
+    baja_california: Baja California
+    baja_california_sur: Baja California Sur
+    campeche: Campeche
+    chiapas: Chiapas
+    chihuahua: Chihuahua
+    coahuila: Coahuila
+    coahuila_de_zaragoza: Coahuila
+    colima: Colima
+    distrito_federal: Ciudad de México
+    durango: Durango
+    guanajuato: Guanajuato
+    guerrero: Guerrero
+    hidalgo: Hidalgo
+    jalisco: Jalisco
+    mexico: Estado de México
+    estado_de_mexico: Estado de México
+    michoacan: Michoacán
+    michoacan_de_ocampo: Michoacán
+    morelos: Morelos
+    nayarit: Nayarit
+    nuevo_leon: Nuevo León
+    oaxaca: Oaxaca
+    puebla: Puebla
+    queretaro: Querétaro
+    queretaro_de_arteaga: Querétaro
+    quintana_roo: Quintana Roo
+    san_luis_potosi: San Luis Potosí
+    sinaloa: Sinaloa
+    sonora: Sonora
+    tabasco: Tabasco
+    tamaulipas: Tamaulipas
+    tlaxcala: Tlaxcala
+    veracruz: Veracruz
+    veracruz_de_ignacio_de_la_llave: Veracruz
+    yucatan: Yucatán
+    zacatecas: Zacatecas
   helpers:
     label:
       usuario:

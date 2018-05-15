@@ -284,16 +284,13 @@ class BusquedasController < ApplicationController
   end
 
   def avanzada
-    condiciones = []
-    joins = []
-    busqueda = 'Especie.datos_basicos'
+    busqueda = Especie.categoria_taxonomica_join
 
     conID = params[:id]
 
     # Para hacer la condicion con el nombre_comun
     if conID.blank? && params[:nombre].present?
-      condiciones << ".caso_nombre_comun_y_cientifico(\"#{params[:nombre].limpia_sql}\")"
-      joins << '.nombres_comunes_join'
+      busqueda = busqueda.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
     end
 
     # Parte de la categoria taxonomica
@@ -301,64 +298,31 @@ class BusquedasController < ApplicationController
       taxon = Especie.find(conID)
 
       if taxon.is_root?
-        condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}\")"
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
       else
         ancestros = taxon.ancestry_ascendente_directo
-        condiciones << ".where(\"ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})\")"
+        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
       end
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      condiciones << ".where(\"CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'\")"
+      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
     end
 
     # Parte del estatus
     if I18n.locale.to_s == 'es-cientifico'
-      # Si escogio uno lo pone, si escogio los dos es como no poner esta condicion
-      if params[:estatus].present? && params[:estatus].length == 1
-        condiciones << ".where('estatus=#{params[:estatus].first}')"
-      end
+      busqueda = busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
     else  # En la busqueda general solo el valido
-      condiciones << ".where('estatus=2')"
+      busqueda = busqueda.where(estatus: 2)
     end
 
-    # Parte del tipo de ditribucion
-    if params[:dist].present?
-      #######################  Quitar cuando se arregle en la base
-      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        condiciones << ".where('especies.invasora IS NOT NULL')"
-      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
-        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        joins << '.tipo_distribucion_join'
-        condiciones << ".where(\"tipos_distribuciones.descripcion IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL\")"
-      else  # Selecciono cualquiera menos invasora
-        joins << '.tipo_distribucion_join'
-        condiciones << ".caso_rango_valores('tipos_distribuciones.descripcion', \"'#{params[:dist].join("','")}'\")"
-      end
-      #######################
-    end
-
-    # Parte del edo. de conservacion
-    if params[:edo_cons].present?
-      joins << '.catalogos_join'
-      condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:edo_cons].join("','")}'\")"
-    end
-
-    # Para las especies prioritarias
-    if params[:prior].present?
-      joins << '.catalogos_join'
-      condiciones << ".caso_rango_valores('catalogos.descripcion', \"'#{params[:prior].join("','")}'\")"
-    end
+    # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
+    busqueda = Busqueda.filtros_default(busqueda, params)
 
     # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
     # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
     if params[:solo_categoria]
-      condiciones << ".where(\"nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI\")"
+      busqueda = busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
     end
-
-    # Quita las condiciones y los joins repetidos
-    condiciones_unicas = condiciones.uniq.join('')
-    joins_unicos = joins.uniq.join('')
-    busqueda << joins_unicos << condiciones_unicas      #pone el query basico armado
 
     # Para sacar los resultados por categoria
     @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
@@ -366,16 +330,15 @@ class BusquedasController < ApplicationController
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
 
-    @totales = eval(busqueda.gsub('datos_basicos','datos_count'))[0].totales
+    @totales = busqueda.datos_count[0].totales
 
     if @totales > 0
 
       if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        @taxones = Busqueda.por_arbol(busqueda)
-
+        @taxones = busqueda.datos_arbol_con_filtros
         checklist
       else
-        query = eval(busqueda).distinct.to_sql
+        query = busqueda.datos_basicos.distinct.to_sql
         consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
         @taxones = Especie.find_by_sql(consulta)
 
@@ -453,7 +416,6 @@ class BusquedasController < ApplicationController
   end
 
   def descargar_taxa_excel(busqueda=nil)
-
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
@@ -487,7 +449,7 @@ class BusquedasController < ApplicationController
         if basica
           taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
         else  # Para la avanzada
-          query = eval(busqueda).distinct.to_sql
+          query = busqueda.distinct.to_sql
           consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
           taxones = Especie.find_by_sql(consulta)
         end
@@ -503,15 +465,15 @@ class BusquedasController < ApplicationController
 
       else  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
         if con_correo
-          if Rails.env.production?
-            # el nombre de la lista es cuando la solicito? y el correo
-            lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+          # el nombre de la lista es cuando la solicito? y el correo
+          lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
+          if Rails.env.production?
             if basica
               opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
+              lista.delay(queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
             else
-              lista.delay(:priority => 2, queue: 'descargar_taxa').to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]}) if lista.save
+              lista.delay(queue: 'descargar_taxa').to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
             end
 
           else  # Para develpment o test
@@ -519,7 +481,7 @@ class BusquedasController < ApplicationController
               opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
               lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
             else
-              lista.to_excel({busqueda: busqueda, avanzada: true, correo: params[:correo]})
+              lista.to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
             end
           end
 
