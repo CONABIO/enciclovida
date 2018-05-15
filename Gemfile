@@ -25,7 +25,7 @@ gem 'jquery-rails', '~> 3.1.3'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'magick-metadata'  # maneja metadatos
 gem 'mime-types', '1.25.1'
-gem 'mysql2'
+gem 'mysql2', '0.3.17'
 gem 'nokogiri'  # hacer un parse con xml
 gem 'pg', '0.21.0'
 gem 'rack-contrib'
