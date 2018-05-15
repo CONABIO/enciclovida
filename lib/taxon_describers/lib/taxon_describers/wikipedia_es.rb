@@ -12,7 +12,7 @@ module TaxonDescribers
 
     def page_url(taxon)
       #"http://es.wikipedia.org/wiki/#{taxon.wikipedia_title || taxon.name}"
-      "http://es.wikipedia.org/wiki/#{taxon.nombre_cientifico}"
+      "http://es.wikipedia.org/wiki/#{taxon.nombre_cientifico.limpiar.limpia}"
     end
   end
 

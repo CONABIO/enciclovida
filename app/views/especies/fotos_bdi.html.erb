@@ -1,23 +1,40 @@
-<% if @pagina.blank? && @fotos.any? %>
-    <div class="text-center paginado_1"></div>
-<% end %>
 
-<% if @fotos.any? %>
-    <div id="paginado_fotos">
-      <% @fotos.each do |foto| %>
-          <div class="result-img-container" id="fotos_paginado_container">
-            <%= link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank %>
-          </div>
-      <% end %>
+<div id="paginado_fotos">
+
+	<% if @pagina.blank? && @fotos.any? %>
+	  <div class="text-center paginado_1"></div>
+	<% end %>
+  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 media-supplier">
+	  <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+	    <i class ='conabio_completo-ev-icon'></i>
+	  </div>
+    <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+      <i class ='bdi-ev-icon'></i>
     </div>
-<% else %>
-    Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
-<% end %>
+    <div class="col-xs-12 col-sm-2 col-md-2 col-md-offset-2 col-lg-3 col-lg-offset-9">
+      <span class='glyphicon glyphicon-camera' aria-hidden='true'></span>
+    </div>
+  </div>
 
-<% if @pagina.blank? && @fotos.any? %>
-    <div class="text-center paginado_2"></div>
+  <% if @fotos.any? %>
+    <% @fotos.each do |foto| %>
+      <div class="result-img-container">
+        <%= link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
+		</p>
+  <% end %>
 
-    <script>
-        paginado_fotos(<%= @paginas || 1 %>, 1);
-    </script>
-<% end %>
+
+
+	<% if @pagina.blank? && @fotos.any? %>
+	  <div class="text-center paginado_2"></div>
+
+	  <script>
+		  paginado_fotos(<%= @paginas || 1 %>, 1);
+	  </script>
+	<% end %>
+
+</div>

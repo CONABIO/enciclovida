@@ -21,12 +21,10 @@ class Catalogo < ActiveRecord::Base
 
       edo_conservacion = Catalogo.where(:nivel1 => nivel1, :nivel2 => nivel2, :nivel3 => 0).where(:id => id_inferior..id_superior).first   #el nombre del edo. de conservacion
       edo_conservacion ? edo_conservacion.descripcion : nil
-
     else
       nil
     end
   end
-
 
   # Saco el nombre del ambiente ya que al unir los catalogos, los nombres aveces no coinciden
   def ambiente

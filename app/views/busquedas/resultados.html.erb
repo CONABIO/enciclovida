@@ -1,300 +1,300 @@
 <%= javascript_include_tag 'scrolling', 'data-turbolinks-track' => true %>
 
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-	// Para validar el correo
-	function isValidEmailAddress(emailAddress) {
-		var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-		return pattern.test(emailAddress);
-	};
+    // Para validar el correo
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    };
 
-	// Hacemos un set de todas las posibles tabs que podria haber, para
-	// que conserve el paginado con el scrolling
-	offset = {
-		clase:          2,
-		cohorte:        2,
-		division:       2,
-		eplicalse:      2,
-		especie:        2,
-		estirpe:        2,
-		familia:        2,
-		forma:          2,
-		genero:         2,
-		grado:          2,
-		grupo:          2,
-		grupo_especies: 2,
-		hiporden:       2,
-		infraclase:     2,
-		infraorden:     2,
-		infraphylum:    2,
-		orden:          2,
-		parvorden:      2,
-		phylum:         2,
-		raza:           2,
-		reino:          2,
-		seccion:        2,
-		serie:          2,
-		subclase:       2,
-		subdivision:    2,
-		subespecie:     2,
-		subfamilia:     2,
-		subforma:       2,
-		subgenero:      2,
-		subgrupo:       2,
-		suborden:       2,
-		subphylum:      2,
-		subreino:       2,
-		subseccion:     2,
-		subserie:       2,
-		subtribu:       2,
-		subvariedad:    2,
-		superclase:     2,
-		superfamilia:   2,
-		superorden:     2,
-		superphylum:    2,
-		superseccion:   2,
-		supertribu:     2,
-		tribu:          2,
-		variedad:       2,
-		todos:          2
-	};
+    // Hacemos un set de todas las posibles tabs que podria haber, para
+    // que conserve el paginado con el scrolling
+    offset = {
+        clase:          2,
+        cohorte:        2,
+        division:       2,
+        eplicalse:      2,
+        especie:        2,
+        estirpe:        2,
+        familia:        2,
+        forma:          2,
+        genero:         2,
+        grado:          2,
+        grupo:          2,
+        grupo_especies: 2,
+        hiporden:       2,
+        infraclase:     2,
+        infraorden:     2,
+        infraphylum:    2,
+        orden:          2,
+        parvorden:      2,
+        phylum:         2,
+        raza:           2,
+        reino:          2,
+        seccion:        2,
+        serie:          2,
+        subclase:       2,
+        subdivision:    2,
+        subespecie:     2,
+        subfamilia:     2,
+        subforma:       2,
+        subgenero:      2,
+        subgrupo:       2,
+        suborden:       2,
+        subphylum:      2,
+        subreino:       2,
+        subseccion:     2,
+        subserie:       2,
+        subtribu:       2,
+        subvariedad:    2,
+        superclase:     2,
+        superfamilia:   2,
+        superorden:     2,
+        superphylum:    2,
+        superseccion:   2,
+        supertribu:     2,
+        tribu:          2,
+        variedad:       2,
+        todos:          2
+    };
 
-	// El valor del offset, paginado, url inicial y la categoria en la que se encuentra
-	settings.cat = 'todos';
-	settings.offset = offset.todos;
-	settings.url = "<%= request.url %>";
-	settings.url_original = "<%= request.url %>";
-	settings.nop = <%= params[:por_pagina].to_i || Busqueda::POR_PAGINA_PREDETERMINADO %>;
-	settings.nivel = '';
+    // El valor del offset, paginado, url inicial y la categoria en la que se encuentra
+    settings.cat = 'todos';
+    settings.offset = offset.todos;
+    settings.url = "<%= request.url %>";
+    settings.url_original = "<%= request.url %>";
+    settings.nop = <%= params[:por_pagina].to_i || Busqueda::POR_PAGINA_PREDETERMINADO %>;
+    settings.nivel = '';
 
-	$(document).ready(function()
-	{
-		POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
-		//Variable globar para poder saber cuales datos descargar
-		datos_descarga = {};
-		datos_descarga.url = "<%= request.url %>";
-		datos_descarga.cuantos = <%= @totales %>;
+    $(document).ready(function()
+    {
+        POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
+        //Variable globar para poder saber cuales datos descargar
+        datos_descarga = {};
+        datos_descarga.url = "<%= request.url %>";
+        datos_descarga.cuantos = <%= @totales %>;
 
-		$('#pestañas').tabs(); // Inicia los tabs
+        $('#pestañas').tabs(); // Inicia los tabs
 
-		scrolling_page("#resultados", settings.nop, settings.url);
+        scrolling_page("#resultados", settings.nop, settings.url);
 
-		/**
-		 *  Carga los taxones de la categoria dada
-		 **/
-		$("[id^='nivel_']").click(function ()
-		{
-			var nivel = $(this).attr('id').substring(6);
-			var id_div = '#' + $(this).attr('id_div');
-			var url = $(this).attr('url') + '&solo_categoria=' + nivel;
+        /**
+         *  Carga los taxones de la categoria dada
+         **/
+        $("[id^='nivel_']").click(function ()
+        {
+            var nivel = $(this).attr('id').substring(6);
+            var id_div = '#' + $(this).attr('id_div');
+            var url = $(this).attr('url') + '&solo_categoria=' + nivel;
 
-			if (nivel == '')  // tab default
-			{
-				datos_descarga.url = "<%= request.url %>";
-				datos_descarga.cuantos = <%= @totales %>;
+            if (nivel == '')  // tab default
+            {
+                datos_descarga.url = "<%= request.url %>";
+                datos_descarga.cuantos = <%= @totales %>;
 
-			} else {
-				$.each(POR_CATEGORIA, function (index, value) {
-					if (value.nombre_categoria_taxonomica == nivel) {
-						datos_descarga.url = value.url;
-						datos_descarga.cuantos = value.cuantos;
-					}
-				});
-			}
+            } else {
+                $.each(POR_CATEGORIA, function (index, value) {
+                    if (value.nombre_categoria_taxonomica == nivel) {
+                        datos_descarga.url = value.url;
+                        datos_descarga.cuantos = value.cuantos;
+                    }
+                });
+            }
 
-			if (datos_descarga.cuantos > 200)
-			{
-				$('#boton_enviar_descarga').attr('disabled','disabled');
-				$('#correo').show();
-				$('#label_correo').show();
+            if (datos_descarga.cuantos > 200)
+            {
+                $('#boton_enviar_descarga').attr('disabled','disabled');
+                $('#correo').show();
+                $('#label_correo').show();
 
-			} else {
-				$('#boton_enviar_descarga').removeAttr('disabled');
-				$('#correo').hide();
-				$('#label_correo').hide();
-			}
+            } else {
+                $('#boton_enviar_descarga').removeAttr('disabled');
+                $('#correo').hide();
+                $('#label_correo').hide();
+            }
 
-			// Es cero ya que cuenta los espacios en el div ***
-			// No mover la linea del div donde pone el tab shalalala
-			if ($(id_div).html().length == 0)
-				$(id_div).load(url);
+            // Es cero ya que cuenta los espacios en el div ***
+            // No mover la linea del div donde pone el tab shalalala
+            if ($(id_div).html().length == 0)
+                $(id_div).load(url);
 
-			settings.offset = eval("offset."+$(this).attr('id_div'));
-			settings.cat = $(this).attr('id_div');
-			settings.nivel = nivel;
+            settings.offset = eval("offset."+$(this).attr('id_div'));
+            settings.cat = $(this).attr('id_div');
+            settings.nivel = nivel;
 
-			if (settings.nivel == '')
-				settings.url = settings.url_original;
-			else
-				settings.url = settings.url_original + "&solo_categoria=" + nivel;
-		});
+            if (settings.nivel == '')
+                settings.url = settings.url_original;
+            else
+                settings.url = settings.url_original + "&solo_categoria=" + nivel;
+        });
 
-		$(document).on('click', "#box_especie", function()
-		{
-			checaCaja = $(this).is(":checked") ? true : false
-			if (checaCaja)
-			{
-				$(":input[class='especies']").prop("checked", true);
-			} else {
-				$(":input[class='especies']").prop("checked", false);
-			}
-		});
+        $(document).on('click', "#box_especie", function()
+        {
+            checaCaja = $(this).is(":checked") ? true : false
+            if (checaCaja)
+            {
+                $(":input[class='especies']").prop("checked", true);
+            } else {
+                $(":input[class='especies']").prop("checked", false);
+            }
+        });
 
-		$("#muestra_listas").click(function ()
-		{
-			$('#widget_listas').slideToggle("fast", function(){
-				if ($(this).html().length == 0)
-				{
-					$.ajax({
-						url: "/listas/dame_listas",
-						type: 'POST'
-					}).done(function(html) {
-						$('#widget_listas').html(html);
-					}).fail(function(){
-						$('#widget_listas').html('<h4>Hubo un error al cargar los datos.</h4>');
-					});
-				}
-			});
-			return false;
-		});
+        $("#muestra_listas").click(function ()
+        {
+            $('#widget_listas').slideToggle("fast", function(){
+                if ($(this).html().length == 0)
+                {
+                    $.ajax({
+                        url: "/listas/dame_listas",
+                        type: 'POST'
+                    }).done(function(html) {
+                        $('#widget_listas').html(html);
+                    }).fail(function(){
+                        $('#widget_listas').html('<h4>Hubo un error al cargar los datos.</h4>');
+                    });
+                }
+            });
+            return false;
+        });
 
-		// Para validar en vivo el correo
-		$(document).on('keyup', '#correo', function(){
-			if( !isValidEmailAddress($(this).val()) )
-			{
-				$(this).parent().addClass("has-error");
-				$(this).parent().removeClass("has-success");
+        // Para validar en vivo el correo
+        $(document).on('keyup', '#correo', function(){
+            if( !isValidEmailAddress($(this).val()) )
+            {
+                $(this).parent().addClass("has-error");
+                $(this).parent().removeClass("has-success");
 
-				$(this).siblings("span:first").addClass("glyphicon-remove");
-				$(this).siblings("span:first").removeClass("glyphicon-ok");
-				$('#boton_enviar_descarga').attr('disabled', 'disabled')
-			} else {
-				$(this).parent().removeClass("has-error");
-				$(this).parent().addClass("has-success");
-				$(this).siblings("span:first").addClass("glyphicon-ok");
-				$(this).siblings("span:first").removeClass("glyphicon-remove");
-				$('#boton_enviar_descarga').removeAttr('disabled')
-			}
-		});
+                $(this).siblings("span:first").addClass("glyphicon-remove");
+                $(this).siblings("span:first").removeClass("glyphicon-ok");
+                $('#boton_enviar_descarga').attr('disabled', 'disabled')
+            } else {
+                $(this).parent().removeClass("has-error");
+                $(this).parent().addClass("has-success");
+                $(this).siblings("span:first").addClass("glyphicon-ok");
+                $(this).siblings("span:first").removeClass("glyphicon-remove");
+                $('#boton_enviar_descarga').removeAttr('disabled')
+            }
+        });
 
-		// Para validar una ultima vez cuando paso la validacion del boton
-		$(document).on('click', '#boton_enviar_descarga', function(){
-			var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
+        // Para validar una ultima vez cuando paso la validacion del boton
+        $(document).on('click', '#boton_enviar_descarga', function(){
+            var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
 
-			// No datos mayores a 200
-			if (datos_descarga.cuantos > 200)
-			{
-				var correo = $('#correo').val();
+            // No datos mayores a 200
+            if (datos_descarga.cuantos > 200)
+            {
+                var correo = $('#correo').val();
 
-				if(isValidEmailAddress(correo))
-				{
-					$.ajax({
-						url: url_xlsx + "&correo=" + correo,
-						type: 'GET',
-						dataType: "json"
-					}).done(function(resp) {
-						if (resp.estatus == 1)
-						{
-							$('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
-						} else {
-							$('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-						}
+                if(isValidEmailAddress(correo))
+                {
+                    $.ajax({
+                        url: url_xlsx + "&correo=" + correo,
+                        type: 'GET',
+                        dataType: "json"
+                    }).done(function(resp) {
+                        if (resp.estatus == 1)
+                        {
+                            $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
+                        } else {
+                            $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                        }
 
-					}).fail(function(){
-						$('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-					});
+                    }).fail(function(){
+                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    });
 
-				} else {
-					return false;
-				}
-			} else {
-				window.location.replace(url_xlsx);
-				$('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
-			}
-		});
-	});
+                } else {
+                    return false;
+                }
+            } else {
+                window.location.replace(url_xlsx);
+                $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
+            }
+        });
+    });
 </script>
 
 <% content_for(:title) do %>
-  <%= @titulo='Resultados' %>
+    <%= @titulo='Resultados' %>
 <% end %>
 <%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+    <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
 <%- end -%>
 
 <% if notice.present? %>
-  <div class="alert alert-warning" role="alert"><%= notice %></div>
+    <div class="alert alert-warning" role="alert"><%= notice %></div>
 <% end %>
 
 <% if @fuzzy_match.present? %>
-  <div class="alert alert-success">
-    <strong><%= @fuzzy_match %></strong>
-  </div>
+    <div class="alert alert-success">
+      <strong><%= @fuzzy_match %></strong>
+    </div>
 <% end %>
 
 <div id="resultados-container" class="<%= 'state-one' if params[:busqueda]=='avanzada' %>">
   <div class="row">
     <% if params[:busqueda]=='avanzada' %>
-      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>
+        <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>
     <% end %>
     <button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#myModal">
       Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
     </button>
     <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
-      <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
-        Listado para Revisión (✓)
-      </button>
+        <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
+          Listado para Revisión (✓)
+        </button>
     <% end %>
   </div>
   <hr />
   <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
-    <%= render :file => 'busquedas/avanzada' %>
-    <script type="text/javascript">
-	    $(document).ready(function(){
+      <%= render :file => 'busquedas/avanzada' %>
+      <script type="text/javascript">
+          $(document).ready(function(){
 
-		    var SET_PARAMS = <%=raw @setParams.to_json %>;
+              var SET_PARAMS = <%=raw @setParams.to_json %>;
 
-		    // Escogio de grupo iconico
-		    if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
-			    $('#id_' + SET_PARAMS.id).prop('checked', true);
-		    else if (SET_PARAMS.nombre != undefined) {
-			    por_nombre();
-			    $('#nombre').val(SET_PARAMS.nombre);
-		    }
+              // Escogio de grupo iconico
+              if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
+                  $('#id_' + SET_PARAMS.id).prop('checked', true);
+              else if (SET_PARAMS.nombre != undefined) {
+                  por_nombre();
+                  $('#nombre').val(SET_PARAMS.nombre);
+              }
 
-		    if (SET_PARAMS.id != undefined)
-			    $('#id').val(SET_PARAMS.id);
-		    if (SET_PARAMS.por_pagina != undefined)
-			    $('#por_pagina').val(SET_PARAMS.por_pagina);
-		    if (SET_PARAMS.dist != undefined)
-		    {
-			    SET_PARAMS.dist.forEach(function(valor){
-				    $('#dist_' + valor).prop('checked', true);
-			    });
-		    }
-		    if (SET_PARAMS.edo_cons != undefined)
-		    {
-			    SET_PARAMS.edo_cons.forEach(function(valor){
-				    $('#edo_cons_' + valor).prop('checked', true);
-			    });
-		    }
-		    if (SET_PARAMS.prior != undefined)
-		    {
-			    SET_PARAMS.prior.forEach(function(valor){
-				    $('#prior_' + valor).prop('checked', true);
-			    });
-		    }
-		    if (SET_PARAMS.estatus != undefined)
-		    {
-			    SET_PARAMS.estatus.forEach(function(valor){
-				    $('#estatus_' + valor).prop('checked', true);
-			    });
-		    }
+              if (SET_PARAMS.id != undefined)
+                  $('#id').val(SET_PARAMS.id);
+              if (SET_PARAMS.por_pagina != undefined)
+                  $('#por_pagina').val(SET_PARAMS.por_pagina);
+              if (SET_PARAMS.dist != undefined)
+              {
+                  SET_PARAMS.dist.forEach(function(valor){
+                      $('#dist_' + valor).prop('checked', true);
+                  });
+              }
+              if (SET_PARAMS.edo_cons != undefined)
+              {
+                  SET_PARAMS.edo_cons.forEach(function(valor){
+                      $('#edo_cons_' + valor).prop('checked', true);
+                  });
+              }
+              if (SET_PARAMS.prior != undefined)
+              {
+                  SET_PARAMS.prior.forEach(function(valor){
+                      $('#prior_' + valor).prop('checked', true);
+                  });
+              }
+              if (SET_PARAMS.estatus != undefined)
+              {
+                  SET_PARAMS.estatus.forEach(function(valor){
+                      $('#estatus_' + valor).prop('checked', true);
+                  });
+              }
 
-		    <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
-		    cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
-		    <% end %>
-	    });
-    </script>
+              <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+              cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+              <% end %>
+          });
+      </script>
   <% end %>
 
   <div id="pestañas" class="panel">
@@ -304,15 +304,15 @@
       </li>
 
       <% if @por_categoria.present? && @por_categoria.length > 0 %>
-        <% @por_categoria.each do |categoria| %>
-          <li>
-            <a href="#<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"
-               data-toggle="tab" id="<%= "nivel_#{categoria[:nombre_categoria_taxonomica].parameterize}" %>" url="<%= request.url %>"
-               id_div="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>">
-              <%= "#{categoria[:nombre_categoria_taxonomica]} (#{categoria[:cuantos]})" %>
-            </a>
-          </li>
-        <% end %>
+          <% @por_categoria.each do |categoria| %>
+              <li>
+                <a href="#<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"
+                   data-toggle="tab" id="<%= "nivel_#{categoria[:nombre_categoria_taxonomica].parameterize}" %>" url="<%= request.url %>"
+                   id_div="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>">
+                  <%= "#{categoria[:nombre_categoria_taxonomica]} (#{categoria[:cuantos]})" %>
+                </a>
+              </li>
+          <% end %>
       <% end %>
     </ul>
 
@@ -321,13 +321,14 @@
     </div>
 
     <% if @por_categoria.present? && @por_categoria.length > 0 %>
-      <% @por_categoria.each do |categoria| %>
-        <div class="tab-pane panel-body panel-resultados" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
-      <% end %>
+        <% @por_categoria.each do |categoria| %>
+            <div class="tab-pane panel-body panel-resultados" id="<%= I18n.transliterate(categoria[:nombre_categoria_taxonomica]).downcase.gsub(' ','_') %>"></div>
+        <% end %>
     <% end %>
   </div>
 
 </div>
+
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -340,7 +341,6 @@
         <p>
           Para resultados mayores a <strong>200</strong> es necesario proporcionar un correo electrónico, al cual
           se te enviará un archivo excel (.xlsx) con la busqueda correspondiente.
-
         <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de resultados</small></p>
         </p>
         <div class="form-group has-feedback">
@@ -348,10 +348,8 @@
           <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales <= 200) %>
           <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
           <span id="inputSuccess2Status" class="sr-only">(success)</span>
-
           <span id="estatus_descargar_taxa"></span>
         </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
