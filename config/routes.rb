@@ -2,7 +2,8 @@ Buscador::Application.routes.draw do
 
   resources :regiones_mapas do
     collection do
-      get 'dame-region' => :dame_region
+      get 'dame-tipo-region' => :dame_tipo_region
+      get 'dame-ancestry' => :dame_ancestry
     end
   end
 
@@ -20,7 +21,11 @@ Buscador::Application.routes.draw do
 
   get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
   get 'explora-por-region' => 'ubicaciones#por_region'
-  get 'especies-por-catalogo-id' => 'ubicaciones#especies_por_catalogo_id'
+  get 'explora-por-region/especies-por-grupo' => 'ubicaciones#especies_por_grupo'
+  get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
+  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
+  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
+  get 'explora-por-region/conteo-por-grupo' => 'ubicaciones#conteo_por_grupo'
 
   get "busquedas/basica"
   get "busquedas/avanzada"
@@ -98,9 +103,11 @@ Buscador::Application.routes.draw do
       get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/media-cornell' => 'especies#media_cornell'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
+      post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
     end
   end
 
@@ -193,5 +200,8 @@ Buscador::Application.routes.draw do
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
 
   get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
+
+  get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
+  post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
 end

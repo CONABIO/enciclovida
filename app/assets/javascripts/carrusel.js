@@ -9,15 +9,12 @@ function fotos_naturalista()
             dataType: 'json'
         }).done(function (json) {
             if (jQuery.isEmptyObject(json)) {
-                if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                 fotos_bdi();
             } else {
 
                 if (json.total_results == 0) {
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                     fotos_bdi();
                 } else if (json.results[0].taxon_photos.length == 0) {
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                     fotos_bdi();
                 } else {
                     $.ajax(
@@ -39,7 +36,6 @@ function fotos_naturalista()
                             inicia_carrusel();
 
                         }).error(function (error) {
-                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                             fotos_bdi();
                         });
                 }
@@ -92,6 +88,7 @@ function fotos_bdi()
             }
         }).error(function (error) {
             $('#contenedor_fotos').remove();
+            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero hubo un error al cargar las fotos');
         });
 }
 

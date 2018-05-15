@@ -1,0 +1,29 @@
+<h5>
+  <span class="badge">4</span>
+  <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#toggle-ba-content" aria-expanded="false" aria-controls="toggle-ba-content">
+    <b>Aplica filtros: conservación, comercio internacional, distribución y especies prioritarias (opcional). </b><span class="caret"></span>
+  </button>
+</h5>
+
+<div id="toggle-ba-content" class="collapse">
+  <div class="well row">
+    <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h6>
+        <%= checkboxEstadoConservacion(true).gsub('btn-basica ', '').html_safe %>
+      </div>
+
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Tipo de distribución</strong></h6>
+        <%= checkboxTipoDistribucion.gsub('btn-basica ', '').html_safe %>
+      </div>
+
+      <div class="checkbox explora_por">
+        <h6 class="text-primary"><strong>Especies prioritarias para la conservación</strong></h6>
+        <%= checkboxPrioritaria.gsub('btn-basica ', '').html_safe %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

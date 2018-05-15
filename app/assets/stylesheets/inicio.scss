@@ -23,6 +23,31 @@ header {
   background-size: cover;
   -o-background-size: cover;
 }
+#news{
+  color: #fafafa;
+  padding: 0;
+}
+#news > h4{
+  background-color: #829E3D;
+  display: block;
+  margin: 0;
+  padding: 0 10px;
+  line-height: 30px;
+  font-weight: bold;
+}
+#news a{
+  color: #d5e3e6;
+  text-decoration: underline;
+}
+#issues{
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.issue{
+  border-bottom: 1px solid rgba(213, 227, 230, 0.51);
+  padding: 5px 15px 5px 10px;
+  background-color: rgba(51, 51, 51, 0.75);
+}
 @media(min-width:768px){
   .btn-circle {
     visibility:visible !important;

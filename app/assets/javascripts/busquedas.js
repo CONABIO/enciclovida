@@ -60,7 +60,7 @@ soulmate_asigna = function(tipo_busqueda)
                 iconos = iconos + "<i class='" + val + ev +"' title='"+firstToUpperCase(val)+"'></i>"
             });
 
-            if (data.geodatos != undefined && data.geodatos.length > 0){iconos = iconos + "<i class='globe-ev-icon text-success' title='Tiene mapa'></i>"}
+            if (data.geodatos != undefined && data.geodatos.length > 0){iconos = iconos + "<i class='glyphicon glyphicon-globe text-success' title='Tiene mapa'></i>"}
             if (data.fotos > 0){iconos = iconos + "<i class='picture-ev-icon text-success' title='Tiene imágenes'></i><sub>" + data.fotos + "</sub>"}
 
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
@@ -154,46 +154,5 @@ $(document).ready(function()
         if (url == "") return false
         else window.open(url, '_blank');
     });
-
-
-
-//        $(document).on('change', "[id^='distribucion_nivel_']", function()
-//        {
-//            var valor=$(this).val();
-//            $('#'+$(this).attr('id') + ' option').removeAttr('selected');  //remueve si habia algun seleccionado
-//            $('#'+$(this).attr('id') + " option[value='"+valor+"']").attr('selected',true);
-//            var nivel=parseInt($(this).attr('name').substring(19));
-//
-//            if ($(this).val() != '')
-//            {
-//                jQuery.ajax({
-//                    success: function(html){
-//                        $('#distribucion_nivel_'+(nivel)).nextAll("[id^='distribucion_nivel_']").remove();
-//                        switch (nivel)
-//                        {
-//                            case 1:
-//                                $('#distribucion_nivel').empty().html(html);       //pare el inicial
-//                                break;
-//                            case 2:
-//                                $('#distribucion_nivel').append(html);
-//                                break;
-//                        }
-//                    },
-//                    fail: function(){
-//                        $('#notice').html('Hubo un error al cargar los filtros, por favor intentalo de nuevo.');
-//                    },
-//                    type:'POST',
-//                    url:'/regiones/regiones',
-//                    cache:true,
-//                    data: {region: $(this).val(), region_nivel: nivel}
-//                });
-//            }
-//
-//            if ($(this).val() == '' && nivel == 1)  //quita las sub-regiones si eligio todas
-//                $('#distribucion_nivel').empty();
-//
-//            if ($(this).val() == '' && nivel == 2)  //quita las sub-regiones si eligio todas
-//                $('#distribucion_nivel_3').remove();
-//        });
 });
 

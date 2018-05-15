@@ -71,7 +71,7 @@ settings = {
                     var $this=$("#resultados" + settings.nivel);
 
 					// Check the user is at the bottom of the element
-                    if($(window).scrollTop() + $(window).height() == $(document).height() && !settings.busy) {
+                    if($(window).scrollTop() + $(window).height() + 400  > $(document).height() && !settings.busy) {
 
 						// Now we are working, so busy is true
 						settings.busy = true;
