@@ -1,5 +1,7 @@
 Buscador::Application.routes.draw do
 
+  resources :peces
+
   resources :regiones_mapas do
     collection do
       get 'dame-tipo-region' => :dame_tipo_region
