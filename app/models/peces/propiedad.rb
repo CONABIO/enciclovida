@@ -3,6 +3,11 @@ class Propiedad < ActiveRecord::Base
   establish_connection(:peces)
   self.table_name='propiedades'
 
+  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :propiedad_id
+  has_many :peces, :through => :peces_propiedades, :source => :pez
+
+  has_many :criterios, :class_name => 'Criterio', :foreign_key => :propiedad_id
+
   has_ancestry
 
   scope :grupos_conabio, -> { where(tipo_propiedad: 'Grupo CONABIO').order(:nombre_propiedad) }
