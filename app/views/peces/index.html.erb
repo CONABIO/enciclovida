@@ -1,0 +1,37 @@
+<h1>Listing peces</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Especie</th>
+      <th>Valor total promedio</th>
+      <th>Valor</th>
+      <th>Anio</th>
+      <th>Nombre propiedad</th>
+      <th>Tipo propiedad</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @peces.each do |pez| %>
+      <tr>
+        <td><%= pez.especie_id %></td>
+        <td><%= pez.valor_total_promedio %></td>
+        <td><%#= pez.valor %></td>
+        <td><%#= pez.anio %></td>
+        <td><%#= pez.nombre_propiedad %></td>
+        <td><%#= pez.tipo_propiedad %></td>
+        <td><%= link_to 'Show', pez_path(pez) %></td>
+        <td><%= link_to 'Edit', edit_pez_path(pez) %></td>
+        <td><%= link_to 'Destroy', pez_path(pez), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Pez', new_pez_path %>
