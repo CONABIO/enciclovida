@@ -43,9 +43,8 @@ db/seeds.rb
 db/respaldos/*
 app/assets/javascripts/i18n/translations.js
 tools/bitacoras/
-config/config.yml
-config/database.yml_postgres
-config/database.yml_sql-server
+config/config.yml*
+config/database.yml*
 dump.rdb
 tools/campos_snib.csv
 tools/correspondencia_snib/
@@ -53,6 +52,7 @@ tools/correspondencia_geoserver/
 app/assets/taxones/*
 public/kmz/*
 tools/correspondencia_proyectos_naturalista/
+public/fontello-demo.html
 public/pdfs/
 public/uploads/
 public/validaciones_excel/
