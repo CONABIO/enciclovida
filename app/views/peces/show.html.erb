@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Especie:</strong>
+  <%= @pez.especie_id %>
+</p>
+
+<p>
+  <strong>Valor total promedio:</strong>
+  <%= @pez.valor_total_promedio %>
+</p>
+
+<p>
+  <strong>Valor:</strong>
+  <%= @pez.valor %>
+</p>
+
+<p>
+  <strong>Anio:</strong>
+  <%= @pez.anio %>
+</p>
+
+<p>
+  <strong>Nombre propiedad:</strong>
+  <%= @pez.nombre_propiedad %>
+</p>
+
+<p>
+  <strong>Tipo propiedad:</strong>
+  <%= @pez.tipo_propiedad %>
+</p>
+
+<%= link_to 'Edit', edit_pece_path(@pez) %> |
+<%= link_to 'Back', pez_path %>
