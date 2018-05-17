@@ -16,29 +16,63 @@ class Pez < ActiveRecord::Base
   scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
   scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total_promedio, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry")}
-  
-  # Completa el campo valor_zonas en la tabla peces para el pez en cuestion
+
+  attr_accessor :guardar_manual
+  before_save :guarda_valor_zonas, unless: :guardar_manual
+
+  # Asigna los valores promedio por zona, de acuerdo a cada estado
+  def guarda_valor_zonas
+    asigna_valor_zonas
+    save if changed?
+  end
+
+  # Regresa un array con los valores promedio por zona, de acuerdo a cada estado
   def dame_valor_zonas
     zonas = []
 
     criterio_propiedades.select('propiedades.*, anio, valor').cnp.each do |propiedad|
       zona_num = propiedad.root.nombre_zona_a_numero  # Para obtener la zona
       zonas[zona_num] = [] if zonas[zona_num].nil?
-      zonas[zona_num] << propiedad.valor
+      cnp_valor = propiedad.nombre_cnp_a_valor.nil? ? propiedad.valor : propiedad.nombre_cnp_a_valor
+      zonas[zona_num] << cnp_valor
     end
 
-    return unless zonas.any?
+    return ['s']*6 unless zonas.any?
     completa_y_promedia_zonas(zonas)
+  end
+
+  def self.actualiza_todo_valor_zonas
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_valor_zonas
+    end
   end
 
 
   private
 
-  def completa_y_promedia_zonas(zonas)
-    promedio_zonas = Array.new(6, -1)
+  # Asigna los valores promedio por zona, de acuerdo a cada estado
+  def asigna_valor_zonas
+    self.valor_zonas = dame_valor_zonas.join('')
+  end
 
-    zonas.each_with_index do |valores, index|
-      promedio_zona = (valores.inject(:+))/valores.length
+  def completa_y_promedia_zonas(zonas)
+    promedio_zonas = Array.new(6, -20)
+
+    zonas.each_with_index do |val, index|
+      valores = val || []
+      estados_validos = (valores || []) - [-10,-20]
+
+      if estados_validos.empty?
+        estados_validos = valores
+      end
+
+      promedio_zona = if estados_validos.nil? || estados_validos.empty?
+                        -20
+                      else
+                        estados_validos.inject(:+)/estados_validos.length
+                      end
+
       promedio_zonas[index] = promedio_zona
     end
 
@@ -50,14 +84,18 @@ class Pez < ActiveRecord::Base
 
     promedios.each_with_index do |promedio, index|
       case promedio
-        when -1
+        when -20..-11
           zonas[index] = 's'
+        when -10..-5
+          zonas[index] = 'n'
         when 0..5
           zonas[index] = 'v'
         when 6..10
           zonas[index] = 'a'
         when 11..100
           zonas[index] = 'r'
+        else
+          zonas[index] = 's'
       end
     end
 

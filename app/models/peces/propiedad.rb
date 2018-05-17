@@ -36,4 +36,16 @@ class Propiedad < ActiveRecord::Base
         5
     end
   end
+
+  def nombre_cnp_a_valor
+    case nombre_propiedad
+      when 'Estatus no definido'
+        -20
+      when 'No se distribuye'
+        -10
+      else
+        nil
+    end
+  end
+
 end
