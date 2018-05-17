@@ -12,4 +12,9 @@ class Pez < ActiveRecord::Base
 
   belongs_to :especie
 
+  scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
+  scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
+  scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total_promedio, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry")}
+
+
 end
