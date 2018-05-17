@@ -1,9 +1,9 @@
 class PecesController < ApplicationController
-  before_action :set_pece, only: [:show, :edit, :update, :destroy]
+  before_action :set_pez, only: [:show, :edit, :update, :destroy]
 
   # GET /peces
   def index
-    @peces = Pez.all
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades
   end
 
   # GET /peces/1
@@ -21,7 +21,7 @@ class PecesController < ApplicationController
 
   # POST /peces
   def create
-    @pez = Pez.new(pece_params)
+    @pez = Pez.new(pez_params)
 
     if @pez.save
       redirect_to @pez, notice: 'Pez was successfully created.'
@@ -32,7 +32,7 @@ class PecesController < ApplicationController
 
   # PATCH/PUT /peces/1
   def update
-    if @pez.update(pece_params)
+    if @pez.update(pez_params)
       redirect_to @pez, notice: 'Pez was successfully updated.'
     else
       render action: 'edit'
@@ -47,12 +47,12 @@ class PecesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_pece
+    def set_pez
       @pez = Pez.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
-    def pece_params
+    def pez_params
       params.require(:pez).permit(:especie_id, :valor_total_promedio, :valor, :anio, :nombre_propiedad, :tipo_propiedad)
     end
 end
