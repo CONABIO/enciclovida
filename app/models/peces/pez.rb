@@ -30,11 +30,9 @@ class Pez < ActiveRecord::Base
   # Regresa un array con los valores promedio por zona, de acuerdo a cada estado
   def dame_valor_zonas
     zonas = []
+    asigna_anio
 
-    # Para sacar solo el año en cuestion
-    cual_anio = anio || CONFIG.peces.anio || 2012
-
-    criterio_propiedades.select('propiedades.*, anio, valor').cnp.where('anio=?', cual_anio).each do |propiedad|
+    criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.root.nombre_zona_a_numero  # Para obtener la zona
       zonas[zona_num] = [] if zonas[zona_num].nil?
       cnp_valor = propiedad.nombre_cnp_a_valor.nil? ? propiedad.valor : propiedad.nombre_cnp_a_valor
@@ -52,9 +50,31 @@ class Pez < ActiveRecord::Base
     end
   end
 
-  def dame_valor_total
-    valor_zonas = color_a_valor_zona.inject(:+)
+  def guarda_valor_total
+    asigna_valor_total
+    save if changed?
+  end
 
+  # Asigna el valor total del pez, sirve para la calificacion y ordenamiento
+  def asigna_valor_total
+    asigna_anio
+    self.valor_total = 0
+
+    propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
+    self.valor_total+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.procedencias.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.nom.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.iucn.map(&:valor).inject(:+).to_i
+    self.valor_total+= color_a_valor_zona.inject(:+)
+  end
+
+  def self.actualiza_todo_valor_total
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_valor_total
+    end
   end
 
 
@@ -115,7 +135,7 @@ class Pez < ActiveRecord::Base
   def color_a_valor_zona
     zonas = []
 
-    valor_zonas.split(',').each do |zona|
+    valor_zonas.split('').each do |zona|
       case zona
         when 's'
           zonas << 0
@@ -128,8 +148,16 @@ class Pez < ActiveRecord::Base
         when 'r'
           zonas << 20
         else
+          zonas << 0
       end
     end
+
+    zonas
+  end
+
+  def asigna_anio
+    # Para sacar solo el año en cuestion
+    self.anio = anio || CONFIG.peces.anio || 2012
   end
 
 end
