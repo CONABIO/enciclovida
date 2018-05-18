@@ -50,7 +50,8 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-
+    @filtros ={nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    #@filtros = {ncientifico: p.map(&:nombrecientifico), ncomunes: p.map(&:nombrecomunes)}
   end
 
   private
