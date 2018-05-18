@@ -15,10 +15,10 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
-  scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total_promedio, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry") }
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen) }
+  scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id, valor, anio, nombre_propiedad, tipo_propiedad, ancestry') }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
-  attr_accessor :guardar_manual
+  attr_accessor :guardar_manual, :anio
   before_save :guarda_valor_zonas, unless: :guardar_manual
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
@@ -31,7 +31,10 @@ class Pez < ActiveRecord::Base
   def dame_valor_zonas
     zonas = []
 
-    criterio_propiedades.select('propiedades.*, anio, valor').cnp.each do |propiedad|
+    # Para sacar solo el año en cuestion
+    cual_anio = anio || CONFIG.peces.anio || 2012
+
+    criterio_propiedades.select('propiedades.*, anio, valor').cnp.where('anio=?', cual_anio).each do |propiedad|
       zona_num = propiedad.root.nombre_zona_a_numero  # Para obtener la zona
       zonas[zona_num] = [] if zonas[zona_num].nil?
       cnp_valor = propiedad.nombre_cnp_a_valor.nil? ? propiedad.valor : propiedad.nombre_cnp_a_valor
