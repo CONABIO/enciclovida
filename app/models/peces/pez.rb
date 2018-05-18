@@ -83,6 +83,24 @@ class Pez < ActiveRecord::Base
     end
   end
 
+  # BORRAR en centralizacion
+  def guarda_nombre_cientifico
+    asigna_nombre_cientifico
+    save if changed?
+  end
+
+  # BORRAR en centralizacion
+  def asigna_nombre_cientifico
+    self.nombre_cientifico = especie.nombre_cientifico
+  end
+
+  def self.actualiza_todo_nombre_cientifico
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_nombre_cientifico
+    end
+  end
+
 
   private
 
