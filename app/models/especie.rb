@@ -615,6 +615,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     if ncnat[:estatus] == 'OK'
       ncn = ncnat[:nombres_comunes].map do |nc|
+        next unless nc['name'].present?
+        next unless nc['lexicon'].present?
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
 
         # Asigna la lengua
