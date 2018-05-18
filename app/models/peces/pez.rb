@@ -25,6 +25,8 @@ class Pez < ActiveRecord::Base
   def actualiza_pez
     guarda_valor_zonas
     guarda_valor_total
+    guarda_nombre_cientifico
+    guarda_nombres_comunes
   end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
@@ -94,10 +96,31 @@ class Pez < ActiveRecord::Base
     self.nombre_cientifico = especie.nombre_cientifico
   end
 
+  # BORRAR en centralizacion
   def self.actualiza_todo_nombre_cientifico
     all.each do |p|
       p.guardar_manual = true
       p.guarda_nombre_cientifico
+    end
+  end
+
+  # BORRAR en centralizacion
+  def guarda_nombres_comunes
+    asigna_nombres_comunes
+    save if changed?
+  end
+
+  # BORRAR en centralizacion
+  def asigna_nombres_comunes
+    nombres = especie.nombres_comunes_todos.map{|e| e.values.flatten}.flatten.join(',')
+    self.nombres_comunes = nombres if nombres.present?
+  end
+
+  # BORRAR en centralizacion
+  def self.actualiza_todo_nombres_comunes
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_nombres_comunes
     end
   end
 
