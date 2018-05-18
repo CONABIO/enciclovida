@@ -15,7 +15,8 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
-  scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total_promedio, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry")}
+  scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total_promedio, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry") }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen) }
 
   attr_accessor :guardar_manual
   before_save :guarda_valor_zonas, unless: :guardar_manual
@@ -46,6 +47,11 @@ class Pez < ActiveRecord::Base
       p.guardar_manual = true
       p.guarda_valor_zonas
     end
+  end
+
+  def dame_valor_total
+    valor_zonas = color_a_valor_zona.inject(:+)
+
   end
 
 
@@ -100,6 +106,27 @@ class Pez < ActiveRecord::Base
     end
 
     zonas
+  end
+
+  # El inverso de valor_a_color
+  def color_a_valor_zona
+    zonas = []
+
+    valor_zonas.split(',').each do |zona|
+      case zona
+        when 's'
+          zonas << 0
+        when 'n'
+          zonas << 0
+        when 'v'
+          zonas << 0
+        when 'a'
+          zonas << 5
+        when 'r'
+          zonas << 20
+        else
+      end
+    end
   end
 
 end
