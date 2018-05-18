@@ -6,7 +6,7 @@ class PecesController < ApplicationController
 
   # GET /peces
   def index
-    @peces = Pez.select_peces.join_criterios.join_propiedades.limit(90)
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.limit(90)
   end
 
   # GET /peces/1
@@ -61,6 +61,6 @@ class PecesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def pez_params
-      params.require(:pez).permit(:especie_id, :valor_total_promedio, :valor, :anio, :nombre_propiedad, :tipo_propiedad)
+      params.require(:pez).permit(:especie_id, :valor_total, :valor_zonas, :tipo_imagen, :imagen, :nombre_cientifico, :nombres_comunes, :valor, :anio, :nombre_propiedad,:tipo_propiedad)
     end
 end

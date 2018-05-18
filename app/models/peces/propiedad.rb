@@ -20,4 +20,32 @@ class Propiedad < ActiveRecord::Base
   scope :nom, -> { where(tipo_propiedad: 'Norma Oficial Mexicana 059 SEMARNAT-2010') }
   scope :iucn, -> { where(tipo_propiedad: 'Lista roja IUCN 2016-3') }
 
+  def nombre_zona_a_numero
+    case nombre_propiedad
+      when 'Pacífico I'
+        0
+      when 'Pacífico II'
+        1
+      when 'Pacífico III'
+        2
+      when 'Golfo de México y Caribe I'
+        3
+      when 'Golfo de México y Caribe II'
+        4
+      when 'Golfo de México y Caribe III'
+        5
+    end
+  end
+
+  def nombre_cnp_a_valor
+    case nombre_propiedad
+      when 'Estatus no definido'
+        -20
+      when 'No se distribuye'
+        -10
+      else
+        nil
+    end
+  end
+
 end
