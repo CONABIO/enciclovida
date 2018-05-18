@@ -1,6 +1,10 @@
 Buscador::Application.routes.draw do
 
-  resources :peces, :as => :pez
+  resources :peces, :as => :pez do
+    collection do
+      get :busqueda
+    end
+  end
 
   resources :regiones_mapas do
     collection do
