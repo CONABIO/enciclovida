@@ -129,4 +129,8 @@ class Pez < ActiveRecord::Base
     end
   end
 
+  def self.ncientifico_option_for_select
+    select('especie_id, nombre_cientifico').map do |k| [k.especie_id,k.nombre_cientifico] end
+  end
+
 end
