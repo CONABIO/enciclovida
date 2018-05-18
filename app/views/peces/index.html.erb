@@ -1,4 +1,4 @@
-<h1>Listing peces</h1>
+<h1>Listando peces</h1>
 
 <table>
   <thead>
@@ -19,11 +19,16 @@
     <% @peces.each do |pez| %>
       <tr>
         <td><%= pez.especie_id %></td>
-        <td><%= pez.valor_total_promedio %></td>
+        <td><%= pez.valor_total %></td>
+				<td><%= pez.valor_zonas %></td>
+				<td><%= pez.tipo_imagen %></td>
+				<td><%= pez.imagen %></td>
+				<td><%= pez.nombre_cientifico%></td>
+				<td><%= pez.nombres_comunes %></td>
         <td><%= pez.valor %></td>
         <td><%= pez.anio %></td>
         <td><%= pez.nombre_propiedad %></td>
-        <td><%#= pez.tipo_propiedad %></td>
+        <td><%= pez.tipo_propiedad %></td>
         <td><%= link_to 'Show', pez_path(pez) %></td>
         <td><%= link_to 'Edit', edit_pez_path(pez) %></td>
         <td><%= link_to 'Destroy', pez_path(pez), method: :delete, data: { confirm: 'Are you sure?' } %></td>
