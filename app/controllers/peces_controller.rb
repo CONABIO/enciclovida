@@ -1,13 +1,17 @@
 class PecesController < ApplicationController
+  before_action do
+    @no_render_busqueda_basica = true
+  end
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
 
   # GET /peces
   def index
-    @peces = Pez.select_joins_peces.join_criterios.join_propiedades
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.limit(90)
   end
 
   # GET /peces/1
   def show
+    @pez = Pez.find(params[:id]).criterios.first.propiedad
   end
 
   # GET /peces/new
@@ -45,6 +49,12 @@ class PecesController < ApplicationController
     redirect_to peces_url, notice: 'Pez was successfully destroyed.'
   end
 
+  def busqueda
+    @filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    #@filtros = {ncientifico: p.map(&:nombrecientifico), ncomunes: p.map(&:nombrecomunes)}
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.where(especie_id: params['ncientifico']) if params['commit'].present?
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_pez
@@ -53,6 +63,6 @@ class PecesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def pez_params
-      params.require(:pez).permit(:especie_id, :valor_total_promedio, :valor, :anio, :nombre_propiedad, :tipo_propiedad)
+      params.require(:pez).permit(:especie_id, :valor_total, :valor_zonas, :tipo_imagen, :imagen, :nombre_cientifico, :nombres_comunes, :valor, :anio, :nombre_propiedad,:tipo_propiedad)
     end
 end

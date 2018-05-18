@@ -18,6 +18,8 @@ class Pez < ActiveRecord::Base
   scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id, valor, anio, nombre_propiedad, tipo_propiedad, ancestry') }
   scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
+  scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
+
   attr_accessor :guardar_manual, :anio
   after_save :actualiza_pez, unless: :guardar_manual
 
