@@ -15,11 +15,18 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
-  scope :select_joins_peces, -> { select("peces.especie_id, peces.valor_total, peces.valor_zonas, peces.tipo_imagen, peces.imagen, peces.nombre_cientifico, peces.nombres_comunes, criterios.valor, criterios.anio, propiedades.nombre_propiedad, propiedades.tipo_propiedad, propiedades.ancestry") }
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen) }
+  scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id, valor, anio, nombre_propiedad, tipo_propiedad, ancestry') }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
-  attr_accessor :guardar_manual
-  before_save :guarda_valor_zonas, unless: :guardar_manual
+
+  attr_accessor :guardar_manual, :anio
+  after_save :actualiza_pez, unless: :guardar_manual
+
+  # Corre los metodos necesarios para actualizar el pez
+  def actualiza_pez
+    guarda_valor_zonas
+    guarda_valor_total
+  end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
   def guarda_valor_zonas
@@ -27,11 +34,12 @@ class Pez < ActiveRecord::Base
     save if changed?
   end
 
-  # Regresa un array con los valores promedio por zona, de acuerdo a cada estado
-  def dame_valor_zonas
+  # Asigna los valores promedio por zona, de acuerdo a cada estado
+  def asigna_valor_zonas
     zonas = []
+    asigna_anio
 
-    criterio_propiedades.select('propiedades.*, anio, valor').cnp.each do |propiedad|
+    criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.root.nombre_zona_a_numero  # Para obtener la zona
       zonas[zona_num] = [] if zonas[zona_num].nil?
       cnp_valor = propiedad.nombre_cnp_a_valor.nil? ? propiedad.valor : propiedad.nombre_cnp_a_valor
@@ -39,7 +47,7 @@ class Pez < ActiveRecord::Base
     end
 
     return ['s']*6 unless zonas.any?
-    completa_y_promedia_zonas(zonas)
+    self.valor_zonas = completa_y_promedia_zonas(zonas).join('')
   end
 
   def self.actualiza_todo_valor_zonas
@@ -49,18 +57,53 @@ class Pez < ActiveRecord::Base
     end
   end
 
-  def dame_valor_total
-    valor_zonas = color_a_valor_zona.inject(:+)
+  def guarda_valor_total
+    asigna_valor_total
+    save if changed?
+  end
 
+  # Asigna el valor total del pez, sirve para la calificacion y ordenamiento
+  def asigna_valor_total
+    asigna_anio
+    self.valor_total = 0
+
+    propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
+    self.valor_total+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.procedencias.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.nom.map(&:valor).inject(:+).to_i
+    self.valor_total+= propiedades.iucn.map(&:valor).inject(:+).to_i
+    self.valor_total+= color_a_valor_zona.inject(:+)
+  end
+
+  def self.actualiza_todo_valor_total
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_valor_total
+    end
+  end
+
+  # BORRAR en centralizacion
+  def guarda_nombre_cientifico
+    asigna_nombre_cientifico
+    save if changed?
+  end
+
+  # BORRAR en centralizacion
+  def asigna_nombre_cientifico
+    self.nombre_cientifico = especie.nombre_cientifico
+  end
+
+  def self.actualiza_todo_nombre_cientifico
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_nombre_cientifico
+    end
   end
 
 
   private
-
-  # Asigna los valores promedio por zona, de acuerdo a cada estado
-  def asigna_valor_zonas
-    self.valor_zonas = dame_valor_zonas.join('')
-  end
 
   def completa_y_promedia_zonas(zonas)
     promedio_zonas = Array.new(6, -20)
@@ -112,7 +155,7 @@ class Pez < ActiveRecord::Base
   def color_a_valor_zona
     zonas = []
 
-    valor_zonas.split(',').each do |zona|
+    valor_zonas.split('').each do |zona|
       case zona
         when 's'
           zonas << 0
@@ -125,8 +168,16 @@ class Pez < ActiveRecord::Base
         when 'r'
           zonas << 20
         else
+          zonas << 0
       end
     end
+
+    zonas
+  end
+
+  def asigna_anio
+    # Para sacar solo el año en cuestion
+    self.anio = anio || CONFIG.peces.anio || 2012
   end
 
   def self.ncientifico_option_for_select
