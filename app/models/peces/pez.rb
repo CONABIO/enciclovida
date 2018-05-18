@@ -27,6 +27,7 @@ class Pez < ActiveRecord::Base
     guarda_valor_total
     guarda_nombre_cientifico
     guarda_nombres_comunes
+    guarda_imagen
   end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
@@ -82,6 +83,48 @@ class Pez < ActiveRecord::Base
     all.each do |p|
       p.guardar_manual = true
       p.guarda_valor_total
+    end
+  end
+
+  def guarda_imagen
+    asigna_imagen
+    save if changed?
+  end
+
+  # Asigna la ilustracion, foto o ilustracion, asi como el tipo de foto
+  def asigna_imagen
+    # Trata de asignar la ilustracion
+    bdi = BDIService.new
+    res = bdi.dameFotos(taxon: especie, campo: 528, autor: 'Sergio de la Rosa Martínez', autor_campo: 80, ilustraciones: true)
+
+    if res[:estatus] == 'OK'
+      if res[:fotos].any?
+        self.imagen = res[:fotos].first.medium_url
+        self.tipo_imagen = 1
+        return
+      end
+    end
+
+    # Trata de asignar la foto principal
+    if a = especie.adicional
+      foto = a.foto_principal
+
+      if foto.present?
+        self.imagen = foto
+        self.tipo_imagen = 2
+        return
+      end
+    end
+
+    # Asignar la silueta
+    self.imagen = '/assets/app/peces/silueta.png'
+    self.tipo_imagen = 3
+  end
+
+  def self.actualiza_todo_imagen
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_imagen
     end
   end
 
