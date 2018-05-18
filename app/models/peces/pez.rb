@@ -19,7 +19,13 @@ class Pez < ActiveRecord::Base
   scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
   attr_accessor :guardar_manual, :anio
-  before_save :guarda_valor_zonas, unless: :guardar_manual
+  after_save :actualiza_pez, unless: :guardar_manual
+
+  # Corre los metodos necesarios para actualizar el pez
+  def actualiza_pez
+    guarda_valor_zonas
+    guarda_valor_total
+  end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
   def guarda_valor_zonas
@@ -27,8 +33,8 @@ class Pez < ActiveRecord::Base
     save if changed?
   end
 
-  # Regresa un array con los valores promedio por zona, de acuerdo a cada estado
-  def dame_valor_zonas
+  # Asigna los valores promedio por zona, de acuerdo a cada estado
+  def asigna_valor_zonas
     zonas = []
     asigna_anio
 
@@ -40,7 +46,7 @@ class Pez < ActiveRecord::Base
     end
 
     return ['s']*6 unless zonas.any?
-    completa_y_promedia_zonas(zonas)
+    self.valor_zonas = completa_y_promedia_zonas(zonas).join('')
   end
 
   def self.actualiza_todo_valor_zonas
@@ -79,11 +85,6 @@ class Pez < ActiveRecord::Base
 
 
   private
-
-  # Asigna los valores promedio por zona, de acuerdo a cada estado
-  def asigna_valor_zonas
-    self.valor_zonas = dame_valor_zonas.join('')
-  end
 
   def completa_y_promedia_zonas(zonas)
     promedio_zonas = Array.new(6, -20)
