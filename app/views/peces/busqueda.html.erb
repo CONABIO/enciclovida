@@ -3,12 +3,18 @@
 </script>
 
 <%# render :file => 'busquedas/avanzada' %>
-<%= form_tag busqueda_pez_index_path :method => :post, :class => 'form-horizontal', :id => :b_peces  do %>
+<%= form_tag busqueda_pez_index_url, :method => :post, :class => 'form-horizontal', :id => :b_peces  do %>
 	<%= select_tag(:ncientifico, options_for_select(@filtros[:nombres].map{|k| [k.nombre_cientifico,k.especie_id]}), class: 'form-control input-lg') %>
-	<h3>Ó</h3>
+	<h5>Ó</h5>
 	<%= select_tag(:ncomun, options_for_select(@filtros[:nombres].map{|k| [k.nombres_comunes, k.especie_id]}), {class: 'form-control input-sm', multiple: :multiple}) %>
-<hr>
+	<hr>
 	<%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
 	<%= select_tag(:zonasn, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
+<%= submit_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar'%>
 
 <% end -%>
+
+
+<% if @peces.present? %>
+	<%= render :file => 'peces/index' %>
+<% end %>

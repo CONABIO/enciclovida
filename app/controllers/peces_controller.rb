@@ -50,8 +50,9 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros ={nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    @filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
     #@filtros = {ncientifico: p.map(&:nombrecientifico), ncomunes: p.map(&:nombrecomunes)}
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.where(especie_id: params['ncientifico']) if params['commit'].present?
   end
 
   private
