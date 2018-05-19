@@ -1,3 +1,37 @@
+<%= semantic_form_for(@pez, url: '/peces', method: :post) do |f| %>
+    <% if @pez.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
+
+          <ul>
+            <% @pez.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <%= f.inputs "", :id => "peces" do %>
+        <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a enciclovida' %>
+    <% end %>
+
+    <h3>Criterios asociados</h3>
+    <div id='peces_criterios'>
+      <%= f.semantic_fields_for :peces_criterios do |criterios| %>
+          <%= render 'peces_criterios', :f => criterios %>
+      <% end %>
+
+      <div class='links'>
+        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds' %>
+      </div>
+    </div>
+
+    <%= f.actions do %>
+        <%= f.action :submit, label: 'Crear pez' %>
+        <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
+    <% end %>
+<% end %>
+
 <%= form_for(@pez, url: '/peces', method: :post) do |f| %>
   <% if @pez.errors.any? %>
     <div id="error_explanation">
