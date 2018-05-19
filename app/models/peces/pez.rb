@@ -21,15 +21,17 @@ class Pez < ActiveRecord::Base
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
 
   attr_accessor :guardar_manual, :anio
-  after_save :actualiza_pez, unless: :guardar_manual
+  before_save :actualiza_pez, unless: :guardar_manual
+
+  accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
-    guarda_valor_zonas
-    guarda_valor_total
-    guarda_nombre_cientifico
-    guarda_nombres_comunes
-    guarda_imagen
+    asigna_valor_zonas
+    asigna_valor_total
+    asigna_nombre_cientifico
+    asigna_nombres_comunes
+    asigna_imagen
   end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado

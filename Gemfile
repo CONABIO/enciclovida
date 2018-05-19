@@ -17,6 +17,7 @@ gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado
 gem 'devise'
 gem 'exifr'
 gem 'fontello_rails_converter'
+gem 'formtastic'
 gem 'haml'
 gem 'htmlentities'
 gem 'i18n-js'
