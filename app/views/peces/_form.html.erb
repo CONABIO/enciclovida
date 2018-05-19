@@ -1,41 +1,33 @@
-<%= form_for(@pez) do |f| %>
-  <% if @pez.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
+<%= semantic_form_for(@pez, url: '/peces', method: :post) do |f| %>
+    <% if @pez.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
 
-      <ul>
-      <% @pez.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+          <ul>
+            <% @pez.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <%= f.inputs "", :id => "peces" do %>
+        <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a enciclovida' %>
+    <% end %>
+
+    <h3>Criterios asociados</h3>
+    <div id='peces_criterios'>
+      <%= f.semantic_fields_for :peces_criterios do |criterios| %>
+          <%= render 'peces/_peces_criterios_fields', :f => criterios %>
       <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="field">
-    <%= f.label :especie_id %><br>
-    <%= f.text_field :especie_id %>
-  </div>
-  <div class="field">
-    <%= f.label :valor_total_promedio %><br>
-    <%= f.text_field :valor_total_promedio %>
-  </div>
-  <div class="field">
-    <%= f.label :valor %><br>
-    <%= f.text_field :valor %>
-  </div>
-  <div class="field">
-    <%= f.label :anio %><br>
-    <%= f.text_field :anio %>
-  </div>
-  <div class="field">
-    <%= f.label :nombre_propiedad %><br>
-    <%= f.text_area :nombre_propiedad %>
-  </div>
-  <div class="field">
-    <%= f.label :tipo_propiedad %><br>
-    <%= f.text_area :tipo_propiedad %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+      <div class='links'>
+        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds', force_non_association_create: true %>
+      </div>
+    </div>
+
+    <%= f.actions do %>
+        <%= f.action :submit, label: 'Crear pez' %>
+        <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
+    <% end %>
 <% end %>

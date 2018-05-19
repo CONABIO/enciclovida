@@ -28,7 +28,7 @@ class PecesController < ApplicationController
     @pez = Pez.new(pez_params)
 
     if @pez.save
-      redirect_to @pez, notice: 'Pez was successfully created.'
+      redirect_to pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
     else
       render action: 'new'
     end
@@ -77,6 +77,6 @@ class PecesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def pez_params
-      params.require(:pez).permit(peces: [:especie_id, :valor_total, :valor_zonas, :tipo_imagen, :imagen, :nombre_cientifico, :nombres_comunes], criterio: [:valor, :anio], propiedad: [:nombre_propiedad,:tipo_propiedad])
+      params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
     end
 end

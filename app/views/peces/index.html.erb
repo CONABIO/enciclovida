@@ -1,4 +1,5 @@
-<h1>Listando peces</h1>
+<h1>Administración de especies marinas comerciales</h1>
+<%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar nueva especie marina comercial'.html_safe, new_pez_path if params[:action] == 'index' %>
 
 <table class="table table-striped table-hover table-condensed table-responsive">
   <thead>
@@ -48,4 +49,5 @@
 
 <br>
 
-<%= link_to 'New Pez', new_pez_path if params[:action] == 'index'  %>
+<%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar nueva especie marina comercial'.html_safe, new_pez_path if params[:action] == 'index' %>
+
