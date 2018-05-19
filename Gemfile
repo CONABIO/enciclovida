@@ -8,7 +8,7 @@ gem 'axlsx_rails'  # Gema para exportar en excel
 gem 'blurrily'#, git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # forza a blurrily a usar rails 5
 gem 'bootstrap-sass'
 gem 'carrierwave'  # form file upload
-gem 'cocoon', '=1.2.0'  # anida las formas de diferentes o del mismo modelo
+gem 'cocoon', '1.2.0'  # anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.0.0'
 gem 'composite_primary_keys' #multiples llaves primarias
 gem 'daemons'  # para hacer ejecutables bash
