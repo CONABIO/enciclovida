@@ -1,20 +1,44 @@
-<script>
-//	var nombres_comunes = [];
-</script>
+
+
+<%- content_for(:extracss) do -%>
+  <%# stylesheet_link_tag "peces/peces", media: "all", "data-turbolinks-track" => true %>
+<%- end -%>
+<%- content_for(:extrajs) do -%>
+  <%# javascript_include_tag "peces/peces", "data-turbolinks-track" => true %>
+  <script>
+    //var ncientifico = <%# %>;
+    //var ncomunes = <%# %>;
+  //</script>
+<%- end -%>
 
 <%# render :file => 'busquedas/avanzada' %>
+
+
 <%= form_tag busqueda_pez_index_url, :method => :post, :class => 'form-horizontal', :id => :b_peces  do %>
-	<%= select_tag(:ncientifico, options_for_select(@filtros[:nombres].map{|k| [k.nombre_cientifico,k.especie_id]}), class: 'form-control input-lg') %>
-	<h5>Ó</h5>
-	<%= select_tag(:ncomun, options_for_select(@filtros[:nombres].map{|k| [k.nombres_comunes, k.especie_id]}), {class: 'form-control input-sm', multiple: :multiple}) %>
-	<hr>
-	<%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
-	<%= select_tag(:zonasn, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
-<%= submit_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar'%>
+
+  <div class="ui-widget">
+    <%# select_tag(:ncientificoS, options_for_select(@filtros[:nombres].map{|k| [k.nombre_cientifico,k.especie_id]}), class: 'form-control input-lg') %>
+    <label for="ncientifico">Nombre científico: </label>
+    <%= text_field_tag(:ncientifico, nil, placeholder: 'Escribe un nombre científico...', class: 'form-control input-lg' ) %>
+    <%= hidden_field_tag(:ncientifico_id) %>
+  </div>
+
+  <hr>
+
+  <div class="ui-widget">
+    <%# select_tag(:ncomun, options_for_select(@filtros[:nombres].map{|k| [k.nombres_comunes, k.especie_id]}), {class: 'form-control input-lg'}) %>
+    <label for="ncomunes">Nombre común: </label>
+    <%= text_field_tag(:ncomunes, nil, placeholder: 'Escribe un nombre común...', class: 'form-control input-lg') %>
+    <%= hidden_field_tag(:ncomunes_id) %>
+  </div>
+
+  <hr>
+
+  <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
+  <%= select_tag(:zonasn, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), class: 'form-control input-lg') %>
+  <%= submit_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar'%>
 
 <% end -%>
-
-
 <% if @peces.present? %>
-	<%= render :file => 'peces/index' %>
+  <%= render :file => 'peces/index' %>
 <% end %>
