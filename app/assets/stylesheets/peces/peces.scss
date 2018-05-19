@@ -10,6 +10,7 @@
  */
 
 // "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+
 @import "bootstrap-sprockets";
 @import "custom_bootstrap";
 @import "bootstrap";
@@ -18,3 +19,6 @@
 @import 'enciclovida_font_icons';
 @import "animation";
 @import 'general';
+@import "dashboard";
+@import 'peces_extra';
+@import "jquery-ui";

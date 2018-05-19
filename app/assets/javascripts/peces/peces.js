@@ -12,7 +12,7 @@
 //
 //= require jquery
 //= require jquery-ui.js
-//= require jquery_ujs
+// require jquery_ujs
 //= require turbolinks
 //= require adicional.js
 //= require bootstrap-sprockets
@@ -21,3 +21,4 @@
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require "i18n/translations"
+//= require "peces/peces_extra"
