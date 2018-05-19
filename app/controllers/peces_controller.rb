@@ -50,18 +50,20 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    @filtros = {grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    #@filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
     #@filtros = {ncientifico: p.map(&:nombrecientifico), ncomunes: p.map(&:nombrecomunes)}
-    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.where(especie_id: params['ncientifico']) if params['commit'].present?
+    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.where(especie_id: params[:ncientifico_id]) if params[:commit].present?
   end
 
   def dameNombre
     tipo = params[:tipo]
     case tipo
     when 'cientifico'
-      render json: Pez.select(:especie_id, :nombre_cientifico).to_json
+      #render json: Pez.select(:especie_id, :nombre_cientifico).where("nombre_cientifico LIKE ?", "%#{params[:term]}%").map{|k| [k.nombre_cientifico,k.especie_id.to_s]}.to_s.to_json
+      render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
     when 'comunes'
-      render json: Pez.select(:especie_id, :nombres_comunes).to_json
+      render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
     else
       render json: [{error: 'no encontre'}].to_json
     end
