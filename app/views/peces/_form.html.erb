@@ -18,11 +18,11 @@
     <h3>Criterios asociados</h3>
     <div id='peces_criterios'>
       <%= f.semantic_fields_for :peces_criterios do |criterios| %>
-          <%= render 'peces_criterios', :f => criterios %>
+          <%= render 'peces/_peces_criterios_fields', :f => criterios %>
       <% end %>
 
       <div class='links'>
-        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds' %>
+        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds', force_non_association_create: true %>
       </div>
     </div>
 
@@ -30,28 +30,4 @@
         <%= f.action :submit, label: 'Crear pez' %>
         <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
     <% end %>
-<% end %>
-
-<%= form_for(@pez, url: '/peces', method: :post) do |f| %>
-  <% if @pez.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
-
-      <ul>
-      <% @pez.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :especie_id, 'Pez' %><br>
-    <%= f.text_field :especie_id %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-
 <% end %>

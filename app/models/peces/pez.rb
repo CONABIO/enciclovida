@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, inverse_of: :pez, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
@@ -17,9 +17,9 @@ class Pez < ActiveRecord::Base
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
   scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id, valor, anio, nombre_propiedad, tipo_propiedad, ancestry') }
   scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
-
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
 
+  validates_presence_of :especie_id
   attr_accessor :guardar_manual, :anio
   before_save :actualiza_pez, unless: :guardar_manual
 
