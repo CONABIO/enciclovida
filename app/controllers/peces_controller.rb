@@ -55,6 +55,18 @@ class PecesController < ApplicationController
     @peces = Pez.select_joins_peces.join_criterios.join_propiedades.where(especie_id: params['ncientifico']) if params['commit'].present?
   end
 
+  def dameNombre
+    tipo = params[:tipo]
+    case tipo
+    when 'cientifico'
+      render json: Pez.select(:especie_id, :nombre_cientifico).to_json
+    when 'comunes'
+      render json: Pez.select(:especie_id, :nombres_comunes).to_json
+    else
+      render json: [{error: 'no encontre'}].to_json
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_pez
@@ -63,6 +75,6 @@ class PecesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def pez_params
-      params.require(:pez).permit(:especie_id, :valor_total, :valor_zonas, :tipo_imagen, :imagen, :nombre_cientifico, :nombres_comunes, :valor, :anio, :nombre_propiedad,:tipo_propiedad)
+      params.require(:pez).permit(peces: [:especie_id, :valor_total, :valor_zonas, :tipo_imagen, :imagen, :nombre_cientifico, :nombres_comunes], criterio: [:valor, :anio], propiedad: [:nombre_propiedad,:tipo_propiedad])
     end
 end

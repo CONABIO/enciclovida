@@ -4,6 +4,7 @@ Buscador::Application.routes.draw do
     collection do
       get :busqueda
       post :busqueda
+      get :dameNombre
     end
   end
 
