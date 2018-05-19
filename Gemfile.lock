@@ -120,6 +120,8 @@ GEM
       launchy
       rest-client
       rubyzip (~> 1.0)
+    formtastic (3.1.5)
+      actionpack (>= 3.2.13)
     gyoku (1.1.1)
       builder (>= 2.1.2)
     haml (5.0.4)
@@ -302,6 +304,7 @@ DEPENDENCIES
   devise
   exifr
   fontello_rails_converter
+  formtastic
   haml
   htmlentities
   i18n-js

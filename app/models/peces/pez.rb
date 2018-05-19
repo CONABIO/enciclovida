@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, inverse_of: :pez, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
@@ -17,21 +17,23 @@ class Pez < ActiveRecord::Base
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
   scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id, valor, anio, nombre_propiedad, tipo_propiedad, ancestry') }
   scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
-
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
+  validates_presence_of :especie_id
   attr_accessor :guardar_manual, :anio
-  after_save :actualiza_pez, unless: :guardar_manual
+  before_save :actualiza_pez, unless: :guardar_manual
+
+  accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
-    guarda_valor_zonas
-    guarda_valor_total
-    guarda_nombre_cientifico
-    guarda_nombres_comunes
-    guarda_imagen
+    asigna_valor_zonas
+    asigna_valor_total
+    asigna_nombre_cientifico
+    asigna_nombres_comunes
+    asigna_imagen
   end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
