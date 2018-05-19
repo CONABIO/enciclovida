@@ -25,7 +25,8 @@
   <%= stylesheet_link_tag "peces/peces", media: "all", "data-turbolinks-track" => true %>
   <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
-
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
 </head>
 <body>
 
