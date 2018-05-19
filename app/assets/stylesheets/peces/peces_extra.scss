@@ -1,15 +1,61 @@
+//
+//#project-label {
+//  display: block;
+//  font-weight: bold;
+//  margin-bottom: 1em;
+//}
+//#project-icon {
+//  float: left;
+//  height: 32px;
+//  width: 32px;
+//}
+//#project-description {
+//  margin: 0;
+//  padding: 0;
+//}
+//
+//
+//.custom-combobox {
+//    position: relative;
+//    display: inline-block;
+//  }
+//  .custom-combobox-toggle {
+//    position: absolute;
+//    top: 0;
+//    bottom: 0;
+//    margin-left: -1px;
+//    padding: 0;
+//  }
+//  .custom-combobox-input {
+//    margin: 0;
+//    padding: 5px 10px;
+//  }
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
 
-#project-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 1em;
+table {
+	font-size: 1em;
 }
-#project-icon {
-  float: left;
-  height: 32px;
-  width: 32px;
+
+.ui-draggable, .ui-droppable {
+	background-position: top;
 }
-#project-description {
-  margin: 0;
-  padding: 0;
+
+.ui-autocomplete-loading {
+  //background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+.ui-menu {
+  background-color: #f3f3f3;
+  font-size: x-large;
+  border-left: 1px solid #cccccc;
+  border-right: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  margin-top: -4px;
+}
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
+  background-color: #bbbbbb;
+  color: #fafafa;
 }
