@@ -22,3 +22,4 @@
 //= require busquedas.js
 //= require "i18n/translations"
 //= require "peces/peces_extra"
+//= require cocoon
