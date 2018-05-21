@@ -12,17 +12,17 @@
     <% end %>
 
     <%= f.inputs "", :id => "peces" do %>
-        <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a enciclovida' %>
+        <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
     <% end %>
 
     <h3>Criterios asociados</h3>
     <div id='peces_criterios'>
       <%= f.semantic_fields_for :peces_criterios do |criterios| %>
-          <%= render 'peces/_peces_criterios_fields', :f => criterios %>
+          <%= render partial: 'peces_criterios_fields', locals: {:f => criterios} %>
       <% end %>
 
       <div class='links'>
-        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds', force_non_association_create: true %>
+        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fields' %>
       </div>
     </div>
 
