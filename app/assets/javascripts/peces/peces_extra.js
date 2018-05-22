@@ -15,8 +15,10 @@ $( function() {
             });
         },
         select: function( event, ui ) {
-            $( "#ncientifico_id" ).val( ui.item.especie_id );
+            $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncientifico" ).val( ui.item.value );
+            $( "#ncomunes" ).val('');
+            $( ".agrupada select, #ncomunes" ).attr('disabled', true).addClass('disabled');
             return false;
         }
     });
@@ -39,9 +41,16 @@ $( function() {
             });
         },
         select: function( event, ui ) {
-            $( "#ncomunes_id" ).val( ui.item.especie_id );
+            $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncomunes" ).val( ui.item.value );
+            $( "#ncientifico" ).val('');
+            $( ".agrupada select, #ncientifico" ).attr('disabled', true).addClass('disabled');
             return false;
         }
     });
 });
+
+function limpiaBusqueda(){
+    $(".agrupada select, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
+    $( "#especie_id, #ncientifico, #ncomunes" ).val('');
+}
