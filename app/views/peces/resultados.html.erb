@@ -1,13 +1,30 @@
-    <div class="panel-resultados" id="todos">
-      <div id="resultados">
-        <% @peces.each do |pez| %>
-          <div class="result-img-container">
-            <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
-            <div class="result-nombre-container">
-              <%= tituloNombreCientifico(pez, :link => true).html_safe %>
+<div id="resultados-container" class="state-one">
+  <div class="row">
+      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
+        <span class="glyphicon"></span></button>
+  </div>
+  <hr/>
+    <%= render :file => 'peces/busqueda' %>
+
+  <div id="pestañas" class="panel">
+    <div class="tab-pane panel-body panel-resultados" id="todos">
+      <div class="panel-resultados" id="todos">
+        <div id="resultados">
+          <% @peces.each do |pez| %>
+            <div class="result-img-container">
+              <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
+              <div class="result-nombre-container">
+                <%= tituloNombreCientifico(pez, :link => true).html_safe %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
+  </div>
+
+</div>
+
+
+
 
