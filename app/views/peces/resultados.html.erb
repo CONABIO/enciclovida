@@ -1,0 +1,13 @@
+    <div class="panel-resultados" id="todos">
+      <div id="resultados">
+        <% @peces.each do |pez| %>
+          <div class="result-img-container">
+            <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
+            <div class="result-nombre-container">
+              <%= tituloNombreCientifico(pez, :link => true).html_safe %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
