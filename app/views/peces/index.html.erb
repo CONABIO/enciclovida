@@ -1,6 +1,6 @@
 <h1>Administración de especies marinas comerciales</h1>
 <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar nueva especie marina comercial'.html_safe, new_pez_path if params[:action] == 'index' %>
-
+<h2><span class="label label-info"><%= @peces.length%></span></h2>
 <table class="table table-striped table-hover table-condensed table-responsive">
   <thead>
     <tr>
@@ -8,9 +8,6 @@
       <th>Imagen</th>
       <th>Valor total</th>
       <th>Valor zonas</th>
-      <th>Valor</th>
-      <th>Año</th>
-      <th>Propiedad</th>
       <% if params[:action] == 'index'  %>
       <th>Administración</th>
       <% end %>
@@ -23,18 +20,15 @@
         <td>
           <span class="label label-info"><%= pez.especie_id %></span>
           <small><b><i><%= pez.nombre_cientifico%></i></b></small><hr>
-          <% pez.nombres_comunes.split(',').each do |nc| %>
-            <small><%= nc%></small><br>
+          <% if pez.nombres_comunes.present? %>
+            <% pez.nombres_comunes.split(',').each do |nc| %>
+              <small><%= nc%></small><br>
+            <% end %>
           <% end %>
         </td>
         <td><%= image_tag(pez.imagen, class: "img-responsive") %></td>
         <td><%= pez.valor_total %></td>
 				<td><%= pez.valor_zonas %></td>
-        <td><%= pez.valor %></td>
-        <td><%= pez.anio %></td>
-        <td>
-          <small><%= pez.tipo_propiedad %>:<br><%= pez.nombre_propiedad %></small>
-        </td>
         <% if params[:action] == 'index'  %>
           <td>
             <%= link_to '<span class="glyphicon glyphicon-play" aria-hidden="true"></span>'.html_safe, pez_path(pez), title: 'Mostrar'%>
