@@ -31,11 +31,11 @@
 //    padding: 5px 10px;
 //  }
 body {
-	font-family: Arial, Helvetica, sans-serif;
+//	font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
-	font-size: 1em;
+//	font-size: 1em;
 }
 
 .ui-draggable, .ui-droppable {
@@ -47,7 +47,7 @@ table {
 }
 .ui-menu {
   background-color: #f3f3f3;
-  font-size: x-large;
+  font-size: large;
   border-left: 1px solid #cccccc;
   border-right: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
@@ -58,4 +58,8 @@ table {
 .ui-menu .ui-state-focus, .ui-menu .ui-state-active {
   background-color: #bbbbbb;
   color: #fafafa;
+}
+.agrupada select.disabled {
+  color: #888;
+  background-color: #ddd;
 }
