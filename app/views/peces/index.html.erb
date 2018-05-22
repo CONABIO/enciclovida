@@ -8,9 +8,6 @@
       <th>Imagen</th>
       <th>Valor total</th>
       <th>Valor zonas</th>
-      <th>Valor</th>
-      <th>Año</th>
-      <th>Propiedad</th>
       <% if params[:action] == 'index'  %>
       <th>Administración</th>
       <% end %>
@@ -32,11 +29,6 @@
         <td><%= image_tag(pez.imagen, class: "img-responsive") %></td>
         <td><%= pez.valor_total %></td>
 				<td><%= pez.valor_zonas %></td>
-        <td><%= pez.valor %></td>
-        <td><%= pez.anio %></td>
-        <td>
-          <small><%= pez.tipo_propiedad %>:<br><%= pez.nombre_propiedad %></small>
-        </td>
         <% if params[:action] == 'index'  %>
           <td>
             <%= link_to '<span class="glyphicon glyphicon-play" aria-hidden="true"></span>'.html_safe, pez_path(pez), title: 'Mostrar'%>
