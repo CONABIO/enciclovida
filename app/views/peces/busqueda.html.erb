@@ -42,27 +42,27 @@
       <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona - -', class: 'form-control input-lg' ) %>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg disabled', disabled: true) %>
+      <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg') %>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Pesquerías - -', class: 'form-control input-lg disabled', disabled: true) %>
+      <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Pesquerías - -', class: 'form-control input-lg') %>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input-lg disabled', disabled: true) %>
+      <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input-lg') %>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input-lg disabled', disabled: true) %>
+      <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input-lg') %>
     </div>
   </div>
 
   <hr />
 
   <div class="form-group">
-    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
-      <%= button_tag "Limpiar", :type => 'button', :class => "btn btn-danger btn-sm btn-block btn-title", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-    </div>
     <div class="col-xs-8 col-sm-8 col-md-9 col-lg-10">
       <%= submit_tag "Buscar", data: {disable_with: 'Procesando...'}, :class => "btn btn-success btn-lg btn-block btn-title", :title => 'Buscar' %>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+      <%= button_tag "Limpiar", :type => 'button', :class => "btn btn-danger btn-sm btn-block btn-title", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
     </div>
   </div>
 
