@@ -52,21 +52,24 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros = {grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencias: Propiedad.procedencias, pesquerias:  Propiedad.pesquerias, nom: Propiedad.nom, iucn: Propiedad.iucn}
+    @filtros =  Propiedad.dame_filtros
 
-    #@filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    if params[:commit].present?
 
-    #@peces = Pez
+    @peces = Pez.filtros_peces
 
-    @peces = Pez.filtros_peces if params[:commit].present?
+    #Busqueda por nombre científico o comunes
+    @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
-    @peces = @peces.where(especie_id: params[:especie_id]) if params[:commit].present? && params[:especie_id].present?
+    @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
+    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:zonas].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:procedencias]) if params[:procedencias].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:pesquerias]) if params[:pesquerias].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:nom]) if params[:nom].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:iucn]) if params[:iucn].present?
 
-    @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:commit].present? && params[:grupos].present?
-
-    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:commit].present? && params[:zonas].present?
-
-
+    render :file => 'peces/resultados'
+    end
 
   end
 
@@ -74,7 +77,6 @@ class PecesController < ApplicationController
     tipo = params[:tipo]
     case tipo
     when 'cientifico'
-      #render json: Pez.select(:especie_id, :nombre_cientifico).where("nombre_cientifico LIKE ?", "%#{params[:term]}%").map{|k| [k.nombre_cientifico,k.especie_id.to_s]}.to_s.to_json
       render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
     when 'comunes'
       render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
