@@ -1,0 +1,6 @@
+<div class='nested-fields'>
+  <%= f.inputs do %>
+      <%= f.input :criterio_id, label: 'Criterio', as: :select, collection: Criterio.all.map{|c| [c.propiedad.nombre_propiedad, c.id]} %>
+      <%= link_to_remove_association 'Quitar criterio', f %>
+  <% end %>
+</div>

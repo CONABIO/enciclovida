@@ -12,17 +12,22 @@
     <% end %>
 
     <%= f.inputs "", :id => "peces" do %>
-        <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a enciclovida' %>
+        <% if @pez.new_record? %>
+            <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+        <% else %>
+            <h4><%= @pez.nombre_cientifico %></h4>
+            <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+        <% end %>
     <% end %>
 
     <h3>Criterios asociados</h3>
     <div id='peces_criterios'>
       <%= f.semantic_fields_for :peces_criterios do |criterios| %>
-          <%= render 'peces/_peces_criterios_fields', :f => criterios %>
+          <%= render partial: 'edit_peces_criterios_fields', locals: {:f => criterios} %>
       <% end %>
 
       <div class='links'>
-        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'peces_criterios_fileds', force_non_association_create: true %>
+        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'new_peces_criterios_fields' %>
       </div>
     </div>
 
@@ -31,3 +36,14 @@
         <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
     <% end %>
 <% end %>
+
+<%-
+    grouped_options = {
+            'North America' => [['United States','US'], 'Canada'],
+            'Europe' => ['Denmark','Germany','France']
+    }
+
+
+    %>
+
+<%= select_tag 'nomre', grouped_options_for_select(grouped_options, selected: 'France') %>
