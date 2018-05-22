@@ -52,19 +52,26 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros = {grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencias: Propiedad.procedencias, pesquerias:  Propiedad.pesquerias, nom: Propiedad.nom, iucn: Propiedad.iucn}
+    @filtros =  Propiedad.dame_filtros
 
     #@filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
 
-    #@peces = Pez
+    @peces = nil
 
-    @peces = Pez.filtros_peces if params[:commit].present?
+    if params[:commit].present?
 
-    @peces = @peces.where(especie_id: params[:especie_id]) if params[:commit].present? && params[:especie_id].present?
+    @peces = Pez.filtros_peces
 
-    @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:commit].present? && params[:grupos].present?
+    @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
-    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:commit].present? && params[:zonas].present?
+    @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
+    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:zonas].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:procedencias]) if params[:procedencias].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:pesquerias]) if params[:pesquerias].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:nom]) if params[:nom].present?
+    @peces = @peces.where("criterios.propiedad_id = ?", params[:iucn]) if params[:iucn].present?
+
+    end
 
 
 
