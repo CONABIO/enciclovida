@@ -54,14 +54,11 @@ class PecesController < ApplicationController
   def busqueda
     @filtros =  Propiedad.dame_filtros
 
-    #@filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
-
-    @peces = nil
-
     if params[:commit].present?
 
     @peces = Pez.filtros_peces
 
+    #Busqueda por nombre científico o comunes
     @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
     @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
@@ -71,9 +68,8 @@ class PecesController < ApplicationController
     @peces = @peces.where("criterios.propiedad_id = ?", params[:nom]) if params[:nom].present?
     @peces = @peces.where("criterios.propiedad_id = ?", params[:iucn]) if params[:iucn].present?
 
+    render :file => 'peces/resultados'
     end
-
-
 
   end
 
@@ -81,7 +77,6 @@ class PecesController < ApplicationController
     tipo = params[:tipo]
     case tipo
     when 'cientifico'
-      #render json: Pez.select(:especie_id, :nombre_cientifico).where("nombre_cientifico LIKE ?", "%#{params[:term]}%").map{|k| [k.nombre_cientifico,k.especie_id.to_s]}.to_s.to_json
       render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
     when 'comunes'
       render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
