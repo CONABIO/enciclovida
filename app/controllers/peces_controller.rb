@@ -6,7 +6,9 @@ class PecesController < ApplicationController
 
   # GET /peces
   def index
+    # Mega join =S (por eso se limita)
     @peces = Pez.select_joins_peces.join_criterios.join_propiedades.limit(90)
+    #@peces = Pez.load
   end
 
   # GET /peces/1
@@ -50,16 +52,21 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros = {grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
+    @filtros = {grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencias: Propiedad.procedencias, pesquerias:  Propiedad.pesquerias, nom: Propiedad.nom, iucn: Propiedad.iucn}
+
     #@filtros = {nombres: Pez.nombres_peces, grupos: Propiedad.grupos_conabio, zonas: Propiedad.zonas, procedencia: Propiedad.procedencias}
 
-    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.filtros_peces if params[:commit].present?
+    #@peces = Pez
+
+    @peces = Pez.filtros_peces if params[:commit].present?
 
     @peces = @peces.where(especie_id: params[:especie_id]) if params[:commit].present? && params[:especie_id].present?
 
     @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:commit].present? && params[:grupos].present?
 
     @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:commit].present? && params[:zonas].present?
+
+
 
   end
 

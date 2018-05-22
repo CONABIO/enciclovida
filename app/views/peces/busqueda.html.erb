@@ -9,8 +9,6 @@
       //</script>
 <%- end -%>
 
-<%# render :file => 'busquedas/avanzada' %>
-
 
 <%= form_tag busqueda_pez_index_url, :method => :post, :class => 'form-horizontal', :id => :b_peces  do %>
 
@@ -36,12 +34,24 @@
   <hr />
 
   <div class="form-group agrupada">
-    <h4 class="text-center">Búsqueda por grupos y o zonas</h4>
+    <h4 class="text-center">Búsqueda por grupos, zonas, categorías de riesgo, pesquerías</h4>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
       <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control input-lg' ) %>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-      <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- -Zona - -', class: 'form-control input-lg' ) %>
+      <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona - -', class: 'form-control input-lg' ) %>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+      <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg disabled', disabled: true) %>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+      <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Pesquerías - -', class: 'form-control input-lg disabled', disabled: true) %>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+      <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input-lg disabled', disabled: true) %>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+      <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input-lg disabled', disabled: true) %>
     </div>
   </div>
 
@@ -60,5 +70,5 @@
 
 <% end -%>
 <% if @peces.present? %>
-  <%= render :file => 'peces/index' %>
+  <%= render :file => 'peces/resultados' %>
 <% end %>
