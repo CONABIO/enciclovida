@@ -23,16 +23,14 @@
     <div class="ui-widget col-xs-12 col-sm-8 col-md-5 col-lg-5">
       <%= text_field_tag(:ncientifico, nil, placeholder: 'Nombre científico...', class: 'form-control input-lg' ) %>
       <%# select_tag(:ncientificoS, options_for_select(@filtros[:nombres].map{|k| [k.nombre_cientifico,k.especie_id]}), class: 'form-control input-lg') %>
-      <%= hidden_field_tag(:ncientifico_id) %>
     </div>
 
     <!--label for="ncomunes" class="col-xs-12 col-sm-4 col-md-12 col-lg-2 control-label">Nombre común</label-->
     <div class="ui-widget col-xs-12 col-sm-8 col-md-7 col-lg-7">
       <%= text_field_tag(:ncomunes, nil, placeholder: 'Nombre común...', class: 'form-control input-lg') %>
       <%# select_tag(:ncomun, options_for_select(@filtros[:nombres].map{|k| [k.nombres_comunes, k.especie_id]}), {class: 'form-control input-lg'}) %>
-      <%= hidden_field_tag(:ncomunes_id) %>
     </div>
-
+    <%= hidden_field_tag(:especie_id) %>
   </div>
 
   <hr />
