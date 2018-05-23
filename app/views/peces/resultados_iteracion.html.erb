@@ -1,0 +1,9 @@
+<% @peces.each do |pez| %>
+  <div class="result-img-container">
+    <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
+    <i class="badge"><%= pez.valor_total %></i>
+    <div class="result-nombre-container">
+      <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
+    </div>
+  </div>
+<% end %>

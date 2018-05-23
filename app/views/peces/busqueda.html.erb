@@ -1,4 +1,5 @@
 <%- content_for(:extracss) do -%>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <%- end -%>
 <%- content_for(:extrajs) do -%>
   <script>
@@ -35,9 +36,13 @@
     <div class="calificada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
       <fieldset class="text-center">
         <legend><h5 class="text-primary"><strong>Búsqueda por valoración global:</strong></h5></legend>
-        <%= checkboxValorTotal %>
+        <%# checkboxValorTotal %>
+        <hr />
+        <div id="rango"></div>
+        <label for="valor_total">Valor total:</label>
+        <input type="text" id="valor_total" name="semaforo_vt" readonly style="color:#800000; display: block;">
       </fieldset>
-      <hr/>
+      <hr />
     </div>
 
     <div class="agrupada col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
