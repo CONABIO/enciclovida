@@ -52,7 +52,7 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros =  Propiedad.dame_filtros
+    @filtros =  Criterio.dame_filtros
 
     if params[:commit].present?
 
@@ -64,11 +64,13 @@ class PecesController < ApplicationController
     @peces = @peces.where("valor_zonas like '%#{params[:semaforo]}%'" ) if params[:semaforo].present?
 
     @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
-    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:zonas].present?
-    @peces = @peces.where("criterios.propiedad_id = ?", params[:procedencias]) if params[:procedencias].present?
-    @peces = @peces.where("criterios.propiedad_id = ?", params[:pesquerias]) if params[:pesquerias].present?
-    @peces = @peces.where("criterios.propiedad_id = ?", params[:nom]) if params[:nom].present?
-    @peces = @peces.where("criterios.propiedad_id = ?", params[:iucn]) if params[:iucn].present?
+    @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
+    @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
+    @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
+    @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
+    @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
+    @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
+    @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
     render :file => 'peces/resultados'
     end
