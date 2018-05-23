@@ -55,46 +55,44 @@ class PecesController < ApplicationController
     @filtros =  Criterio.dame_filtros
 
     if params[:commit].present?
+      @peces = Pez.filtros_peces
+      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
 
-    @peces = Pez.filtros_peces
+      @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
+      @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
+      @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
+      @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
+      @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
+      @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
+      @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
-    #Busqueda por nombre científico o comunes
-    @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
+      @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
 
-    @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
-    @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
-    @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
-    @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
-    @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
-    @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
-    @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
-    @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
-    render :file => 'peces/resultados'
+      render :file => 'peces/resultados'
     end
-
   end
 
   def dameNombre
     tipo = params[:tipo]
     case tipo
-    when 'cientifico'
-      render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
-    when 'comunes'
-      render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
-    else
-      render json: [{error: 'no encontre'}].to_json
+      when 'cientifico'
+        render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
+      when 'comunes'
+        render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
+      else
+        render json: [{error: 'no encontre'}].to_json
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_pez
-      @pez = Pez.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_pez
+    @pez = Pez.find(params[:id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def pez_params
-      params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
-    end
+  # Only allow a trusted parameter "white list" through.
+  def pez_params
+    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
+  end
 end
