@@ -15,26 +15,46 @@ module PecesHelper
         end
     end
 
-    def checkboxSemaforo
+    def checkboxCNP
       checkBoxes = ''
-      #s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r','No se distribuye' => 'n','Sin datos' => 's'}
       s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r'}
       s.each do |k,v|
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag('semaforo', v, false, id: "semaforo_#{v}")
+        checkBoxes << check_box_tag('semaforo_cnp', v, false, id: "semaforo_cnp_#{k}")
         checkBoxes << "<span title = '#{k}' class = 'btn btn-lg btn-basica btn-title'>"
         checkBoxes << "<i class = 'glyphicon glyphicon-"
-        checkBoxes << case v
-                      when 'v'
+        checkBoxes << case k
+                      when 'Recomendable'
                         'ok-sign'
-                      when 'a'
+                      when 'Poco recomendable'
                         'exclamation-sign'
-                      when 'r'
+                      when 'Evita'
                         'minus-sign'
-                      when 'n'
-                        'eye-close'
-                      when  's'
-                        'question-sign'
+                      else
+                        'stop'
+                      end
+        checkBoxes << "'></i>"
+        checkBoxes << "</span>"
+        checkBoxes << "</label>"
+      end
+      checkBoxes.html_safe
+    end
+
+    def checkboxValorTotal
+      checkBoxes = ''
+      s = {'Recomendable' => '-5,4','Poco recomendable' => '5,20','Evita' => '20,100'}
+      s.each do |k,v|
+        checkBoxes << "<label>"
+        checkBoxes << check_box_tag('semaforo_vt', v, false, id: "semaforo_vt_#{k}")
+        checkBoxes << "<span title = '#{k}' class = 'btn btn-lg btn-basica btn-title'>"
+        checkBoxes << "<i class = 'glyphicon glyphicon-"
+        checkBoxes << case k
+                      when 'Recomendable'
+                        'ok-sign'
+                      when 'Poco recomendable'
+                        'exclamation-sign'
+                      when 'Evita'
+                        'minus-sign'
                       else
                         'stop'
                       end
