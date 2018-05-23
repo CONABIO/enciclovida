@@ -41,7 +41,7 @@ class Criterio < ActiveRecord::Base
   def self.pesquerias
     grouped_options = {}
 
-    Criterio.select_propiedades.select('propiedad_id').join_propiedades.where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad ').each do |c|
+    Criterio.select_propiedades.select('propiedad_id').join_propiedades.where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad').each do |c|
       prop = c.propiedad
       llave_unica = prop.parent.nombre_propiedad.strip
 
