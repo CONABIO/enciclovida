@@ -55,12 +55,12 @@ class Propiedad < ActiveRecord::Base
       {grupos: self.grupos_conabio,
        zonas: self.zonas,
        tipo_capturas: Criterio.tipo_capturas,
-       tipo_vedas: self.tipo_vedas,
-       procedencias: self.procedencias,
+       tipo_vedas: Criterio.tipo_vedas,
+       procedencias: Criterio.procedencias,
        pesquerias:  self.pesquerias,
        cnp: self.cnp,
-       nom: self.nom,
-       iucn: self.iucn}
+       nom: Criterio.nom,
+       iucn: Criterio.iucn}
     end
     filtros
   end

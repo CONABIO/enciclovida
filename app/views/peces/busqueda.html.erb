@@ -53,6 +53,9 @@
             <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control input-lg') %>
           </div>
           <div class="col-xs-12">
+            <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control input-lg') %>
+          </div>
+          <div class="col-xs-12">
             <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg') %>
           </div>
           <div class="col-xs-12">

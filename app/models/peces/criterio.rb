@@ -8,16 +8,16 @@ class Criterio < ActiveRecord::Base
 
   belongs_to :propiedad
 
-  scope :join_propiedades,  -> { joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
+  scope :select_join_propiedades, -> { select('criterios.id, nombre_propiedad').joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
   #scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
   #scope :zonas, -> { where(nombre_propiedad: 'Zonas').first.children }
-  scope :tipo_capturas, -> { select('criterios.id, nombre_propiedad').join_propiedades.where("ancestry=?", 320) }
-  scope :tipo_vedas, -> { where(nombre_propiedad: 'Tipo de veda').first.children }
-  scope :procedencias, -> { where(nombre_propiedad: 'Procedencia').first.children }
+  scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
+  scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
+  scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
   scope :pesquerias, -> { select(:nombre_propiedad).where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad ').distinct.order(:nombre_propiedad) }
   scope :cnp, -> { select(:nombre_propiedad).where(tipo_propiedad: ['zona pacifico', 'zona golfo y caribe']).distinct.order(:nombre_propiedad) }
-  scope :nom, -> { where(nombre_propiedad: 'Norma Oficial Mexicana 059 SEMARNAT-2010').first.children.order(:nombre_propiedad) }
-  scope :iucn, -> { where(nombre_propiedad: 'Lista roja IUCN 2016-3').first.children.order(:nombre_propiedad) }
+  scope :nom, -> { select_join_propiedades.where("ancestry=?", 318) }
+  scope :iucn, -> { select_join_propiedades.where("ancestry=?", 319) }
 
   def self.catalogo
 
