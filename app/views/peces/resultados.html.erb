@@ -13,19 +13,18 @@
       </li>
     </ul>
 
-    <div class="tab-pane panel-body panel-resultados" id="todos">
-      <div class="panel-resultados" id="todos">
+    <div class="tab-pane panel-body resultados-peces" id="todos">
         <div id="resultados">
           <% @peces.each do |pez| %>
             <div class="result-img-container">
-              <%= link_to image_tag(pez.imagen, class: "img-responsive img-thumbnail"), especie_path(pez) %>
+              <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
+              <i class="badge"><%= pez.valor_total %></i>
               <div class="result-nombre-container">
-                <%= tituloNombreCientifico(pez, :link => true).html_safe %>
+                <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
               </div>
             </div>
           <% end %>
         </div>
-      </div>
     </div>
   </div>
 
