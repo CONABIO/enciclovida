@@ -58,6 +58,7 @@ class PecesController < ApplicationController
       @peces = Pez.filtros_peces
       @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
 
+      @peces = @peces.where("valor_zonas like '%#{params[:semaforo]}%'" ) if params[:semaforo].present?
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
@@ -67,7 +68,6 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
       @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
-
 
       render :file => 'peces/resultados'
     end
