@@ -61,6 +61,8 @@ class PecesController < ApplicationController
     #Busqueda por nombre científico o comunes
     @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
+    @peces = @peces.where("valor_zonas like '%#{params[:semaforo]}%'" ) if params[:semaforo].present?
+
     @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
     @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
     @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?

@@ -1,5 +1,5 @@
 module PecesHelper
-    def tituloNombreCientifico(taxon, params={})
+    def tituloNombreCientificoPeces(taxon, params={})
 
       nombre = taxon.nombres_comunes.present? ? taxon.nombres_comunes.split(',').first : ''
 
@@ -14,4 +14,35 @@ module PecesHelper
           'Ocurrio un error en el nombre'.html_safe
         end
     end
+
+    def checkboxSemaforo
+      checkBoxes = ''
+      #s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r','No se distribuye' => 'n','Sin datos' => 's'}
+      s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r'}
+      s.each do |k,v|
+        checkBoxes << "<label>"
+        checkBoxes << check_box_tag('semaforo', v, false, id: "semaforo_#{v}")
+        checkBoxes << "<span title = '#{k}' class = 'btn btn-lg btn-basica btn-title'>"
+        checkBoxes << "<i class = 'glyphicon glyphicon-"
+        checkBoxes << case v
+                      when 'v'
+                        'ok-sign'
+                      when 'a'
+                        'exclamation-sign'
+                      when 'r'
+                        'minus-sign'
+                      when 'n'
+                        'eye-close'
+                      when  's'
+                        'question-sign'
+                      else
+                        'stop'
+                      end
+        checkBoxes << "'></i>"
+        checkBoxes << "</span>"
+        checkBoxes << "</label>"
+      end
+      checkBoxes.html_safe
+    end
+
 end

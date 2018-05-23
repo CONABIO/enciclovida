@@ -160,8 +160,8 @@ div.result-img-container{
     margin: 0 !important;
 }
 .checkbox input:checked+span, .checkbox input+span:hover, .radio input:checked+span, .radio input+span:hover{
-    padding-left: 6px;
-    margin-right: -1px;
+/*    padding-left: 6px;*/
+/*    margin-right: -1px;*/
     color: #800000 !important;
 }
 
