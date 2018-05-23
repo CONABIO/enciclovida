@@ -25,15 +25,21 @@
       </div>
 
 
-      <div class="valorada checkbox col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
+      <div class="valorada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
         <fieldset class="text-center">
-          <legend><h5 class="text-primary"><strong>Búsqueda por semáforo:</strong></h5></legend>
-          <%= checkboxSemaforo %>
+          <legend><h5 class="text-primary"><strong>Búsqueda por recomendaciones de la Carta Nacional Pesquera:</strong></h5></legend>
+          <%= checkboxCNP %>
         </fieldset>
         <hr/>
       </div>
 
-
+    <div class="calificada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
+      <fieldset class="text-center">
+        <legend><h5 class="text-primary"><strong>Búsqueda por valoración global:</strong></h5></legend>
+        <%= checkboxValorTotal %>
+      </fieldset>
+      <hr/>
+    </div>
 
       <div class="agrupada col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
         <fieldset>
@@ -43,7 +49,7 @@
             <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control input-lg' ) %>
           </div>
           <div class="col-xs-12">
-            <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona - -', class: 'form-control input-lg' ) %>
+            <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona (CNP) - -', class: 'form-control input-lg' ) %>
           </div>
           <div class="col-xs-12">
             <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control input-lg') %>
