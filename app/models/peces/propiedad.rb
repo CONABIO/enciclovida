@@ -20,6 +20,8 @@ class Propiedad < ActiveRecord::Base
   scope :nom, -> { where(nombre_propiedad: 'Norma Oficial Mexicana 059 SEMARNAT-2010').first.children.order(:nombre_propiedad) }
   scope :iucn, -> { where(nombre_propiedad: 'Lista roja IUCN 2016-3').first.children.order(:nombre_propiedad) }
 
+  CON_INFORMACION = ['Con potencial de desarrollo', 'Máximo aprovechamiento permisible', 'En deterioro']
+
   def nombre_zona_a_numero
     case nombre_propiedad
       when 'Pacífico I'
@@ -49,10 +51,10 @@ class Propiedad < ActiveRecord::Base
   end
 
   def self.dame_filtros
-    filtros = Rails.cache.fetch('filtros_peces', expires_in: 1.day) do
+    filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
       {grupos: self.grupos_conabio,
        zonas: self.zonas,
-       tipo_capturas: self.tipo_capturas,
+       tipo_capturas: Criterio.tipo_capturas,
        tipo_vedas: self.tipo_vedas,
        procedencias: self.procedencias,
        pesquerias:  self.pesquerias,

@@ -62,7 +62,8 @@ class PecesController < ApplicationController
     @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
     @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
-    @peces = @peces.where("criterios.propiedad_id IN (select id from propiedades where ancestry like '%#{params[:zonas]}%')") if params[:zonas].present?
+    @peces = @peces.where("propiedades.id=?", params[:zonas]) if params[:zonas].present?
+    @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
     @peces = @peces.where("criterios.propiedad_id = ?", params[:procedencias]) if params[:procedencias].present?
     @peces = @peces.where("criterios.propiedad_id = ?", params[:pesquerias]) if params[:pesquerias].present?
     @peces = @peces.where("criterios.propiedad_id = ?", params[:nom]) if params[:nom].present?
