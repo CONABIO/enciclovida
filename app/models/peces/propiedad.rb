@@ -12,15 +12,14 @@ class Propiedad < ActiveRecord::Base
 
   scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
   scope :zonas, -> { where(nombre_propiedad: 'Zonas').first.children }
-  scope :tipo_capturas, -> { where(nombre_propiedad: 'Tipo de captura').first.children }
-  scope :tipo_vedas, -> { where(nombre_propiedad: 'Tipo de veda').first.children }
-  scope :procedencias, -> { where(nombre_propiedad: 'Procedencia').first.children }
-  scope :pesquerias, -> { select(:nombre_propiedad).where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad ').distinct.order(:nombre_propiedad) }
-  scope :cnp, -> { select(:nombre_propiedad).where(tipo_propiedad: ['zona pacifico', 'zona golfo y caribe']).distinct.order(:nombre_propiedad) }
-  scope :nom, -> { where(nombre_propiedad: 'Norma Oficial Mexicana 059 SEMARNAT-2010').first.children.order(:nombre_propiedad) }
-  scope :iucn, -> { where(nombre_propiedad: 'Lista roja IUCN 2016-3').first.children.order(:nombre_propiedad) }
+  scope :tipo_capturas, -> { where('ancestry=?', 320) }
+  scope :tipo_vedas, -> { where('ancestry=?', 321) }
+  scope :procedencias, -> { where('ancestry=?', 322) }
+  scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
+  scope :nom, -> { where('ancestry=?', 318) }
+  scope :iucn, -> { where('ancestry=?', 319) }
 
-  CON_INFORMACION = ['Con potencial de desarrollo', 'Máximo aprovechamiento permisible', 'En deterioro']
+  #scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$' AND tipo_propiedad != 'estado'").distinct }
 
   def nombre_zona_a_numero
     case nombre_propiedad
