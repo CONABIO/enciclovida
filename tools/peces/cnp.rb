@@ -28,7 +28,7 @@ end
 
 def leeCSV
   borra_relaciones
-  borra_propiedades
+  #borra_propiedades
 
   CSV.foreach(Rails.root.join('db', 'peces', 'cnp.csv'), :col_sep => "@") do |row|
     puts "Fila con especie_id: #{row[12]}" if OPTS[:debug]
