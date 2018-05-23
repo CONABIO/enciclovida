@@ -55,12 +55,7 @@ end
 def guarda_relacion(pez, row)
   pc = pez.peces_criterios.new
   pc.criterio_id = @criterio[row[0].strip]
-
-  begin
-    puts "\tGuarda la relacion" if OPTS[:debug] if pc.save
-  rescue
-    puts "\tID repetido: #{row[2]} ********" if OPTS[:debug]
-  end
+  puts "\tGuarda la relacion" if OPTS[:debug] if pc.save
 end
 
 start_time = Time.now

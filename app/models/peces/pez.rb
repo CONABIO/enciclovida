@@ -41,6 +41,15 @@ class Pez < ActiveRecord::Base
     asigna_imagen
   end
 
+  # Actualiza todos los servicios
+  def self.actualiza_todo
+    all.each do |p|
+      p.guardar_manual = true
+      p.actualiza_pez
+      p.save if p.changed?
+    end
+  end
+
   # Asigna los valores promedio por zona, de acuerdo a cada estado
   def guarda_valor_zonas
     asigna_valor_zonas
@@ -182,6 +191,7 @@ class Pez < ActiveRecord::Base
   private
 
   def completa_y_promedia_zonas(zonas)
+    # Valor default por si no tiene dato
     promedio_zonas = Array.new(6, -20)
 
     zonas.each_with_index do |val, index|
@@ -213,11 +223,11 @@ class Pez < ActiveRecord::Base
           zonas[index] = 's'
         when -10..-5
           zonas[index] = 'n'
-        when 0..5
+        when 0..4
           zonas[index] = 'v'
-        when 6..10
+        when 5..19
           zonas[index] = 'a'
-        when 11..100
+        when 20..100
           zonas[index] = 'r'
         else
           zonas[index] = 's'

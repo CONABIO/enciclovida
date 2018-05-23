@@ -4,12 +4,12 @@ require 'trollop'
 
 OPTS = Trollop::options do
   banner <<-EOS
-Pone la procedencia basandose en la tabla propiedades y criterios
+Pone el tipo de veda, y veda_fechas basandose en la tabla propiedades y criterios
 
 
 Usage:
 
-  rails r tools/peces/procedencia.rb -d
+  rails r tools/peces/tipo_de_veda.rb -d
 
 where [options] are:
   EOS
@@ -17,16 +17,17 @@ where [options] are:
 end
 
 
-@criterio = {'Nacional' => 4, 'Importado' => 5, 'Nacional e Importado' => 6}
+@criterio = {'Permanente' => 21, 'Temporal fija' => 22, 'Temporal variable' => 23, 'Sin veda' => 126, 'Sin datos' => 127}
 
 def leeCSV
   borra_relaciones
 
-  CSV.foreach(Rails.root.join('db', 'peces', 'procedencia.csv'), :col_sep => "@") do |row|
-    puts "Fila con especie_id: #{row[2]}" if OPTS[:debug]
-    next unless row[2].present?
-    pez = comprueba_pez(row[2].to_i)
+  CSV.foreach(Rails.root.join('db', 'peces', 'tipo_de_veda.csv'), :col_sep => "@") do |row|
+    puts "Fila con especie_id: #{row[4]}" if OPTS[:debug]
+    next unless row[4].present?
+    pez = comprueba_pez(row[4].to_i)
     guarda_relacion(pez, row)
+    guarda_valores_adicionales(pez, row)
   end
 end
 
@@ -48,13 +49,26 @@ end
 
 def borra_relaciones
   puts "\tBorra relaciones anteriores" if OPTS[:debug]
-  PezCriterio.where(criterio_id: @criterio.values).delete_all
+  ids = @criterio.values
+  PezCriterio.where(criterio_id: ids).delete_all
 end
 
 def guarda_relacion(pez, row)
   pc = pez.peces_criterios.new
   pc.criterio_id = @criterio[row[0].strip]
   puts "\tGuarda la relacion" if OPTS[:debug] if pc.save
+end
+
+def guarda_valores_adicionales(pez, row)
+  pez.veda_fechas = nil
+  veda_fechas = "#{row[2]},#{row[3]}".strip
+
+  if veda_fechas != ','
+    pez.veda_fechas = veda_fechas
+  end
+
+  pez.guardar_manual = true
+  puts "\tGuarda el valor adicional de veda_fechas" if OPTS[:debug] if pez.save
 end
 
 start_time = Time.now
