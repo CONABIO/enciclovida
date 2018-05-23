@@ -58,9 +58,8 @@ class PecesController < ApplicationController
       @peces = Pez.filtros_peces
       @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
 
-      @peces = @peces.where("valor_zonas like '%#{params[:semaforo_cnp]}%'" ) if params[:semaforo_cnp].present?
+      # Filtros globales
       @peces = @peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}") if params[:semaforo_vt].present?
-
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
@@ -69,10 +68,18 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
       @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
-      @peces = @peces.where("propiedades.id = ?", params[:zonas]) if params[:zonas].present?
+      # Filtros de CNP
+      if params[:semaforo_cnp].present? && params[:zonas].present?
+        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: params[:semaforo_cnp])
+        @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
+      elsif params[:semaforo_cnp].present?
+        @peces = @peces.where("valor_zonas LIKE '%#{params[:semaforo_cnp]}%'")
+      elsif params[:zonas].present?
+        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
+        @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
+      end
 
       render :file => 'peces/resultados'
-
     end
 
     if params[:commit].nil? && params[:semaforo_vt].present?
@@ -103,5 +110,19 @@ class PecesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def pez_params
     params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
+  end
+
+  def dame_regexp_zonas(opc = {})
+    colores_default = opc[:colores_default] || 'varns'
+    color_seleccionado = opc[:color_seleccionado] || '[var]'
+    #repeticiones_antes = zona-1
+
+    if opc[:zonas] == 1  # La primera zona
+      "#{color_seleccionado}[#{colores_default}]{5}"
+    elsif opc[:zonas] == 6 # La ultima zona
+      "[#{colores_default}]{5}#{color_seleccionado}"
+    else
+      "[#{colores_default}]{#{opc[:zonas]-1}}#{color_seleccionado}[#{colores_default}]{#{6-opc[:zonas]}}"
+    end
   end
 end
