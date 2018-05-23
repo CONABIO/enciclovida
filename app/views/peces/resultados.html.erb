@@ -7,12 +7,18 @@
     <%= render :file => 'peces/busqueda' %>
 
   <div id="pestañas" class="panel">
+    <ul class="nav nav-tabs" data-tabs="tabs">
+      <li class="active">
+        <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos"><span class="label label-primary"><%= @peces.length %></span> Resultados</a>
+      </li>
+    </ul>
+
     <div class="tab-pane panel-body panel-resultados" id="todos">
       <div class="panel-resultados" id="todos">
         <div id="resultados">
           <% @peces.each do |pez| %>
             <div class="result-img-container">
-              <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
+              <%= link_to image_tag(pez.imagen, class: "img-responsive img-thumbnail"), especie_path(pez) %>
               <div class="result-nombre-container">
                 <%= tituloNombreCientifico(pez, :link => true).html_safe %>
               </div>

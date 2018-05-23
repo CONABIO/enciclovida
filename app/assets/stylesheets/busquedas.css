@@ -64,8 +64,6 @@ div.result-img-container{
     float: left;
     position: relative;
     min-height: 1px;
-    padding-left: 10px;
-    padding-right: 10px;
     transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
 @media (min-width: 993px){
