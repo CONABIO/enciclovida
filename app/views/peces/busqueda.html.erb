@@ -9,29 +9,28 @@
 
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => 'form-horizontal', :id => :b_peces  do %>
 
-      <div class="exacta col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
-        <fieldset>
-          <legend><h5 class="text-primary text-center"><strong>Búsqueda por nombres:</strong></h5></legend>
-          <div class="ui-widget">
-            <%= text_field_tag(:ncientifico, nil, placeholder: 'Nombre científico...', class: 'form-control input-lg' ) %>
-          </div>
+    <div class="exacta col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
+      <fieldset>
+        <legend><h5 class="text-primary text-center"><strong>Búsqueda por nombres:</strong></h5></legend>
+        <div class="ui-widget">
+          <%= text_field_tag(:ncientifico, nil, placeholder: 'Nombre científico...', class: 'form-control input-lg' ) %>
+        </div>
 
-          <div class="ui-widget">
-            <%= text_field_tag(:ncomunes, nil, placeholder: 'Nombre común...', class: 'form-control input-lg') %>
-          </div>
-          <%= hidden_field_tag(:especie_id) %>
-        </fieldset>
-        <hr/>
-      </div>
+        <div class="ui-widget">
+          <%= text_field_tag(:ncomunes, nil, placeholder: 'Nombre común...', class: 'form-control input-lg') %>
+        </div>
+        <%= hidden_field_tag(:especie_id) %>
+      </fieldset>
+      <hr/>
+    </div>
 
-
-      <div class="valorada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
-        <fieldset class="text-center">
-          <legend><h5 class="text-primary"><strong>Búsqueda por recomendaciones de la Carta Nacional Pesquera:</strong></h5></legend>
-          <%= checkboxCNP %>
-        </fieldset>
-        <hr/>
-      </div>
+    <div class="valorada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
+      <fieldset class="text-center">
+        <legend><h5 class="text-primary"><strong>Búsqueda por recomendaciones de la Carta Nacional Pesquera:</strong></h5></legend>
+        <%= checkboxCNP %>
+      </fieldset>
+      <hr/>
+    </div>
 
     <div class="calificada checkbox col-xs-12 <%= 'col-sm-6 col-md-2 col-lg-2' if(@peces.nil?) %>">
       <fieldset class="text-center">
@@ -41,42 +40,42 @@
       <hr/>
     </div>
 
-      <div class="agrupada col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
-        <fieldset>
-          <legend><h5 class="text-primary text-center"><strong>Búsqueda por grupos, zonas, categorías de riesgo, pesquerías:</strong></h5></legend>
+    <div class="agrupada col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
+      <fieldset>
+        <legend><h5 class="text-primary text-center"><strong>Búsqueda por grupos, zonas, categorías de riesgo, pesquerías:</strong></h5></legend>
 
-          <div class="col-xs-12">
-            <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control input-lg' ) %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona (CNP) - -', class: 'form-control input-lg' ) %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control input-lg') %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control input-lg') %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg') %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías - -', class: 'form-control input-lg') %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input-lg') %>
-          </div>
-          <div class="col-xs-12">
-            <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input-lg') %>
-          </div>
-        </fieldset>
-        <hr/>
-      </div>
+        <div class="col-xs-12">
+          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control input-lg' ) %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:zonas, options_for_select(@filtros[:zonas].map{|k| [k.nombre_propiedad, k.id]}), :prompt=> '- - Zona (CNP) - -', class: 'form-control input-lg' ) %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control input-lg') %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control input-lg') %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input-lg') %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías - -', class: 'form-control input-lg') %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input-lg') %>
+        </div>
+        <div class="col-xs-12">
+          <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input-lg') %>
+        </div>
+      </fieldset>
+      <hr/>
+    </div>
 
-      <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9' if(@peces.nil?) %>">
-        <%= button_tag "Buscar", data: {disable_with: 'Procesando...'}, :class => "btn btn-success btn-lg btn-block btn-title", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
-        <%= button_tag "Limpiar", :type => 'button', :class => "btn btn-default btn-sm btn-block btn-title", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-      </div>
+    <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9' if(@peces.nil?) %>">
+      <%= button_tag "Buscar", data: {disable_with: 'Procesando...'}, :class => "btn btn-success btn-lg btn-block btn-title", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+      <%= button_tag "Limpiar", :type => 'button', :class => "btn btn-default btn-sm btn-block btn-title", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+    </div>
 
   <% end -%>
 </div>
