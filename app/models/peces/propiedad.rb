@@ -48,4 +48,18 @@ class Propiedad < ActiveRecord::Base
     end
   end
 
+  def self.dame_filtros
+    filtros = Rails.cache.fetch('filtros_peces', expires_in: 1.day) do
+      {grupos: self.grupos_conabio,
+       zonas: self.zonas,
+       tipo_capturas: self.tipo_capturas,
+       tipo_vedas: self.tipo_vedas,
+       procedencias: self.procedencias,
+       pesquerias:  self.pesquerias,
+       cnp: self.cnp,
+       nom: self.nom,
+       iucn: self.iucn}
+    end
+    filtros
+  end
 end
