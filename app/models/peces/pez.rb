@@ -58,18 +58,17 @@ class Pez < ActiveRecord::Base
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
   def asigna_valor_zonas
-    zonas = []
+    zonas = Array.new(6, -20)  # COmpleta con Estatus no definido por default "s"
     asigna_anio
 
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
-      zona_num = propiedad.root.nombre_zona_a_numero  # Para obtener la zona
-      zonas[zona_num] = [] if zonas[zona_num].nil?
-      cnp_valor = propiedad.nombre_cnp_a_valor.nil? ? propiedad.valor : propiedad.nombre_cnp_a_valor
-      zonas[zona_num] << cnp_valor
+      zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la zona
+      cnp_valor = propiedad.nombre_cnp_a_valor  # Obtiene el valor numerico
+      cnp_valor = cnp_valor.nil? ? propiedad.valor : cnp_valor
+      zonas[zona_num] = cnp_valor
     end
 
-    return ['s']*6 unless zonas.any?
-    self.valor_zonas = completa_y_promedia_zonas(zonas).join('')
+    self.valor_zonas = valor_cnp_a_color(zonas).join('')
   end
 
   def self.actualiza_todo_valor_zonas
@@ -96,7 +95,7 @@ class Pez < ActiveRecord::Base
     self.valor_total+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
     self.valor_total+= propiedades.nom.map(&:valor).inject(:+).to_i
     self.valor_total+= propiedades.iucn.map(&:valor).inject(:+).to_i
-    self.valor_total+= color_a_valor_zona.inject(:+)
+    self.valor_total+= promedia_valores_cnp
   end
 
   def self.actualiza_todo_valor_total
@@ -148,6 +147,14 @@ class Pez < ActiveRecord::Base
     end
   end
 
+  # Promedia el valor de la CNP por zona, solo valores con datos (v,a,r)
+  def promedia_valores_cnp
+    zonas = color_cnp_a_valor
+    return 0 unless zonas.any?
+
+    zonas.inject(:+)/zonas.length
+  end
+
   # BORRAR en centralizacion
   def guarda_nombre_cientifico
     asigna_nombre_cientifico
@@ -190,79 +197,50 @@ class Pez < ActiveRecord::Base
 
   private
 
-  def completa_y_promedia_zonas(zonas)
-    # Valor default por si no tiene dato
-    promedio_zonas = Array.new(6, -20)
-
-    zonas.each_with_index do |val, index|
-      valores = val || []
-      estados_validos = (valores || []) - [-10,-20]
-
-      if estados_validos.empty?
-        estados_validos = valores
-      end
-
-      promedio_zona = if estados_validos.nil? || estados_validos.empty?
-                        -20
-                      else
-                        estados_validos.inject(:+)/estados_validos.length
-                      end
-
-      promedio_zonas[index] = promedio_zona
-    end
-
-    valor_zona_a_color(promedio_zonas)
-  end
-
-  def valor_zona_a_color(promedios)
+  # Asocia el valor de la cnp a un color correspondiente
+  def valor_cnp_a_color(zonas_array)
     zonas = []
 
-    promedios.each_with_index do |promedio, index|
-      case promedio
-        when -20..-11
-          zonas[index] = 's'
-        when -10..-5
-          zonas[index] = 'n'
-        when 0..4
-          zonas[index] = 'v'
-        when 5..19
-          zonas[index] = 'a'
-        when 20..100
-          zonas[index] = 'r'
+    zonas_array.each do |zona|
+      case zona
+        when -20
+          zonas << 's'
+        when -10
+          zonas << 'n'
+        when 0
+          zonas << 'v'
+        when 5
+          zonas << 'a'
+        when 20
+          zonas << 'r'
         else
-          zonas[index] = 's'
+          zonas << 's'
       end
     end
 
     zonas
   end
 
-  # El inverso de valor_a_color
-  def color_a_valor_zona
+  # El inverso de valor_cnp_a_color, solo valores con datos (v,a,r)
+  def color_cnp_a_valor
     zonas = []
 
     valor_zonas.split('').each do |zona|
       case zona
-        when 's'
-          zonas << 0
-        when 'n'
-          zonas << 0
         when 'v'
           zonas << 0
         when 'a'
           zonas << 5
         when 'r'
           zonas << 20
-        else
-          zonas << 0
       end
     end
 
     zonas
   end
 
+  # Para sacar solo el año en cuestion
   def asigna_anio
-    # Para sacar solo el año en cuestion
     self.anio = anio || CONFIG.peces.anio || 2012
   end
 
