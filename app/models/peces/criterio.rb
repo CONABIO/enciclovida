@@ -8,13 +8,13 @@ class Criterio < ActiveRecord::Base
 
   belongs_to :propiedad
 
-  scope :select_join_propiedades, -> { select('criterios.id, nombre_propiedad').joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
-  #scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
-  #scope :zonas, -> { where(nombre_propiedad: 'Zonas').first.children }
+  scope :select_propiedades, -> { select('criterios.id, nombre_propiedad') }
+  scope :join_propiedades, -> { joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
+  scope :select_join_propiedades, -> { select_propiedades.join_propiedades }
+
   scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
   scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
   scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
-  scope :pesquerias, -> { select(:nombre_propiedad).where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad ').distinct.order(:nombre_propiedad) }
   scope :cnp, -> { select(:nombre_propiedad).where(tipo_propiedad: ['zona pacifico', 'zona golfo y caribe']).distinct.order(:nombre_propiedad) }
   scope :nom, -> { select_join_propiedades.where("ancestry=?", 318) }
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", 319) }
@@ -36,6 +36,37 @@ class Criterio < ActiveRecord::Base
     end
 
     resp
+  end
+
+  def self.pesquerias
+    grouped_options = {}
+
+    Criterio.select_propiedades.select('propiedad_id').join_propiedades.where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad ').each do |c|
+      prop = c.propiedad
+      llave_unica = prop.parent.nombre_propiedad.strip
+
+      grouped_options[llave_unica] = [] if !grouped_options.key?(llave_unica)
+      grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+    end
+
+    grouped_options
+  end
+
+  def self.dame_filtros
+
+    filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
+      {grupos: Propiedad.grupos_conabio,
+       zonas: Propiedad.zonas,
+       tipo_capturas: self.tipo_capturas,
+       tipo_vedas: self.tipo_vedas,
+       procedencias: self.procedencias,
+       pesquerias:  self.pesquerias,
+       cnp: self.cnp,
+       nom: self.nom,
+       iucn: self.iucn}
+    end
+
+    filtros
   end
 
 end

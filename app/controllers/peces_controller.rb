@@ -52,7 +52,7 @@ class PecesController < ApplicationController
   end
 
   def busqueda
-    @filtros =  Propiedad.dame_filtros
+    @filtros =  Criterio.dame_filtros
 
     if params[:commit].present?
 
@@ -66,7 +66,7 @@ class PecesController < ApplicationController
     @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
     @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
     @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
-    @peces = @peces.where("criterios.propiedad_id = ?", params[:pesquerias]) if params[:pesquerias].present?
+    @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
     @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
     @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
