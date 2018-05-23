@@ -36,14 +36,3 @@
         <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
     <% end %>
 <% end %>
-
-<%-
-    grouped_options = {
-            'North America' => [['United States','US'], 'Canada'],
-            'Europe' => ['Denmark','Germany','France']
-    }
-
-
-    %>
-
-<%= select_tag 'nomre', grouped_options_for_select(grouped_options, selected: 'France') %>
