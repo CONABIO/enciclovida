@@ -38,6 +38,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 .resultados-peces div.result-img-container img{
   max-height: 200px;
+  max-width: 300px;
   margin: -10px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.9);
   vertical-align: middle;

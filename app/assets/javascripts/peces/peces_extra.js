@@ -49,8 +49,21 @@ $( function() {
         }
     });
 });
+$( function() {
+    $( "#rango" ).slider({
+        range: true,
+        min: -5,
+        max: 70,
+        values: [-5,4],
+        slide: function( event, ui ) {
+            $( "#valor_total" ).val(ui.values[ 0 ] + "," + ui.values[ 1 ] );
+            $("#resultados").load('/peces/busqueda?semaforo_vt=' + $( "#rango" ).slider( "values", 0 ) + ',' + $( "#rango" ).slider( "values", 1 ));
+        }
+    });
+    //$( "#valor_total" ).val($( "#rango" ).slider( "values", 0 ) + ',' + $( "#rango" ).slider( "values", 1 ) );
+  } );
 
 function limpiaBusqueda(){
     $(".agrupada select, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
     $( "#especie_id, #ncientifico, #ncomunes" ).val('');
-}
+};

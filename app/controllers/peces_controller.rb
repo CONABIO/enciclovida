@@ -74,6 +74,12 @@ class PecesController < ApplicationController
       render :file => 'peces/resultados'
 
     end
+
+    if params[:commit].nil? && params[:semaforo_vt].present?
+      @peces = @peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}")
+      render :layout => false, :file => 'peces/resultados_iteracion'  and return
+    end
+
   end
 
   def dameNombre
