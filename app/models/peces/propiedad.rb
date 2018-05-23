@@ -11,7 +11,6 @@ class Propiedad < ActiveRecord::Base
   has_ancestry
 
   scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
-  scope :zonas, -> { where(nombre_propiedad: 'Zonas').first.children }
   scope :tipo_capturas, -> { where('ancestry=?', 320) }
   scope :tipo_vedas, -> { where('ancestry=?', 321) }
   scope :procedencias, -> { where('ancestry=?', 322) }
@@ -19,7 +18,10 @@ class Propiedad < ActiveRecord::Base
   scope :nom, -> { where('ancestry=?', 318) }
   scope :iucn, -> { where('ancestry=?', 319) }
 
-  #scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$' AND tipo_propiedad != 'estado'").distinct }
+  def self.zonas
+    zonas = where(nombre_propiedad: 'Zonas').first.children
+    zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i+1]}
+  end
 
   def nombre_zona_a_numero
     case nombre_propiedad
