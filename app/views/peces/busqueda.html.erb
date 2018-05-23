@@ -25,14 +25,10 @@
       </div>
 
 
-      <div class="valorada col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
-        <fieldset>
-          <legend><h5 class="text-primary text-center"><strong>Búsqueda por semáforo:</strong></h5></legend>
-          <%= button_tag "Recomendable", :type => 'button', :class => "btn btn-success btn-sm btn-title", :title => 'Recomendable' %>
-          <%= button_tag "Poco recomendable", :type => 'button', :class => "btn btn-warning btn-sm btn-title", :title => 'Poco recomendable' %>
-          <%= button_tag "Evita", :type => 'button', :class => "btn btn-danger btn-sm btn-title", :title => 'Evita' %>
-          <%= button_tag "No se distribuye", :type => 'button', :class => "btn btn-default btn-sm btn-title", :title => 'No se distribuye' %>
-          <%= button_tag "No hay información", :type => 'button', :class => "btn btn-default btn-sm btn-title", :title => 'No hay información' %>
+      <div class="valorada checkbox col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-4' if(@peces.nil?) %>">
+        <fieldset class="text-center">
+          <legend><h5 class="text-primary"><strong>Búsqueda por semáforo:</strong></h5></legend>
+          <%= checkboxSemaforo %>
         </fieldset>
         <hr/>
       </div>
