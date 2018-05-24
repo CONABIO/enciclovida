@@ -68,11 +68,11 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
       @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
 
-      # Filtros de CNP
+      # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: params[:semaforo_recomendacion])
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
-      elsif params[:semaforo_cnp].present?
+      elsif params[:semaforo_recomendacion].present?
         @peces = @peces.where("valor_zonas LIKE '%#{params[:semaforo_recomendacion]}%'")
       elsif params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
