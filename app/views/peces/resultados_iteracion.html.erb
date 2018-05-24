@@ -1,18 +1,18 @@
 <% @peces.each do |pez| %>
   <div class="result-img-container">
-    <%= link_to image_tag(pez.imagen, class: "img-responsive"), especie_path(pez) %>
-    <span class="label label-info">Valor total: <%= pez.valor_total %></span>
-    <div class="result-nombre-container">
-      <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
-    </div>
+    <%= image_tag(pez.imagen, class: "img-responsive")%>
+
     <div class="btn-group btn-group-sm" role="group" aria-label="...">
-      <button type="button" class="btn"><small>Zonas CNP: </small></button>
+      <button type="button" class="btn"><small>Zonas: </small></button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[0] %>">I</button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[1] %>">II</button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[2] %>">III</button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[3] %>">IV</button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[4] %>">V</button>
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[5] %>">VI</button>
+    </div>
+    <div class="result-nombre-container">
+      <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
     </div>
   </div>
 <% end %>
