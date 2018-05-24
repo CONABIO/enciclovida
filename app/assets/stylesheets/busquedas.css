@@ -168,6 +168,6 @@ div.result-img-container{
 .checkbox i{
     font-size: 1.7em;
 }
-.checkbox:not(.explora_por) span{
+.checkbox:not(.explora_por, .valorada) span{
     background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
 }
