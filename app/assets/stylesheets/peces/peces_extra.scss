@@ -1,3 +1,7 @@
+.form-peces{
+  margin-bottom: 15px;
+}
+
 .ui-draggable, .ui-droppable {
 	background-position: top;
 }
@@ -19,7 +23,7 @@
   background-color: #bbbbbb;
   color: #fafafa;
 }
-.agrupada select.disabled, .exacta input.disabled, .valorada input.disabled, .calificada input.disabled{
+.exacta input.disabled, .valorada input.disabled, .valorada select.disabled, .agrupada select.disabled, .calificada input.disabled, .calificada span.disabled, .calificada select.disabled{
   color: #888;
   background-color: #ddd;
 }
@@ -36,7 +40,15 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .valorada.checkbox input:checked + span, .valorada.checkbox input + span:hover{
   color: #805050;
 }
-
+#valor_total{
+  background-color: transparent;
+  color: #800000;
+  font-weight: bold;
+  font-size: 1.25em;
+  text-align: center;
+  width: 100%;
+  border: none;
+}
 /*TODO tengo entendido esto debería estar en especies.scss*/
 .resultados-peces{
     text-align: center;
