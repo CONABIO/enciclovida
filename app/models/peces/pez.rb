@@ -35,7 +35,6 @@ class Pez < ActiveRecord::Base
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
     asigna_valor_zonas_y_total
-    asigna_valor_total
     asigna_nombre_cientifico
     asigna_nombres_comunes
     asigna_imagen
@@ -123,14 +122,6 @@ class Pez < ActiveRecord::Base
       p.guardar_manual = true
       p.guarda_imagen
     end
-  end
-
-  # Promedia el valor de la CNP por zona, solo valores con datos (v,a,r)
-  def promedia_valores_cnp
-    zonas = color_cnp_a_valor
-    return 0 unless zonas.any?
-
-    zonas.inject(:+)/zonas.length
   end
 
   # BORRAR en centralizacion
