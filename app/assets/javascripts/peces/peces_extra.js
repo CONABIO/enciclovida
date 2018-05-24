@@ -18,7 +18,7 @@ $( function() {
             $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncientifico" ).val( ui.item.value );
             $( "#ncomunes" ).val('');
-            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .calificada select, .calificada input, .calificada span, #ncomunes" ).attr('disabled', true).addClass('disabled');
+            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncomunes" ).attr('disabled', true).addClass('disabled');
             $( "#rango" ).slider( "disable" );
             return false;
         }
@@ -45,7 +45,7 @@ $( function() {
             $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncomunes" ).val( ui.item.value );
             $( "#ncientifico" ).val('');
-            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .calificada select, .calificada input, .calificada span, #ncientifico" ).attr('disabled', true).addClass('disabled');
+            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncientifico" ).attr('disabled', true).addClass('disabled');
             $( "#rango" ).slider( "disable" );
             return false;
         }
@@ -66,7 +66,7 @@ $( function() {
   } );
 
 function limpiaBusqueda(){
-    $(".valorada *, .agrupada *, .calificada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
+    $(".valorada *, .agrupada *, .recomendada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
     $( "#rango" ).slider( "enable" );
     $( "#especie_id, #ncientifico, #ncomunes, #valor_total" ).val('');
 };
