@@ -13,7 +13,7 @@ class PecesController < ApplicationController
 
   # GET /peces/1
   def show
-    @pez = Pez.find(params[:id]).criterios.first.propiedad
+    @pez = Pez.find(params[:id]).criterio_propiedades.select('peces.*, propiedades.*, valor')
   end
 
   # GET /peces/new
