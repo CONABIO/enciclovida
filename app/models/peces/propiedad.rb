@@ -17,6 +17,7 @@ class Propiedad < ActiveRecord::Base
   scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
   scope :nom, -> { where('ancestry=?', 318) }
   scope :iucn, -> { where('ancestry=?', 319) }
+  scope :cnp, -> {where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado')}
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
@@ -31,11 +32,11 @@ class Propiedad < ActiveRecord::Base
         1
       when 'Pacífico III'
         2
-      when 'Golfo de México y Caribe I'
+      when 'Golfo de México y Caribe IV'
         3
-      when 'Golfo de México y Caribe II'
+      when 'Golfo de México y Caribe V'
         4
-      when 'Golfo de México y Caribe III'
+      when 'Golfo de México y Caribe VI'
         5
     end
   end

@@ -20,21 +20,21 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
 
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(valor_total: :desc, tipo_imagen: :asc, nombre_cientifico: :asc) }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
   validates_presence_of :especie_id
-  attr_accessor :guardar_manual, :anio
+  attr_accessor :guardar_manual, :anio, :valor_por_zona
   before_save :actualiza_pez, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
-    asigna_valor_zonas
+    asigna_valor_zonas_y_total
     asigna_valor_total
     asigna_nombre_cientifico
     asigna_nombres_comunes
@@ -51,57 +51,35 @@ class Pez < ActiveRecord::Base
   end
 
   # Asigna los valores promedio por zona, de acuerdo a cada estado
-  def guarda_valor_zonas
-    asigna_valor_zonas
+  def guarda_valor_zonas_y_total
+    asigna_valor_zonas_y_total
     save if changed?
   end
 
-  # Asigna los valores promedio por zona, de acuerdo a cada estado
-  def asigna_valor_zonas
-    zonas = Array.new(6, -20)  # COmpleta con Estatus no definido por default "s"
+  # Asigna los valores promedio por zona, de acuerdo a todos los criterios
+  def asigna_valor_zonas_y_total
     asigna_anio
+    valores_por_zona
+    puts valor_por_zona.inspect
 
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
-      zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la zona
-      cnp_valor = propiedad.nombre_cnp_a_valor  # Obtiene el valor numerico
-      cnp_valor = cnp_valor.nil? ? propiedad.valor : cnp_valor
-      zonas[zona_num] = cnp_valor
+      zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
+
+      if propiedad.nombre_propiedad == 'No se distribuye'  # La quitamos del array ya que no deberia tener valor
+        self.valor_por_zona[zona_num] = nil
+      else
+        self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
+      end
     end
 
-    self.valor_zonas = valor_cnp_a_color(zonas).join('')
+    self.valor_zonas = valor_zona_a_color.join('')
+    self.valor_total = color_zona_a_valor.inject(:+)
   end
 
-  def self.actualiza_todo_valor_zonas
+  def self.actualiza_todo_valor_zonas_y_total
     all.each do |p|
       p.guardar_manual = true
-      p.guarda_valor_zonas
-    end
-  end
-
-  def guarda_valor_total
-    asigna_valor_total
-    save if changed?
-  end
-
-  # Asigna el valor total del pez, sirve para la calificacion y ordenamiento
-  def asigna_valor_total
-    asigna_anio
-    self.valor_total = 0
-
-    propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
-    self.valor_total+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
-    self.valor_total+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
-    self.valor_total+= propiedades.procedencias.map(&:valor).inject(:+).to_i
-    self.valor_total+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
-    self.valor_total+= propiedades.nom.map(&:valor).inject(:+).to_i
-    self.valor_total+= propiedades.iucn.map(&:valor).inject(:+).to_i
-    self.valor_total+= promedia_valores_cnp
-  end
-
-  def self.actualiza_todo_valor_total
-    all.each do |p|
-      p.guardar_manual = true
-      p.guarda_valor_total
+      p.guarda_valor_zonas_y_total
     end
   end
 
@@ -197,42 +175,36 @@ class Pez < ActiveRecord::Base
 
   private
 
-  # Asocia el valor de la cnp a un color correspondiente
-  def valor_cnp_a_color(zonas_array)
-    zonas = []
-
-    zonas_array.each do |zona|
+  # Asocia el valor por zona a un color correspondiente
+  def valor_zona_a_color
+    valor_por_zona.each_with_index do |zona, i|
       case zona
-        when -20
-          zonas << 's'
-        when -10
-          zonas << 'n'
-        when 0
-          zonas << 'v'
-        when 5
-          zonas << 'a'
-        when 20
-          zonas << 'r'
+        when -5..4
+          self.valor_por_zona[i] = 'v'
+        when 5..19
+          self.valor_por_zona[i] = 'a'
+        when 20..100
+          self.valor_por_zona[i] = 'r'
         else
-          zonas << 's'
+          self.valor_por_zona[i] = 'n'
       end
     end
-
-    zonas
   end
 
-  # El inverso de valor_cnp_a_color, solo valores con datos (v,a,r)
-  def color_cnp_a_valor
+  # Este valor es solo de referencia para el valor total
+  def color_zona_a_valor
     zonas = []
 
     valor_zonas.split('').each do |zona|
       case zona
         when 'v'
-          zonas << 0
+          zonas << 43
         when 'a'
-          zonas << 5
+          zonas << 7
         when 'r'
-          zonas << 20
+          zonas << 1
+        when 'n'
+          zonas << 0
       end
     end
 
@@ -244,4 +216,19 @@ class Pez < ActiveRecord::Base
     self.anio = anio || CONFIG.peces.anio || 2012
   end
 
+  # El valor de los criterios sin la CNP
+  def valores_por_zona
+    asigna_anio
+    valor = 0
+
+    propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
+    valor+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
+    valor+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
+    valor+= propiedades.procedencias.map(&:valor).inject(:+).to_i
+    valor+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
+    valor+= propiedades.nom.map(&:valor).inject(:+).to_i
+    valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
+
+    self.valor_por_zona = Array.new(6, valor)
+  end
 end
