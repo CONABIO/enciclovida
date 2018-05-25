@@ -1,6 +1,6 @@
 <% @peces.each do |pez| %>
   <div class="result-img-container">
-    <%= image_tag(pez.imagen, class: "img-responsive")%>
+    <%= button_tag image_tag(pez.imagen, class: "img-responsive"), type: 'button', class: 'btn-ficha', "data-especie-id" => pez.especie_id %>
 
     <div class="btn-group btn-group-sm" role="group" aria-label="...">
       <button type="button" class="btn"><small>Zonas: </small></button>
@@ -12,7 +12,8 @@
       <button type="button" class="btn btn-zona btn-zona-<%= pez.valor_zonas[5] %>">VI</button>
     </div>
     <div class="result-nombre-container">
-      <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
+      <div id="datos-<%= pez.especie_id %>" class="result-datos-container"></div>
+      <%= tituloNombresPeces(pez, :link => true).html_safe %>
     </div>
   </div>
 <% end %>
