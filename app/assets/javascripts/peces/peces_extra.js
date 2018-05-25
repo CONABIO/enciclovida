@@ -51,19 +51,13 @@ $( function() {
         }
     });
 });
-$( function() {
-    $( "#rango" ).slider({
-        range: true,
-        min: -5,
-        max: 70,
-        values: [-5,4],
-        slide: function( event, ui ) {
-            $( "#valor_total" ).val(ui.values[ 0 ] + ", " + ui.values[ 1 ] );
-            $("#resultados").load('/peces/busqueda?semaforo_vt=' + $( "#rango" ).slider( "values", 0 ) + ',' + $( "#rango" ).slider( "values", 1 ));
-        }
+$(document).ready(function(){
+    $(".btn-ficha").one('click',function(){
+        idEspecie = $(this).data('especie-id');
+        pestaña = '/peces/'+idEspecie+'?layout=0';
+        $('#datos-'+idEspecie).load(pestaña);
     });
-    //$( "#valor_total" ).val($( "#rango" ).slider( "values", 0 ) + ',' + $( "#rango" ).slider( "values", 1 ) );
-  } );
+});
 
 function limpiaBusqueda(){
     $(".valorada *, .agrupada *, .recomendada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
