@@ -1,34 +1,13 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Especie:</strong>
-  <%= @pez.especie_id %>
-</p>
-
-<p>
-  <strong>Valor total promedio:</strong>
-  <%= @pez.valor_total_promedio %>
-</p>
-
-<p>
-  <strong>Valor:</strong>
-  <%= @pez.valor %>
-</p>
-
-<p>
-  <strong>Anio:</strong>
-  <%= @pez.anio %>
-</p>
-
-<p>
-  <strong>Nombre propiedad:</strong>
-  <%= @pez.nombre_propiedad %>
-</p>
-
-<p>
-  <strong>Tipo propiedad:</strong>
-  <%= @pez.tipo_propiedad %>
-</p>
-
-<%= link_to 'Edit', edit_pece_path(@pez) %> |
-<%= link_to 'Back', pez_path %>
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <span class="badge"><%= @pez.especie_id %></span><%= tituloNombresPeces(@pez, :link => true).html_safe %>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <% @criterios.each do |c|  %>
+        <dt><%= c.tipo_propiedad %>: </dt>
+        <dd><small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span></dd>
+      <% end %>
+    </dl>
+  </div>
+</div>

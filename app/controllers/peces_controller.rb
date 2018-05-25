@@ -13,7 +13,10 @@ class PecesController < ApplicationController
 
   # GET /peces/1
   def show
-    @pez = Pez.find(params[:id]).criterio_propiedades.select('peces.*, propiedades.*, valor')
+    @pez = Pez.find(params[:id])
+    @criterios = @pez.criterio_propiedades.select('*, valor')
+    render :layout => false and return if params[:layout].present?
+
   end
 
   # GET /peces/new
