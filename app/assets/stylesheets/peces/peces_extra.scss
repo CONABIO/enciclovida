@@ -45,6 +45,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
+/*
 #valor_total{
   background-color: transparent;
   color: #800000;
@@ -54,18 +55,29 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   width: 100%;
   border: none;
 }
+*/
 /*TODO tengo entendido esto debería estar en especies.scss*/
 .resultados-peces{
     text-align: center;
 }
-.resultados-peces div.result-img-container img{
-  max-height: 200px;
+.resultados-peces .result-img-container{
+  margin: 4px;
+  overflow: visible;
+}
+.resultados-peces .result-img-container img{
+  max-height: 150px;
   max-width: 300px;
-  margin: -15px;
+  /*margin: -15px;*/
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.9);
   vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 10px;
+}
+.resultados-peces .result-img-container .btn-ficha{
+  border: none;
+  background-color: transparent;
+  display: block;
+  margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover{
   transform:scale(.75);
@@ -74,10 +86,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-transform:scale(.75); /* Safari and Chrome */
   -o-transform:scale(.75); /* Opera */
 }
-.resultados-peces div.result-img-container a{
+.resultados-peces .result-img-container a{
   cursor: pointer;
 }
-.resultados-peces div.result-img-container .result-nombre-container{
+.resultados-peces .result-img-container .result-nombre-container{
     min-height: 44px;
     padding: 0;
     margin: 0;
@@ -85,23 +97,41 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
     position: relative;
 
 }
-.resultados-peces div.result-img-container h5{
+.resultados-peces .result-img-container h5, .resultados-peces .result-img-container h4{
     margin: 0;
     padding: 2px 5px;
     text-align: center;
     font-weight: bold;
     font-size: 1em;
 }
-.resultados-peces div.result-img-container a{
+/*
+.resultados-peces .result-img-container a{
     cursor: pointer;
 }
-/*
-.btn-zona-v{background-color: #006400!important; background-image: linear-gradient(to bottom, #97ad97 0%, #006400 100%);}
-.btn-zona-a{background-color: #ffae29!important;background-image: linear-gradient(to bottom, #fafafa 0%, #ffae29 100%);}
-.btn-zona-r{background-color: #83220f!important;background-image: linear-gradient(to bottom, #fafafa 0%, #83220f 100%);}
-.btn-zona-n{background-color: #e3e3e3!important;background-image: linear-gradient(to bottom, #fafafa 0%, #e3e3e3 100%);}
-.btn-zona-s{background-color: #333!important;background-image: linear-gradient(to bottom, #fafafa 0%, #333 100%);}
 */
+.result-datos-container{
+    /*background-color: rgba(238, 238, 238, 0.9);*/
+    width: 350px;
+    font-size: .85em;
+    /*padding: 15px;*/
+}
+.result-datos-container{
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s ease;
+    border: none;
+    top: 0%;
+    right: 0%;
+    overflow-y: hidden;
+    position: absolute;
+    z-index: 10;
+}
+.resultados-peces .result-img-container .btn-ficha:focus ~ .result-nombre-container .result-datos-container{
+    visibility: visible;
+    opacity: 1;
+    overflow-y: visible;
+}
+
 .btn-zona{color: #3a3a3a; font-weight: bolder; cursor: default!important; border: none;}
 
 .btn-zona-v{
