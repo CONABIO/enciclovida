@@ -12,18 +12,14 @@
 //
 //= require jquery
 //= require jquery-ui.js
-//= require jquery_ujs
+// require jquery_ujs
 //= require turbolinks
 //= require adicional.js
 //= require bootstrap-sprockets
-//= require comentarios.js
 //= require i18n.min.js
-//= require jquery.imagesloaded.min.js
-//= require jquery.mockjax.js
-//= require jquery.scrollTo-min.js
-//= require jQuery-Autocomplete.js
-//= require typeahead.js
 //= require general.js
 //= require jquery.soulmate.js
 //= require busquedas.js
 //= require "i18n/translations"
+//= require "peces/peces_extra"
+//= require cocoon

@@ -1,77 +1,4 @@
 GIT
-  remote: git://github.com/calonso-conabio/rails3-jquery-autocomplete.git
-  revision: a4ef3d870c7b8982af40274a2c51bf7e7c55ccf3
-  branch: master
-  specs:
-    rails3-jquery-autocomplete (1.0.11)
-      rails (>= 3.0)
-
-GIT
-  remote: git://github.com/kueda/flickraw.git
-  revision: 35cc21b0f1b6b1af3d10b19d53ea46dd2e5316ea
-  branch: ssl-cert
-  specs:
-    flickraw (0.9.8)
-
-GIT
-  remote: git://github.com/rails-sqlserver/tiny_tds.git
-  revision: 82edfd552aa259ab373d482f0fb2994d8ebd80a1
-  specs:
-    tiny_tds (0.9.5.rc.3)
-      mini_portile2 (~> 2.0)
-
-GIT
-  remote: git://github.com/rails/activerecord-session_store.git
-  revision: e879bf087eb684452aaddb734efa20b95588b141
-  specs:
-    activerecord-session_store (0.1.0)
-      actionpack (>= 4.0.0, < 5)
-      activerecord (>= 4.0.0, < 5)
-      railties (>= 4.0.0, < 5)
-
-GIT
-  remote: git://github.com/rails/rails.git
-  revision: 973490a2879358db9269ecf75e03b2777f9c9e24
-  branch: 4-0-stable
-  specs:
-    actionmailer (4.0.8)
-      actionpack (= 4.0.8)
-      mail (~> 2.5, >= 2.5.4)
-    actionpack (4.0.8)
-      activesupport (= 4.0.8)
-      builder (~> 3.1.0)
-      erubis (~> 2.7.0)
-      rack (~> 1.5.2)
-      rack-test (~> 0.6.2)
-    activemodel (4.0.8)
-      activesupport (= 4.0.8)
-      builder (~> 3.1.0)
-    activerecord (4.0.8)
-      activemodel (= 4.0.8)
-      activerecord-deprecated_finders (~> 1.0.2)
-      activesupport (= 4.0.8)
-      arel (~> 4.0.0)
-    activesupport (4.0.8)
-      i18n (~> 0.6, >= 0.6.9)
-      minitest (~> 4.2)
-      multi_json (~> 1.3)
-      thread_safe (~> 0.1)
-      tzinfo (~> 0.3.37)
-    rails (4.0.8)
-      actionmailer (= 4.0.8)
-      actionpack (= 4.0.8)
-      activerecord (= 4.0.8)
-      activesupport (= 4.0.8)
-      bundler (>= 1.3.0, < 2.0)
-      railties (= 4.0.8)
-      sprockets-rails (~> 2.0)
-    railties (4.0.8)
-      actionpack (= 4.0.8)
-      activesupport (= 4.0.8)
-      rake (>= 0.8.7)
-      thor (>= 0.18.1, < 2.0)
-
-GIT
   remote: https://github.com/calonso-conabio/activerecord-sqlserver-adapter.git
   revision: 47b6d7b5eb6175cf7ae6929678fbe157f53c9f77
   ref: 47b6d7b
@@ -89,215 +16,272 @@ GIT
     ancestry (2.1.0)
       activerecord (>= 3.0.0)
 
+GIT
+  remote: https://github.com/rails/activerecord-session_store
+  revision: 3e0147c74f862dc9a3600a8b11c980d9d43897a1
+  specs:
+    activerecord-session_store (1.1.1)
+      actionpack (>= 4.0)
+      activerecord (>= 4.0)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 1.5.2, < 3)
+      railties (>= 4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack-action_caching (1.1.1)
-      actionpack (>= 4.0.0, < 5.0)
-    activerecord-deprecated_finders (1.0.3)
+    actionmailer (4.0.13)
+      actionpack (= 4.0.13)
+      mail (~> 2.5, >= 2.5.4)
+    actionpack (4.0.13)
+      activesupport (= 4.0.13)
+      builder (~> 3.1.0)
+      erubis (~> 2.7.0)
+      rack (~> 1.5.2)
+      rack-test (~> 0.6.2)
+    actionpack-action_caching (1.2.0)
+      actionpack (>= 4.0.0, < 6)
+    activemodel (4.0.13)
+      activesupport (= 4.0.13)
+      builder (~> 3.1.0)
+    activerecord (4.0.13)
+      activemodel (= 4.0.13)
+      activerecord-deprecated_finders (~> 1.0.2)
+      activesupport (= 4.0.13)
+      arel (~> 4.0.0)
+    activerecord-deprecated_finders (1.0.4)
+    activesupport (4.0.13)
+      i18n (~> 0.6, >= 0.6.9)
+      minitest (~> 4.2)
+      multi_json (~> 1.3)
+      thread_safe (~> 0.1)
+      tzinfo (~> 0.3.37)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
     arel (4.0.2)
-    autoprefixer-rails (6.3.5)
+    autoprefixer-rails (8.3.0)
       execjs
-    axlsx (2.0.1)
+    axlsx (1.3.6)
       htmlentities (~> 4.3.1)
       nokogiri (>= 1.4.1)
-      rubyzip (~> 1.2.1)
-    axlsx_rails (0.3.0)
-      axlsx (>= 2.0.1)
+      rubyzip (>= 0.9.5)
+    axlsx_rails (0.1.5)
+      axlsx
       rails (>= 3.1)
-    bcrypt (3.1.7)
-    blurrily (0.2.1)
-      activesupport
+    bcrypt (3.1.11)
+    blurrily (1.0.2)
+      activesupport (~> 4)
       eventmachine
-      json
-    bootstrap-sass (3.3.6)
+    bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     builder (3.1.4)
-    carrierwave (0.10.0)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
-      json (>= 1.7)
+    carrierwave (1.2.2)
+      activemodel (>= 4.0.0)
+      activesupport (>= 4.0.0)
       mime-types (>= 1.16)
     chronic (0.10.2)
     cocoon (1.2.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.7.1)
-    composite_primary_keys (6.0.6)
-      activerecord (~> 4.0.0)
-    daemons (1.1.9)
-    delayed_job (4.0.2)
-      activesupport (>= 3.0, < 4.2)
-    delayed_job_active_record (4.0.1)
-      activerecord (>= 3.0, < 4.2)
-      delayed_job (>= 3.0, < 4.1)
-    devise (3.2.4)
+    coffee-script-source (1.12.2)
+    composite_primary_keys (6.0.8)
+      activerecord (~> 4.0.6)
+    concurrent-ruby (1.0.5)
+    daemons (1.2.6)
+    delayed_job (4.1.5)
+      activesupport (>= 3.0, < 5.3)
+    delayed_job_active_record (4.1.3)
+      activerecord (>= 3.0, < 5.3)
+      delayed_job (>= 3.0, < 5)
+    devise (3.5.10)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
+      responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
-    eventmachine (1.0.7)
-    execjs (2.2.1)
-    exifr (1.1.3)
-    ffi (1.9.6)
+    eventmachine (1.2.5)
+    execjs (2.7.0)
+    exifr (1.3.3)
+    ffi (1.9.23)
     fontello_rails_converter (0.4.6)
       activesupport
       launchy
       rest-client
       rubyzip (~> 1.0)
+    formtastic (3.1.5)
+      actionpack (>= 3.2.13)
     gyoku (1.1.1)
       builder (>= 2.1.2)
-    haml (4.0.5)
+    haml (5.0.4)
+      temple (>= 0.8.0)
       tilt
-    hike (1.2.3)
-    htmlentities (4.3.2)
+    htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    httpi (2.1.0)
+    httpi (2.1.1)
       rack
       rubyntlm (~> 0.3.2)
-    i18n (0.8.6)
-    i18n-js (2.1.2)
-      i18n
+    i18n (0.9.5)
+      concurrent-ruby (~> 1.0)
+    i18n-js (3.0.5)
+      i18n (>= 0.6.6, < 2)
     jbuilder (1.0.2)
       activesupport (>= 3.0.0)
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.1)
     launchy (2.4.3)
       addressable (~> 2.3)
     levenshtein-ffi (1.1.0)
       ffi (~> 1.9)
-    libv8 (3.16.14.3)
+    libv8 (3.16.14.19)
     magick-metadata (0.0.3)
-    mail (2.6.1)
-      mime-types (>= 1.16, < 3)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     mime-types (1.25.1)
-    mini_portile2 (2.1.0)
+    mini_mime (1.0.0)
+    mini_portile2 (2.3.0)
     minitest (4.7.5)
     multi_json (1.13.1)
     mysql2 (0.3.17)
     netrc (0.11.0)
-    nokogiri (1.8.1)
+    nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
     nori (2.3.0)
     orm_adapter (0.5.0)
-    pg (0.17.1)
-    public_suffix (3.0.0)
+    pg (0.21.0)
+    public_suffix (3.0.2)
     rack (1.5.5)
-    rack-contrib (1.1.0)
-      rack (>= 0.9.1)
+    rack-contrib (1.8.0)
+      rack (~> 1.4)
     rack-google-analytics (1.2.0)
       actionpack
       activesupport
-    rack-protection (1.5.3)
+    rack-protection (1.5.5)
       rack
-    rack-test (0.6.2)
+    rack-test (0.6.3)
       rack (>= 1.0)
+    rails (4.0.13)
+      actionmailer (= 4.0.13)
+      actionpack (= 4.0.13)
+      activerecord (= 4.0.13)
+      activesupport (= 4.0.13)
+      bundler (>= 1.3.0, < 2.0)
+      railties (= 4.0.13)
+      sprockets-rails (~> 2.0)
+    railties (4.0.13)
+      actionpack (= 4.0.13)
+      activesupport (= 4.0.13)
+      rake (>= 0.8.7)
+      thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    rdoc (4.1.1)
-      json (~> 1.4)
+    rb-fsevent (0.10.3)
+    rb-inotify (0.9.10)
+      ffi (>= 0.5.0, < 2)
+    rdoc (6.0.3)
     recaptcha (0.4.0)
-    redis (3.1.0)
-    ref (1.0.5)
+    redis (4.0.1)
+    ref (2.0.0)
+    responders (1.1.2)
+      railties (>= 3.2, < 4.2)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rinku (1.7.3)
-    roo (1.13.2)
-      nokogiri
-      rubyzip
-      spreadsheet (> 0.6.4)
-    ruby-ole (1.2.11.8)
-    rubyXL (3.1.0)
+    rinku (2.0.4)
+    roo (2.7.1)
+      nokogiri (~> 1)
+      rubyzip (~> 1.1, < 2.0.0)
+    rubyXL (3.3.29)
       nokogiri (>= 1.4.4)
-      rubyzip (>= 1.0.0)
+      rubyzip (>= 1.1.6)
     rubyntlm (0.3.4)
     rubyzip (1.2.1)
-    sass (3.3.4)
-    sass-rails (4.0.3)
-      railties (>= 4.0.0, < 5.0)
-      sass (~> 3.3.4)
-      sprockets (~> 2.8, <= 2.11.3)
-      sprockets-rails (~> 2.0)
+    sass (3.5.6)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+    sass-rails (5.0.7)
+      railties (>= 4.0.0, < 6)
+      sass (~> 3.1)
+      sprockets (>= 2.8, < 4.0)
+      sprockets-rails (>= 2.0, < 4.0)
+      tilt (>= 1.1, < 3)
     savon (2.4.0)
       akami (~> 1.2.0)
       builder (>= 2.1.2)
       gyoku (~> 1.1.0)
       httpi (~> 2.1.0)
-      nokogiri (>= 1.8.1)
+      nokogiri (>= 1.4.0)
       nori (~> 2.3.0)
       wasabi (~> 3.2.2)
-    sdoc (0.4.0)
-      json (~> 1.8)
-      rdoc (~> 4.0, < 5.0)
-    seed_dump (3.1.0)
-      activerecord
-      activesupport
-    sinatra (1.4.5)
-      rack (~> 1.4)
+    sdoc (1.0.0)
+      rdoc (>= 5.0)
+    seed_dump (3.2.4)
+      activerecord (>= 4)
+      activesupport (>= 4)
+    sinatra (1.4.8)
+      rack (~> 1.5)
       rack-protection (~> 1.4)
-      tilt (~> 1.3, >= 1.3.4)
+      tilt (>= 1.3, < 3)
     soulmate (1.1.0)
       multi_json (>= 1.0)
       redis (>= 3.0)
       sinatra (>= 1.0)
       vegas (>= 0.1.0)
-    spreadsheet (1.0.4)
-      ruby-ole (>= 1.0)
-    sprockets (2.11.3)
-      hike (~> 1.2)
-      multi_json (~> 1.0)
-      rack (~> 1.0)
-      tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.1.3)
+    sprockets (3.7.1)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
-      sprockets (~> 2.8)
-    therubyracer (0.12.1)
-      libv8 (~> 3.16.14.0)
+      sprockets (>= 2.8, < 4.0)
+    temple (0.8.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
       ref
-    thor (0.19.1)
+    thor (0.20.0)
     thread_safe (0.3.6)
-    tilt (1.4.1)
-    trollop (2.0)
-    turbolinks (2.2.2)
-      coffee-rails
-    tzinfo (0.3.53)
-    uglifier (2.5.3)
-      execjs (>= 0.3.0)
-      json (>= 1.8.0)
+    tilt (2.0.8)
+    tiny_tds (1.3.0)
+      mini_portile2 (~> 2.0)
+    trollop (2.1.2)
+    turbolinks (5.1.1)
+      turbolinks-source (~> 5.1)
+    turbolinks-source (5.1.0)
+    tzinfo (0.3.54)
+    uglifier (4.1.9)
+      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.4)
+    unf_ext (0.0.7.5)
     vegas (0.1.11)
       rack (>= 1.0.0)
-    warden (1.2.3)
+    warden (1.2.7)
       rack (>= 1.0)
     wasabi (3.2.3)
       httpi (~> 2.0)
       mime-types (< 2.0.0)
       nokogiri (>= 1.4.0)
-    wash_out (0.9.0)
+    wash_out (0.12.0)
       nori (>= 2.0.0)
-    whenever (0.9.7)
+    whenever (0.10.0)
       chronic (>= 0.6.3)
-    wicked_pdf (1.0.4)
+    wicked_pdf (1.1.0)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
@@ -308,8 +292,8 @@ DEPENDENCIES
   activerecord-sqlserver-adapter!
   ancestry!
   axlsx_rails
-  blurrily (= 0.2.1)
-  bootstrap-sass (~> 3.3.6)
+  blurrily
+  bootstrap-sass
   carrierwave
   cocoon (= 1.2.0)
   coffee-rails (~> 4.0.0)
@@ -319,8 +303,8 @@ DEPENDENCIES
   delayed_job_active_record
   devise
   exifr
-  flickraw (~> 0.9.8)!
   fontello_rails_converter
+  formtastic
   haml
   htmlentities
   i18n-js
@@ -330,33 +314,33 @@ DEPENDENCIES
   magick-metadata
   mail
   mime-types (= 1.25.1)
-  mysql2
+  mysql2 (= 0.3.17)
   nokogiri
-  pg
+  pg (= 0.21.0)
   rack-contrib
   rack-google-analytics
-  rails!
-  rails3-jquery-autocomplete!
+  rails (= 4.0.13)
   rake (= 10.4.2)
-  recaptcha
+  recaptcha (= 0.4.0)
   rest-client
   rinku
   roo
   rubyXL
   rubyzip (= 1.2.1)
-  sass-rails (~> 4.0.0)
+  sass-rails
   savon (= 2.4.0)
   sdoc
   seed_dump
   soulmate
   therubyracer
-  tiny_tds!
+  tiny_tds (= 1.3.0)
   trollop
   turbolinks
   uglifier (>= 1.3.0)
   wash_out
   whenever
   wicked_pdf
+  zip
 
 BUNDLED WITH
-   1.13.6
+   1.16.1
