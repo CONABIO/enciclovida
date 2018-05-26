@@ -17,7 +17,7 @@ class Propiedad < ActiveRecord::Base
   scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
   scope :nom, -> { where('ancestry=?', 318) }
   scope :iucn, -> { where('ancestry=?', 319) }
-  scope :cnp, -> {where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado')}
+  scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children

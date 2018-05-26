@@ -61,7 +61,6 @@ class PecesController < ApplicationController
       @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
 
       # Filtros globales
-      #@peces = @peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}") if params[:semaforo_vt].present?
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
@@ -69,6 +68,7 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
       @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
       @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
+      @peces = @peces.where("criterios.id IN (#{params[:cnp]})") if params[:cnp].present?
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
@@ -83,12 +83,6 @@ class PecesController < ApplicationController
 
       render :file => 'peces/resultados'
     end
-
-    #if params[:commit].nil? && params[:semaforo_vt].present?
-    #  @peces = Pez.filtros_peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}")
-    #  render :layout => false, :file => 'peces/resultados_iteracion'  and return
-    #end
-
   end
 
   def dameNombre

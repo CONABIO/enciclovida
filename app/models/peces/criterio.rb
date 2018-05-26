@@ -15,9 +15,9 @@ class Criterio < ActiveRecord::Base
   scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
   scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
   scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
-  scope :cnp, -> { select(:nombre_propiedad).where(tipo_propiedad: ['zona pacifico', 'zona golfo y caribe']).distinct.order(:nombre_propiedad) }
   scope :nom, -> { select_join_propiedades.where("ancestry=?", 318) }
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", 319) }
+  scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
 
   def self.catalogo
 
@@ -52,6 +52,18 @@ class Criterio < ActiveRecord::Base
     grouped_options
   end
 
+  def self.cnp_select
+    cnp_options = ['Con potencial de desarrollo', 'Máximo aprovechamiento permisible', 'En deterioro']
+    options = []
+
+    cnp_options.each do |c|
+      criterios = self.cnp.where('nombre_propiedad=?', c).map(&:id).join(',')
+      options << [c, criterios]
+    end
+
+    options
+  end
+
   def self.dame_filtros
 
     filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
@@ -61,7 +73,7 @@ class Criterio < ActiveRecord::Base
        tipo_vedas: self.tipo_vedas,
        procedencias: self.procedencias,
        pesquerias:  self.pesquerias,
-       cnp: self.cnp,
+       cnp: self.cnp_select,
        nom: self.nom,
        iucn: self.iucn}
     end
