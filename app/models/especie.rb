@@ -26,6 +26,7 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
+  has_one :pez
   has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => 'especie_id', :dependent => :destroy
   belongs_to :categoria_taxonomica
   has_many :especies_regiones, :class_name => 'EspecieRegion', :foreign_key => 'especie_id', :dependent => :destroy
@@ -615,6 +616,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     if ncnat[:estatus] == 'OK'
       ncn = ncnat[:nombres_comunes].map do |nc|
+        next unless nc['name'].present?
+        next unless nc['lexicon'].present?
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
 
         # Asigna la lengua

@@ -1,0 +1,27 @@
+<div id="resultados-container" class="state-one">
+  <div class="row">
+      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
+        <span class="glyphicon"></span></button>
+  </div>
+  <hr/>
+    <%= render :file => 'peces/busqueda' %>
+
+  <div id="pestañas" class="panel">
+    <ul class="nav nav-tabs" data-tabs="tabs">
+      <li class="active">
+        <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos"><span class="label label-primary"><%= @peces.length %></span> Resultados</a>
+      </li>
+    </ul>
+
+    <div class="tab-pane panel-body resultados-peces" id="todos">
+        <div id="resultados">
+          <%= render :file => 'peces/resultados_iteracion' %>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
