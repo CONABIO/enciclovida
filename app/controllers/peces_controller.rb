@@ -3,6 +3,9 @@ class PecesController < ApplicationController
     @no_render_busqueda_basica = true
   end
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
+  before_action :only => [:index, :new, :update, :edit, :create, :destroy] {tiene_permiso?('Administrador', true)}  # Minimo administrador
+
 
   # GET /peces
   def index
@@ -58,7 +61,9 @@ class PecesController < ApplicationController
 
     if params[:commit].present?
       @peces = Pez.filtros_peces
-      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
+
+      # Busqueda por nombre científico o comunes
+      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
       # Filtros globales
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
@@ -111,7 +116,6 @@ class PecesController < ApplicationController
   def dame_regexp_zonas(opc = {})
     colores_default = opc[:colores_default] || 'varns'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
-    #repeticiones_antes = zona-1
 
     if opc[:zonas] == 1  # La primera zona
       "#{color_seleccionado}[#{colores_default}]{5}"
