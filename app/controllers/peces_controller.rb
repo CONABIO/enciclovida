@@ -14,9 +14,8 @@ class PecesController < ApplicationController
   # GET /peces/1
   def show
     @pez = Pez.find(params[:id])
-    @criterios = @pez.criterio_propiedades.select('*, valor')
+    @criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     render :layout => false and return if params[:layout].present?
-
   end
 
   # GET /peces/new
