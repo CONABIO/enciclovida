@@ -20,7 +20,7 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
 
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(valor_total: :desc, tipo_imagen: :asc, nombre_cientifico: :asc) }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
@@ -34,8 +34,8 @@ class Pez < ActiveRecord::Base
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
+    guarda_nom_iucn
     asigna_valor_zonas_y_total
-    asigna_valor_total
     asigna_nombre_cientifico
     asigna_nombres_comunes
     asigna_imagen
@@ -83,6 +83,49 @@ class Pez < ActiveRecord::Base
     end
   end
 
+  # Asigna los valores de la nom de acuerdo a catalogos
+  def guarda_nom_iucn
+    asigna_anio
+    categorias = []
+    borra_relaciones_nom_iucn
+
+    especie.estados_conservacion.each do |n|  # BORRAR este parche en la centralizacion
+      if valor = n.nom_cites_iucn(true)
+        propiedad = Propiedad.where(nombre_propiedad: valor).first
+        next unless propiedad
+
+        if criterio = propiedad.criterios.where('anio=?', anio).first
+          pc = peces_criterios.new
+          pc.criterio_id = criterio.id
+          pc.save if pc.valid?
+
+          categorias << propiedad.tipo_propiedad
+        end
+      end  # End valor de nom o iucn
+    end  # End estados conservacion
+
+    # Categorias default si no encontro valor en nom
+    if !categorias.include?('Norma Oficial Mexicana 059 SEMARNAT-2010')
+      pc = peces_criterios.new
+      pc.criterio_id = 158  # No aplica
+      pc.save if pc.valid?
+    end
+
+    # Categorias default si no encontro valor en iucn
+    if !categorias.include?('Lista roja IUCN 2016-3')
+      pc = peces_criterios.new
+      pc.criterio_id = 159  # No aplica
+      pc.save if pc.valid?
+    end
+  end
+
+  def self.actualiza_todo_nom_iucn
+    all.each do |p|
+      p.guardar_manual = true
+      p.guarda_nom_iucn
+    end
+  end
+
   def guarda_imagen
     asigna_imagen
     save if changed?
@@ -123,14 +166,6 @@ class Pez < ActiveRecord::Base
       p.guardar_manual = true
       p.guarda_imagen
     end
-  end
-
-  # Promedia el valor de la CNP por zona, solo valores con datos (v,a,r)
-  def promedia_valores_cnp
-    zonas = color_cnp_a_valor
-    return 0 unless zonas.any?
-
-    zonas.inject(:+)/zonas.length
   end
 
   # BORRAR en centralizacion
@@ -198,11 +233,13 @@ class Pez < ActiveRecord::Base
     valor_zonas.split('').each do |zona|
       case zona
         when 'v'
-          zonas << 43
+          #zonas << 43
+          zonas << -100
         when 'a'
-          zonas << 7
+          #zonas << 7
+          zonas << 10
         when 'r'
-          zonas << 1
+          zonas << 100
         when 'n'
           zonas << 0
       end
@@ -230,5 +267,14 @@ class Pez < ActiveRecord::Base
     valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
 
     self.valor_por_zona = Array.new(6, valor)
+  end
+
+  # Borra la relaciones para crearlas de nuevo
+  def borra_relaciones_nom_iucn
+    asigna_anio
+    nom = criterio_propiedades.select('propiedades.*, criterios.id AS criterio_id').nom.where('anio=?', anio).map(&:criterio_id)
+    iucn = criterio_propiedades.select('propiedades.*, criterios.id AS criterio_id').iucn.where('anio=?', anio).map(&:criterio_id)
+
+    peces_criterios.where(criterio_id: nom + iucn).delete_all
   end
 end

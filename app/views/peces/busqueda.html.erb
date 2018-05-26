@@ -66,6 +66,9 @@
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input') %>
         </div>
+        <div class="col-xs-10 col-xs-offset-1 form-peces">
+          <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Carta Nacional Pesquera 2012 - -', class: 'form-control input-sm') %>
+        </div>
       </fieldset>
       <hr/>
     </div>
