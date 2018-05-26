@@ -20,7 +20,7 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
 
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(valor_total: :desc, tipo_imagen: :asc, nombre_cientifico: :asc) }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
@@ -233,11 +233,13 @@ class Pez < ActiveRecord::Base
     valor_zonas.split('').each do |zona|
       case zona
         when 'v'
-          zonas << 43
+          #zonas << 43
+          zonas << -100
         when 'a'
-          zonas << 7
+          #zonas << 7
+          zonas << 10
         when 'r'
-          zonas << 1
+          zonas << 100
         when 'n'
           zonas << 0
       end
