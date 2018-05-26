@@ -5,7 +5,7 @@ module PecesHelper
 
 
         if params[:title]
-          nombre.present? ? "#{nombre} (#{taxon.nombre_cientifico})".html_safe : taxon.nombre_cientifico
+          nombre.present? ? "<h4>#{nombre}</h4> <h5>#{taxon.nombre_cientifico}</h5>".html_safe : taxon.nombre_cientifico
         elsif params[:link]
           nombre.present? ? "<h4>#{nombre}</h4><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
         elsif params[:show]
