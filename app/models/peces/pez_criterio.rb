@@ -7,4 +7,6 @@ class PezCriterio < ActiveRecord::Base
   belongs_to :pez, class_name: 'Pez', foreign_key: :especie_id
   belongs_to :criterio
 
+  validates_uniqueness_of :especie_id, scope: :criterio_id
+
 end

@@ -17,7 +17,7 @@ class Propiedad < ActiveRecord::Base
   scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
   scope :nom, -> { where('ancestry=?', 318) }
   scope :iucn, -> { where('ancestry=?', 319) }
-  scope :cnp, -> {where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado')}
+  scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
@@ -38,17 +38,6 @@ class Propiedad < ActiveRecord::Base
         4
       when 'Golfo de México y Caribe VI'
         5
-    end
-  end
-
-  def nombre_cnp_a_valor
-    case nombre_propiedad
-      when 'Estatus no definido'
-        -20
-      when 'No se distribuye'
-        -10
-      else
-        nil
     end
   end
 
