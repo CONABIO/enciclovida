@@ -728,6 +728,9 @@ class EspeciesController < ApplicationController
 
   # Actualiza las observaciones, los nombres comunes y las fotos
   def servicios
+    # Para ctualizar los servicios del pez
+    pez = @especie.pez
+
     # Para guardar los cambios en redis y las observacion
     if Rails.env.production?
       @especie.delay(queue: 'redis').guarda_redis
@@ -740,8 +743,10 @@ class EspeciesController < ApplicationController
         @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
       end
 
+      pez.delay(queue: 'peces').save if pez
     else
       @especie.guarda_redis
+      pez.save if pez
     end
   end
 
