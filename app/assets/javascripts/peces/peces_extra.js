@@ -18,8 +18,7 @@ $( function() {
             $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncientifico" ).val( ui.item.value );
             $( "#ncomunes" ).val('');
-            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncomunes" ).attr('disabled', true).addClass('disabled');
-            $( "#rango" ).slider( "disable" );
+            $( ".agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncomunes" ).attr('disabled', true).addClass('disabled');
             return false;
         }
     });
@@ -45,8 +44,7 @@ $( function() {
             $( "#especie_id" ).val( ui.item.especie_id );
             $( "#ncomunes" ).val( ui.item.value );
             $( "#ncientifico" ).val('');
-            $( ".valorada select, .valorada input, .valorada span, .agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncientifico" ).attr('disabled', true).addClass('disabled');
-            $( "#rango" ).slider( "disable" );
+            $( ".recomendada select, .recomendada input, .recomendada span, #ncientifico" ).attr('disabled', true).addClass('disabled');
             return false;
         }
     });
@@ -60,7 +58,6 @@ $(document).ready(function(){
 });
 
 function limpiaBusqueda(){
-    $(".valorada *, .agrupada *, .recomendada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
-    $( "#rango" ).slider( "enable" );
-    $( "#especie_id, #ncientifico, #ncomunes, #valor_total" ).val('');
+    $(".agrupada *, .recomendada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
+    $( "#especie_id, #ncientifico, #ncomunes" ).val('');
 };

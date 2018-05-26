@@ -3,6 +3,9 @@ class PecesController < ApplicationController
     @no_render_busqueda_basica = true
   end
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
+  before_action :only => [:index, :new, :update, :edit, :create, :destroy] {tiene_permiso?('Administrador', true)}  # Minimo administrador
+
 
   # GET /peces
   def index
@@ -59,7 +62,9 @@ class PecesController < ApplicationController
 
     if params[:commit].present?
       @peces = Pez.filtros_peces
-      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?  # Busqueda por nombre científico o comunes
+
+      # Busqueda por nombre científico o comunes
+      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
       # Filtros globales
       #@peces = @peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}") if params[:semaforo_vt].present?
@@ -84,11 +89,6 @@ class PecesController < ApplicationController
 
       render :file => 'peces/resultados'
     end
-
-    #if params[:commit].nil? && params[:semaforo_vt].present?
-    #  @peces = Pez.filtros_peces.where("valor_total BETWEEN #{params[:semaforo_vt].split(',').first.to_i} AND #{params[:semaforo_vt].split(',').last.to_i}")
-    #  render :layout => false, :file => 'peces/resultados_iteracion'  and return
-    #end
 
   end
 
@@ -118,7 +118,6 @@ class PecesController < ApplicationController
   def dame_regexp_zonas(opc = {})
     colores_default = opc[:colores_default] || 'varns'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
-    #repeticiones_antes = zona-1
 
     if opc[:zonas] == 1  # La primera zona
       "#{color_seleccionado}[#{colores_default}]{5}"
