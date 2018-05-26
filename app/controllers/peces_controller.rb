@@ -77,10 +77,11 @@ class PecesController < ApplicationController
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: params[:semaforo_recomendacion])
+        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif params[:semaforo_recomendacion].present?
-        @peces = @peces.where("valor_zonas LIKE '%#{params[:semaforo_recomendacion]}%'")
+        rec = params[:semaforo_recomendacion].map{|r| "#{r}+"}.join('|')
+        @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
@@ -114,15 +115,15 @@ class PecesController < ApplicationController
   end
 
   def dame_regexp_zonas(opc = {})
-    colores_default = opc[:colores_default] || 'varns'
+    colores_default = opc[:colores_default] || '[varns]'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
 
     if opc[:zonas] == 1  # La primera zona
-      "#{color_seleccionado}[#{colores_default}]{5}"
+      "#{color_seleccionado}#{colores_default}{5}"
     elsif opc[:zonas] == 6 # La ultima zona
-      "[#{colores_default}]{5}#{color_seleccionado}"
+      "#{colores_default}{5}#{color_seleccionado}"
     else
-      "[#{colores_default}]{#{opc[:zonas]-1}}#{color_seleccionado}[#{colores_default}]{#{6-opc[:zonas]}}"
+      "#{colores_default}{#{opc[:zonas]-1}}#{color_seleccionado}#{colores_default}{#{6-opc[:zonas]}}"
     end
   end
 end
