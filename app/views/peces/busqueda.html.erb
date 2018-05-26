@@ -46,28 +46,28 @@
           <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control' ) %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Zona - -', class: 'form-control input') %>
+          <%= select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Zona - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control input') %>
+          <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control input') %>
+          <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control input') %>
+          <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías - -', class: 'form-control input') %>
+          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control input') %>
+          <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control input') %>
+          <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 form-peces">
-          <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Carta Nacional Pesquera 2012 - -', class: 'form-control input-sm') %>
+          <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Carta Nacional Pesquera 2012 - -', class: 'form-control') %>
         </div>
       </fieldset>
       <hr/>
