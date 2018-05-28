@@ -11,3 +11,4 @@ nohup ruby /usr/local/app_rails/buscador/bin/delayed_job -i ejemplares_snib--que
 nohup ruby /usr/local/app_rails/buscador/bin/delayed_job -i estadisticas --queue=estadisticas run &
 nohup ruby /usr/local/app_rails/buscador/bin/delayed_job -i observaciones_naturalista --queue=observaciones_naturalista run &
 nohup ruby /usr/local/app_rails/buscador/bin/delayed_job -i redis --queue=redis run &
+nohup ruby /usr/local/app_rails/buscador/bin/delayed_job -i peces --queue=peces run &
