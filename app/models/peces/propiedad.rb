@@ -1,6 +1,6 @@
 class Propiedad < ActiveRecord::Base
 
-  establish_connection(:peces)
+  establish_connection(Rails.env.to_sym)
   self.table_name='propiedades'
 
   has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :propiedad_id

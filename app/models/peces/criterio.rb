@@ -1,6 +1,6 @@
 class Criterio < ActiveRecord::Base
 
-  establish_connection(:peces)
+  establish_connection(Rails.env.to_sym)
   self.table_name='criterios'
 
   has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :criterio_id
