@@ -7,6 +7,9 @@ class BDIService
   ALBUM_PLANTAS = {4 => '5002-Hongos', 6000010 => '5018-Cícadas', 135296 => '5017-Musgos-Helechos', 6000008 => '5017-Musgos-Helechos', 6000009 => '5021-Pinos%20y%20Cedros'}
   ALBUM_PLANTAS_GLOBAL = %w(5023-Plantas 5038-Colección%20Botánica)
 
+  ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
+
+
   def dameFotos(opts)
     bdi = CONFIG.bdi_imagenes
     fotos = []
@@ -45,6 +48,7 @@ class BDIService
   def arma_y_consulta_url(opts)
     nombre = opts[:nombre].limpia_ws(true)
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
+    url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
@@ -63,6 +67,13 @@ class BDIService
   # Las fotos de acuerdo al album al que pertenece en BDI
   def fotos_album(opts)
     taxon = opts[:taxon]
+
+    # Solo para el caso de las ilustraciones
+    if opts[:ilustraciones]
+      opts.merge!({album: ALBUM_ILUSTRACIONES.first, nombre: taxon.nombre_cientifico})
+      return tiene_fotos?(opts)
+    end
+
     reino = taxon.root.nombre_cientifico.strip
     ancestros = taxon.path_ids
 

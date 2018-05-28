@@ -1,0 +1,6 @@
+<div class='nested-fields'>
+  <%= f.inputs do %>
+      <%= f.input :criterio_id, label: f.object.criterio.propiedad.tipo_propiedad, as: :select, collection: grouped_options_for_select(Criterio.catalogo, selected: f.object.criterio_id) %>
+      <%= link_to_remove_association 'Quitar criterio', f %>
+  <% end %>
+</div>
