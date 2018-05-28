@@ -1,7 +1,5 @@
 class NombresComunesController < ApplicationController
   before_action :set_nombr_comune, only: [:show, :edit, :update, :destroy]
-  autocomplete :nombre_comun, :comun, :column_name => 'nombre_comun', :full => true, :display_value => :personalizaBusqueda,
-               :extra_data => [:id, :lengua, :nombre_comun], :limit => 30
 
   # GET /nombres_comunes
   # GET /nombres_comunes.json
