@@ -1,7 +1,5 @@
 class BibliografiasController < ApplicationController
   before_action :set_bibliografia, only: [:show, :edit, :update, :destroy]
-  autocomplete :bibliografia, :autor, :full => true, :display_value => :personalizaBusqueda,
-               :extra_data => [:autor, :titulo_publicacion, :anio], :limit => 30
 
   # GET /bibliografias
   # GET /bibliografias.json

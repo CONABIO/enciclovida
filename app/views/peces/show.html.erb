@@ -1,0 +1,13 @@
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <%= tituloNombresPeces(@pez, :link => true).html_safe %>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <% @criterios.each do |c|  %>
+        <dt><%= c.tipo_propiedad %>: </dt>
+        <dd><small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span></dd>
+      <% end %>
+    </dl>
+  </div>
+</div>
