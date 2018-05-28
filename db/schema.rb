@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180124005326) do
+ActiveRecord::Schema.define(version: 20180406230347) do
 
   create_table "adicionales", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "especie_id", null: false
@@ -122,7 +122,6 @@ ActiveRecord::Schema.define(version: 20180124005326) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "geoserver_info"
-    t.text "cornell_id"
   end
 
   create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
