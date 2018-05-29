@@ -40,23 +40,30 @@
       <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
+
   <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
+
   <% if (@especie_o_inferior) %>
       <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
         <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
       </div>
   <% end %>
+
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
     <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
     <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
   </div>
+
 </div>
+
 <hr/>
+
 <div class="btn-group pull-right" style="z-index: 1;">
   <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Más información científica sobre la especie...  <span class="caret"></span>
   </button>
+
   <ul class="dropdown-menu" style="z-index: 1001;">
     <li>
       <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
@@ -82,9 +89,7 @@
 </div>
 
 <div id="pestañas" class="panel row">
-
   <ul class="nav nav-tabs" role="tablist">
-
     <li role="presentation" class="active">
       <a href="#geodata_e_imagen" class="noLoad" aria-controls="geodata_e_imagen" role="tab" data-toggle="pill"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a>
     </li>
@@ -94,26 +99,29 @@
 
       <ul class="dropdown-menu" style="z-index: 1001;">
         <li class="dropdown-header">CONABIO - Banco de imágenes</li>
-
         <li role="presentation">
           <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
         </li>
-
         <li role="separator" class="divider"></li>
-
         <li class="dropdown-header">Macaulay Library</li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
-
       </ul>
     </li>
 
-
-    <li role="presentation" ><a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
-    <li role="presentation" ><a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
-    <li role="presentation" ><a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
-    <li role="presentation" ><a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
+    <li role="presentation" >
+      <a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a>
+    </li>
   </ul>
 
   <div class="tab-content">

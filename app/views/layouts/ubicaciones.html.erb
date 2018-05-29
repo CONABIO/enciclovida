@@ -7,12 +7,6 @@
   <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
-  <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
-  </script>
-
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= javascript_include_tag 'lib/d3.v3.min', 'data-turbolinks-track' => true %>
   <script src="http://d3js.org/topojson.v1.min.js" data-turbolinks-track="true"></script>
@@ -22,6 +16,7 @@
   <%= javascript_include_tag 'busquedas/region/topojson', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/region/registros_snib', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'mapa/mapa', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -39,6 +34,9 @@
   <%= stylesheet_link_tag "busquedas/region/por_region", "data-turbolinks-track" => true %>
 
   <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
 </head>
 <body>
 
@@ -59,8 +57,6 @@
 <footer class="legal">
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
-
-<%#TODO bitacora.html_safe if bitacora.present? %>
 
 <%= yield :delayedjs %>
 
