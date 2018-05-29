@@ -281,7 +281,8 @@ GEM
     whenever (0.10.0)
       chronic (>= 0.6.3)
     wicked_pdf (1.1.0)
-    zip (2.0.2)
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -326,7 +327,7 @@ DEPENDENCIES
   rinku
   roo
   rubyXL
-  rubyzip (= 1.2.1)
+  rubyzip (>= 1.2.1)
   sass-rails
   savon (= 2.4.0)
   sdoc
@@ -340,7 +341,7 @@ DEPENDENCIES
   wash_out
   whenever
   wicked_pdf
-  zip
+  zip-zip
 
 BUNDLED WITH
    1.16.1
