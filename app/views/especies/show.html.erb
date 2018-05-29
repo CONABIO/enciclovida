@@ -58,17 +58,9 @@
     Más información científica sobre la especie...  <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" style="z-index: 1001;">
-    <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
-    <%#Todo if ESPANTOSO, arreglar cuando ya se arregle el PDF (comentado con sintaxis ERB para q no salga en el html) %>
-    <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-        <li>
-          <%= button_tag("<b>Descargar &middot; <i class ='file-pdf-ev-icon'></i><sub>PDF</sub></b>".html_safe, :class => 'btn btn-link', :type => :button, :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
-        </li>
-    <% else %>
-        <li>
-          <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
-        </li>
-    <% end %>
+    <li>
+      <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
+    </li>
     <li role="separator" class="divider"></li>
     <li class="dropdown-header">Consultar en: <sup><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></sup></li>
     <li>
