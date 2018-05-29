@@ -50,6 +50,7 @@ class Especie < ActiveRecord::Base
   has_one :proveedor
   has_one :adicional
   has_one :pez
+  has_one :scat, :foreign_key => attribute_alias(:id)
   has_one :categoria_conteo
 
   belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
