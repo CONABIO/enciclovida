@@ -1,4 +1,3 @@
-<%= @correos.inspect  if !Rails.env.production? %>
 <p>
   <%= @comentario.is_root? ? "Se te ha asignado el siguiente comentario:" : "Te han contestado el siguiente comentario:" %>
   <% con_taxon = @nombre_cientifico.present? %>
