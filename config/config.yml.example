@@ -113,9 +113,8 @@ base: &base
   cornell:
     api: https://api.macaulaylibrary.org/ml-catalog-api/ws3.0/partner/search/assets?
     key: 9999999999999999999999999999
-    api_old: https://search.macaulaylibrary.org/catalog.json?taxonCode=
-    taxonCode: https://search.macaulaylibrary.org//api/v1/find/taxon?q=
 
+  correo_admin: coco@nana.bo.bo
 
 ###--------------------Aun no se ocupan------------------------###
 
