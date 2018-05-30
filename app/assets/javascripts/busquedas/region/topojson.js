@@ -18,21 +18,21 @@ var cargaDivisionEstatal = function()
                 $('#contenedor-nombre-region').html(name);
             })
             .on('dblclick', function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'estado';
-                d.properties.bounds = d3.geo.bounds(d);
-                cargaRegion(d.properties);
+                cargaRegion(opciones.datos[d.properties.region_id].properties);
 
-                $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
+                // Selecciona el estado correspondiente en el select
+                $('#region_estado').val(opciones.datos[d.properties.region_id].properties.region_id);
                 $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.region_id);
+                $('#region_municipio').prop('disabled', false).attr('parent_id', opciones.datos[d.properties.region_id].properties.region_id);
             })
             .each(function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'estado';
-                d.properties.bounds = d3.geo.bounds(d);
-                d.properties.region_id_se = d.properties.region_id;
-                completaSelect(d.properties);
+                // Asigna los valores la primera y unica vez que carga los estados
+                opciones.datos[d.properties.region_id] = {};
+                opciones.datos[d.properties.region_id].properties = d.properties;
+                opciones.datos[d.properties.region_id].properties.layer = $(this);
+                opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
+                opciones.datos[d.properties.region_id].properties.bounds = d3.geo.bounds(d);
+                completaSelect(opciones.datos[d.properties.region_id].properties);
             });
 
         map.on('zoomend', reinicia);

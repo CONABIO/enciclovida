@@ -1,8 +1,20 @@
 <% content_for(:delayedjs) do %>
     <script>
         map = null;
+        legend_control = null;
         especies = null;
         especies_con_filtro = null;
+
+        opciones = {};
+        opciones.datos = [];
+        opciones.taxon = {};
+        opciones.layer_obj = {};
+        opciones.grupo_id_seleccionado = null;
+        opciones.pagina_especies = 1;
+        opciones.corresp = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);
+        opciones.geoportal_url = "<%= CONFIG.geoportal_url %>";
+        console.log(opciones);
+
         taxon = {};
         layer_obj = {};
         grupo_id_seleccionado = null;
@@ -13,7 +25,7 @@
         // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
         CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);
         geoportal_url = "<%= CONFIG.geoportal_url %>";
-        legend_control = null;
+
         markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
         cargaMapa('map');
         cargaDivisionEstatal();

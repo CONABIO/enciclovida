@@ -1,27 +1,31 @@
 $(document).ready(function(){
 
+    /**
+     * Cuando selecciona un grupo de los grupos icónicos
+     */
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
         grupo_id_seleccionado = $(this).attr('grupo_id');
         pagina_especies = 1;
         cargaEspecies();
     });
 
+    /**
+     * Cuando selecciona una especie
+     */
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaRegistros($(this).attr('snib_url'));
         taxon["id"] = $(this).attr('especie_id');
         taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
         taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
-        //return false;
     });
 
     /**
-     *  Para escoger con las listas
+     *  Cuando selecciona un estado de la lista
      */
     $('#regiones').on('change', '#region_estado', function(){
         if ($(this).val() == '')
         {
             $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-            $('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
 
         } else {
             $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
@@ -37,11 +41,12 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * Cuando selecciona un municipio de la lista
+     */
     $('#regiones').on('change', '#region_municipio', function(){
         if ($(this).val() == '')
             console.log('esta vacio');
-        //$('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-
         else {
             var prop = {};
             prop.bounds = eval($('option:selected', this).attr('bounds'));
@@ -52,13 +57,12 @@ $(document).ready(function(){
             prop.region_id_se = $('option:selected', this).attr('region_id_se');
             cargaRegion(prop);
         }
-
     });
 
-    /*$( "#toggle-ba-icon" ).click(function() {
-        $( "#toggle-ba-content" ).slideToggle( "fast", function() {});
-    });*/
 
+    /**
+     * Para los filtros default: distribucion y riesgo
+     */
     $('#b_avanzada').on('change', ".checkbox input", function()
     {
         cargaEspecies();
@@ -122,6 +126,9 @@ $(document).ready(function(){
         return false;
     });
 
+    /**
+     * Cuando autocompleta por nombre cientifico o comun
+     */
     $('#especies').on('keyup', '#nombre', function(){
         pagina_especies = 1;
         cargaEspecies();
