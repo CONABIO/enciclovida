@@ -14,16 +14,10 @@ var cargaDivisionEstatal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                var name = d.properties.nombre_region;
-                $('#contenedor-nombre-region').html(name);
+                nombreRegion(d.properties.region_id);
             })
             .on('dblclick', function(d){
-                cargaRegion(opciones.datos[d.properties.region_id].properties);
-
-                // Selecciona el estado correspondiente en el select
-                $('#region_estado').val(opciones.datos[d.properties.region_id].properties.region_id);
-                $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                $('#region_municipio').prop('disabled', false).attr('parent_id', opciones.datos[d.properties.region_id].properties.region_id);
+                seleccionaEstado(d.properties.region_id);
             })
             .each(function(d){
                 // Asigna los valores la primera y unica vez que carga los estados
@@ -73,8 +67,7 @@ var cargaDivisionMunicipal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                var name = d.properties.nombre_region;
-                $('#contenedor-nombre-region').html(name);
+                nombreRegion(d.properties.region_id);
             })
             .on('dblclick', function(d){
                 d.properties.layer = $(this);
