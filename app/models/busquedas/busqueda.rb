@@ -19,7 +19,7 @@ class Busqueda
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize
-    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional).distinct
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
     self.totales = 0
   end
 

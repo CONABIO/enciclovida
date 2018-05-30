@@ -3,10 +3,10 @@ class BusquedaRegion < Busqueda
 
   # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
   def especies_por_grupo
-    key = existe_cache_especies_por_grupo_con_filtros?
+    existe_cache_especies_por_grupo_con_filtros?
 
     if resp[:estatus]  # Para ver si los parametros son correctos
-      if key  # Para ver si la llave existe
+      if resp[:key]  # Para ver si la llave existe
         cache_especies_por_grupo_con_filtros
       else
         cache_especies_por_grupo
@@ -59,11 +59,10 @@ class BusquedaRegion < Busqueda
         end
         especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
 
-        consulta = Especie.select('especies.id, nombre_cientifico, especies.catalogo_id, nombre_comun_principal, foto_principal').adicional_join.where(catalogo_id: especies_hash.keys)
-        consulta = filtros_default(consulta).distinct
-        taxones = consulta.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
+        filtros_default(especies_hash.keys)  # Hace el query con los filtros default
+        resultados = taxones.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
 
-        taxones.each do |taxon|
+        resultados.each do |taxon|
           especies_hash[taxon[:catalogo_id]] = taxon.merge({nregistros: especies_hash[taxon[:catalogo_id]]})
         end
 
@@ -125,25 +124,25 @@ class BusquedaRegion < Busqueda
       dist = params[:dist].present? ? params[:dist].join('-') : ''
       prior = params[:prior].present? ? params[:prior].join('-') : ''
       self.key_especies_con_filtro = "#{key_especies}_#{edo_cons}_#{dist}_#{prior}".estandariza
-
-      self.resp = {estatus: true}
-      Rails.cache.exist?(self.key_especies_con_filtro)
+      self.resp = {estatus: true, key: Rails.cache.exist?(self.key_especies_con_filtro)}
     else
       self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo_id' y 'region_id' son obligatorios"}
-      false
     end
   end
 
   def filtro_con_nombre
     if params[:nombre].present?
       if resp[:estatus]
+        puts resp[:resultados].inspect
         self.resp[:resultados] = resp[:resultados].map{|t| t if (/#{params[:nombre].sin_acentos}/.match(t[:nombre_cientifico].sin_acentos) || /#{params[:nombre].sin_acentos}/.match(t[:nombre_comun].try(:sin_acentos)))}.compact
       end
     end
   end
 
-  def filtros_default(consulta)
-    Busqueda.filtros_default(consulta, params)
+  def filtros_default(ids)
+    self.taxones = taxones.select(:id, :nombre_cientifico).select("nombre_comun_principal, foto_principal, #{Scat.attribute_alias(:catalogo_id)} AS catalogo_id").where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", ids)
+    tipo_distribucion
+    estado_conservacion
   end
 
   # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
