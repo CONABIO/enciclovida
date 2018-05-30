@@ -23,22 +23,7 @@ $(document).ready(function(){
      *  Cuando selecciona un estado de la lista
      */
     $('#regiones').on('change', '#region_estado', function(){
-        if ($(this).val() == '')
-        {
-            $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-
-        } else {
-            $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-            $('#region_municipio').prop('disabled', false).attr('parent_id', $(this).val());
-
-            var prop = {};
-            prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj['estado'][$(this).val()];
-            prop.region_id = $(this).val();
-            prop.tipo_region = 'estado';
-            prop.region_id_se = $(this).val();
-            cargaRegion(prop);
-        }
+        seleccionaEstado($(this).val());
     });
 
     /**
@@ -58,7 +43,6 @@ $(document).ready(function(){
             cargaRegion(prop);
         }
     });
-
 
     /**
      * Para los filtros default: distribucion y riesgo

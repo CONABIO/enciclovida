@@ -96,11 +96,37 @@ var cargaEspecies = function()
     });
 };
 
-// Rellena las opciones de region-estado
+/**
+ * Pone los municipios correspondientes, selecciona el valor y carga la region
+ * @param valor
+ */
+var seleccionaEstado = function(region_id)
+{
+    if (region_id == '')
+    {
+        $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+
+    } else {
+        var region_id = parseInt(region_id);
+        $('#region_estado').val(region_id);
+        $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
+        $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);
+
+        cargaRegion(opciones.datos[region_id].properties);
+    }
+};
+
+var nombreRegion = function(region_id)
+{
+    var name = opciones.datos[region_id].properties.nombre_region;
+    $('#contenedor-nombre-region').html(name);
+};
+
+/**
+ * Rellena las opciones de estado y municipio
+ * @param prop
+ */
 var completaSelect = function(prop)
 {
-    if (layer_obj[prop.tipo_region] == undefined) layer_obj[prop.tipo_region] = {};
-    layer_obj[prop.tipo_region][prop.region_id] = prop.layer;
-
     $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]" region_id_se="' + prop.region_id + '">' + prop.nombre_region + '</option>');
 };
