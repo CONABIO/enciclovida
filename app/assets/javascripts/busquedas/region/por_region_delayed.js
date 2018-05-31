@@ -4,8 +4,8 @@ $(document).ready(function(){
      * Cuando selecciona un grupo de los grupos icónicos
      */
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
-        grupo_id_seleccionado = $(this).attr('grupo_id');
-        pagina_especies = 1;
+        opciones.grupo_seleccionado = $(this).attr('grupo');
+        opciones.pagina_especies = 1;
         cargaEspecies();
     });
 
@@ -38,6 +38,7 @@ $(document).ready(function(){
      */
     $('#b_avanzada').on('change', ".checkbox input", function()
     {
+        opciones.pagina_especies = 1;
         cargaEspecies();
     });
 
@@ -103,7 +104,7 @@ $(document).ready(function(){
      * Cuando autocompleta por nombre cientifico o comun
      */
     $('#especies').on('keyup', '#nombre', function(){
-        pagina_especies = 1;
+        opciones.pagina_especies = 1;
         cargaEspecies();
     });
 

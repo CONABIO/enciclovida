@@ -120,7 +120,7 @@ var cargaRegion = function(prop)
     }
 
     map.flyToBounds([prop.bounds[0].reverse(), prop.bounds[1].reverse()]);
-    cargaGrupos(prop);
+    cargaGrupos();
     borraRegistrosAnteriores();
     $('#svg-division-estatal .selecciona-region').attr('class', 'region');
     $('#svg-division-municipal .selecciona-region').attr('class', 'region');
