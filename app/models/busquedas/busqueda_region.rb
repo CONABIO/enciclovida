@@ -1,6 +1,11 @@
 class BusquedaRegion < Busqueda
   attr_accessor :resp, :key_especies, :key_especies_con_filtro, :url_especies
 
+  # Esta correspondencia no deberia existir pero las regiones en el snib las hicieron con las patas
+  CORRESPONDENCIA = [nil, '08', '01', '07', '23', '26', '10', '32', '16', '13', '24', '25', '04',
+                     '06', '31', '12', '20', '18', '14', '02', '19', '21', '15', '27', '03', '11',
+                     '22', '30', '05', '28', '09', '29', '17']
+
   # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
   def especies_por_grupo
     existe_cache_especies_por_grupo_con_filtros?
@@ -20,24 +25,26 @@ class BusquedaRegion < Busqueda
 
   def cache_conteo_por_grupo
     if params[:tipo_region].present?
-      if params[:tipo_region] == 'estado' && params[:region_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:region_id].rjust(2, '0')}?apiKey=enciclovida"
-      elsif params[:tipo_region] == 'municipio' && params[:region_id].present? && params[:parent_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:parent_id]}_#{params[:region_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:parent_id]}/#{params[:region_id]}?apiKey=enciclovida"
+      correspondencia_estado
+      return unless resp[:estatus]
+
+      if params[:estado_id].present? && params[:municipio_id].present?
+        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id]}?apiKey=enciclovida"
+      elsif params[:estado_id].present?
+        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
       else
-        self.resp = {estatus: false, msg: "El parámetro 'tipo_region' no es el correcto."}
+        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end
 
-      if key.present?
-        self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-          respuesta_conteo_por_grupo(url)
-        end
+      self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
+        puts key + ' ' + url
+        respuesta_conteo_por_grupo(url)
       end
 
     else
-      self.resp = {estatus: false, msg: "El parámetro 'tipo_region' esta vacío."}
+      self.resp = { estatus: false, msg: "El parámetro 'tipo_region' esta vacío." }
     end
   end
 
@@ -174,5 +181,17 @@ class BusquedaRegion < Busqueda
     end
 
     grupos
+  end
+
+  # La correspondencia del estado en el servicio de Abraham, debio haber sido la llave priamria ...
+  def correspondencia_estado
+    valor = CORRESPONDENCIA[params[:estado_id].to_i]
+
+    if valor
+      self.params[:estado_id] = valor
+      self.resp = { estatus: true }
+    else
+      self.resp = { estatus: false, msg: "El parámetro 'estado_id' no es es correcto." }
+    end
   end
 end
