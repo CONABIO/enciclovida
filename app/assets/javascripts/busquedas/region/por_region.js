@@ -102,24 +102,42 @@ var cargaEspecies = function()
  */
 var seleccionaEstado = function(region_id)
 {
-    if (region_id == '')
-    {
-        $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+    $('#svg-division-municipal').remove();
 
-    } else {
+    if (region_id == '')
+        $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
+    else {
         var region_id = parseInt(region_id);
         $('#region_estado').val(region_id);
         $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
         $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);
 
+        opciones.estado_seleccionado = region_id;
         cargaRegion(opciones.datos[region_id].properties);
     }
 };
 
-var nombreRegion = function(region_id)
+/**
+ * Pone los municipios correspondientes, selecciona el valor y carga la region
+ * @param valor
+ */
+var seleccionaMunicipio = function(region_id)
 {
-    var name = opciones.datos[region_id].properties.nombre_region;
-    $('#contenedor-nombre-region').html(name);
+    if (region_id != '')
+    {
+        var region_id = parseInt(region_id);
+        $('#region_municipio').val(region_id);
+        cargaRegion(opciones.datos[opciones.estado_seleccionado].municipios[region_id].properties);
+    }
+};
+
+/**
+ * El nombre de la region cuanso se pasa el mouse por encima
+ * @param prop
+ */
+var nombreRegion = function(prop)
+{
+    $('#contenedor-nombre-region').html(prop.nombre_region);
 };
 
 /**
@@ -128,5 +146,5 @@ var nombreRegion = function(region_id)
  */
 var completaSelect = function(prop)
 {
-    $('#region_' + prop.tipo_region).append('<option value="' + prop.region_id +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]" region_id_se="' + prop.region_id + '">' + prop.nombre_region + '</option>');
+    $('#region_' + prop.tipo_region).append('<option value="' + parseInt(prop.region_id) +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]">' + prop.nombre_region + '</option>');
 };
