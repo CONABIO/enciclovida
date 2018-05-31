@@ -30,18 +30,7 @@ $(document).ready(function(){
      * Cuando selecciona un municipio de la lista
      */
     $('#regiones').on('change', '#region_municipio', function(){
-        if ($(this).val() == '')
-            console.log('esta vacio');
-        else {
-            var prop = {};
-            prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj['municipio'][$(this).val()];
-            prop.region_id = $(this).val();
-            prop.parent_id = CORRESP[$(this).attr('parent_id')];
-            prop.tipo_region = 'municipio';
-            prop.region_id_se = $('option:selected', this).attr('region_id_se');
-            cargaRegion(prop);
-        }
+        seleccionaMunicipio($(this).val());
     });
 
     /**

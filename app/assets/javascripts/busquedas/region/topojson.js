@@ -14,7 +14,7 @@ var cargaDivisionEstatal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                nombreRegion(d.properties.region_id);
+                nombreRegion(opciones.datos[d.properties.region_id].properties);
             })
             .on('dblclick', function(d){
                 seleccionaEstado(d.properties.region_id);
@@ -57,7 +57,7 @@ var cargaDivisionMunicipal = function()
     var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
     var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
-    d3.json('/topojson/estado_' + region_id_se + '_division_municipal.json', function (error, collection) {
+    d3.json('/topojson/estado_' + opciones.estado_seleccionado + '_division_municipal.json', function (error, collection) {
         var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
         var path = d3.geo.path().projection(projectPoint);
 
@@ -67,21 +67,22 @@ var cargaDivisionMunicipal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                nombreRegion(d.properties.region_id);
+                nombreRegion(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
             })
             .on('dblclick', function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'municipio';
-                d.properties.bounds = d3.geo.bounds(d);
-                cargaRegion(d.properties);
-
-                $('#region_municipio').val(d.properties.region_id);  // Selecciona el municipio correspondiente en el select
+                seleccionaMunicipio(d.properties.region_id);
             })
             .each(function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'municipio';
-                d.properties.bounds = d3.geo.bounds(d);
-                completaSelect(d.properties);
+                if (opciones.datos[opciones.estado_seleccionado].municipios == undefined)
+                    opciones.datos[opciones.estado_seleccionado].municipios = [];
+
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)] = {};
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties = d.properties;
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.layer = $(this);
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.tipo_region = 'municipio';
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.bounds = d3.geo.bounds(d);
+
+                completaSelect(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
             });
 
         map.on('zoomend', reinicia);
@@ -112,9 +113,6 @@ var cargaRegion = function(prop)
     switch(prop.tipo_region)
     {
         case 'estado':
-            tipo_region_se = 'estados';
-            region_id_se = prop.region_id;
-            $('#svg-division-municipal').remove();
             cargaDivisionMunicipal();
             break;
         case 'municipio':
