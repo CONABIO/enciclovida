@@ -116,8 +116,6 @@ var cargaRegion = function(prop)
             cargaDivisionMunicipal();
             break;
         case 'municipio':
-            tipo_region_se = 'municipios';
-            region_id_se = prop.region_id_se;
             break;
     }
 
@@ -141,19 +139,6 @@ var muestraOcultaSvg = function(caso)
         $('#svg-division-estatal').css('visibility', 'hidden');
         $('#svg-division-municipal').css('visibility', 'hidden');
         $('#svg-region').css('visibility', 'hidden');
-    }
-};
-
-var dameUrlTopojson = function(prop)
-{
-    switch (prop.tipo_region)
-    {
-        case 'estado':
-            return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_division_municipal.json';
-        case 'municipio':
-            return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_' + prop.parent_id + '.json';
-        default:
-            return undefined;
     }
 };
 

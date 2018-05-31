@@ -1,42 +1,12 @@
 /**
- * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado
- * @param prop
- * @returns {string}
+ * Carga los grupos iconicos y su respectivo conteo
+ * @param properties
  */
-var parametrosCargaEspecies = function(prop)
-{
-    if ($('#region_municipio').val() == '')
-    {
-        var region_id = CORRESP[$('option:selected', $('#region_estado')).val()];
-        var parent_id = '';
-    } else {
-        var region_id = $('option:selected', $('#region_municipio')).val();
-        var parent_id = CORRESP[$('#region_municipio').attr('parent_id')];
-    }
-
-    var params_generales = {grupo_id: grupo_id_seleccionado,
-        region_id: region_id, parent_id: parent_id, pagina: pagina_especies, nombre: $('#nombre').val()};
-
-    if (prop != undefined)
-        params_generales = Object.assign({},params_generales, prop);
-
-    return $('#b_avanzada').serialize() + '&' + $.param(params_generales);
-};
-
 var cargaGrupos = function(properties)
 {
-    if (properties.tipo_region == 'estado')
-    {
-        var region_id = CORRESP[properties.region_id];
-        var parent_id = '';
-    } else {
-        var region_id = properties.region_id;
-        var parent_id = properties.parent_id;
-    }
-
     $.ajax({
         url: '/explora-por-region/conteo-por-grupo',
-        data: {tipo_region: properties.tipo_region, region_id: region_id, parent_id: parent_id}
+        data: parametros()
     }).done(function(resp) {
         if (resp.estatus)
         {
@@ -54,9 +24,27 @@ var cargaGrupos = function(properties)
     });
 };
 
+/**
+ * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado
+ * @param prop, parametros adicionales
+ * @returns {string}
+ */
+var parametros = function(prop)
+{
+    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo_id: grupo_id_seleccionado, estado_id: opciones.estado_seleccionado,
+        municipio_id: opciones.municipio_seleccionado, pagina: opciones.pagina_especies, nombre: $('#nombre').val() };
+
+    if (prop != undefined)
+        params_generales = Object.assign({},params_generales, prop);
+
+    return $('#b_avanzada').serialize() + '&' + $.param(params_generales);
+};
+
+/**
+ * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
+ */
 var cargaEspecies = function()
 {
-    // Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
     $.ajax({
         url: '/explora-por-region/especies-por-grupo',
         method: 'GET',
@@ -105,14 +93,19 @@ var seleccionaEstado = function(region_id)
     $('#svg-division-municipal').remove();
 
     if (region_id == '')
+    {
         $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-    else {
+        opciones.estado_seleccionado = null;
+        opciones.tipo_region_seleccionado = null;
+    } else {
         var region_id = parseInt(region_id);
         $('#region_estado').val(region_id);
         $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
         $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);
 
         opciones.estado_seleccionado = region_id;
+        opciones.municipio_seleccionado = null;
+        opciones.tipo_region_seleccionado = 'estado';
         cargaRegion(opciones.datos[region_id].properties);
     }
 };
@@ -123,10 +116,16 @@ var seleccionaEstado = function(region_id)
  */
 var seleccionaMunicipio = function(region_id)
 {
-    if (region_id != '')
+    if (region_id == '')
     {
+        opciones.municipio_seleccionado = null;
+        opciones.tipo_region_seleccionado = 'estado';
+
+    } else {
         var region_id = parseInt(region_id);
         $('#region_municipio').val(region_id);
+        opciones.municipio_seleccionado = region_id;
+        opciones.tipo_region_seleccionado = 'municipio';
         cargaRegion(opciones.datos[opciones.estado_seleccionado].municipios[region_id].properties);
     }
 };
@@ -146,5 +145,5 @@ var nombreRegion = function(prop)
  */
 var completaSelect = function(prop)
 {
-    $('#region_' + prop.tipo_region).append('<option value="' + parseInt(prop.region_id) +'" bounds="[[' + prop.bounds[0] + '],[' + prop.bounds[1] + ']]">' + prop.nombre_region + '</option>');
+    $('#region_' + prop.tipo_region).append("<option value='" + parseInt(prop.region_id) + "'>" + prop.nombre_region + '</option>');
 };
