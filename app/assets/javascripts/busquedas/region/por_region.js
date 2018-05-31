@@ -2,7 +2,7 @@
  * Carga los grupos iconicos y su respectivo conteo
  * @param properties
  */
-var cargaGrupos = function(properties)
+var cargaGrupos = function()
 {
     $.ajax({
         url: '/explora-por-region/conteo-por-grupo',
@@ -14,7 +14,7 @@ var cargaGrupos = function(properties)
             $('#contenedor_especies').empty();
             var grupos_orden = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],resp.resultados[6],resp.resultados[4], resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
             $.each(grupos_orden, function(index, prop){
-                $('#contenedor_grupos').append('<label><input type="radio" name="id"><span tooltip-title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo_id="'+prop.grupo+'" reino="' + prop.reino + '"></span><sub grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub></label>');
+                $('#contenedor_grupos').append('<label><input type="radio" name="id"><span tooltip-title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo="'+prop.grupo+'" reino="' + prop.reino + '"></span><sub grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub></label>');
             });
         } else
             console.log('Falló el servicio de conteo del SNIB');
@@ -31,7 +31,7 @@ var cargaGrupos = function(properties)
  */
 var parametros = function(prop)
 {
-    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo_id: grupo_id_seleccionado, estado_id: opciones.estado_seleccionado,
+    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo: opciones.grupo_seleccionado, estado_id: opciones.estado_seleccionado,
         municipio_id: opciones.municipio_seleccionado, pagina: opciones.pagina_especies, nombre: $('#nombre').val() };
 
     if (prop != undefined)
@@ -48,12 +48,12 @@ var cargaEspecies = function()
     $.ajax({
         url: '/explora-por-region/especies-por-grupo',
         method: 'GET',
-        data: parametrosCargaEspecies()
+        data: parametros()
     }).done(function(resp) {
         if (resp.estatus)  // Para asignar los resultados con o sin filtros
         {
-            if (pagina_especies == 1) $('#contenedor_especies').empty();
-            $('#grupos').find("[grupo_id_badge='" + grupo_id_seleccionado + "']").text(resp.totales);
+            //if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
+            $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
 
             $.each(resp.resultados, function(index, taxon){
                 var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se, geoportal_url: geoportal_url, reino: $('#grupos').find("[grupo_id='" + grupo_id_seleccionado + "']").attr('reino')});

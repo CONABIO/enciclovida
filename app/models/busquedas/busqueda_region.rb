@@ -6,6 +6,31 @@ class BusquedaRegion < Busqueda
                      '06', '31', '12', '20', '18', '14', '02', '19', '21', '15', '27', '03', '11',
                      '22', '30', '05', '28', '09', '29', '17']
 
+  # REVISADO: Cache para obtener el conteo de especies por grupo
+  def cache_conteo_por_grupo
+    if params[:tipo_region].present?
+      correspondencia_estado
+      return unless resp[:estatus]
+
+      if params[:estado_id].present? && params[:municipio_id].present?
+        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}?apiKey=enciclovida"
+      elsif params[:estado_id].present?
+        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
+      else
+        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
+      end
+
+      self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
+        respuesta_conteo_por_grupo(url)
+      end
+
+    else
+      self.resp = { estatus: false, msg: "El parámetro 'tipo_region' esta vacío." }
+    end
+  end
+
   # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
   def especies_por_grupo
     existe_cache_especies_por_grupo_con_filtros?
@@ -21,31 +46,6 @@ class BusquedaRegion < Busqueda
       # Esta consulta no va en el cache para poder manejarla de mi aldo y sea mas rapida la respuesta
       filtro_con_nombre
     end  # End resp[:estatus]
-  end
-
-  def cache_conteo_por_grupo
-    if params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
-
-      if params[:estado_id].present? && params[:municipio_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id]}?apiKey=enciclovida"
-      elsif params[:estado_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
-      else
-        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
-      end
-
-      self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-        puts key + ' ' + url
-        respuesta_conteo_por_grupo(url)
-      end
-
-    else
-      self.resp = { estatus: false, msg: "El parámetro 'tipo_region' esta vacío." }
-    end
   end
 
   def cache_especies_por_grupo
@@ -86,7 +86,7 @@ class BusquedaRegion < Busqueda
 
   private
 
-  # Es el servicio de conteo de Abraham
+  # REVISADO: Consulta el conteo por especie en el servicio de Abraham
   def respuesta_conteo_por_grupo(url)
     begin
       rest = RestClient.get(url)
@@ -117,13 +117,18 @@ class BusquedaRegion < Busqueda
 
   # Para saber si la peticion con la region y los filtros ya existe y consultar directo cache especies_por_grupo
   def existe_cache_especies_por_grupo_con_filtros?
-    if params[:grupo_id].present? && params[:region_id].present?
-      if params[:parent_id].present?
-        self.key_especies = "especies_grupo_municipio_#{params[:grupo_id].estandariza}_#{params[:parent_id]}_#{params[:region_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:parent_id]}/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
+    if params[:grupo].present? && params[:tipo_region].present?
+      correspondencia_estado
+      return unless resp[:estatus]
+
+      if params[:estado_id].present? && params[:municipio_id].present?
+        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
+      elsif params[:estado_id].present?
+        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
       else
-        self.key_especies = "especies_grupo_estado_#{params[:grupo_id].estandariza}_#{params[:region_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:region_id].rjust(2, '0')}/edomun/#{params[:grupo_id].estandariza}?apiKey=enciclovida"
+        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end
 
       # La llave con los diferentes filtros
@@ -133,7 +138,7 @@ class BusquedaRegion < Busqueda
       self.key_especies_con_filtro = "#{key_especies}_#{edo_cons}_#{dist}_#{prior}".estandariza
       self.resp = {estatus: true, key: Rails.cache.exist?(self.key_especies_con_filtro)}
     else
-      self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo_id' y 'region_id' son obligatorios"}
+      self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo' y 'tipo_region' son obligatorios"}
     end
   end
 
