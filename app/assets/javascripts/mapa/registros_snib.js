@@ -1,6 +1,17 @@
-var dameUrlServicioSnib = function(prop)
+var dameUrlServicioSnibPorRegion = function(prop)
 {
-    return prop.geoportal_url + '&rd=' + prop.reino + '&id=' + prop.catalogo_id + '&clayer=' + prop.tipo_region_se + '&cvalue=' + prop.region_id_se;
+    prop.estado_id = opciones.correspondencia[prop.estado_id];
+
+    var snib_url = prop.snib_url + '/' + prop.reino + '/' + prop.catalogo_id + '/' + prop.estado_id;
+
+    if (prop.municipio_id != null && prop.municipio_id != '')
+    {
+        prop.municipio_id = ('00'+prop.municipio_id).slice(-3);
+        snib_url+= '/' + prop.municipio_id;
+    }
+
+    snib_url+= '?apiKey=enciclovida';
+    return snib_url;
 };
 
 var cargaRegistros = function(url)
@@ -144,7 +155,7 @@ var ejemplarSnib = function(prop)
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
 //Para enviar un comentario acerca de un registro en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + taxon.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };
@@ -153,12 +164,12 @@ var nombre = function()
 {
     if (I18n.locale == 'es')
     {
-        if (taxon.nombre_comun.length > 0)
-            return taxon.nombre_comun + "<br /><a href='/especies/" + taxon.id + "'><i>" + taxon.nombre_cientifico + "</i></a>";
+        if (opciones.taxon_seleccionado.nombre_comun.length > 0)
+            return opciones.taxon_seleccionado.nombre_comun + "<br /><a href='/especies/" + opciones.taxon_seleccionado.id + "'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
         else
-            return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
+            return "<a href='/especies/" + opciones.taxon_seleccionado.id + "' target='_blank'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
     } else
-        return "<a href='/especies/" + taxon.id + "' target='_blank'><i>" + taxon.nombre_cientifico + "</i></a>";
+        return "<a href='/especies/" + opciones.taxon_seleccionado.id + "' target='_blank'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
 };
 
 var geojsonSnib = function(url)
