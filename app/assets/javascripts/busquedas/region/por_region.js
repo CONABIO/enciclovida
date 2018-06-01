@@ -52,11 +52,11 @@ var cargaEspecies = function()
     }).done(function(resp) {
         if (resp.estatus)  // Para asignar los resultados con o sin filtros
         {
-            //if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
+            if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
             $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
 
             $.each(resp.resultados, function(index, taxon){
-                var url = dameUrlServicioSnib({catalogo_id: taxon.catalogo_id, tipo_region_se: tipo_region_se, region_id_se: region_id_se, geoportal_url: geoportal_url, reino: $('#grupos').find("[grupo_id='" + grupo_id_seleccionado + "']").attr('reino')});
+                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado, municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
                 if (url == undefined) return;
 
                 // Las que no tiene imagen se le pega la fuente

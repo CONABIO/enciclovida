@@ -6,6 +6,7 @@ $(document).ready(function(){
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
         opciones.grupo_seleccionado = $(this).attr('grupo');
         opciones.pagina_especies = 1;
+        opciones.reino_seleccionado = $(this).attr('reino');
         cargaEspecies();
     });
 
@@ -14,9 +15,9 @@ $(document).ready(function(){
      */
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaRegistros($(this).attr('snib_url'));
-        taxon["id"] = $(this).attr('especie_id');
-        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
-        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
+        opciones.taxon_seleccionado.id = $(this).attr('especie_id');
+        opciones.taxon_seleccionado.nombre_comun = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
+        opciones.taxon_seleccionado.nombre_cientifico = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
     });
 
     /**
@@ -75,7 +76,7 @@ $(document).ready(function(){
                 url: '/explora-por-region/descarga-taxa',
                 type: 'GET',
                 dataType: "json",
-                data: parametrosCargaEspecies({correo: correo})
+                data: parametros({correo: correo})
             }).done(function(resp) {
                 if (resp.estatus == 1)
                 {
@@ -95,7 +96,7 @@ $(document).ready(function(){
      * Esta funcion se sustituirá por el scrolling
      */
     $('#carga_mas_especies').on('click', function(){
-        pagina_especies++;
+        opciones.pagina_especies++;
         cargaEspecies();
         return false;
     });
