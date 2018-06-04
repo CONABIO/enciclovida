@@ -25,7 +25,10 @@ var cargaDivisionEstatal = function()
                 opciones.datos[d.properties.region_id].properties = d.properties;
                 opciones.datos[d.properties.region_id].properties.layer = $(this);
                 opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
-                opciones.datos[d.properties.region_id].properties.bounds = d3.geo.bounds(d);
+
+                var bounds = d3.geo.bounds(d)
+                opciones.datos[d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+
                 completaSelect(opciones.datos[d.properties.region_id].properties);
             });
 
@@ -80,7 +83,9 @@ var cargaDivisionMunicipal = function()
                 opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties = d.properties;
                 opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.layer = $(this);
                 opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.tipo_region = 'municipio';
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.bounds = d3.geo.bounds(d);
+
+                var bounds = d3.geo.bounds(d)
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
 
                 completaSelect(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
             });
@@ -119,7 +124,7 @@ var cargaRegion = function(prop)
             break;
     }
 
-    map.flyToBounds([prop.bounds[0].reverse(), prop.bounds[1].reverse()]);
+    map.flyToBounds(prop.bounds);
     cargaGrupos();
     borraRegistrosAnteriores();
     $('#svg-division-estatal .selecciona-region').attr('class', 'region');
