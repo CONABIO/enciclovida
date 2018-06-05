@@ -158,7 +158,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def cuantas_especies_inferiores(opc = {})
     return unless opc[:estadistica_id].present?
     puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
-    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
+    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
     estadisticas = self.estadisticas
 
     conteo =  if opc[:estadistica_id] == 2  # Solo especies
@@ -214,7 +214,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     response = []
 
     if ws
-      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: eval(CONFIG.cache.iucn)) do
+      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
         if iucn = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico)
           iucn_ws = I18n.t("cat_riesgo.iucn_ws.#{iucn.parameterize}", :default => iucn).parameterize
 
@@ -542,7 +542,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
     return {estatus: 'error', msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
-    escribe_cache('ficha_naturalista', eval(CONFIG.cache.ficha_naturalista)) if Rails.env.production?
+    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
 
     begin
       respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpiar.limpia)}"
