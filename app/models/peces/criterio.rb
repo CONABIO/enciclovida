@@ -21,7 +21,7 @@ class Criterio < ActiveRecord::Base
 
   def self.catalogo
 
-    resp = Rails.cache.fetch('criterios_catalogo', expires_in: CONFIG.cache.peces.catalogos) do
+    resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
       grouped_options = {}
 
       Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
@@ -66,7 +66,7 @@ class Criterio < ActiveRecord::Base
 
   def self.dame_filtros
 
-    filtros = Rails.cache.fetch('filtros_peces', expires_in: CONFIG.cache.peces.filtros) do
+    filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
       {grupos: Propiedad.grupos_conabio,
        zonas: Propiedad.zonas,
        tipo_capturas: self.tipo_capturas,

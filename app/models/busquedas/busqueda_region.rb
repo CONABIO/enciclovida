@@ -31,7 +31,7 @@ class BusquedaRegion < Busqueda
       end
 
       if key.present?
-        self.resp = Rails.cache.fetch(key, expires_in: CONFIG.cache.busquedas_region.conteo_grupo) do
+        self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
           respuesta_conteo_por_grupo(url)
         end
       end
@@ -42,14 +42,14 @@ class BusquedaRegion < Busqueda
   end
 
   def cache_especies_por_grupo
-    self.resp = Rails.cache.fetch(key_especies, expires_in: CONFIG.cache.busquedas_region.especies_grupo) do
+    self.resp = Rails.cache.fetch(key_especies, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
       respuesta_especies_por_grupo(url_especies)
     end
   end
 
   # Es la busqueda con los filtros, regio y grupo de la busqueda por region
   def cache_especies_por_grupo_con_filtros
-    self.resp = Rails.cache.fetch(key_especies_con_filtro, expires_in: CONFIG.cache.busquedas_region.especies_grupo) do
+    self.resp = Rails.cache.fetch(key_especies_con_filtro, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
       # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
       if resp[:estatus]
         especies_hash = {}
