@@ -214,7 +214,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     response = []
 
     if ws
-      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: CONFIG.cache.iucn) do
+      fetch = Rails.cache.fetch("iucn_#{id}", expires_in: eval(CONFIG.cache.iucn)) do
         if iucn = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico)
           iucn_ws = I18n.t("cat_riesgo.iucn_ws.#{iucn.parameterize}", :default => iucn).parameterize
 

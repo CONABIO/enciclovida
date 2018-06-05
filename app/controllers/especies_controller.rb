@@ -27,7 +27,7 @@ class EspeciesController < ApplicationController
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => CONFIG.cache.fichas, :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
 
   #c.session.blank? || c.session['warden.user.user.key'].blank?
   #}
