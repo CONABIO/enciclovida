@@ -352,7 +352,8 @@ GEM
     wicked_pdf (1.1.0)
     xpath (3.0.0)
       nokogiri (~> 1.8)
-    zip (2.0.2)
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -418,7 +419,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   whenever
   wicked_pdf
-  zip
+  zip-zip
 
 BUNDLED WITH
    1.16.1
