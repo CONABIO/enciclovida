@@ -4,7 +4,7 @@ module CacheServices
       p.guarda_observaciones_naturalista
     else
       # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
-      escribe_cache('observaciones_naturalista', eval(CONFIG.cache.observaciones_naturalista)) if Rails.env.production?
+      escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
     end
   end
 
@@ -13,7 +13,7 @@ module CacheServices
       p.guarda_ejemplares_snib
     else
       # Pone el cache para no volverlo a consultar, en caso que no tenga proveedor
-      escribe_cache('ejemplares_snib', eval(CONFIG.cache.ejemplares_snib)) if Rails.env.production?
+      escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
     end
   end
 
