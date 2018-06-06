@@ -1,0 +1,33 @@
+/**
+El estilo de las fuentes que no son el default
+**/
+.div-icon-snib {
+    color: #800000;
+    font-size: 1.8em;
+}
+/**
+El estilo de la fuente default
+**/
+.div-icon-snib-default {
+    color: #800000;
+    font-size: 1.2em;
+}
+/**
+El estilo del contorno del circulo
+**/
+.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large{
+    background-color: #d8b2b2;
+    opacity: 1!important;
+}
+/**
+El estilo del circulo
+**/
+.marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div{
+    background-color: #800000;
+}
+/**
+El estilo del numero dentro del circulo
+**/
+.marker-cluster-small div span, .marker-cluster-medium div span, .marker-cluster-large div span{
+    color: white;
+}
