@@ -130,7 +130,7 @@ var soulmate_asigna = function(tipo_busqueda)
 
 $(document).ready(function()
 {
-    $(document).on('change', ".radio input", function()
+    $('#busqueda_avanzada').on('change', ".radio input", function()
     {
         // El ID del grupo iconico
         var id_gi = $(this).val();
@@ -138,21 +138,21 @@ $(document).ready(function()
         cat_tax_asociadas(id_gi,'','');
     });
 
-    $(document).on('click', '#limpiar', function(){
+    $('#busqueda_avanzada').on('click', '#limpiar', function(){
         window.location.href = "/avanzada";
     });
 
-    $(document).on('click', '#por_nombre_fuente', function(){
+    $('#busqueda_avanzada').on('click', '#por_nombre_fuente', function(){
         por_nombre();
         return false;
     });
 
-    $(document).on('click', '#por_gi_fuente', function(){
+    $('#busqueda_avanzada').on('click', '#por_gi_fuente', function(){
         por_gi();
         return false;
     });
 
-    $(document).on('click', '#boton_checklist', function(){
+    $('#busqueda_avanzada').on('click', '#boton_checklist', function(){
         var url = $(this).attr('url');
 
         if (url == "") return false;

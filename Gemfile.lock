@@ -142,6 +142,8 @@ GEM
       launchy
       rest-client
       rubyzip (~> 1.0)
+    formtastic (3.1.5)
+      actionpack (>= 3.2.13)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     gyoku (1.3.1)
@@ -350,6 +352,8 @@ GEM
     wicked_pdf (1.1.0)
     xpath (3.0.0)
       nokogiri (~> 1.8)
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -374,6 +378,7 @@ DEPENDENCIES
   devise
   exifr
   fontello_rails_converter
+  formtastic
   haml
   htmlentities
   i18n-js
@@ -414,6 +419,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   whenever
   wicked_pdf
+  zip-zip
 
 BUNDLED WITH
    1.16.1

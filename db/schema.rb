@@ -84,224 +84,80 @@ ActiveRecord::Schema.define(version: 20180406230347) do
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
-
-  create_table "especies", force: true do |t|
-    t.string   "nombre",                          limit: 100, null: false
-    t.integer  "estatus",                         limit: 2,   null: false
-    t.string   "fuente",                          limit: 30,  null: false
-    t.string   "nombre_autoridad",                            null: false
-    t.string   "numero_filogenetico",             limit: 50
-    t.string   "cita_nomenclatural"
-    t.string   "sis_clas_cat_dicc",                           null: false
-    t.string   "anotacion"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
-    t.integer  "id_nombre_ascendente"
-    t.integer  "id_ascend_obligatorio"
-    t.integer  "categoria_taxonomica_id"
-    t.string   "ancestry_ascendente_directo"
-    t.string   "ancestry_ascendente_obligatorio"
-    t.string   "catalogo_id",                     limit: 20
-    t.string   "nombre_cientifico"
+  create_table "especies_estadistica", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer "especie_id"
+    t.integer "estadistica_id"
+    t.integer "conteo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "especies", ["ancestry_ascendente_directo"], name: "index_ancestry_ascendente_directo_especies"
-  add_index "especies", ["categoria_taxonomica_id"], name: "index_categoria_taxonomica_id_especies"
-  add_index "especies", ["nombre_cientifico"], name: "index_nombre_cientifico_especies"
-
-  create_table "especies_bibliografias", primary_key: "especie_id", force: true do |t|
-    t.integer  "bibliografia_id", null: false
-    t.string   "observaciones"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+  create_table "estadisticas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string "descripcion_estadistica"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "especies_catalogos", primary_key: "especie_id", force: true do |t|
-    t.integer  "catalogo_id",   null: false
-    t.text     "observaciones"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+  create_table "listas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string "nombre_lista", null: false
+    t.text "columnas"
+    t.string "formato"
+    t.integer "esta_activa", limit: 1, default: 0, null: false
+    t.text "cadena_especies"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "usuario_id", null: false
   end
 
-  create_table "especies_estadistica", force: true do |t|
-    t.integer  "especie_id"
-    t.integer  "estadistica_id"
-    t.integer  "conteo"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "proveedores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer "especie_id", null: false
+    t.integer "naturalista_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "geoserver_info"
   end
 
-  create_table "especies_estatuses", primary_key: "especie_id1", force: true do |t|
-    t.integer  "especie_id2",   null: false
-    t.integer  "estatus_id",    null: false
-    t.string   "observaciones"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string "nombre_rol", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.string "observaciones"
   end
 
-  create_table "especies_estatuses_bibliografias", id: false, force: true do |t|
-    t.integer  "especie_id1"
-    t.integer  "especie_id2"
-    t.integer  "estatus_id",      null: false
-    t.integer  "bibliografia_id"
-    t.string   "observaciones"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+  create_table "roles_categorias_contenido", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer "categorias_contenido_id"
+    t.integer "rol_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "especies_regiones", primary_key: "especie_id", force: true do |t|
-    t.integer  "region_id",            null: false
-    t.integer  "tipo_distribucion_id"
-    t.text     "observaciones"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+  create_table "sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string "session_id", null: false
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  add_index "especies_regiones", ["tipo_distribucion_id"], name: "index_tipo_distribucion_id_especies_regiones"
-
-  create_table "estadisticas", force: true do |t|
-    t.string   "descripcion_estadistica"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "estatuses", force: true do |t|
-    t.string   "descripcion", limit: 55, null: false
-    t.integer  "nivel1",      limit: 2,  null: false
-    t.integer  "nivel2",      limit: 2,  null: false
-    t.integer  "nivel3",      limit: 2,  null: false
-    t.integer  "nivel4",      limit: 2,  null: false
-    t.integer  "nivel5",      limit: 2,  null: false
-    t.string   "ruta_icono"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "estatuses", ["descripcion"], name: "index_descripcion_estatuses"
-
-  create_table "listas", force: true do |t|
-    t.string   "nombre_lista",                          null: false
-    t.text     "columnas"
-    t.string   "formato"
-    t.integer  "esta_activa",     limit: 2, default: 0, null: false
-    t.text     "cadena_especies"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.integer  "usuario_id",                            null: false
-  end
-
-  create_table "nombres_comunes", force: true do |t|
-    t.string   "nombre_comun",  limit: 50,  null: false
-    t.string   "observaciones"
-    t.string   "lengua",        limit: 100
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-  end
-
-  add_index "nombres_comunes", ["nombre_comun"], name: "index_nombre_comun_nombres_comunes"
-
-  create_table "nombres_regiones", primary_key: "nombre_comun_id", force: true do |t|
-    t.integer  "especie_id",    null: false
-    t.integer  "region_id",     null: false
-    t.text     "observaciones"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  create_table "nombres_regiones_bibliografias", primary_key: "nombre_comun_id", force: true do |t|
-    t.integer  "especie_id",      null: false
-    t.integer  "region_id",       null: false
-    t.integer  "bibliografia_id", null: false
-    t.string   "observaciones"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
-  create_table "proveedores", force: true do |t|
-    t.integer  "especie_id",     null: false
-    t.integer  "naturalista_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "geoserver_info"
-  end
-
-  create_table "regiones", force: true do |t|
-    t.string   "nombre_region",  limit: 100, null: false
-    t.integer  "tipo_region_id"
-    t.string   "clave_region",   limit: 35
-    t.integer  "id_region_asc",              null: false
-    t.string   "ancestry"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
-  add_index "regiones", ["ancestry"], name: "index_ancestry_tipos_regiones"
-  add_index "regiones", ["nombre_region"], name: "index_nombre_region_tipos_regiones"
-  add_index "regiones", ["tipo_region_id"], name: "index_tipo_region_id_tipos_regiones"
-
-  create_table "roles", force: true do |t|
-    t.string   "nombre_rol",    null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.string   "ancestry"
-    t.string   "observaciones"
-  end
-
-  create_table "roles_categorias_contenido", force: true do |t|
-    t.integer  "categorias_contenido_id"
-    t.integer  "rol_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sessions", force: true do |t|
-    t.string   "session_id", null: false
-    t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true
-  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at"
-
-  create_table "tipos_distribuciones", force: true do |t|
-    t.string   "descripcion", limit: 100, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-  end
-
-  add_index "tipos_distribuciones", ["descripcion"], name: "index_descripcion_tipos_distribuciones"
-
-  create_table "tipos_regiones", force: true do |t|
-    t.string   "descripcion",           null: false
-    t.integer  "nivel1",      limit: 2, null: false
-    t.integer  "nivel2",      limit: 2, null: false
-    t.integer  "nivel3",      limit: 2, null: false
-    t.integer  "nivel4",      limit: 2, null: false
-    t.integer  "nivel5",      limit: 2, null: false
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
-
-  add_index "tipos_regiones", ["descripcion"], name: "index_descripcion_tipos_regiones"
-
-  create_table "usuarios", force: true do |t|
-    t.string   "nombre",                                null: false
-    t.string   "apellido",                              null: false
-    t.string   "institucion"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.string   "locale",                 default: "es", null: false
-    t.string   "email",                  default: "",   null: false
-    t.string   "encrypted_password",     default: "",   null: false
-    t.string   "reset_password_token"
+  create_table "usuarios", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string "nombre", null: false
+    t.string "apellido", null: false
+    t.string "institucion"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "locale", default: "es", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false

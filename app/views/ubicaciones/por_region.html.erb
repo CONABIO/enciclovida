@@ -1,19 +1,22 @@
 <% content_for(:delayedjs) do %>
     <script>
         map = null;
+        legend_control = null;
         especies = null;
         especies_con_filtro = null;
-        taxon = {};
-        layer_obj = {};
-        grupo_id_seleccionado = null;
-        region_id_se = null;
-        tipo_region_se = null;
-        pagina_especies = 1;
 
-        // Es el id del estado, para posteriormente hallar su correspondencia al ID del API
-        CORRESP = eval(<%=raw Estado::CORRESPONDENCIA.to_json %>);
-        geoportal_url = "<%= CONFIG.geoportal_url %>";
-        legend_control = null;
+        opciones = {};
+        opciones.datos = [];
+        opciones.tipo_region_seleccionado = null;
+        opciones.estado_seleccionado = null;
+        opciones.municipio_seleccionado = null;
+        opciones.grupo_seleccionado = null;
+        opciones.reino_seleccionado = null;
+        opciones.taxon_seleccionado = {};
+        opciones.pagina_especies = 1;
+        opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
+        opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
+
         markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
         cargaMapa('map');
         cargaDivisionEstatal();

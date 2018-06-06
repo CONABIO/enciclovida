@@ -1,6 +1,5 @@
 class EspeciesCatalogoController < ApplicationController
   before_action :set_especie_catalogo, only: [:show, :edit, :update, :destroy]
-  autocomplete :catalogo, :descripcion, :full => true, :extra_data => [:descripcion], :limit => 30
 
   # GET /especies_catalogo
   # GET /especies_catalogo.json

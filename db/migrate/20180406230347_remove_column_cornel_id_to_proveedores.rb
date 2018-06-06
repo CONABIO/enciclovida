@@ -1,4 +1,4 @@
-class RemoveColumnCornelIdToProveedores < ActiveRecord::Migration
+class RemoveColumnCornelIdToProveedores < ActiveRecord::Migration[5.1]
   def up
     change_table(:proveedores) do |t|
       t.remove :cornell_id

@@ -23,7 +23,7 @@
 //= require jquery.scrollTo-min.js
 //= require jQuery-Autocomplete.js
 //= require typeahead.js
-//= require cocoon.js
+//= require cocoon
 //= require general
 //= require jquery.soulmate.js
 //= require busquedas.js
