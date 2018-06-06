@@ -15,8 +15,8 @@ class Criterio < ActiveRecord::Base
   scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
   scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
   scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
-  scope :nom, -> { select_join_propiedades.where("ancestry=?", 318) }
-  scope :iucn, -> { select_join_propiedades.where("ancestry=?", 319) }
+  scope :nom, -> { select_join_propiedades.where("ancestry=?", Propiedad::NOM_ID) }
+  scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
 
   def self.catalogo

@@ -15,13 +15,21 @@ class Propiedad < ActiveRecord::Base
   scope :tipo_vedas, -> { where('ancestry=?', 321) }
   scope :procedencias, -> { where('ancestry=?', 322) }
   scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
-  scope :nom, -> { where('ancestry=?', 318) }
-  scope :iucn, -> { where('ancestry=?', 319) }
+  scope :nom, -> { where('ancestry=?', NOM_ID) }
+  scope :iucn, -> { where('ancestry=?', IUCN_ID) }
   scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
+
+  NOM_ID = 318.freeze
+  IUCN_ID = 319.freeze
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
     zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i+1]}
+  end
+
+  def es_categoria_de_riesgo?
+    return true if ([NOM_ID] + [IUCN_ID]).include?(ancestry.to_i)
+    false
   end
 
   def nombre_zona_a_numero
