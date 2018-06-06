@@ -1,66 +1,45 @@
 $(document).ready(function(){
 
+    /**
+     * Cuando selecciona un grupo de los grupos icónicos
+     */
     $('#contenedor_grupos').on('click', '.grupo_id', function(){
-        grupo_id_seleccionado = $(this).attr('grupo_id');
-        pagina_especies = 1;
+        opciones.grupo_seleccionado = $(this).attr('grupo');
+        opciones.pagina_especies = 1;
+        opciones.reino_seleccionado = $(this).attr('reino');
         cargaEspecies();
     });
 
+    /**
+     * Cuando selecciona una especie
+     */
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaRegistros($(this).attr('snib_url'));
-        taxon["id"] = $(this).attr('especie_id');
-        taxon["nombre_comun"] = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
-        taxon["nombre_cientifico"] = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
-        //return false;
+        opciones.taxon_seleccionado.id = $(this).attr('especie_id');
+        opciones.taxon_seleccionado.nombre_comun = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
+        opciones.taxon_seleccionado.nombre_cientifico = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
     });
 
     /**
-     *  Para escoger con las listas
+     *  Cuando selecciona un estado de la lista
      */
     $('#regiones').on('change', '#region_estado', function(){
-        if ($(this).val() == '')
-        {
-            $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-            $('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-
-        } else {
-            $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-            $('#region_municipio').prop('disabled', false).attr('parent_id', $(this).val());
-
-            var prop = {};
-            prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj['estado'][$(this).val()];
-            prop.region_id = $(this).val();
-            prop.tipo_region = 'estado';
-            prop.region_id_se = $(this).val();
-            cargaRegion(prop);
-        }
+        seleccionaEstado($(this).val());
     });
 
+    /**
+     * Cuando selecciona un municipio de la lista
+     */
     $('#regiones').on('change', '#region_municipio', function(){
-        if ($(this).val() == '')
-            console.log('esta vacio');
-        //$('#region_anp').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-
-        else {
-            var prop = {};
-            prop.bounds = eval($('option:selected', this).attr('bounds'));
-            prop.layer = layer_obj['municipio'][$(this).val()];
-            prop.region_id = $(this).val();
-            prop.parent_id = CORRESP[$(this).attr('parent_id')];
-            prop.tipo_region = 'municipio';
-            prop.region_id_se = $('option:selected', this).attr('region_id_se');
-            cargaRegion(prop);
-        }
-
+        seleccionaMunicipio($(this).val());
     });
 
-    /*$( "#toggle-ba-icon" ).click(function() {
-        $( "#toggle-ba-content" ).slideToggle( "fast", function() {});
-    });*/
-
+    /**
+     * Para los filtros default: distribucion y riesgo
+     */
     $('#b_avanzada').on('change', ".checkbox input", function()
     {
+        opciones.pagina_especies = 1;
         cargaEspecies();
     });
 
@@ -97,13 +76,13 @@ $(document).ready(function(){
                 url: '/explora-por-region/descarga-taxa',
                 type: 'GET',
                 dataType: "json",
-                data: parametrosCargaEspecies({correo: correo})
+                data: parametros({correo: correo})
             }).done(function(resp) {
                 if (resp.estatus == 1)
                 {
                     $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste.');
                 } else
-                    $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    $('#estatus_descargar_taxa').empty().html(resp.msg);
 
             }).fail(function(){
                 $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
@@ -117,21 +96,22 @@ $(document).ready(function(){
      * Esta funcion se sustituirá por el scrolling
      */
     $('#carga_mas_especies').on('click', function(){
-        pagina_especies++;
+        opciones.pagina_especies++;
         cargaEspecies();
         return false;
     });
 
+    /**
+     * Cuando autocompleta por nombre cientifico o comun
+     */
     $('#especies').on('keyup', '#nombre', function(){
-        pagina_especies = 1;
+        opciones.pagina_especies = 1;
         cargaEspecies();
     });
 
-/*    window.scroll({
-        top: 120,
-        left: 0,
-        behavior: 'smooth'
-    });*/
+    /**
+     * Para que aparezca la barra del scroll en las especies
+     */
     $(window).load(function()
     {
         $("html,body").animate({scrollTop: 122}, 1000);

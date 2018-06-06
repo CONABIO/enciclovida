@@ -14,25 +14,22 @@ var cargaDivisionEstatal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                var name = d.properties.nombre_region;
-                $('#contenedor-nombre-region').html(name);
+                nombreRegion(opciones.datos[d.properties.region_id].properties);
             })
             .on('dblclick', function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'estado';
-                d.properties.bounds = d3.geo.bounds(d);
-                cargaRegion(d.properties);
-
-                $('#region_estado').val(d.properties.region_id);  // Selecciona el estado correspondiente en el select
-                $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-                $('#region_municipio').prop('disabled', false).attr('parent_id', d.properties.region_id);
+                seleccionaEstado(d.properties.region_id);
             })
             .each(function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'estado';
-                d.properties.bounds = d3.geo.bounds(d);
-                d.properties.region_id_se = d.properties.region_id;
-                completaSelect(d.properties);
+                // Asigna los valores la primera y unica vez que carga los estados
+                opciones.datos[d.properties.region_id] = {};
+                opciones.datos[d.properties.region_id].properties = d.properties;
+                opciones.datos[d.properties.region_id].properties.layer = $(this);
+                opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
+
+                var bounds = d3.geo.bounds(d)
+                opciones.datos[d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+
+                completaSelect(opciones.datos[d.properties.region_id].properties);
             });
 
         map.on('zoomend', reinicia);
@@ -63,7 +60,7 @@ var cargaDivisionMunicipal = function()
     var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
     var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
-    d3.json('/topojson/estado_' + region_id_se + '_division_municipal.json', function (error, collection) {
+    d3.json('/topojson/estado_' + opciones.estado_seleccionado + '_division_municipal.json', function (error, collection) {
         var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
         var path = d3.geo.path().projection(projectPoint);
 
@@ -73,22 +70,24 @@ var cargaDivisionMunicipal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                var name = d.properties.nombre_region;
-                $('#contenedor-nombre-region').html(name);
+                nombreRegion(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
             })
             .on('dblclick', function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'municipio';
-                d.properties.bounds = d3.geo.bounds(d);
-                cargaRegion(d.properties);
-
-                $('#region_municipio').val(d.properties.region_id);  // Selecciona el municipio correspondiente en el select
+                seleccionaMunicipio(d.properties.region_id);
             })
             .each(function(d){
-                d.properties.layer = $(this);
-                d.properties.tipo_region = 'municipio';
-                d.properties.bounds = d3.geo.bounds(d);
-                completaSelect(d.properties);
+                if (opciones.datos[opciones.estado_seleccionado].municipios == undefined)
+                    opciones.datos[opciones.estado_seleccionado].municipios = [];
+
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)] = {};
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties = d.properties;
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.layer = $(this);
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.tipo_region = 'municipio';
+
+                var bounds = d3.geo.bounds(d)
+                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+
+                completaSelect(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
             });
 
         map.on('zoomend', reinicia);
@@ -119,19 +118,14 @@ var cargaRegion = function(prop)
     switch(prop.tipo_region)
     {
         case 'estado':
-            tipo_region_se = 'estados';
-            region_id_se = prop.region_id;
-            $('#svg-division-municipal').remove();
             cargaDivisionMunicipal();
             break;
         case 'municipio':
-            tipo_region_se = 'municipios';
-            region_id_se = prop.region_id_se;
             break;
     }
 
-    map.flyToBounds([prop.bounds[0].reverse(), prop.bounds[1].reverse()]);
-    cargaGrupos(prop);
+    map.flyToBounds(prop.bounds);
+    cargaGrupos();
     borraRegistrosAnteriores();
     $('#svg-division-estatal .selecciona-region').attr('class', 'region');
     $('#svg-division-municipal .selecciona-region').attr('class', 'region');
@@ -150,19 +144,6 @@ var muestraOcultaSvg = function(caso)
         $('#svg-division-estatal').css('visibility', 'hidden');
         $('#svg-division-municipal').css('visibility', 'hidden');
         $('#svg-region').css('visibility', 'hidden');
-    }
-};
-
-var dameUrlTopojson = function(prop)
-{
-    switch (prop.tipo_region)
-    {
-        case 'estado':
-            return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_division_municipal.json';
-        case 'municipio':
-            return '/topojson/' + prop.tipo_region + '_' + prop.region_id + '_' + prop.parent_id + '.json';
-        default:
-            return undefined;
     }
 };
 

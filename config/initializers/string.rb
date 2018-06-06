@@ -18,8 +18,8 @@ class String
   end
 
   # Para cuando se quiere consultar un web service
-  def limpia_ws
-    self.limpiar.limpia
+  def limpia_ws(bdi=false)
+    self.limpiar(bdi).limpia
   end
 
   def limpia_csv
@@ -50,11 +50,11 @@ class String
   end
 
   def estandariza
-    sin_acentos.limpia.parameterize.downcase
+    sin_acentos.limpia.parameterize
   end
 
   def sin_acentos
-    I18n.transliterate(self).strip
+    I18n.transliterate(self).strip.downcase
   end
 end
 

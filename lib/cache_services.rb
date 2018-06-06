@@ -1,7 +1,7 @@
 module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
-    #suma_visita_servicio
+    suma_visita_servicio
     #cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
     #cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
     #cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores del taxon
@@ -9,6 +9,7 @@ module CacheServices
     #guarda_observaciones_naturalista_servicio
     #guarda_ejemplares_snib_servicio
     guarda_redis_servicio
+    guarda_pez_servicios
   end
 
   # REVISAO: Guarda los datos más importantes en el redis
@@ -17,6 +18,15 @@ module CacheServices
       delay(queue: 'redis').guarda_redis
     else
       guarda_redis
+    end
+  end
+
+  # REVISADO: Guarda la información asociada al pez
+  def guarda_pez_servicios
+    if Rails.env.production?
+      pez.delay(queue: 'peces').save if pez
+    else
+      pez.save if pez
     end
   end
 
