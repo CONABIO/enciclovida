@@ -111,7 +111,8 @@ class PecesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
+    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy],
+                                peces_propiedades_attributes: [:propiedad_id, :id, :_destroy])
   end
 
   def dame_regexp_zonas(opc = {})

@@ -27,6 +27,24 @@ class Propiedad < ActiveRecord::Base
     zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i+1]}
   end
 
+  def self.catalogo
+    resp = Rails.cache.fetch('propiedades_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
+      grouped_options = {}
+
+      Propiedad.all.each do |prop|
+        next if prop.es_categoria_de_riesgo?
+        llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+
+        grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
+        grouped_options[llave_unica] << [prop.nombre_propiedad, prop.id]
+      end
+
+      grouped_options
+    end
+
+    resp
+  end
+
   def es_categoria_de_riesgo?
     return true if ([NOM_ID] + [IUCN_ID]).include?(ancestry.to_i)
     false
