@@ -22,11 +22,7 @@ class Criterio < ActiveRecord::Base
   def self.catalogo(prop = nil)
 
     if prop.present?
-      grouped_options = {}
-      llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
-      puts prop.inspect
-      grouped_options[llave_unica] = prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] }
-      grouped_options
+      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] }
 
     else
       resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
