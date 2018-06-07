@@ -15,7 +15,7 @@
         <% if @pez.new_record? %>
             <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
         <% else %>
-            <h4><%= @pez.nombre_cientifico %></h4>
+            <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
             <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
         <% end %>
     <% end %>
@@ -30,6 +30,17 @@
         <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'new_peces_criterios_fields' %>
       </div>
     </div>
+
+  <h3>Propiedades</h3>
+  <div id='peces_propiedades'>
+    <%= f.semantic_fields_for :peces_propiedades do |propiedades| %>
+      <%= render partial: 'edit_peces_propiedades_fields', locals: {:f => propiedades} %>
+    <% end %>
+
+    <div class='links'>
+      <%= link_to_add_association 'Añade propiedad', f, :peces_propiedades, partial: 'new_peces_propiedades_fields' %>
+    </div>
+  </div>
 
     <%= f.actions do %>
         <%= f.action :submit, label: 'Crear pez' %>
