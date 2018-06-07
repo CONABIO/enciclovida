@@ -19,23 +19,33 @@ class Criterio < ActiveRecord::Base
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
 
-  def self.catalogo
+  def self.catalogo(prop = nil)
 
-    resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
+    if prop.present?
       grouped_options = {}
+      llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+      puts prop.inspect
+      grouped_options[llave_unica] = prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] }
+      grouped_options
 
-      Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
-        prop = c.propiedad
-        llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+    else
+      resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
+        grouped_options = {}
 
-        grouped_options[llave_unica] = [] if !grouped_options.key?(llave_unica)
-        grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+        Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
+          prop = c.propiedad
+          next if prop.es_categoria_de_riesgo?
+          llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+
+          grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
+          grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+        end
+
+        grouped_options
       end
 
-      grouped_options
+      resp
     end
-
-    resp
   end
 
   def self.pesquerias
