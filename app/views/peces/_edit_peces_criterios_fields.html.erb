@@ -5,8 +5,8 @@
       if !propiedad.es_categoria_de_riesgo?
     %>
 
-      <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select,
-                  collection: grouped_options_for_select(Criterio.catalogo(propiedad), selected: f.object.criterio_id) %>
+      <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select, prompt: '-- Selecciona --',
+                  collection: options_for_select(Criterio.catalogo(propiedad), selected: f.object.criterio_id) %>
     <% end %>
   <% end %>
 </div>
