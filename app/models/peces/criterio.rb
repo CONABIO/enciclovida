@@ -30,7 +30,8 @@ class Criterio < ActiveRecord::Base
 
         Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
           prop = c.propiedad
-          next if prop.existe_propiedad?
+          next if prop.existe_propiedad?([Propiedad::NOM_ID, Propiedad::IUCN_ID])
+          #next if prop.existe_propiedad?
           llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
           grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)

@@ -1,6 +1,7 @@
 <div class='nested-fields'>
   <%= f.inputs do %>
-      <%= f.input :propiedad_id, label: 'Propiedad', as: :select, collection: Criterio.all.map{|c| [c.propiedad.nombre_propiedad, c.id]} %>
+      <%= f.input :propiedad_id, label: 'Nueva propiedad', as: :select, prompt: '-- Selecciona --',
+                  collection: grouped_options_for_select(Propiedad.catalogo) %>
       <%= link_to_remove_association 'Quitar criterio', f %>
   <% end %>
 </div>

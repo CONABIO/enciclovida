@@ -5,7 +5,7 @@
       unless propiedad.existe_propiedad?([Propiedad::NOM_ID, Propiedad::IUCN_ID])
     %>
 
-      <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select, prompt: '-- Selecciona --',
+      <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select,
                   collection: options_for_select(Criterio.catalogo(propiedad), selected: f.object.criterio_id) %>
     <% end %>
   <% end %>
