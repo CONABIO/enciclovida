@@ -2,7 +2,7 @@
   <%= f.inputs do %>
     <%
       propiedad = f.object.criterio.propiedad
-      if !propiedad.es_categoria_de_riesgo?
+      unless propiedad.existe_propiedad?([Propiedad::NOM_ID, Propiedad::IUCN_ID])
     %>
 
       <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select, prompt: '-- Selecciona --',

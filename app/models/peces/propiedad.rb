@@ -11,16 +11,23 @@ class Propiedad < ActiveRecord::Base
   has_ancestry
 
   scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
-  scope :tipo_capturas, -> { where('ancestry=?', 320) }
-  scope :tipo_vedas, -> { where('ancestry=?', 321) }
-  scope :procedencias, -> { where('ancestry=?', 322) }
+  scope :tipo_capturas, -> { where('ancestry=?', TIPO_CAPTURA_ID) }
+  scope :tipo_vedas, -> { where('ancestry=?', TIPO_DE_VEDA_ID) }
+  scope :procedencias, -> { where('ancestry=?', PROCEDENCIA_ID) }
   scope :pesquerias,  -> { where(tipo_propiedad: 'Pesquerías en vías de sustentabilidad') }
   scope :nom, -> { where('ancestry=?', NOM_ID) }
   scope :iucn, -> { where('ancestry=?', IUCN_ID) }
   scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
 
+  # Los IDS asignados, estos no deberían cambiar
   NOM_ID = 318.freeze
   IUCN_ID = 319.freeze
+  TIPO_CAPTURA_ID = 320.freeze
+  PROCEDENCIA_ID = 322.freeze
+  TIPO_DE_VEDA_ID = 321.freeze
+  ZONA_ID = 323.freeze
+
+  PROPIEDADES_DEFAULT = [NOM_ID, IUCN_ID, TIPO_CAPTURA_ID, PROCEDENCIA_ID, TIPO_DE_VEDA_ID, ZONA_ID].freeze
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
@@ -32,7 +39,8 @@ class Propiedad < ActiveRecord::Base
       grouped_options = {}
 
       Propiedad.all.each do |prop|
-        next if prop.es_categoria_de_riesgo?
+
+        next if prop.existe_propiedad?
         llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
         grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
@@ -45,8 +53,9 @@ class Propiedad < ActiveRecord::Base
     resp
   end
 
-  def es_categoria_de_riesgo?
-    return true if ([NOM_ID] + [IUCN_ID]).include?(ancestry.to_i)
+  def existe_propiedad?(propiedades=nil)
+    propiedades ||= PROPIEDADES_DEFAULT
+    return true if propiedades.include?(ancestry.to_i)
     false
   end
 

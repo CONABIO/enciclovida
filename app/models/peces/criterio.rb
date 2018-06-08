@@ -12,9 +12,9 @@ class Criterio < ActiveRecord::Base
   scope :join_propiedades, -> { joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
   scope :select_join_propiedades, -> { select_propiedades.join_propiedades }
 
-  scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
-  scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
-  scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
+  scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_CAPTURA_ID) }
+  scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_DE_VEDA_ID) }
+  scope :procedencias, -> { select_join_propiedades.where("ancestry=?", Propiedad::PROCEDENCIA_ID) }
   scope :nom, -> { select_join_propiedades.where("ancestry=?", Propiedad::NOM_ID) }
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
@@ -30,7 +30,7 @@ class Criterio < ActiveRecord::Base
 
         Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
           prop = c.propiedad
-          next if prop.es_categoria_de_riesgo?
+          next if prop.existe_propiedad?
           llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
           grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
