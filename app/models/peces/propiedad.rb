@@ -10,7 +10,7 @@ class Propiedad < ActiveRecord::Base
 
   has_ancestry
 
-  scope :grupos_conabio, -> { where(nombre_propiedad: 'Grupo CONABIO').first.children.order(:nombre_propiedad) }
+  scope :grupos_conabio, -> { where('ancestry=?', GRUPO_ID).order(:nombre_propiedad) }
   scope :tipo_capturas, -> { where('ancestry=?', TIPO_CAPTURA_ID) }
   scope :tipo_vedas, -> { where('ancestry=?', TIPO_DE_VEDA_ID) }
   scope :procedencias, -> { where('ancestry=?', PROCEDENCIA_ID) }
@@ -26,6 +26,7 @@ class Propiedad < ActiveRecord::Base
   PROCEDENCIA_ID = 322.freeze
   TIPO_DE_VEDA_ID = 321.freeze
   ZONA_ID = 323.freeze
+  GRUPO_ID = 317.freeze
 
   PROPIEDADES_DEFAULT = [NOM_ID, IUCN_ID, TIPO_CAPTURA_ID, PROCEDENCIA_ID, TIPO_DE_VEDA_ID, ZONA_ID].freeze
 
@@ -41,6 +42,7 @@ class Propiedad < ActiveRecord::Base
       Propiedad.all.each do |prop|
 
         next if prop.existe_propiedad?
+        next if prop.is_root?
         llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
         grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
