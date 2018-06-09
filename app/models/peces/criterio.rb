@@ -19,6 +19,8 @@ class Criterio < ActiveRecord::Base
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
 
+  validates_presence_of :propiedad_id
+
   def self.catalogo(prop = nil)
 
     if prop.present?
