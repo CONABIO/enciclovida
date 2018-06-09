@@ -1,35 +1,35 @@
 <%= semantic_form_for(@pez, url: '/peces', method: :post) do |f| %>
-    <% if @pez.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
+  <% if @pez.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
 
-          <ul>
-            <% @pez.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-    <% end %>
-
-    <%= f.inputs "", :id => "peces" do %>
-        <% if @pez.new_record? %>
-            <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
-        <% else %>
-            <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
-            <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+      <ul>
+        <% @pez.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
         <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= f.inputs "", :id => "peces" do %>
+    <% if @pez.new_record? %>
+      <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+    <% else %>
+      <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
+      <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+    <% end %>
+  <% end %>
+
+  <h3>Criterios asociados</h3>
+  <div id='peces_criterios'>
+    <%= f.semantic_fields_for :peces_criterios do |criterios| %>
+      <%= render partial: 'edit_peces_criterios_fields', locals: {:f => criterios} %>
     <% end %>
 
-    <h3>Criterios asociados</h3>
-    <div id='peces_criterios'>
-      <%= f.semantic_fields_for :peces_criterios do |criterios| %>
-          <%= render partial: 'edit_peces_criterios_fields', locals: {:f => criterios} %>
-      <% end %>
-
-      <div class='links'>
-        <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'new_peces_criterios_fields' %>
-      </div>
+    <div class='links'>
+      <%= link_to_add_association 'Añade criterio', f, :peces_criterios, partial: 'new_peces_criterios_fields' %>
     </div>
+  </div>
 
   <h3>Propiedades</h3>
   <div id='peces_propiedades'>
@@ -42,8 +42,13 @@
     </div>
   </div>
 
-    <%= f.actions do %>
-        <%= f.action :submit, label: 'Crear pez' %>
-        <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
+  <%= f.actions do %>
+    <% if @pez.new_record? %>
+      <%= f.action :submit, label: 'Crear pez' %>
+    <% else %>
+      <%= f.action :submit, label: 'Actualizar pez' %>
     <% end %>
+    <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
+  <% end %>
+
 <% end %>
