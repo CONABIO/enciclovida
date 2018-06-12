@@ -65,8 +65,10 @@ class Pez < ActiveRecord::Base
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
 
-      if propiedad.nombre_propiedad == 'No se distribuye'  # La quitamos del array ya que no deberia tener valor
-        self.valor_por_zona[zona_num] = nil
+      if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
+        self.valor_por_zona[zona_num] = 'n'
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
+        self.valor_por_zona[zona_num] = 's'
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
       end
@@ -213,6 +215,8 @@ class Pez < ActiveRecord::Base
   # Asocia el valor por zona a un color correspondiente
   def valor_zona_a_color
     valor_por_zona.each_with_index do |zona, i|
+      next unless zona.class == Fixnum # Por si ya tiene asignada una letra
+
       case zona
         when -5..4
           self.valor_por_zona[i] = 'v'
@@ -220,8 +224,6 @@ class Pez < ActiveRecord::Base
           self.valor_por_zona[i] = 'a'
         when 20..100
           self.valor_por_zona[i] = 'r'
-        else
-          self.valor_por_zona[i] = 'n'
       end
     end
   end
@@ -233,14 +235,12 @@ class Pez < ActiveRecord::Base
     valor_zonas.split('').each do |zona|
       case zona
         when 'v'
-          #zonas << 43
           zonas << -100
         when 'a'
-          #zonas << 7
           zonas << 10
         when 'r'
           zonas << 100
-        when 'n'
+        when 'n', 's'
           zonas << 0
       end
     end
