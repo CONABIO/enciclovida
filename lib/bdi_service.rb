@@ -21,6 +21,7 @@ class BDIService
     bdi = CONFIG.bdi_imagenes
     fotos = []
     jres = fotos_album(opts)
+    return jres if jres['data'].present? && jres['data'].any?
 
     jres['data'].each do |x|
       foto = Photo.new
@@ -57,7 +58,6 @@ class BDIService
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
-    puts url.inspect
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
@@ -102,12 +102,12 @@ class BDIService
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ILUSTRACIONES.each do |album|
-          opts[:album] = album
-          opts.merge!({nombre: taxon.nombre_cientifico, campo: 'q'})
+          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
           jres = tiene_fotos?(opts)
           return jres if jres['data'].present? && jres['data'].any?
         end
 
+        return {'data' => []}
       else
         (ALBUM_PLANTAS.keys & ancestros).each do |taxon_id|
           opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
@@ -124,11 +124,12 @@ class BDIService
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ILUSTRACIONES.each do |album|
-          opts[:album] = album
-          opts.merge!({nombre: taxon.nombre_cientifico, campo: 'q'})
+          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
           jres = tiene_fotos?(opts)
           return jres if jres['data'].present? && jres['data'].any?
         end
+
+        return {'data' => []}
     end
 
   end
