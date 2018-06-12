@@ -20,7 +20,7 @@ class Pez < ActiveRecord::Base
 
   scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
 
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(con_estrella: :desc).order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
@@ -61,7 +61,6 @@ class Pez < ActiveRecord::Base
   def asigna_valor_zonas_y_total
     asigna_anio
     valores_por_zona
-    puts valor_por_zona.inspect
 
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
@@ -263,9 +262,13 @@ class Pez < ActiveRecord::Base
     valor+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
     valor+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
     valor+= propiedades.procedencias.map(&:valor).inject(:+).to_i
-    valor+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
     valor+= propiedades.nom.map(&:valor).inject(:+).to_i
     valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
+
+    # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
+    pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
+    valor+= pesquerias
+    self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)
   end
