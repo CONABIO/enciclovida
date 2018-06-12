@@ -6,7 +6,6 @@ class PecesController < ApplicationController
   before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
   before_action :only => [:index, :new, :update, :edit, :create, :destroy] {tiene_permiso?('Administrador', true)}  # Minimo administrador
 
-
   # GET /peces
   def index
     # Mega join =S (por eso se limita)
@@ -43,7 +42,8 @@ class PecesController < ApplicationController
 
   # PATCH/PUT /peces/1
   def update
-    if @pez.update(pez_params)
+    puts pez_params.inspect
+    if @pez.update_attributes(pez_params)
       redirect_to @pez, notice: 'Pez was successfully updated.'
     else
       render action: 'edit'
@@ -111,8 +111,8 @@ class PecesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :_destroy],
-                                peces_propiedades_attributes: [:propiedad_id, :_destroy])
+    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+                                peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
   def dame_regexp_zonas(opc = {})
