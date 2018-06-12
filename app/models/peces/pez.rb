@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, inverse_of: :pez, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
