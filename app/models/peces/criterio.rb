@@ -21,6 +21,8 @@ class Criterio < ActiveRecord::Base
 
   validates_presence_of :propiedad_id
 
+  CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
+
   def self.catalogo(prop = nil)
 
     if prop.present?
