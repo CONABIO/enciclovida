@@ -21,7 +21,7 @@ class BDIService
     bdi = CONFIG.bdi_imagenes
     fotos = []
     jres = fotos_album(opts)
-    return jres if jres['data'].present? && jres['data'].any?
+    return jres unless jres['data'].any?
 
     jres['data'].each do |x|
       foto = Photo.new
@@ -90,21 +90,21 @@ class BDIService
         (ALBUM_ANIMALES.keys & ancestros).each do |taxon_id|
           opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
+          return jres if jres['data'].any?
         end
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ANIMALES_GLOBAL.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
+          return jres if jres['data'].any?
         end
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ILUSTRACIONES.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
           jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
+          return jres if jres['data'].any?
         end
 
         return {'data' => []}
@@ -119,14 +119,14 @@ class BDIService
         ALBUM_PLANTAS_GLOBAL.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
+          return jres if jres['data'].any?
         end
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ILUSTRACIONES.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
           jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
+          return jres if jres['data'].any?
         end
 
         return {'data' => []}
