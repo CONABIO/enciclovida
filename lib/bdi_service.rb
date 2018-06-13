@@ -21,7 +21,7 @@ class BDIService
     bdi = CONFIG.bdi_imagenes
     fotos = []
     jres = fotos_album(opts)
-    return jres unless jres['data'].any?
+    return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
 
     jres['data'].each do |x|
       foto = Photo.new
