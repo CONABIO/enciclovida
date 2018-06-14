@@ -40,6 +40,12 @@ class Pez < ActiveRecord::Base
     asigna_nombre_cientifico
     asigna_nombres_comunes
     asigna_imagen
+    guarda_redis
+  end
+
+  # Guarda el redis del pez aprovechando el metodo empaquetado de especie
+  def guarda_redis
+    especie.guarda_redis(loader: 'peces', foto_principal: imagen)
   end
 
   # Actualiza todos los servicios
