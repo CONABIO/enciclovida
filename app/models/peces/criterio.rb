@@ -21,10 +21,12 @@ class Criterio < ActiveRecord::Base
 
   validates_presence_of :propiedad_id
 
+  CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
+
   def self.catalogo(prop = nil)
 
     if prop.present?
-      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] }
+      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] if p.criterios.present? }
 
     else
       resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
