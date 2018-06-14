@@ -1,7 +1,11 @@
 <%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
-<%- content_for(:extrajs) do -%>
+<%- content_for(:delayedjs) do -%>
   <script>
+      $(document).ready(function(){
+          soulmate_asigna();
+      });
   </script>
 <%- end -%>
 
@@ -25,12 +29,10 @@
           <h5 class="text-primary"><strong>Selecciona la especie por nombre:</strong></h5>
           <h6><i>Esta búsqueda bloquea los demás criterios</i></h6>
         </legend>
-        <div class="ui-widget form-peces">
-          <%= text_field_tag(:ncomunes, nil, placeholder: 'Nombre común ...', class: 'form-control input-lg') %>
-        </div>
 
         <div class="ui-widget form-peces">
-          <%= text_field_tag(:ncientifico, nil, placeholder: 'Nombre científico ...', class: 'form-control input-lg' ) %>
+          <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
+                             :autocomplete => :off, :class => 'form-control input-lg' %>
         </div>
 
         <%= hidden_field_tag(:especie_id) %>
