@@ -5,8 +5,14 @@
   <div class="panel-body">
     <dl class="dl-horizontal">
       <% @criterios.each do |c|  %>
-        <dt><%= c.tipo_propiedad %>: </dt>
-        <dd><small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span></dd>
+        <dt><% if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad) %>
+            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+            <% end %><%= c.tipo_propiedad %>:
+        </dt>
+
+        <dd>
+          <small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span>
+        </dd>
       <% end %>
     </dl>
     <p>-5..4 -> V</p>
