@@ -164,7 +164,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background: linear-gradient(to bottom, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2836d', endColorstr='#7a1a07', GradientType=0);
 }
-.btn-zona-s, .btn-zona-n{
+.btn-zona-s, .btn-zona-n, .btn-zona-sn{
   background: rgba(255, 255, 255, 1);
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(50%, rgba(221, 221, 221, 1)));
@@ -176,4 +176,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 .btn-zona-n{
   color: transparent!important;
+}
+.btn-zona-sn{
+  color: #666!important;
 }
