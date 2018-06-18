@@ -17,19 +17,21 @@ module PecesHelper
 
     def checkboxRecomendacion
       checkBoxes = ''
-      s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r'}
+      s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r', 'Sin datos' => 'sn'}
       s.each do |k,v|
         checkBoxes << "<label>"
         checkBoxes << check_box_tag('semaforo_recomendacion[]', v, false, id: "semaforo_recomendacion_#{k}")
         checkBoxes << "<span title = '#{k}' class = 'btn btn-lg btn-basica btn-zona-#{v} btn-title'>"
-        checkBoxes << "<i class = 'glyphicon glyphicon-"
+        checkBoxes << "<i class = '"
         checkBoxes << case k
                       when 'Recomendable'
-                        'ok-sign'
+                        'glyphicon glyphicon-ok-sign'
                       when 'Poco recomendable'
-                        'exclamation-sign'
+                        'glyphicon glyphicon-exclamation-sign'
                       when 'Evita'
-                        'minus-sign'
+                        'glyphicon glyphicon-minus-sign'
+                      when 'Sin datos'
+                        'no-data-ev-icon'
                       else
                         'stop'
                       end
