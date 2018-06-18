@@ -126,7 +126,7 @@ $(document).ready(function()
         });
     };
 
-    $(document).on('change', ".radio input", function()
+    $('#por_gi').on('change', ".radio input", function()
     {
         // El ID del grupo iconico
         var id_gi = $(this).attr('value');
