@@ -116,7 +116,7 @@ class PecesController < ApplicationController
   end
 
   def dame_regexp_zonas(opc = {})
-    colores_default = opc[:colores_default] || '[varns]'
+    colores_default = opc[:colores_default] || '[var]'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
 
     if opc[:zonas] == 1  # La primera zona
