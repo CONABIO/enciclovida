@@ -1,5 +1,5 @@
 <% content_for(:delayedjs) do %>
-    <script>
+    <script data-turbolinks-track="true">
         map = null;
         legend_control = null;
         especies = null;
@@ -17,7 +17,8 @@
         opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
         opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
 
-        markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2,
+            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
         cargaMapa('map');
         cargaDivisionEstatal();
     </script>
