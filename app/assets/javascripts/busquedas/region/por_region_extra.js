@@ -147,3 +147,24 @@ var completaSelect = function(prop)
 {
     $('#region_' + prop.tipo_region).append("<option value='" + parseInt(prop.region_id) + "'>" + prop.nombre_region + '</option>');
 };
+
+/**
+ * Devuelve la URL de las especies por region
+ * @param prop
+ * @returns {string}
+ */
+var dameUrlServicioSnibPorRegion = function(prop)
+{
+    prop.estado_id = opciones.correspondencia[prop.estado_id];
+
+    var snib_url = prop.snib_url + '/' + prop.reino + '/' + prop.catalogo_id + '/' + prop.estado_id;
+
+    if (prop.municipio_id != null && prop.municipio_id != '')
+    {
+        prop.municipio_id = ('00'+prop.municipio_id).slice(-3);
+        snib_url+= '/' + prop.municipio_id;
+    }
+
+    snib_url+= '?apiKey=enciclovida';
+    return snib_url;
+};
