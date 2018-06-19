@@ -80,7 +80,13 @@ class PecesController < ApplicationController
         regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif params[:semaforo_recomendacion].present?
-        rec = params[:semaforo_recomendacion].map{|r| "#{r}+"}.join('|')
+        # Selecciono el valor de sin datos
+        if params[:semaforo_recomendacion].include?('sn')
+          rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
+        else # Cualquier otra combinacion
+          rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
+        end
+
         @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
@@ -116,7 +122,7 @@ class PecesController < ApplicationController
   end
 
   def dame_regexp_zonas(opc = {})
-    colores_default = opc[:colores_default] || '[var]'
+    colores_default = opc[:colores_default] || '[varns]'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
 
     if opc[:zonas] == 1  # La primera zona
