@@ -4,16 +4,16 @@
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <meta name="keywords" content="Busqueda por región, ubicación, zona, lugar, especies, estados, municipios, ANP, registros">
+  <meta name="keywords" content="Busqueda por peces, marinos, comerciales, crustaceos, tiburones, pulpos, almejas">
   <title><%= yield :title %></title>
-  <%= favicon_link_tag '/favicon.ico' %>
+  <%= favicon_link_tag 'favicon.ico' %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
 
-  <%= javascript_include_tag "peces/peces", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -21,7 +21,8 @@
       I18n.fallbacks = true;
   </script>
 
-  <%= stylesheet_link_tag "peces/peces", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag 'peces/peces', 'data-turbolinks-track' => true %>
+
   <%= csrf_meta_tags %>
   <%= yield :extracss %>
   <%= yield :extrajs %>
