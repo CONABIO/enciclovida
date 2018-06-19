@@ -48,7 +48,7 @@ module CacheServices
         cuantas_especies_inferiores(opc)
       end
 
-      escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.cuantas_especies_inferiores)) if Rails.env.production?
+      escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.cuantas_especies_inferiores) if Rails.env.production?
     end
   end
 
@@ -63,7 +63,7 @@ module CacheServices
         end
       end
 
-      escribe_cache('observaciones_naturalista', eval(CONFIG.cache.observaciones_naturalista)) if Rails.env.production?
+      escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
     end
   end
 
@@ -78,13 +78,13 @@ module CacheServices
         end
       end
 
-      escribe_cache('ejemplares_snib', eval(CONFIG.cache.ejemplares_snib)) if Rails.env.production?
+      escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
     end
   end
 
   # REVISADO: Escribe un cache
   def escribe_cache(recurso, tiempo = 1.day)
-    Rails.cache.write("#{recurso}_#{id}", true, :expires_in => tiempo)
+    Rails.cache.write("#{recurso}_#{id}", :expires_in => tiempo)
   end
 
   # REVISADO: Verifica que el cache exista

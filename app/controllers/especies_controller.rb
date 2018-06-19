@@ -97,7 +97,33 @@ class EspeciesController < ApplicationController
       end
 
       format.pdf do
-        @photos = @especie.fotos_bdi[:fotos]
+        @fotos = nil
+
+        # Fotos de naturalista
+        if p = @especie.proveedor
+          fotos = p.fotos_naturalista
+
+          if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+            @fotos = []
+
+            fotos[:fotos].each do |f|
+              foto = Photo.new
+              foto.large_url = f['photo']['large_url']
+              foto.medium_url = f['photo']['medium_url']
+              foto.native_page_url = f['photo']['native_page_url']
+              foto.license = f['photo']['attribution']
+              foto.square_url = f['photo']['square_url']
+              foto.native_realname = f['photo']['attribution']
+              @fotos << foto
+            end
+          end
+        end
+
+        # Fotos de BDI
+        unless @fotos.present?
+          fotos = @especie.fotos_bdi
+          @fotos = fotos[:fotos] if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+        end
 
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
