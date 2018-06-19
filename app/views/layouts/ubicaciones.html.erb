@@ -4,19 +4,21 @@
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
-  <%= favicon_link_tag '/favicon.ico' %>
+  <meta name="keywords" content="Busqueda por región, ubicación, zona, lugar, especies, estados, municipios, ANP, registros">
+  <title><%= yield :title %></title>
+  <%= favicon_link_tag 'favicon.ico' %>
 
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag 'lib/d3.v3.min', 'data-turbolinks-track' => true %>
+  <script type="text/javascript" data-turbolinks-track="true">
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
+
+  <script src="https://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
   <script src="http://d3js.org/topojson.v1.min.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js" data-turbolinks-track="true"></script>
-  <%= javascript_include_tag 'lib/Control.FullScreen', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'busquedas/region/topojson', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'mapa/registros_snib', 'data-turbolinks-track' => true %>
+
   <%= javascript_include_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'mapa/mapa', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -24,15 +26,12 @@
       I18n.fallbacks = true;
   </script>
 
-  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-  <%= stylesheet_link_tag "busquedas", "data-turbolinks-track" => true %>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.2.0/dist/MarkerCluster.Default.css" />
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true" />
-  <%= stylesheet_link_tag 'lib/Control.FullScreen', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag "busquedas/region/por_region", "data-turbolinks-track" => true %>
-  <%= stylesheet_link_tag "mapa/registros_snib", "data-turbolinks-track" => true %>
+
+  <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
@@ -59,10 +58,10 @@
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
 
-<%= yield :delayedjs %>
-
 <% if Rails.env.production? %>
-    <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
+  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
 <% end %>
+
+<%= yield :delayedjs %>
 </body>
 </html>
