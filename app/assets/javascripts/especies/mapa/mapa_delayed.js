@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     // Inicia el mapa
     cargaMapa('map');
