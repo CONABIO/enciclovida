@@ -1,10 +1,17 @@
-var cargaRegistros = function(url)
+/**
+ * Borra registros anteriores y carga los nuevos
+ * @param url
+ */
+var cargaRegistrosSnib = function(url)
 {
-    borraRegistrosAnteriores();
+    borraRegistrosAnterioresSnib();
     geojsonSnib(url);
 };
 
-var borraRegistrosAnteriores = function()
+/**
+ * Borra registros anteriores
+ */
+var borraRegistrosAnterioresSnib = function()
 {
     if (map.hasLayer(markersLayer))
     {
@@ -14,7 +21,11 @@ var borraRegistrosAnteriores = function()
     }
 };
 
-var leyendaSNIB = function(con_conteo)
+/**
+ * La simbologia dentro del mapa
+ * @param con_conteo
+ */
+var leyendaSnib = function(con_conteo)
 {
     legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
@@ -24,9 +35,7 @@ var leyendaSNIB = function(con_conteo)
         var conteo = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
 
     var marker_default = '&nbsp;&nbsp;<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones<br />';
-
     var marker_averaves = '<i class="feather-ev-icon div-icon-snib"></i>Observaciones<br />';
-
     var marker_fosil = '<i class="bone-ev-icon div-icon-snib"></i>Fósiles';
 
     legend_control.addOverlay(markersLayer,
@@ -34,6 +43,9 @@ var leyendaSNIB = function(con_conteo)
     );
 };
 
+/**
+ * Añade los puntos en forma de fuentes
+ */
 var aniadePuntosSnib = function()
 {
     var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
@@ -58,7 +70,7 @@ var aniadePuntosSnib = function()
     markersLayer.addLayer(species_layer);
     map.addLayer(markersLayer);
 
-    leyendaSNIB(true);
+    leyendaSnib(true);
 };
 
 /**
@@ -91,7 +103,7 @@ var ejemplarSnibGeojson = function(layer, id)
 
                 contenido += "<dt>Más información: </dt><dd><a href='http://" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-// Para enviar un comentario acerca de un registro en particular
+                // Para enviar un comentario acerca de un registro en particular
                 contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + ejemplar.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
                 contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + ejemplar.idejemplar;
@@ -99,7 +111,7 @@ var ejemplarSnibGeojson = function(layer, id)
                 var contenido = "Hubo un error al retraer el ejemplar: " + res.msg;
             }
 
-// Pone el popup arriba del punto
+            // Pone el popup arriba del punto
             var popup = new L.Popup();
             var bounds = layer.getBounds();
 
@@ -138,12 +150,16 @@ var ejemplarSnib = function(prop)
 
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-//Para enviar un comentario acerca de un registro en particular
+    //Para enviar un comentario acerca de un registro en particular
     contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };
 
+/**
+ * Para desplegar el nombre cientifico, idealmente deberia de venir del helper de especies
+ * @returns {string}
+ */
 var nombre = function()
 {
     if (I18n.locale == 'es')
@@ -156,6 +172,10 @@ var nombre = function()
         return "<a href='/especies/" + opciones.taxon_seleccionado.id + "' target='_blank'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
 };
 
+/**
+ * Carga el geojson para iterarlo
+ * @param url
+ */
 var geojsonSnib = function(url)
 {
     $.ajax({
@@ -183,5 +203,5 @@ var geojsonSnib = function(url)
             console.log(errorThrown);
             console.log(jqXHR.responseText);
         }
-    });  // termina ajax
+    });
 };

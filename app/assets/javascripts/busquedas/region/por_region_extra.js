@@ -12,9 +12,12 @@ var cargaGrupos = function()
         {
             $('#contenedor_grupos').empty();
             $('#contenedor_especies').empty();
-            var grupos_orden = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],resp.resultados[6],resp.resultados[4], resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
+            var grupos_orden = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],
+                resp.resultados[6],resp.resultados[4], resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
             $.each(grupos_orden, function(index, prop){
-                $('#contenedor_grupos').append('<label><input type="radio" name="id"><span tooltip-title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo="'+prop.grupo+'" reino="' + prop.reino + '"></span><sub grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub></label>');
+                $('#contenedor_grupos').append('<label><input type="radio" name="id"><span tooltip-title="' +
+                    prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-xs btn-basica btn-title" grupo="'+prop.grupo+
+                    '" reino="' + prop.reino + '"></span><sub grupo_id_badge="'+ prop.grupo +'">' + prop.total + '</sub></label>');
             });
         } else
             console.log('Falló el servicio de conteo del SNIB');
@@ -41,7 +44,8 @@ var parametros = function(prop)
 };
 
 /**
- * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
+ * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
+ * ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
  */
 var cargaEspecies = function()
 {
@@ -56,7 +60,8 @@ var cargaEspecies = function()
             $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
 
             $.each(resp.resultados, function(index, taxon){
-                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado, municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
+                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
+                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
                 if (url == undefined) return;
 
                 // Las que no tiene imagen se le pega la fuente
