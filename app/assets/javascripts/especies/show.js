@@ -1,4 +1,6 @@
-// Inicializa las funciones del show de especies
+/**
+ * // Inicializa las funciones del show de especies
+ */
 var showEspecies  =function()
 {
     tooltip();
