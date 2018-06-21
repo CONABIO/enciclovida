@@ -1,4 +1,4 @@
-//=require ../sly.js
+//=require especies/carrusel/sly
 
 var fotos_naturalista = function()
 {
