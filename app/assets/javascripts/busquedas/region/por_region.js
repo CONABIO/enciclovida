@@ -1,10 +1,3 @@
-//= require jquery
-//= require jquery-ui
-//= require turbolinks
-//= require bootstrap-sprockets
-//= require i18n/i18n.min.js
-//= require general
-//= require i18n/translations
 //= require lib/Control.FullScreen
 //= require busquedas/region/topojson
 //= require mapa/registros_snib

@@ -1,11 +1,3 @@
-/*
- Cuando el usuario elige un taxon en la vists avanzada, las categorias
- taxonimicas se despliegan segun las asociadas
- */
-function firstToUpperCase( str ) {
-    return str.substr(0, 1).toUpperCase() + str.substr(1);
-}
-
 var por_nombre = function()
 {
     $("#id").val("");
@@ -66,7 +58,6 @@ var soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
     {
-        console.log(data);
         if (I18n.locale == 'es-cientifico')
         {
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
@@ -76,7 +67,7 @@ var soulmate_asigna = function(tipo_busqueda)
             if (data.nombre_comun == null)
                 var nombres = '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
             else
-                var nombres = '<b>' + firstToUpperCase(data.nombre_comun) + ' </b><sub>' + data.lengua + '</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
+                var nombres = '<b>' + primeraEnMayuscula(data.nombre_comun) + ' </b><sub>' + data.lengua + '</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
 
 
             if (data.foto == null)

@@ -1,11 +1,2 @@
-//= require jquery
-//= require jquery-ui
-//= require turbolinks
-//= require bootstrap-sprockets
-//= require i18n/i18n.min.js
-//= require general
-//= require jquery.soulmate
-//= require busquedas
-//= require i18n/translations
 //= require peces/peces_extra
 //= require cocoon

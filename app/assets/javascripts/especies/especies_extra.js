@@ -7,7 +7,6 @@ var showEspecies  =function()
     refreshMediaQueries();
     nombresComunes();
     eventoPestañas();
-    eventoFichasPDF();
 
     // Para correr las imagenes principales
     if (INATURALIST_API != undefined) fotos_naturalista(); else fotos_bdi();
@@ -25,33 +24,6 @@ var eventoPestañas = function()
     });
 };
 
-// Inicializa el evento para cuando quieren cambiar de ficha; wikipedia, conabio, etc
-var eventoFichas = function()
-{
-    $('#taxon_description').on('change', '#from', function(){
-        cual_ficha = $(this).val();
-
-        $.ajax({
-            url: "/especies/"+TAXON.id+"/describe?from="+cual_ficha,
-            method: 'get',
-            success: function(data, status) {
-                $('.taxon_description').replaceWith(data);
-            },
-            error: function(request, status, error) {
-                $('.taxon_description').loadingShades('close');
-            }
-        });
-    });
-};
-
-// Para cuando quieren bajar la ficha en PDF
-var eventoFichasPDF = function()
-{
-    $('#content').on('click', '#boton_pdf', function(){
-        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
-    });
-};
-
 // Para correr los nobres comunes del lado del cliente, pone de catalogos y naturalista
 var nombresComunes = function()
 {
@@ -59,7 +31,10 @@ var nombresComunes = function()
 };
 
 $(document).ready(function(){
-    cual_ficha = '';
+
+    $('#enlaces_externos').on('click', '#boton_pdf', function(){
+        window.open("/especies/"+TAXON.id+".pdf?from="+cual_ficha);
+    });
 
     var info = function(){
         $('#ficha-div').slideUp();
