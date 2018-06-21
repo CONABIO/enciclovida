@@ -16,24 +16,12 @@
 //= require jquery.soulmate.js
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require lib/jquery.bootpag.min
 //= require i18n.min.js
-//= require busquedas.js
 //= require i18n/translations
 //= require general
+//= require busquedas.js
 
 
-//= require adicional.js
 //= require comentarios.js
-
-
-//= require jquery.imagesloaded.min.js
-//= require jquery.mockjax.js
-//= require jquery.scrollTo-min.js
-//= require jQuery-Autocomplete.js
-//= require typeahead.js
-
-
-
-
-
 //= require especies/obligatorios
