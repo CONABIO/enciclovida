@@ -1,5 +1,16 @@
 <% content_for(:extrajs) do %>
     <script type="text/javascript" charset="utf-8">
+        opciones = {};
+        opciones.taxon = "<%= @especie.id %>";
+        opciones.geodatos = <%=raw @geo.present? ? @geo.to_json : {} %>;
+        opciones.bsi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
+        opciones.especie_o_inferior = <%=raw @especie_o_inferior || false %>;
+
+        <% if @con_naturalista.present? %>
+          opciones.naturalista_api = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
+        <% end %>
+
+
         TAXON = {id: "<%= @especie.id %>"};
         NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
         SPECIES_OR_LOWER = <%=raw @especie_o_inferior || false %>;
@@ -21,7 +32,7 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-    <%= stylesheet_link_tag 'carrusel', media: 'all' %>
+    <%= stylesheet_link_tag 'carrusel' %>
 <% end %>
 
 <% if notice.present? %>
