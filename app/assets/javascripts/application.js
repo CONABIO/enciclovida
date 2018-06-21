@@ -11,13 +11,13 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery-ui
 //= require jquery_ujs
+//= require lib/jquery-ui
 //= require jquery.soulmate
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require lib/jquery.bootpag.min
 //= require i18n/i18n.min
 //= require i18n/translations
-//= require general
+//= require shared/general
 //= require busquedas
