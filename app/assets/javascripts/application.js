@@ -10,22 +10,30 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require turbolinks
 //= require jquery
 //= require jquery-ui.js
 //= require jquery_ujs
-//= require adicional.js
+//= require jquery.soulmate.js
+//= require turbolinks
 //= require bootstrap-sprockets
-//= require comentarios.js
 //= require i18n.min.js
+//= require busquedas.js
+//= require i18n/translations
+//= require general
+
+
+//= require adicional.js
+//= require comentarios.js
+
+
 //= require jquery.imagesloaded.min.js
 //= require jquery.mockjax.js
 //= require jquery.scrollTo-min.js
 //= require jQuery-Autocomplete.js
 //= require typeahead.js
-//= require cocoon
-//= require general
-//= require jquery.soulmate.js
-//= require busquedas.js
-//= require "i18n/translations"
-//= require "especies/obligatorios"
+
+
+
+
+
+//= require especies/obligatorios

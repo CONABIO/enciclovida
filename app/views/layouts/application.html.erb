@@ -4,8 +4,9 @@
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
-  <%= favicon_link_tag '/favicon.ico' %>
+  <title><%= yield :title %></title>
+  <meta name="keywords" content="<%= yield :meta_keywords %>">
+  <%= favicon_link_tag 'favicon.ico' %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
@@ -13,8 +14,8 @@
       PORT = "<%= PORT %>";
   </script>
 
-  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -22,15 +23,12 @@
       I18n.fallbacks = true;
   </script>
 
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
-
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
 <body>
-
 
 <%= yield :ribbon %>
 
@@ -56,12 +54,11 @@
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
 
-<%#TODO bitacora.html_safe if bitacora.present? %>
-
-<%= yield :delayedjs %>
 <%= yield :extrajs_carrusel %>
-<% if Rails.env == 'production'  %>
+<% if Rails.env.production?  %>
     <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
 <% end %>
+
+<%= yield :delayedjs %>
 </body>
 </html>
