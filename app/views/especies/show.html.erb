@@ -8,6 +8,7 @@
       opciones.geodatos = <%=raw @geo.present? ? @geo.to_json : {} %>;
       opciones.bsi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
       opciones.especie_o_inferior = <%=raw @especie_o_inferior || false %>;
+      opciones.cual_ficha = '';
 
       <% if @con_naturalista.present? %>
       opciones.naturalista_api = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
@@ -25,12 +26,6 @@
       <% else %>
       INATURALIST_API = undefined;
       <% end %>
-  </script>
-<% end %>
-
-<%= content_for(:delayedjs) do %>
-  <script>
-      showEspecies();
   </script>
 <% end %>
 

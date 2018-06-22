@@ -1,7 +1,3 @@
-<% content_for(:extrajs) do %>
-  <%= javascript_include_tag 'especies/fichas/fichas_extra', 'data-turbolinks-track' => true %>
-<% end %>
-
 <% css_class = "clear taxon_description" %>
 <% if @describer %>
   <% css_class += " #{@describer.name.split('::').last.underscore}_description" %>
@@ -41,11 +37,6 @@
   <% end  %>
 </div>
 
-<script>
-    // Se llama en esta vista para que el evento lo ponga cuando el elemento ya se creo
-    $(document).ready(function(){
-        //eventoFichas();
-    });
-</script>
+<%= javascript_include_tag 'especies/fichas/fichas_extra', 'data-turbolinks-track' => true %>
 
 
