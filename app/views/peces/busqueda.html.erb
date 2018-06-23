@@ -49,6 +49,7 @@
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Por zona - -', class: 'form-control') %>
+          <%= render :partial => 'peces/svg_zonas_marinas' %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
@@ -63,10 +64,13 @@
           <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías en vías de sustentabilidad - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Norma Oficial Mexicana 059 - -', :class => 'form-control') %>
+          <%#=select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Norma Oficial Mexicana 059 - -', :class => 'form-control') %>
+          <%= checkboxEstadoConservacionPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN - -', class: 'form-control') %>
+          <%#= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN - -', class: 'form-control') %>
+          <%# poner q el id q viene de la BD sea el q va dentro de los corchetitos para en el controller ponerlo en un IN%>
+          <%= checkboxEstadoConservacionPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 form-peces">
           <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Estado de la población - -', class: 'form-control') %>
