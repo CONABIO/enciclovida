@@ -10,7 +10,7 @@ $(document).ready(function(){
         }
     });
 
-    if (opciones.naturalista_api != undefined) fotos_naturalista(); else fotos_bdi();
+    if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
 
     $('#nombres_comunes_todos').load("/especies/" + opciones.taxon + "/nombres-comunes-todos");
 

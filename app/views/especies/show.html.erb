@@ -6,7 +6,7 @@
       opciones = {};
       opciones.taxon = "<%= @especie.id %>";
       opciones.geodatos = <%=raw @geo.present? ? @geo.to_json : {} %>;
-      opciones.bsi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
+      opciones.bdi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
       opciones.especie_o_inferior = <%=raw @especie_o_inferior || false %>;
       opciones.cual_ficha = '';
 

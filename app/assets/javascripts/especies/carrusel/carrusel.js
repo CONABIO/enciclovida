@@ -1,31 +1,34 @@
 //=require especies/carrusel/sly
 
-var fotos_naturalista = function()
+/**
+ * Despliega las fotos de naturalista
+ */
+var fotosNaturalista = function()
 {
     $.ajax(
         {
-            url: INATURALIST_API,
+            url: opciones.naturalista_api,
             type: 'GET',
             dataType: 'json'
         }).done(function (json) {
             if (jQuery.isEmptyObject(json)) {
-                fotos_bdi();
+                fotosBDI();
             } else {
 
                 if (json.total_results == 0) {
-                    fotos_bdi();
+                    fotosBDI();
                 } else if (json.results[0].taxon_photos.length == 0) {
-                    fotos_bdi();
+                    fotosBDI();
                 } else {
                     $.ajax(
                         {
-                            url: '/especies/' + TAXON.id + '/fotos-referencia',
+                            url: '/especies/' + opciones.taxon + '/fotos-referencia',
                             type: 'POST',
                             data: {
                                 fotos: JSON.stringify(json.results[0].taxon_photos.slice(0, 5))
                             }
                         }).done(function (fotos) {
-                            if (jQuery.isEmptyObject(GEO))
+                            if (jQuery.isEmptyObject(opciones.geodatos))
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                             else {
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
@@ -36,42 +39,45 @@ var fotos_naturalista = function()
                             inicia_carrusel();
 
                         }).error(function (error) {
-                            fotos_bdi();
+                            fotosBDI();
                         });
                 }
             }
         }).error(function (error) {
-            fotos_bdi();
+            fotosBDI();
         });
 };
 
-var fotos_bdi = function()
+/**
+ * Despliega las fotos de BDI
+ */
+var fotosBDI = function()
 {
     $.ajax(
         {
-            url: BDI_API,
+            url: opciones.bdi_api,
             type: 'GET',
             dataType: 'json'
         }).done(function (json) {
             if (jQuery.isEmptyObject(json)) {
                 $('#contenedor_fotos').remove();
-                if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
             } else {
 
                 if (json.estatus == 'error') {
                     $('#contenedor_fotos').remove();
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                    if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
                 } else if (json.estatus == 'OK' && json.fotos.length == 0) {
                     $('#contenedor_fotos').remove();
-                    if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
+                    if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero no contamos con una imagen o geodato');
                 } else {
                     $.ajax(
                         {
-                            url: '/especies/' + TAXON.id + '/fotos-referencia',
+                            url: '/especies/' + opciones.taxon + '/fotos-referencia',
                             type: 'POST',
                             data: {fotos: JSON.stringify(json.fotos.slice(0, 5))}
                         }).done(function (fotos) {
-                            if (jQuery.isEmptyObject(GEO))
+                            if (jQuery.isEmptyObject(opciones.geodatos))
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                             else {
                                 $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
@@ -82,20 +88,24 @@ var fotos_bdi = function()
                             inicia_carrusel();
                         }).error(function (error) {
                             $('#contenedor_fotos').remove();
-                            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
+                            if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                         });
                 }
             }
         }).error(function (error) {
             $('#contenedor_fotos').remove();
-            if (jQuery.isEmptyObject(GEO)) $('#sin_datos').html('Lo sentimos, pero hubo un error al cargar las fotos');
+            if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero hubo un error al cargar las fotos');
         });
 };
 
+/**
+ * Inicializa el carrusel en las imagenes principales
+ */
 var inicia_carrusel = function()
 {
-//Para que la imagen inicial no se desborde antes de que inicie el carrusel:
+    //Para que la imagen inicial no se desborde antes de que inicie el carrusel:
     $('#foto-carrusel-interna').css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
+
     var sly = new Sly('#carrusel', {
         horizontal: 1,
         // Item based navigation //
@@ -121,7 +131,8 @@ var inicia_carrusel = function()
         // Classes //
         activeClass: 'seleccionada'
     }).init();
-//En el evento de que una foto se convierte en activa, se modifica la foto central
+
+    //En el evento de que una foto se convierte en activa, se modifica la foto central
     sly.on('active', function (eventName) {
         //Para cambiar la foto interna y establecer el tamaño máximo
         $('#foto-carrusel-interna').attr('src', $('img.seleccionada').attr('data-large')).css('max-height', $('#contenedor_fotos').height() - 100 - $('#foto-carrusel > p').height());
@@ -129,44 +140,13 @@ var inicia_carrusel = function()
         $('#foto-atribucion').html($('img.seleccionada').attr('data-attribution'));
         $('.enlace-atribucion').attr('href', $('img.seleccionada').attr('data-native-page-url'));
     });
+
     $(window).resize(function (e) {
         $('#carrusel').sly('reload');
     });
-    if(!jQuery.isEmptyObject(GEO)){
+
+    if(!jQuery.isEmptyObject(opciones.geodatos)){
         $('#map').css('height', $('#contenedor_mapa').height() - 30);
         map.invalidateSize(true);
     }
 };
-
-var paginado_fotos = function(paginas, pagina)
-{
-    var es_primero = null;
-
-    $('.paginado_1, .paginado_2').bootpag({
-        total: paginas,          // total pages
-        page: pagina,            // default page
-        maxVisible: 5,     // visible pagination
-        leaps: true,         // next/prev leaps through maxVisible
-        firstLastUse: true,
-        first: '←',
-        last: '→'
-    }).on("page", function (event, pag) {
-        if (es_primero == pag)
-            return;
-        else {
-            $.ajax(
-                {
-                    url: '/especies/' + TAXON.id + '/fotos-bdi.html',
-                    type: 'GET',
-                    data: {
-                        pagina: pag
-                    }
-                }).done(function (res) {
-                    $('#paginado_fotos').empty().append(res);
-                });
-        }
-
-        es_primero = pag;
-    });
-};
-
