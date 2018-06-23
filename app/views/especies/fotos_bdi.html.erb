@@ -28,6 +28,7 @@
   <% end %>
 
 	<% if @pagina.blank? && @fotos.any? %>
+    <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
 	  <div class="text-center paginado_2"></div>
 
 	  <script data-turbolinks-track="true">
