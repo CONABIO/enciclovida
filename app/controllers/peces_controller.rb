@@ -71,8 +71,8 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
       @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
-      @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
-      @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
+      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
+      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp]})") if params[:cnp].present?
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
