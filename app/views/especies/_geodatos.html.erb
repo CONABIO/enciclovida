@@ -16,7 +16,7 @@
   <script data-turbolinks-track="true">
       map = null;
       legend_control = null;
-      opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
+      opciones.snib_url = "<%= @snib_url %>";
 
       markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2,
           spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
@@ -24,11 +24,6 @@
 
   <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
 <% end %>
-
-<script data-turbolinks-track="true">
-
-
-</script>
 
 <%#= javascript_include_tag 'especies/geodatos', 'data-turbolinks-track' => true %>
 

@@ -5,7 +5,7 @@
   <script type="text/javascript" charset="utf-8">
       opciones = {};
       opciones.taxon = "<%= @especie.id %>";
-      opciones.geodatos = <%=raw @geo.present? ? @geo.to_json : {} %>;
+      opciones.geodatos = <%=raw @geodatos.present? ? @geodatos.to_json : {} %>;
       opciones.bdi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
       opciones.especie_o_inferior = <%=raw @especie_o_inferior || false %>;
       opciones.cual_ficha = '';
@@ -18,7 +18,7 @@
       TAXON = {id: "<%= @especie.id %>"};
       NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
       SPECIES_OR_LOWER = <%=raw @especie_o_inferior || false %>;
-      GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
+      GEO = <%=raw @geodatos.present? ? @geodatos.to_json : {} %>;
       BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
 
       <% if @con_naturalista.present? %>

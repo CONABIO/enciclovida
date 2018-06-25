@@ -144,9 +144,4 @@ var inicia_carrusel = function()
     $(window).resize(function (e) {
         $('#carrusel').sly('reload');
     });
-
-    if(!jQuery.isEmptyObject(opciones.geodatos)){
-        $('#map').css('height', $('#contenedor_mapa').height() - 30);
-        map.invalidateSize(true);
-    }
 };

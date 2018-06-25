@@ -57,7 +57,17 @@ class EspeciesController < ApplicationController
 
           if @especie_o_inferior
             geodatos = proveedor.geodatos
-            @geo = geodatos if geodatos[:cuales].any?
+
+            if geodatos[:cuales].any?
+              @geodatos = geodatos
+
+              # Para poner las variable con las que consulto el SNIB
+              if geodatos[:cuales].include?('snib')
+                reino = @especie.root.nombre_cientifico.estandariza
+                catalogo_id = @especie.scat.catalogo_id
+                @snib_url = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+              end
+            end
           end
         end
 
