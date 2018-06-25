@@ -1,59 +1,7 @@
-var por_nombre = function()
-{
-    $("#id").val("");
-    $("#datos_cat").html("");
-    $("#panelCategoriaTaxonomicaPt").hide();
-
-    $("[id^='id_']").each(function(){
-        $(this).prop('checked', false);
-    });
-
-    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
-};
-
-var por_gi = function()
-{
-    $("#id").val("");
-    $("#nombre").val('');
-    $("#datos_cat").html("");
-    $("#panelCategoriaTaxonomicaPt").hide();
-
-    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
-};
-
-var cat_tax_asociadas = function(id,nivel,cat)
-{
-    $.ajax(
-        {
-            url: "/cat_tax_asociadas",
-            type: 'GET',
-            data: {
-                id: id,
-                nivel: nivel,
-                cat: cat
-            }
-        }).done(function(html)
-        {
-            $('#datos_cat').html('').html(html);
-            $('#panelCategoriaTaxonomicaPt').show();
-        });
-};
-
-var scrolling_page = function(objeto, por_pagina, url)
-{
-    $(objeto).scrollPagination({
-        nop     : por_pagina, // The number of posts per scroll to be loaded
-        offset  : 2, // Initial offset, begins at 0 in this case
-        error   : '', // When the user reaches the end this is the message that is
-        // displayed. You can change this if you want.
-        delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-                       // This is mainly for usability concerns. You can alter this as you see fit
-        scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
-        // but will still load if the user clicks.
-        url     : url
-    });
-};
-
+/**
+ * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
+ * @param tipo_busqueda
+ */
 var soulmate_asigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
@@ -68,7 +16,6 @@ var soulmate_asigna = function(tipo_busqueda)
                 var nombres = '<a href="" class="not-active">' + data.nombre_cientifico +'</a>';
             else
                 var nombres = '<b>' + primeraEnMayuscula(data.nombre_comun) + ' </b><sub>' + data.lengua + '</sub><a href="" class="not-active">' + data.nombre_cientifico +'</a>';
-
 
             if (data.foto == null)
                 var foto = '<i class="soulmate-img ev1-ev-icon pull-left"></i>';
@@ -118,40 +65,3 @@ var soulmate_asigna = function(tipo_busqueda)
         maxResults:     5
     });
 };
-
-$(document).ready(function()
-{
-    $('#busqueda_avanzada').on('change', ".radio input", function()
-    {
-        // El ID del grupo iconico
-        var id_gi = $(this).val();
-        $('#id').val(id_gi);
-        cat_tax_asociadas(id_gi,'','');
-    });
-
-    $('#busqueda_avanzada').on('click', '#limpiar', function(){
-        window.location.href = "/avanzada";
-    });
-
-    $('#busqueda_avanzada').on('click', '#por_nombre_fuente', function(){
-        por_nombre();
-        return false;
-    });
-
-    $('#busqueda_avanzada').on('click', '#por_gi_fuente', function(){
-        por_gi();
-        return false;
-    });
-
-    $('#busqueda_avanzada').on('click', '#boton_checklist', function(){
-        var url = $(this).attr('url');
-
-        if (url == "") return false;
-        else window.open(url, '_blank');
-    });
-
-    $("#busqueda_avanzada").on('submit', '#b_avanzada', function() {
-        $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI
-    });
-});
-
