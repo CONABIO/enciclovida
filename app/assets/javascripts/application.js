@@ -13,11 +13,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require lib/jquery-ui
-//= require jquery.soulmate
+//= require lib/jquery.soulmate
+//= require lib/jquery.bootpag.min
 //= require turbolinks
 //= require bootstrap-sprockets
-//= require lib/jquery.bootpag.min
 //= require i18n/i18n.min
 //= require i18n/translations
 //= require shared/general
-//= require busquedas
+//= require shared/soulmate
+
