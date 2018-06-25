@@ -16,4 +16,6 @@ $(document).ready(function() {
             map.invalidateSize(true);
         },1000);
     });
+
+    cargaRegistrosSnib(opciones.snib_url);
 });
