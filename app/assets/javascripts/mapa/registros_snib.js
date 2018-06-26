@@ -87,7 +87,8 @@ var ejemplarSnibGeojson = function(layer, id)
                 var ejemplar = res.ejemplar;
                 var contenido = "";
 
-                contenido += "<h4>" + nombre() + "</h4>";
+                //contenido += "<h4>" + nombre() + "</h4>";
+                contenido += "<h4>" + opciones.nombre + "</h4>";
                 contenido += "<dt>Localidad: </dt><dd>" + ejemplar.localidad + "</dd>";
                 contenido += "<dt>Municipio: </dt><dd>" + ejemplar.municipiomapa + "</dd>";
                 contenido += "<dt>Estado: </dt><dd>" + ejemplar.estadomapa + "</dd>";
@@ -134,7 +135,8 @@ var ejemplarSnib = function(prop)
 {
     var contenido = "";
 
-    contenido += "<h4 class='text-center'>" + nombre() + "</h4>";
+    //contenido += "<h4 class='text-center'>" + nombre() + "</h4>";
+    contenido += "<h4 class='text-center'>" + opciones.nombre + "</h4>";
     contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
     contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
     contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
@@ -151,7 +153,8 @@ var ejemplarSnib = function(prop)
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
     //Para enviar un comentario acerca de un registro en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    //contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };

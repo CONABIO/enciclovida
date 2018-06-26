@@ -1,31 +1,9 @@
 <% content_for(:extrajs) do %>
-
   <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
 
-  <script type="text/javascript" charset="utf-8">
-      opciones = {};
-      opciones.taxon = "<%= @especie.id %>";
-      opciones.geodatos = <%=raw @geodatos.present? ? @geodatos.to_json : {} %>;
-      opciones.bdi_api = '/especies/' + opciones.taxon + '/fotos-bdi.json';
-      opciones.especie_o_inferior = <%=raw @especie_o_inferior || false %>;
-      opciones.cual_ficha = '';
-
-      <% if @con_naturalista.present? %>
-      opciones.naturalista_api = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
-      <% end %>
-
-
-      TAXON = {id: "<%= @especie.id %>"};
-      NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
-      SPECIES_OR_LOWER = <%=raw @especie_o_inferior || false %>;
-      GEO = <%=raw @geodatos.present? ? @geodatos.to_json : {} %>;
-      BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
-
-      <% if @con_naturalista.present? %>
-      INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
-      <% else %>
-      INATURALIST_API = undefined;
-      <% end %>
+  <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+      opciones = <%=raw @datos.to_json %>;
+      opciones.nombre = "<%= tituloNombreCientifico(@especie, link: true) %>"
   </script>
 <% end %>
 
@@ -52,7 +30,7 @@
 
   <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
 
-  <% if (@especie_o_inferior) %>
+  <% if (@datos[:especie_o_inferior]) %>
     <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
     </div>
@@ -89,9 +67,9 @@
       <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li role="separator" class="divider"></li>
-    <% if @con_naturalista %>
+    <% if @datos[:naturalista_id] %>
       <li>
-        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
+        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@datos[:naturalista_id]}", class: 'noLoad', target: '_blank') %>
       </li>
     <% end %>
   </ul>
@@ -129,7 +107,7 @@
       <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
     </li>
     <li role="presentation" >
-      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a>
+      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span></a>
     </li>
   </ul>
 
