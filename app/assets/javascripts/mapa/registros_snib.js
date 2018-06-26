@@ -17,7 +17,8 @@ var borraRegistrosAnterioresSnib = function()
     {
         map.removeControl(legend_control);
         map.removeLayer(markersLayer);
-        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2, spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
+            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
     }
 };
 
@@ -133,10 +134,12 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
+    // Sustituye las etiquetas h5 por h4 y centra el texto
+    var nombre_f = $('<textarea/>').html(opciones.nombre).text().replace(/<h5/g, "<h4 class='text-center'").replace(/<\/h5/g, "</h4");
     var contenido = "";
 
     //contenido += "<h4 class='text-center'>" + nombre() + "</h4>";
-    contenido += "<h4 class='text-center'>" + opciones.nombre + "</h4>";
+    contenido += "" + nombre_f + "";
     contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
     contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
     contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
@@ -154,7 +157,8 @@ var ejemplarSnib = function(prop)
 
     //Para enviar un comentario acerca de un registro en particular
     //contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
+        prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };
