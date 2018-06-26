@@ -5,7 +5,7 @@
   </p>
 </div>
 
-<% if @geodatos.present? %>
+<% if @datos[:geodatos].present? %>
     <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2' id="contenedor_mapa">
       <div class="embed-responsive embed-responsive-4by3">
         <%= render partial: 'geodatos' %>
@@ -19,26 +19,26 @@
 
       <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
 
-        <% if @geodatos[:cuales].include?('naturalista') %>
+        <% if @datos[:geodatos][:cuales].include?('naturalista') %>
             <li class="dropdown-header"><%= imagotipo_naturalista_nombre %></li>
-            <li><%= link_to("#{icono_globo} KML".html_safe, @geodatos[:naturalista_kml], :target => :_blank) if @geodatos[:naturalista_kml].present? %></li>
-            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geodatos[:naturalista_kmz], :target => :_blank) if @geodatos[:naturalista_kmz].present? %></li>
-            <li><%= link_to("#{icono_globo} JSON".html_safe, @geodatos[:naturalista_json], :target => :_blank) if @geodatos[:naturalista_json].present? %></li>
+            <li><%= link_to("#{icono_globo} KML".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank) if @datos[:geodatos][:naturalista_kml].present? %></li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank) if @datos[:geodatos][:naturalista_kmz].present? %></li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank) if @datos[:geodatos][:naturalista_json].present? %></li>
         <% end %>
 
-        <% if @geodatos[:cuales].include?('snib') %>
+        <% if @datos[:geodatos][:cuales].include?('snib') %>
             <li role="separator" class="divider"></li>
             <li class="dropdown-header">SNIB</li>
-            <li><%= link_to("#{icono_globo} KML".html_safe, @geodatos[:snib_kml], :target => :_blank) if @geodatos[:snib_kml].present? %></li>
-            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geodatos[:snib_kmz], :target => :_blank) if @geodatos[:snib_kmz].present? %></li>
-            <li><%= link_to("#{icono_globo} JSON".html_safe, @geodatos[:snib_json], :target => :_blank) if @geodatos[:snib_json].present? %></li>
+            <li><%= link_to("#{icono_globo} KML".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank) if @datos[:geodatos][:snib_kml].present? %></li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank) if @datos[:geodatos][:snib_kmz].present? %></li>
+            <li><%= link_to("#{icono_globo} JSON".html_safe, @datos[:geodatos][:snib_json], :target => :_blank) if @datos[:geodatos][:snib_json].present? %></li>
             <li><%= link_to('Diccionario de datos', 'http://www.snib.mx/d/CONABIO-SNIB-DiccionarioDatos2015-11.pdf', :target => :_blank) %></li>
         <% end %>
 
-        <% if @geodatos[:cuales].include?('geoserver') %>
+        <% if @datos[:geodatos][:cuales].include?('geoserver') %>
             <li role="separator" class="divider"></li>
             <li class="dropdown-header">Mapa de distribución</li>
-            <li><%= link_to("#{icono_globo} KMZ".html_safe, @geodatos[:geoserver_descarga_url], :target => :_blank) if @geodatos[:geoserver_descarga_url].present? %></li>
+            <li><%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:geoserver_descarga_url], :target => :_blank) if @datos[:geodatos][:geoserver_descarga_url].present? %></li>
         <% end %>
       </ul>
     </div>

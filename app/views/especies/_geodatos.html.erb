@@ -16,7 +16,7 @@
   <script data-turbolinks-track="true">
       map = null;
       legend_control = null;
-      opciones.snib_url = "<%= @snib_url %>";
+      opciones.snib_url = "<%= @datos[:snib_url] %>";
 
       markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2,
           spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});

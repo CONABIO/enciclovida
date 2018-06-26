@@ -45,34 +45,38 @@ class EspeciesController < ApplicationController
     respond_to do |format|
       format.html do
 
+        @datos = {}
         if adicional = @especie.adicional
-          @nombre_comun_principal = adicional.nombre_comun_principal
+          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
         end
 
-        @especie_o_inferior = @especie.especie_o_inferior?
+        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
-          @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
+          @datos[:naturalista_id] = proveedor.naturalista_id if proveedor.naturalista_id.present?
 
-          if @especie_o_inferior
+          if @datos[:especie_o_inferior]
             geodatos = proveedor.geodatos
 
             if geodatos[:cuales].any?
-              @geodatos = geodatos
+              @datos[:geodatos] = geodatos
 
               # Para poner las variable con las que consulto el SNIB
               if geodatos[:cuales].include?('snib')
                 reino = @especie.root.nombre_cientifico.estandariza
                 catalogo_id = @especie.scat.catalogo_id
-                @snib_url = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+                @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
               end
             end
           end
         end
 
-        # Para los comentarios
-        @cuantos = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
+        # Para las variables restantes
+        @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
+        @datos[:taxon] = @especie.id
+        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:cual_ficha] = ''
       end
 
       format.json do
