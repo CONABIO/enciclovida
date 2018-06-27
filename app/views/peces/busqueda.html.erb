@@ -1,7 +1,11 @@
 <%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
-<%- content_for(:extrajs) do -%>
+<%- content_for(:delayedjs) do -%>
   <script>
+      $(document).ready(function(){
+          soulmate_asigna();
+      });
   </script>
 <%- end -%>
 
@@ -22,15 +26,13 @@
     <div class="exacta col-xs-12 <%= 'col-sm-6 col-md-6 col-lg-4' if(@peces.nil?) %>">
       <fieldset class="text-center">
         <legend>
-          <h5 class="text-primary"><strong>Selecciona especie por nombre:</strong></h5>
-          <h6><i>Esta búsqueda bloquea las demás </i></h6>
+          <h5 class="text-primary"><strong>Selecciona la especie por nombre:</strong></h5>
+          <h6><i>Esta búsqueda bloquea los demás criterios</i></h6>
         </legend>
-        <div class="ui-widget form-peces">
-          <%= text_field_tag(:ncomunes, nil, placeholder: 'Nombre común...', class: 'form-control input-lg') %>
-        </div>
 
         <div class="ui-widget form-peces">
-          <%= text_field_tag(:ncientifico, nil, placeholder: 'Nombre científico...', class: 'form-control input-lg' ) %>
+          <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
+                             :autocomplete => :off, :class => 'form-control input-lg' %>
         </div>
 
         <%= hidden_field_tag(:especie_id) %>
@@ -40,40 +42,48 @@
 
     <div class="agrupada col-xs-12 <%= 'col-sm-6 col-md-6 col-lg-8' if(@peces.nil?) %>">
       <fieldset class="text-center">
-        <legend><h5 class="text-primary"><strong>Aplica y busca por criterios:</strong></h5></legend>
+        <legend><h5 class="text-primary"><strong>Busca por más criterios:</strong></h5></legend>
 
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo marino - -', :class => 'form-control' ) %>
+        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control' ) %>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Por zona - -', class: 'form-control') %>
+          <%= render :partial => 'peces/svg_zonas_marinas' %>
+          <%= checkboxPeces({:zonas => @filtros[:zonas]})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
+          <%= checkboxPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control') %>
+          <%= checkboxPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control') %>
+          <%= checkboxPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}})%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Zona - -', class: 'form-control') %>
+          <h5><strong>Pesquerías en vías de sustentabilidad</strong></h5>
+          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Selecciona una opción - -', class: 'form-control') %>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%#=select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Norma Oficial Mexicana 059 - -', :class => 'form-control') %>
+          <%= checkboxEstadoConservacionPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control') %>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%#= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN - -', class: 'form-control') %>
+          <%# poner q el id q viene de la BD sea el q va dentro de los corchetitos para en el controller ponerlo en un IN%>
+          <%= checkboxEstadoConservacionPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías - -', class: 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - NOM-059 (2010) - -', :class => 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN (2016-3) - -', class: 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 form-peces">
-          <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Carta Nacional Pesquera 2012 - -', class: 'form-control') %>
+        <div class="checkbox col-xs-10 col-xs-offset-1 form-peces">
+          <%# select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Estado de la población - -', class: 'form-control') %>
+          <%= checkboxPeces({:cnp => @filtros[:cnp]})%>
         </div>
       </fieldset>
       <hr/>
     </div>
-
-
 
     <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-4 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-8' if(@peces.nil?) %>">
       <%= button_tag "Buscar", data: {disable_with: 'Procesando...'}, :class => "btn btn-success btn-lg btn-block btn-title", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
