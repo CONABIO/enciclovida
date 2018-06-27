@@ -181,3 +181,42 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   margin-left: 0!important;
   margin-right: 0!important;
 }
+
+
+/************* SVG Zonas marítimas ****************************/
+
+path{
+  display:inline;
+  fill-opacity:1;
+  fill-rule:evenodd;
+  stroke:#919191;
+  stroke-miterlimit:4;
+  stroke-dasharray:none;
+  stroke-opacity:1
+}
+#sea-zone-i{fill: #4f9ac0;}
+#sea-zone-ii{fill: #4f80c0;}
+#sea-zone-iii{fill: #4f60c0;}
+#sea-zone-iv{fill: #83c0e4;}
+#sea-zone-v{fill: #83d1e4;}
+#sea-zone-vi{fill: #83e4df;}
+path[id^=sea-zone-]{
+  cursor: pointer;
+}
+path[id^=sea-zone-]:hover, .zona-seleccionada{
+  fill: #17325f!important;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  stroke: #b9da9d;
+  outline: none;
+}
+
+#sea-states{
+  fill: #b9da9d;stroke-width:.5px;
+}
+#earth-states{
+  fill: #f2ffbd;
+}
+#extranjero{
+  fill: #c1c1c1;
+}

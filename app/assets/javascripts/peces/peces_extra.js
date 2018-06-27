@@ -4,6 +4,9 @@ $(document).ready(function(){
         pestaña = '/peces/'+idEspecie+'?layout=0';
         $('#datos-'+idEspecie).load(pestaña);
     });
+    $("path[id^=sea-zone-]").on('click', function(){
+        $(this).toggleClass('zona-seleccionada')
+    });
 });
 
 function limpiaBusqueda(){
