@@ -189,34 +189,26 @@ path{
   display:inline;
   fill-opacity:1;
   fill-rule:evenodd;
-  stroke:#919191;
+  stroke:#666666;
   stroke-miterlimit:4;
   stroke-dasharray:none;
-  stroke-opacity:1
+  stroke-opacity:1;
+  stroke-width: .75px;
 }
-#sea-zone-i{fill: #4f9ac0;}
-#sea-zone-ii{fill: #4f80c0;}
-#sea-zone-iii{fill: #4f60c0;}
-#sea-zone-iv{fill: #83c0e4;}
-#sea-zone-v{fill: #83d1e4;}
-#sea-zone-vi{fill: #83e4df;}
-path[id^=sea-zone-]{
-  cursor: pointer;
-}
-path[id^=sea-zone-]:hover, .zona-seleccionada{
-  fill: #17325f!important;
-  stroke-width: 1px;
-  stroke-linejoin: round;
-  stroke: #b9da9d;
-  outline: none;
-}
+/*#path_zonas_pacifico-i{fill: #56a7d0;}
+#path_zonas_pacifico-ii{fill: #5488cb;}
+#path_zonas_pacifico-iii{fill: #446ea5;}
+#path_zonas_golfo-de-mexico-y-caribe-iv{fill: #83c0e4;}
+#path_zonas_golfo-de-mexico-y-caribe-v{fill: #83d1e4;}
+#path_zonas_golfo-de-mexico-y-caribe-vi{fill: #83e4df;}*/
+path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
+path[id^=path_zonas_]:hover{fill: rgba(23, 50, 95, 0.75) !important; stroke-width: 1.75px!important;  stroke: #c1c1c1 !important;}
+.zona-seleccionada{fill: #17325f!important;}
+#sea-states{fill: #b9da9d;}
+#earth-states{fill: #f2ffbd;}
+#extranjero{fill: #c1c1c1;}
 
-#sea-states{
-  fill: #b9da9d;stroke-width:.5px;
-}
-#earth-states{
-  fill: #f2ffbd;
-}
-#extranjero{
-  fill: #c1c1c1;
+
+.checkbox i{
+  font-size: 1.7em;
 }
