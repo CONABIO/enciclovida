@@ -44,36 +44,42 @@
       <fieldset class="text-center">
         <legend><h5 class="text-primary"><strong>Busca por más criterios:</strong></h5></legend>
 
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control' ) %>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Por zona - -', class: 'form-control') %>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:zonas, options_for_select(@filtros[:zonas]), :prompt => '- - Por zona - -', class: 'form-control') %>
           <%= render :partial => 'peces/svg_zonas_marinas' %>
+          <%= checkboxPeces({:zonas => @filtros[:zonas]})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
+          <%= checkboxPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control') %>
+          <%= checkboxPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}})%>
+        </div>
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%# select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control') %>
+          <%= checkboxPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}})%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_capturas, options_for_select(@filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de captura - -', :class => 'form-control') %>
+          <h5><strong>Pesquerías en vías de sustentabilidad</strong></h5>
+          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Selecciona una opción - -', class: 'form-control') %>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:tipo_vedas, options_for_select(@filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Tipo de veda - -', :class => 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:procedencias, options_for_select(@filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Procedencia - -', :class => 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Pesquerías en vías de sustentabilidad - -', class: 'form-control') %>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%#=select_tag(:nom, options_for_select(@filtros[:nom].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Norma Oficial Mexicana 059 - -', :class => 'form-control') %>
           <%= checkboxEstadoConservacionPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+        <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%#= select_tag(:iucn, options_for_select(@filtros[:iucn].map {|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Lista roja IUCN - -', class: 'form-control') %>
           <%# poner q el id q viene de la BD sea el q va dentro de los corchetitos para en el controller ponerlo en un IN%>
           <%= checkboxEstadoConservacionPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}})%>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 form-peces">
-          <%= select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Estado de la población - -', class: 'form-control') %>
+        <div class="checkbox col-xs-10 col-xs-offset-1 form-peces">
+          <%# select_tag(:cnp, options_for_select(@filtros[:cnp]), :prompt => '- - Estado de la población - -', class: 'form-control') %>
+          <%= checkboxPeces({:cnp => @filtros[:cnp]})%>
         </div>
       </fieldset>
       <hr/>

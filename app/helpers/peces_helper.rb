@@ -59,7 +59,7 @@ module PecesHelper
     checkBoxes=''
 
     cat.each do |k, valores|
-      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>"
+      checkBoxes << "<h5><strong>#{t(k)}</strong></h5>"
       valores.each do |edo, id|
         checkBoxes << "<label>"
         checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
@@ -72,4 +72,21 @@ module PecesHelper
     checkBoxes.html_safe
   end
 
+  # Filtros para Categorías de riesgo y comercio internacional
+  def checkboxPeces(cat)
+    checkBoxes=''
+
+    cat.each do |k, valores|
+      checkBoxes << "<h5><strong>#{k.to_s.capitalize}</strong></h5>"
+      valores.each do |edo, id|
+        checkBoxes << "<label>"
+        checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
+        checkBoxes << "<span title = '#{edo}' class = 'btn btn-xs btn-basica btn-title'>"
+        checkBoxes << "#{edo}"
+        checkBoxes << "</span>"
+        checkBoxes << "</label>"
+      end
+    end
+    checkBoxes.html_safe
+  end
 end
