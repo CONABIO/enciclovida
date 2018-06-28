@@ -16,9 +16,9 @@ module BusquedasHelper
     ia=%w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
     ip=%w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
-    reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => ir)
-    animales = Especie.select_grupos_iconicos.where(:nombre_cientifico => ia)
-    plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => ip)
+    reinos = Especie.select_grupos_iconicos.where(:nombre_cientifico => Busqueda::ICONOS_REINOS)
+    animales = Especie.select_grupos_iconicos.where(:nombre_cientifico => Busqueda::ICONOS_ANIMALES)
+    plantas = Especie.select_grupos_iconicos.where(:nombre_cientifico => Busqueda::ICONOS_PLANTAS)
 
     def arma_span(taxon)
       "<label>#{radio_button_tag('', taxon.id, false, id: nil)}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
