@@ -24,7 +24,7 @@
     <h3>
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-      <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
+      <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
 
@@ -47,7 +47,7 @@
 <hr/>
 
 <div class="btn-group pull-right" style="z-index: 1;">
-  <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Más información científica sobre la especie...  <span class="caret"></span>
   </button>
 
