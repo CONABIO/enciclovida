@@ -118,6 +118,7 @@ span.zonas{
 .btn-zona{color: #3a3a3a; font-weight: bolder; cursor: default!important; border: none;}
 
 .btn-zona-v{
+  fill: rgba(146, 186, 37, 1);
   background: rgba(224, 235, 195, 1);
   background: -moz-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(224, 235, 195, 1)), color-stop(50%, rgba(146, 186, 37, 1)));
@@ -127,7 +128,9 @@ span.zonas{
   background: linear-gradient(to bottom, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#92ba25', GradientType=0);
 }
-.btn-zona-a{	background: rgba(255, 241, 184, 1);
+.btn-zona-a{
+  fill: rgba(255, 174, 41, 1);
+  background: rgba(255, 241, 184, 1);
   background: -moz-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 241, 184, 1)), color-stop(50%, rgba(255, 174, 41, 1)));
   background: -webkit-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
@@ -137,6 +140,7 @@ span.zonas{
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff1b8', endColorstr='#ffae29', GradientType=0);
 }
 .btn-zona-r{
+  fill: rgba(122, 26, 7, 1);
   background: rgba(242, 131, 109, 1);
   background: -moz-linear-gradient(top, rgba(242, 131, 109, 1) 0%,rgba(122, 26, 7, 1) 100%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242, 131,109, 1)), color-stop(100%, rgba(122, 26, 7, 1)));
@@ -155,7 +159,12 @@ span.zonas{
   background: linear-gradient(to bottom, #dfdfdf 0%, #bababa 50%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', endColorstr='#bababa', GradientType=0);
 }
+.btn-zona-s{
+  fill: #dadada;
+}
 .btn-zona-n{
+  fill: none;
+  stroke-width: 0px;
   color: transparent!important;
 }
 .btn-zona-sn i:before{
@@ -186,9 +195,9 @@ path{
 path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
 path[id^=path_zonas_]:hover{fill: #17325f!important; stroke: #999999!important; stroke-width: 2px;}
 .zona-seleccionada{fill: #17325f!important;}
-#sea-states{fill: #b9da9d;}
-#earth-states{fill: #f2ffbd;}
-#extranjero{fill: #c1c1c1;}
+#sea-states,#modal_sea-states{fill: #b9da9d;}
+#earth-states, #modal_earth-states{fill: #f2ffbd;}
+#extranjero, #modal_extranjero{fill: #c1c1c1;}
 
 
 .checkbox i{
