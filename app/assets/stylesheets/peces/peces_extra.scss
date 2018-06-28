@@ -1,29 +1,9 @@
 .form-peces{
   margin-bottom: 15px;
 }
-.ui-draggable, .ui-droppable {
-	background-position: top;
-}
-.ui-autocomplete-loading {
-  background: white url("//jqueryui.com/resources/demos/autocomplete/images/ui-anim_basic_16x16.gif") right center no-repeat;
-}
-.ui-menu {
-  background-color: #f3f3f3;
-  font-size: large;
-  border-left: 1px solid #cccccc;
-  border-right: 1px solid #cccccc;
-  border-bottom: 1px solid #cccccc;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  margin-top: -4px;
-}
 .soulmate-type-suggestions li{
   padding: 1em 0;
   min-height: 125px;
-}
-.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
-  background-color: #bbbbbb;
-  color: #fafafa;
 }
 .exacta input.disabled, .agrupada select.disabled, .recomendada input.disabled, .recomendada span.disabled, .recomendada select.disabled{
   color: #888;
@@ -48,7 +28,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
-
+span.zonas{
+  display: none;
+}
 .resultados-peces{
     text-align: center;
 }
