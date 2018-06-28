@@ -7,10 +7,7 @@ $(document).ready(function(){
     $("path[id^=path_zonas_]").on('click', function(){
         $(this).toggleClass('zona-seleccionada');
         var input = $('#' + this.id.replace('path_',''));
-        console.log(input);
-        console.log(input.prop("checked"));
         input.prop("checked", !input.prop("checked"));
-        console.log(input.prop("checked"));
     });
 });
 
