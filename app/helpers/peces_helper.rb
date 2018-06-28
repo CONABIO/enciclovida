@@ -77,11 +77,10 @@ module PecesHelper
     checkBoxes=''
 
     cat.each do |k, valores|
-      checkBoxes << "<h5><strong>#{k.to_s.capitalize}</strong></h5>"
       valores.each do |edo, id|
         checkBoxes << "<label>"
         checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
-        checkBoxes << "<span title = '#{edo}' class = 'btn btn-xs btn-basica btn-title'>"
+        checkBoxes << "<span title = '#{edo}' class = 'btn btn-xs btn-default btn-basica btn-title #{k}'>"
         checkBoxes << "#{edo}"
         checkBoxes << "</span>"
         checkBoxes << "</label>"
