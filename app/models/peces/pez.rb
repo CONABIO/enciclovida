@@ -164,9 +164,18 @@ class Pez < ActiveRecord::Base
       end
     end
 
-    # Asignar la silueta
+    # Asigna el grupo iconico de la especie
+    especie.ancestors.reverse.map(&:nombre_cientifico).each do |nombre|
+      if Busqueda::ICONOS_ANIMALES.include?(nombre)
+        self.imagen = "#{nombre.estandariza}-ev-icon"
+        self.tipo_imagen = 3
+        return
+      end
+    end
+
+    # Asignar la silueta, el ultimo caso, ya que es una silueta general
     self.imagen = '/assets/app/peces/silueta.png'
-    self.tipo_imagen = 3
+    self.tipo_imagen = 4
   end
 
   def self.actualiza_todo_imagen
