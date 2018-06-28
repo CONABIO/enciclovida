@@ -3,6 +3,7 @@
     <%= tituloNombresPeces(@pez, :link => true).html_safe %>
   </div>
   <div class="panel-body">
+    <%= render :partial => 'peces/svg_zonas_marinas_show' %>
     <dl class="dl-horizontal">
       <% @criterios.each do |c|  %>
         <dt><% if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad) %>
@@ -14,6 +15,7 @@
           <small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span>
         </dd>
       <% end %>
+
     </dl>
     <p>-5..4 -> V</p>
     <p>5..19 -> A</p>
