@@ -67,17 +67,17 @@ class PecesController < ApplicationController
 
       # Filtros globales
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
-      @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
-      @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
-      @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
+      @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
+      @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
+      @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
       @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
-      @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
-      @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
+      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
+      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp]})") if params[:cnp].present?
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
+        regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif params[:semaforo_recomendacion].present?
         # Selecciono el valor de sin datos
@@ -89,7 +89,7 @@ class PecesController < ApplicationController
 
         @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
+        regexp = dame_regexp_zonas(zonas: params[:zonas])
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
@@ -124,13 +124,10 @@ class PecesController < ApplicationController
   def dame_regexp_zonas(opc = {})
     colores_default = opc[:colores_default] || '[varns]'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
-
-    if opc[:zonas] == 1  # La primera zona
-      "#{color_seleccionado}#{colores_default}{5}"
-    elsif opc[:zonas] == 6 # La ultima zona
-      "#{colores_default}{5}#{color_seleccionado}"
-    else
-      "#{colores_default}{#{opc[:zonas]-1}}#{color_seleccionado}#{colores_default}{#{6-opc[:zonas]}}"
+    valor_por_zona = Array.new(6, colores_default)
+    opc[:zonas].each do |z|
+      valor_por_zona[z.to_i-1] = color_seleccionado
     end
+    valor_por_zona.join('')
   end
 end

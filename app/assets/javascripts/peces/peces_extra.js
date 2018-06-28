@@ -4,6 +4,11 @@ $(document).ready(function(){
         pestaña = '/peces/'+idEspecie+'?layout=0';
         $('#datos-'+idEspecie).load(pestaña);
     });
+    $("path[id^=path_zonas_]").on('click', function(){
+        $(this).toggleClass('zona-seleccionada');
+        var input = $('#' + this.id.replace('path_',''));
+        input.prop("checked", !input.prop("checked"));
+    });
 });
 
 function limpiaBusqueda(){
