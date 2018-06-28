@@ -38,7 +38,7 @@ span.zonas{
   margin: 4px;
   overflow: visible;
 }
-.resultados-peces .result-img-container img{
+.resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
   max-height: 150px;
   max-width: 300px;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.9);
@@ -46,13 +46,18 @@ span.zonas{
   border: 1px solid #ddd;
   border-radius: 10px;
 }
+.resultados-peces i.icono-resultado-pez {
+  transition: all .2s ease;
+  vertical-align: baseline;
+  font-size: 4em;
+}
 .resultados-peces .result-img-container .btn-ficha{
   border: none;
   background-color: transparent;
   display: block;
   margin: 0 auto;
 }
-.resultados-peces div.result-img-container img:hover{
+.resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
   transform:scale(.75);
   -ms-transform:scale(.75); /* IE 9 */
   -moz-transform:scale(.75); /* Firefox */
