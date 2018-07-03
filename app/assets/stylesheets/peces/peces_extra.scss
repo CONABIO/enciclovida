@@ -19,6 +19,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:not(#nombre){
   visibility: hidden;
 }
+fieldset{
+  border-top: 1px solid #ffffff;
+  padding-top: 10px;
+}
 .recomendada input + span{
   color: #ececec;
   border-radius: 50%;
@@ -30,6 +34,19 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 span.zonas{
   display: none;
+}
+.botones-peces{
+  width: 100px;
+  transition-delay: 0ms;
+  transition-property: width;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+}
+.botones-peces:hover{
+  width: 250px;
+}
+.botones-peces:hover:after{
+  content: " " attr(title) " ";
 }
 .resultados-peces{
     text-align: center;
