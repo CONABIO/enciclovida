@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, inverse_of: :pez, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
@@ -13,14 +13,14 @@ class Pez < ActiveRecord::Base
 
   belongs_to :especie
 
-  scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen]).select('peces.especie_id') }
+  scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).select('peces.especie_id') }
 
   scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
   scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
 
   scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
 
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(:valor_total, :tipo_imagen, :nombre_cientifico) }
+  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(con_estrella: :desc).order(:valor_total, :tipo_imagen, :nombre_cientifico) }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
@@ -31,6 +31,7 @@ class Pez < ActiveRecord::Base
   before_save :actualiza_pez, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
@@ -39,6 +40,12 @@ class Pez < ActiveRecord::Base
     asigna_nombre_cientifico
     asigna_nombres_comunes
     asigna_imagen
+    guarda_redis
+  end
+
+  # Guarda el redis del pez aprovechando el metodo empaquetado de especie
+  def guarda_redis
+    especie.guarda_redis(loader: 'peces', foto_principal: imagen)
   end
 
   # Actualiza todos los servicios
@@ -60,13 +67,14 @@ class Pez < ActiveRecord::Base
   def asigna_valor_zonas_y_total
     asigna_anio
     valores_por_zona
-    puts valor_por_zona.inspect
 
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
 
-      if propiedad.nombre_propiedad == 'No se distribuye'  # La quitamos del array ya que no deberia tener valor
-        self.valor_por_zona[zona_num] = nil
+      if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
+        self.valor_por_zona[zona_num] = 'n'
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
+        self.valor_por_zona[zona_num] = 's'
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
       end
@@ -213,6 +221,8 @@ class Pez < ActiveRecord::Base
   # Asocia el valor por zona a un color correspondiente
   def valor_zona_a_color
     valor_por_zona.each_with_index do |zona, i|
+      next unless zona.class == Fixnum # Por si ya tiene asignada una letra
+
       case zona
         when -5..4
           self.valor_por_zona[i] = 'v'
@@ -220,8 +230,6 @@ class Pez < ActiveRecord::Base
           self.valor_por_zona[i] = 'a'
         when 20..100
           self.valor_por_zona[i] = 'r'
-        else
-          self.valor_por_zona[i] = 'n'
       end
     end
   end
@@ -233,14 +241,12 @@ class Pez < ActiveRecord::Base
     valor_zonas.split('').each do |zona|
       case zona
         when 'v'
-          #zonas << 43
           zonas << -100
         when 'a'
-          #zonas << 7
           zonas << 10
         when 'r'
           zonas << 100
-        when 'n'
+        when 'n', 's'
           zonas << 0
       end
     end
@@ -262,9 +268,13 @@ class Pez < ActiveRecord::Base
     valor+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
     valor+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
     valor+= propiedades.procedencias.map(&:valor).inject(:+).to_i
-    valor+= propiedades.pesquerias.map(&:valor).inject(:+).to_i
     valor+= propiedades.nom.map(&:valor).inject(:+).to_i
     valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
+
+    # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
+    pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
+    valor+= pesquerias
+    self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)
   end
