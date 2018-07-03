@@ -532,7 +532,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       datos[:score] = Adicional::LENGUAS_ACEPTADAS.length*visitas
     end
 
-    datos[:data][:foto] = x_square_url  # Foto square_url
+    if opc[:foto_principal].present?
+      datos['data']['foto'] = opc[:foto_principal]
+    else
+      datos['data']['foto'] = x_square_url  # Foto square_url
+    end
+
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
     datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]
     datos[:data][:autoridad] = nombre_autoridad.try(:limpia)
@@ -571,10 +576,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
     self.x_nombres_comunes_naturalista = nil
 
-    categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-
-    # Guarda en la categoria seleccionada
-    loader = Soulmate::Loader.new(categoria)
+    if opc[:loader].present? # Guarda en el loader que especifico
+      loader = Soulmate::Loader.new(opc[:loader])
+    else # Guarda en la cataegoria taxonomica correspondiente
+      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+      loader = Soulmate::Loader.new(categoria)
+    end
 
     # Guarda el redis con todos los nombres cientificos
     loader.add(redis(opc.merge({consumir_servicios: true})))

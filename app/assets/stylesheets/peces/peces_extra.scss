@@ -1,25 +1,9 @@
 .form-peces{
   margin-bottom: 15px;
 }
-.ui-draggable, .ui-droppable {
-	background-position: top;
-}
-.ui-autocomplete-loading {
-  background: white url("//jqueryui.com/resources/demos/autocomplete/images/ui-anim_basic_16x16.gif") right center no-repeat;
-}
-.ui-menu {
-  background-color: #f3f3f3;
-  font-size: large;
-  border-left: 1px solid #cccccc;
-  border-right: 1px solid #cccccc;
-  border-bottom: 1px solid #cccccc;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  margin-top: -4px;
-}
-.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
-  background-color: #bbbbbb;
-  color: #fafafa;
+.soulmate-type-suggestions li{
+  padding: 1em 0;
+  min-height: 125px;
 }
 .exacta input.disabled, .agrupada select.disabled, .recomendada input.disabled, .recomendada span.disabled, .recomendada select.disabled{
   color: #888;
@@ -32,7 +16,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
 }
-.recomendada input{
+.recomendada input:not(#nombre){
   visibility: hidden;
 }
 .recomendada input + span{
@@ -44,7 +28,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
-
+span.zonas{
+  display: none;
+}
 .resultados-peces{
     text-align: center;
 }
@@ -132,6 +118,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .btn-zona{color: #3a3a3a; font-weight: bolder; cursor: default!important; border: none;}
 
 .btn-zona-v{
+  fill: rgba(146, 186, 37, 1);
   background: rgba(224, 235, 195, 1);
   background: -moz-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(224, 235, 195, 1)), color-stop(50%, rgba(146, 186, 37, 1)));
@@ -141,7 +128,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background: linear-gradient(to bottom, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#92ba25', GradientType=0);
 }
-.btn-zona-a{	background: rgba(255, 241, 184, 1);
+.btn-zona-a{
+  fill: rgba(255, 174, 41, 1);
+  background: rgba(255, 241, 184, 1);
   background: -moz-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 241, 184, 1)), color-stop(50%, rgba(255, 174, 41, 1)));
   background: -webkit-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
@@ -151,6 +140,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff1b8', endColorstr='#ffae29', GradientType=0);
 }
 .btn-zona-r{
+  fill: rgba(122, 26, 7, 1);
   background: rgba(242, 131, 109, 1);
   background: -moz-linear-gradient(top, rgba(242, 131, 109, 1) 0%,rgba(122, 26, 7, 1) 100%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242, 131,109, 1)), color-stop(100%, rgba(122, 26, 7, 1)));
@@ -160,16 +150,56 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background: linear-gradient(to bottom, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2836d', endColorstr='#7a1a07', GradientType=0);
 }
-.btn-zona-s, .btn-zona-n{
-  background: rgba(255, 255, 255, 1);
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(50%, rgba(221, 221, 221, 1)));
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
-  background: -o-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
-  background: -ms-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
-  background: linear-gradient(to bottom, #4E4D49rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0);
+.btn-zona-s, .btn-zona-n, .btn-zona-sn{
+  background: #dadada;
+  background: -moz-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
+  background: -webkit-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
+  background: -o-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
+  background: -ms-linear-gradient(top, #dadada 0%, #bababa 50%);
+  background: linear-gradient(to bottom, #dfdfdf 0%, #bababa 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', endColorstr='#bababa', GradientType=0);
 }
 .btn-zona-s{
+  fill: #dadada;
+}
+.btn-zona-n{
+  fill: none;
+  stroke-width: 0px;
   color: transparent!important;
+}
+.btn-zona-sn i:before{
+  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
+  margin-left: 0!important;
+  margin-right: 0!important;
+}
+
+
+/************* SVG Zonas marítimas ****************************/
+
+path{
+  display:inline;
+  fill-opacity:1;
+  fill-rule:evenodd;
+  stroke:#666666;
+  stroke-miterlimit:4;
+  stroke-dasharray:none;
+  stroke-opacity:1;
+  stroke-width: .5px;
+}
+/*#path_zonas_pacifico-i{fill: #56a7d0;}
+#path_zonas_pacifico-ii{fill: #5488cb;}
+#path_zonas_pacifico-iii{fill: #446ea5;}
+#path_zonas_golfo-de-mexico-y-caribe-iv{fill: #83c0e4;}
+#path_zonas_golfo-de-mexico-y-caribe-v{fill: #83d1e4;}
+#path_zonas_golfo-de-mexico-y-caribe-vi{fill: #83e4df;}*/
+path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
+path[id^=path_zonas_]:hover{fill: #17325f!important; stroke: #999999!important; stroke-width: 2px;}
+.zona-seleccionada{fill: #17325f!important;}
+#sea-states,#modal_sea-states{fill: #b9da9d;}
+#earth-states, #modal_earth-states{fill: #f2ffbd;}
+#extranjero, #modal_extranjero{fill: #c1c1c1;}
+
+
+.checkbox i{
+  font-size: 1.7em;
 }
