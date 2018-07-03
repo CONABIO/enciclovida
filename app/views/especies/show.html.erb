@@ -1,10 +1,11 @@
 <% content_for(:extrajs) do %>
-    <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "show" %>
     <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
     <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
 <% end %>
 
 <%= content_for(:delayedjs) do %>
+
     <script>
         function paginado_fotos(paginas, pagina)
         {
@@ -39,7 +40,7 @@
         }
 
         // Para correr los nobres comunes del lado del cliente
-        nombres_comunes_todos();
+        $('#nombres_comunes_todos').load("/especies/" + TAXON.id + "/nombres-comunes-todos");
     </script>
 <% end %>
 
@@ -243,7 +244,5 @@
     <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
   </div>
-
-
 
 </div>
