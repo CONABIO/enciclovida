@@ -44,7 +44,6 @@ class PecesController < ApplicationController
 
   # PATCH/PUT /peces/1
   def update
-    puts pez_params.inspect
     if @pez.update_attributes(pez_params)
       redirect_to @pez, notice: 'Pez was successfully updated.'
     else

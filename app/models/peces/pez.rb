@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy#, inverse_of: :pez
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
@@ -94,37 +94,56 @@ class Pez < ActiveRecord::Base
   # Asigna los valores de la nom de acuerdo a catalogos
   def guarda_nom_iucn
     asigna_anio
-    categorias = []
-    borra_relaciones_nom_iucn
 
-    especie.estados_conservacion.each do |n|  # BORRAR este parche en la centralizacion
-      if valor = n.nom_cites_iucn(true)
-        propiedad = Propiedad.where(nombre_propiedad: valor).first
-        next unless propiedad
+    # Para actualizar o crear el valor de la nom
+    criterio_id = if nom = especie.catalogos.nom.first
+                    if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
+                      if crit = prop.criterios.where('anio=?', 2012).first
+                        crit.id
+                      else
+                        158
+                      end
+                    end
 
-        if criterio = propiedad.criterios.where('anio=?', anio).first
-          pc = peces_criterios.new
-          pc.criterio_id = criterio.id
-          pc.save if pc.valid?
+                  else
+                    158
+                  end
 
-          categorias << propiedad.tipo_propiedad
-        end
-      end  # End valor de nom o iucn
-    end  # End estados conservacion
 
-    # Categorias default si no encontro valor en nom
-    if !categorias.include?('Norma Oficial Mexicana 059 SEMARNAT-2010')
-      pc = peces_criterios.new
-      pc.criterio_id = 158  # No aplica
-      pc.save if pc.valid?
+    if crit = criterios.where('anio=?', 2012).nom.first
+      pez_crit = peces_criterios.where(criterio_id: crit.id).first
+      pez_crit.criterio_id = criterio_id
+    else
+      pez_crit = peces_criterios.new
+      pez_crit.criterio_id = criterio_id # No aplica
     end
 
-    # Categorias default si no encontro valor en iucn
-    if !categorias.include?('Lista roja IUCN 2016-3')
-      pc = peces_criterios.new
-      pc.criterio_id = 159  # No aplica
-      pc.save if pc.valid?
+    pez_crit.save if pez_crit.changed?
+
+    # Para actualizar o crear el valor de iucn
+    criterio_id = if iucn = especie.catalogos.iucn.first
+                    if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
+                      if crit = prop.criterios.where('anio=?', 2012).first
+                        crit.id
+                      else
+                        159
+                      end
+                    end
+
+                  else
+                    159
+                  end
+
+
+    if crit = criterios.where('anio=?', 2012).iucn.first
+      pez_crit = peces_criterios.where(criterio_id: crit.id).first
+      pez_crit.criterio_id = criterio_id
+    else
+      pez_crit = peces_criterios.new
+      pez_crit.criterio_id = criterio_id # No aplica
     end
+
+    pez_crit.save if pez_crit.changed?
   end
 
   def self.actualiza_todo_nom_iucn
@@ -224,12 +243,12 @@ class Pez < ActiveRecord::Base
       next unless zona.class == Fixnum # Por si ya tiene asignada una letra
 
       case zona
-        when -5..4
-          self.valor_por_zona[i] = 'v'
-        when 5..19
-          self.valor_por_zona[i] = 'a'
-        when 20..100
-          self.valor_por_zona[i] = 'r'
+      when -5..4
+        self.valor_por_zona[i] = 'v'
+      when 5..19
+        self.valor_por_zona[i] = 'a'
+      when 20..100
+        self.valor_por_zona[i] = 'r'
       end
     end
   end
@@ -240,14 +259,14 @@ class Pez < ActiveRecord::Base
 
     valor_zonas.split('').each do |zona|
       case zona
-        when 'v'
-          zonas << -100
-        when 'a'
-          zonas << 10
-        when 'r'
-          zonas << 100
-        when 'n', 's'
-          zonas << 0
+      when 'v'
+        zonas << -100
+      when 'a'
+        zonas << 10
+      when 'r'
+        zonas << 100
+      when 'n', 's'
+        zonas << 0
       end
     end
 
