@@ -29,6 +29,7 @@ class Pez < ActiveRecord::Base
   validates_presence_of :especie_id
   attr_accessor :guardar_manual, :anio, :valor_por_zona
   before_save :actualiza_pez, unless: :guardar_manual
+  after_save :guarda_valor_zonas_y_total, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
@@ -36,7 +37,6 @@ class Pez < ActiveRecord::Base
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
     guarda_nom_iucn
-    asigna_valor_zonas_y_total
     asigna_nombre_cientifico
     asigna_nombres_comunes
     asigna_imagen
@@ -60,7 +60,8 @@ class Pez < ActiveRecord::Base
   # Asigna los valores promedio por zona, de acuerdo a cada estado
   def guarda_valor_zonas_y_total
     asigna_valor_zonas_y_total
-    save if changed?
+    self.guardar_manual = true
+    save if valid?
   end
 
   # Asigna los valores promedio por zona, de acuerdo a todos los criterios
@@ -296,14 +297,5 @@ class Pez < ActiveRecord::Base
     self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)
-  end
-
-  # Borra la relaciones para crearlas de nuevo
-  def borra_relaciones_nom_iucn
-    asigna_anio
-    nom = criterio_propiedades.select('propiedades.*, criterios.id AS criterio_id').nom.where('anio=?', anio).map(&:criterio_id)
-    iucn = criterio_propiedades.select('propiedades.*, criterios.id AS criterio_id').iucn.where('anio=?', anio).map(&:criterio_id)
-
-    peces_criterios.where(criterio_id: nom + iucn).delete_all
   end
 end
