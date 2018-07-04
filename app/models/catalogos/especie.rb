@@ -533,9 +533,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     if opc[:foto_principal].present?
-      datos['data']['foto'] = opc[:foto_principal]
+      datos[:data][:foto] = opc[:foto_principal]
     else
-      datos['data']['foto'] = x_square_url  # Foto square_url
+      datos[:data][:foto] = x_square_url  # Foto square_url
     end
 
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
