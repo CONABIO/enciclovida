@@ -22,7 +22,7 @@
     $(document).ready(function() {
         map = null;
         legend_control = null;
-        opciones.snib_url = "<%= @snib_url %>";
+        opciones.snib_url = "<%= @datos[:snib_url] %>";
 
         markersLayer = L.markerClusterGroup({
             chunkedLoading: true, spiderfyDistanceMultiplier: 2,
