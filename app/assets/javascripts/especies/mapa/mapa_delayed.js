@@ -1,7 +1,8 @@
 $(document).ready(function() {
     // Inicia el mapa
     cargaMapa('map');
-    ponTamaño();
+    cargaRegistrosSnib(opciones.snib_url);
+    //ponTamaño();
 
     $(window).resize(function () {
         ponTamaño();
@@ -13,6 +14,4 @@ $(document).ready(function() {
             ponTamaño();
         },1000);
     });
-
-    cargaRegistrosSnib(opciones.snib_url);
 });
