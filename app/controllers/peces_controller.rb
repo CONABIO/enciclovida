@@ -126,7 +126,7 @@ class PecesController < ApplicationController
     color_seleccionado = opc[:color_seleccionado] || '[var]'
     valor_por_zona = Array.new(6, colores_default)
     opc[:zonas].each do |z|
-      valor_por_zona[z.to_i-1] = color_seleccionado
+      valor_por_zona[z.to_i] = color_seleccionado
     end
     valor_por_zona.join('')
   end
