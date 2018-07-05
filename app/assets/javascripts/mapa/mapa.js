@@ -57,3 +57,8 @@ var cargaMapa = function (id)
 
     L.control.layers(baseMaps).addTo(map);
 };
+
+var ponTamaño = function () {
+    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    map.invalidateSize(true);
+};
