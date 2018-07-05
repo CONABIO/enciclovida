@@ -2,6 +2,14 @@
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 /**
+ * Pone el tamaño inicial al mapa
+ */
+var ponTamaño = function () {
+    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    map.invalidateSize(true);
+};
+
+/**
  * Para validar el correo
  * @param correo
  * @returns {boolean}

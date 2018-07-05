@@ -144,4 +144,8 @@ var inicia_carrusel = function()
     $(window).resize(function (e) {
         $('#carrusel').sly('reload');
     });
+
+    if(!jQuery.isEmptyObject(opciones.geodatos)){
+        ponTamaño();
+    }
 };
