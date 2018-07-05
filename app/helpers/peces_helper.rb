@@ -43,15 +43,12 @@ module PecesHelper
   end
 
   def dibujaZonasPez pez
-    '<div class="btn-group btn-group-sm" role="group" aria-label="...">'+
-        '<button type="button" class="btn btn-zona"><small>Zonas: </small></button>'+
-        '<button type="button" tooltip-title="Pacífico I" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[0] + '">I</button>'+
-        '<button type="button" tooltip-title="Pacífico II" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[1] + '">II</button>'+
-        '<button type="button" tooltip-title="Pacífico III" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[2] + '">III</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe IV" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[3] +'">IV</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe V" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[4] +'">V</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe VI" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[5] +'">VI</button>'+
-        '</div>'
+    @filtros[:zonas]
+    lista = '<ul>'<<'<small><b>Zonas: </b></small>'
+    @filtros[:zonas].each_with_index do |z, i|
+      lista << "<li tooltip-title='#{z[0]}' class='btn-title btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0].split(' ').last}</li>"
+    end
+      lista << '</ul>'
   end
 
   # Filtros para Categorías de riesgo y comercio internacional
