@@ -1,7 +1,7 @@
 <% content_for(:extrajs) do %>
-  <script src="https://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
-  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="true"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js" data-turbolinks-track="true"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
   <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
 <% end %>
 
@@ -13,22 +13,20 @@
 <% end %>
 
 <% content_for(:delayedjs) do %>
-
-
-
+  <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
 <% end %>
-
-<%#= javascript_include_tag 'especies/geodatos', 'data-turbolinks-track' => true %>
 
 <div id="map"></div>
 
 <script data-turbolinks-track="true">
-    map = null;
-    legend_control = null;
-    opciones.snib_url = "<%= @snib_url %>";
+    $(document).ready(function() {
+        map = null;
+        legend_control = null;
+        opciones.snib_url = "<%= @snib_url %>";
 
-    markersLayer = L.markerClusterGroup({chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
+        markersLayer = L.markerClusterGroup({
+            chunkedLoading: true, spiderfyDistanceMultiplier: 2,
+            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}, which_layer: 'geoportal'
+        });
+    });
 </script>
-
-<%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
