@@ -54,18 +54,33 @@ var aniadePuntosSnib = function()
 
     var species_layer = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-
-            if (feature.properties.d.ejemplarfosil == 'SI')  // Este campos quiere decir que es un fosil
-                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
-            else if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
-                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
-            else  // de lo contrario es un registro normal
-                return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+// Para distinguir si son solo las corrdenadas
+            if (opciones.solo_coordenadas)
+            {
+                if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                else if (feature.properties.d[2])  // Este campo quiere decir que es de localidad no de campo
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                else  // de lo contrario es un registro rojo normal
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+            } else {
+                if (feature.properties.d.ejemplarfosil == 'SI')  // Este campos quiere decir que es un fosil
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                else if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                else  // de lo contrario es un registro normal
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+            }
         },
         onEachFeature: function (prop, layer) {
-            layer.bindPopup(ejemplarSnib(prop.properties.d));
-            layer.on("click", function () {
-            });
+            // Para distinguir si son solo las corrdenadas
+            if (opciones.solo_coordenadas)
+            {
+                layer.on("click", function () {
+                    ejemplarSnibGeojson(layer, prop.properties.d[0]);
+                });
+            } else
+                layer.bindPopup(ejemplarSnib(prop.properties.d));
         }
     });
 
@@ -81,46 +96,23 @@ var aniadePuntosSnib = function()
 var ejemplarSnibGeojson = function(layer, id)
 {
     $.ajax({
-        url: "/especies/" + TAXON.id + "/ejemplar-snib/" + id,
+        url: "/especies/" + opciones.taxon + "/ejemplar-snib/" + id,
         dataType : "json",
         success : function (res){
             if (res.estatus == 'OK')
             {
-                var ejemplar = res.ejemplar;
-                var contenido = "";
+                var contenido = ejemplarSnib(res.ejemplar);
 
-                //contenido += "<h4>" + nombre() + "</h4>";
-                contenido += "<h4>" + opciones.nombre + "</h4>";
-                contenido += "<dt>Localidad: </dt><dd>" + ejemplar.localidad + "</dd>";
-                contenido += "<dt>Municipio: </dt><dd>" + ejemplar.municipiomapa + "</dd>";
-                contenido += "<dt>Estado: </dt><dd>" + ejemplar.estadomapa + "</dd>";
-                contenido += "<dt>País: </dt><dd>" + ejemplar.paismapa + "</dd>";
-                contenido += "<dt>Fecha: </dt><dd>" + ejemplar.fechacolecta + "</dd>";
-                contenido += "<dt>Colector: </dt><dd>" + ejemplar.colector + "</dd>";
-                contenido += "<dt>Colección: </dt><dd>" + ejemplar.coleccion + "</dd>";
-                contenido += "<dt>Institución: </dt><dd>" + ejemplar.institucion + "</dd>";
-                contenido += "<dt>País de la colección: </dt><dd>" + ejemplar.paiscoleccion + "</dd>";
+                // Pone el popup arriba del punto
+                var popup = new L.Popup();
+                var bounds = layer.getBounds();
 
-                if (ejemplar.proyecto.length > 0 && ejemplar.urlproyecto.length > 0)
-                    contenido += "<dt>Proyecto: </dt><dd><a href='" + ejemplar.urlproyecto + "' target='_blank'>" + ejemplar.proyecto + "</a></dd>";
-
-                contenido += "<dt>Más información: </dt><dd><a href='http://" + ejemplar.urlejemplar + "' target='_blank'>consultar</a></dd>";
-
-                // Para enviar un comentario acerca de un registro en particular
-                contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + TAXON.id + "/comentarios/new?proveedor_id=" + ejemplar.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
-
-                contenido = "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID: </strong>" + ejemplar.idejemplar;
-            } else {
-                var contenido = "Hubo un error al retraer el ejemplar: " + res.msg;
+                popup.setLatLng(bounds.getCenter());
+                popup.setContent(contenido);
+                map.openPopup(popup);
             }
-
-            // Pone el popup arriba del punto
-            var popup = new L.Popup();
-            var bounds = layer.getBounds();
-
-            popup.setLatLng(bounds.getCenter());
-            popup.setContent(contenido);
-            map.openPopup(popup);
+            else
+                console.log("Hubo un error al retraer el ejemplar: " + res.msg);
         },
         error: function( jqXHR ,  textStatus,  errorThrown ){
             console.log("error: " + textStatus);
@@ -139,7 +131,6 @@ var ejemplarSnib = function(prop)
     var nombre_f = $('<textarea/>').html(opciones.nombre).text().replace(/<h5/g, "<h4 class='text-center'").replace(/<\/h5/g, "</h4");
     var contenido = "";
 
-    //contenido += "<h4 class='text-center'>" + nombre() + "</h4>";
     contenido += "" + nombre_f + "";
     contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
     contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
@@ -157,27 +148,10 @@ var ejemplarSnib = function(prop)
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
     //Para enviar un comentario acerca de un registro en particular
-    //contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon_seleccionado.id + "/comentarios/new?proveedor_id=" + prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
     contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
         prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
-};
-
-/**
- * Para desplegar el nombre cientifico, idealmente deberia de venir del helper de especies
- * @returns {string}
- */
-var nombre = function()
-{
-    if (I18n.locale == 'es')
-    {
-        if (opciones.taxon_seleccionado.nombre_comun.length > 0)
-            return opciones.taxon_seleccionado.nombre_comun + "<br /><a href='/especies/" + opciones.taxon_seleccionado.id + "'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
-        else
-            return "<a href='/especies/" + opciones.taxon_seleccionado.id + "' target='_blank'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
-    } else
-        return "<a href='/especies/" + opciones.taxon_seleccionado.id + "' target='_blank'><i>" + opciones.taxon_seleccionado.nombre_cientifico + "</i></a>";
 };
 
 /**
