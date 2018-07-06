@@ -76,6 +76,7 @@ class EspeciesController < ApplicationController
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
         @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:solo_coordenadas] = true
         @datos[:cual_ficha] = ''
       end
 
