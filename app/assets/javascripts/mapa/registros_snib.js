@@ -18,7 +18,8 @@ var borraRegistrosAnterioresSnib = function()
         map.removeControl(legend_control);
         map.removeLayer(markersLayer);
         markersLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, which_layer: 'geoportal'});
+            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
+        });
     }
 };
 

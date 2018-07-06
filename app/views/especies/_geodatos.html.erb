@@ -19,6 +19,8 @@
 <div id="map"></div>
 
 <script data-turbolinks-track="true">
+    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+
     $(document).ready(function() {
         map = null;
         legend_control = null;
@@ -26,7 +28,7 @@
 
         markersLayer = L.markerClusterGroup({
             chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}, which_layer: 'geoportal'
+            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
         });
     });
 </script>
