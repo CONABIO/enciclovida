@@ -4,9 +4,9 @@
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <title><%= yield :title %></title>
   <meta name="keywords" content="<%= yield :meta_keywords %>">
-  <%= favicon_link_tag 'favicon.ico' %>
+  <title><%= yield :title %></title>
+  <%= favicon_link_tag '/favicon.ico' %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");

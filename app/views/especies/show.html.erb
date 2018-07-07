@@ -15,6 +15,10 @@
   <div class="row alert alert-success" role="alert"><%= notice %></div>
 <% end %>
 
+<% content_for(:meta_keywords) do %>
+  <%= "#{@especie.nombre_cientifico},#{@datos[:nombres_comunes]}".strip %>
+<% end %>
+
 <% content_for(:title) do %>
   <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
