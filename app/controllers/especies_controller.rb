@@ -118,7 +118,7 @@ class EspeciesController < ApplicationController
         if p = @especie.proveedor
           fotos = p.fotos_naturalista
 
-          if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+          if fotos[:estatus] && fotos[:fotos].any?
             @fotos = []
 
             fotos[:fotos].each do |f|
@@ -137,7 +137,7 @@ class EspeciesController < ApplicationController
         # Fotos de BDI
         unless @fotos.present?
           fotos = @especie.fotos_bdi
-          @fotos = fotos[:fotos] if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+          @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
@@ -378,14 +378,14 @@ class EspeciesController < ApplicationController
             if bdi[:ultima].present?
               totales+= por_pagina*(bdi[:ultima]-1)
               fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
-              totales+= fbu[:fotos].count if fbu[:estatus] == 'OK'
+              totales+= fbu[:fotos].count if fbu[:estatus]
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
         end  # End format html
       end  # End respond
 
-    else  # End estatus OK
+    else  # End estatus
       render :_error and return
     end
   end
@@ -405,7 +405,7 @@ class EspeciesController < ApplicationController
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
             else
-              {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+              {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
             end
 
     render json: fotos
@@ -509,7 +509,7 @@ class EspeciesController < ApplicationController
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
             resp.delete(:ruta)
             render json: resp
@@ -522,7 +522,7 @@ class EspeciesController < ApplicationController
         format.kml do
           resp = p.observaciones_naturalista('.kml')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -534,7 +534,7 @@ class EspeciesController < ApplicationController
         format.kmz do
           resp = p.observaciones_naturalista('.kmz')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -560,7 +560,7 @@ class EspeciesController < ApplicationController
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
     else
-      render json: {estatus: 'error', msg: 'No existe naturalista_id'}.to_json
+      render json: {estatus: false, msg: 'No existe naturalista_id'}.to_json
     end
   end
 
@@ -577,7 +577,7 @@ class EspeciesController < ApplicationController
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
             resp.delete(:ruta)
             render json: resp
@@ -590,7 +590,7 @@ class EspeciesController < ApplicationController
         format.kml do
           resp = p.ejemplares_snib('.kml')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -602,7 +602,7 @@ class EspeciesController < ApplicationController
         format.kmz do
           resp = p.ejemplares_snib('.kmz')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -628,7 +628,7 @@ class EspeciesController < ApplicationController
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
     else
-      render json: {estatus: 'error', msg: 'No existe en el SNIB'}.to_json
+      render json: {estatus: false, msg: 'No existe en el SNIB'}.to_json
     end
   end
 
