@@ -57,7 +57,7 @@
         
         <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= render :partial => 'peces/svg_zonas_marinas' %>
-          <%= checkboxPeces({:zonas => @filtros[:zonas]})%>
+          <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
         </div>
       </fieldset>
     </div>
@@ -66,34 +66,32 @@
       <fieldset class="text-center">
         <h5 class="text-primary"><strong>Y si lo deseas, puedes añadir más criterios complementarios a tu búsqueda:</strong></h5>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <h5><strong>Estado de la población</strong></h5>
-          <%= checkboxPeces({:cnp => @filtros[:cnp]})%>
+          <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <h5><strong>Pesquerías en vías de sustentabilidad</strong></h5>
           <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Selecciona una opción - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= checkboxEstadoConservacionPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}})%>
+          <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Norma Oficial Mexicana NOM-059')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= checkboxEstadoConservacionPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}})%>
+          <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Unión Internacional para la Conservación de la Naturaleza (IUCN)')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <h5><strong>Tipo de captura</strong></h5>
-          <%= checkboxPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}})%>
+          <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <h5><strong>Tipo de veda</strong></h5>
-          <%= checkboxPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}})%>
+          <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <h5><strong>Procedencia</strong></h5>
-          <%= checkboxPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}})%>
+          <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Procedencia')%>
         </div>
 
       </fieldset>
     </div>
 
   <% end -%>
+
+
 </div>
