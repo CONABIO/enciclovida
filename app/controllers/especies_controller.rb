@@ -48,6 +48,7 @@ class EspeciesController < ApplicationController
         @datos = {}
         if adicional = @especie.adicional
           @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
         @datos[:especie_o_inferior] = @especie.especie_o_inferior?
