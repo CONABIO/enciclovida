@@ -71,9 +71,9 @@
       <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li role="separator" class="divider"></li>
-    <% if @datos[:naturalista_id] %>
+    <% if @datos[:ficha_naturalista] %>
       <li>
-        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@datos[:naturalista_id]}", class: 'noLoad', target: '_blank') %>
+        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, @datos[:ficha_naturalista], class: 'noLoad', target: '_blank') %>
       </li>
     <% end %>
   </ul>
