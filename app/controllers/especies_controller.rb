@@ -55,7 +55,11 @@ class EspeciesController < ApplicationController
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
-          @datos[:naturalista_id] = proveedor.naturalista_id if proveedor.naturalista_id.present?
+          naturalista_id = proveedor.naturalista_id
+          if naturalista_id.present?
+            @datos[:naturalista_api] = "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
+            @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
+          end
 
           if @datos[:especie_o_inferior]
             geodatos = proveedor.geodatos
