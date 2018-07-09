@@ -771,6 +771,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
+    ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
 
     # Para los nombres comunes de naturalista
     if p = proveedor
@@ -782,14 +783,14 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     if ncnat[:estatus]
       ncn = ncnat[:nombres_comunes].map do |nc|
         next unless nc['name'].present?
-        next unless nc['lexicon'].present?
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
+        next if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
 
         # Asigna la lengua
         lengua = nc['lexicon']
 
         if lengua.present?
-          l = I18n.transliterate(lengua).parameterize.downcase.gsub('-','_')
+          l = lengua.estandariza.gsub('-','_')
         else
           l = 'nd'
         end
@@ -801,7 +802,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       ncn = []
     end
 
-    # PAra el orden de las lenguas
+    # Para el orden de las lenguas
     nombres = (ncc + ncn).uniq.compact
     nombres_inicio = []
     nombres_mitad = []
@@ -855,6 +856,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     # Los uno para obtener los nombres unidos
     todos = (nombres_inicio + nombres_mitad + nombres_final).compact
 
+    # Guarda los nombres comunes en adicionales
     if todos.any?
       a = adicional ? adicional : Adicional.new(especie_id: id)
       a.nombres_comunes = todos.map(&:values).flatten.join(',')
