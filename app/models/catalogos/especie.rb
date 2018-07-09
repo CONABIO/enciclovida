@@ -987,7 +987,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   def cual_nombre_comun_coincidio(nombre, fuzzy_match=false)
     # nombres_comunes_adicionales es un alias a nombres_comunes de adicionales
     return self.x_nombre_comun_principal = nil unless nombres_comunes_adicionales.present?
-    nombres = JSON.parse(nombres_comunes_adicionales).values.flatten
+    nombres = nombres_comunes_adicionales.split(',')
     return self.x_nombre_comun_principal = nil unless nombres.any?
 
     # Para hacer la comparacion en minisculas y sin acentos
