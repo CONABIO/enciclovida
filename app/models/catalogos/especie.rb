@@ -435,65 +435,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     CategoriaTaxonomica::CATEGORIAS_GEODATOS.include? categoria_taxonomica.nombre_categoria_taxonomica
   end
 
-  #
-  # Fetches associated user-selected FlickrPhotos if they exist, otherwise
-  # gets the the first :limit Create Commons-licensed photos tagged with the
-  # taxon's scientific name from Flickr.  So this will return a heterogeneous
-  # array: part FlickrPhotos, part api responses
-  #
-  def photos_with_backfill(options = {})
-    options[:limit] ||= 9
-    chosen_photos = taxon_photos.includes(:photo).limit(options[:limit]).map{|tp| tp.photo}
-    if chosen_photos.size < options[:limit]
-      new_photos = Photo.includes({:taxon_photos => :especie}).
-          order("taxon_photos.id ASC").
-          limit(options[:limit] - chosen_photos.size).
-          where("especies.ancestry_ascendente_directo LIKE '#{ancestry_ascendente_directo}/#{id}%'")#.includes()
-      if new_photos.size > 0
-        new_photos = new_photos.where("photos.id NOT IN (?)", chosen_photos)
-      end
-      chosen_photos += new_photos.to_a
-    end
-    flickr_chosen_photos = []
-    if !options[:skip_external] && chosen_photos.size < options[:limit] && self.auto_photos
-      begin
-        r = flickr.photos.search(
-            :tags => name.gsub(' ', '').strip,
-            :per_page => options[:limit] - chosen_photos.size,
-            :license => '1,2,3,4,5,6', # CC licenses
-            :extras => 'date_upload,owner_name,url_s,url_t,url_s,url_m,url_l,url_o,owner_name,license',
-            :sort => 'relevance'
-        )
-        r = [] if r.blank?
-        flickr_chosen_photos = if r.respond_to?(:map)
-                                 r.map{|fp| fp.respond_to?(:url_s) && fp.url_s ? FlickrPhoto.new_from_api_response(fp) : nil}.compact
-                               else
-                                 []
-                               end
-      rescue FlickRaw::FailedResponse, EOFError => e
-        Rails.logger.error "EXCEPTION RESCUE: #{e}"
-        Rails.logger.error e.backtrace.join("\n\t")
-      end
-    end
-    flickr_ids = chosen_photos.map{|p| p.native_photo_id}
-    chosen_photos += flickr_chosen_photos.reject do |fp|
-      flickr_ids.include?(fp.id)
-    end
-    chosen_photos
-  end
-
-  def photos_cache_key
-    "taxon_photos_#{id}"
-  end
-
-  def photos_with_external_cache_key
-    "taxon_photos_external_#{id}"
-  end
-
-  def info_tab_cache_key
-    "views/info_tab_#{id}"
-  end
-
   # Guarda en cache el path del KMZ
   def snib_cache_key
     "snib_#{id}"
@@ -876,49 +817,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  # Pone el grupo iconico en la tabla adicionales
-  def crea_con_grupo_iconico(id)
-    ad = Adicional.new
-    ad.especie_id = self.id
-    ad.icono_id = id
-    ad
-  end
-
-  # Pone la foto principal en la tabla adicionales
-  def asigna_foto
-    # Pone la primera foto que encuentre con NaturaLista, de lo contrario una de CONABIO
-    foto_p = ''
-
-    fotos = photos.where("photos.type != 'ConabioPhoto'")
-
-    if fotos.any?
-      fotos.each do |f|
-        if f.square_url.present?
-          foto_p = f.square_url
-          break
-        end
-      end
-    else
-      photos.where("photos.type = 'ConabioPhoto'").each do |f|
-        if f.square_url.present?
-          foto_p = f.square_url
-          break
-        end
-      end
-    end
-
-    return {:cambio => false} unless foto_p.present?
-
-    if adicional
-      adicional.foto_principal = foto_p
-    else
-      ad = crea_con_foto(foto_p)
-      return {:cambio => ad.foto_principal.present?, :adicional => ad}
-    end
-
-    {:cambio => adicional.foto_principal_changed?, :adicional => adicional}
-  end
-
   # Pone la foto principal en la tabla adicionales
   def crea_con_foto(foto_principal)
     ad = Adicional.new
@@ -955,33 +853,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         end
       end
     end
-  end
-
-  # Devuelve un array de todos los nombres comunes, incluyendo el nombre_principal
-  def todos_los_nombres_comunes
-    nombres = nombres_comunes.map {|nc|
-      # Este condicional fue necesario para poder agrupar los nombres si la lengua es nula
-      if nc.lengua.present?
-        {nc.lengua => nc.nombre_comun.capitalize}
-      else
-        {'ND' => nc.nombre_comun.capitalize}
-      end
-    }.uniq
-
-    agrupa_nombres = nombres.reduce({}) {|h, pairs| pairs.each {|k, v| (h[k] ||= []) << v}; h}
-
-    # Añade el nombre comun principal
-    if a = adicional
-      # Le asigno 'A' para que sea el primer nombre en aparecer cuando se ordenan
-      agrupa_nombres['A'] = [a.nombre_comun_principal] if a.nombre_comun_principal.present?
-    end
-
-    if agrupa_nombres.present? && agrupa_nombres.any?
-      agrupa_nombres.sort.to_h
-    else
-      {}
-    end
-
   end
 
   # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
