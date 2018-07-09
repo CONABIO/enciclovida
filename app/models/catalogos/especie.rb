@@ -853,7 +853,15 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     # Los uno para obtener los nombres unidos
-    (nombres_inicio + nombres_mitad + nombres_final).compact
+    todos = (nombres_inicio + nombres_mitad + nombres_final).compact
+
+    if todos.any?
+      a = adicional ? adicional : Adicional.new(especie_id: id)
+      a.nombres_comunes = todos.map(&:values).flatten.join(',')
+      a.save if a.changed?
+    end
+
+    todos
   end
 
   # REVISADO: Despleiga las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
