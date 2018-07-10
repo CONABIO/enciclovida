@@ -30,11 +30,6 @@ var borraRegistrosAnterioresSnib = function()
             spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
         });
     }
-
-    /*coleccionesLayer = L.markerClusterGroup({
-        chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
-    });*/
 };
 
 /**
@@ -43,35 +38,19 @@ var borraRegistrosAnterioresSnib = function()
  */
 var leyendaSnib = function(con_conteo)
 {
-    var overlays = [
-        {
-            name: "Snib Layer",
-            layer: snibLayer,
-            active: true
-        }
-    ];
+    if (con_conteo == undefined)
+        var conteo_snib = "<b>Registros del SNIB</b>";
+    else
+        var conteo_snib = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
+
+    var overlays = {
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones': snibLayer,
+        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves': observacionesLayer,
+        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles': fosilesLayer,
+        /*"Localidad no de campo": coleccionesLayer,*/
+    };
 
     legend_control = L.control.layers({}, overlays, {collapsed: false, position: 'bottomleft'}).addTo(map);
-
-    if (con_conteo == undefined)
-        var conteo = "<b>Registros del SNIB</b>";
-    else
-        var conteo = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
-
-    var marker_default = '&nbsp;&nbsp;<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones<br />';
-    var marker_averaves = '<i class="feather-ev-icon div-icon-snib"></i>Observaciones<br />';
-    var marker_fosil = '<i class="bone-ev-icon div-icon-snib"></i>Fósiles';
-
-    /*legend_control.addOverlay(snibLayer,
-        conteo + "<p>" + marker_default + marker_averaves + marker_fosil + "</p>"
-    );
-    legend_control.addOverlay(coleccionesLayer,
-        "<p>"+conteo+"</p>" + marker_default);
-*/
-    //legend_control.addOverlay(overlays, "Prueba");
-
-
-    //snibLayer.on('')
 };
 
 /**
@@ -81,23 +60,17 @@ var aniadePuntosSnib = function()
 {
     var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
 
-    var species_layer = L.geoJson(geojsonFeature, {
+    var snib = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
             // Para distinguir si son solo las corrdenadas
             if (opciones.solo_coordenadas)
             {
-                if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
-                else if (feature.properties.d[2])  // Este campo quiere decir que es de localidad no de campo
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
-                else  // de lo contrario es un registro rojo normal
+                if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             } else {
-                if (feature.properties.d.ejemplarfosil == 'SI')  // Este campos quiere decir que es un fosil
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
-                else if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
-                else  // de lo contrario es un registro normal
+                // Este campos quiere decir que es de aves aves
+                if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
+                && feature.properties.d.ejemplarfosil != 'SI')
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             }
         },
@@ -113,24 +86,16 @@ var aniadePuntosSnib = function()
         }
     });
 
-    species_layer2 = L.geoJson(geojsonFeature, {
+    var observaciones = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
             // Para distinguir si son solo las corrdenadas
             if (opciones.solo_coordenadas)
             {
-                if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
+                if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de aves aves
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
-                else if (feature.properties.d[2])  // Este campo quiere decir que es de localidad no de campo
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
-                else  // de lo contrario es un registro rojo normal
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             } else {
-                if (feature.properties.d.ejemplarfosil == 'SI')  // Este campos quiere decir que es un fosil
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
-                else if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
+                if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
-                else  // de lo contrario es un registro normal
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             }
         },
         onEachFeature: function (feature, layer) {
@@ -145,17 +110,37 @@ var aniadePuntosSnib = function()
         }
     });
 
-    coleccionesLayer = L.featureGroup.subGroup(snibLayer, species_layer2);
-    coleccionesLayer.addLayer(species_layer2);
-    //snibLayer.addLayer(species_layer);
-    //coleccionesLayer.addLayer(species_layer2);
-    //coleccionesLayer.addLayer(species_layer2);
-    //snibLayer.addLayer(coleccionesLayer);
+    var fosiles = L.geoJson(geojsonFeature, {
+        pointToLayer: function (feature, latlng) {
+            // Para distinguir si son solo las corrdenadas
+            if (opciones.solo_coordenadas)
+            {
+                if (feature.properties.d[1] == 3)  // Este campos quiere decir que es de fosiles
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+            } else {
+                if (feature.properties.d.ejemplarfosil == 'SI')
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+            }
+        },
+        onEachFeature: function (feature, layer) {
+            // Para distinguir si son solo las corrdenadas
+            if (opciones.solo_coordenadas)
+            {
+                layer.on("click", function () {
+                    ejemplarSnibGeojson(layer, feature.properties.d[0]);
+                });
+            } else
+                layer.bindPopup(ejemplarSnib(feature.properties.d));
+        }
+    });
 
+    snibLayer.addLayer(snib);
+    observacionesLayer = L.featureGroup.subGroup(snibLayer, observaciones);
+    fosilesLayer = L.featureGroup.subGroup(snibLayer, fosiles);
 
     map.addLayer(snibLayer);
-    map.addLayer(coleccionesLayer);
-    //map.addLayer(markersLayer2);
+    map.addLayer(observacionesLayer);
+    map.addLayer(fosilesLayer);
 
     leyendaSnib(true);
 };
@@ -229,6 +214,9 @@ var geojsonSnib = function(url)
         dataType : "json",
         success : function (d){
             registros_conteo = d.length;
+            colecciones = 0;
+            observaciones = 0;
+            fosiles = 0;
             allowedPoints = d3.map([]);
 
             for(var i=0;i<d.length;i++)
