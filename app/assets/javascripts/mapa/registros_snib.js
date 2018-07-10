@@ -54,7 +54,7 @@ var aniadePuntosSnib = function()
 
     var species_layer = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-// Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las corrdenadas
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1])  // Este campos quiere decir que es de aves aves
@@ -72,15 +72,15 @@ var aniadePuntosSnib = function()
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             }
         },
-        onEachFeature: function (prop, layer) {
+        onEachFeature: function (feature, layer) {
             // Para distinguir si son solo las corrdenadas
             if (opciones.solo_coordenadas)
             {
                 layer.on("click", function () {
-                    ejemplarSnibGeojson(layer, prop.properties.d[0]);
+                    ejemplarSnibGeojson(layer, feature.properties.d[0]);
                 });
             } else
-                layer.bindPopup(ejemplarSnib(prop.properties.d));
+                layer.bindPopup(ejemplarSnib(feature.properties.d));
         }
     });
 
@@ -99,17 +99,11 @@ var ejemplarSnibGeojson = function(layer, id)
         url: "/especies/" + opciones.taxon + "/ejemplar-snib/" + id,
         dataType : "json",
         success : function (res){
-            if (res.estatus == 'OK')
+            if (res.estatus)
             {
                 var contenido = ejemplarSnib(res.ejemplar);
-
-                // Pone el popup arriba del punto
-                var popup = new L.Popup();
-                var bounds = layer.getBounds();
-
-                popup.setLatLng(bounds.getCenter());
-                popup.setContent(contenido);
-                map.openPopup(popup);
+                layer.bindPopup(contenido);
+                layer.openPopup();
             }
             else
                 console.log("Hubo un error al retraer el ejemplar: " + res.msg);
@@ -171,11 +165,20 @@ var geojsonSnib = function(url)
             {
                 var item_id = 'geo-' + i.toString();
 
-                allowedPoints.set(item_id, {
-                    "type"      : "Feature",
-                    "properties": {d: d[i]}, // El ID y si es de aver aves
-                    "geometry"  : JSON.parse(d[i].json_geom)
-                });
+                if (opciones.solo_coordenadas)
+                {
+                    allowedPoints.set(item_id, {
+                        "type"      : "Feature",
+                        "properties": {d: [d[i][2], d[i][3], d[i][4]]},
+                        "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
+                    });
+                } else {
+                    allowedPoints.set(item_id, {
+                        "type"      : "Feature",
+                        "properties": {d: d[i]},
+                        "geometry"  : JSON.parse(d[i].json_geom)
+                    });
+                }
             }
 
             aniadePuntosSnib();

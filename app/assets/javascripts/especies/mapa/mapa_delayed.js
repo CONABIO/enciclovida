@@ -1,8 +1,16 @@
 $(document).ready(function() {
     // Inicia el mapa
     cargaMapa('map');
-    cargaRegistrosSnib(opciones.snib_url);
-    //ponTamaño();
+
+    // Para cargar los datos del SNIB
+    if (opciones.geodatos.snib_mapa_json == undefined)
+    {
+        if (opciones.snib_url != undefined)
+            cargaRegistrosSnib(opciones.snib_url);
+    } else {
+        opciones.solo_coordenadas = true;
+        cargaRegistrosSnib(opciones.geodatos.snib_mapa_json);
+    }
 
     $(window).resize(function () {
         ponTamaño();
