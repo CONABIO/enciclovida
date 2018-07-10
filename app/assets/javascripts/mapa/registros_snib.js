@@ -44,7 +44,8 @@ var leyendaSnib = function(con_conteo)
         var conteo_snib = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
 
     var overlays = {
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones': snibLayer,
+        'Registros del SNIB<br />(museos, colectas y proyectos)': snibLayer,
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones': coleccionesLayer,
         '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves': observacionesLayer,
         '<i class="bone-ev-icon div-icon-snib"></i>Fósiles': fosilesLayer,
         /*"Localidad no de campo": coleccionesLayer,*/
@@ -60,9 +61,9 @@ var aniadePuntosSnib = function()
 {
     var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
 
-    var snib = L.geoJson(geojsonFeature, {
+    var colecciones = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
@@ -75,7 +76,7 @@ var aniadePuntosSnib = function()
             }
         },
         onEachFeature: function (feature, layer) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
                 layer.on("click", function () {
@@ -88,7 +89,7 @@ var aniadePuntosSnib = function()
 
     var observaciones = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de aves aves
@@ -99,7 +100,7 @@ var aniadePuntosSnib = function()
             }
         },
         onEachFeature: function (feature, layer) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
                 layer.on("click", function () {
@@ -112,18 +113,21 @@ var aniadePuntosSnib = function()
 
     var fosiles = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
-                if (feature.properties.d[1] == 3)  // Este campos quiere decir que es de fosiles
+                if (feature.properties.d[1] == 3) {
+                    console.log('hay fosil');
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                } // Este campos quiere decir que es de fosiles
+
             } else {
                 if (feature.properties.d.ejemplarfosil == 'SI')
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
             }
         },
         onEachFeature: function (feature, layer) {
-            // Para distinguir si son solo las corrdenadas
+            // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
                 layer.on("click", function () {
@@ -134,14 +138,17 @@ var aniadePuntosSnib = function()
         }
     });
 
-    snibLayer.addLayer(snib);
+    coleccionesLayer = L.featureGroup.subGroup(snibLayer, colecciones);
+    coleccionesLayer.addLayer(colecciones);
     observacionesLayer = L.featureGroup.subGroup(snibLayer, observaciones);
+    observacionesLayer.addLayer(observaciones);
     fosilesLayer = L.featureGroup.subGroup(snibLayer, fosiles);
+    fosilesLayer.addLayer(fosiles);
 
     map.addLayer(snibLayer);
+    map.addLayer(coleccionesLayer);
     map.addLayer(observacionesLayer);
     map.addLayer(fosilesLayer);
-
     leyendaSnib(true);
 };
 
@@ -227,7 +234,7 @@ var geojsonSnib = function(url)
                 {
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
-                        "properties": {d: [d[i][2], d[i][3], d[i][4]]},
+                        "properties": {d: [d[i][2], d[i][3]]},
                         "geometry"  : {coordinates: [d[i][0], d[i][1]], type: "Point"}
                     });
                 } else {

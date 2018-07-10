@@ -69,10 +69,10 @@ module CacheServices
 
   # REVISADO: Guarda los ejemplares del SNIB
   def guarda_ejemplares_snib_servicio
-    if !existe_cache?('observaciones_naturalista')
+    if !existe_cache?('ejemplares_snib')
       if p = proveedor
         if Rails.env.production?
-          p.delay(queue: 'observaciones_naturalista').guarda_ejemplares_snib
+          p.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
         else
           p.guarda_ejemplares_snib
         end

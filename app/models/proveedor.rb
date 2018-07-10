@@ -284,7 +284,6 @@ class Proveedor < ActiveRecord::Base
 
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?('ejemplares_snib')
-
     # Pone el cache para no volverlo a consultar
     especie.escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
 
@@ -292,7 +291,6 @@ class Proveedor < ActiveRecord::Base
     self.ejemplares_mapa = []
     validacion = valida_ejemplares_snib
     return validacion unless validacion[:estatus]
-
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
     nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
@@ -478,23 +476,34 @@ class Proveedor < ActiveRecord::Base
     aves = %w(averaves ebird)
     coleccion = ejemplar['coleccion'].downcase
     es_averaves = false
+    valor_coleccion = 1
 
     coleccion.split(' ').each do |col|
       break if es_averaves
-      es_averaves = true if aves.include?(col)
+
+      if aves.include?(col)
+        es_averaves = true
+      end
     end
 
-    # Para ver si la locacion no es de campo
-    locacion_no_campo = ejemplar['probablelocnodecampo'].estandariza == 'si' ? 1 : 0
+    # Para ver si la locacion no es de campo, tiene mas preferencia
+    if ejemplar['probablelocnodecampo'].try(:estandariza) == 'si'
+      valor_coleccion = 4
+    elsif es_averaves
+      valor_coleccion = 2
+    elsif ejemplar['ejemplarfosil'].try(:estandariza) == 'si'
+      valor_coleccion = 3
+    end
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0, locacion_no_campo]
+    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], valor_coleccion]
   end
 
   # REVISADO: Valida los ejemplares del SNIB
   def valida_ejemplares_snib
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}&fields=all", timeout: 3)
+      puts "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.downcase}/#{especie.scat.catalogo_id}?apiKey=enciclovida"
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}?apiKey=enciclovida", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: false, msg: e}
