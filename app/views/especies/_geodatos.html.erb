@@ -1,6 +1,7 @@
 <% content_for(:extrajs) do %>
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="reload"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
   <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
 <% end %>
@@ -20,14 +21,4 @@
 
 <script data-turbolinks-track="true">
     $('#map').css('height', $('#contenedor_mapa').height() - 30);
-
-    $(document).ready(function() {
-        map = null;
-        legend_control = null;
-
-        markersLayer = L.markerClusterGroup({
-            chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
-        });
-    });
 </script>
