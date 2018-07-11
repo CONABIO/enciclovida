@@ -140,7 +140,7 @@ var observacionNaturalistaGeojson = function(layer, id)
         success : function (res){
             if (res.estatus)
             {
-                var contenido = observacionNaturalista(res.ejemplar);
+                var contenido = observacionNaturalista(res.observacion);
                 layer.bindPopup(contenido);
                 layer.openPopup();
             }
