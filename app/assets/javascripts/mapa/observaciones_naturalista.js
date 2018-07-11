@@ -40,7 +40,7 @@ var leyendaNaturalista = function()
     naturalista_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     naturalista_control.addOverlay(naturalistaLayer,
-        '<b>Observaciones de NaturaLista</b><br />(ciencia ciudadana) <sub>' + observaciones_conteo + '</sub>'
+        '<b>Observaciones de <i class=\'naturalista-3-ev-icon\'></i><i class=\'naturalista-4-ev-icon\'></i></b><br />(ciencia ciudadana) <sub>' + observaciones_conteo + '</sub>'
     );
 
     naturalista_control.addOverlay(investigacionLayer,
