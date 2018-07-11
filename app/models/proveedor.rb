@@ -356,7 +356,7 @@ class Proveedor < ActiveRecord::Base
     self.observaciones << observacion
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 0]
+    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 2]
   end
 
   # REVISADO: Valida que Naturalista tenga observaciones
