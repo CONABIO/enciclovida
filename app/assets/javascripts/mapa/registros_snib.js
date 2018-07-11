@@ -45,19 +45,19 @@ var leyendaSnib = function()
     );
 
     legend_control.addOverlay(coleccionesLayer,
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones'
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
     );
 
     legend_control.addOverlay(observacionesLayer,
-        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves'
+        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves <sub>' + observaciones_conteo + '</sub>'
     );
 
     legend_control.addOverlay(fosilesLayer,
-        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles'
+        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles <sub>' + fosiles_conteo + '</sub>'
     );
 
     legend_control.addOverlay(noCampoLayer,
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Localidad no de campo'
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 
@@ -74,12 +74,17 @@ var aniadePuntosSnib = function()
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
+                {
+                    colecciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                }
             } else {
-                // Este campos quiere decir que es de aves aves
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
                 && feature.properties.d.ejemplarfosil != 'SI')
+                {
+                    colecciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                }
             }
         },
         onEachFeature: function (feature, layer) {
@@ -100,10 +105,16 @@ var aniadePuntosSnib = function()
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de aves aves
+                {
+                    observaciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                }
             } else {
-                if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))  // Este campos quiere decir que es de aves aves
+                if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))
+                {
+                    observaciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                }
             }
         },
         onEachFeature: function (feature, layer) {
@@ -124,10 +135,16 @@ var aniadePuntosSnib = function()
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 3)  // Este campos quiere decir que es de fosiles
+                {
+                    fosiles_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                }
             } else {
                 if (feature.properties.d.ejemplarfosil == 'SI')
+                {
+                    fosiles_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                }
             }
         },
         onEachFeature: function (feature, layer) {
@@ -148,10 +165,16 @@ var aniadePuntosSnib = function()
             if (opciones.solo_coordenadas)
             {
                 if (feature.properties.d[1] == 4)  // Este campos quiere decir que es de locacion no de campo
+                {
+                    no_campo_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                }
             } else {
                 if (feature.properties.d.ejemplarfosil == 'SI')
+                {
+                    no_campo_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                }
             }
         },
         onEachFeature: function (feature, layer) {
@@ -251,9 +274,11 @@ var geojsonSnib = function(url)
         dataType : "json",
         success : function (d){
             registros_conteo = d.length;
-            colecciones = 0;
-            observaciones = 0;
-            fosiles = 0;
+            colecciones_conteo = 0;
+            observaciones_conteo = 0;
+            fosiles_conteo = 0;
+            no_campo_conteo = 0;
+
             allowedPoints = d3.map([]);
 
             for(var i=0;i<d.length;i++)
