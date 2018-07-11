@@ -36,22 +36,29 @@ var borraRegistrosAnterioresSnib = function()
  * La simbologia dentro del mapa
  * @param con_conteo
  */
-var leyendaSnib = function(con_conteo)
+var leyendaSnib = function()
 {
-    if (con_conteo == undefined)
-        var conteo_snib = "<b>Registros del SNIB</b>";
-    else
-        var conteo_snib = "<b>Registros del SNIB <sub>" + registros_conteo + "</sub></b>";
+    legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
-    var overlays = {
-        'Registros del SNIB<br />(museos, colectas y proyectos)': snibLayer,
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones': coleccionesLayer,
-        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves': observacionesLayer,
-        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles': fosilesLayer,
-        /*"Localidad no de campo": coleccionesLayer,*/
-    };
+    legend_control.addOverlay(snibLayer,
+        '<b>Registros del SNIB</b><br />(museos, colectas y proyectos) <sub>' + registros_conteo + '</sub>'
+    );
 
-    legend_control = L.control.layers({}, overlays, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    legend_control.addOverlay(coleccionesLayer,
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones'
+    );
+
+    legend_control.addOverlay(observacionesLayer,
+        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves'
+    );
+
+    legend_control.addOverlay(fosilesLayer,
+        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles'
+    );
+
+    legend_control.addOverlay(noCampoLayer,
+        '<i class="circle-ev-icon div-icon-snib-default"></i>Localidad no de campo'
+    );
 };
 
 /**
@@ -116,14 +123,35 @@ var aniadePuntosSnib = function()
             // Para distinguir si son solo las coordenadas
             if (opciones.solo_coordenadas)
             {
-                if (feature.properties.d[1] == 3) {
-                    console.log('hay fosil');
+                if (feature.properties.d[1] == 3)  // Este campos quiere decir que es de fosiles
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
-                } // Este campos quiere decir que es de fosiles
-
             } else {
                 if (feature.properties.d.ejemplarfosil == 'SI')
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+            }
+        },
+        onEachFeature: function (feature, layer) {
+            // Para distinguir si son solo las coordenadas
+            if (opciones.solo_coordenadas)
+            {
+                layer.on("click", function () {
+                    ejemplarSnibGeojson(layer, feature.properties.d[0]);
+                });
+            } else
+                layer.bindPopup(ejemplarSnib(feature.properties.d));
+        }
+    });
+
+    var noCampo = L.geoJson(geojsonFeature, {
+        pointToLayer: function (feature, latlng) {
+            // Para distinguir si son solo las coordenadas
+            if (opciones.solo_coordenadas)
+            {
+                if (feature.properties.d[1] == 4)  // Este campos quiere decir que es de locacion no de campo
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+            } else {
+                if (feature.properties.d.ejemplarfosil == 'SI')
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
             }
         },
         onEachFeature: function (feature, layer) {
@@ -144,6 +172,8 @@ var aniadePuntosSnib = function()
     observacionesLayer.addLayer(observaciones);
     fosilesLayer = L.featureGroup.subGroup(snibLayer, fosiles);
     fosilesLayer.addLayer(fosiles);
+    noCampoLayer = L.featureGroup.subGroup(snibLayer, noCampo);
+    noCampoLayer.addLayer(noCampo);
 
     map.addLayer(snibLayer);
     map.addLayer(coleccionesLayer);
