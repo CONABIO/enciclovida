@@ -12,7 +12,7 @@ console.log(opciones);
 
     // Para cargar las capas del geoserver
     if (opciones.geoserver_url != undefined)
-        cargaCapasGeoportal(opciones.geoserver_url);
+        cargaCapasGeoserver(opciones.geoserver_url);
 
     $(window).resize(function () {
         ponTamaño();
