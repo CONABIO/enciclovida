@@ -50,10 +50,5 @@ var capaDistribucionGeoserver = function (url) {
     map.addLayer(distribucionLayer);
     leyendaGeoserver();
 
-    // Para cuando se cambie de layer ponga enfrente el mapa de distribucion
-    map.addEventListener('baselayerchange', function(){
-        distribucionLayer.bringToFront();
-    });
-
     distribucionLayer.bringToFront();  // Para desde un inicio que se muestre el mapa de distribucion
 };
