@@ -4,6 +4,7 @@
  */
 var cargaCapasGeoserver = function(url)
 {
+    distribucionLayer = undefined;
     borraCapasAnterioresGeoserver();
     capaDistribucionGeoserver(url);
 };
@@ -28,9 +29,8 @@ var leyendaGeoserver = function()
 {
     geoserver_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
-    distribucionLayer.addTo(map);
-    legend_control.addOverlay(distribucionLayer,
-        "<b>Distribución potencial (CONABIO)</b>"
+    geoserver_control.addOverlay(distribucionLayer,
+        "<b>Distribución potencial<br /> (Geoserver CONABIO)</b>"
     );
 };
 
