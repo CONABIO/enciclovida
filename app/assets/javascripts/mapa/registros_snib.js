@@ -19,8 +19,8 @@ var borraRegistrosAnterioresSnib = function()
 {
     if (map.hasLayer(snibLayer))
     {
-        map.removeControl(legend_control);
-        map.removeLayer(markersLayer);
+        map.removeControl(snib_control);
+        map.removeLayer(snibLayer);
         snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
             spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
         });
@@ -34,29 +34,28 @@ var borraRegistrosAnterioresSnib = function()
 
 /**
  * La simbologia dentro del mapa
- * @param con_conteo
  */
 var leyendaSnib = function()
 {
-    legend_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    snib_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
-    legend_control.addOverlay(snibLayer,
+    snib_control.addOverlay(snibLayer,
         '<b>Registros del SNIB</b><br />(museos, colectas y proyectos) <sub>' + registros_conteo + '</sub>'
     );
 
-    legend_control.addOverlay(coleccionesLayer,
+    snib_control.addOverlay(coleccionesLayer,
         '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
     );
 
-    legend_control.addOverlay(observacionesLayer,
+    snib_control.addOverlay(observacionesLayer,
         '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves <sub>' + observaciones_conteo + '</sub>'
     );
 
-    legend_control.addOverlay(fosilesLayer,
+    snib_control.addOverlay(fosilesLayer,
         '<i class="bone-ev-icon div-icon-snib"></i>Fósiles <sub>' + fosiles_conteo + '</sub>'
     );
 
-    legend_control.addOverlay(noCampoLayer,
+    snib_control.addOverlay(noCampoLayer,
         '<i class="circle-ev-icon div-icon-snib-default"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
@@ -66,7 +65,7 @@ var leyendaSnib = function()
  */
 var aniadePuntosSnib = function()
 {
-    var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values()};
+    var geojsonFeature =  { "type": "FeatureCollection", "features": allowedPoints.values() };
 
     var colecciones = L.geoJson(geojsonFeature, {
         pointToLayer: function (feature, latlng) {
@@ -202,7 +201,7 @@ var aniadePuntosSnib = function()
     map.addLayer(coleccionesLayer);
     map.addLayer(observacionesLayer);
     map.addLayer(fosilesLayer);
-    leyendaSnib(true);
+    leyendaSnib();
 };
 
 /**
