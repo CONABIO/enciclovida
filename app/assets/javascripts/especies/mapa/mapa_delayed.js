@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     // Para cargar los registros del SNIB
     if (opciones.snib_url != undefined)
-        cargaRegistrosSnib(opciones.snib_url);
+        cargaEjemplaresSnib(opciones.snib_url);
 
     // Para cargar las observaciones de NaturaLista
     if (opciones.naturalista_url != undefined)
