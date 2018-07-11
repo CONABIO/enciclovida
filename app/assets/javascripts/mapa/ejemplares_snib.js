@@ -1,21 +1,21 @@
 /**
- * Borra registros anteriores y carga los nuevos
+ * Borra ejemplares anteriores y carga los nuevos
  * @param url
  */
-var cargaRegistrosSnib = function(url)
+var cargaEjemplaresSnib = function(url)
 {
     snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
         spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
     });
 
-    borraRegistrosAnterioresSnib();
+    borraEjemplaresAnterioresSnib();
     geojsonSnib(url);
 };
 
 /**
- * Borra registros anteriores
+ * Borra ejemplares anteriores
  */
-var borraRegistrosAnterioresSnib = function()
+var borraEjemplaresAnterioresSnib = function()
 {
     if (map.hasLayer(snibLayer))
     {
@@ -40,7 +40,7 @@ var leyendaSnib = function()
     snib_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     snib_control.addOverlay(snibLayer,
-        '<b>Registros del SNIB</b><br />(museos, colectas y proyectos) <sub>' + registros_conteo + '</sub>'
+        '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'
     );
 
     snib_control.addOverlay(coleccionesLayer,
@@ -205,7 +205,7 @@ var aniadePuntosSnib = function()
 };
 
 /**
- * Hace una ajax request para la obtener la información de un taxon, esto es más rapido para muchos registros
+ * Hace una ajax request para la obtener la información de un taxon, esto es más rapido para muchos ejemplares
  * */
 var ejemplarSnibGeojson = function(layer, id)
 {
@@ -231,7 +231,7 @@ var ejemplarSnibGeojson = function(layer, id)
 };
 
 /**
- * Lanza el pop up con la inforamcion del taxon, ya esta cargado; este metodo es lento con muchos registros
+ * Lanza el pop up con la inforamcion del taxon, ya esta cargado; este metodo es lento con muchos ejemplares
  * */
 var ejemplarSnib = function(prop)
 {
@@ -255,7 +255,7 @@ var ejemplarSnib = function(prop)
 
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
-    //Para enviar un comentario acerca de un registro en particular
+    //Para enviar un comentario acerca de un ejemplar en particular
     contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
         prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
@@ -272,7 +272,7 @@ var geojsonSnib = function(url)
         url: url,
         dataType : "json",
         success : function (d){
-            registros_conteo = d.length;
+            ejemplares_conteo = d.length;
             colecciones_conteo = 0;
             observaciones_conteo = 0;
             fosiles_conteo = 0;
