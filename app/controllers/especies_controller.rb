@@ -86,6 +86,13 @@ class EspeciesController < ApplicationController
                 end
               end
 
+              # Para poner las variable con las que consulto el Geoserver
+              if geodatos[:cuales].include?('geoserver')
+                if geodatos[:geoserver_url].present?
+                  @datos[:geoserver_url] = geodatos[:geoserver_url]
+                end
+              end
+
             end  # End gedatos any?
           end  # End especie o inferior
         end  # End proveedor existe
