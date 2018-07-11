@@ -80,7 +80,7 @@ var aniadePuntosSnib = function()
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
-                && feature.properties.d.ejemplarfosil != 'SI')
+                && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
@@ -140,7 +140,7 @@ var aniadePuntosSnib = function()
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
                 }
             } else {
-                if (feature.properties.d.ejemplarfosil == 'SI')
+                if (feature.properties.d.ejemplarfosil.toLowerCase() == 'si')
                 {
                     fosiles_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
@@ -170,7 +170,7 @@ var aniadePuntosSnib = function()
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
                 }
             } else {
-                if (feature.properties.d.ejemplarfosil == 'SI')
+                if (feature.properties.d.probablelocnodecampo.toLowerCase() == 'si')
                 {
                     no_campo_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
