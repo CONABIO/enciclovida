@@ -9,10 +9,10 @@ module CacheServices
     #guarda_observaciones_naturalista_servicio
     #guarda_ejemplares_snib_servicio
     guarda_redis_servicio
-    guarda_pez_servicios
+    #guarda_pez_servicios
   end
 
-  # REVISAO: Guarda los datos más importantes en el redis
+  # REVISADO: Guarda los datos más importantes en el redis
   def guarda_redis_servicio
     if Rails.env.production?
       delay(queue: 'redis').guarda_redis
