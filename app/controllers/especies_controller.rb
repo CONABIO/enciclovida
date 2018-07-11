@@ -66,16 +66,29 @@ class EspeciesController < ApplicationController
 
             if geodatos[:cuales].any?
               @datos[:geodatos] = geodatos
+              @datos[:solo_coordenadas] = true
 
               # Para poner las variable con las que consulto el SNIB
               if geodatos[:cuales].include?('snib')
-                reino = @especie.root.nombre_cientifico.estandariza
-                catalogo_id = @especie.scat.catalogo_id
-                @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+                if geodatos[:snib_mapa_json].present?
+                  @datos[:snib_url] = geodatos[:snib_mapa_json]
+                else
+                  reino = @especie.root.nombre_cientifico.estandariza
+                  catalogo_id = @especie.scat.catalogo_id
+                  @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+                end
               end
-            end
-          end
-        end
+
+              # Para poner las variable con las que consulto de NaturaLista
+              if geodatos[:cuales].include?('naturalista')
+                if geodatos[:naturalista_mapa_json].present?
+                  @datos[:naturalista_url] = geodatos[:naturalista_mapa_json]
+                end
+              end
+
+            end  # End gedatos any?
+          end  # End especie o inferior
+        end  # End proveedor existe
 
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
