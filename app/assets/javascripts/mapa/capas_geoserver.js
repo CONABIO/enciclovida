@@ -1,22 +1,22 @@
 /**
- * Borra ejemplares anteriores y carga los nuevos
+ * Borra capas anteriores y carga las nuevas
  * @param url
  */
-var cargaCapasGeoportal = function(url)
+var cargaCapasGeoserver = function(url)
 {
-    borraCapasAnterioresGeoportal();
-    capaDistribucionGeoportal(url);
+    borraCapasAnterioresGeoserver();
+    capaDistribucionGeoserver(url);
 };
 
 /**
  * Borra capas anteriores
  */
-var borraCapasAnterioresGeoportal = function()
+var borraCapasAnterioresGeoserver = function()
 {
     if (distribucionLayer == undefined) return;
     if (map.hasLayer(distribucionLayer))
     {
-        map.removeControl(geoportal_control);
+        map.removeControl(geoserver_control);
         map.removeLayer(distribucionLayer);
     }
 };
@@ -24,9 +24,9 @@ var borraCapasAnterioresGeoportal = function()
 /**
  * La simbologia dentro del mapa
  */
-var leyendaGeoportal = function()
+var leyendaGeoserver = function()
 {
-    geoportal_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    geoserver_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
 
     distribucionLayer.addTo(map);
     legend_control.addOverlay(distribucionLayer,
@@ -38,9 +38,9 @@ var leyendaGeoportal = function()
  * Crear y carga la capa de distribucion
  * @param url
  */
-var capaDistribucionGeoportal = function (url) {
+var capaDistribucionGeoserver = function (url) {
     distribucionLayer = L.tileLayer.wms(url, {
-        layers: GEO.geoserver_layer,
+        layers: opciones.geodatos.geoserver_layer,
         format: 'image/png',
         transparent: true,
         opacity:.5,
@@ -48,7 +48,7 @@ var capaDistribucionGeoportal = function (url) {
     });
 
     map.addLayer(distribucionLayer);
-    leyendaGeoportal();
+    leyendaGeoserver();
 
     // Para cuando se cambie de layer ponga enfrente el mapa de distribucion
     map.addEventListener('baselayerchange', function(){
