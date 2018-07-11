@@ -2,15 +2,13 @@ $(document).ready(function() {
     // Inicia el mapa
     cargaMapa('map');
 
-    // Para cargar los datos del SNIB
-    if (opciones.geodatos.snib_mapa_json == undefined)
-    {
-        if (opciones.snib_url != undefined)
-            cargaRegistrosSnib(opciones.snib_url);
-    } else {
-        opciones.solo_coordenadas = true;
-        cargaRegistrosSnib(opciones.geodatos.snib_mapa_json);
-    }
+    // Para cargar los registros del SNIB
+    if (opciones.snib_url != undefined)
+        cargaRegistrosSnib(opciones.snib_url);
+
+    // Para cargar las observaciones de NaturaLista
+    if (opciones.naturalista_url != undefined)
+        cargaObservacionesNaturalista(opciones.naturalista_url);
 
     $(window).resize(function () {
         ponTamaño();
