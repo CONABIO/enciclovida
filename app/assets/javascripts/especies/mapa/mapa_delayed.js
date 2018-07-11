@@ -10,6 +10,10 @@ console.log(opciones);
     if (opciones.naturalista_url != undefined)
         cargaObservacionesNaturalista(opciones.naturalista_url);
 
+    // Para cargar las capas del geoserver
+    if (opciones.geoserver_url != undefined)
+        cargaCapasGeoportal(opciones.geoserver_url);
+
     $(window).resize(function () {
         ponTamaño();
     });
