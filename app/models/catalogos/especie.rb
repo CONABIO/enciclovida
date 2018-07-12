@@ -795,16 +795,18 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     # Los uno para obtener los nombres unidos
-    todos = (nombres_inicio + nombres_mitad + nombres_final).compact
+    (nombres_inicio + nombres_mitad + nombres_final).compact
+  end
 
-    # Guarda los nombres comunes en adicionales
+  # Guarda los nombres comunes en adicionales
+  def guarda_nombres_comunes_todos
+    todos = nombres_comunes_todos
+
     if todos.any?
       a = adicional ? adicional : Adicional.new(especie_id: id)
       a.nombres_comunes = todos.map(&:values).flatten.join(',')
       a.save if a.changed?
     end
-
-    todos
   end
 
   # REVISADO: Despleiga las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
