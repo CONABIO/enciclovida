@@ -706,10 +706,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
   end
 
   def nombres_comunes_todos
-    # El orden de las lenguas, ya para que no se enojen!!!
-    lenguas_primero = ['Español', 'Español México', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
-    lenguas_ultimo = ['Chino tradicional', 'Ruso', 'Japonés', 'Coreano', 'Hebreo', 'AOU 4-Letter Codes', 'Vermont Flora Codes', 'ND']
-
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
     ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
@@ -752,8 +748,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     nombres.each do |nombre|
       lengua = nombre.keys.first  # Ya que es un hash
 
-      if lenguas_primero.include?(lengua)
-        index = lenguas_primero.index(lengua)
+      if NombreComun::LENGUAS_PRIMERO.include?(lengua)
+        index = NombreComun::LENGUAS_PRIMERO.index(lengua)
 
         # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
         if nombres_inicio[index].nil?
@@ -763,8 +759,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
         nombres_inicio[index][lengua] << nombre[lengua]
 
-      elsif lenguas_ultimo.include?(lengua)
-        index = lenguas_ultimo.index(lengua)
+      elsif NombreComun::LENGUAS_ULTIMO.include?(lengua)
+        index = NombreComun::LENGUAS_ULTIMO.index(lengua)
 
         # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
         if nombres_final[index].nil?

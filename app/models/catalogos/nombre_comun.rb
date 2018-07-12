@@ -33,11 +33,15 @@ class NombreComun < ActiveRecord::Base
   scope :select_basico, ->(adicionales=[]) { select('DISTINCT especies.id, estatus, nombre_cientifico, nombre_autoridad, categoria_taxonomica_id, nombre_categoria_taxonomica,
 adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_comun_principal' +
                                                         (adicionales.any? ? ',' + adicionales.join(',') : '')) }
-    #categoria_taxonomica_id, nombre_categoria_taxonomica') }
   # select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(adicionales=[], join_type='LEFT') { select_basico(adicionales).especies_join(join_type).categoria_taxonomica_join(join_type).adicional_join(join_type) }
   # Este select es para contar todas las especies partiendo del nombre comun
   scope :datos_count, ->(join_type='LEFT') { select('count(DISTINCT especies.id) AS cuantos').especies_join(join_type) }
+
+  # El orden de las lenguas, ya para que no se enojen!!!
+  LENGUAS_PRIMERO = ['Español', 'Español México', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
+  LENGUAS_ULTIMO = ['Bavarian', 'Aymara', 'Afrikáans', 'Romansh', 'Sardinian', 'Rumano', 'Ladino', 'Estonio', 'Albanés', 'Zaza', 'Hindi', 'Búlgaro', 'Chino tradicional',
+                    'Ruso', 'Japonés', 'Hebreo', 'Coreano', 'AOU 4-Letter Codes', 'Vermont Flora Codes', 'ND']
 
   def species_or_lower?(cat, con_genero = false)
     if con_genero
