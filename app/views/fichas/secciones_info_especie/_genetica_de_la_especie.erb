@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-md-12 text-justify">
+
+    <h4>Variabilidad genética</h4>
+    <ul>
+      <li><strong>Descripción de la variabilidad genética</strong> <p><%= @historiaNatural.variabilidadGenetica.html_safe %></p></li>
+      <li><strong>Marcadores utilizados para describir la variabilidad</strong> <p><%= @historiaNatural.marcadorGenetico.html_safe %></p></li>
+    </ul>
+    <br>
+
+    <h4>Secuencias publicadas para la especie</h4>
+    <p><%= @historiaNatural.secuencias.html_safe %></p></p>
+    <br>
+
+    <h4>MEXBOL/Código de barras</h4>
+    <p><%= @historiaNatural.mexbol %></p>
+  </div>
+</div>
+<hr>

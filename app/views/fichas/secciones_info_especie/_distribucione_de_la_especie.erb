@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-md-12">
+  <br>
+    <h4>Región </h4>
+    <p class="text-justify"><%= @distribucion.infoAdicionalMun.html_safe %></p>
+
+    <h4>Estado del hábitat con respecto al desarrollo natural del taxón</h4>
+    <p class="text-justify"><%= @habitat.estadoHabitat.html_safe %></p>
+    <br>
+
+    <div class="row">
+      <div class="col-md-6" style="border-color: #C1C1C1; border-right-style: dashed">
+        <h4>Distribución:</h4>
+        <ul>
+          <li>
+            <h4>Histórica o potencial</h4>
+            <p class="text-justify"><%= (@distribucion.historicaPotencial).html_safe %></p>
+          </li>
+          <li>
+            <h4>Amplia o restringida</h4>
+            <p class="text-justify"><%= (@distribucion.historicaPotencial).html_safe %></p>
+          </li>
+          <li>
+            <h4>Información adicional</h4>
+            <p class="text-justify"><%= (@distribucion.infoAdicionalAlcance).html_safe  %></p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4>Endemismo</h4>
+        <ul>
+          <li>
+            <p class="text-justify"> <strong>¿Endémica en México?: </strong> <%= @endemica.endemicaMexico.html_safe  %></p>
+          </li>
+          <li>
+            <p class="text-justify"> <strong>Endémica a: </strong> <%= @endemica.endemicaA.html_safe  %></p>
+          </li>
+          <li>
+            <p class="text-justify"> <strong>Información adicional </strong> <%= (@endemica.infoAdicionalEndemica).html_safe %></p>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    <br>
+
+  </div>
+
+</div>
+<hr>

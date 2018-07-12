@@ -1,0 +1,32 @@
+<div class="row" id="inicio">
+  <div class="col-md-12">
+    <h1 class="text-left text-danger">
+      <%= @nombre_comun.present? ? (@nombre_comun.nombre) : (sin_info_msj)%>
+    </h1>
+    <h5 class="text-left text-danger">
+      <%= @sinonimo.present? ? (@sinonimo.nombreSimple) : (sin_info_msj) %>
+    </h5>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-md-6">
+    <p><a href="#clasiDescEsp" class="text-primary btn" style="color: #033B59"><strong>Clasificación y descripción de la especie</strong></a></p>
+    <p><a href="#distribucionEspecie" class="text-primary btn" style="color: #033B59"><strong>Distribución de la especie</strong></a></p>
+    <p><a href="#ambienteDeEspecie" class="text-primary btn " style="color: #033B59"><strong>Tipo de ambiente en donde se desarrolla la especie</strong></a></p>
+    <p><a href="#biologiaEspecie" class="text-primary btn " style="color: #033B59"><strong>Biología de la especie</strong></a></p>
+    <p><a href="#ecologiaDemografiaEspecie" class="text-primary btn " style="color: #033B59"><strong>Ecología y demografía de la especie</strong></a></p>
+  </div>
+
+  <div class="col-md-6">
+    <p><a href="#geneticaEspecie" class="text-primary btn " style="color: #033B59"><strong>Genética de la especie</strong></a></p>
+    <p><a href="#importanciaEspecie" class="text-primary btn " style="color: #033B59"><strong>Importancia de la especie</strong></a></p>
+    <p><a href="#estadoConservacionEspecie" class="text-primary btn " style="color: #033B59"><strong>Estado de conservación de la especie</strong></a></p>
+    <p><a href="#especiesPrioritariasConservacion" class="text-primary btn " style="color: #033B59"><strong>Especies prioritarias para la conservación</strong></a></p>
+    <p><a href="#necesidadesDeInformacion" class="text-primary btn " style="color: #033B59"><strong>Necesidades de información</strong></a></p>
+  </div>
+</div>
+
+<hr>

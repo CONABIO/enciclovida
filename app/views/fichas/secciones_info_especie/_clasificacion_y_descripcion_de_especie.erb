@@ -1,0 +1,57 @@
+<div class="row">
+  <div class="col-md-8" style="padding: 30px 30px 30px 15px;">
+    <h4>Resumen de la especie</h4> <p class="text-justify"><%=(@taxon.resumenEspecie).html_safe %></p>
+    <br><br>
+    <h4>Descripción de la especie</h4> <p class="text-justify"><%=(@taxon.descEspecie).html_safe %></p>
+    <br><br>
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Machos</th>
+        <th>Hembras</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>Largo total en centímetros</th>
+        <td><%=@taxon.largoinicialmachos%></td>
+        <td><%=@taxon.largoinicialhembras%></td>
+      </tr>
+      <tr>
+        <th>Longevidad</th>
+        <td><%=@taxon.edadinicialmachos%></td>
+        <td><%=@taxon.edadinicialhembras%></td>
+      </tr>
+      <tr>
+        <th>Peso en gramos</th>
+        <td><%=@taxon.pesoinicialmachos%></td>
+        <td><%=@taxon.pesoinicialhembras%></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <br>
+    <h4>Categoría de riesgo según la NOM-059-SEMARNAT</h4>
+    <p class="text-justify"><%=@legislacion.infoAdicional.html_safe %></p>
+    <p class="text-justify"><%=@legislacion.estatusLegalProteccion.html_safe %></p>
+
+  </div>
+
+  <div class="col-md-4" style="background-color: #EFEFEF; padding: 30px;">
+    <h4 class="text-center text-primary">Taxonomía</h4>
+    <p><strong>Reino: </strong><%=" " + @taxon.reino.html_safe %></p>
+    <p><strong>Phylum: </strong><%=" " + @taxon.divisionphylum.html_safe %></p>
+    <p><strong>Clase: </strong><%=" " + @taxon.clase.html_safe %></p>
+    <p><strong>Orden: </strong><%=" " + @taxon.orden.html_safe %></p>
+    <p><strong>Familia: </strong><%=" " + @taxon.familia.html_safe %></p>
+    <br>
+    <h4 class="text-center text-primary">Nombre científico</h4>
+    <p><strong>Año: </strong> <%= @taxon.anio %></p>
+    <p><strong>Autor: </strong> <%= @taxon.autor.html_safe %></p>
+    <br>
+    <h4 class="text-center text-primary">Información adicional</h4>
+    <p class="text-justify"><strong>Especies similares:</strong> <%=(@taxon.especiesSmilares).html_safe %></p>
+  </div>
+</div>
+<hr>

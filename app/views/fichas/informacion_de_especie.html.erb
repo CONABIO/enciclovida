@@ -1,0 +1,117 @@
+<% sin_info_msj = "Sin información disponible" %>
+<div style="background-color: #ffffff; margin-bottom: 30px;">
+
+  <div class="container" style="padding: 30px 30px 0 30px; margin-top: 30px;">
+    <!-- Encabezado en el que se muestra el nombre de la especie -->
+    <%= render('fichas/secciones_info_especie/titulo', sin_info_msj: sin_info_msj) %>
+  </div>
+  <br>
+
+  <div class="container" style="padding: 0 30px 0 30px;">
+    <div class="row">
+      <div class="col-md-12" id="clasiDescEsp">
+        <h3 class="text-left text-primary">Clasificación y descripción de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/clasificacion_y_descripcion_de_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+  <br>
+
+  <div class="container" style="padding: 0 30px 0 30px;">
+    <div class="row">
+      <div class="col-md-12" id="distribucionEspecie">
+        <h3 class="text-left text-primary">Distribución de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/distribucione_de_la_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+  <br>
+
+  <div class="container" style="padding: 0 30px 0 30px;">
+    <div class="row">
+      <div class="col-md-12" id="ambienteDeEspecie">
+        <h3 class="text-left text-primary">Tipo de ambiente en donde se desarrolla la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/ambiente_de_desarrollo_de_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+  <br>
+
+  <div class="container" style="padding: 0 30px 0 30px;">
+    <div class="row">
+      <div class="col-md-12" id="biologiaEspecie">
+        <h3 class="text-left text-primary">Biología de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/biologia_de_la_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+  <br>
+
+  <div class="container" style="padding: 0 30px 0 30px;">
+    <div class="row">
+      <div class="col-md-12" id="ecologiaDemografiaEspecie">
+        <h3 class="text-left text-primary">Ecología y demografía de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/ecologia_y_demografia_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <br>
+  <div class="container" style="padding: 0 30px 0 30px;">
+
+    <div class="row">
+      <div class="col-md-12" id="geneticaEspecie">
+        <h3 class="text-left text-primary">Genética de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/genetica_de_la_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <br>
+  <div class="container" style="padding: 0 30px 0 30px;">
+
+    <div class="row">
+      <div class="col-md-12" id="importanciaEspecie">
+        <h3 class="text-left text-primary">Importancia de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/importancia_de_la_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <br>
+  <div class="container" style="padding: 0 30px 0 30px;">
+
+    <div class="row">
+      <div class="col-md-12" id="estadoConservacionEspecie">
+        <h3 class="text-left text-primary">Estado de conservación de la especie</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/estado_de_conservacion_de_la_especie', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <br>
+  <div class="container" style="padding: 0 30px 0 30px;">
+
+    <div class="row">
+      <div class="col-md-12" id="especiesPrioritariasConservacion">
+        <h3 class="text-left text-primary">Especies prioritarias para la conservación</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/especies_prioritarias_para_conservacion', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <br>
+  <div class="container" style="padding: 0 30px 0 30px;">
+
+    <div class="row">
+      <div class="col-md-12" id="necesidadesDeInformacion">
+        <h3 class="text-left text-primary">Necesidades de información</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/necesidades_de_informacion', sin_info_msj: sin_info_msj) %>
+  </div>
+
+  <!-- Agregar el botón de subir -->
+  <%= render('fichas/secciones_info_especie/boton_subir') %>
+
+</div>
