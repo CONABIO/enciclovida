@@ -443,7 +443,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     FUZZY_NOM_CIEN.put(nombre_cientifico, id)
   end
 
-  def redis(opc={})
+  # REVISADO: Asigna el redis correspondiente
+  def asigna_redis(opc={})
     datos = {}
     datos[:data] = {}
 
@@ -507,7 +508,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos.stringify_keys
   end
 
-  # Pone un nuevo record en redis para el nombre comun (fuera de catalogos) y el nombre cientifico
+  # REVISADO: Gurada los nombres comunes y cientifico en redis
   def guarda_redis(opc={})
     # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
     self.x_foto_principal = nil
@@ -528,7 +529,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     borra_redis(loader)
 
     # Guarda el redis con el nombre cientifico
-    loader.add(redis(opc.merge({consumir_servicios: true})))
+    loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
     num_nombres = 0;
@@ -539,7 +540,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       nombres.values.flatten.each_with_index do |nombre|
         num_nombres+= 1
         nombre_obj = NombreComun.new({id: "#{id}000000#{num_nombres}".to_i, nombre_comun: nombre, lengua: lengua})
-        loader.add(redis(opc.merge({nombre_comun: nombre_obj})))
+        loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
       end
     end
   end
@@ -577,7 +578,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     guarda_fotos_todas
   end
 
-  # Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
+  # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
   def dame_fotos_todas
     # Fotos de naturalista
     if p = proveedor
@@ -612,7 +613,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  # Guarda en adicionales las fotos
+  # REVISADO: Guarda en adicionales las fotos
   def guarda_fotos_todas
     dame_fotos_todas
 
