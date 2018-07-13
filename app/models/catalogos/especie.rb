@@ -338,10 +338,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     {'Tipo de distribución' => response}
   end
 
-  def species_or_lower?
-    SPECIES_OR_LOWER.include?(self.try(:nombre_categoria_taxonomica) || categoria_taxonomica.nombre_categoria_taxonomica)
-  end
-
   # REVISADO: Regresa si un taxon es especie o inferior o genero
   def especie_o_inferior?(opc = {})
 

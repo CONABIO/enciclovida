@@ -13,7 +13,7 @@
     <p>
       <%_ t(:inaturalist_is_an_online_community, :site_name => SITE_NAME)
       <% if @taxon -%>
-        <% if @taxon.species_or_lower? && @taxon.common_name && @taxon.common_name.to_s !~/'/ -%>
+        <% if @taxon.especie_o_inferior? && @taxon.common_name && @taxon.common_name.to_s !~/'/ -%>
           <%= t(:the) %>
         <% end -%>
         <%= render(:partial => "shared/taxon", :object => @taxon, :locals => {:link_url => taxon_url(@taxon)}) %>

@@ -107,7 +107,7 @@ class EspeciesController < ApplicationController
       format.json do
         @especie.e_geodata = []
 
-        if @especie.species_or_lower?
+        if @especie.especie_o_inferior?
           if proveedor = @especie.proveedor
             geodatos = proveedor.geodatos
             @especie.e_geodata = geodatos if geodatos[:cuales].any?
@@ -167,7 +167,7 @@ class EspeciesController < ApplicationController
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
                         CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
                         [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
                       else
                         [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
@@ -486,7 +486,7 @@ class EspeciesController < ApplicationController
   def describe
     @describers = if CONFIG.taxon_describers
                     CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
                     [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
                   else
                     [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
