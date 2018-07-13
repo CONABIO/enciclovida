@@ -360,6 +360,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     false
   end
 
+  # REVISADO: Regresa true si es un taxon apto para generar geodatos
   def apta_con_geodatos?
     CategoriaTaxonomica::CATEGORIAS_GEODATOS.include? categoria_taxonomica.nombre_categoria_taxonomica
   end
@@ -375,13 +376,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     else
       bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
     end
-  end
-
-  # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
-  def guarda_fotos_nombres_servicios
-    ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
-    guarda_nombres_comunes_todos
-    guarda_fotos_todas
   end
 
   # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
@@ -417,77 +411,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
-  end
-
-  # REVISADO: Guarda en adicionales las fotos
-  def guarda_fotos_todas
-    dame_fotos_todas
-
-    if x_foto_principal.present?
-      a = adicional ? adicional : Adicional.new(especie_id: id)
-      a.foto_principal = x_foto_principal
-      a.save if a.changed?
-    end
-  end
-
-  # Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
-  def ficha_naturalista_por_nombre
-    return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
-    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
-
-    begin
-      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
-      resultados = JSON.parse(respuesta)
-    rescue => e
-      return {estatus: false, msg: e}
-    end
-
-    # Nos aseguramos que coincide el nombre
-    return {estatus: false, msg: 'No hay resultados'} if resultados.count == 0
-
-    resultados.each do |t|
-      next unless t['ancestry'].present?
-      if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
-        reino_naturalista = t['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-        reino_enciclovida = root_id
-
-        # Me aseguro que el reino coincida
-        if (reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
-
-          if p = proveedor
-            p.naturalista_id = t['id']
-            p.save
-          else
-            self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
-          end
-
-          return {estatus: true, ficha: t}
-        end
-
-      end  # End nombre cientifico
-    end  # End resultados
-
-    return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
-  end
-
-  # El nombre predeterminado de catalogos y la lengua
-  def nombre_comun_principal_catalogos
-    con_espaniol = false
-
-    nombres_comunes.each do |nc|
-      if !con_espaniol && nc.lengua == 'Español'
-        self.x_nombre_comun_principal = nc.nombre_comun
-        self.x_lengua = nc.lengua
-        con_espaniol = true
-      elsif !con_espaniol && nc.lengua == 'Inglés'
-        self.x_nombre_comun_principal = nc.nombre_comun
-        self.x_lengua = nc.lengua
-      elsif !con_espaniol
-        self.x_nombre_comun_principal = nc.nombre_comun
-        self.x_lengua = nc.lengua
-      end
-    end  # End nombres_comunes
   end
 
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
@@ -588,19 +511,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
-  # REVISADO: Guarda los nombres comunes en adicionales
-  def guarda_nombres_comunes_todos
-    dame_nombres_comunes_todos
-
-    if x_nombre_comun_principal.present?
-      a = adicional ? adicional : Adicional.new(especie_id: id)
-      a.nombres_comunes = x_nombres_comunes
-      a.nombre_comun_principal = x_nombre_comun_principal
-      a.save if a.changed?
-    end
-  end
-
-  # REVISADO: Despleiga las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
+  # REVISADO: Despliega las categorias taxonomicas asociadas a un grupo iconico en la busqueda avanzada
   def cat_tax_asociadas
     nivel2 = root.nombre_cientifico.strip == 'Animalia' ? 1 : 0
     cats = CategoriaTaxonomica.cat_tax_asociadas(nivel2)
@@ -608,14 +519,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     if I18n.locale.to_s != 'es-cientifico'
       cats.where(nivel3: 0, nivel4: 0)
     end
-  end
-
-  # Pone la foto principal en la tabla adicionales
-  def crea_con_foto(foto_principal)
-    ad = Adicional.new
-    ad.especie_id = id
-    ad.foto_principal = foto_principal
-    ad
   end
 
   # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye
@@ -648,8 +551,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
-  # Pone el nombre comun que haya coincidido, de acuerdo a la lista,
-  # nombre es la busqueda que realizo
+  # REVISADO: Pone el nombre comun que haya coincidido, de acuerdo a la lista,
   def cual_nombre_comun_coincidio(nombre, fuzzy_match=false)
     # nombres_comunes_adicionales es un alias a nombres_comunes de adicionales
     return self.x_nombre_comun_principal = nil unless nombres_comunes_adicionales.present?

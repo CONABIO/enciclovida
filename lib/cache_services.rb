@@ -110,6 +110,77 @@ module CacheServices
 
   private
 
+  # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
+  def ficha_naturalista_por_nombre
+    return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
+    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
+
+    begin
+      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
+      resultados = JSON.parse(respuesta)
+    rescue => e
+      return {estatus: false, msg: e}
+    end
+
+    # Nos aseguramos que coincide el nombre
+    return {estatus: false, msg: 'No hay resultados'} if resultados.count == 0
+
+    resultados.each do |t|
+      next unless t['ancestry'].present?
+      if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
+        reino_naturalista = t['ancestry'].split('/')[1].to_i
+        next unless reino_naturalista.present?
+        reino_enciclovida = root_id
+
+        # Me aseguro que el reino coincida
+        if (reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
+
+          if p = proveedor
+            p.naturalista_id = t['id']
+            p.save
+          else
+            self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
+          end
+
+          return {estatus: true, ficha: t}
+        end
+
+      end  # End nombre cientifico
+    end  # End resultados
+
+    return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
+  end
+
+  # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
+  def guarda_fotos_nombres_servicios
+    ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
+    guarda_nombres_comunes_todos
+    guarda_fotos_todas
+  end
+
+  # REVISADO: Guarda en adicionales las fotos
+  def guarda_fotos_todas
+    dame_fotos_todas
+
+    if x_foto_principal.present?
+      a = adicional ? adicional : Adicional.new(especie_id: id)
+      a.foto_principal = x_foto_principal
+      a.save if a.changed?
+    end
+  end
+
+  # REVISADO: Guarda los nombres comunes en adicionales
+  def guarda_nombres_comunes_todos
+    dame_nombres_comunes_todos
+
+    if x_nombre_comun_principal.present?
+      a = adicional ? adicional : Adicional.new(especie_id: id)
+      a.nombres_comunes = x_nombres_comunes
+      a.nombre_comun_principal = x_nombre_comun_principal
+      a.save if a.changed?
+    end
+  end
+
   # REVISADO: Asigna el redis correspondiente
   def asigna_redis(opc={})
     datos = {}
@@ -199,7 +270,7 @@ module CacheServices
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
-    num_nombres = 0;
+    num_nombres = 0
 
     x_nombres_comunes_todos.each do |nombres|
       lengua = nombres.keys.first
