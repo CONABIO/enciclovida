@@ -223,7 +223,7 @@ class Pez < ActiveRecord::Base
 
   # BORRAR en centralizacion
   def asigna_nombres_comunes
-    nombres = especie.nombres_comunes_todos.map{|e| e.values.flatten}.flatten.join(',')
+    nombres = especie.dame_nombres_comunes_todos.map{|e| e.values.flatten}.flatten.join(',')
     self.nombres_comunes = nombres if nombres.present?
   end
 

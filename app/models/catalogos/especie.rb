@@ -29,8 +29,7 @@ class Especie < ActiveRecord::Base
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
-                :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista,
-                :x_nombres_comunes_catalogos,
+                :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_epifamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
@@ -257,12 +256,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
 
     conteo = case opc[:estadistica_id]
-               when 2, 22
-                 cuantas_especies(opc)
-               when 3, 23
-                 cuantas_especies_e_inferiores(opc)
-               else
-                 false
+             when 2, 22
+               cuantas_especies(opc)
+             when 3, 23
+               cuantas_especies_e_inferiores(opc)
+             else
+               false
              end
 
     return unless conteo
@@ -301,12 +300,12 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     children_hash = {}
 
     case nivel1
-      when 7
-        children_hash[:color] = '#748c17';
-      when 1
-        children_hash[:color] = '#c27113'
-      else
-        children_hash[:color] = '#C6DBEF'
+    when 7
+      children_hash[:color] = '#748c17';
+    when 1
+      children_hash[:color] = '#c27113'
+    else
+      children_hash[:color] = '#C6DBEF'
     end
 
     radius_min_size = opts[:radius_size] || 8
@@ -448,7 +447,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     datos = {}
     datos[:data] = {}
 
-    fotos_nombres_servicios if opc[:consumir_servicios]
+    guarda_fotos_nombres_servicios if opc[:consumir_servicios]
     visitas = especie_estadisticas.visitas
 
     # Asigna si viene la peticion de nombre comun
@@ -515,7 +514,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     self.x_nombre_comun_principal = nil
     self.x_lengua = nil
     self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
-    self.x_nombres_comunes_naturalista = nil
+    self.x_nombres_comunes = nil
+    self.x_nombres_comunes_todos = nil
 
     if opc[:loader].present? # Guarda en el loader que especifico
       loader = Soulmate::Loader.new(opc[:loader])
@@ -524,7 +524,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       loader = Soulmate::Loader.new(categoria)
     end
 
-    # Guarda el redis con todos los nombres cientificos
+    # Guarda el redis con el nombre cientifico
     loader.add(redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes de catalogos
@@ -569,10 +569,16 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
   end
 
-  # Fotos y nombres comunes de dbi, catalogos y naturalista
-  def fotos_nombres_servicios
+  # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
+  def guarda_fotos_nombres_servicios
     ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
+    guarda_nombres_comunes_todos
+    guarda_fotos_todas
+  end
 
+  # Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
+  def dame_fotos_todas
+    # Fotos de naturalista
     if p = proveedor
       fn = p.fotos_naturalista
 
@@ -584,31 +590,6 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
           self.x_foto_principal = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
         end
       end
-
-      # Para guardar los nombres comunes de naturalista y el nombre comun principal
-      ncn = p.nombres_comunes_naturalista
-      if ncn[:estatus]  # Si naturalista tiene un nombre default, le pongo ese
-        ncn[:nombres_comunes].each do |nc|
-          if nc['lexicon'] != 'Scientific Names'
-            self.x_nombre_comun_principal = nc['name']
-
-            # Asigna la lengua
-            lengua = nc['lexicon']
-            if lengua.present?
-              l = I18n.transliterate(lengua.downcase.gsub(' ','_'))
-              self.x_lengua = I18n.t("lenguas.#{l}", default: lengua)
-            else
-              self.x_lengua = I18n.t("lenguas.nd", default: lengua)
-            end
-
-            break  # Es necesario salirse para que no asigne el ultimo
-
-          end  # End lexicon != nombre cientifico
-        end  # End each do nombres_comunes
-
-        self.x_nombres_comunes_naturalista = ncn[:nombres_comunes]
-
-      end  # End estatus OK
     end
 
     # Fotos de bdi
@@ -628,20 +609,16 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
+  end
 
-    # Asigno estos nombres comunes ya que los ocupare más adelante
-    self.x_nombres_comunes_catalogos = nombres_comunes.map{|nc| I18n.transliterate(nc.nombre_comun.downcase)} if nombres_comunes.length > 0
+  # Guarda en adicionales las fotos
+  def guarda_fotos_todas
+    dame_fotos_todas
 
-    # Si no guardo el de naturalista, pongo el default de catalogos
-    nombre_comun_principal_catalogos if x_nombre_comun_principal.blank?
-
-    # Para guardar la foto principal para los resultados, es la best_photo
-    if a = adicional
+    if x_foto_principal.present?
+      a = adicional ? adicional : Adicional.new(especie_id: id)
       a.foto_principal = x_foto_principal
-      a.nombre_comun_principal = x_nombre_comun_principal
       a.save if a.changed?
-    else
-      Adicional.create({foto_principal: x_foto_principal, nombre_comun_principal: x_nombre_comun_principal, especie_id: id})
     end
   end
 
@@ -705,7 +682,8 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end  # End nombres_comunes
   end
 
-  def nombres_comunes_todos
+  # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
+  def dame_nombres_comunes_todos
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
     ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
@@ -791,16 +769,24 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     end
 
     # Los uno para obtener los nombres unidos
-    (nombres_inicio + nombres_mitad + nombres_final).compact
-  end
-
-  # Guarda los nombres comunes en adicionales
-  def guarda_nombres_comunes_todos
-    todos = nombres_comunes_todos
+    todos = (nombres_inicio + nombres_mitad + nombres_final).compact
 
     if todos.any?
+      todos_array = todos.map(&:values).flatten
+      self.x_nombres_comunes = todos_array.join(',')
+      self.x_nombre_comun_principal = todos_array.first
+      self.x_nombres_comunes_todos = todos
+    end
+  end
+
+  # REVISADO: Guarda los nombres comunes en adicionales
+  def guarda_nombres_comunes_todos
+    dame_nombres_comunes_todos
+
+    if x_nombre_comun_principal.present?
       a = adicional ? adicional : Adicional.new(especie_id: id)
-      a.nombres_comunes = todos.map(&:values).flatten.join(',')
+      a.nombres_comunes = x_nombres_comunes
+      a.nombre_comun_principal = x_nombre_comun_principal
       a.save if a.changed?
     end
   end
