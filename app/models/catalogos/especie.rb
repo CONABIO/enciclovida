@@ -452,9 +452,9 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
-      datos[:id] = "#{nc.id}#{id}00000".to_i
+      datos[:id] = nc.id
       datos[:term] = I18n.transliterate(nc.nombre_comun.limpia)
-      datos[:data][:nombre_comun] = nc.nombre_comun.limpia.capitalize
+      datos[:data][:nombre_comun] = nc.nombre_comun
       datos[:data][:id] = id
       datos[:data][:lengua] = nc.lengua
 
@@ -466,7 +466,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
     else  # Asigna si viene la peticion de nombre_cientifico
       datos[:id] = id
       datos[:term] = I18n.transliterate(nombre_cientifico.limpia)
-      datos[:data][:nombre_comun] = x_nombre_comun_principal.try(:limpia).try(:capitalize)
+      datos[:data][:nombre_comun] = x_nombre_comun_principal
       datos[:data][:id] = id
       datos[:data][:lengua] = x_lengua
       datos[:score] = Adicional::LENGUAS_ACEPTADAS.length*visitas
@@ -524,36 +524,37 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       loader = Soulmate::Loader.new(categoria)
     end
 
+    # Borra los actuales
+    borra_redis(loader)
+
     # Guarda el redis con el nombre cientifico
     loader.add(redis(opc.merge({consumir_servicios: true})))
 
-    # Guarda el redis con todos los nombres comunes de catalogos
-    nombres_comunes.each do |nc|
-      loader.add(redis(opc.merge({nombre_comun: nc})))
-    end
+    # Guarda el redis con todos los nombres comunes
+    num_nombres = 0;
 
-    # Guarda el redis con los nombres comunes de naturalista y diferentes a catalogos
-    if x_nombres_comunes_naturalista
-      primer_nombre = nil
+    x_nombres_comunes_todos.each do |nombres|
+      lengua = nombres.keys.first
 
-      x_nombres_comunes_naturalista.each_with_index do |nom, index|
-        next if nom['lexicon'] == 'Scientific Names'
-        next if x_nombres_comunes_catalogos.present? && x_nombres_comunes_catalogos.include?(I18n.transliterate(nom['name'].downcase))
-        primer_nombre = nom['name'] if index == 0
-        next if primer_nombre == nom['name'] && index > 0
-
-        if nom['lexicon'].present?
-          lengua = I18n.transliterate(nom['lexicon'].downcase.gsub(' ','_'))
-        else
-          lengua = 'nd'
-        end
-
-        nc = NombreComun.new({id: nom['id'], nombre_comun: nom['name'], lengua: I18n.t("lenguas.#{lengua}", default: lengua)})
-        loader.add(redis(opc.merge({nombre_comun: nc})))
+      nombres.values.flatten.each_with_index do |nombre|
+        num_nombres+= 1
+        nombre_obj = NombreComun.new({id: "#{id}000000#{num_nombres}".to_i, nombre_comun: nombre, lengua: lengua})
+        loader.add(redis(opc.merge({nombre_comun: nombre_obj})))
       end
     end
+  end
 
-    puts "\n\nGuardo redis #{id}"
+  # REVISADO: borra todos los nombres comunes y el cnetifico del redis, para posteriormente volver a generarlo
+  def borra_redis(loader)
+    # Borra el del nombre cientifico
+    nombre_cient_data = {id: id}.stringify_keys
+    loader.remove(nombre_cient_data)
+
+    # Borra los nombre comunes
+    50.times do |i|
+      nombre_com_data = {id: "#{id}000000#{i+1}"}.stringify_keys
+      loader.remove(nombre_com_data)
+    end
   end
 
   # REVISADO: Servicio que trae la respuesta de bdi
@@ -775,6 +776,7 @@ Dalbergia_ruddae Dalbergia_stevensonii Dalbergia_cubilquitzensis)
       todos_array = todos.map(&:values).flatten
       self.x_nombres_comunes = todos_array.join(',')
       self.x_nombre_comun_principal = todos_array.first
+      self.x_lengua = todos.first.keys.first
       self.x_nombres_comunes_todos = todos
     end
   end
