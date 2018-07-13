@@ -4,6 +4,7 @@ class Especie < ActiveRecord::Base
   self.table_name = 'catalogocentralizado.Nombre'
   self.primary_key = 'IdNombre'
 
+  include AncestryPersonalizado
   include CacheServices
 
   # Los alias con las tablas de catalogos
