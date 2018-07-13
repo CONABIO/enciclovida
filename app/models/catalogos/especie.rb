@@ -147,59 +147,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Query que saca los ancestros, nombres cientificos y sus categorias taxonomicas correspondientes
   scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }
 
-  # Scopes y metodos para ancestry, TODO: ponerlo en una gema
-
-  # REVISADO: Para ver si un taxon es root
-  def is_root?
-    return false unless ancestry_ascendente_directo.present?
-    ancestros = ancestry_ascendente_directo.split(',').map{|a| a if a.present?}.compact
-    return false unless ancestros.any?
-
-    ancestros.count == 1 ? true : false
-  end
-
-  # REVISADO: Devuelve el taxon root con active record
-  def root
-    if is_root?
-      self
-    else
-      return Especie.none unless ancestry_ascendente_directo.present?
-      ancestros = ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
-      return Especie.none unless ancestros.any?
-
-      Especie.find(ancestros.first)
-    end
-  end
-
-  # REVISADO: Regresa el id root
-  def root_id
-    if is_root?
-      id
-    else
-      root.id
-    end
-  end
-
-  # REVISADO: Devuelve un array de los ancestros y el taxon en cuestion
-  def path_ids
-    ancestry_ascendente_directo.split(',').map{|a| a.to_i if a.present?}.compact
-  end
-
-  # REVISADO: Devuelve el active record de los ancestros y el taxon en cuestion
-  def path
-    Especie.where(id: path_ids)
-  end
-
-  # REVISADO: Devuelve los descendentes en un array
-  def descendant_ids
-    descendants.map(&:id)
-  end
-
-  # REVISADO: Devuelve los descendentes como active record
-  def descendants
-    Especie.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", id).where.not(id: id)
-  end
-
   CON_REGION = [19, 50]
 
   ESTATUS = [
