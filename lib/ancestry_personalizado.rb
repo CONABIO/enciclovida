@@ -1,10 +1,6 @@
 # Esta biblioteca emula la gema ancestry, fue necesaria por que el campo cambio y es muy especifico
 module AncestryPersonalizado
 
-  def self.included(klass)
-    "Persistence module was included into #{klass}"
-  end
-
   # REVISADO: Para ver si un taxon es root
   def is_root?
     return false unless ancestry_ascendente_directo.present?
