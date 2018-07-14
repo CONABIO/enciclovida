@@ -266,22 +266,32 @@ module CacheServices
 
     # Borra los actuales
     borra_redis(loader)
+    borra_fuzzy_match
 
     # Guarda el redis con el nombre cientifico
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
+    FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
 
     # Guarda el redis con todos los nombres comunes
-    num_nombres = 0
+    num_nombre = 0
 
     x_nombres_comunes_todos.each do |nombres|
       lengua = nombres.keys.first
 
       nombres.values.flatten.each_with_index do |nombre|
-        num_nombres+= 1
-        nombre_obj = NombreComun.new({id: "#{id}000000#{num_nombres}".to_i, nombre_comun: nombre, lengua: lengua})
+        num_nombre+= 1
+        id_referencia = id_referencia_nombre_comun(num_nombre)
+        nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
         loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
+        FUZZY_NOM_COM.put(nombre, id_referencia)
       end
     end
+  end
+
+  # Es el ID del nombre comun que va vinculado al nombre cientifico
+  def id_referencia_nombre_comun(num_nombre)
+    # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
+    "9#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(2,'0')}".to_i
   end
 
   # REVISADO: borra todos los nombres comunes y el cnetifico del redis, para posteriormente volver a generarlo
@@ -292,8 +302,21 @@ module CacheServices
 
     # Borra los nombre comunes
     50.times do |i|
-      nombre_com_data = {id: "#{id}000000#{i+1}"}.stringify_keys
+      id_referencia = id_referencia_nombre_comun(i+1)
+      nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
+    end
+  end
+
+  # REVISADO: Borra el fuzzy match de los nombres comunes y nombre cientifico
+  def borra_fuzzy_match
+    # Borra el nombre cientifico
+    FUZZY_NOM_CIEN.delete(id)
+
+    # Borra los nombre comunes
+    50.times do |i|
+      id_referencia = id_referencia_nombre_comun(i+1)
+      FUZZY_NOM_COM.delete(id_referencia)
     end
   end
 
