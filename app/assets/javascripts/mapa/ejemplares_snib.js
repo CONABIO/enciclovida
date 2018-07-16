@@ -44,19 +44,19 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(coleccionesLayer,
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
+        '<span aria-hidden="true" class="circle-ev-icon div-icon-snib-default"></span>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
     );
 
     snib_control.addOverlay(observacionesLayer,
-        '<i class="feather-ev-icon div-icon-snib"></i>Observaciones de aVerAves <sub>' + observaciones_conteo + '</sub>'
+        '<span aria-hidden="true" class="feather-ev-icon div-icon-snib"></span>Observaciones de aVerAves <sub>' + observaciones_conteo + '</sub>'
     );
 
     snib_control.addOverlay(fosilesLayer,
-        '<i class="bone-ev-icon div-icon-snib"></i>Fósiles <sub>' + fosiles_conteo + '</sub>'
+        '<span aria-hidden="true" class="bone-ev-icon div-icon-snib"></span>Fósiles <sub>' + fosiles_conteo + '</sub>'
     );
 
     snib_control.addOverlay(noCampoLayer,
-        '<i class="circle-ev-icon div-icon-snib-default"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
+        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-snib-default"></span>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 
@@ -75,14 +75,14 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="circle-ev-icon"></span>'})});
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
                 && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="circle-ev-icon"></span>'})});
                 }
             }
         },
@@ -106,13 +106,13 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de aves aves
                 {
                     observaciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="feather-ev-icon"></span>'})});
                 }
             } else {
                 if (feature.properties.d.coleccion.toLowerCase().includes('averaves') || feature.properties.d.coleccion.toLowerCase().includes('ebird'))
                 {
                     observaciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="feather-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="feather-ev-icon"></span>'})});
                 }
             }
         },
@@ -136,13 +136,13 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 3)  // Este campos quiere decir que es de fosiles
                 {
                     fosiles_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="bone-ev-icon"></span>'})});
                 }
             } else {
                 if (feature.properties.d.ejemplarfosil.toLowerCase() == 'si')
                 {
                     fosiles_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="bone-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="bone-ev-icon"></span>'})});
                 }
             }
         },
@@ -166,13 +166,13 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 4)  // Este campos quiere decir que es de locacion no de campo
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
                 }
             } else {
                 if (feature.properties.d.probablelocnodecampo.toLowerCase() == 'si')
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<i class="circle-ev-icon"></i>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
                 }
             }
         },
