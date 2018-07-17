@@ -1,7 +1,14 @@
 class BDIService
 
-  ALBUM_ANIMALES = {22655 => '5006-Aves', 213482 => '5009-Peces', 22653 => '5008-Mamíferos',
-                    22647 => '5001-Reptiles', 22654 => '5007-Anfibios', 22650 => '5107-Tiburones%20y%20Rayas', 5 => '5004-Microorganismos', 3 => '5004-Microorganismos', 129550 => '5005-Invertebrados', 40657 => '5005-Invertebrados', 40658 => '5005-Invertebrados', 40659 => '5005-Invertebrados', 40660 => '5005-Invertebrados', 40661 => '5005-Invertebrados', 40662 => '5005-Invertebrados', 40663 => '5005-Invertebrados', 40664 => '5005-Invertebrados', 40665 => '5005-Invertebrados', 40666 => '5005-Invertebrados', 40667 => '5005-Invertebrados', 40668 => '5005-Invertebrados', 40669 => '5005-Invertebrados', 40670 => '5005-Invertebrados', 40671 => '5005-Invertebrados', 40672 => '5005-Invertebrados', 213408 => '5005-Invertebrados', 16910 => '5005-Invertebrados'}
+  ALBUM_ANIMALES = {8002485 => '5006-Aves', 8002478 => '5009-Peces', 8002483 => '5008-Mamíferos',
+                    8000009 => '5001-Reptiles', 8002484 => '5007-Anfibios', 8002480 => '5107-Tiburones%20y%20Rayas',
+                    7000005 => '5004-Microorganismos', 7000003 => '5004-Microorganismos', 1000006 => '5005-Invertebrados',
+                    4000006 => '5005-Invertebrados', 4000007 => '5005-Invertebrados', 4000008 => '5005-Invertebrados',
+                    4000009 => '5005-Invertebrados', 4000010 => '5005-Invertebrados', 4000011 => '5005-Invertebrados',
+                    4000012 => '5005-Invertebrados', 4000013 => '5005-Invertebrados', 4000014 => '5005-Invertebrados',
+                    4004301 => '5005-Invertebrados', 4004389 => '5005-Invertebrados', 4004403 => '5005-Invertebrados',
+                    4004553 => '5005-Invertebrados', 4004600 => '5005-Invertebrados', 4007072 => '5005-Invertebrados',
+                    4007472 => '5005-Invertebrados', 8002472 => '5005-Invertebrados', 10000006 => '5005-Invertebrados'}
   ALBUM_ANIMALES_GLOBAL = ['5037-Colección%20Zoológica']
 
   ALBUM_PLANTAS = {4 => '5002-Hongos', 6000010 => '5018-Cícadas', 135296 => '5017-Musgos-Helechos', 6000008 => '5017-Musgos-Helechos', 6000009 => '5021-Pinos%20y%20Cedros'}
@@ -14,6 +21,7 @@ class BDIService
     bdi = CONFIG.bdi_imagenes
     fotos = []
     jres = fotos_album(opts)
+    return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
 
     jres['data'].each do |x|
       foto = Photo.new
@@ -82,29 +90,46 @@ class BDIService
         (ALBUM_ANIMALES.keys & ancestros).each do |taxon_id|
           opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres.any?
+          return jres if jres['data'].any?
         end
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_ANIMALES_GLOBAL.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres.any?
+          return jres if jres['data'].any?
         end
 
+        # Si llego a este punto quiere decir que tengo que probar con los globales
+        ALBUM_ILUSTRACIONES.each do |album|
+          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
+          jres = tiene_fotos?(opts)
+          return jres if jres['data'].any?
+        end
+
+        return {'data' => []}
       else
         (ALBUM_PLANTAS.keys & ancestros).each do |taxon_id|
           opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres.any?
+          return jres if jres['data'].present? && jres['data'].any?
         end
 
         # Si llego a este punto quiere decir que tengo que probar con los globales
         ALBUM_PLANTAS_GLOBAL.each do |album|
           opts.merge!({album: album, nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
-          return jres if jres.any?
+          return jres if jres['data'].any?
         end
+
+        # Si llego a este punto quiere decir que tengo que probar con los globales
+        ALBUM_ILUSTRACIONES.each do |album|
+          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
+          jres = tiene_fotos?(opts)
+          return jres if jres['data'].any?
+        end
+
+        return {'data' => []}
     end
 
   end

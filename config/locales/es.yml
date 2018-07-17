@@ -322,7 +322,9 @@ es:
     lc: "Riesgo bajo (LR): Preocupación menor (lc)"
   lenguas:
     afrikaans: Afrikáans
+    albanian: Albanés
     bengali: Bengalí
+    bulgarian: Búlgaro
     cebuano: Cebuano
     chinese_traditional: Chino tradicional
     creole_french: Criollo (Francés)
@@ -331,6 +333,7 @@ es:
     dutch: Holandés
     english: Inglés
     espanol_mexico: Español
+    estonian: Estonio
     french: Francés
     gela: Gela
     german: Alemán

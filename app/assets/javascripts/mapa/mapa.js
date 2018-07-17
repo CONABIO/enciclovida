@@ -1,3 +1,7 @@
+/**
+ * Inicializa el mapa
+ * @param id
+ */
 var cargaMapa = function (id)
 {
     // El default de leaflet

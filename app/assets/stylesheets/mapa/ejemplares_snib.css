@@ -1,16 +1,9 @@
 /**
-El estilo de las fuentes que no son el default
+El estilo de los ejemplares del snib
 **/
 .div-icon-snib {
     color: #800000;
     font-size: 1.8em;
-}
-/**
-El estilo de la fuente default
-**/
-.div-icon-snib-default {
-    color: #800000;
-    font-size: 1.2em;
 }
 /**
 El estilo del contorno del circulo

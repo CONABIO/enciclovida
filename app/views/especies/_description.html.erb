@@ -37,11 +37,6 @@
   <% end  %>
 </div>
 
-<script>
-    // Se llama en esta vista para que el evento lo ponga cuando el elemento ya se creo
-    $(document).ready(function(){
-        eventoFichas();
-    });
-</script>
+<%= javascript_include_tag 'especies/fichas/fichas_extra', 'data-turbolinks-track' => true %>
 
 

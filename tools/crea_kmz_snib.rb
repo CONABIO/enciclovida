@@ -21,7 +21,7 @@ def kmz
     next unless taxon = proveedor.especie  # Por los IDS que borraron
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
-    next unless taxon.species_or_lower?
+    next unless taxon.especie_o_inferior?
     proveedor.kml
 
     if proveedor.snib_kml.present?

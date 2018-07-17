@@ -149,7 +149,7 @@ class Photo
     photo_taxa = to_taxa if photo_taxa.blank?
     return if photo_taxa.blank?
     photo_taxa = photo_taxa.sort_by{|t| t.rank_level || Taxon::ROOT_LEVEL + 1}
-    photo_taxa.detect(&:species_or_lower?) || photo_taxa.first
+    photo_taxa.detect(&:especie_o_inferior?) || photo_taxa.first
   end
 
   # Sync photo object with its native source.  Implemented by descendents
