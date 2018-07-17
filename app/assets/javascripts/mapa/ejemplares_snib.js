@@ -44,7 +44,7 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(coleccionesLayer,
-        '<span aria-hidden="true" class="circle-ev-icon div-icon-snib-default"></span>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
+        '<span aria-hidden="true" class="glyphicon glyphicon-map-marker div-icon-snib"></span>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
     );
 
     snib_control.addOverlay(observacionesLayer,
@@ -56,7 +56,7 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(noCampoLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-snib-default"></span>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
+        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-snib"></span>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 
@@ -75,14 +75,14 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="circle-ev-icon"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
                 && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="circle-ev-icon"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
                 }
             }
         },
@@ -166,13 +166,13 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 4)  // Este campos quiere decir que es de locacion no de campo
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
                 }
             } else {
                 if (feature.properties.d.probablelocnodecampo.toLowerCase() == 'si')
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib-default', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
                 }
             }
         },
