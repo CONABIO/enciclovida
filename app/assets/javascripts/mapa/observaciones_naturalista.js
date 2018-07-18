@@ -4,10 +4,6 @@
  */
 var cargaObservacionesNaturalista = function(url)
 {
-    naturalistaLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
-    });
-
     borraObservacionesAnterioresNaturalista();
     geojsonNaturalista(url);
 };
@@ -17,19 +13,24 @@ var cargaObservacionesNaturalista = function(url)
  */
 var borraObservacionesAnterioresNaturalista = function()
 {
-    if (map.hasLayer(naturalistaLayer))
+    if (typeof naturalistaLayer !== 'undefined')
     {
-        map.removeControl(naturalista_control);
-        map.removeLayer(naturalistaLayer);
-        naturalistaLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
-        });
-    } else {
-        naturalistaLayer = L.markerClusterGroup({
-            chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
-        });
+        if (map.hasLayer(naturalistaLayer))
+        {
+            map.removeControl(naturalista_control);
+            map.removeLayer(naturalistaLayer);
+        }
     }
+
+    naturalistaLayer = L.markerClusterGroup({
+        chunkedLoading: true, spiderfyDistanceMultiplier: 2,
+        spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5},
+        iconCreateFunction: function (cluster) {
+            var markers = cluster.getAllChildMarkers();
+            return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-naturalista',
+                iconSize: L.point(40, 40) });
+        }
+    });
 };
 
 /**
