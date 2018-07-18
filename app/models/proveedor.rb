@@ -339,7 +339,11 @@ class Proveedor < ActiveRecord::Base
     obs[:uri] = observacion['uri']
 
     if obs[:uri].present?
-      obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
+      obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'naturalista.mx').
+          gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
+
+      relativa = obs[:uri].split('naturalista.mx').last
+      obs[:uri] = "https://www.naturalista.mx#{relativa}"
     end
 
     obs[:longitude] = observacion['geojson']['coordinates'][0].to_f
