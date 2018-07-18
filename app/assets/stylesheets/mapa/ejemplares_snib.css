@@ -24,6 +24,6 @@ El estilo del circulo
 /**
 El estilo del numero dentro del circulo
 **/
-.div-cluster-snib span{
+.div-cluster-snib div span{
     color: white;
 }
