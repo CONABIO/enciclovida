@@ -5,7 +5,12 @@
 var cargaEjemplaresSnib = function(url)
 {
     snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
+        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 },
+        iconCreateFunction: function (cluster) {
+            var markers = cluster.getAllChildMarkers();
+            return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-snib',
+                iconSize: L.point(40, 40) });
+        }
     });
 
     borraEjemplaresAnterioresSnib();
@@ -22,12 +27,22 @@ var borraEjemplaresAnterioresSnib = function()
         map.removeControl(snib_control);
         map.removeLayer(snibLayer);
         snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }
+            spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 },
+            iconCreateFunction: function (cluster) {
+                var markers = cluster.getAllChildMarkers();
+                return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-snib',
+                    iconSize: L.point(40, 40) });
+            }
         });
     } else {
         snibLayer = L.markerClusterGroup({
             chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}
+            spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5},
+            iconCreateFunction: function (cluster) {
+                var markers = cluster.getAllChildMarkers();
+                return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-snib',
+                    iconSize: L.point(40, 40) });
+            }
         });
     }
 };

@@ -5,22 +5,25 @@ El estilo de los ejemplares del snib
     color: #800000;
     font-size: 1.8em;
 }
+
 /**
 El estilo del contorno del circulo
 **/
-.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large{
+.div-cluster-snib{
     background-color: #d8b2b2;
     opacity: 1!important;
 }
+
 /**
 El estilo del circulo
 **/
-.marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div{
+.div-cluster-snib div{
     background-color: #800000;
 }
+
 /**
 El estilo del numero dentro del circulo
 **/
-.marker-cluster-small div span, .marker-cluster-medium div span, .marker-cluster-large div span{
+.div-cluster-snib span{
     color: white;
 }
