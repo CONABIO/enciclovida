@@ -191,9 +191,17 @@ $(document).ready(function(){
      */
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaEjemplaresSnib($(this).attr('snib_url'));
-        opciones.taxon_seleccionado.id = $(this).attr('especie_id');
-        opciones.taxon_seleccionado.nombre_comun = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
-        opciones.taxon_seleccionado.nombre_cientifico = $(this).siblings('.result-nombre-container').find('i')[0].innerText;
+        opciones.taxon = $(this).attr('especie_id');
+
+        $.ajax({
+            url: '/especies/' + opciones.taxon + '/dame-nombre-con-formato',
+            type: 'GET',
+        }).done(function(nombre) {
+            opciones.nombre = nombre;
+
+        }).fail(function(){
+            opciones.nombre = '';
+        });
     });
 
     /**
