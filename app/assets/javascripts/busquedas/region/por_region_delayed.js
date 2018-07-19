@@ -14,7 +14,7 @@ $(document).ready(function(){
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.especie_id', function(){
-        cargaRegistrosSnib($(this).attr('snib_url'));
+        cargaEjemplaresSnib($(this).attr('snib_url'));
         opciones.taxon_seleccionado.id = $(this).attr('especie_id');
         opciones.taxon_seleccionado.nombre_comun = $(this).siblings('.result-nombre-container').find('span')[0].innerText;
         opciones.taxon_seleccionado.nombre_cientifico = $(this).siblings('.result-nombre-container').find('i')[0].innerText;

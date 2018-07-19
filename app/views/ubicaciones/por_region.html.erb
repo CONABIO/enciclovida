@@ -1,7 +1,5 @@
 <% content_for(:delayedjs) do %>
     <script data-turbolinks-track="true">
-        map = null;
-        legend_control = null;
         especies = null;
         especies_con_filtro = null;
 
@@ -43,6 +41,7 @@
   <div id="busqueda_avanzada" class="col-md-12">
     <%= render partial: 'filtros_busqueda_avanzada_bis' %>
   </div>
+
   <div id="map"></div>
 </div>
 
