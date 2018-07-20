@@ -34,8 +34,9 @@ class Pez < ActiveRecord::Base
 
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
+    self.guardar_manual = true
     guarda_nom_iucn
-    asigna_imagen
+    guarda_imagen
     guarda_redis
   end
 
@@ -159,7 +160,7 @@ class Pez < ActiveRecord::Base
     bdi = BDIService.new
     res = bdi.dameFotos(taxon: especie, campo: 528, autor: 'Sergio de la Rosa Martínez', autor_campo: 80, ilustraciones: true)
 
-    if res[:estatus] == 'OK'
+    if res[:estatus]
       if res[:fotos].any?
         self.imagen = res[:fotos].first.medium_url
         self.tipo_imagen = 1
@@ -168,7 +169,7 @@ class Pez < ActiveRecord::Base
     end
 
     # Trata de asignar la foto principal
-    if a = especie.adicional
+    if a = adicional
       foto = a.foto_principal
 
       if foto.present?
