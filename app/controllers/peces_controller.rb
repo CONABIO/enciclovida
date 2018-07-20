@@ -2,6 +2,7 @@ class PecesController < ApplicationController
   before_action do
     @no_render_busqueda_basica = true
   end
+
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
   before_action :only => [:index, :new, :update, :edit, :create, :destroy] do
@@ -10,9 +11,7 @@ class PecesController < ApplicationController
 
   # GET /peces
   def index
-    # Mega join =S (por eso se limita)
-    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.limit(90)
-    #@peces = Pez.load
+    @peces = Pez.filtros_peces.limit(90)
   end
 
   # GET /peces/1
