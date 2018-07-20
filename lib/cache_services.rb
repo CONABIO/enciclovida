@@ -9,7 +9,6 @@ module CacheServices
     #cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
     #guarda_observaciones_naturalista_servicio
     #guarda_ejemplares_snib_servicio
-    guarda_nombres_comunes_todos_servicio
     guarda_redis_servicio
     #guarda_pez_servicios
   end
@@ -29,15 +28,6 @@ module CacheServices
       pez.delay(queue: 'peces').save if pez
     else
       pez.save if pez
-    end
-  end
-
-  # REVISADO: # Guarda los nombres comunes en adicionales
-  def guarda_nombres_comunes_todos_servicio
-    if Rails.env.production?
-      guarda_nombres_comunes_todos.delay(queue: 'nombres_comunes')
-    else
-      guarda_nombres_comunes_todos
     end
   end
 
@@ -164,9 +154,13 @@ module CacheServices
     dame_fotos_todas
 
     if x_foto_principal.present?
-      a = adicional ? adicional : Adicional.new(especie_id: id)
+      a = adicional.reload ? adicional : Adicional.new(especie_id: id)
       a.foto_principal = x_foto_principal
-      a.save if a.changed?
+
+      if a.changed?
+        a.save
+        reload
+      end
     end
   end
 
@@ -178,7 +172,11 @@ module CacheServices
       a = adicional ? adicional : Adicional.new(especie_id: id)
       a.nombres_comunes = x_nombres_comunes
       a.nombre_comun_principal = x_nombre_comun_principal
-      a.save if a.changed?
+
+      if a.changed?
+        a.save
+        reload
+      end
     end
   end
 
