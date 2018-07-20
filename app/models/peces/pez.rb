@@ -35,8 +35,6 @@ class Pez < ActiveRecord::Base
   # Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
     guarda_nom_iucn
-    asigna_nombre_cientifico
-    asigna_nombres_comunes
     asigna_imagen
     guarda_redis
   end
@@ -108,7 +106,6 @@ class Pez < ActiveRecord::Base
                     158
                   end
 
-
     if crit = criterios.where('anio=?', 2012).nom.first
       pez_crit = peces_criterios.where(criterio_id: crit.id).first
       pez_crit.criterio_id = criterio_id
@@ -132,7 +129,6 @@ class Pez < ActiveRecord::Base
                   else
                     159
                   end
-
 
     if crit = criterios.where('anio=?', 2012).iucn.first
       pez_crit = peces_criterios.where(criterio_id: crit.id).first
@@ -191,45 +187,6 @@ class Pez < ActiveRecord::Base
     all.each do |p|
       p.guardar_manual = true
       p.guarda_imagen
-    end
-  end
-
-  # BORRAR en centralizacion
-  def guarda_nombre_cientifico
-    asigna_nombre_cientifico
-    save if changed?
-  end
-
-  # BORRAR en centralizacion
-  def asigna_nombre_cientifico
-    self.nombre_cientifico = especie.nombre_cientifico
-  end
-
-  # BORRAR en centralizacion
-  def self.actualiza_todo_nombre_cientifico
-    all.each do |p|
-      p.guardar_manual = true
-      p.guarda_nombre_cientifico
-    end
-  end
-
-  # BORRAR en centralizacion
-  def guarda_nombres_comunes
-    asigna_nombres_comunes
-    save if changed?
-  end
-
-  # BORRAR en centralizacion
-  def asigna_nombres_comunes
-    nombres = especie.dame_nombres_comunes_todos.map{|e| e.values.flatten}.flatten.join(',')
-    self.nombres_comunes = nombres if nombres.present?
-  end
-
-  # BORRAR en centralizacion
-  def self.actualiza_todo_nombres_comunes
-    all.each do |p|
-      p.guardar_manual = true
-      p.guarda_nombres_comunes
     end
   end
 
