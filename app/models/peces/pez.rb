@@ -41,7 +41,7 @@ class Pez < ActiveRecord::Base
 
   # Guarda el redis del pez aprovechando el metodo empaquetado de especie
   def guarda_redis
-    especie.guarda_redis(loader: 'peces', foto_principal: imagen)
+    especie.guarda_redis_servicio(loader: 'peces', foto_principal: imagen)
   end
 
   # Actualiza todos los servicios
@@ -196,7 +196,7 @@ class Pez < ActiveRecord::Base
   # Asocia el valor por zona a un color correspondiente
   def valor_zona_a_color
     valor_por_zona.each_with_index do |zona, i|
-      next unless zona.class == Fixnum # Por si ya tiene asignada una letra
+      next unless zona.class == Integer # Por si ya tiene asignada una letra
 
       case zona
       when -5..4

@@ -10,13 +10,13 @@ module CacheServices
     #guarda_observaciones_naturalista_servicio
     #guarda_ejemplares_snib_servicio
     guarda_redis_servicio
-    #guarda_pez_servicios
+    guarda_pez_servicios
   end
 
   # REVISADO: Guarda los datos más importantes en el redis
-  def guarda_redis_servicio
+  def guarda_redis_servicio(opc={})
     if Rails.env.production?
-      delay(queue: 'redis').guarda_redis
+      delay(queue: 'redis').guarda_redis(opc)
     else
       guarda_redis
     end
@@ -260,15 +260,15 @@ module CacheServices
     else # Guarda en la cataegoria taxonomica correspondiente
       categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
       loader = Soulmate::Loader.new(categoria)
+      borra_fuzzy_match
+      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
     end
 
     # Borra los actuales
     borra_redis(loader)
-    borra_fuzzy_match
 
     # Guarda el redis con el nombre cientifico
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
-    FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
 
     # Guarda el redis con todos los nombres comunes
     num_nombre = 0
@@ -281,7 +281,7 @@ module CacheServices
         id_referencia = id_referencia_nombre_comun(num_nombre)
         nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
         loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
-        FUZZY_NOM_COM.put(nombre, id_referencia)
+        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
       end
     end
   end
