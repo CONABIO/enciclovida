@@ -1,6 +1,6 @@
 class PezCriterio < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
+  establish_connection(:peces)
   self.table_name='peces_criterios'
   #self.primary_keys = :especie_id, :criterio_id
 
