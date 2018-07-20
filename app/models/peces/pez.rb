@@ -1,6 +1,6 @@
 class Pez < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
+  establish_connection(:peces)
   self.table_name='peces'
   self.primary_key='especie_id'
 
