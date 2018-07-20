@@ -9,8 +9,7 @@ class Criterio < ActiveRecord::Base
   belongs_to :propiedad
 
   scope :select_propiedades, -> { select('criterios.id, nombre_propiedad') }
-  scope :join_propiedades, -> { joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
-  scope :select_join_propiedades, -> { select_propiedades.join_propiedades }
+  scope :select_join_propiedades, -> { select_propiedades.left_joins(:propiedad) }
 
   scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_CAPTURA_ID) }
   scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_DE_VEDA_ID) }
@@ -52,7 +51,7 @@ class Criterio < ActiveRecord::Base
   def self.pesquerias
     grouped_options = {}
 
-    Criterio.select_propiedades.select('propiedad_id').join_propiedades.where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad').each do |c|
+    Criterio.select_join_propiedades.select('propiedad_id').where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad').each do |c|
       prop = c.propiedad
       llave_unica = prop.parent.nombre_propiedad.strip
 

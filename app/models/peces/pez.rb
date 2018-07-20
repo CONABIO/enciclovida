@@ -4,7 +4,7 @@ class Pez < ActiveRecord::Base
   self.table_name='peces'
   self.primary_key='especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy#, inverse_of: :pez
+  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
@@ -12,15 +12,13 @@ class Pez < ActiveRecord::Base
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
+  has_one :adicional, :foreign_key => :especie_id
 
-  scope :select_joins_peces, -> { select([:nombre_cientifico, :nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).select('peces.especie_id') }
+  scope :select_joins_peces, -> { select([:nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).
+      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
 
-  scope :join_criterios,-> { joins('LEFT JOIN peces_criterios ON peces.especie_id=peces_criterios.especie_id LEFT JOIN criterios on peces_criterios.criterio_id = criterios.id') }
-  scope :join_propiedades,-> { joins('LEFT JOIN peces_propiedades ON peces.especie_id=peces_propiedades.especie_id LEFT JOIN propiedades on peces_propiedades.propiedad_id = propiedades.id') }
-
-  scope :join_criterios_propiedades,-> { joins('LEFT JOIN propiedades on criterios.propiedad_id = propiedades.id') }
-
-  scope :filtros_peces, -> { select_joins_peces.join_criterios.join_propiedades.distinct.order(con_estrella: :desc).order(:valor_total, :tipo_imagen, :nombre_cientifico) }
+  scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional, :especie).
+      order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC")}
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
