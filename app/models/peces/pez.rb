@@ -12,13 +12,13 @@ class Pez < ActiveRecord::Base
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
-  has_one :adicional, :foreign_key => :especie_id
+  has_one :adicional, :through => :especie, :source => :adicional#:foreign_key => :especie_id
 
   scope :select_joins_peces, -> { select([:nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).
       select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
 
-  scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional, :especie).
-      order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC")}
+  scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
+      order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC") }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
