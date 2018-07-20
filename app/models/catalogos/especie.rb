@@ -386,7 +386,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         if lengua.present?
           l = lengua.estandariza.gsub('-','_')
         else
-          l = 'nd'
+          lengua = 'nd'
         end
 
         # Los nombres comunes de naturalista en hash con la lengua

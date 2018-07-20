@@ -83,24 +83,6 @@ module CacheServices
     end
   end
 
-  # REVISADO: Escribe un cache
-  def escribe_cache(recurso, tiempo = 1.day)
-    Rails.cache.write("#{recurso}_#{id}", :expires_in => tiempo)
-  end
-
-  # REVISADO: Verifica que el cache exista
-  def existe_cache?(recurso)
-    Rails.cache.exist?("#{recurso}_#{id}")
-  end
-
-  # REVISADO: Borra un cache
-  def borra_cache(recurso)
-    Rails.cache.delete("#{recurso}_#{id}")
-  end
-
-
-  private
-
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
     return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
@@ -141,6 +123,24 @@ module CacheServices
 
     return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
   end
+
+  # REVISADO: Escribe un cache
+  def escribe_cache(recurso, tiempo = 1.day)
+    Rails.cache.write("#{recurso}_#{id}", :expires_in => tiempo)
+  end
+
+  # REVISADO: Verifica que el cache exista
+  def existe_cache?(recurso)
+    Rails.cache.exist?("#{recurso}_#{id}")
+  end
+
+  # REVISADO: Borra un cache
+  def borra_cache(recurso)
+    Rails.cache.delete("#{recurso}_#{id}")
+  end
+
+
+  private
 
   # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
   def guarda_fotos_nombres_servicios
@@ -186,7 +186,13 @@ module CacheServices
     datos[:data] = {}
 
     guarda_fotos_nombres_servicios if opc[:consumir_servicios]
-    visitas = especie_estadisticas.visitas
+
+    begin
+      visitas = especie_estadisticas.visitas
+    rescue  # Por si no existia la estadistica inicial
+      suma_visita
+      visitas = especie_estadisticas.visitas
+    end
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
@@ -253,7 +259,7 @@ module CacheServices
     self.x_lengua = nil
     self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
     self.x_nombres_comunes = nil
-    self.x_nombres_comunes_todos = nil
+    self.x_nombres_comunes_todos = []
 
     if opc[:loader].present? # Guarda en el loader que especifico
       loader = Soulmate::Loader.new(opc[:loader])
