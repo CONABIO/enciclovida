@@ -112,6 +112,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
+      get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
     end
   end
 

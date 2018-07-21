@@ -1,4 +1,6 @@
-// Carga la division estatal de un inicio
+/**
+ * Carga la division estatal de un inicio
+ */
 var cargaDivisionEstatal = function()
 {
     var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-estatal');
@@ -54,7 +56,9 @@ var cargaDivisionEstatal = function()
     });
 };
 
-// Carga todos los municipios de cierto estado
+/**
+ * Carga todos los municipios de cierto estado
+ */
 var cargaDivisionMunicipal = function()
 {
     var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
@@ -111,8 +115,11 @@ var cargaDivisionMunicipal = function()
     });
 };
 
-// Carga una sola region en especifico, municipios o estado; reutilizando esta funcion
-// se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
+/**
+ * Carga una sola region en especifico, municipios o estado; reutilizando esta funcion
+ se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
+ * @param prop
+ */
 var cargaRegion = function(prop)
 {
     switch(prop.tipo_region)
@@ -126,13 +133,16 @@ var cargaRegion = function(prop)
 
     map.flyToBounds(prop.bounds);
     cargaGrupos();
-    borraRegistrosAnteriores();
+    borraEjemplaresAnterioresSnib();
     $('#svg-division-estatal .selecciona-region').attr('class', 'region');
     $('#svg-division-municipal .selecciona-region').attr('class', 'region');
     prop.layer.attr('class', 'selecciona-region');
 };
 
-// Para cuando se hace una animacion con flyTo, los svgs de estatal o municipal o region sola
+/**
+ * Para cuando se hace una animacion con flyTo, los svgs de estatal o municipal o region sola
+ * @param caso
+ */
 var muestraOcultaSvg = function(caso)
 {
     if (caso)
@@ -147,15 +157,21 @@ var muestraOcultaSvg = function(caso)
     }
 };
 
-// Hace la projecccion de los puntos en D3 cuando se hace un zoom
+/**
+ * Hace la projecccion de los puntos en D3 cuando se hace un zoom
+ * @param x
+ * @returns {*[]}
+ */
 var projectPoint = function(x)
 {
     var point = map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
     return [point.x, point.y];
 };
 
-/** FUNCIONES CORE **/
-
+/**
+ * Funciones propias de topojson
+ * @param opts
+ */
 function addTopoData(opts){
     if (opts.clean) opts.layer.clearLayers();
 
