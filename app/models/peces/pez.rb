@@ -12,7 +12,7 @@ class Pez < ActiveRecord::Base
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
-  has_one :adicional, :through => :especie, :source => :adicional#:foreign_key => :especie_id
+  has_one :adicional, :through => :especie, :source => :adicional
 
   scope :select_joins_peces, -> { select([:nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).
       select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
@@ -179,9 +179,18 @@ class Pez < ActiveRecord::Base
       end
     end
 
-    # Asignar la silueta
+    # Asigna el grupo iconico de la especie
+    especie.ancestors.reverse.map(&:nombre_cientifico).each do |nombre|
+      if Busqueda::GRUPOS_ANIMALES.include?(nombre.strip)
+        self.imagen = "#{nombre.estandariza}-ev-icon"
+        self.tipo_imagen = 3
+        return
+      end
+    end
+
+    # Asignar la silueta, el ultimo caso, ya que es una silueta general
     self.imagen = '/assets/app/peces/silueta.png'
-    self.tipo_imagen = 3
+    self.tipo_imagen = 4
   end
 
   def self.actualiza_todo_imagen
