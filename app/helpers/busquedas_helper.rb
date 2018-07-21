@@ -1,4 +1,5 @@
 module BusquedasHelper
+
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos
     def arma_span(taxon)
