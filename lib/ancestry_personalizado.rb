@@ -51,4 +51,12 @@ module AncestryPersonalizado
   def descendants
     Especie.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", id).where.not(id: id)
   end
+
+  def ancestor_ids
+    path_ids - [id]
+  end
+
+  def ancestors
+    Especie.where(id: ancestor_ids)
+  end
 end
