@@ -44,7 +44,7 @@ class PecesController < ApplicationController
   # PATCH/PUT /peces/1
   def update
     if @pez.update_attributes(pez_params)
-      redirect_to @pez, notice: 'Pez was successfully updated.'
+      redirect_to @pez, notice: 'El Pez fue actualizado satisfactoriamente.'
     else
       render action: 'edit'
     end
@@ -53,7 +53,7 @@ class PecesController < ApplicationController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to peces_url, notice: 'Pez was successfully destroyed.'
+    redirect_to peces_url, notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def busqueda
