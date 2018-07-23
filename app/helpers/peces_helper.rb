@@ -1,8 +1,6 @@
 module PecesHelper
   def tituloNombresPeces(taxon, params={})
-
-    nombre = taxon.nombres_comunes.present? ? taxon.nombres_comunes.split(',').first : ''
-
+    nombre = taxon.nombre_comun_principal.present? ? taxon.nombre_comun_principal : ''
 
     if params[:title]
       nombre.present? ? "<h4>#{nombre}</h4> <h5>#{taxon.nombre_cientifico}</h5>".html_safe : taxon.nombre_cientifico

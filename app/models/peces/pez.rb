@@ -14,7 +14,7 @@ class Pez < ActiveRecord::Base
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
 
-  scope :select_joins_peces, -> { select([:nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).
+  scope :select_joins_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
       select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
 
   scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
