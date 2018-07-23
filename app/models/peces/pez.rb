@@ -73,7 +73,7 @@ class Pez < ActiveRecord::Base
       if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
       elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
-        self.valor_por_zona[zona_num] = 's'
+        #self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
       end
