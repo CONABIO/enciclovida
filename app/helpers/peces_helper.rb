@@ -1,4 +1,5 @@
 module PecesHelper
+
   def tituloNombresPeces(taxon, params={})
     nombre = taxon.nombre_comun_principal.present? ? taxon.nombre_comun_principal : ''
 
@@ -11,6 +12,17 @@ module PecesHelper
     else
       'Ocurrio un error en el nombre'.html_safe
     end
+  end
+
+  def checboxEstrella
+    checkBox = ''
+    checkBox << "<label>"
+    checkBox << check_box_tag('con_estrella[]', '1', false, id: 'con_estrella')
+    checkBox << "<span title='Especies certificadas' class = 'btn btn-lg btn-basica btn-title con-estrella'>"
+    checkBox << "<i class = 'glyphicon glyphicon-star'></i>"
+    checkBox << "</span>"
+    checkBox << "</label>"
+    checkBox.html_safe
   end
 
   def checkboxRecomendacion
@@ -30,8 +42,6 @@ module PecesHelper
                       'glyphicon glyphicon-minus-sign'
                     when 'Sin datos'
                       'no-data-ev-icon'
-                    else
-                      'stop'
                     end
       checkBoxes << "'></i>"
       checkBoxes << "</span>"
@@ -40,7 +50,7 @@ module PecesHelper
     checkBoxes.html_safe
   end
 
-  def dibujaZonasPez pez
+  def dibujaZonasPez(pez)
     '<div class="btn-group btn-group-sm" role="group" aria-label="...">'+
         '<button type="button" class="btn btn-zona"><small>Zonas: </small></button>'+
         '<button type="button" tooltip-title="Pacífico I" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[0] + '">I</button>'+
@@ -86,4 +96,5 @@ module PecesHelper
     end
     checkBoxes.html_safe
   end
+
 end
