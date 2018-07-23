@@ -48,20 +48,6 @@ class Criterio < ActiveRecord::Base
     end
   end
 
-  def self.pesquerias
-    grouped_options = {}
-
-    Criterio.select_join_propiedades.select('propiedad_id').where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad').each do |c|
-      prop = c.propiedad
-      llave_unica = prop.parent.nombre_propiedad.strip
-
-      grouped_options[llave_unica] = [] if !grouped_options.key?(llave_unica)
-      grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
-    end
-
-    grouped_options
-  end
-
   def self.cnp_select
     cnp_options = ['Con potencial de desarrollo', 'Máximo aprovechamiento permisible', 'En deterioro']
     options = []
@@ -77,15 +63,17 @@ class Criterio < ActiveRecord::Base
   def self.dame_filtros
 
     filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
-      {grupos: Propiedad.grupos_conabio,
-       zonas: Propiedad.zonas,
-       tipo_capturas: self.tipo_capturas,
-       tipo_vedas: self.tipo_vedas,
-       procedencias: self.procedencias,
-       pesquerias:  self.pesquerias,
-       cnp: self.cnp_select,
-       nom: self.nom,
-       iucn: self.iucn}
+      {
+          grupos: Propiedad.grupos_conabio,
+          zonas: Propiedad.zonas,
+          tipo_capturas: self.tipo_capturas,
+          tipo_vedas: self.tipo_vedas,
+          procedencias: self.procedencias,
+          pesquerias: Pez.filtros_peces.where(con_estrella: 1).distinct,
+          cnp: self.cnp_select,
+          nom: self.nom,
+          iucn: self.iucn
+      }
     end
 
     filtros

@@ -68,12 +68,14 @@ class PecesController < ApplicationController
       # Busqueda con estrella
       @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
 
+      # Busqueda con pesquerias
+      @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
+
       # Filtros globales
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
-      @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
       @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
       @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
