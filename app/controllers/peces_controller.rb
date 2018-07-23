@@ -53,7 +53,7 @@ class PecesController < ApplicationController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to peces_url, notice: 'El pez fue destruido satisfactoriamente.'
+    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def busqueda

@@ -10,6 +10,7 @@
   </script>
 <%- end -%>
 
+<%= notice if notice.present? %>
 <div id="busqueda_avanzada">
 
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
