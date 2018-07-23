@@ -29,5 +29,5 @@ Buscador::Application.configure do
 
   config.assets.initialize_on_precompile = true
 
-  config.web_console.whitelisted_ips = '172.16.3.222'
+  config.web_console.whitelisted_ips = '172.16.3.0/16'
 end

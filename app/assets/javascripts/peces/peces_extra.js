@@ -9,6 +9,10 @@ $(document).ready(function(){
         var input = $('#' + this.id.replace('path_',''));
         input.prop("checked", !input.prop("checked"));
     });
+
+    $(window).load(function(){
+        $("html,body").animate({scrollTop: 122}, 1000);
+    });
 });
 
 function limpiaBusqueda(){

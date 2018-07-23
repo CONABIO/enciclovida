@@ -32,7 +32,7 @@ class Propiedad < ActiveRecord::Base
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
-    zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i+1]}
+    zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i]}
   end
 
   def self.catalogo
