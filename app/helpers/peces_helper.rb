@@ -27,74 +27,44 @@ module PecesHelper
 
   def checkboxRecomendacion
     checkBoxes = ''
-    s = {'Recomendable' => 'v','Poco recomendable' => 'a','Evita' => 'r', 'Sin datos' => 'sn'}
+    s = {:v => ['Recomendable','glyphicon glyphicon-ok-sign'], :a => ['Poco recomendable','glyphicon glyphicon-exclamation-sign'], :r => ['Evita','glyphicon glyphicon-minus-sign'], :sn => ['Sin datos','no-data-ev-icon']}
     s.each do |k,v|
       checkBoxes << "<label>"
-      checkBoxes << check_box_tag('semaforo_recomendacion[]', v, false, id: "semaforo_recomendacion_#{k}")
-      checkBoxes << "<span title = '#{k}' class = 'btn btn-lg btn-basica btn-zona-#{v} btn-title'>"
-      checkBoxes << "<i class = '"
-      checkBoxes << case k
-                    when 'Recomendable'
-                      'glyphicon glyphicon-ok-sign'
-                    when 'Poco recomendable'
-                      'glyphicon glyphicon-exclamation-sign'
-                    when 'Evita'
-                      'glyphicon glyphicon-minus-sign'
-                    when 'Sin datos'
-                      'no-data-ev-icon'
-                    end
-      checkBoxes << "'></i>"
+      checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0]}")
+      checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-lg btn-basica btn-zona-#{k} btn-title'>"
+      checkBoxes << "<i class = '#{v[1]}'></i>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
+
     checkBoxes.html_safe
   end
 
-  def dibujaZonasPez(pez)
-    '<div class="btn-group btn-group-sm" role="group" aria-label="...">'+
-        '<button type="button" class="btn btn-zona"><small>Zonas: </small></button>'+
-        '<button type="button" tooltip-title="Pacífico I" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[0] + '">I</button>'+
-        '<button type="button" tooltip-title="Pacífico II" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[1] + '">II</button>'+
-        '<button type="button" tooltip-title="Pacífico III" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[2] + '">III</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe IV" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[3] +'">IV</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe V" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[4] +'">V</button>'+
-        '<button type="button" tooltip-title="Golfo de México y Caribe VI" class="btn btn-title btn-zona btn-zona-' + pez.valor_zonas[5] +'">VI</button>'+
-        '</div>'
-  end
-
-  # Filtros para Categorías de riesgo y comercio internacional
-  def checkboxEstadoConservacionPeces(cat)
-    checkBoxes=''
-
-    cat.each do |k, valores|
-      checkBoxes << "<h5><strong>#{t(k)}</strong></h5>"
-      valores.each do |edo, id|
-        checkBoxes << "<label>"
-        checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
-        checkBoxes << "<span title = '#{t('cat_riesgo.' << edo.parameterize << '.nombre')}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>"
-        checkBoxes << "</span>"
-        checkBoxes << "</label>"
-      end
-    end
-    checkBoxes.html_safe
-  end
-
-  # Filtros para Categorías de riesgo y comercio internacional
-  def checkboxPeces(cat)
-    checkBoxes=''
+  def checkboxCriteriosPeces(cat, ico=false, titulo='')
+    checkBoxes="<h5><strong>#{titulo}</strong></h5>"
 
     cat.each do |k, valores|
       valores.each do |edo, id|
         checkBoxes << "<label>"
         checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
-        checkBoxes << "<span title = '#{edo}' class = 'btn btn-xs btn-default btn-basica btn-title #{k}'>"
-        checkBoxes << "#{edo}"
+        checkBoxes << "<span title = '#{edo}' class = '#{k} btn btn-xs btn-basica btn-title #{'btn-default' unless ico}'>"
+        checkBoxes << "#{edo}" unless ico
+        checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>" if ico
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
     end
+
     checkBoxes.html_safe
+  end
+
+  def dibujaZonasPez pez
+    @filtros[:zonas]
+    lista = '<ul>'<<'<small><b>Zonas: </b></small>'
+    @filtros[:zonas].each_with_index do |z, i|
+      lista << "<li tooltip-title='#{z[0]}' class='btn-title btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0].split(' ').last}</li>"
+    end
+    lista << '</ul>'
   end
 
 end

@@ -19,6 +19,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:not(#nombre){
   visibility: hidden;
 }
+fieldset{
+  border-top: 1px solid #ffffff;
+  padding-top: 10px;
+}
 .recomendada input + span{
   color: #ececec;
   border-radius: 50%;
@@ -28,8 +32,21 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
-span.zonas{
+.zonificada span.zonas{
   display: none;
+}
+.botones-peces{
+  width: 20%;
+  transition-delay: 0ms;
+  transition-property: width;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+}
+.botones-peces:hover{
+  width: 75%;
+}
+.botones-peces:hover:after{
+  content: " " attr(title) " ";
 }
 .resultados-peces{
     text-align: center;
@@ -44,10 +61,10 @@ span.zonas{
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.9);
   vertical-align: middle;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 .resultados-peces i.icono-resultado-pez {
-  transition: all .2s ease;
+  transition: all .2s ease-in-out;
   vertical-align: baseline;
   font-size: 4em;
 }
@@ -58,11 +75,11 @@ span.zonas{
   margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.75);
-  -ms-transform:scale(.75); /* IE 9 */
-  -moz-transform:scale(.75); /* Firefox */
-  -webkit-transform:scale(.75); /* Safari and Chrome */
-  -o-transform:scale(.75); /* Opera */
+  transform:scale(.8);
+  -ms-transform:scale(.8); /* IE 9 */
+  -moz-transform:scale(.8); /* Firefox */
+  -webkit-transform:scale(.8); /* Safari and Chrome */
+  -o-transform:scale(.8); /* Opera */
 
 }
 .resultados-peces .btn-ficha:hover:after {
@@ -82,7 +99,7 @@ span.zonas{
   background-color: #fafafa;
 }
 .resultados-peces .result-img-container a{
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 .resultados-peces .result-img-container .result-nombre-container{
     min-height: 44px;
@@ -120,7 +137,18 @@ span.zonas{
     overflow-y: visible;
 }
 
-.btn-zona{color: #3a3a3a; font-weight: bolder; cursor: default!important; border: none;}
+.btn-zona{
+  display: inline-table;
+  padding: 2px 0px;
+  font-weight: bold;
+  text-align: center;
+/*  vertical-align: middle;*/
+  border-radius: 2px;
+  color: #3a3a3a;
+  margin: 0px 1px 0px 0px;
+  width: 25px;
+  font-size: .8em;
+}
 
 .con-estrella{
   fill: rgba(0, 0, 0, 255);
