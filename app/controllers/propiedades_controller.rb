@@ -4,12 +4,15 @@ class PropiedadesController < ApplicationController
   # GET /propiedades
   # GET /propiedades.json
   def index
-    @propiedades = Propiedad.all
+    @propiedades = Propiedad.all.order(ancestry: :asc)
+
+    render 'peces/propiedades/index'
   end
 
   # GET /propiedades/1
   # GET /propiedades/1.json
   def show
+    render 'peces/propiedades/show'
   end
 
   # GET /propiedades/new
