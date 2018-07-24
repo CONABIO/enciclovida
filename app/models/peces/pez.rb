@@ -14,7 +14,7 @@ class Pez < ActiveRecord::Base
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
 
-  scope :select_joins_peces, -> { select([:nombres_comunes, :valor_total, :valor_zonas, :imagen, :con_estrella]).
+  scope :select_joins_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
       select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
 
   scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
@@ -24,28 +24,29 @@ class Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  validates_presence_of :especie_id
   attr_accessor :guardar_manual, :anio, :valor_por_zona
+
+  validates_presence_of :especie_id
   before_save :actualiza_pez, unless: :guardar_manual
   after_save :guarda_valor_zonas_y_total, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
-  # Corre los metodos necesarios para actualizar el pez
+  # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
-    self.guardar_manual = true
     guarda_nom_iucn
-    guarda_imagen
+    asigna_imagen
     guarda_redis
+    asigna_valor_zonas_y_total
   end
 
-  # Guarda el redis del pez aprovechando el metodo empaquetado de especie
+  # REVISADO: Guarda el redis del pez aprovechando el metodo empaquetado de especie
   def guarda_redis
     especie.guarda_redis_servicio(loader: 'peces', foto_principal: imagen)
   end
 
-  # Actualiza todos los servicios
+  # REVISADO: Actualiza todos los servicios
   def self.actualiza_todo
     all.each do |p|
       p.guardar_manual = true
@@ -54,14 +55,14 @@ class Pez < ActiveRecord::Base
     end
   end
 
-  # Asigna los valores promedio por zona, de acuerdo a cada estado
+  # REVISADO: Asigna los valores promedio por zona, de acuerdo a cada estado
   def guarda_valor_zonas_y_total
     asigna_valor_zonas_y_total
     self.guardar_manual = true
     save if valid?
   end
 
-  # Asigna los valores promedio por zona, de acuerdo a todos los criterios
+  # REVISADO: Asigna los valores promedio por zona, de acuerdo a todos los criterios
   def asigna_valor_zonas_y_total
     asigna_anio
     valores_por_zona
@@ -72,7 +73,7 @@ class Pez < ActiveRecord::Base
       if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
       elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
-        self.valor_por_zona[zona_num] = 's'
+        #self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
       end
@@ -82,6 +83,7 @@ class Pez < ActiveRecord::Base
     self.valor_total = color_zona_a_valor.inject(:+)
   end
 
+  # REVISADO: Actualiza todas las zonas y valores totales de todos los peces
   def self.actualiza_todo_valor_zonas_y_total
     all.each do |p|
       p.guardar_manual = true
@@ -89,23 +91,19 @@ class Pez < ActiveRecord::Base
     end
   end
 
-  # Asigna los valores de la nom de acuerdo a catalogos
+  # REVISADO: Asigna los valores de la nom de acuerdo a catalogos
   def guarda_nom_iucn
     asigna_anio
+    criterio_id = 158
 
     # Para actualizar o crear el valor de la nom
-    criterio_id = if nom = especie.catalogos.nom.first
-                    if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
-                      if crit = prop.criterios.where('anio=?', 2012).first
-                        crit.id
-                      else
-                        158
-                      end
-                    end
-
-                  else
-                    158
-                  end
+    if nom = especie.catalogos.nom.first
+      if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
+        if crit = prop.criterios.where('anio=?', 2012).first
+          criterio_id = crit.id
+        end
+      end
+    end
 
     if crit = criterios.where('anio=?', 2012).nom.first
       pez_crit = peces_criterios.where(criterio_id: crit.id).first
@@ -118,18 +116,15 @@ class Pez < ActiveRecord::Base
     pez_crit.save if pez_crit.changed?
 
     # Para actualizar o crear el valor de iucn
-    criterio_id = if iucn = especie.catalogos.iucn.first
-                    if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
-                      if crit = prop.criterios.where('anio=?', 2012).first
-                        crit.id
-                      else
-                        159
-                      end
-                    end
+    criterio_id = 159
 
-                  else
-                    159
-                  end
+    if iucn = especie.catalogos.iucn.first
+      if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
+        if crit = prop.criterios.where('anio=?', 2012).first
+          criterio_id = crit.id
+        end
+      end
+    end
 
     if crit = criterios.where('anio=?', 2012).iucn.first
       pez_crit = peces_criterios.where(criterio_id: crit.id).first
@@ -142,6 +137,7 @@ class Pez < ActiveRecord::Base
     pez_crit.save if pez_crit.changed?
   end
 
+  # REVISADO: Actualiza las categorias de riesgo de todos los peces
   def self.actualiza_todo_nom_iucn
     all.each do |p|
       p.guardar_manual = true
@@ -149,12 +145,13 @@ class Pez < ActiveRecord::Base
     end
   end
 
+  # REVISADO: Guarda la imagen asociada del pez
   def guarda_imagen
     asigna_imagen
     save if changed?
   end
 
-  # Asigna la ilustracion, foto o ilustracion, asi como el tipo de foto
+  # REVISADO: Asigna la ilustracion, foto o ilustracion, asi como el tipo de foto
   def asigna_imagen
     # Trata de asignar la ilustracion
     bdi = BDIService.new
@@ -193,6 +190,7 @@ class Pez < ActiveRecord::Base
     self.tipo_imagen = 4
   end
 
+  # REVISADO: Actualiza la imagen principal de todos los peces
   def self.actualiza_todo_imagen
     all.each do |p|
       p.guardar_manual = true
@@ -203,7 +201,7 @@ class Pez < ActiveRecord::Base
 
   private
 
-  # Asocia el valor por zona a un color correspondiente
+  # REVISADO: Asocia el valor por zona a un color correspondiente
   def valor_zona_a_color
     valor_por_zona.each_with_index do |zona, i|
       next unless zona.class == Integer # Por si ya tiene asignada una letra
@@ -219,7 +217,7 @@ class Pez < ActiveRecord::Base
     end
   end
 
-  # Este valor es solo de referencia para el valor total
+  # REVISADO: Este valor es solo de referencia para el valor total
   def color_zona_a_valor
     zonas = []
 
@@ -239,12 +237,12 @@ class Pez < ActiveRecord::Base
     zonas
   end
 
-  # Para sacar solo el año en cuestion
+  # REVISADO: Para sacar solo el año en cuestion
   def asigna_anio
     self.anio = anio || CONFIG.peces.anio || 2012
   end
 
-  # El valor de los criterios sin la CNP
+  # REVISADO: El valor de los criterios sin la CNP
   def valores_por_zona
     asigna_anio
     valor = 0

@@ -1,7 +1,7 @@
 module PecesHelper
-  def tituloNombresPeces(taxon, params={})
 
-    nombre = taxon.nombres_comunes.present? ? taxon.nombres_comunes.split(',').first : ''
+  def tituloNombresPeces(taxon, params={})
+    nombre = taxon.nombre_comun_principal.present? ? taxon.nombre_comun_principal : ''
 
     if params[:title]
       nombre.present? ? "<h4>#{nombre}</h4> <h5>#{taxon.nombre_cientifico}</h5>".html_safe : taxon.nombre_cientifico
@@ -12,6 +12,17 @@ module PecesHelper
     else
       'Ocurrio un error en el nombre'.html_safe
     end
+  end
+
+  def checboxEstrella
+    checkBox = ''
+    checkBox << "<label>"
+    checkBox << check_box_tag('con_estrella[]', '1', false, id: 'con_estrella')
+    checkBox << "<span title='Especies certificadas' class = 'btn btn-lg btn-basica btn-title con-estrella'>"
+    checkBox << "<i class = 'glyphicon glyphicon-star'></i>"
+    checkBox << "</span>"
+    checkBox << "</label>"
+    checkBox.html_safe
   end
 
   def checkboxRecomendacion
@@ -25,9 +36,9 @@ module PecesHelper
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
+
     checkBoxes.html_safe
   end
-
 
   def checkboxCriteriosPeces(cat, ico=false, titulo='')
     checkBoxes="<h5><strong>#{titulo}</strong></h5>"
@@ -43,6 +54,7 @@ module PecesHelper
         checkBoxes << "</label>"
       end
     end
+
     checkBoxes.html_safe
   end
 
