@@ -1,25 +1,34 @@
 <p id="notice"><%= notice %></p>
 
+<%= link_to 'Nueva propiedad', new_propiedad_path %>
+
 <h1>Propiedades</h1>
 
 <table>
   <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
+  <tr>
+    <th>ID</th>
+    <th>Nombre propiedad</th>
+    <th>Tipo propiedad</th>
+    <th></th>
+  </tr>
   </thead>
 
   <tbody>
-    <% @propiedades.each do |propiedad| %>
-      <tr>
-        <td><%= link_to 'Show', propiedad %></td>
-        <td><%= link_to 'Edit', edit_propiedad_path(propiedad) %></td>
-        <td><%= link_to 'Destroy', propiedad, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+  <% @propiedades.each do |propiedad| %>
+    <tr>
+      <td><%= propiedad.id %></td>
+      <td><%= propiedad.nombre_propiedad %></td>
+      <td><%= propiedad.tipo_propiedad %></td>
+      <td>
+        <%= link_to 'Ver', propiedad %> | <%= link_to 'Editar', edit_propiedad_path(propiedad) %> |
+        <%= link_to 'Destruir', propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
+      </td>
+    </tr>
+  <% end %>
   </tbody>
 </table>
 
 <br>
 
-<%= link_to 'New Propiedad', new_propiedad_path %>
+<%= link_to 'Nueva propiedad', new_propiedad_path %>
