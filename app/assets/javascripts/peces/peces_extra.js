@@ -10,7 +10,7 @@ var bloqueaBusqueda = function()
 
 $(document).ready(function(){
     TYPES = ['peces'];
-    soulmate_asigna('peces');
+    soulmateAsigna('peces');
 
     $(".btn-ficha").one('click',function(){
         idEspecie = $(this).data('especie-id');
