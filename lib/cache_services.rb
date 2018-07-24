@@ -18,7 +18,7 @@ module CacheServices
     if Rails.env.production?
       delay(queue: 'redis').guarda_redis(opc)
     else
-      guarda_redis
+      guarda_redis(opc)
     end
   end
 
@@ -139,6 +139,47 @@ module CacheServices
     Rails.cache.delete("#{recurso}_#{id}")
   end
 
+  # REVISADO: Gurada los nombres comunes y cientifico en redis
+  def guarda_redis(opc={})
+    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
+    self.x_foto_principal = nil
+    self.x_nombre_comun_principal = nil
+    self.x_lengua = nil
+    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
+    self.x_nombres_comunes = nil
+    self.x_nombres_comunes_todos = []
+
+    if opc[:loader].present? # Guarda en el loader que especifico
+      loader = Soulmate::Loader.new(opc[:loader])
+    else # Guarda en la cataegoria taxonomica correspondiente
+      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+      loader = Soulmate::Loader.new(categoria)
+      borra_fuzzy_match
+      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
+    end
+
+    # Borra los actuales
+    borra_redis(loader)
+
+    # Guarda el redis con el nombre cientifico
+    loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
+
+    # Guarda el redis con todos los nombres comunes
+    num_nombre = 0
+
+    x_nombres_comunes_todos.each do |nombres|
+      lengua = nombres.keys.first
+
+      nombres.values.flatten.each_with_index do |nombre|
+        num_nombre+= 1
+        id_referencia = id_referencia_nombre_comun(num_nombre)
+        nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
+        loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
+        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
+      end
+    end
+  end
+
 
   private
 
@@ -251,48 +292,7 @@ module CacheServices
     datos.stringify_keys
   end
 
-  # REVISADO: Gurada los nombres comunes y cientifico en redis
-  def guarda_redis(opc={})
-    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
-    self.x_foto_principal = nil
-    self.x_nombre_comun_principal = nil
-    self.x_lengua = nil
-    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
-    self.x_nombres_comunes = nil
-    self.x_nombres_comunes_todos = []
-
-    if opc[:loader].present? # Guarda en el loader que especifico
-      loader = Soulmate::Loader.new(opc[:loader])
-    else # Guarda en la cataegoria taxonomica correspondiente
-      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-      loader = Soulmate::Loader.new(categoria)
-      borra_fuzzy_match
-      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
-    end
-
-    # Borra los actuales
-    borra_redis(loader)
-
-    # Guarda el redis con el nombre cientifico
-    loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
-
-    # Guarda el redis con todos los nombres comunes
-    num_nombre = 0
-
-    x_nombres_comunes_todos.each do |nombres|
-      lengua = nombres.keys.first
-
-      nombres.values.flatten.each_with_index do |nombre|
-        num_nombre+= 1
-        id_referencia = id_referencia_nombre_comun(num_nombre)
-        nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
-        loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
-        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
-      end
-    end
-  end
-
-  # Es el ID del nombre comun que va vinculado al nombre cientifico
+  # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def id_referencia_nombre_comun(num_nombre)
     # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
     "9#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(2,'0')}".to_i
