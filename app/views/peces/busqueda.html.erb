@@ -10,14 +10,17 @@
   </script>
 <%- end -%>
 
+<%= notice if notice.present? %>
 <div id="busqueda_avanzada">
 
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
     <h4 class="text-success text-center">
       <strong>Peces y mariscos comerciales</strong>
     </h4>
-    <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button', :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-    <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-success pull-right", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+    <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button',
+                   :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+    <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'},
+                   :class => "botones-peces btn btn-success pull-right", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
 
     <div class="clearfix" style="padding-bottom: 10px;"></div>
 
@@ -25,6 +28,8 @@
       <fieldset class="text-center">
         <h5 class="text-primary"><strong>Puedes seleccionar las recomendaciones del semáforo:</strong></h5>
         <div class="col-xs-12 form-peces">
+          <% checboxEstrella.inspect %>
+          <%= checboxEstrella %>
           <%= checkboxRecomendacion %>
         </div>
       </fieldset>
@@ -48,7 +53,6 @@
       </fieldset>
     </div>
 
-
     <div class="exacta col-xs-12 <%= 'col-sm-12 col-md-6 col-lg-5' if(@peces.nil?) %>"></div>
 
     <div class="zonificada col-xs-12 <%= 'col-sm-12 col-md-6 col-lg-7' if(@peces.nil?) %>">
@@ -70,8 +74,8 @@
           <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <h5><strong>Pesquerías en vías de sustentabilidad</strong></h5>
-          <%= select_tag(:pesquerias, grouped_options_for_select(@filtros[:pesquerias]), :prompt => '- - Selecciona una opción - -', class: 'form-control') %>
+          <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
+          <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].collect { |p| [tituloNombresPeces(p, show: true), p.especie_id] }), :prompt => '- - Selecciona una opción - -', class: 'form-control') %>
         </div>
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-6 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Norma Oficial Mexicana NOM-059')%>
@@ -93,6 +97,5 @@
     </div>
 
   <% end -%>
-
 
 </div>

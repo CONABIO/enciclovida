@@ -44,7 +44,7 @@ class PecesController < ApplicationController
   # PATCH/PUT /peces/1
   def update
     if @pez.update_attributes(pez_params)
-      redirect_to @pez, notice: 'Pez was successfully updated.'
+      redirect_to @pez, notice: 'El Pez fue actualizado satisfactoriamente.'
     else
       render action: 'edit'
     end
@@ -53,7 +53,7 @@ class PecesController < ApplicationController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to peces_url, notice: 'Pez was successfully destroyed.'
+    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def busqueda
@@ -65,12 +65,17 @@ class PecesController < ApplicationController
       # Busqueda por nombre científico o comunes
       @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
+      # Busqueda con estrella
+      @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
+
+      # Busqueda con pesquerias
+      @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
+
       # Filtros globales
       @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
-      @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
       @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
       @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?

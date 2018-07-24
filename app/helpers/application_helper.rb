@@ -173,7 +173,5 @@ module ApplicationHelper
     rol = Rol.find_by_nombre_rol(nombre_rol)
     #Revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
     return false unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.path_ids).any?
-
-    return true
   end
 end
