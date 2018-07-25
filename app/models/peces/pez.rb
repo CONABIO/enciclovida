@@ -43,7 +43,7 @@ class Pez < ActiveRecord::Base
 
   # REVISADO: Guarda el redis del pez aprovechando el metodo empaquetado de especie
   def guarda_redis
-    especie.guarda_redis_servicio(loader: 'peces', foto_principal: imagen)
+    especie.guarda_redis(loader: 'peces', foto_principal: imagen)
   end
 
   # REVISADO: Actualiza todos los servicios
