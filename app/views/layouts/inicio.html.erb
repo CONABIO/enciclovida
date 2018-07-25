@@ -40,7 +40,6 @@
 
 <%= yield %>
 
-<!-- Partners -->
 <aside class="partners">
   <%= render :partial => 'inicio/index_partners' %>
 </aside>
@@ -53,7 +52,6 @@
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
 
-<%#TODO bitacora.html_safe if bitacora.present? %>
 <% if Rails.env.production? %>
     <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
 <% end %>
