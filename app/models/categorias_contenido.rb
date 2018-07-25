@@ -1,5 +1,6 @@
 class CategoriasContenido < ActiveRecord::Base
   self.table_name='categorias_contenido'
+  self.primary_key = 'id'
 
   has_ancestry
 
