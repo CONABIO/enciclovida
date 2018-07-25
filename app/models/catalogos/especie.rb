@@ -75,8 +75,6 @@ class Especie < ActiveRecord::Base
   has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
 
 
-
-  has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
   has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
 
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
