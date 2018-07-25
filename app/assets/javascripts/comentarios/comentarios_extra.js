@@ -87,7 +87,7 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('change', ".comentario_estatus", function()
+    $('#escucha_envio').on('change', ".comentario_estatus", function()
     {
         var estatus = $(this).val();
 
@@ -145,7 +145,7 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('change', ".comentario_categorias_contenido_id", function()
+    $('#escucha_envio').on('change', ".comentario_categorias_contenido_id", function()
     {
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
@@ -189,7 +189,7 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('click', ".historial", function()
+    $('#escucha_envio').on('click', ".historial", function()
     {
         var especie_id = $(this).attr('especie_id');
         var comentario_id = $(this).attr('comentario_id');
@@ -213,7 +213,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $(document).on('click', "[id^='ocultar_']", function()
+    $('#escucha_envio').on('click', "[id^='ocultar_']", function()
     {
         var comentario_id = $(this).attr('id').split("_")[1];
         var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
@@ -224,7 +224,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $(document).on('change', "[id^='filtro_']", function()
+    $('#escucha_envio').on('change', "[id^='filtro_']", function()
     {
         $.ajax({
             url: "/comentarios/administracion",
@@ -237,7 +237,7 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()
+    $('#escucha_envio').on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()
     {
         if ($(this).attr("id") == "filtro_created_at")
         {
