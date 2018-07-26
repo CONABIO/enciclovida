@@ -671,7 +671,7 @@ class EspeciesController < ApplicationController
     end
 
     # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-    @especie.servicios
+    @especie.servicios if params[:action] == 'show'
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
