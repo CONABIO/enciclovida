@@ -11,18 +11,20 @@ var bloqueaBusqueda = function()
 $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
-    
+
     $('#multiModal').on('show.bs.modal', function (event) {
-        button = $(event.relatedTarget); // Button that triggered the modal
-        idEspecie = $(button).data('especie-id');
-        pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
+        var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
+        var idEspecie = $(button).data('especie-id');
+        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
         $('#multiModalBody').load(pestaña);
-        $('#multiModalLabel').html(button.siblings('.result-nombre-container').children('h4').html());
-        $('#multiModalLabel_bis').html(button.siblings('.result-nombre-container').children('h5').html());
+        $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
     });
 
-    //Eliminar contenido del modal-body (necesario para q deje de reproducirse el video/audio cuando se cierra modal)
-    $('#multiModal').on('hide.bs.modal', function(){$('#multiModalBody').empty()});
+    //Eliminar contenido del modal-body y modal header (para poder reutilizar el modal en peces)
+    $('#multiModal').on('hide.bs.modal', function(){
+        $('#multiModalBody').empty();
+        $('.modal-header h5').remove();
+    });
 
 
     $("path[id^=path_zonas_]").on('click', function(){
