@@ -16,9 +16,6 @@
       <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
       <li><%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
-      <li><%= link_to 'Diferencia entre las vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-      <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-      <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
       <li role="separator" class="divider"></li>
       <% if usuario_signed_in? %>
         <li><%= link_to 'Administracion de comentarios', admin_path, data: { turbolinks: false } %></li>
