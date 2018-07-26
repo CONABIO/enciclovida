@@ -27,7 +27,7 @@ class Proveedor < ActiveRecord::Base
     {estatus: true, nombres_comunes: nombres_comunes}
   end
 
-  # REVISADO: Consulta la fihca de naturalista por medio de su API nodejs
+  # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
   def ficha_naturalista_api_nodejs
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
