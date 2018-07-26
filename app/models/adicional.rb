@@ -1,6 +1,6 @@
 class Adicional < ActiveRecord::Base
 
-  establish_connection(:development)
+  establish_connection(Rails.env.to_sym)
   self.table_name='enciclovida.adicionales'
 
   belongs_to :especie
@@ -10,4 +10,5 @@ class Adicional < ActiveRecord::Base
 
   # Lenguas aceptadas de NaturaLista
   LENGUAS_ACEPTADAS = %w(espanol spanish espanol_mexico huasteco maya maya_peninsular mayan_languages mazateco mixteco mixteco_de_yoloxochitl totonaco otomi nahuatl zapoteco english)
+
 end

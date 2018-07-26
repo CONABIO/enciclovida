@@ -1,6 +1,6 @@
 class Comentario < ActiveRecord::Base
 
-  establish_connection(:development)
+  establish_connection(Rails.env.to_sym)
   self.table_name='enciclovida.comentarios'
   self.primary_key = 'id'
 
@@ -88,4 +88,5 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
       end
     end
   end
+
 end

@@ -1,4 +1,6 @@
 class UsuarioRol < ActiveRecord::Base
+
+  establish_connection(Rails.env.to_sym)
   belongs_to :usuario
   belongs_to :rol
 

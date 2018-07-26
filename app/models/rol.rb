@@ -1,6 +1,6 @@
 class Rol < ActiveRecord::Base
 
-  establish_connection(:development)
+  establish_connection(Rails.env.to_sym)
   self.table_name='enciclovida.roles'
 
   has_ancestry

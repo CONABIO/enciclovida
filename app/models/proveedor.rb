@@ -1,6 +1,6 @@
 class Proveedor < ActiveRecord::Base
 
-  establish_connection(:development)
+  establish_connection(Rails.env.to_sym)
   self.table_name='enciclovida.proveedores'
 
   belongs_to :especie
@@ -654,4 +654,5 @@ class Proveedor < ActiveRecord::Base
     end
     photos
   end
+
 end
