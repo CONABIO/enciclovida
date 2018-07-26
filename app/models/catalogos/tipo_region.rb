@@ -1,5 +1,6 @@
 class TipoRegion < ActiveRecord::Base
 
+  establish_connection(:catalogos)
   self.table_name='tipos_regiones'
   self.primary_key='id'
   has_many :regiones

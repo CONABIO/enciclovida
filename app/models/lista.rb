@@ -1,5 +1,6 @@
 class Lista < ActiveRecord::Base
 
+  establish_connection(Rails.env.to_sym)
   self.table_name = 'listas'
   attr_accessor :taxones, :taxon
   validates :nombre_lista, :presence => true, :uniqueness => true
@@ -267,4 +268,5 @@ class Lista < ActiveRecord::Base
   def quita_repetidos
     self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
   end
+
 end
