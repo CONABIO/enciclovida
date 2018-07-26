@@ -100,6 +100,7 @@ class EspeciesController < ApplicationController
         @datos[:taxon] = @especie.id
         @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
         @datos[:cual_ficha] = ''
+        @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
 
       format.json do
