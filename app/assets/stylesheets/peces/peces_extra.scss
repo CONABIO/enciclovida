@@ -109,12 +109,17 @@ fieldset{
     position: relative;
 
 }
-.resultados-peces .result-img-container h5, .resultados-peces .result-img-container h4{
+.resultados-peces .result-img-container h5{
     margin: 0;
     padding: 2px 5px;
     text-align: center;
     font-weight: bold;
     font-size: 1em;
+}
+.modal-header h5{
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.25em;
 }
 .result-datos-container{
     width: 400px;
