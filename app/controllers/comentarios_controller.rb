@@ -295,7 +295,7 @@ class ComentariosController < ApplicationController
     tax_especifica = current_usuario.usuario_especies
     contenido_especifico = current_usuario.categorias_contenidos
 
-    consulta = Comentario.datos_basicos
+    consulta = Comentario
 
     if params[:comentario].present?
       params = comentario_params
@@ -336,7 +336,7 @@ class ComentariosController < ApplicationController
         consulta = consulta.order('comentarios.created_at DESC')
       end
 
-      @comentarios = consulta.offset(offset).limit(@por_pagina)
+      @comentarios = consulta.datos_basicos.offset(offset).limit(@por_pagina)
 
     else
 
@@ -358,7 +358,7 @@ class ComentariosController < ApplicationController
 
       # Comentarios totales
       @totales = consulta.count
-      @comentarios = consulta.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
+      @comentarios = consulta.datos_basicos.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
     end
 
     @comentarios.each do |c|

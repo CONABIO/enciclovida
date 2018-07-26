@@ -14,25 +14,7 @@ class Comentario < ActiveRecord::Base
   has_one :general, :class_name => 'ComentarioGeneral', :foreign_key => 'comentario_id'
   has_one :comentario_proveedor, :class_name => 'ComentarioProveedor', :foreign_key => 'comentario_id'
 
-  # Atributo para tener la cuenta de los comentarios del historial
-  attr_reader :cuantos
-  attr_writer :cuantos
-
-  # Para evitar el google captcha a los usuarios administradores
-  attr_reader :con_verificacion
-  attr_writer :con_verificacion
-
-  # Para saber si es un comentario de un administrador
-  attr_reader :es_admin
-  attr_writer :es_admin
-
-  # Para saber si es una respuesta del usuario
-  attr_reader :es_respuesta
-  attr_writer :es_respuesta
-
-  # Para saber si es un comentario de un administrador
-  attr_reader :es_propietario
-  attr_writer :es_propietario
+  attr_accessor :cuantos, :con_verificacion, :es_admin, :es_respuesta, :es_propietario
 
   validates_presence_of :comentario
   validates_presence_of :especie_id

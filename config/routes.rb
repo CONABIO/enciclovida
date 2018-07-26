@@ -8,6 +8,9 @@ Buscador::Application.routes.draw do
     end
   end
 
+  resources :criterios
+  resources :propiedades
+
   resources :regiones_mapas do
     collection do
       get 'dame-tipo-region' => :dame_tipo_region
