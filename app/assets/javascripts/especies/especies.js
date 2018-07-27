@@ -1,2 +1,2 @@
-//= require especies/carrusel/carrusel.js
+//= require especies/carrusel/carrusel
 //= require especies/especies_extra

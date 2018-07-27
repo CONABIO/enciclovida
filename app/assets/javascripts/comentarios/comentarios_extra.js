@@ -58,6 +58,9 @@ $(document).ready(function(){
     });
     */
 
+    muestra_historial_comentario('escucha_envio');
+    oculta_historial_comentario('escucha_envio');
+
     $('.comentario_submit').on('click', function(){
         var errores = [];
 
@@ -187,41 +190,6 @@ $(document).ready(function(){
                 $('#comentario_estatus_div_' + comentario_id).empty().append("Hubo un problema al actualizar");
             }
         });
-    });
-
-    $('#escucha_envio').on('click', ".historial", function()
-    {
-        var especie_id = $(this).attr('especie_id');
-        var comentario_id = $(this).attr('comentario_id');
-        var ficha = $(this).attr('ficha');
-
-        if (especie_id == undefined || comentario_id == undefined)
-            return false;
-
-        $.ajax({
-            url: "/especies/" + especie_id + "/comentarios/" + comentario_id,
-            method: 'GET',
-            data: {ficha: ficha}
-
-        }).done(function(html) {
-            $('#historial_' + comentario_id).empty().append(html).slideDown();
-            var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
-            link_historial.hide();
-            $('#ocultar_' + comentario_id).slideDown();
-        });
-
-        return false;
-    });
-
-    $('#escucha_envio').on('click', "[id^='ocultar_']", function()
-    {
-        var comentario_id = $(this).attr('id').split("_")[1];
-        var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
-
-        $('#historial_' + comentario_id).hide();
-        $('#ocultar_' + comentario_id).hide();
-        link_historial.slideDown();
-        return false;
     });
 
     $('#escucha_envio').on('change', "[id^='filtro_']", function()
