@@ -94,10 +94,11 @@ Buscador::Application.routes.draw do
 
   resources :especies_catalogo
 
-  resources :especies, as: :especie do
+  resources :especies, :except => :show, as: :especie do
     resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
 
     collection do
+      get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }
       post :update_photos, :as => :update_photos_for
       get ':id/arbol' => 'especies#arbol'
       get :error

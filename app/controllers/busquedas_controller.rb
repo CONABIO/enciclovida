@@ -141,6 +141,7 @@ class BusquedasController < ApplicationController
     @totales = busqueda.totales
     @por_categoria = busqueda.por_categoria || []
     @taxones = busqueda.taxones
+    @fuzzy_match = busqueda.fuzzy_match
     arbol = false
 
     response.headers['x-total-entries'] = @totales.to_s if @taxones.present?

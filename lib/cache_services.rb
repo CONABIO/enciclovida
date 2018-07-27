@@ -3,10 +3,10 @@ module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
     suma_visita_servicio
-    #cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-    #cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    #cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    #cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
+    cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
     #guarda_observaciones_naturalista_servicio
     #guarda_ejemplares_snib_servicio
     guarda_redis_servicio
@@ -172,7 +172,7 @@ module CacheServices
 
       nombres.values.flatten.each_with_index do |nombre|
         num_nombre+= 1
-        id_referencia = id_referencia_nombre_comun(num_nombre)
+        id_referencia = nombre_comun_a_id_referencia(num_nombre)
         nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
         loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
         FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
@@ -293,7 +293,7 @@ module CacheServices
   end
 
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
-  def id_referencia_nombre_comun(num_nombre)
+  def nombre_comun_a_id_referencia(num_nombre)
     # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
     "9#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(2,'0')}".to_i
   end
@@ -306,7 +306,7 @@ module CacheServices
 
     # Borra los nombre comunes
     50.times do |i|
-      id_referencia = id_referencia_nombre_comun(i+1)
+      id_referencia = nombre_comun_a_id_referencia(i+1)
       nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
     end
@@ -319,7 +319,7 @@ module CacheServices
 
     # Borra los nombre comunes
     50.times do |i|
-      id_referencia = id_referencia_nombre_comun(i+1)
+      id_referencia = nombre_comun_a_id_referencia(i+1)
       FUZZY_NOM_COM.delete(id_referencia)
     end
   end

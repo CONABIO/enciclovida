@@ -1,4 +1,6 @@
 class CategoriasContenido < ActiveRecord::Base
+
+  establish_connection(Rails.env.to_sym)
   self.table_name='categorias_contenido'
   self.primary_key = 'id'
 
@@ -96,4 +98,5 @@ class CategoriasContenido < ActiveRecord::Base
 
     grouped_options
   end
+  
 end
