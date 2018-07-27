@@ -145,7 +145,14 @@ module EspeciesHelper
     def creaLista(nombre, opc={})
       # TODO: Poner las bibliografias en un modal, el actual esta roto
       bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
-      "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
+      html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
+
+      bibliografias.each do |bibliografia|
+        html << " <a tabindex='0' class='btn btn-link bibliografia-nombre-comun' role='button' data-toggle='popover' data-trigger='focus'
+tooltip-title='Bibliografía' data-content='#{bibliografia}'>Bibliografía</a>"
+      end
+
+      html
     end
 
     taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
