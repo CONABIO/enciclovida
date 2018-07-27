@@ -12,11 +12,20 @@ $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
 
-    $(".btn-ficha").one('click',function(){
-        idEspecie = $(this).data('especie-id');
-        pestaña = '/peces/'+idEspecie+'?layout=0';
-        $('#datos-'+idEspecie).load(pestaña);
+    $('#multiModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
+        var idEspecie = $(button).data('especie-id');
+        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
+        $('#multiModalBody').load(pestaña);
+        $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
     });
+
+    //Eliminar contenido del modal-body y modal header (para poder reutilizar el modal en peces)
+    $('#multiModal').on('hide.bs.modal', function(){
+        $('#multiModalBody').empty();
+        $('.modal-header h5').remove();
+    });
+
 
     $("path[id^=path_zonas_]").on('click', function(){
         $(this).toggleClass('zona-seleccionada');
