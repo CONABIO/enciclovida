@@ -300,3 +300,24 @@ ul.social-buttons li a:active {
 .media-tabs div.result-img-container a{
   cursor: pointer;
 }
+#map .glyphicon, #map span[class$="-ev-icon"]{
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 15px;
+  padding: 3px;
+}
+.leaflet-control-layers-expanded{
+  background-color:rgba(229, 232, 226, 0.68)!important;
+}
+#map sub{
+  color: #333333;
+  background-color: #800000;
+}
+sub{
+  border-radius: 8px;
+  color: #333333;
+  background-color: #dddddd;
+  padding: 2px 4px;
+  margin-left: -2px;
+  font-size: .8em;
+  font-weight: bold;
+}
