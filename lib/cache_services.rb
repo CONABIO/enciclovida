@@ -7,8 +7,8 @@ module CacheServices
     cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
     cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
     cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    #guarda_observaciones_naturalista_servicio
-    #guarda_ejemplares_snib_servicio
+    guarda_observaciones_naturalista_servicio
+    guarda_ejemplares_snib_servicio
     guarda_redis_servicio
     guarda_pez_servicios
   end
@@ -295,7 +295,7 @@ module CacheServices
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def nombre_comun_a_id_referencia(num_nombre)
     # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
-    "9#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(2,'0')}".to_i
+    "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
   # REVISADO: borra todos los nombres comunes y el cnetifico del redis, para posteriormente volver a generarlo
