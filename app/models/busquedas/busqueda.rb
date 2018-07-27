@@ -101,4 +101,11 @@ Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
     end
   end
 
+
+  protected
+
+  # REVISADO: Regresa el ID de la centralizacion de acuerdo a uin nombre comun dado
+  def id_referencia_a_nombre_comun(id_referencia)
+    id_referencia.to_s[1..6].to_i
+  end
 end

@@ -2,7 +2,7 @@ require 'digest/sha2'
 
 class Usuario < ActiveRecord::Base
 
-  establish_connection(:development)
+  establish_connection(Rails.env.to_sym)
   self.table_name='enciclovida.usuarios'
 
   # Para validar un correo y otros modelos lo puedan utilizar

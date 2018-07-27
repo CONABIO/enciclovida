@@ -20,11 +20,6 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  # Los servicios de estadisticas y cache, solo para el show
-  before_action only: [:show] do
-    @especie.servicios
-  end
-
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -105,6 +100,7 @@ class EspeciesController < ApplicationController
         @datos[:taxon] = @especie.id
         @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
         @datos[:cual_ficha] = ''
+        @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
 
       format.json do
@@ -456,39 +452,6 @@ class EspeciesController < ApplicationController
     @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
-  def edit_photos
-    @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
-  end
-
-  def update_photos
-    photos = retrieve_photos
-    errors = photos.map do |p|
-      p.valid? ? nil : p.errors.full_messages
-    end.flatten.compact
-
-    @especie.photos = photos
-    @especie.save
-
-    #unless photos.count == 0
-    #  Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)
-    #end
-    if errors.blank?
-      flash[:notice] = 'Las fotos fueron actualizadas satisfactoriamente'
-    else
-      flash[:error] = "Algunas fotos no pudieron ser guardadas, debido a: #{errors.to_sentence.downcase}"
-    end
-    redirect_to especie_path(@especie)
-  rescue Errno::ETIMEDOUT
-    flash[:error] = t(:request_timed_out)
-    redirect_to especie_path(@especie)
-=begin
-  rescue Koala::Facebook::APIError => e
-    raise e unless e.message =~ /OAuthException/
-    flash[:error] = t(:facebook_needs_the_owner_of_that_photo_to, :site_name_short => CONFIG.site_name_short)
-    redirect_back_or_default(taxon_path(@taxon))
-=end
-  end
-
   # Viene de la pestaña de la ficha
   def describe
     @describers = if CONFIG.taxon_describers
@@ -693,14 +656,22 @@ class EspeciesController < ApplicationController
     end
   end
 
+
   private
 
   def set_especie(arbol = false)
-    begin
+    begin  # Coincidio y es el ID de la centralizacion
       @especie = Especie.find(params[:id])
-    rescue    #si no encontro el taxon
-      render :_error and return
+    rescue   #si no encontro el taxon, puede ser el ID viejo de millones
+      if id_millon = Adicional.where(idMillon: params[:id]).first
+        @especie = Especie.find(id_millon.especie_id)
+      else  # Tampoco era el ID de millon
+        render :_error and return
+      end
     end
+
+    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+    @especie.servicios if params[:action] == 'show'
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
@@ -738,40 +709,6 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
-  end
-
-  def retrieve_photos
-    #[retrieve_remote_photos, retrieve_local_photos].flatten.compact
-    [retrieve_remote_photos].flatten.compact
-  end
-
-  def retrieve_remote_photos
-    photo_classes = Photo.descendent_classes - [LocalPhoto]
-    photos = []
-    photo_classes.each do |photo_class|
-      param = photo_class.to_s.underscore.pluralize
-      next if params[param].blank?
-      params[param].reject {|i| i.blank?}.uniq.each do |photo_id|
-        if fp = photo_class.find_by_native_photo_id(photo_id)
-          photos << fp
-        else
-          pp = photo_class.get_api_response(photo_id)
-          photos << photo_class.new_from_api_response(pp, current_usuario.id) if pp
-        end
-      end
-    end
-    photos
-  end
-
-  def retrieve_local_photos
-    return [] if params[:local_photos].blank?
-    photos = []
-    params[:local_photos].reject {|i| i.blank?}.uniq.each do |photo_id|
-      if fp = LocalPhoto.find_by_native_photo_id(photo_id)
-        photos << fp
-      end
-    end
-    photos
   end
 
   def guardaRelaciones(tipoRelacion)
