@@ -5,14 +5,10 @@ class PecesController < ApplicationController
 
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
-  before_action :only => [:index, :new, :update, :edit, :create, :destroy] do
+  before_action :only => [:new, :update, :edit, :create, :destroy] do
     tiene_permiso?('Administrador', true)  # Minimo administrador
   end
 
-  # GET /peces
-  def index
-    @peces = Pez.filtros_peces.limit(90)
-  end
 
   # GET /peces/1
   def show
