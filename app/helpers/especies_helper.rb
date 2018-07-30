@@ -148,7 +148,7 @@ module EspeciesHelper
       html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
 
       bibliografias.each do |bibliografia|
-        html << " <a tabindex='0' class='btn btn-link bibliografia-nombre-comun' role='button' data-toggle='popover' data-trigger='focus'
+        html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 tooltip-title='Bibliografía' data-content='#{bibliografia}'>Bibliografía</a>"
       end
 
@@ -192,6 +192,8 @@ tooltip-title='Bibliografía' data-content='#{bibliografia}'>Bibliografía</a>"
 
       regiones.each do |id, datos|
         lista << "<li>#{datos[:nombre]}</li>"
+        lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+tooltip-title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
 
         if datos[:reg_desc].any?
           sub_reg = creaLista(datos[:reg_desc])
@@ -202,7 +204,7 @@ tooltip-title='Bibliografía' data-content='#{bibliografia}'>Bibliografía</a>"
       "</strong><ul>#{lista.join('')}</ul>"
     end
 
-    regiones = taxon.regiones.validas.distinct
+    regiones = taxon.regiones.select_observaciones.validas.distinct
     reg_asignadas = Region.regiones_asignadas(regiones)
     "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
   end
