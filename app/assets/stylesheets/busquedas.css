@@ -156,8 +156,9 @@ div.result-img-container{
     position: relative;
 }
 .checkbox input, .radio input{
-    display: none;
+    /*display: none;*/
     margin: 0 !important;
+    right: 0;
 }
 .checkbox input:checked+span, .checkbox input+span:hover, .radio input:checked+span, .radio input+span:hover{
 /*    padding-left: 6px;*/
