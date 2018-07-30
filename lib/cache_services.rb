@@ -263,9 +263,15 @@ module CacheServices
       datos[:data][:foto] = x_square_url  # Foto square_url
     end
 
+    datos[:data][:publico] = 0
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
     datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]
     datos[:data][:autoridad] = nombre_autoridad.try(:limpia)
+
+    # Para poner si es publico o no
+    if cat = scat
+      datos[:data][:publico] = cat.publico
+    end
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = {}
