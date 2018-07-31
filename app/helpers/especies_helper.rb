@@ -147,9 +147,10 @@ module EspeciesHelper
       bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
       html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
 
-      bibliografias.each do |bibliografia|
+      if bibliografias.any?
+        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
         html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-tooltip-title='Bibliografía' data-content='#{bibliografia}'>Bibliografía</a>"
+title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
       end
 
       html
