@@ -209,23 +209,36 @@ tooltip-title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliograf
     "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
   end
 
-  # REVISADO: Una misma funcion para sinonimos u homnimos
+  # REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
       "<strong>#{opciones[:tipo_recurso]}: </strong><small>#{recurso.join(', ')}</small>"
     end
 
-    def creaLista(recurso, opciones={})
-      "<p><strong>#{opciones[:tipo_recurso]} </strong></p><ul>#{recurso.join('')}</ul>"
+    def creaLista(taxones, opciones={})
+      html = ''
+
+      taxones.each do |taxon|
+        html << "<li>#{tituloNombreCientifico(taxon, show: true)}</li>"
+
+        bibliografias = taxon.bibliografias.map(&:cita_completa)
+
+        if bibliografias.any?
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
+        end
+      end
+
+      "<p><strong>#{opciones[:tipo_recurso]} </strong></p><ul>#{html}</ul>"
     end
 
-    ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).sinonimos.map(&:especie_id2)
+    ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
     return '' unless ids.any?
     taxones = Especie.find(ids)
 
     if opciones[:tab_catalogos]
-      recurso = taxones.map{ |t| "<li>#{tituloNombreCientifico(t, show: true)}</li>" }
-      creaLista(recurso, opciones).html_safe
+      creaLista(taxones, opciones).html_safe
     else
       recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
       creaContenedor(recurso, opciones).html_safe
