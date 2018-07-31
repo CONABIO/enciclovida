@@ -7,7 +7,7 @@ $(document).ready(function(){
             var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
             var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
             $(this.getAttribute('href')).load(pestaña, function () {
-                if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover();
+                if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover({html: true});
             });
         }
     });
