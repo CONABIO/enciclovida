@@ -1,7 +1,7 @@
 class GithubService
 
   def dame_issues
-    resp = Rails.cache.fetch('github_issues', expires_in: CONFIG.cache.github.issues) do
+    resp = Rails.cache.fetch('github_issues', expires_in: eval(CONFIG.cache.github.issues)) do
       puts 'ENTRO A GENERAR'
       lee_issues
     end
