@@ -194,7 +194,7 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
       regiones.each do |id, datos|
         lista << "<li>#{datos[:nombre]}</li>"
         lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-tooltip-title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
+title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
 
         if datos[:reg_desc].any?
           sub_reg = creaLista(datos[:reg_desc])
