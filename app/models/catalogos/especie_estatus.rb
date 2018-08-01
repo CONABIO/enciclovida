@@ -8,9 +8,10 @@ class EspecieEstatus < ActiveRecord::Base
   alias_attribute :especie_id1, :IdNombre
   alias_attribute :especie_id2, :IdNombreRel
   alias_attribute :estatus_id, :IdTipoRelacion
+  alias_attribute :observaciones, :Observaciones
 
-  belongs_to :especie, :foreign_key => :especie_id1
-  belongs_to :especie, :foreign_key => :especie_id2
+  belongs_to :especie, :foreign_key => attribute_alias(:especie_id1)
+  belongs_to :especie, :foreign_key => attribute_alias(:especie_id2)
   belongs_to :estatus, :foreign_key => attribute_alias(:estatus_id)
 
   scope :sinonimos, -> { where(estatus_id: 1) }

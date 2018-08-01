@@ -87,6 +87,11 @@ Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
     end
   end
 
+  # REVISADO: Condicion para regresar solo los taxones publicos
+  def solo_publicos
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+  end
+
   # REVISADO: ALgunos valores como el offset, pagina y por pagina
   def paginado_y_offset
     self.pagina = (params[:pagina] || 1).to_i
