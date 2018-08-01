@@ -58,7 +58,7 @@ module CacheServices
     if !existe_cache?('observaciones_naturalista')
       if p = proveedor
         if Rails.env.production?
-          p.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
+          p.guarda_observaciones_naturalista.delay(queue: 'observaciones_naturalista')
         else
           p.guarda_observaciones_naturalista
         end
@@ -73,7 +73,7 @@ module CacheServices
     if !existe_cache?('ejemplares_snib')
       if p = proveedor
         if Rails.env.production?
-          p.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
+          p.guarda_ejemplares_snib.delay(queue: 'ejemplares_snib')
         else
           p.guarda_ejemplares_snib
         end
