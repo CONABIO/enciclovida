@@ -25,7 +25,7 @@ module TaxonDescribers
     end
 
     def fake_view
-      FakeView.new(:view_paths => [File.expand_path("../../views/", __FILE__)])
+      FakeView.new(:view_paths => [File.expand_path("../views/", __FILE__)])
     end
   end
 end

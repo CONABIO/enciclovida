@@ -1,6 +1,3 @@
-require ::File.expand_path('../taxon_describers/base', __FILE__)
-Dir[::File.expand_path('../taxon_describers/*.rb', __FILE__)].each {|f| require f}
-
 module TaxonDescribers
   def self.describe(taxon, options = {})
     if options[:describer]

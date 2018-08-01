@@ -1,5 +1,5 @@
 #
-# MetaService is a generalized wrapper for ReST web services that use URLs 
+# MetaService is a generalized wrapper for ReST web services that use URLs
 # like this:
 #
 #   http://provider.com/endpoint?method_param=method_name&other_param=other_value
