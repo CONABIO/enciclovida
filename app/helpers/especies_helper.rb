@@ -253,19 +253,24 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
-    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})].flatten
     html = ''
+    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria_bibliografia
 
-    def creaCaracteristica(nom_caract, valores)
-      lista = valores.map{|c| "<li>#{c}</li>"}
-      "<p><strong>#{nom_caract}</strong><ul>#{lista.join('')}</ul></p>"
+    def creaCaracteristica(valores)
+      html = ''
+      biblio = "<ul>#{valores[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+      biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
+
+      lista = valores[:descripciones].each do |l|
+        html << "<li>#{l}</li> #{biblio_html}"
+      end
+
+      "<p><strong>#{valores[:nombre_catalogo]}</strong><ul>#{html}</ul></p>"
     end
 
-    caracteristicas.each do |caract|
-      nom_caract = caract.keys.join('')
-      valores = caract.values.flatten
-      next unless valores.any?
-      html << creaCaracteristica(nom_caract, valores)
+    caracteristicas.each do |key, valores|
+      html << creaCaracteristica(valores)
     end
 
     html.html_safe

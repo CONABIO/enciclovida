@@ -13,5 +13,5 @@ class EspecieCatalogo < ActiveRecord::Base
   belongs_to :especie
   belongs_to :catalogo, :foreign_key => Catalogo.attribute_alias(:id)
 
-  #validates_uniqueness_of :especie_id, :scope => :catalogo_id
+  has_many :bibliografias, :class_name => 'EspecieCatalogoBibliografia', :dependent => :destroy, :foreign_key => Especie.attribute_alias(:id)
 end
