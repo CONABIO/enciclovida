@@ -1,4 +1,3 @@
-require ::File.expand_path('../eol', __FILE__)
 module TaxonDescribers
   
   class EolEs < Eol
