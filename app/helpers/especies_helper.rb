@@ -15,7 +15,7 @@ module EspeciesHelper
                  end
                end
              end.try(:capitalize)
-  
+
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.especie_o_inferior?   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
@@ -166,7 +166,7 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
   # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-    'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
+                  'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
     html = ''
 
     def creaContenedor(taxon, opc={})
@@ -253,7 +253,7 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
-    caracteristicas = [taxon.tipo_distribucion(tab_catalogos: true), taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})].flatten
+    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})].flatten
     html = ''
 
     def creaCaracteristica(nom_caract, valores)
@@ -271,6 +271,23 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
     html.html_safe
   end
 
+  # REVISADO: Regresa la distribucion de catalogos
+  def dameDistribucion(taxon)
+    html =''
+
+    def creaLista(distribucion)
+      "<li>#{distribucion}</li>"
+    end
+
+    distribuciones = taxon.tipo_distribucion(tab_catalogos: true).values.flatten.compact
+
+    distribuciones.each do |distribucion|
+      html << creaLista(distribucion)
+    end
+
+    html.present? ? "<p><strong>Tipo de distribución</strong><ul>#{html}</ul></p>".html_safe : html
+  end
+
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
@@ -280,7 +297,8 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
       response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
     }
 
-    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
+    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
+'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
     response.join.html_safe
   end
 
@@ -320,7 +338,8 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
   end
 
   def ponBotonEditaIDNaturalista
-    button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe, id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
+    button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe,
+               id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
   end
 
   # REVISADO: Regresa las bibliografias de la especie del nombre cientifico en el show de especies
@@ -331,7 +350,7 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
       html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
     end
 
-    html.any? ? "<p><strong>Bibliografía del nombre científico válido</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
+    html.any? ? "<p><strong>Bibliografía del nombre científico</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
   end
 
   def esSinonimo (taxon)
@@ -343,12 +362,24 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
 
   def imprimeMediaCornell(item,type)
     case type
-      when 'photo'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900", "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
-      when 'video'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
-      when 'audio'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    when 'photo'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
+              "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
+              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
+    when 'video'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
+              "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    when 'audio'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
+              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
+              "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
     end
   end
 
