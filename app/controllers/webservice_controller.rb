@@ -1,5 +1,5 @@
 class WebserviceController < ApplicationController
-  skip_before_filter :set_locale
+  skip_before_action :set_locale
   protect_from_forgery with: :null_session
   layout false, :only => [:geojson_a_topojson]
 
