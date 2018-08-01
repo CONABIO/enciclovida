@@ -15,6 +15,9 @@ class Region < ActiveRecord::Base
 
   scope :validas, -> { where.not(nombre_region: 'ND') }
 
+  # TODO: Quitar este parche cuando las bibliografias de espeice_region esten relacionadas como se deben ...
+  scope :select_observaciones, -> { select("*, #{EspecieRegion.table_name}.#{EspecieRegion.attribute_alias(:observaciones)} AS observaciones") }
+
   def self.regiones_asignadas(regiones)
     resp = {}
 
@@ -26,7 +29,7 @@ class Region < ActiveRecord::Base
   end
 
   def asocia_regiones(resp = {})
-    region = {nombre: nombre_region, reg_desc: {}}
+    region = {nombre: nombre_region, reg_desc: {}, observaciones: observaciones}
 
     # Es root
     if id_region_asc == id

@@ -3,6 +3,7 @@ class BusquedaAvanzada < Busqueda
   def resultados_avanzada
     paginado_y_offset
     estatus
+    solo_publicos
     estado_conservacion
     tipo_distribucion
     solo_categoria

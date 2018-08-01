@@ -6,7 +6,8 @@
 
         <%= dameEstatus(@especie) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
-        <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
+        <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
+        <%= dameDistribucion(@especie) %>
         <%= dameCaracteristica(@especie) %>
         <%= dameOtrosAtributos(@especie) %>
         <%= dameEspecieBibliografias(@especie) %>
@@ -15,7 +16,7 @@
 
     <td width="60%" valign="top">
       <fieldset>
-        <legend class="leyenda">Nombres comunes y regiones</legend>
+        <legend class="leyenda">Nombres comunes y distribución</legend>
 
         <%= dameNomComunesBiblio(@especie) %>
         <%= dameDistribucionLiteratura(@especie) %>

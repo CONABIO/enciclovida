@@ -7,6 +7,7 @@ class EspecieRegion < ActiveRecord::Base
   # Los alias con las tablas de catalogos
   alias_attribute :especie_id, :IdNombre
   alias_attribute :region_id, :IdRegion
+  alias_attribute :observaciones, :Observaciones
 
   attr_accessor :region_id_falso
   validates_presence_of :especie_id, :region_id

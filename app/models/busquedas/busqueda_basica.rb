@@ -6,6 +6,7 @@ class BusquedaBasica < Busqueda
   def resultados_basica
     paginado_y_offset
     estatus
+    solo_publicos
     solo_categoria
 
     return unless por_id_o_nombre

@@ -61,6 +61,8 @@ class Especie < ActiveRecord::Base
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
   has_many :regiones, :through => :especies_regiones, :source => :region
 
+  has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
+
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
 
@@ -73,13 +75,9 @@ class Especie < ActiveRecord::Base
   has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy
   has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
 
-
-  has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
-
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
