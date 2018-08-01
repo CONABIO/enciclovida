@@ -278,7 +278,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       if resp[nombre_catalogo.estandariza.to_sym].present?
         resp[nombre_catalogo.estandariza.to_sym][:descripciones] << cat.descripcion
         resp[nombre_catalogo.estandariza.to_sym][:bibliografias] << biblio_cita_completa
-        resp[nombre_catalogo.estandariza.to_sym][:observaciones] << observaciones
+        resp[nombre_catalogo.estandariza.to_sym][:observaciones] << esp_cat.observaciones
       else
         resp[nombre_catalogo.estandariza.to_sym] = { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion],
                                                      bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }

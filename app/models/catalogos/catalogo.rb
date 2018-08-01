@@ -23,15 +23,22 @@ class Catalogo < ActiveRecord::Base
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
-    ((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6) && nivel3 > 0)
+    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0)
   end
 
   # REVISADO: Regresa la categoria superior del nombre del catalogo
   def dame_nombre_catalogo
-    if cat = Catalogo.where(nivel1: nivel1, nivel2:nivel2, nivel3: 0).first
-      cat.descripcion
+    if nivel1 == 18
+      if cat = Catalogo.where(nivel1: nivel1, nivel2: 0, nivel3: 0).first
+        cat.descripcion
+      end
+
     else
-      'No determinado'
+      if cat = Catalogo.where(nivel1: nivel1, nivel2:nivel2, nivel3: 0).first
+        cat.descripcion
+      else
+        'No determinado'
+      end
     end
   end
 
