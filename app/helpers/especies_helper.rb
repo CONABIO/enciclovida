@@ -150,7 +150,7 @@ module EspeciesHelper
       if bibliografias.any?
         biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
         html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
+title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
       end
 
       html
@@ -227,7 +227,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
         if bibliografias.any?
           biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
           html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
+title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         end
       end
 
