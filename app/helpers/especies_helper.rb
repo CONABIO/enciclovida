@@ -261,9 +261,10 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
       biblio = "<ul>#{valores[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
       biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
+      obs_html = valores[:observaciones].any? ? "<p>Observaciones: #{valores[:observaciones].join('<hr />')}</p>" : ''
 
-      lista = valores[:descripciones].each do |l|
-        html << "<li>#{l}</li> #{biblio_html}"
+      valores[:descripciones].each do |l|
+        html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
       end
 
       "<p><strong>#{valores[:nombre_catalogo]}</strong><ul>#{html}</ul></p>"
