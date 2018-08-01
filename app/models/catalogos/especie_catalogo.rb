@@ -7,7 +7,7 @@ class EspecieCatalogo < ActiveRecord::Base
   # Los alias con las tablas de catalogos
   alias_attribute :especie_id, :IdNombre
   alias_attribute :catalogo_id, :IdCatNombre
-  alias_attribute :descripcion, :Descripcion
+  alias_attribute :observaciones, :Observaciones
 
   attr_accessor :catalogo_id_falso
   belongs_to :especie
