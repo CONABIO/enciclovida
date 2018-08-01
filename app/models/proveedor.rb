@@ -180,10 +180,7 @@ class Proveedor < ActiveRecord::Base
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?('observaciones_naturalista')
 
-    # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
-
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
       return resp unless resp[:estatus]
@@ -284,8 +281,6 @@ class Proveedor < ActiveRecord::Base
 
     # Para no guardar nada si el cache aun esta vigente
     return if especie.existe_cache?('ejemplares_snib')
-    # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
 
     self.ejemplares = []
     self.ejemplares_mapa = []
