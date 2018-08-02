@@ -16,7 +16,7 @@ module CacheServices
   # REVISADO: Guarda los datos más importantes en el redis
   def guarda_redis_servicio(opc={})
     if Rails.env.production?
-      guarda_redis(opc).delay(queue: 'redis')
+      delay(queue: 'redis').guarda_redis(opc)
     else
       guarda_redis(opc)
     end
@@ -25,7 +25,7 @@ module CacheServices
   # REVISADO: Guarda la información asociada al pez
   def guarda_pez_servicios
     if Rails.env.production?
-      pez.save.delay(queue: 'peces') if pez
+      pez.delay(queue: 'peces').save if pez
     else
       pez.save if pez
     end
@@ -34,7 +34,7 @@ module CacheServices
   # REVISADO: Suma una visita a la estadisticas
   def suma_visita_servicio
     if Rails.env.production?
-      suma_visita.delay(queue: 'estadisticas')
+      delay(queue: 'estadisticas').suma_visita
     else
       suma_visita
     end
@@ -48,8 +48,7 @@ module CacheServices
       else
         cuantas_especies_inferiores(opc)
       end
-
-      escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
+      #escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
     end
   end
 
@@ -58,12 +57,11 @@ module CacheServices
     if !existe_cache?('observaciones_naturalista')
       if p = proveedor
         if Rails.env.production?
-          p.guarda_observaciones_naturalista.delay(queue: 'observaciones_naturalista')
+          p.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
         else
           p.guarda_observaciones_naturalista
         end
       end
-      escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
     end
   end
 
@@ -72,12 +70,11 @@ module CacheServices
     if !existe_cache?('ejemplares_snib')
       if p = proveedor
         if Rails.env.production?
-          p.guarda_ejemplares_snib.delay(queue: 'ejemplares_snib')
+          p.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
         else
           p.guarda_ejemplares_snib
         end
       end
-      escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
     end
   end
 
@@ -124,7 +121,8 @@ module CacheServices
 
   # REVISADO: Escribe un cache
   def escribe_cache(recurso, tiempo = 1.day)
-    Rails.cache.write("#{recurso}_#{id}", :expires_in => eval(tiempo))
+    puts "---- escribe cache #{recurso}_#{id}, expires in #{tiempo.inspect}, y soy clase: #{tiempo.class.inspect}"
+    Rails.cache.write("#{recurso}_#{id}", :expires_in => eval(tiempo).to_f, :created_at => Time.now.to_f)
   end
 
   # REVISADO: Verifica que el cache exista
@@ -346,7 +344,7 @@ module CacheServices
   def cuantas_especies_inferiores(opc = {})
     return unless opc[:estadistica_id].present?
     puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
-    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
+    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
 
     conteo = case opc[:estadistica_id]
              when 2, 22
