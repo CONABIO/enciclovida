@@ -127,7 +127,13 @@ module CacheServices
 
   # REVISADO: Verifica que el cache exista
   def existe_cache?(recurso)
-    Rails.cache.exist?("#{recurso}_#{id}")
+    if Rails.cache.exist?("#{recurso}_#{id}")
+      cache = Rails.cache.read("#{recurso}_#{id}")
+      puts "#{recurso}_#{id} ::: ceated_at: #{cache[:created_at]} + expires_in: #{cache[:expires_in]} = (#{(cache[:created_at] + cache[:expires_in])}) > #{Time.now.to_f} ::: #{(cache[:created_at] + cache[:expires_in]) > Time.now.to_f}"
+      (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
+    else
+      false
+    end
   end
 
   # REVISADO: Borra un cache
