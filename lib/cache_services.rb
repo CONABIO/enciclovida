@@ -7,8 +7,8 @@ module CacheServices
     cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
     cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
     cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    #guarda_observaciones_naturalista_servicio
-    #guarda_ejemplares_snib_servicio
+    guarda_observaciones_naturalista_servicio
+    guarda_ejemplares_snib_servicio
     guarda_redis_servicio
     guarda_pez_servicios
   end
@@ -48,7 +48,6 @@ module CacheServices
       else
         cuantas_especies_inferiores(opc)
       end
-      #escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
     end
   end
 
@@ -121,7 +120,6 @@ module CacheServices
 
   # REVISADO: Escribe un cache
   def escribe_cache(recurso, tiempo = 1.day)
-    puts "---- escribe cache #{recurso}_#{id}, expires in #{tiempo.inspect}, y soy clase: #{tiempo.class.inspect}"
     Rails.cache.write("#{recurso}_#{id}", :expires_in => eval(tiempo).to_f, :created_at => Time.now.to_f)
   end
 
@@ -129,8 +127,13 @@ module CacheServices
   def existe_cache?(recurso)
     if Rails.cache.exist?("#{recurso}_#{id}")
       cache = Rails.cache.read("#{recurso}_#{id}")
-      puts "#{recurso}_#{id} ::: ceated_at: #{cache[:created_at]} + expires_in: #{cache[:expires_in]} = (#{(cache[:created_at] + cache[:expires_in])}) > #{Time.now.to_f} ::: #{(cache[:created_at] + cache[:expires_in]) > Time.now.to_f}"
-      (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
+
+      begin
+        (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
+      rescue
+        false
+      end
+
     else
       false
     end
