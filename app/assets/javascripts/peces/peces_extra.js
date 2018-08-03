@@ -26,7 +26,6 @@ $(document).ready(function(){
         $('.modal-header h5').remove();
     });
 
-
     $("path[id^=path_zonas_]").on('click', function(){
         $(this).toggleClass('zona-seleccionada');
         var input = $('#' + this.id.replace('path_',''));
