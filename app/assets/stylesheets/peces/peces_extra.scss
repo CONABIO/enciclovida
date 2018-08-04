@@ -28,6 +28,7 @@ fieldset{
   border-radius: 50%;
   border: none;
   font-size: 2em;
+  box-shadow: -1px 4px 7px #9c9696;
 }
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
@@ -58,7 +59,7 @@ fieldset{
 .resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
   max-height: 150px;
   max-width: 300px;
-  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.9);
+  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.9);
   vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -66,7 +67,9 @@ fieldset{
 .resultados-peces i.icono-resultado-pez {
   transition: all .2s ease-in-out;
   vertical-align: baseline;
-  font-size: 4em;
+  font-size: 8em;
+  background: none!important;
+  border: 0px!important;
 }
 .resultados-peces .result-img-container .btn-ficha{
   border: none;
@@ -75,21 +78,22 @@ fieldset{
   margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.8);
-  -ms-transform:scale(.8); /* IE 9 */
-  -moz-transform:scale(.8); /* Firefox */
-  -webkit-transform:scale(.8); /* Safari and Chrome */
-  -o-transform:scale(.8); /* Opera */
-
+  transform:scale(.85);
+  -ms-transform:scale(.85); /* IE 9 */
+  -moz-transform:scale(.85); /* Firefox */
+  -webkit-transform:scale(.85); /* Safari and Chrome */
+  -o-transform:scale(.85); /* Opera */
+  font-size: 6em;
 }
 .resultados-peces .btn-ficha:hover:after {
-  content: 'click para más info';
+  content: 'Da click para más información';
   font-size: smaller;
   font-weight: bold;
   padding: 4px;
   color: #333;
   position: absolute;
   top: 0%;
+  left: 0%;
   white-space: nowrap;
   z-index: 9999;
   border-radius: 4px;
@@ -99,14 +103,22 @@ fieldset{
   background-color: #fafafa;
 }
 .resultados-peces .result-img-container .glyphicon-star{
-  font-size: 2em;
+  font-size: 1.75em;
   color: #fdca2d;
-  text-shadow: 2px 2px 4px #6b600d;
+  text-shadow: 2px 2px 4px #797341;
   margin-left: -2em;
   border-radius: 50%;
-  padding: 3px 1px 2px 5px;
-  background-color: #b9b9b9a3;
-  box-shadow: 2px 2px 5px #9c9696;
+  padding: 5px;
+  background-color: #6091c3ad;
+  -webkit-transition: -webkit-transform 1.5s ease-in-out;
+  -ms-transition: -ms-transform 1.5s ease-in-out;
+  transition: transform 1.5s ease-in-out;
+  z-index: 1;
+}
+.resultados-peces .result-img-container:hover .glyphicon-star {
+  transform:rotate(360deg);
+  -ms-transform:rotate(360deg);
+  -webkit-transform:rotate(360deg);
 }
 .resultados-peces .result-img-container .result-nombre-container{
     min-height: 44px;
@@ -162,16 +174,17 @@ fieldset{
   font-size: .8em;
 }
 
-.con-estrella{
-  fill: rgba(0, 0, 0, 255);
-  background: rgba(135,206,250,1);
-  background: -moz-linear-gradient(top, rgba(135,206,250,1) 0%, rgba(0, 0, 0, 255) 50%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(135,206,250,1)), color-stop(50%, rgba(0, 0, 0, 255)));
-  background: -webkit-linear-gradient(top, rgba(135,206,250,1) 0%, rgba(0, 0, 0, 255) 50%);
-  background: -o-linear-gradient(top, rgba(135,206,250,1) 0%, rgba(0, 0, 0, 255) 50%);
-  background: -ms-linear-gradient(top, rgba(135,206,250,1) 0%, rgba(0, 0, 0, 255) 50%);
-  background: linear-gradient(to bottom, rgba(135,206,250,1) 0%, rgba(0, 0, 0, 255) 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#92ba25', GradientType=0);
+.btn-star{
+  fill: rgb(96, 145, 195);
+  background: -moz-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, #d7ebff), color-stop(50%, #6091c3));
+  background: -webkit-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
+  background: -o-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
+  background: -ms-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
+  background: linear-gradient(to bottom, #d7ebff 0%, #6091c3 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#6091c3', GradientType=0);
+  color: #fdca2d!important;
+  text-shadow: 2px 2px 4px #6b600d;
 }
 
 .btn-zona-v{

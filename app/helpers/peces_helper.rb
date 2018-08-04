@@ -4,7 +4,7 @@ module PecesHelper
     checkBox = ''
     checkBox << "<label>"
     checkBox << check_box_tag('con_estrella[]', '1', false, id: 'con_estrella')
-    checkBox << "<span title='Especies certificadas' class = 'btn btn-lg btn-basica btn-title con-estrella'>"
+    checkBox << "<span title='Especies certificadas' class = 'btn btn-lg btn-basica btn-title btn-star'>"
     checkBox << "<i class = 'glyphicon glyphicon-star'></i>"
     checkBox << "</span>"
     checkBox << "</label>"
