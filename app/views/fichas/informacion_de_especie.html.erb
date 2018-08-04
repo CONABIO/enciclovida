@@ -1,4 +1,5 @@
 <% sin_info_msj = "Sin información disponible" %>
+
 <div style="background-color: #ffffff; margin-bottom: 30px;">
 
   <div class="container" style="padding: 30px 30px 0 30px; margin-top: 30px;">
@@ -8,7 +9,7 @@
   <br>
 
   <div class="container" style="padding: 0 30px 0 30px;">
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="clasiDescEsp">
         <h3 class="text-left text-primary">Clasificación y descripción de la especie</h3>
       </div>
@@ -18,7 +19,7 @@
   <br>
 
   <div class="container" style="padding: 0 30px 0 30px;">
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="distribucionEspecie">
         <h3 class="text-left text-primary">Distribución de la especie</h3>
       </div>
@@ -28,7 +29,7 @@
   <br>
 
   <div class="container" style="padding: 0 30px 0 30px;">
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="ambienteDeEspecie">
         <h3 class="text-left text-primary">Tipo de ambiente en donde se desarrolla la especie</h3>
       </div>
@@ -36,9 +37,8 @@
     <%= render('fichas/secciones_info_especie/ambiente_de_desarrollo_de_especie', sin_info_msj: sin_info_msj) %>
   </div>
   <br>
-
   <div class="container" style="padding: 0 30px 0 30px;">
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="biologiaEspecie">
         <h3 class="text-left text-primary">Biología de la especie</h3>
       </div>
@@ -48,7 +48,7 @@
   <br>
 
   <div class="container" style="padding: 0 30px 0 30px;">
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="ecologiaDemografiaEspecie">
         <h3 class="text-left text-primary">Ecología y demografía de la especie</h3>
       </div>
@@ -58,8 +58,7 @@
 
   <br>
   <div class="container" style="padding: 0 30px 0 30px;">
-
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="geneticaEspecie">
         <h3 class="text-left text-primary">Genética de la especie</h3>
       </div>
@@ -69,8 +68,7 @@
 
   <br>
   <div class="container" style="padding: 0 30px 0 30px;">
-
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="importanciaEspecie">
         <h3 class="text-left text-primary">Importancia de la especie</h3>
       </div>
@@ -81,7 +79,7 @@
   <br>
   <div class="container" style="padding: 0 30px 0 30px;">
 
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="estadoConservacionEspecie">
         <h3 class="text-left text-primary">Estado de conservación de la especie</h3>
       </div>
@@ -92,7 +90,7 @@
   <br>
   <div class="container" style="padding: 0 30px 0 30px;">
 
-    <div class="row">
+    <div class="row xSection">
       <div class="col-md-12" id="especiesPrioritariasConservacion">
         <h3 class="text-left text-primary">Especies prioritarias para la conservación</h3>
       </div>
@@ -101,9 +99,8 @@
   </div>
 
   <br>
-  <div class="container" style="padding: 0 30px 0 30px;">
-
-    <div class="row">
+  <div class="container" style="padding: 0 30px 40px 30px;">
+    <div class="row xSection">
       <div class="col-md-12" id="necesidadesDeInformacion">
         <h3 class="text-left text-primary">Necesidades de información</h3>
       </div>
@@ -115,3 +112,131 @@
   <%= render('fichas/secciones_info_especie/boton_subir') %>
 
 </div>
+
+
+
+<script>
+
+  var section = document.getElementsByClassName("xSection");
+  var i;
+
+    for (i = 0; i < section.length; i++) {
+        section[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var showInfo = this.nextElementSibling;
+            if (showInfo.style.maxHeight){
+                showInfo.style.maxHeight = null;
+            } else {
+                showInfo.style.maxHeight = showInfo.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
+
+
+<style>
+  .sticky {
+    padding: 0 20px 0 30px;
+  }
+
+  .fixed {
+    position: fixed;
+    top:0; left:0;
+    width: 100%; }
+
+</style>
+
+<style>
+  .xSection {
+    color: #444;
+    cursor: pointer;
+    width: 100%;
+    border: #0e5f59;
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    text-align: left;
+    transition: 0.5s;
+  }
+
+  .active, .xSection:hover {
+    background-color: #ccc;
+  }
+
+  .xSection:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .active:after {
+    content: "\2212";
+  }
+
+  .showInfo {
+    padding: 0px 1px 1px 0px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+</style>
+
+<script>
+    var stickyOffset = $('.sticky').offset().top;
+    var headerMeasure = 120;
+
+    $(window).scroll(function(){
+        var sticky = $('.sticky'),
+            scroll = $(window).scrollTop();
+
+        if (scroll >= stickyOffset) {
+            sticky.addClass('fixed');
+            $(".hTituloEsp").css("font-size", "25px");
+            $(".hSection").show();
+            $(".hSinonimoEsp").hide();
+        }
+        else {
+            sticky.removeClass('fixed');
+            $(".hSinonimoEsp").show();
+            $(".hSection").hide();
+        }
+    });
+
+    $(window).on("scroll", function(){
+
+        if ($(this).scrollTop() >= $("#clasiDescEsp").offset().top - headerMeasure){
+            $(".hSection").text("Clasificación y descripción");
+        }
+        if ($(this).scrollTop() >= $("#distribucionEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Distribución");
+        }
+        if ($(this).scrollTop() >= $("#ambienteDeEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Tipo de ambiente en donde se desarrolla");
+        }
+        if ($(this).scrollTop() >= $("#biologiaEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Biología");
+        }
+        if ($(this).scrollTop() >= $("#ecologiaDemografiaEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Ecología y demografía");
+        }
+        if ($(this).scrollTop() >= $("#geneticaEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Genética");
+        }
+        if ($(this).scrollTop() >= $("#importanciaEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Importancia de la especie");
+        }
+        if ($(this).scrollTop() >= $("#estadoConservacionEspecie").offset().top - headerMeasure){
+            $(".hSection").text("Estado de conservación");
+        }
+        if ($(this).scrollTop() >= $("#especiesPrioritariasConservacion").offset().top - headerMeasure){
+            $(".hSection").text("Especies prioritarias para la conservación");
+        }
+        if ($(this).scrollTop() >= $("#necesidadesDeInformacion").offset().top - headerMeasure){
+            $(".hSection").text("Necesidades de información");
+        }
+    });
+
+</script>

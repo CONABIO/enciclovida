@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row showInfo">
   <div class="col-md-12">
     <h4>Región </h4>
     <p class="text-justify"><%= @distribucion.infoAdicionalMun.html_safe %></p>
@@ -30,7 +30,15 @@
         <h4>Endemismo</h4>
         <ul>
           <li>
-            <p class="text-justify"> <strong>¿Endémica en México?: </strong> <%= @endemica.endemicaMexico.html_safe  %></p>
+            <%
+            if @endemica.endemicaMexico == 'si'
+            %>
+              <p class="text-justify"> <strong>Con </strong> endemismo en México</p>
+            <%
+            else
+            %>
+              <p class="text-justify"> <strong>Sin </strong> endemismo en México</p>
+            <%end%>
           </li>
           <li>
             <p class="text-justify"> <strong>Endémica a: </strong> <%= @endemica.endemicaA.html_safe  %></p>

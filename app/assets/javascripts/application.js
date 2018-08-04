@@ -21,6 +21,7 @@
 //= require jquery.imagesloaded.min.js
 //= require jquery.mockjax.js
 //= require jquery.scrollTo-min.js
+//= require jquery.scrollgress.min.js
 //= require jQuery-Autocomplete.js
 //= require typeahead.js
 //= require cocoon
