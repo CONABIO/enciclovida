@@ -2,9 +2,9 @@
   <div class="col-md-12" id="biologiaEspecie">
 
     <% if @historiaNatural.tipoReproduccion == 'animal' %>
-      <br>
+
       <h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Animal</strong></h4>
-      <br><br>
+
       <h4>Generalidades: </h4><p><%= @infoReproduccion.descripcion.html_safe%></p>
 
       <div class="row">
@@ -68,11 +68,10 @@
 
 
     <% else %>
-      <br>
       <h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
-      <br><br>
+      <br>
       <h4>Generalidades: </h4><p class="text-justify"><%= @infoReproduccion.descripcion.html_safe%></p>
-      <br><br>
+      <br>
       <div class="row">
         <div class="col-md-6" style="border-color: #C1C1C1; border-right-style: dashed">
 
@@ -120,7 +119,7 @@
         <div class="col-md-12">
           <br>
           <h4 class="text-center"><strong>Floración, frutificación y semillas</strong> </h4>
-          <br><br>
+          <br>
         </div>
         <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed">
           <h4 class="text-primary text-center">Floración</h4><br>
@@ -172,7 +171,7 @@
     <div class="col-md-12">
       <br>
       <h4 class="text-center"><strong>Más información</strong> </h4>
-      <br><br>
+      <br>
     </div>
     <div class="col-md-8">
       <br>
