@@ -26,23 +26,31 @@
     </div>
   <% end %>
 
-  <div class="col-xs-12">
-    <dl class="dl-horizontal">
-      <% @criterios.each do |c|  %>
-        <dt><% if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad) %>
-            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-            <% end %><%= c.tipo_propiedad %>:
-        </dt>
+  <div class="clearfix"></div>
 
-        <dd>
-          <small class="pull-left"><%= c.nombre_propiedad %></small><span class="label label-default pull-right"><%= c.valor%></span>
-        </dd>
-      <% end %>
-    </dl>
+  <% @criterios.each do |c|  %>
+    <div class="col-xs-6">
+      <b>
+        <%= c.tipo_propiedad %>
+        <% if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad) %>
+          <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+        <% end %>:
+      </b>
+    </div>
+    <div class="col-xs-5">
+      <small><%= c.nombre_propiedad %></small>
+    </div>
+    <div class="col-xs-1">
+      <span class="badge"><%= c.valor%></span>
+    </div>
+    <div class="clearfix"></div>
+  <% end %>
 
-    <p>El color de la recomendación es de acuerdo a la suma de los criterios descritos arriba, y varian depediendo la zona</p>
-    <p>Menor a 5 es color verde</p>
-    <p>De 5 a 19 es color amarillo</p>
-    <p>Más de 20 es color rojo</p>
-  </div>
+  <hr />
+  <h5 class="text-center"><i>El color de la recomendación es de acuerdo a la suma de los criterios descritos arriba, y varian depediendo la zona</i></h5>
+  <h3 class="text-center">
+    <span class="label btn-zona-v">Menor a 5 es color verde</span> - <span class="label btn-zona-a">De 5 a 19 es color amarillo</span> - <span class="label btn-zona-r">Más de 20 es color rojo</span>
+  </h3>
+
+
 </div>
