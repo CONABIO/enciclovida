@@ -68,7 +68,7 @@ class PecesController < ApplicationController
       @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
 
       # Filtros globales
-      @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
+      @peces = @peces.where("peces_propiedades.propiedad_id = ?", params[:grupos]) if params[:grupos].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
