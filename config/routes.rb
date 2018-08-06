@@ -2,8 +2,7 @@ Buscador::Application.routes.draw do
 
   resources :peces, :as => :pez, except: :index do
     collection do
-      get '/', action: 'busqueda'
-      post :busqueda
+      get :busqueda
       get :dameNombre
     end
   end
