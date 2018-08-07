@@ -206,7 +206,7 @@ module CacheServices
     dame_fotos_todas
 
     if x_foto_principal.present?
-      a = adicional.reload ? adicional : Adicional.new(especie_id: id)
+      a = adicional ? adicional.reload : Adicional.new(especie_id: id)
       a.foto_principal = x_foto_principal
 
       if a.changed?
