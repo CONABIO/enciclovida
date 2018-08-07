@@ -6,7 +6,7 @@ class PecesController < ApplicationController
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
   before_action :only => [:new, :update, :edit, :create, :destroy] do
-    tiene_permiso?('Administrador', true)  # Minimo administrador
+    tiene_permiso?('AdminPeces', true)  # Minimo administrador
   end
 
 
