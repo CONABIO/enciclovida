@@ -94,23 +94,29 @@ module CacheServices
 
     resultados.each do |t|
       next unless t['ancestry'].present?
+
       if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
-        reino_naturalista = t['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-        reino_enciclovida = root_id
+        array_ancestros = t['ancestry'].split('/')
 
-        # Me aseguro que el reino coincida
-        if (reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
+        if array_ancestros.count > 1  # Es un reino
+          reino_naturalista = t['ancestry'].split('/')[1].to_i
 
-          if p = proveedor
-            p.naturalista_id = t['id']
-            p.save
-          else
-            self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
-          end
+          #if reino_naturalista
+          next unless reino_naturalista.present?
+          reino_enciclovida = root_id
 
-          return {estatus: true, ficha: t}
+          # Me aseguro que el reino coincida
+          next if !(reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
         end
+
+        if p = proveedor
+          p.naturalista_id = t['id']
+          p.save
+        else
+          self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
+        end
+
+        return {estatus: true, ficha: t}
 
       end  # End nombre cientifico
     end  # End resultados
@@ -190,7 +196,7 @@ module CacheServices
 
   # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
   def guarda_fotos_nombres_servicios
-    ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
+    ficha_naturalista_por_nombre if !proveedor || proveedor.naturalista_id.blank?  # Para encontrar el naturalista_id si no existe el proveedor
     guarda_nombres_comunes_todos
     guarda_fotos_todas
   end
@@ -216,8 +222,8 @@ module CacheServices
 
     if x_nombre_comun_principal.present?
       a = adicional ? adicional : Adicional.new(especie_id: id)
-      a.nombres_comunes = x_nombres_comunes
-      a.nombre_comun_principal = x_nombre_comun_principal
+      a.nombres_comunes = x_nombres_comunes.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})
+      a.nombre_comun_principal = x_nombre_comun_principal.force_encoding("UTF-8")
 
       if a.changed?
         a.save
