@@ -1,7 +1,7 @@
 class Adicional < ActiveRecord::Base
 
   establish_connection(Rails.env.to_sym)
-  self.table_name='enciclovida.adicionales'
+  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.adicionales"
 
   belongs_to :especie
   attr_accessor :select_nom_comun, :text_nom_comun
