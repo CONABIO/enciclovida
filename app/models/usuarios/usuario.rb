@@ -3,7 +3,7 @@ require 'digest/sha2'
 class Usuario < ActiveRecord::Base
 
   establish_connection(Rails.env.to_sym)
-  self.table_name='enciclovida.usuarios'
+  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.usuarios"
 
   # Para validar un correo y otros modelos lo puedan utilizar
   nombre_correo_regex  = '[\w\.%\+\-]+'.freeze

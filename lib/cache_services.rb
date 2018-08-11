@@ -3,14 +3,35 @@ module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
     suma_visita_servicio
-    cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-    cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    guarda_estadisticas_servicio
     guarda_observaciones_naturalista_servicio
     guarda_ejemplares_snib_servicio
     guarda_redis_servicio
     guarda_pez_servicios
+  end
+
+  # REVISADO: Suma una visita a la estadisticas
+  def suma_visita_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas').suma_visita
+    else
+      suma_visita
+    end
+  end
+
+  def guarda_estadisticas_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas').guarda_estadisticas
+    else
+      guarda_estadisticas
+    end
+  end
+
+  def guarda_estadisticas
+    cuantas_especies_inferiores(estadistica_id: 2)
+    cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
   end
 
   # REVISADO: Guarda los datos más importantes en el redis
@@ -28,26 +49,6 @@ module CacheServices
       pez.delay(queue: 'peces').save if pez
     else
       pez.save if pez
-    end
-  end
-
-  # REVISADO: Suma una visita a la estadisticas
-  def suma_visita_servicio
-    if Rails.env.production?
-      delay(queue: 'estadisticas').suma_visita
-    else
-      suma_visita
-    end
-  end
-
-  # REVISADO: Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
-  def cuantas_especies_inferiores_servicio(opc = {})
-    if !existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
-      if Rails.env.production?
-        delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
-      else
-        cuantas_especies_inferiores(opc)
-      end
     end
   end
 
