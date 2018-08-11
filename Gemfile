@@ -13,7 +13,8 @@ gem 'coffee-rails', '~> 4.2'
 gem 'composite_primary_keys'  # Multiples llaves primarias
 gem 'daemons'  # para hacer ejecutables bash
 gem 'delayed_job'
-gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado tiempo, puede ser desde consola
+#gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado tiempo, puede ser desde consola
+gem 'delayed_job_mongoid'
 gem 'devise'
 gem 'exifr'
 gem 'fontello_rails_converter'
