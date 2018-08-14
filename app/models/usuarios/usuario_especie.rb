@@ -1,8 +1,10 @@
 class UsuarioEspecie < ActiveRecord::Base
 
   establish_connection(Rails.env.to_sym)
+  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.usuarios_especie"
+
   belongs_to :usuario
-  belongs_to :especie
+  belongs_to :especie, :class_name=> 'Especie'
 
   scope :join_usuarios,-> { joins('JOIN usuarios on usuario_id = usuarios.id') }
   scope :join_especies,-> { joins('JOIN especies on especie_id = especies.id') }
