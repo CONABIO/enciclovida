@@ -8,11 +8,12 @@ class BDIService
                     129550 => '5005-Invertebrados', 132386 => '5005-Invertebrados', 40661 => '5005-Invertebrados',
                     40669 => '5005-Invertebrados', 40666 => '5005-Invertebrados', 40663 => '5005-Invertebrados',
                     40671 => '5005-Invertebrados', 40664 => '5005-Invertebrados', 40670 => '5005-Invertebrados',
-                    40659 => '5005-Invertebrados', 40672 => '5005-Invertebrados' 40667 => '5005-Invertebrados',
+                    40659 => '5005-Invertebrados', 40672 => '5005-Invertebrados', 40667 => '5005-Invertebrados',
                     40657 => '5005-Invertebrados', 16910 => '5005-Invertebrados'}
   ALBUM_ANIMALES_GLOBAL = ['5037-Colección%20Zoológica']
 
-  ALBUM_PLANTAS = {4 => '5002-Hongos', 135391 => '5018-Cícadas', 135296 => '5017-Musgos-Helechos', 135730 => '5021-Pinos%20y%20Cedros', 135637 => '5021-Pinos%20y%20Cedros'}
+  ALBUM_PLANTAS = {4 => '5002-Hongos', 135391 => '5018-Cícadas', 135296 => '5017-Musgos-Helechos',
+                   135730 => '5021-Pinos%20y%20Cedros', 135637 => '5021-Pinos%20y%20Cedros'}
   ALBUM_PLANTAS_GLOBAL = %w(5023-Plantas 5038-Colección%20Botánica)
 
   ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
