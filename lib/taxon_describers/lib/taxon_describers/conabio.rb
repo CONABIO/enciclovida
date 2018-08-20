@@ -12,7 +12,7 @@ module TaxonDescribers
 
     private
     def conabio_service
-      @conabio_service=ConabioService.new
+      @conabio_service=New_Conabio_Service.new(:timeout => 20)
     end
   end
 end

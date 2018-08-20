@@ -219,7 +219,7 @@ class FichasController < ApplicationController
 
 
     respond_to do |format|
-      format.html #{ render :layout => false }
+      format.html { render :layout => false }
       format.json { render json: {
           taxon: @taxon,
           # I. Clasificación y descripción de la especie
