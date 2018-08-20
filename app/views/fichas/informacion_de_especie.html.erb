@@ -121,7 +121,7 @@
   <br>
   <div class="container" style="padding: 0 30px 40px 30px;">
     <div class="row xSection">
-      <div class="col-md-12" id="metadatos">
+      <div class="col-md-12" id="referencias">
         <h3 class="text-left text-primary">Referencias</h3>
       </div>
     </div>
@@ -256,6 +256,12 @@
         }
         if ($(this).scrollTop() >= $("#necesidadesDeInformacion").offset().top - headerMeasure){
             $(".hSection").text("Necesidades de información");
+        }
+        if ($(this).scrollTop() >= $("#metadatos").offset().top - headerMeasure){
+            $(".hSection").text("Metadatos");
+        }
+        if ($(this).scrollTop() >= $("#referencias").offset().top - headerMeasure){
+            $(".hSection").text("Referencias");
         }
     });
 
