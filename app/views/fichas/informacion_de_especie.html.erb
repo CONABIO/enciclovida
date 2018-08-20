@@ -99,7 +99,7 @@
   </div>
 
   <br>
-  <div class="container" style="padding: 0 30px 40px 30px;">
+  <div class="container" style="padding: 0 30px 0 30px;">
     <div class="row xSection">
       <div class="col-md-12" id="necesidadesDeInformacion">
         <h3 class="text-left text-primary">Necesidades de información</h3>
@@ -108,30 +108,20 @@
     <%= render('fichas/secciones_info_especie/necesidades_de_informacion', sin_info_msj: sin_info_msj) %>
   </div>
 
+  <br>
+  <div class="container" style="padding: 0 30px 40px 30px;">
+    <div class="row xSection">
+      <div class="col-md-12" id="metadatos">
+        <h3 class="text-left text-primary">Metadatos</h3>
+      </div>
+    </div>
+    <%= render('fichas/secciones_info_especie/metadatos', sin_info_msj: sin_info_msj) %>
+  </div>
+
   <!-- Agregar el botón de subir -->
   <%= render('fichas/secciones_info_especie/boton_subir') %>
 
 </div>
-
-
-
-<script>
-
-  var section = document.getElementsByClassName("xSection");
-  var i;
-
-    for (i = 0; i < section.length; i++) {
-        section[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var showInfo = this.nextElementSibling;
-            if (showInfo.style.maxHeight){
-                showInfo.style.maxHeight = null;
-            } else {
-                showInfo.style.maxHeight = showInfo.scrollHeight + "px";
-            }
-        });
-    }
-</script>
 
 
 
@@ -185,6 +175,24 @@
 </style>
 
 <script>
+
+    // Ocultar y mostrar una sección
+    var section = document.getElementsByClassName("xSection");
+    var i;
+
+    for (i = 0; i < section.length; i++) {
+        section[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var showInfo = this.nextElementSibling;
+            if (showInfo.style.maxHeight){
+                showInfo.style.maxHeight = null;
+            } else {
+                showInfo.style.maxHeight = showInfo.scrollHeight + "px";
+            }
+        });
+    }
+
+    // Controlar el encabezado, para mostrar nombre de la especie
     var stickyOffset = $('.sticky').offset().top;
     var headerMeasure = 120;
 
@@ -205,6 +213,8 @@
         }
     });
 
+
+    // Para mostrar en el encabezado la sección que el usuario está viendo
     $(window).on("scroll", function(){
 
         if ($(this).scrollTop() >= $("#clasiDescEsp").offset().top - headerMeasure){
