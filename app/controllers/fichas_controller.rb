@@ -214,6 +214,9 @@ class FichasController < ApplicationController
     @ciudad = @contacto.ciudad
     @pais = @ciudad.pais
 
+    # XII. Referencias: (Agregado)
+    @referencias = @taxon.referenciasBibliograficas
+
 
     respond_to do |format|
       format.html #{ render :layout => false }
@@ -233,9 +236,13 @@ class FichasController < ApplicationController
           # VII. Importancia de la especie
           culturaUsos: @culturaUsos,
           # VIII. Estado de conservación de la especie
-          amenazaDirecta: @amenazaDirecta, conservacion: @conservacion
+          amenazaDirecta: @amenazaDirecta, conservacion: @conservacion,
           # IX. Especies prioritarias para la conservación
           # X. Necesidades de información
+          # XI. Metadatos
+          metadato: @metadato, asociado: @asociado, organizacion: @organizacion, responsable: @responsable, puesto: @puesto, contacto: @contacto, ciudad: @ciudad, pais: @pais,
+          # XII. Referencias: (Agregado)
+          referencias: @referencias
         }
       }
     end
