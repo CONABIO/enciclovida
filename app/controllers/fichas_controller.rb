@@ -204,6 +204,16 @@ class FichasController < ApplicationController
     # X. Necesidades de información
     # @taxon = Taxon.find(params[:id])
 
+    # XI. Metadatos:
+    @metadato = @taxon.metadatos.first
+    @asociado = @metadato.asociado.first
+    @organizacion = @asociado.organizacion
+    @responsable = @asociado.responsable
+    @puesto = @asociado.puesto
+    @contacto = @asociado.contacto.first
+    @ciudad = @contacto.ciudad
+    @pais = @ciudad.pais
+
 
     respond_to do |format|
       format.html #{ render :layout => false }
