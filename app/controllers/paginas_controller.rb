@@ -54,7 +54,7 @@ class PaginasController < ApplicationController
         datos << t.adicional.try(:foto_principal)
         datos << t
 
-        if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'")
+        if familia = t.ancestors.left_joins(:categoria_taxonomica).where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
           datos << familia.first.nombre_cientifico
         else
           datos << nil
