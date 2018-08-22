@@ -47,11 +47,11 @@ class BusquedaBasica < Busqueda
 
     self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional).select_basico.order(:nombre_cientifico).offset(offset).limit(por_pagina).distinct
 
-    if ids_comun.any?
+    if ids_comun.any? && ids_cientifico.any?
+      self.taxones = taxones.where(id: (ids_comun + ids_cientifico).uniq)
+    elsif ids_comun.any?
       self.taxones = taxones.where(id: ids_comun)
-    end
-
-    if ids_cientifico.any?
+    elsif ids_cientifico.any?
       self.taxones = taxones.where(id: ids_cientifico)
     end
 
@@ -62,21 +62,23 @@ class BusquedaBasica < Busqueda
 
       # Para los nombres comunes
       if taxon.nombres_comunes_adicionales.present?
+        taxon.nombre_comun_principal = []
+
         taxon.nombres_comunes_adicionales.split(',').each do |nombre|
           distancia = Levenshtein.distance(params[:nombre].limpiar.downcase, nombre.downcase)
-          ids_totales << taxon if distancia < 3
+
+          if distancia < 3
+            ids_totales << taxon
+            taxon.nombre_comun_principal << nombre
+          end
         end
+
+        taxon.nombre_comun_principal = taxon.nombre_comun_principal.join(', ')
       end
     end
 
     # Para mantener el valor en taxones
-    self.taxones = ids_totales
-
-    # Para que saga el total tambien con el fuzzy match
-    taxones.each do |t|
-      t.cual_nombre_comun_coincidio(params[:nombre], true)
-    end
-
+    self.taxones = ids_totales.uniq
     self.totales = taxones.length
     self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?' if totales > 0
   end
