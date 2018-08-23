@@ -67,6 +67,7 @@ base: &base
     ficha_naturalista: 1.day
     ejemplares_snib: 1.day
     fichas: 1.week
+    iucn: 1.second
     busquedas_region:
       conteo_grupo: 1.week
       especies_grupo: 1.week
@@ -115,6 +116,9 @@ base: &base
     key: 9999999999999999999999999999
 
   correo_admin: coco@nana.bo.bo
+
+  peces:
+    anio: 2012
 
 ###--------------------Aun no se ocupan------------------------###
 

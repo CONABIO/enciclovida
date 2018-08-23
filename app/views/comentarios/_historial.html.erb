@@ -2,7 +2,7 @@
 
 <% if c.cuantos.present? %>
     <% if c.cuantos > 0 %>
-        <%= link_to("Ver más... <span>#{c.cuantos}</span>".html_safe, '', class: 'historial btn btn-link btn-xs', comentario_id: c.id, especie_id: c.especie_id, ficha: ficha ? '1' : '0') %>
+        <%= link_to("Respuesta(s) ... <span>#{c.cuantos}</span>".html_safe, '', class: 'historial btn btn-link btn-xs', comentario_id: c.id, especie_id: c.especie_id, ficha: ficha ? '1' : '0') %>
     <% else %>
         <%= link_to("Responder <i class='glyphicon glyphicon-edit'></i>".html_safe, '', class: 'historial btn btn-link btn-xs', comentario_id: c.id, especie_id: c.especie_id) if !ficha %>
     <% end %>

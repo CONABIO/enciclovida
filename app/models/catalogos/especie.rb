@@ -45,13 +45,10 @@ class Especie < ActiveRecord::Base
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
 
-  attr_accessor :foto_principal
-
   has_one :proveedor
   has_one :adicional
   has_one :pez
   has_one :scat, :foreign_key => attribute_alias(:id)
-  has_one :categoria_conteo
 
   belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
 
@@ -61,6 +58,8 @@ class Especie < ActiveRecord::Base
   has_many :especies_regiones, :class_name => 'EspecieRegion', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :tipos_distribuciones, :through => :especies_regiones, :source => :tipo_distribucion
   has_many :regiones, :through => :especies_regiones, :source => :region
+
+  has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
 
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
@@ -74,15 +73,9 @@ class Especie < ActiveRecord::Base
   has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy
   has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
 
-
-
-  has_many :categorias_conteo, :class_name => 'CategoriaConteo', :foreign_key => attribute_alias(:especie_id), :dependent => :destroy
-  has_many :nombres_regiones_bibliografias, :class_name => 'NombreRegionBibliografia', :dependent => :destroy
-
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
   has_many :usuarios, :through => :usuario_especies, :source => :usuario
   has_many :comentarios, :class_name => 'Comentario', :foreign_key => :especie_id
-
 
   accepts_nested_attributes_for :especies_catalogos, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :especies_regiones, :reject_if => :all_blank, :allow_destroy => true
@@ -244,7 +237,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     children_hash
   end
 
-  # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array de hashes
+  # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array con los valores
   def nom_cites_iucn_ambiente_prioritaria(opc={})
     response = []
 
@@ -267,6 +260,30 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     response << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
     response << {'Tipo de ambiente' => catalogos.ambientes.map(&:descripcion)}
     response
+  end
+
+  # REVISADO: Regresa en un hash todos los valores con las bibliorafias, para pestaña de catalogos especialmente
+  def nom_cites_iucn_ambiente_prioritaria_bibliografia
+    resp = {}
+
+    especies_catalogos.each do |esp_cat|
+      cat = esp_cat.catalogo
+      next unless cat.es_catalogo_permitido?
+      nombre_catalogo = cat.dame_nombre_catalogo
+      biblio = esp_cat.bibliografias.where(catalogo_id: cat.id).map(&:bibliografia_id)
+      biblio_cita_completa = biblio.any? ? Bibliografia.find(biblio).map(&:cita_completa) : []
+
+      if resp[nombre_catalogo.estandariza.to_sym].present?
+        resp[nombre_catalogo.estandariza.to_sym][:descripciones] << cat.descripcion
+        resp[nombre_catalogo.estandariza.to_sym][:bibliografias] << biblio_cita_completa
+        resp[nombre_catalogo.estandariza.to_sym][:observaciones] << esp_cat.observaciones
+      else
+        resp[nombre_catalogo.estandariza.to_sym] = { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion],
+                                                     bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
+      end
+    end
+
+    resp
   end
 
   # REVISADO: Devuelve el tipo de distribución para colocar en la simbologia del show de especies
@@ -386,7 +403,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         if lengua.present?
           l = lengua.estandariza.gsub('-','_')
         else
-          l = 'nd'
+          lengua = 'nd'
         end
 
         # Los nombres comunes de naturalista en hash con la lengua

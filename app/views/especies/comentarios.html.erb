@@ -34,6 +34,7 @@
           <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>
       <% end %>
 
-
   </tbody>
 </table>
+
+<%= javascript_include_tag 'especies/comentarios/comentarios_extra', 'data-turbolinks-track' => true %>

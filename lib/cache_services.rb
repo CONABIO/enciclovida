@@ -3,42 +3,11 @@ module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
     suma_visita_servicio
-    #cuantas_especies_inferiores_servicio(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-    #cuantas_especies_inferiores_servicio(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    #cuantas_especies_inferiores_servicio({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    #cuantas_especies_inferiores_servicio({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
-    #guarda_observaciones_naturalista_servicio
-    #guarda_ejemplares_snib_servicio
-    guarda_nombres_comunes_todos_servicio
+    guarda_estadisticas_servicio
+    guarda_observaciones_naturalista_servicio
+    guarda_ejemplares_snib_servicio
     guarda_redis_servicio
-    #guarda_pez_servicios
-  end
-
-  # REVISADO: Guarda los datos más importantes en el redis
-  def guarda_redis_servicio
-    if Rails.env.production?
-      delay(queue: 'redis').guarda_redis
-    else
-      guarda_redis
-    end
-  end
-
-  # REVISADO: Guarda la información asociada al pez
-  def guarda_pez_servicios
-    if Rails.env.production?
-      pez.delay(queue: 'peces').save if pez
-    else
-      pez.save if pez
-    end
-  end
-
-  # REVISADO: # Guarda los nombres comunes en adicionales
-  def guarda_nombres_comunes_todos_servicio
-    if Rails.env.production?
-      guarda_nombres_comunes_todos.delay(queue: 'nombres_comunes')
-    else
-      guarda_nombres_comunes_todos
-    end
+    guarda_pez_servicios
   end
 
   # REVISADO: Suma una visita a la estadisticas
@@ -50,16 +19,36 @@ module CacheServices
     end
   end
 
-  # REVISADO: Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
-  def cuantas_especies_inferiores_servicio(opc = {})
-    if !existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
-      if Rails.env.production?
-        delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
-      else
-        cuantas_especies_inferiores(opc)
-      end
+  def guarda_estadisticas_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas').guarda_estadisticas
+    else
+      guarda_estadisticas
+    end
+  end
 
-      escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.cuantas_especies_inferiores) if Rails.env.production?
+  def guarda_estadisticas
+    cuantas_especies_inferiores(estadistica_id: 2)
+    cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+  end
+
+  # REVISADO: Guarda los datos más importantes en el redis
+  def guarda_redis_servicio(opc={})
+    if Rails.env.production?
+      delay(queue: 'redis').guarda_redis(opc)
+    else
+      guarda_redis(opc)
+    end
+  end
+
+  # REVISADO: Guarda la información asociada al pez
+  def guarda_pez_servicios
+    if Rails.env.production?
+      pez.delay(queue: 'peces').save if pez
+    else
+      pez.save if pez
     end
   end
 
@@ -73,8 +62,6 @@ module CacheServices
           p.guarda_observaciones_naturalista
         end
       end
-
-      escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
     end
   end
 
@@ -88,28 +75,8 @@ module CacheServices
           p.guarda_ejemplares_snib
         end
       end
-
-      escribe_cache('ejemplares_snib', CONFIG.cache.ejemplares_snib) if Rails.env.production?
     end
   end
-
-  # REVISADO: Escribe un cache
-  def escribe_cache(recurso, tiempo = 1.day)
-    Rails.cache.write("#{recurso}_#{id}", :expires_in => tiempo)
-  end
-
-  # REVISADO: Verifica que el cache exista
-  def existe_cache?(recurso)
-    Rails.cache.exist?("#{recurso}_#{id}")
-  end
-
-  # REVISADO: Borra un cache
-  def borra_cache(recurso)
-    Rails.cache.delete("#{recurso}_#{id}")
-  end
-
-
-  private
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
@@ -128,23 +95,29 @@ module CacheServices
 
     resultados.each do |t|
       next unless t['ancestry'].present?
+
       if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
-        reino_naturalista = t['ancestry'].split('/')[1].to_i
-        next unless reino_naturalista.present?
-        reino_enciclovida = root_id
+        array_ancestros = t['ancestry'].split('/')
 
-        # Me aseguro que el reino coincida
-        if (reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
+        if array_ancestros.count > 1  # Es un reino
+          reino_naturalista = t['ancestry'].split('/')[1].to_i
 
-          if p = proveedor
-            p.naturalista_id = t['id']
-            p.save
-          else
-            self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
-          end
+          #if reino_naturalista
+          next unless reino_naturalista.present?
+          reino_enciclovida = root_id
 
-          return {estatus: true, ficha: t}
+          # Me aseguro que el reino coincida
+          next if !(reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
         end
+
+        if p = proveedor
+          p.naturalista_id = t['id']
+          p.save
+        else
+          self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
+        end
+
+        return {estatus: true, ficha: t}
 
       end  # End nombre cientifico
     end  # End resultados
@@ -152,9 +125,79 @@ module CacheServices
     return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
+  # REVISADO: Escribe un cache
+  def escribe_cache(recurso, tiempo = 1.day)
+    Rails.cache.write("#{recurso}_#{id}", :expires_in => eval(tiempo).to_f, :created_at => Time.now.to_f)
+  end
+
+  # REVISADO: Verifica que el cache exista
+  def existe_cache?(recurso)
+    if Rails.cache.exist?("#{recurso}_#{id}")
+      cache = Rails.cache.read("#{recurso}_#{id}")
+
+      begin
+        (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
+      rescue
+        false
+      end
+
+    else
+      false
+    end
+  end
+
+  # REVISADO: Borra un cache
+  def borra_cache(recurso)
+    Rails.cache.delete("#{recurso}_#{id}")
+  end
+
+  # REVISADO: Gurada los nombres comunes y cientifico en redis
+  def guarda_redis(opc={})
+    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
+    self.x_foto_principal = nil
+    self.x_nombre_comun_principal = nil
+    self.x_lengua = nil
+    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
+    self.x_nombres_comunes = nil
+    self.x_nombres_comunes_todos = []
+
+    if opc[:loader].present? # Guarda en el loader que especifico
+      loader = Soulmate::Loader.new(opc[:loader])
+    else # Guarda en la cataegoria taxonomica correspondiente
+      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+      loader = Soulmate::Loader.new(categoria)
+      borra_fuzzy_match
+      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
+    end
+
+    # Borra los actuales
+    borra_redis(loader)
+
+    # Guarda el redis con el nombre cientifico
+    loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
+
+    # Guarda el redis con todos los nombres comunes
+    num_nombre = 0
+
+    x_nombres_comunes_todos.each do |nombres|
+      lengua = nombres.keys.first
+
+      nombres.values.flatten.each_with_index do |nombre|
+        num_nombre+= 1
+        id_referencia = nombre_comun_a_id_referencia(num_nombre)
+        nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
+        loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
+        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
+      end
+    end
+  end
+
+
+  private
+
   # REVISADO: Guarda fotos y nombres comunes de dbi, catalogos y naturalista
   def guarda_fotos_nombres_servicios
-    ficha_naturalista_por_nombre if !proveedor  # Para encontrar el naturalista_id si no existe el proveedor
+    ficha_naturalista_por_nombre if !proveedor || proveedor.naturalista_id.blank?  # Para encontrar el naturalista_id si no existe el proveedor
     guarda_nombres_comunes_todos
     guarda_fotos_todas
   end
@@ -164,9 +207,13 @@ module CacheServices
     dame_fotos_todas
 
     if x_foto_principal.present?
-      a = adicional ? adicional : Adicional.new(especie_id: id)
+      a = adicional ? adicional.reload : Adicional.new(especie_id: id)
       a.foto_principal = x_foto_principal
-      a.save if a.changed?
+
+      if a.changed?
+        a.save
+        reload
+      end
     end
   end
 
@@ -176,9 +223,13 @@ module CacheServices
 
     if x_nombre_comun_principal.present?
       a = adicional ? adicional : Adicional.new(especie_id: id)
-      a.nombres_comunes = x_nombres_comunes
-      a.nombre_comun_principal = x_nombre_comun_principal
-      a.save if a.changed?
+      a.nombres_comunes = x_nombres_comunes.encode('UTF-8', {invalid: :replace, undef: :replace, replace: ''})
+      a.nombre_comun_principal = x_nombre_comun_principal.force_encoding("UTF-8")
+
+      if a.changed?
+        a.save
+        reload
+      end
     end
   end
 
@@ -188,7 +239,13 @@ module CacheServices
     datos[:data] = {}
 
     guarda_fotos_nombres_servicios if opc[:consumir_servicios]
-    visitas = especie_estadisticas.visitas
+
+    begin
+      visitas = especie_estadisticas.visitas
+    rescue  # Por si no existia la estadistica inicial
+      suma_visita
+      visitas = especie_estadisticas.visitas
+    end
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
@@ -218,9 +275,15 @@ module CacheServices
       datos[:data][:foto] = x_square_url  # Foto square_url
     end
 
+    datos[:data][:publico] = 0
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
     datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]
     datos[:data][:autoridad] = nombre_autoridad.try(:limpia)
+
+    # Para poner si es publico o no
+    if cat = scat
+      datos[:data][:publico] = cat.publico
+    end
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = {}
@@ -247,51 +310,10 @@ module CacheServices
     datos.stringify_keys
   end
 
-  # REVISADO: Gurada los nombres comunes y cientifico en redis
-  def guarda_redis(opc={})
-    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
-    self.x_foto_principal = nil
-    self.x_nombre_comun_principal = nil
-    self.x_lengua = nil
-    self.x_fotos_totales = 0  # Para poner cero si no tiene fotos
-    self.x_nombres_comunes = nil
-    self.x_nombres_comunes_todos = nil
-
-    if opc[:loader].present? # Guarda en el loader que especifico
-      loader = Soulmate::Loader.new(opc[:loader])
-    else # Guarda en la cataegoria taxonomica correspondiente
-      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-      loader = Soulmate::Loader.new(categoria)
-    end
-
-    # Borra los actuales
-    borra_redis(loader)
-    borra_fuzzy_match
-
-    # Guarda el redis con el nombre cientifico
-    loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
-    FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
-
-    # Guarda el redis con todos los nombres comunes
-    num_nombre = 0
-
-    x_nombres_comunes_todos.each do |nombres|
-      lengua = nombres.keys.first
-
-      nombres.values.flatten.each_with_index do |nombre|
-        num_nombre+= 1
-        id_referencia = id_referencia_nombre_comun(num_nombre)
-        nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
-        loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
-        FUZZY_NOM_COM.put(nombre, id_referencia)
-      end
-    end
-  end
-
-  # Es el ID del nombre comun que va vinculado al nombre cientifico
-  def id_referencia_nombre_comun(num_nombre)
+  # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
+  def nombre_comun_a_id_referencia(num_nombre)
     # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
-    "9#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(2,'0')}".to_i
+    "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
   # REVISADO: borra todos los nombres comunes y el cnetifico del redis, para posteriormente volver a generarlo
@@ -302,7 +324,7 @@ module CacheServices
 
     # Borra los nombre comunes
     50.times do |i|
-      id_referencia = id_referencia_nombre_comun(i+1)
+      id_referencia = nombre_comun_a_id_referencia(i+1)
       nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
     end
@@ -315,7 +337,7 @@ module CacheServices
 
     # Borra los nombre comunes
     50.times do |i|
-      id_referencia = id_referencia_nombre_comun(i+1)
+      id_referencia = nombre_comun_a_id_referencia(i+1)
       FUZZY_NOM_COM.delete(id_referencia)
     end
   end
@@ -338,7 +360,7 @@ module CacheServices
   def cuantas_especies_inferiores(opc = {})
     return unless opc[:estadistica_id].present?
     puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
-    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", eval(CONFIG.cache.estadisticas.cuantas_especies_inferiores)) if Rails.env.production?
+    escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
 
     conteo = case opc[:estadistica_id]
              when 2, 22

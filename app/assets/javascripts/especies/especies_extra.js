@@ -6,7 +6,9 @@ $(document).ready(function(){
         if (!Boolean($(this).hasClass('noLoad'))){
             var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
             var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
-            $(this.getAttribute('href')).load(pestaña);
+            $(this.getAttribute('href')).load(pestaña, function () {
+                if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover({html: true});
+            });
         }
     });
 
@@ -25,4 +27,6 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
     });
+
+    window.history.pushState("", "", opciones.slug_url);
 });

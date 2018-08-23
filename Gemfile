@@ -13,7 +13,8 @@ gem 'coffee-rails', '~> 4.2'
 gem 'composite_primary_keys'  # Multiples llaves primarias
 gem 'daemons'  # para hacer ejecutables bash
 gem 'delayed_job'
-gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado tiempo, puede ser desde consola
+#gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado tiempo, puede ser desde consola
+gem 'delayed_job_mongoid'
 gem 'devise'
 gem 'exifr'
 gem 'fontello_rails_converter'
@@ -26,7 +27,7 @@ gem 'jquery-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mysql2'
+gem 'mysql2', '0.4.10'
 gem 'nokogiri'  # Hacer un parse con xml
 gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
@@ -48,7 +49,7 @@ gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
-gem 'uglifier', '~> 1.3.0'
+gem 'uglifier'
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'

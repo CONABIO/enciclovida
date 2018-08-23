@@ -14,7 +14,8 @@ class Busqueda
   ]
 
   GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
-  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria
+Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
   GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
   # REVISADO: Inicializa los objetos busqueda
@@ -86,6 +87,11 @@ class Busqueda
     end
   end
 
+  # REVISADO: Condicion para regresar solo los taxones publicos
+  def solo_publicos
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+  end
+
   # REVISADO: ALgunos valores como el offset, pagina y por pagina
   def paginado_y_offset
     self.pagina = (params[:pagina] || 1).to_i
@@ -100,4 +106,11 @@ class Busqueda
     end
   end
 
+
+  protected
+
+  # REVISADO: Regresa el ID de la centralizacion de acuerdo a uin nombre comun dado
+  def id_referencia_a_nombre_comun(id_referencia)
+    id_referencia.to_s[1..6].to_i
+  end
 end

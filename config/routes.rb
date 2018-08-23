@@ -1,12 +1,15 @@
 Buscador::Application.routes.draw do
 
-  resources :peces, :as => :pez do
+  resources :peces, :as => :pez, except: :index do
     collection do
       get :busqueda
       post :busqueda
       get :dameNombre
     end
   end
+
+  resources :criterios
+  resources :propiedades
 
   resources :regiones_mapas do
     collection do
@@ -91,10 +94,11 @@ Buscador::Application.routes.draw do
 
   resources :especies_catalogo
 
-  resources :especies, as: :especie do
+  resources :especies, :except => :show, as: :especie do
     resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
 
     collection do
+      get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }
       post :update_photos, :as => :update_photos_for
       get ':id/arbol' => 'especies#arbol'
       get :error
@@ -112,6 +116,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
+      get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
     end
   end
 

@@ -2,7 +2,7 @@
  * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
  * @param tipo_busqueda
  */
-var soulmate_asigna = function(tipo_busqueda)
+var soulmateAsigna = function(tipo_busqueda)
 {
     var render = function(term, data, type, index, id)
     {
@@ -45,14 +45,17 @@ var soulmate_asigna = function(tipo_busqueda)
     var select = function(term, data, type)
     {
         $('#nombre').val(term);
-        $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
 
         if (tipo_busqueda != undefined && tipo_busqueda == 'avanzada')
+        {
             cat_tax_asociadas(data.id);  // despliega las categorias taxonomicas asociadas al taxon
-        else {
-            // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
-            window.location.replace('/especies/' + data.id)
+            $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
+        } else if(tipo_busqueda != undefined && tipo_busqueda == 'peces')
+            bloqueaBusqueda();
+        else {// Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
+            window.location.replace('/especies/' + data.id);
+            $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
         }
     };
 

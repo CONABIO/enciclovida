@@ -44,7 +44,7 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
     <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
+    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
   </div>
 
 </div>
@@ -112,7 +112,7 @@
       <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
     </li>
     <li role="presentation" >
-      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span></a>
+      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
     </li>
   </ul>
 
