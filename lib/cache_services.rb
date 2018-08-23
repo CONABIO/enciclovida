@@ -402,4 +402,20 @@ module CacheServices
     estadistica.conteo = 1
     estadistica.save
   end
+
+  #Métodos a borrar, se utilizaran y se eliminaran posteriormente
+  def dame_carpeta_geodatos
+    carpeta = Rails.root.join('public', 'geodatos', id.to_s)
+    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
+    carpeta
+  end
+
+  def retrae_observaciones_naturalista
+    return unless apta_con_geodatos?
+    return unless p = proveedor
+    archivo = dame_carpeta_geodatos.join("observaciones_#{nombre_cientifico.limpiar.gsub(' ','_')}")
+    return if File.exists?(archivo)
+    guarda_observaciones_naturalista
+  end
+
 end
