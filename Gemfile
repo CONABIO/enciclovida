@@ -5,7 +5,7 @@ gem 'activerecord-session_store'  # Pasa los request con POST a traves de la bas
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'  # Gema para exportar en excel
-#gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
+gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
@@ -28,7 +28,7 @@ gem 'mail'
 gem 'mime-types'
 gem 'mysql2', '0.4.10'
 gem 'nokogiri'  # Hacer un parse con xml
-#gem 'pg'
+gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
 gem 'rack-contrib'
 gem 'rack-google-analytics'
