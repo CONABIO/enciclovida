@@ -1,6 +1,7 @@
 class UsuarioRol < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
+  self.table_name = "#{CONFIG.bases.ev}.usuarios_roles"
+
   belongs_to :usuario
   belongs_to :rol
 

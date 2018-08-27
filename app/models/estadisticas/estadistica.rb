@@ -1,6 +1,5 @@
 class Estadistica < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.estadisticas"
+  self.table_name = "#{CONFIG.bases.ev}.estadisticas"
 
 end

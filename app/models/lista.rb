@@ -1,7 +1,7 @@
 class Lista < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name = 'listas'
+  self.table_name = "#{CONFIG.bases.ev}.listas"
+
   attr_accessor :taxones, :taxon
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos

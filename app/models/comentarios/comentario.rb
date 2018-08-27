@@ -1,7 +1,6 @@
 class Comentario < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.comentarios"
+  self.table_name = "#{CONFIG.bases.ev}.comentarios"
   self.primary_key = 'id'
 
   belongs_to :especie
