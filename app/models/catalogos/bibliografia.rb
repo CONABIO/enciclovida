@@ -1,7 +1,6 @@
 class Bibliografia < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.Bibliografia'
+  self.table_name = "#{CONFIG.bases.cat}.Bibliografia"
   self.primary_key = 'IdBibliografia'
 
   # Los alias con las tablas de catalogos

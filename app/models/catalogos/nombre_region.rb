@@ -1,7 +1,6 @@
 class NombreRegion < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.RelNomNomComunRegion'
+  self.table_name = "#{CONFIG.bases.cat}.RelNomNomComunRegion"
   self.primary_keys = :IdNomComun, :IdNombre, :IdRegion
 
   # Los alias con las tablas de catalogos
