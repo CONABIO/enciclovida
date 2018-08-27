@@ -1,7 +1,6 @@
 class CategoriasContenido < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name='categorias_contenido'
+  self.table_name = "#{CONFIG.bases.ev}.categorias_contenido"
   self.primary_key = 'id'
 
   has_ancestry

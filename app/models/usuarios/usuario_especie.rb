@@ -1,7 +1,6 @@
 class UsuarioEspecie < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.usuarios_especie"
+  self.table_name = "#{CONFIG.bases.ev}.usuarios_especie"
 
   belongs_to :usuario
   belongs_to :especie, :class_name=> 'Especie'

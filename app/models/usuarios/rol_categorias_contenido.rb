@@ -1,6 +1,7 @@
 class RolCategoriasContenido < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
+  self.table_name = "#{CONFIG.bases.ev}.roles_categorias_contenido"
+
   belongs_to :categorias_contenido
   belongs_to :rol
 
