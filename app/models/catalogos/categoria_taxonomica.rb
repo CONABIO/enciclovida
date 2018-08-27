@@ -1,7 +1,6 @@
 class CategoriaTaxonomica < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.CategoriaTaxonomica'
+  self.table_name = "#{CONFIG.bases.cat}.CategoriaTaxonomica"
   self.primary_key = 'idCategoriaTaxonomica'
 
   # Los alias con las tablas de catalogos

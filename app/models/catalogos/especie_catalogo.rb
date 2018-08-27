@@ -1,8 +1,7 @@
 class EspecieCatalogo < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.RelNombreCatalogo'
-  self.primary_keys= :IdNombre, :IdCatNombre
+  self.table_name = "#{CONFIG.bases.cat}.RelNombreCatalogo"
+  self.primary_keys = :IdNombre, :IdCatNombre
 
   # Los alias con las tablas de catalogos
   alias_attribute :especie_id, :IdNombre
