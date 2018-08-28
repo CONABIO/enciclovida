@@ -9,17 +9,14 @@ login: &login
 development:
   <<: *login
   database: enciclovida_development
-  timeout: 200
 
 test:
   <<: *login
   database: enciclovida_test
-  timeout: 200
 
 production:
   <<: *login
   database: enciclovida
-  timeout: 5
 
 snib:
   adapter: postgresql
@@ -29,8 +26,3 @@ snib:
   password:
   host:
   port: 5434
-
-catalogos:
-  <<: *login
-  database: catalogocentralizado
-  timeout: 5
