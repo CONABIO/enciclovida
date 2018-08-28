@@ -21,7 +21,28 @@ class Catalogo < ActiveRecord::Base
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
 
-  # REVISADO:
+  # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
+  def es_catalogo_permitido?
+    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0)
+  end
+
+  # REVISADO: Regresa la categoria superior del nombre del catalogo
+  def dame_nombre_catalogo
+    if nivel1 == 18
+      if cat = Catalogo.where(nivel1: nivel1, nivel2: 0, nivel3: 0).first
+        cat.descripcion
+      end
+
+    else
+      if cat = Catalogo.where(nivel1: nivel1, nivel2:nivel2, nivel3: 0).first
+        cat.descripcion
+      else
+        'No determinado'
+      end
+    end
+  end
+
+  # REVISADO: regresa todos los ambientes
   def self.ambiente_todos
     ambientes
   end
@@ -36,6 +57,7 @@ class Catalogo < ActiveRecord::Base
     {:nom => nom, :iucn => iucn, :cites => cites}
   end
 
+  # REVISADO: Regresa todas las proritarias
   def self.prioritaria_todas
     prioritarias
   end

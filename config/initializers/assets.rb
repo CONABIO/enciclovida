@@ -1,1 +1,11 @@
-Rails.application.config.assets.precompile += %w(inicio.css busquedas.css scrolling.js carrusel.css especies/obligatorios.js especies/arbol/arbol_identado.scss especies/arbol/arbol_nodo.css especies/arbol/arbol_nodo.js especies/arbol/arbol_identado.js especies/geodatos.js lib/leaflet.markercluster-src.js lib/MarkerCluster.Default.scss lib/d3.v3.min.js lib/Control.FullScreen.js busquedas/region/topojson.js mapa/registros_snib.js busquedas/region/por_region.js busquedas/region/por_region_delayed.js lib/Control.FullScreen.css busquedas/region/por_region.css peces/peces.js peces/peces.css mapa/mapa.js mapa/registros_snib.css)
+Rails.application.config.assets.precompile += %w(
+inicio/inicio.js soulmate.css
+busquedas/avanzada/avanzada.js lib/scrolling.js
+especies/especies.js especies/fichas/fichas_extra.js especies/media/bdi.js especies/media/multimedia.js especies/comentarios/comentarios_extra.js
+inicio.css busquedas.css carrusel.css especies/obligatorios.js
+especies/arbol/arbol_identado.scss especies/arbol/arbol_nodo.css especies/arbol/arbol_nodo.js especies/arbol/arbol_identado.js
+busquedas/region/por_region.js busquedas/region/por_region.css busquedas/region/por_region_extra.js
+peces/peces.js peces/peces.css
+especies/mapa/mapa.js especies/mapa/mapa.css especies/mapa/mapa_delayed.js
+comentarios/comentarios.js
+)

@@ -1,19 +1,24 @@
 <% @peces.each do |pez| %>
   <div class="result-img-container">
-    <%= button_tag image_tag(pez.imagen, class: "img-responsive"), type: 'button', class: 'btn-ficha', "data-especie-id" => pez.especie_id %>
 
-    <div class="btn-group btn-group-sm" role="group" aria-label="...">
-      <button type="button" class="btn btn-zona"><small>Zonas: </small></button>
-      <button type="button" tooltip-title="Pacífico I" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[0] %>">I</button>
-      <button type="button" tooltip-title="Pacífico II" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[1] %>">II</button>
-      <button type="button" tooltip-title="Pacífico III" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[2] %>">III</button>
-      <button type="button" tooltip-title="Golfo de México y Caribe IV" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[3] %>">IV</button>
-      <button type="button" tooltip-title="Golfo de México y Caribe V" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[4] %>">V</button>
-      <button type="button" tooltip-title="Golfo de México y Caribe VI" class="btn btn-title btn-zona btn-zona-<%= pez.valor_zonas[5] %>">VI</button>
-    </div>
+
+    <% if pez.con_estrella %>
+      <span class="glyphicon glyphicon-star text-success pull-right" aria-hidden="true"></span>
+    <% end %>
+    <% if pez.imagen =~ URI::regexp %>
+      <%= button_tag image_tag(pez.imagen, class: "img-responsive"), type: 'button', class: 'btn-ficha', "data-especie-id" => pez.especie_id, "data-toggle" => "modal", "data-target" => "#multiModal" %>
+    <% else %>
+      <button class="btn-ficha" data-especie-id="<%= pez.especie_id %>" type="button" data-toggle="modal" data-target="#multiModal">
+        <i class="<%= pez.imagen %> icono-resultado-pez"></i>
+      </button>
+    <% end %>
+
     <div class="result-nombre-container">
-      <div id="datos-<%= pez.especie_id %>" class="result-datos-container"></div>
-      <%= tituloNombresPeces(pez, :link => true).html_safe %>
+      <%= dibujaZonasPez(pez).html_safe %>
+      <%= tituloNombreCientifico(pez.especie, :link => true).html_safe %>
+
     </div>
+
   </div>
+
 <% end %>

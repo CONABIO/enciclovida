@@ -17,7 +17,7 @@ def guarda_observaciones(lim_inf = nil, lim_sup = nil)
   Especie.find_each do |taxon|
     next if lim_inf.present? && taxon.id < lim_inf
     next if lim_sup.present? && taxon.id > lim_sup
-    #next unless taxon.species_or_lower?
+    #next unless taxon.especie_o_inferior?
     puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
     if p = taxon.proveedor

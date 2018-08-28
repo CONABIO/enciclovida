@@ -1,6 +1,6 @@
 class Criterio < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
+  establish_connection(:peces)
   self.table_name='criterios'
 
   has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :criterio_id
@@ -9,47 +9,43 @@ class Criterio < ActiveRecord::Base
   belongs_to :propiedad
 
   scope :select_propiedades, -> { select('criterios.id, nombre_propiedad') }
-  scope :join_propiedades, -> { joins('LEFT JOIN propiedades ON propiedades.id=criterios.propiedad_id') }
-  scope :select_join_propiedades, -> { select_propiedades.join_propiedades }
+  scope :select_join_propiedades, -> { select_propiedades.left_joins(:propiedad) }
 
-  scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", 320) }
-  scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", 321) }
-  scope :procedencias, -> { select_join_propiedades.where("ancestry=?", 322) }
-  scope :nom, -> { select_join_propiedades.where("ancestry=?", 318) }
-  scope :iucn, -> { select_join_propiedades.where("ancestry=?", 319) }
+  scope :tipo_capturas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_CAPTURA_ID) }
+  scope :tipo_vedas, -> { select_join_propiedades.where("ancestry=?", Propiedad::TIPO_DE_VEDA_ID) }
+  scope :procedencias, -> { select_join_propiedades.where("ancestry=?", Propiedad::PROCEDENCIA_ID) }
+  scope :nom, -> { select_join_propiedades.where("ancestry=?", Propiedad::NOM_ID) }
+  scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
 
-  def self.catalogo
+  validates_presence_of :propiedad_id
 
-    resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
-      grouped_options = {}
+  CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
 
-      Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
-        prop = c.propiedad
-        llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+  def self.catalogo(prop = nil)
 
-        grouped_options[llave_unica] = [] if !grouped_options.key?(llave_unica)
-        grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+    if prop.present?
+      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] if p.criterios.present? }
+
+    else
+      resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
+        grouped_options = {}
+
+        Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
+          prop = c.propiedad
+          next if prop.existe_propiedad?([Propiedad::NOM_ID, Propiedad::IUCN_ID])
+          #next if prop.existe_propiedad?
+          llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
+
+          grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
+          grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+        end
+
+        grouped_options
       end
 
-      grouped_options
+      resp
     end
-
-    resp
-  end
-
-  def self.pesquerias
-    grouped_options = {}
-
-    Criterio.select_propiedades.select('propiedad_id').join_propiedades.where('tipo_propiedad=?', 'Pesquerías en vías de sustentabilidad').each do |c|
-      prop = c.propiedad
-      llave_unica = prop.parent.nombre_propiedad.strip
-
-      grouped_options[llave_unica] = [] if !grouped_options.key?(llave_unica)
-      grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
-    end
-
-    grouped_options
   end
 
   def self.cnp_select
@@ -67,15 +63,17 @@ class Criterio < ActiveRecord::Base
   def self.dame_filtros
 
     filtros = Rails.cache.fetch('filtros_peces', expires_in: eval(CONFIG.cache.peces.filtros)) do
-      {grupos: Propiedad.grupos_conabio,
-       zonas: Propiedad.zonas,
-       tipo_capturas: self.tipo_capturas,
-       tipo_vedas: self.tipo_vedas,
-       procedencias: self.procedencias,
-       pesquerias:  self.pesquerias,
-       cnp: self.cnp_select,
-       nom: self.nom,
-       iucn: self.iucn}
+      {
+          grupos: Propiedad.grupos_conabio,
+          zonas: Propiedad.zonas,
+          tipo_capturas: self.tipo_capturas,
+          tipo_vedas: self.tipo_vedas,
+          procedencias: self.procedencias,
+          pesquerias: Pez.filtros_peces.where(con_estrella: 1).distinct,
+          cnp: self.cnp_select,
+          nom: self.nom,
+          iucn: self.iucn
+      }
     end
 
     filtros

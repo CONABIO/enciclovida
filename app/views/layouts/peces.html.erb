@@ -4,17 +4,17 @@
       xmlns:og="http://ogp.me/ns#">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
+  <meta name="keywords" content="Busqueda por peces, marinos, comerciales, crustaceos, tiburones, pulpos, almejas">
+  <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
 
-
-  <%= javascript_include_tag "peces/peces", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -22,14 +22,13 @@
       I18n.fallbacks = true;
   </script>
 
-  <%= stylesheet_link_tag "peces/peces", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag 'peces/peces', 'data-turbolinks-track' => true %>
+
   <%= csrf_meta_tags %>
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
 <body>
-
-
 
 <header class="container-fluid">
   <%= render :partial => 'shared/ribbon', locals: {texto: '¡Versión BETA!'} %>
@@ -39,7 +38,8 @@
 <section id="content">
   <div class="container-fluid">
     <div class="row main">
-      <div class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12':'col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'  %>">
+      <div class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' :
+                          'col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'  %>">
         <%= yield %>
       </div>
     </div>
@@ -54,12 +54,11 @@
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
 
-<%#TODO bitacora.html_safe if bitacora.present? %>
+<% if Rails.env.production? %>
+  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
+<% end %>
 
 <%= yield :delayedjs %>
 
-<% if Rails.env == 'production'  %>
-  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
 </body>
 </html>

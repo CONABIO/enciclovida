@@ -1,35 +1,27 @@
 <% content_for(:extrajs) do %>
-    <script type="text/javascript" charset="utf-8">
-        TAXON = {id: "<%= @especie.id %>"};
-        NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
-        SPECIES_OR_LOWER = <%=raw @especie_o_inferior || false %>;
-        GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
-        BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
 
-        <% if @con_naturalista.present? %>
-        INATURALIST_API = "<%= "#{CONFIG.inaturalist_api}/taxa/#{@con_naturalista}" %>";
-        <% else %>
-        INATURALIST_API = undefined;
-        <% end %>
-    </script>
-<% end %>
-
-<%= content_for(:delayedjs) do %>
-    <script>
-        showEspecies();
-    </script>
+  <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+      opciones = <%=raw @datos.to_json %>;
+      opciones.nombre = '<%= tituloNombreCientifico(@especie, link: true) %>';
+  </script>
 <% end %>
 
 <% content_for(:extracss) do %>
-    <%= stylesheet_link_tag 'carrusel', media: 'all' %>
+  <%= stylesheet_link_tag 'carrusel', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% if notice.present? %>
-    <div class="row alert alert-success" role="alert"><%= notice %></div>
+  <div class="row alert alert-success" role="alert"><%= notice %></div>
+<% end %>
+
+<% content_for(:meta_keywords) do %>
+  <%= "#{@especie.nombre_cientifico},#{@datos[:nombres_comunes]}".strip %>
 <% end %>
 
 <% content_for(:title) do %>
-    <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
+  <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
 <div class="row">
@@ -37,22 +29,22 @@
     <h3>
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-      <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
+      <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
 
   <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
 
-  <% if (@especie_o_inferior) %>
-      <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
-        <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-      </div>
+  <% if (@datos[:especie_o_inferior]) %>
+    <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
+      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+    </div>
   <% end %>
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
     <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
+    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
   </div>
 
 </div>
@@ -60,11 +52,11 @@
 <hr/>
 
 <div class="btn-group pull-right" style="z-index: 1;">
-  <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Más información científica sobre la especie...  <span class="caret"></span>
   </button>
 
-  <ul class="dropdown-menu" style="z-index: 1001;">
+  <ul class="dropdown-menu" style="z-index: 1001;" id="enlaces_externos">
     <li>
       <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
     </li>
@@ -80,10 +72,10 @@
       <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li role="separator" class="divider"></li>
-    <% if @con_naturalista %>
-        <li>
-          <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
-        </li>
+    <% if @datos[:ficha_naturalista] %>
+      <li>
+        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, @datos[:ficha_naturalista], class: 'noLoad', target: '_blank') %>
+      </li>
     <% end %>
   </ul>
 </div>
@@ -120,7 +112,7 @@
       <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
     </li>
     <li role="presentation" >
-      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a>
+      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
     </li>
   </ul>
 

@@ -2,18 +2,13 @@ class PecesController < ApplicationController
   before_action do
     @no_render_busqueda_basica = true
   end
+
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
-  before_action :only => [:index, :new, :update, :edit, :create, :destroy] do
-    tiene_permiso?('Administrador', true)  # Minimo administrador
+  before_action :only => [:new, :update, :edit, :create, :destroy] do
+    tiene_permiso?('AdminPeces', true)  # Minimo administrador
   end
 
-  # GET /peces
-  def index
-    # Mega join =S (por eso se limita)
-    @peces = Pez.select_joins_peces.join_criterios.join_propiedades.limit(90)
-    #@peces = Pez.load
-  end
 
   # GET /peces/1
   def show
@@ -44,8 +39,8 @@ class PecesController < ApplicationController
 
   # PATCH/PUT /peces/1
   def update
-    if @pez.update(pez_params)
-      redirect_to @pez, notice: 'Pez was successfully updated.'
+    if @pez.update_attributes(pez_params)
+      redirect_to @pez, notice: 'El Pez fue actualizado satisfactoriamente.'
     else
       render action: 'edit'
     end
@@ -54,7 +49,7 @@ class PecesController < ApplicationController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to peces_url, notice: 'Pez was successfully destroyed.'
+    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def busqueda
@@ -66,25 +61,36 @@ class PecesController < ApplicationController
       # Busqueda por nombre científico o comunes
       @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
 
+      # Busqueda con estrella
+      @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
+
+      # Busqueda con pesquerias
+      @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
+
       # Filtros globales
-      @peces = @peces.where("propiedades.id = ?", params[:grupos]) if params[:grupos].present?
-      @peces = @peces.where("criterios.id = ?", params[:tipo_capturas]) if params[:tipo_capturas].present?
-      @peces = @peces.where("criterios.id = ?", params[:tipo_vedas]) if params[:tipo_vedas].present?
-      @peces = @peces.where("criterios.id = ?", params[:procedencias]) if params[:procedencias].present?
-      @peces = @peces.where("criterios.id = ?", params[:pesquerias]) if params[:pesquerias].present?
-      @peces = @peces.where("criterios.id = ?", params[:nom]) if params[:nom].present?
-      @peces = @peces.where("criterios.id = ?", params[:iucn]) if params[:iucn].present?
-      @peces = @peces.where("criterios.id IN (#{params[:cnp]})") if params[:cnp].present?
+      @peces = @peces.where("peces_propiedades.propiedad_id = ?", params[:grupos]) if params[:grupos].present?
+      @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
+      @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
+      @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
+      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
+      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
+      @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i, color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
+        regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif params[:semaforo_recomendacion].present?
-        rec = params[:semaforo_recomendacion].map{|r| "#{r}+"}.join('|')
+        # Selecciono el valor de sin datos
+        if params[:semaforo_recomendacion].include?('sn')
+          rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
+        else # Cualquier otra combinacion
+          rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
+        end
+
         @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas].to_i)
+        regexp = dame_regexp_zonas(zonas: params[:zonas])
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
@@ -112,19 +118,17 @@ class PecesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:criterio_id, :id, :_destroy])
+    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+                                peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
   def dame_regexp_zonas(opc = {})
     colores_default = opc[:colores_default] || '[varns]'
     color_seleccionado = opc[:color_seleccionado] || '[var]'
-
-    if opc[:zonas] == 1  # La primera zona
-      "#{color_seleccionado}#{colores_default}{5}"
-    elsif opc[:zonas] == 6 # La ultima zona
-      "#{colores_default}{5}#{color_seleccionado}"
-    else
-      "#{colores_default}{#{opc[:zonas]-1}}#{color_seleccionado}#{colores_default}{#{6-opc[:zonas]}}"
+    valor_por_zona = Array.new(6, colores_default)
+    opc[:zonas].each do |z|
+      valor_por_zona[z.to_i] = color_seleccionado
     end
+    valor_por_zona.join('')
   end
 end

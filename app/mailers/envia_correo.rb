@@ -4,45 +4,44 @@ class EnviaCorreo < Devise::Mailer
   # Metodos adicionales
   def excel(validacion)
     @ruta_excel = validacion.excel_url
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: validacion/descarga de #{validacion.nombre_archivo}--[#{validacion.correo}")
-    mail(:to => validacion.correo, :subject => "EncicloVida: validacion/descarga de #{validacion.nombre_archivo}")
+    @correos = validacion.correo
+    mail(:to => enviar_a?(validacion.correo), :subject => "EncicloVida: validacion/descarga de #{validacion.nombre_archivo}")
   end
 
   def respuesta_comentario(comentario)
     completa_datos_comentario(comentario)
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: Respuesta a comentario--[#{@comentario_root.correo}")
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Respuesta a comentario') if debo_enviar_correos?(@comentario_root.correo)
+    @correos = @comentario_root.correo
+    mail(:to => enviar_a?(@comentario_root.correo), :subject => 'EncicloVida: Respuesta a comentario')
   end
 
   def comentario_resuelto(comentario)
     completa_datos_comentario(comentario)
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: Comentario resuelto--[#{@comentario_root.correo}")
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario resuelto') if debo_enviar_correos?(@comentario_root.correo)
+    @correos = @comentario_root.correo
+    mail(:to => enviar_a?(@comentario_root.correo), :subject => 'EncicloVida: Comentario resuelto')
   end
 
   def confirmacion_comentario(comentario)
     completa_datos_comentario(comentario)
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: Comentario recibido--[#{@comentario_root.correo}")
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if debo_enviar_correos?(@comentario_root.correo)
+    @correos = @comentario_root.correo
+    mail(:to => enviar_a?(@comentario_root.correo), :subject => 'EncicloVida: Comentario recibido')
   end
 
   def confirmacion_comentario_general(comentario)
     completa_datos_comentario(comentario)
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: Comentario recibido--[#{@comentario_root.correo}")
-    mail(:to => @comentario_root.correo, :subject => 'EncicloVida: Comentario recibido') if debo_enviar_correos?(@comentario_root.correo)
+    @correos = @comentario_root.correo
+    mail(:to => enviar_a?(@comentario_root.correo), :subject => 'EncicloVida: Comentario recibido')
   end
 
   def descargar_taxa(ruta, correo)
     @ruta = ruta
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => "EncicloVida: Descargar taxa--[#{@comentario_root.correo}") #Linea para debuggear los envios personalizados
-    mail(:to => correo, :subject => 'EncicloVida: Descargar taxa')
+    @correos = correo
+    mail(:to => enviar_a?(correo), :subject => 'EncicloVida: Descargar taxa')
   end
 
   def avisar_responsable_contenido(comentario,correos)
     completa_datos_comentario(comentario)
     @correos = correos
-    #mail(:to => "ggonzalez@conabio.gob.mx", :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') #Linea para debuggear los envios personalizados
-    mail(:to => correos.join(','), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar') if debo_enviar_correos?(correos)
+    mail(:to => enviar_a?(correos), :subject => 'EncicloVida: Te ha sido asignado un comentario para solucionar')
   end
 
   private
@@ -64,8 +63,20 @@ class EnviaCorreo < Devise::Mailer
     @created_at = @comentario_root.created_at.strftime('%d-%m-%y_%H-%M-%S')
   end
 
-  def debo_enviar_correos?(correos)
-    correos = [correos] ##Por si recibo un string solamente
-    Rails.env.production? || correos.join.include?("ggonzalez") || correos.join.include?("calonso") || correos.join.include?("albertoglezba") || correos.join.include?("mailinator")
+  # Método que revisa si estamos en producción... y que envía solo a los desarrolladores o correos de pruebas en development
+  def enviar_a?(correos)
+
+    correos = [correos] unless correos.is_a? Array
+
+    if Rails.env.production?
+      return correos.join(',')
+    else
+      correos.keep_if do |c|
+        c.include?("ggonzalez") || c.include?("calonso") || c.include?("albertoglezba") || c.include?("mailinator")
+      end
+      correos << CONFIG.correo_admin unless correos.any?
+      return correos.join(',')
+    end
   end
+
 end

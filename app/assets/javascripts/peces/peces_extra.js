@@ -1,63 +1,38 @@
-$( function() {
-    var cache = {};
-    $( "#ncientifico" ).autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-            var term = request.term;
-            if ( term in cache ) {
-                response( cache[ term ] );
-                return;
-            }
-            $.getJSON( "dameNombre?tipo=cientifico", request, function( data, status, xhr ) {
-                cache[ term ] = data;
-                console.log(data);
-                response( data );
-            });
-        },
-        select: function( event, ui ) {
-            $( "#especie_id" ).val( ui.item.especie_id );
-            $( "#ncientifico" ).val( ui.item.value );
-            $( "#ncomunes" ).val('');
-            $( ".agrupada select, .recomendada select, .recomendada input, .recomendada span, #ncomunes" ).attr('disabled', true).addClass('disabled');
-            return false;
-        }
-    });
-});
-
-$( function() {
-    var cache = {};
-    $( "#ncomunes" ).autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-            var term = request.term;
-            if ( term in cache ) {
-                response( cache[ term ] );
-                return;
-            }
-            $.getJSON( "dameNombre?tipo=comunes", request, function( data, status, xhr ) {
-                cache[ term ] = data;
-                console.log(data);
-                response( data );
-            });
-        },
-        select: function( event, ui ) {
-            $( "#especie_id" ).val( ui.item.especie_id );
-            $( "#ncomunes" ).val( ui.item.value );
-            $( "#ncientifico" ).val('');
-            $( ".recomendada select, .recomendada input, .recomendada span, #ncientifico" ).attr('disabled', true).addClass('disabled');
-            return false;
-        }
-    });
-});
-$(document).ready(function(){
-    $(".btn-ficha").one('click',function(){
-        idEspecie = $(this).data('especie-id');
-        pestaña = '/peces/'+idEspecie+'?layout=0';
-        $('#datos-'+idEspecie).load(pestaña);
-    });
-});
-
-function limpiaBusqueda(){
-    $(".agrupada *, .recomendada *, #ncientifico, #ncomunes").attr("disabled", false).removeClass("disabled");
-    $( "#especie_id, #ncientifico, #ncomunes" ).val('');
+var limpiaBusqueda = function()
+{
+    $(".agrupada *, .recomendada *, #nombre").attr("disabled", false).removeClass("disabled");
+    $( "#especie_id, #nombre" ).val('');
 };
+
+var bloqueaBusqueda = function()
+{
+};
+
+$(document).ready(function(){
+    TYPES = ['peces'];
+    soulmateAsigna('peces');
+
+    $('#multiModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
+        var idEspecie = $(button).data('especie-id');
+        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
+        $('#multiModalBody').load(pestaña);
+        $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
+    });
+
+    //Eliminar contenido del modal-body y modal header (para poder reutilizar el modal en peces)
+    $('#multiModal').on('hide.bs.modal', function(){
+        $('#multiModalBody').empty();
+        $('.modal-header h5').remove();
+    });
+
+    $("path[id^=path_zonas_]").on('click', function(){
+        $(this).toggleClass('zona-seleccionada');
+        var input = $('#' + this.id.replace('path_',''));
+        input.prop("checked", !input.prop("checked"));
+    });
+
+    $(window).load(function(){
+        $("html,body").animate({scrollTop: 122}, 1000);
+    });
+});

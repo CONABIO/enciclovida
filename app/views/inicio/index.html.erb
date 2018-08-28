@@ -1,5 +1,5 @@
 <div class="text-center col-xs-12 col-sm-10 col-md-4 col-lg-4 col-xs-offset-0 col-sm-offset-1 col-md-offset-8 col-lg-offset-8" id="exploraRegion">
-  <a href="/explora-por-region" class="btn btn-success btn-block" target="_blank">¿Búsqueda de especies por estado / municipio?</a>
+  <a href="/explora-por-region" class="btn btn-success btn-block" data-turbolinks="false">¿Búsqueda de especies por estado / municipio?</a>
 </div>
 <%= render :partial => 'inicio/index_news' %>
 <div class="text-center row" style="margin-top: -120px;">
@@ -22,10 +22,10 @@
           <div class="btn-group" role="group">
             <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-info dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
             <ul class="dropdown-menu">
-              <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
-              <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-              <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-              <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
+              <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias', data: { turbolinks: false } %></li>
             </ul>
           </div>
         </div>
