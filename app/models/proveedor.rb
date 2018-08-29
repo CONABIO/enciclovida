@@ -1,7 +1,6 @@
 class Proveedor < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name="#{Rails.configuration.database_configuration[Rails.env]['database']}.proveedores"
+  self.table_name = "#{CONFIG.bases.ev}.proveedores"
 
   belongs_to :especie
   attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa

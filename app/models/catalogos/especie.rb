@@ -1,7 +1,6 @@
 class Especie < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.Nombre'
+  self.table_name = "#{CONFIG.bases.cat}.Nombre"
   self.primary_key = 'IdNombre'
 
   include AncestryPersonalizado

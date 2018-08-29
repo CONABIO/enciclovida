@@ -1,7 +1,6 @@
 class NombreComun < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.NomComun'
+  self.table_name = "#{CONFIG.bases.cat}.NomComun"
   self.primary_key = 'IdNomComun'
 
   # Los alias con las tablas de catalogos

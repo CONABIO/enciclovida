@@ -11,7 +11,7 @@ gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
 gem 'composite_primary_keys'  # Multiples llaves primarias
-gem 'daemons'  # para hacer ejecutables bash
+gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 #gem 'delayed_job_active_record'  # pone commits para correrlos en un determinado tiempo, puede ser desde consola
 gem 'delayed_job_mongoid'
@@ -27,7 +27,7 @@ gem 'jquery-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mysql2'
+gem 'mysql2', '0.4.10'
 gem 'nokogiri'  # Hacer un parse con xml
 gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
