@@ -1,8 +1,7 @@
 <% sin_info_msj = "Sin información disponible" %>
 
-<div style="background-color: #ffffff; margin-bottom: 30px;">
-
-  <div class="container" style="padding: 30px 30px 0 30px; margin-top: 30px;">
+<div id='ficha'>
+  <div class="container" style="padding: 30px 30px 0 30px;">
     <!-- Encabezado en el que se muestra el nombre de la especie -->
     <%= render('fichas/secciones_info_especie/titulo', sin_info_msj: sin_info_msj) %>
   </div>
@@ -134,56 +133,6 @@
 </div>
 
 
-
-<style>
-  .sticky {
-    padding: 0 20px 0 30px;
-  }
-
-  .fixed {
-    position: fixed;
-    top:0; left:0;
-    width: 100%; }
-
-</style>
-
-<style>
-  .xSection {
-    color: #444;
-    cursor: pointer;
-    width: 100%;
-    border-width: 1px 0 0 0;
-    border-color: #6c3630;
-    border-style: solid;
-    text-align: left;
-    transition: 0.5s;
-  }
-
-  .active, .xSection:hover {
-    background-color: #ccc;
-  }
-
-  .xSection:after {
-    content: '\002B';
-    color: #777;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-  }
-
-  .active:after {
-    content: "\2212";
-  }
-
-  .showInfo {
-    padding: 0px 1px 1px 0px;
-    background-color: white;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-  }
-</style>
-
 <script>
 
     // Ocultar y mostrar una sección
@@ -202,22 +151,22 @@
         });
     }
 
-    // Controlar el encabezado, para mostrar nombre de la especie
-    var stickyOffset = $('.sticky').offset().top;
-    var headerMeasure = 120;
+    // Controlar el encabezado, para mostrar nombre de la especie y la sección en la que se encuentra
+    var stickyOffset = $('.headCard').offset().top;
+    var headerMeasure = 120; // Pixeles extra para que el encabezado cambie el título al pasar cerca de el
 
     $(window).scroll(function(){
-        var sticky = $('.sticky'),
+        var sticky = $('.headCard'),
             scroll = $(window).scrollTop();
 
         if (scroll >= stickyOffset) {
-            sticky.addClass('fixed');
-            $(".hTituloEsp").css("font-size", "25px");
+            sticky.addClass('headCardFixed');
+            $(".hTituloEsp").css("font-size", "35px");
             $(".hSection").show();
             $(".hSinonimoEsp").hide();
         }
         else {
-            sticky.removeClass('fixed');
+            sticky.removeClass('headCardFixed');
             $(".hSinonimoEsp").show();
             $(".hSection").hide();
         }
@@ -225,6 +174,7 @@
 
 
     // Para mostrar en el encabezado la sección que el usuario está viendo
+    // Funciona
     $(window).on("scroll", function(){
 
         if ($(this).scrollTop() >= $("#clasiDescEsp").offset().top - headerMeasure){

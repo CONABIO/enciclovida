@@ -1,0 +1,47 @@
+#ficha {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    background-color: white;
+}
+
+.headCard {
+    padding: 0 20px 0 0;
+}
+
+.headCardFixed {
+    z-index: 10;
+    position: fixed;
+    top:0; left:0;
+    width: 100%;
+}
+
+.xSection {
+    cursor: pointer;
+    width: 100%;
+    border-width: 1px 0 0 0;
+    border-color: #6c3630;
+    border-style: solid;
+    transition: 0.5s;
+}
+
+.xSection.active:after {
+    content: "\2212"; /* Para mostrar "+" */
+}
+
+#ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
+    border-bottom: 0;  /* En los H's salía borde */
+}
+
+.xSection:after {
+    content: '\002B';
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.showInfo {
+    padding: 0 1px 1px 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
