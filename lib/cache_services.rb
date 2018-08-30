@@ -99,15 +99,18 @@ module CacheServices
       if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
         array_ancestros = t['ancestry'].split('/')
 
-        if array_ancestros.count > 1  # Es un reino
+        if array_ancestros.count > 1
           reino_naturalista = t['ancestry'].split('/')[1].to_i
 
-          #if reino_naturalista
+          # Es un reino
           next unless reino_naturalista.present?
           reino_enciclovida = root_id
 
           # Me aseguro que el reino coincida
-          next if !(reino_naturalista == reino_enciclovida) || (reino_naturalista == 47126 && reino_enciclovida == 2) || (reino_naturalista == 47170 && reino_enciclovida == 4) || (reino_naturalista == 47686 && reino_enciclovida == 5)
+          next if !((reino_naturalista == reino_enciclovida) || # Reino animalia
+              (reino_naturalista == 47126 && reino_enciclovida == 2) || # Reino plantae
+              (reino_naturalista == 47170 && reino_enciclovida == 4) || # Reino fungi
+              ([48222, 47686].include?(reino_naturalista) && reino_enciclovida == 5)) # Reino protoctista o chromista en naturalista
         end
 
         if p = proveedor

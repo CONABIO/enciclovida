@@ -394,7 +394,13 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       ncn = ncnat[:nombres_comunes].map do |nc|
         next unless nc['name'].present?
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
-        next if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
+
+        # Un nombre de catalogos es igualq ue uno de Naturalista, conservo el de Naturalista
+        if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
+          ncc.each_with_index do |h, index|
+            ncc.delete_at(index) if h.values.join('').estandariza == nc['name'].estandariza
+          end
+        end
 
         # Asigna la lengua
         lengua = nc['lexicon']
@@ -413,7 +419,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
 
     # Para el orden de las lenguas
-    nombres = (ncc + ncn).uniq.compact
+    nombres = (ncn + ncc).uniq.compact
     nombres_inicio = []
     nombres_mitad = []
     nombres_final = []
