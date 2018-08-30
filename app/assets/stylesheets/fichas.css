@@ -1,11 +1,12 @@
 #ficha {
     margin-bottom: 30px;
     margin-top: 30px;
-    background-color: white;
+    /*background-color: white;*/
 }
 
 .headCard {
-    padding: 0 20px 0 0;
+    padding: 20px;
+    background-color: #ececec;
 }
 
 .headCardFixed {
@@ -30,6 +31,7 @@
 
 #ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
     border-bottom: 0;  /* En los H's salía borde */
+    margin: 10px 0!important;
 }
 
 .xSection:after {
