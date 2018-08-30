@@ -389,4 +389,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     end
   end
 
+  def dejaComentario
+    link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
 end

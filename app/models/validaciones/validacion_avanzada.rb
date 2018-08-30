@@ -24,7 +24,6 @@ class ValidacionAvanzada < Validacion
     super
 
     sheet.parse(cabecera).each_with_index do |f, index|
-      next if index == 0
       self.fila = f
       self.nombre_cientifico = f['nombre_cientifico']
 

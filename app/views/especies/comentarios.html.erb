@@ -30,8 +30,7 @@
       </td></tr>
 
       <% else %>
-          Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, contribuye con un
-          <%= link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie)) %>
+          Aun no hay comentarios acerca de <strong><%= @especie.nombre_cientifico %></strong>, contribuye con un <%= dejaComentario %>
       <% end %>
 
   </tbody>
