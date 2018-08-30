@@ -295,7 +295,7 @@ class ComentariosController < ApplicationController
     tax_especifica = current_usuario.usuario_especies
     contenido_especifico = current_usuario.categorias_contenidos
 
-    consulta = Comentario
+    consulta = Comentario.datos_basicos
 
     if params[:comentario].present?
       params = comentario_params
@@ -312,8 +312,8 @@ class ComentariosController < ApplicationController
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
-          or_taxa << " especies.id = #{e.especie_id}"
-          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+          or_taxa << " #{Especie.attribute_alias(:id)} = #{e.especie_id}"
+          or_taxa << " #{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%#{e.especie_id}%' "
         end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
@@ -327,38 +327,34 @@ class ComentariosController < ApplicationController
 
       # Para ordenar por created_at, nombre_cientifico o ambos
       if params[:created_at].present? && params[:nombre_cientifico].present?
-        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
+        consulta = consulta.order("#{Especie.attribute_alias(:nombre_cientifico)} #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
       elsif params[:created_at].present?
         consulta = consulta.order("comentarios.created_at #{params[:created_at]}")
       elsif params[:nombre_cientifico].present?
-        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}")
+        consulta = consulta.order("#{Especie.attribute_alias(:nombre_cientifico)} #{params[:nombre_cientifico]}")
       else
         consulta = consulta.order('comentarios.created_at DESC')
       end
 
-      @comentarios = consulta.datos_basicos.offset(offset).limit(@por_pagina)
+      @comentarios = consulta.offset(offset).limit(@por_pagina)
 
     else
-
       # estatus = 5 quiere decir oculto a la vista
       consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
-          or_taxa << " especies.id = #{e.especie_id}"
-          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+          or_taxa << " #{Especie.attribute_alias(:id)} = #{e.especie_id}"
+          or_taxa << " #{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%#{e.especie_id}%' "
           end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
-
       if contenido_especifico.length > 0
         consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
       end
-
       # Comentarios totales
-      @totales = consulta.count
-      @comentarios = consulta.datos_basicos.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
+      @totales = consulta.count(:all)
+      @comentarios = consulta.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
     end
 
     @comentarios.each do |c|
