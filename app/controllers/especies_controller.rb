@@ -39,7 +39,7 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-
+    render 'especies/noPublicos' and return unless @especie.scat.Publico
     respond_to do |format|
       format.html do
 
