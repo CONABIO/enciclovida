@@ -27,7 +27,7 @@ gem 'jquery-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mysql2'
+gem 'mysql2', '0.4.10'
 gem 'nokogiri'  # Hacer un parse con xml
 gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
