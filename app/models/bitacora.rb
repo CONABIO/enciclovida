@@ -1,7 +1,6 @@
 class Bitacora < ActiveRecord::Base
 
-  establish_connection(Rails.env.to_sym)
-  self.table_name='bitacoras'
+  self.table_name = "#{CONFIG.bases.ev}.bitacoras"
   belongs_to :usuario
 
 end

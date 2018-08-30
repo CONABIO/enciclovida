@@ -1,13 +1,13 @@
-<div class="row">
+<div class="row showInfo">
 
   <div class="col-md-12">
-    <br><br>
+    <br>
     <div class="row text-center" >
       <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed"><h4>Ambiente:</h4><p><%= @ecorregion.present? ? (@ecorregion.descripcion.html_safe) : (sin_info_msj) %> </p></div>
       <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed"><h4>Ecorregion:</h4><p><%=  @cat_eacorregionwwf.present? ? (@cat_eacorregionwwf.TipoEcorregion.html_safe) : (sin_info_msj) %></p></div>
       <div class="col-md-4"><h4>Ecosistema:</h4><p><%=  @ecosistema.present? ? (@ecosistema.tipoecosistema.html_safe) : (sin_info_msj) %></p></div>
     </div>
-    <br><br>
+    <br>
 
     <div class="row text-justify" >
       <div class="col-md-8">
@@ -24,16 +24,15 @@
 
             <ol>
               <li>
-                <p><label>¿Se encuentra en hábitat agropecuario? </label><%= @habitat.habitatAgropecuario.html_safe%></p>
+                <%= @habitat.habitatAgropecuario == 'no' ? ("No se encuentra en hábitat agropecuario") : ("Si se encuentra en hábitat agropecuario")%>
               </li>
               <li>
-                <p><label>¿Se encuentra en zonas urbanas?</label><%=@habitat.zonaUrbana%></p>
+                <%= @habitat.zonaUrbana == 'no' ? ("No se encuentra en zonas urbanas") : ("Si se encuentra en zonas urbanas")%>
               </li>
               <li>
-                <p><label>Se encuentra en vegetación secundaria?</label><%=@habitat.VegetacionSecundaria%></p>
+                <%= @habitat.VegetacionSecundaria == 'no' ? ("No se encuentra en vegetación secundaria") : ("Si se encuentra en vegetación secundaria")%>
               </li>
             </ol>
-
           </li>
           <li>
             <strong>Tipo de vegetación secundaria</strong>
@@ -93,4 +92,3 @@
     </div>
   </div>
 </div>
-<hr>

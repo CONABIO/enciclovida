@@ -1,8 +1,7 @@
 class TipoRegion < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name='tipos_regiones'
-  self.primary_key='id'
+  self.table_name = "#{CONFIG.bases.cat}.tipos_regiones"
+  self.primary_key = 'id'
   has_many :regiones
 
   TIPOS_REGIONES = ['ESTADO', 'REGIONES HIDROLÓGICAS PRIORITARIAS', 'REGIONES MARINAS PRIORITARIAS',

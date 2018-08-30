@@ -5,7 +5,7 @@ require 'uri'
 require 'open-uri'
 require 'csv'
 require File.expand_path('../config', __FILE__)
-# require 'blurrily/client.rb'  #para el fuzzy match
+require 'blurrily/client.rb'  #para el fuzzy match
 
 CONFIG = BuscadorConfig.new(File.expand_path('../config.yml', __FILE__))
 
@@ -30,8 +30,8 @@ IP = CONFIG.site_url.split(':')[1].gsub('//','')
 PORT = CONFIG.site_url.split(':')[2][0..-1]
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
-# FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
-# FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
+FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
+FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
 
 module Buscador
   class Application < Rails::Application

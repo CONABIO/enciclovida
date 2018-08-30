@@ -11,6 +11,9 @@ class Asociado < ActiveRecord::Base
 	belongs_to :puesto, :class_name => 'Puesto', :foreign_key => 'puestoId'
 	belongs_to :organizacion, :class_name => 'Organizacion', :foreign_key => 'organizacionId'
 
-	has_many :relAsociadosContactos, class_name: 'Relasociadocontacto'
-	has_many :relMetadatosAsociados , class_name: 'Relmetadatosasociado'
+	has_many :relAsociadosContactos, class_name: 'Relasociadocontacto', :foreign_key => 'contactoId'
+	has_many :relMetadatosAsociados , class_name: 'Relmetadatosasociado', :foreign_key => 'metadatosId'
+
+	has_many :contacto, class_name: 'Contacto', through: :relAsociadosContactos
+
 end

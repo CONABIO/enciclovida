@@ -1,6 +1,6 @@
-class RelAsociadoContacto < ActiveRecord::Base
+class Relasociadocontacto < ActiveRecord::Base
 	establish_connection(:fichasespecies)
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'relasociadocontacto'
 
 	self.primary_keys = :asociadoId,  :contactoId

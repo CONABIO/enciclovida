@@ -1,12 +1,22 @@
-<div class="row">
+<div class="row showInfo">
   <div class="col-md-12">
-    <h4>¿Se encuentra enlistada como especie prioritaria? <%=@taxon.prioritaria.html_safe%> </h4>
-    <ol>
-      <li><label>Listado en el que se encuentra</label><p class="text-justify"><%=@taxon.publicadaEn.html_safe%></p></li>
-      <li><label>Prioridad resultante del proceso</label><p class="text-justify"><%=@taxon.nivelPrioridad.html_safe%></p></li>
-    </ol>
-    <h4>Justificación del estatus de especie prioritaria</h4>
-    <p class="text-justify"><%=@taxon.justificacionPrioritaria.html_safe%></p>
+
+    <% if @taxon.prioritaria == 'no'%>
+      <h4> Esta especie no se encuentra enlistada como prioritaria</h4>
+    <% else
+      if @taxon.prioritaria == 'si'
+    %>
+        <h4> Esta especie si se encuentra enlistada como prioritaria:</h4>
+        <ol>
+          <li><label>Listado en el que se encuentra</label><p class="text-justify"><%=@taxon.publicadaEn.html_safe%></p></li>
+          <li><label>Prioridad resultante del proceso</label><p class="text-justify"><%=@taxon.nivelPrioridad.html_safe%></p></li>
+        </ol>
+
+        <h4>Justificación del estatus de especie prioritaria</h4>
+        <p class="text-justify"><%=@taxon.justificacionPrioritaria.html_safe%></p>
+    <% else %>
+      <h3><%=sin_info_msj%></h3>
+    <% end end %>
+
   </div>
 </div>
-<hr>

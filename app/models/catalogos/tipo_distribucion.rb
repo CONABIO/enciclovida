@@ -1,7 +1,6 @@
 class TipoDistribucion < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.TipoDistribucion'
+  self.table_name = "#{CONFIG.bases.cat}.TipoDistribucion"
   self.primary_key = 'IdTipoDistribucion'
 
   # Los alias con las tablas de catalogos

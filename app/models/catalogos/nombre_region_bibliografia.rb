@@ -1,8 +1,7 @@
 class NombreRegionBibliografia < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.RelNomNomComunRegionBiblio'
-  self.primary_keys= :IdNombreComun, :IdNombre, :IdRegion, :IdBibiografia
+  self.table_name = "#{CONFIG.bases.cat}.RelNomNomComunRegionBiblio"
+  self.primary_keys = :IdNombreComun, :IdNombre, :IdRegion, :IdBibiografia
 
   attr_accessor :bibliografia_id_falsa
   belongs_to :especie

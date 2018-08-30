@@ -1,7 +1,6 @@
 class Scat < ActiveRecord::Base
 
-  establish_connection(:catalogos)
-  self.table_name = 'catalogocentralizado.SCAT'
+  self.table_name = "#{CONFIG.bases.cat}.SCAT"
   self.primary_key = 'IdNombre'
 
   # Los alias con las tabla de SCAT

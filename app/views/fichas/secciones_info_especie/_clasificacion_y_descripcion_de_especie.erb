@@ -1,5 +1,5 @@
-<div class="row">
-  <div class="col-md-8" style="padding: 30px 30px 30px 15px;">
+<div class="row showInfo">
+  <div class="col-md-8" style="padding: 0px 30px 30px 15px;">
     <h4>Resumen de la especie</h4> <p class="text-justify"><%=(@taxon.resumenEspecie).html_safe %></p>
     <br><br>
     <h4>Descripción de la especie</h4> <p class="text-justify"><%=(@taxon.descEspecie).html_safe %></p>
@@ -54,4 +54,3 @@
     <p class="text-justify"><strong>Especies similares:</strong> <%=(@taxon.especiesSmilares).html_safe %></p>
   </div>
 </div>
-<hr>
