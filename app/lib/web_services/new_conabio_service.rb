@@ -16,7 +16,7 @@ class New_Conabio_Service
     Rails.logger.debug "[DEBUG] Se realizará la busqueda de: #{q}"
     # Llamar a 'infoEspecie', quien nos devolverá código html con la infomración de la especie
     # Por prueba, se envia el taxón 1, pero q, se envía el que se va a buscar realmente
-    request('infoEspecie/1', q)
+    request("infoEspecie/#{q}")
   end
 
   def request(method, *args)
@@ -25,8 +25,9 @@ class New_Conabio_Service
     begin
       timed_out = Timeout::timeout(@timeout) do
         Rails.logger.debug "[DEBUG] #{self.class.name} getting #{request_uri}"
-        #Nokogiri::HTML(open(request_uri), nil, 'ISO-8859-1')
-        Nokogiri::HTML(open(request_uri))
+        puts '-----------------1'
+        Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
+        #Nokogiri::HTML(open(request_uri))
       end
     rescue Timeout::Error
       raise Timeout::Error, "#{@service_name} didn't respond within #{@timeout} seconds."
