@@ -380,6 +380,24 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash[columna] = nil  # Por default la pongo vacia
 
         case columna
+          when 'SCAT_Reino_valido'
+            validacion_interna_hash[columna] = [fila['reino'], INFORMACION_ORIG] if fila['reino'].present?
+          when 'SCAT_Phylum-Division_valido'
+            validacion_interna_hash[columna] = [fila['division'], INFORMACION_ORIG] if fila['division'].present?
+          when 'SCAT_Clase_valido'
+            validacion_interna_hash[columna] = [fila['clase'], INFORMACION_ORIG] if fila['clase'].present?
+          when 'SCAT_Subclase_valido'
+            validacion_interna_hash[columna] = [fila['subclase'], INFORMACION_ORIG] if fila['subclase'].present?
+          when 'SCAT_Orden_valido'
+            validacion_interna_hash[columna] = [fila['orden'], INFORMACION_ORIG] if fila['orden'].present?
+          when 'SCAT_Suborden_valido'
+            validacion_interna_hash[columna] = [fila['suborden'], INFORMACION_ORIG] if fila['suborden'].present?
+          when 'SCAT_Infraorden_valido'
+            validacion_interna_hash[columna] = [fila['infraorden'], INFORMACION_ORIG] if fila['infraorden'].present?
+          when 'SCAT_Superfamilia_valido'
+            validacion_interna_hash[columna] = [fila['superfamilia'], INFORMACION_ORIG] if fila['superfamilia'].present?
+          when 'SCAT_Subgenero_valido'
+            validacion_interna_hash[columna] = [fila['subgenero'], INFORMACION_ORIG] if fila['subgenero'].present?
           when 'SCAT_Familia_valido'
             validacion_interna_hash[columna] = [fila['familia'], INFORMACION_ORIG] if fila['familia'].present?
           when 'SCAT_Genero_valido'
