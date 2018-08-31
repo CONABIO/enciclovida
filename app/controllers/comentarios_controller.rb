@@ -319,11 +319,11 @@ class ComentariosController < ApplicationController
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
 
       # Comentarios totales
-      @totales = consulta.count
+      @totales = consulta.count(:all)
 
       # Para ordenar por created_at, nombre_cientifico o ambos
       if params[:created_at].present? && params[:nombre_cientifico].present?
@@ -350,7 +350,7 @@ class ComentariosController < ApplicationController
         consulta = consulta.where(or_taxa.join(' OR '))
       end
       if contenido_especifico.length > 0
-        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
       # Comentarios totales
       @totales = consulta.count(:all)
