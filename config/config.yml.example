@@ -123,6 +123,7 @@ base: &base
     cat: catalogocentralizado
     ev: enciclovida
     pez: peces
+    metamares: metamares
 
 ###--------------------Aun no se ocupan------------------------###
 
