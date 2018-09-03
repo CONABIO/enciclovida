@@ -1,4 +1,4 @@
-class UbicacionM < ActiveRecord::Base
+class Metamares::Ubicacion < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.metamares}.ubicaciones"
 
