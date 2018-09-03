@@ -1,4 +1,4 @@
-class RegionM < ActiveRecord::Base
+class Metamares::Region < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.metamares}.regiones"
 

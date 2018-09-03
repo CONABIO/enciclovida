@@ -1,4 +1,4 @@
-class PeriodoM < ActiveRecord::Base
+class Metamares::Periodo < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.metamares}.periodos"
 
