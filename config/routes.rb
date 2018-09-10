@@ -1,5 +1,10 @@
 Buscador::Application.routes.draw do
 
+  namespace :metamares do
+    resources :admin
+    resources :front
+  end
+
   resources :peces, :as => :pez, except: :index do
     collection do
       get :busqueda
