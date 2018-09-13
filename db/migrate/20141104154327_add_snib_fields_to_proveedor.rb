@@ -1,4 +1,4 @@
-class AddSnibFieldsToProveedor < ActiveRecord::Migration
+class AddSnibFieldsToProveedor < ActiveRecord::Migration[5.1]
   change_table(:proveedores) do |t|
     ## Campos adicionales para el SNIB
     t.integer :snib_id

@@ -1102,7 +1102,7 @@
     },
     {
       "uid": "b171fe9eaf405d538e17fca7b6399266",
-      "css": "alto",
+      "css": "alta",
       "code": 59448,
       "src": "custom_icons",
       "selected": true,
@@ -1111,12 +1111,12 @@
         "width": 1000
       },
       "search": [
-        "alto"
+        "alta"
       ]
     },
     {
       "uid": "409bb6720895759c68351a165b0f346f",
-      "css": "medio",
+      "css": "media",
       "code": 59449,
       "src": "custom_icons",
       "selected": true,
@@ -1125,12 +1125,12 @@
         "width": 1000
       },
       "search": [
-        "medio"
+        "media"
       ]
     },
     {
       "uid": "c7f6dcf1c56049834bff74b7c9c66ee2",
-      "css": "bajo",
+      "css": "menor",
       "code": 59450,
       "src": "custom_icons",
       "selected": true,
@@ -1139,7 +1139,7 @@
         "width": 1000
       },
       "search": [
-        "bajo"
+        "menor"
       ]
     },
     {
@@ -1343,20 +1343,6 @@
       ]
     },
     {
-      "uid": "a89b27aa3ac43e1bf004fbc174f9c524",
-      "css": "cornell_lab_red",
-      "code": 59502,
-      "src": "custom_icons",
-      "selected": true,
-      "svg": {
-        "path": "M5161.5 119.2C5123.1 88.5 5065.4 61.5 4996.2 61.5V30.8H5007.7C5088.5 30.8 5153.8 69.2 5188.5 103.8L5161.5 119.2ZM5169.2 176.9L4965.4 323.1S4961.5 300 4992.3 276.9C5023.1 253.8 5207.7 130.8 5207.7 130.8L5169.2 176.9Z",
-        "width": 9038
-      },
-      "search": [
-        "cornell_lab_red"
-      ]
-    },
-    {
       "uid": "42de0d1651b4ff9b5fbab453c4038748",
       "css": "cornell_lab_yellow",
       "code": 59503,
@@ -1422,6 +1408,20 @@
       },
       "search": [
         "sin datos"
+      ]
+    },
+    {
+      "uid": "a89b27aa3ac43e1bf004fbc174f9c524",
+      "css": "cornell_lab_red",
+      "code": 59502,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M5161.5 119.2C5123.1 88.5 5065.4 61.5 4996.2 61.5V30.8H5007.7C5088.5 30.8 5153.8 69.2 5188.5 103.8L5161.5 119.2ZM5169.2 176.9L4965.4 323.1S4961.5 300 4992.3 276.9C5023.1 253.8 5207.7 130.8 5207.7 130.8L5169.2 176.9Z",
+        "width": 9038
+      },
+      "search": [
+        "cornell_lab_red"
       ]
     },
     {

@@ -1,9 +1,9 @@
-
 <div id="paginado_fotos">
 
 	<% if @pagina.blank? && @fotos.any? %>
 	  <div class="text-center paginado_1"></div>
 	<% end %>
+
   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 media-supplier">
 	  <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
 	    <i class ='conabio_completo-ev-icon'></i>
@@ -27,13 +27,12 @@
 		</p>
   <% end %>
 
-
-
 	<% if @pagina.blank? && @fotos.any? %>
+    <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
 	  <div class="text-center paginado_2"></div>
 
-	  <script>
-		  paginado_fotos(<%= @paginas || 1 %>, 1);
+	  <script data-turbolinks-track="true">
+		  paginadoFotosBDI(<%= @paginas || 1 %>, 1);
 	  </script>
 	<% end %>
 

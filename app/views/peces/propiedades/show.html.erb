@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Nombre propiedad</th>
+    <th>Tipo propiedad</th>
+    <th>Ancestros</th>
+    <th>Criterios vinculados</th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td><%= @propiedad.id %></td>
+      <td><%= @propiedad.nombre_propiedad %></td>
+      <td><%= @propiedad.tipo_propiedad %></td>
+      <td><%= @propiedad.ancestry %></td>
+      <td></td>
+      <td>
+        <%= link_to 'Editar', edit_propiedad_path(@propiedad) %> |
+        <%= link_to 'Destruir', @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<%= link_to 'Volver al panel de administración', propiedades_path %>

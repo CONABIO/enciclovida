@@ -1,0 +1,21 @@
+/**
+Los estilos del cluster group, inclui este porque es personalizado
+ */
+.div-cluster-snib, .div-cluster-naturalista {
+    background-clip: padding-box;
+    border-radius: 20px;
+}
+
+.div-cluster-snib div, .div-cluster-naturalista div {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    margin-top: 5px;
+    text-align: center;
+    border-radius: 15px;
+    font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.div-cluster-snib span, .div-cluster-naturalista span {
+    line-height: 30px;
+}

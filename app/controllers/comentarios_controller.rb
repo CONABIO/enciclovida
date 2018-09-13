@@ -3,10 +3,12 @@ class ComentariosController < ApplicationController
     #render 'shared/en_mantenimiento'
     @no_render_busqueda_basica = true
   end
-  skip_before_filter :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
+  skip_before_action :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :show, :extrae_comentarios_generales]
-  before_action :only => [:index, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] {tiene_permiso?('AdminComentarios', true)}  # Minimo administrador de comentarios
+  before_action :only => [:index, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
+    tiene_permiso?('AdminComentarios', true)  # Minimo administrador de comentarios
+  end
 
   before_action :only => [:extrae_comentarios_generales, :show_correo, :admin, :show, :create] do
     @xolo_url = "https://#{CONFIG.smtp.user_name}:#{CONFIG.smtp.password}@#{CONFIG.smtp.address}/home/enciclovida/"
@@ -310,26 +312,26 @@ class ComentariosController < ApplicationController
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
-          or_taxa << " especies.id = #{e.especie_id}"
-          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+          or_taxa << " #{Especie.attribute_alias(:id)} = #{e.especie_id}"
+          or_taxa << " #{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%#{e.especie_id}%' "
         end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
 
       if contenido_especifico.length > 0
-        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
 
       # Comentarios totales
-      @totales = consulta.count
+      @totales = consulta.count(:all)
 
       # Para ordenar por created_at, nombre_cientifico o ambos
       if params[:created_at].present? && params[:nombre_cientifico].present?
-        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
+        consulta = consulta.order("#{Especie.attribute_alias(:nombre_cientifico)} #{params[:nombre_cientifico]}, comentarios.created_at #{params[:created_at]}")
       elsif params[:created_at].present?
         consulta = consulta.order("comentarios.created_at #{params[:created_at]}")
       elsif params[:nombre_cientifico].present?
-        consulta = consulta.order("nombre_cientifico #{params[:nombre_cientifico]}")
+        consulta = consulta.order("#{Especie.attribute_alias(:nombre_cientifico)} #{params[:nombre_cientifico]}")
       else
         consulta = consulta.order('comentarios.created_at DESC')
       end
@@ -337,25 +339,21 @@ class ComentariosController < ApplicationController
       @comentarios = consulta.offset(offset).limit(@por_pagina)
 
     else
-
       # estatus = 5 quiere decir oculto a la vista
       consulta = consulta.where('comentarios.estatus < ?', Comentario::OCULTAR)
-
       if tax_especifica.length > 0
         or_taxa = []
         tax_especifica.each do |e|
-          or_taxa << " especies.id = #{e.especie_id}"
-          or_taxa << " especies.ancestry_ascendente_directo LIKE '%#{e.especie_id}%' "
+          or_taxa << " #{Especie.attribute_alias(:id)} = #{e.especie_id}"
+          or_taxa << " #{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%#{e.especie_id}%' "
           end
         consulta = consulta.where(or_taxa.join(' OR '))
       end
-
       if contenido_especifico.length > 0
-        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids))
+        consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
-
       # Comentarios totales
-      @totales = consulta.count
+      @totales = consulta.count(:all)
       @comentarios = consulta.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
     end
 

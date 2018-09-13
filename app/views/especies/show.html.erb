@@ -1,62 +1,27 @@
 <% content_for(:extrajs) do %>
-    <%= javascript_include_tag "show", "data-turbolinks-track" => true %>
-    <%= javascript_include_tag "geodatos/d3.v3.min", "data-turbolinks-track" => true %>
-    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+      opciones = <%=raw @datos.to_json %>;
+      opciones.nombre = '<%= tituloNombreCientifico(@especie, link: true) %>';
+  </script>
 <% end %>
 
-<%= content_for(:delayedjs) do %>
-    <script>
-        function paginado_fotos(paginas, pagina)
-        {
-            var es_primero = null;
-
-            $('.paginado_1, .paginado_2').bootpag({
-                total: paginas,          // total pages
-                page: pagina,            // default page
-                maxVisible: 5,     // visible pagination
-                leaps: true,         // next/prev leaps through maxVisible
-                firstLastUse: true,
-                first: '←',
-                last: '→'
-            }).on("page", function (event, pag) {
-                if (es_primero == pag)
-                    return;
-                else {
-                    $.ajax(
-                            {
-                                url: '/especies/' + TAXON.id + '/fotos-bdi.html',
-                                type: 'GET',
-                                data: {
-                                    pagina: pag
-                                }
-                            }).done(function (res) {
-                                $('#paginado_fotos').empty().append(res);
-                            });
-                }
-
-                es_primero = pag;
-            });
-        }
-
-        // Para correr los nobres comunes del lado del cliente
-        nombres_comunes_todos();
-    </script>
+<% content_for(:extracss) do %>
+  <%= stylesheet_link_tag 'carrusel', 'data-turbolinks-track' => true %>
 <% end %>
-
-<script data-turbolinks-track="true" type="text/javascript" charset="utf-8">
-    var TAXON = <%=raw @especie.to_json %>;
-    var NOMBRE_COMUN_PRINCIPAL = "<%=raw @nombre_comun_principal.present? ? @nombre_comun_principal : '' %>";
-    var SPECIES_OR_LOWER = <%=raw species_or_lower = @species_or_lower %>;
-    var GEO = <%=raw @geo.present? ? @geo.to_json : {} %>;
-    var BDI_API = '/especies/' + TAXON.id + '/fotos-bdi.json';
-</script>
 
 <% if notice.present? %>
-    <div class="row alert alert-success" role="alert"><%= notice %></div>
+  <div class="row alert alert-success" role="alert"><%= notice %></div>
+<% end %>
+
+<% content_for(:meta_keywords) do %>
+  <%= "#{@especie.nombre_cientifico},#{@datos[:nombres_comunes]}".strip %>
 <% end %>
 
 <% content_for(:title) do %>
-    <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
+  <%= @titulo = tituloNombreCientifico(@especie, :title => true) %>
 <% end %>
 
 <div class="row">
@@ -64,37 +29,37 @@
     <h3>
       <%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %>
       <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-	    <%= ponBotonEditaIDNaturalista if usuario_signed_in? &&  editarIDNaturalista = tiene_permiso?('Administrador') %>
+      <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
     </h3>
   </div>
-	<%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
-  <% if (@species_or_lower) %>
+
+  <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
+
+  <% if (@datos[:especie_o_inferior]) %>
     <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
       <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
     </div>
   <% end %>
+
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div id="nombres_comunes_todos"></div>
-    <%= dameStatus(@especie).html_safe %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
+    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
   </div>
+
 </div>
+
 <hr/>
+
 <div class="btn-group pull-right" style="z-index: 1;">
-  <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Más información científica sobre la especie...  <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" style="z-index: 1001;">
-    <%# Parche para mostrar el PDF de Dalbergia (comentado con sintaxis ERB para q no salga en el html) %>
-    <%#Todo if ESPANTOSO, arreglar cuando ya se arregle el PDF (comentado con sintaxis ERB para q no salga en el html) %>
-    <% if Especie::DALBERGIAS.include?(@especie.nombre_cientifico.gsub(' ','_')) %>
-      <li>
-        <%= button_tag("<b>Descargar &middot; <i class ='file-pdf-ev-icon'></i><sub>PDF</sub></b>".html_safe, :class => 'btn btn-link', :type => :button, :onClick => "window.open('http://conabioweb.conabio.gob.mx/webservice/dalbergias/#{@especie.nombre_cientifico.gsub(' ','_')}.pdf', '_blank', 'status=no, menubar=no' )") %>
-      </li>
-    <% else %>
-      <li>
-        <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
-      </li>
-    <% end %>
+
+  <ul class="dropdown-menu" style="z-index: 1001;" id="enlaces_externos">
+    <li>
+      <%= button_tag("<b>Ficha en PDF <i class ='file-pdf-ev-icon'></i></b>".html_safe, :class => 'btn btn-link', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
+    </li>
     <li role="separator" class="divider"></li>
     <li class="dropdown-header">Consultar en: <sup><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></sup></li>
     <li>
@@ -107,18 +72,16 @@
       <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li role="separator" class="divider"></li>
-    <% if @con_naturalista %>
+    <% if @datos[:ficha_naturalista] %>
       <li>
-        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, "#{CONFIG.naturalista_url}/taxa/#{@con_naturalista}", class: 'noLoad', target: '_blank') %>
+        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, @datos[:ficha_naturalista], class: 'noLoad', target: '_blank') %>
       </li>
     <% end %>
   </ul>
 </div>
 
 <div id="pestañas" class="panel row">
-
   <ul class="nav nav-tabs" role="tablist">
-
     <li role="presentation" class="active">
       <a href="#geodata_e_imagen" class="noLoad" aria-controls="geodata_e_imagen" role="tab" data-toggle="pill"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a>
     </li>
@@ -128,29 +91,29 @@
 
       <ul class="dropdown-menu" style="z-index: 1001;">
         <li class="dropdown-header">CONABIO - Banco de imágenes</li>
-
         <li role="presentation">
           <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
         </li>
-        <% if @con_cornell %>
-          <li role="separator" class="divider"></li>
-
-          <li class="dropdown-header">Macaulay Library</li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
-          <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
-
-
-        <% end %>
-
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header">Macaulay Library</li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
+        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
       </ul>
     </li>
 
-
-    <li role="presentation" ><a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a></li>
-    <li role="presentation" ><a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a></li>
-    <li role="presentation" ><a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a></li>
-    <li role="presentation" ><a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="badge"><%= @cuantos %></span></a></li>
+    <li role="presentation" >
+      <a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
+    </li>
+    <li role="presentation" >
+      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
+    </li>
   </ul>
 
   <div class="tab-content">
@@ -179,71 +142,67 @@
       </p>
     </div>
 
-    <% if @con_cornell %>
-      <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
-      <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-        <p class="text-center">
-          <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-        <h4>Cargando... Por favor, espera</h4>
-        </p>
-      </div>
+    <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+    <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+    <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
 
-      <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content" style="background-color: #c5c5c5;">
+    <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color: #c5c5c5;">
 
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-
-            </div>
-
-            <div class="modal-body text-success" id="modal_reproduce_body">
-	            <div class="row">
-	              <div class="col-md-9">
-	                <div class="embed-responsive embed-responsive-16by9">
-	                </div>
-	              </div>
-	              <div class="col-md-3">
-
-			            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-	                <b id="modal_localidad"></b>
-		              <h5 id="modal_ubicacion"></h5>
-		              <small id="modal_fecha"></small>
-			            <hr>
-		              <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
-		            </div>
-
-	            </div>
-            </div>
-
-            <div class="modal-footer">
-              <h5 class="modal-title">
-                <i class="copyright-ev-icon"></i>
-                <b id="modal_autor"></b>
-                <span>, Macaulay Library at The Cornell Lab of Ornithology</span>
-              </h5>
-            </div>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 
           </div>
+
+          <div class="modal-body text-success" id="modal_reproduce_body">
+            <div class="row">
+              <div class="col-md-9">
+                <div class="embed-responsive embed-responsive-16by9">
+                </div>
+              </div>
+              <div class="col-md-3">
+
+                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                <b id="modal_localidad"></b>
+                <h5 id="modal_ubicacion"></h5>
+                <small id="modal_fecha"></small>
+                <hr>
+                <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <h5 class="modal-title">
+              <i class="copyright-ev-icon"></i>
+              <b id="modal_autor"></b>
+              <span>, Macaulay Library at The Cornell Lab of Ornithology</span>
+            </h5>
+          </div>
+
         </div>
       </div>
-    <% end %>
+    </div>
 
     <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
   </div>
-
-
 
 </div>

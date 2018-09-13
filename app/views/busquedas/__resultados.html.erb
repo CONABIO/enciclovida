@@ -1,4 +1,5 @@
 <% if I18n.locale.to_s != 'es-cientifico' %>
+
   <% @taxones.each do |taxon| %>
     <% if taxon.foto_principal.present? %>
       <div class="result-img-container">
@@ -15,8 +16,8 @@
         </div>
       </div>
     <% end %>
-
   <% end %>
+
 <% else %>
   <% @taxones.each do |taxon| %>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 resultados-cientificos">

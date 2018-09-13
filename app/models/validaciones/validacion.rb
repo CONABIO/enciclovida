@@ -40,11 +40,11 @@ class Validacion
       nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
       taxones = if nombres.length == 2  # Especie
-                  Especie.where("nombre_cientifico LIKE '#{nombres[0]} % #{nombres[1]}'")
+                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]} % #{nombres[1]}'")
                 elsif nombres.length == 3  # Infraespecie
-                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
                 elsif nombres.length == 1 # Genero o superior
-                  Especie.where("nombre_cientifico LIKE '#{nombres[0]}'")
+                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]}'")
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
@@ -60,7 +60,7 @@ class Validacion
         ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy)
 
         if ids.present?
-          taxones = Especie.caso_rango_valores('especies.id', ids.join(','))
+          taxones = Especie.where(id: ids)
           taxones_con_distancia = []
 
           taxones.each do |taxon|

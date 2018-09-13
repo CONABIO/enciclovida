@@ -1,4 +1,4 @@
-class CreateAdicionales < ActiveRecord::Migration
+class CreateAdicionales < ActiveRecord::Migration[5.1]
   def change
     create_table :adicionales do |t|
       t.integer :especie_id, :null => false

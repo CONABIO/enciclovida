@@ -24,7 +24,6 @@ class ValidacionAvanzada < Validacion
     super
 
     sheet.parse(cabecera).each_with_index do |f, index|
-      next if index == 0
       self.fila = f
       self.nombre_cientifico = f['nombre_cientifico']
 
@@ -333,7 +332,8 @@ class ValidacionAvanzada < Validacion
       validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
 
       # Para la NOM
-      nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
+      #nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
+      nom = taxon.catalogos.nom
       if nom.length == 1
         taxon.x_nom = nom[0].descripcion
         validacion_interna_hash['SCAT_NOM-059'] = taxon.x_nom
@@ -342,7 +342,8 @@ class ValidacionAvanzada < Validacion
       end
 
       # Para IUCN
-      iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
+      #iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
+      iucn = taxon.catalogos.iucn
       if iucn.length == 1
         taxon.x_iucn = iucn[0].descripcion
         validacion_interna_hash['SCAT_IUCN'] = taxon.x_iucn
@@ -350,7 +351,8 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash['SCAT_IUCN'] = nil
       end
 
-      cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
+      #cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
+      cites = taxon.catalogos.iucn
       if cites.length == 1
         taxon.x_cites = cites[0].descripcion
         validacion_interna_hash['SCAT_CITES'] = taxon.x_cites
@@ -359,6 +361,7 @@ class ValidacionAvanzada < Validacion
       end
 
       # Para el tipo de distribucion
+      #tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
       tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
 
       if tipos_distribuciones.any?
@@ -368,7 +371,7 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash['SCAT_Distribucion'] = nil
       end
 
-      validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
+      validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sist_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
       validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
 

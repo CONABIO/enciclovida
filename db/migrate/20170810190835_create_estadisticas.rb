@@ -1,4 +1,4 @@
-class CreateEstadisticas < ActiveRecord::Migration
+class CreateEstadisticas < ActiveRecord::Migration[5.1]
   def up
     create_table :estadisticas do |t|
       t.string :descripcion_estadistica
@@ -25,7 +25,7 @@ class CreateEstadisticas < ActiveRecord::Migration
                      "Ejemplares en el SNIB (aVerAves)",
                      "Observaciones en NaturaLista (grado de investigación)",
                      "Observaciones en NaturaLista (grado casual)",
-                     "Mapas de distribución"]
+                     "Mapas de distribución", "Número de especies validas", "Número de especies e inferiores validas"]
 
     descripciones.each do |x|
       Estadistica.create(:descripcion_estadistica => x)

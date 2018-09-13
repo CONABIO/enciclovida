@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?97329690');
-  src: font-url('enciclovida_font_icons.eot?97329690#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?97329690') format('woff2'),
-       font-url('enciclovida_font_icons.woff?97329690') format('woff'),
-       font-url('enciclovida_font_icons.ttf?97329690') format('truetype'),
-       font-url('enciclovida_font_icons.svg?97329690#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?94327214');
+  src: font-url('enciclovida_font_icons.eot?94327214#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?94327214') format('woff2'),
+       font-url('enciclovida_font_icons.woff?94327214') format('woff'),
+       font-url('enciclovida_font_icons.ttf?94327214') format('truetype'),
+       font-url('enciclovida_font_icons.svg?94327214#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?97329690#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?94327214#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -111,9 +111,9 @@
 .exotica-ev-icon:before { content: '\e835'; } /* '' */
 .exotica-2-ev-icon:before { content: '\e836'; } /* '' */
 .prioritarias-ev-icon:before { content: '\e837'; } /* '' */
-.alto-ev-icon:before { content: '\e838'; } /* '' */
-.medio-ev-icon:before { content: '\e839'; } /* '' */
-.bajo-ev-icon:before { content: '\e83a'; } /* '' */
+.alta-ev-icon:before { content: '\e838'; } /* '' */
+.media-ev-icon:before { content: '\e839'; } /* '' */
+.menor-ev-icon:before { content: '\e83a'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83c'; } /* '' */
 .doc-text-ev-icon:before { content: '\e83e'; } /* '' */

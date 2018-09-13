@@ -1,22 +1,30 @@
 class BusquedasController < ApplicationController
+
   before_action only: :resultados, if: -> {params[:busqueda] == 'avanzada'} do
     @no_render_busqueda_basica = true
   end
+
   before_action only: :avanzada do
     @no_render_busqueda_basica = true
   end
 
-  skip_before_filter :set_locale, only: [:cat_tax_asociadas]
+  skip_before_action :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]
 
+  # REVISADO: Los filtros de la busqueda avanzada
+  def avanzada
+    filtros_iniciales
+  end
+
+  # REVISADO: Los resultados de busqueda basica o avanzada
   def resultados
     # Por si no coincidio nada
     @taxones = Especie.none
 
     if params[:busqueda] == 'basica'
-      basica
+      resultados_basica
     elsif params[:busqueda] == 'avanzada'
-      avanzada
+      resultados_avanzada
     else  # Default, error
       respond_to do |format|
         format.html { redirect_to  '/inicio/error', :notice => 'Búsqueda incorrecta por favor inténtalo de nuevo.' }
@@ -72,7 +80,8 @@ class BusquedasController < ApplicationController
     render json: @data.to_json
   end
 
-  def checklist(sin_filtros=false) #Acción que genera los checklists de aceurdo a un set de resultados
+  # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
+  def checklist(sin_filtros=false)
     if sin_filtros
       #Sin no tengo filtros, dibujo el checklist tal y caul como lo recibo (render )
     else
@@ -93,9 +102,10 @@ class BusquedasController < ApplicationController
     end
   end
 
-  # Las categoras asociadas de acuerdo al taxon que escogio
+  # REVISADO: Las categoras asociadas de acuerdo al taxon que escogio
   def cat_tax_asociadas
-    @especie = Especie.find(params[:id])
+    especie = Especie.find(params[:id])
+    @categorias = especie.cat_tax_asociadas
   end
 
   def tabs
@@ -104,143 +114,35 @@ class BusquedasController < ApplicationController
 
   private
 
-  # Busqueda basica
-  def basica
-    arbol = params[:arbol].present? && params[:arbol].to_i == 1
-    vista_general = I18n.locale.to_s == 'es' ? true : false
+  # REVISADO: Los filtros de la busqueda avanzada y de los resultados
+  def filtros_iniciales
+    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
 
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
-    params[:solo_categoria] = params[:solo_categoria].gsub('-', ' ') if params[:solo_categoria].present?  # Para la categoria grupo especies
+    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
 
-    if params[:solo_categoria].present?
-      if vista_general
-        scope = Especie.where(estatus: 2)
-      else
-        scope = Especie
-      end
+    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
 
-      scope = scope.where('nombre_categoria_taxonomica = ? COLLATE Latin1_general_CI_AI', params[:solo_categoria])
+    @prioritarias = Catalogo.prioritarias
+  end
 
-      # Por si desea descargar el formato en excel o csv sin que haga todos los querys
-      if Lista::FORMATOS_DESCARGA.include?(params[:format])
-        # Por si en la busqueda original estaba vacia
-        if params[:nombre].strip.blank?
-          @totales = scope.count
-        else
-          @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
-        end
+  # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
+  def resultados_basica
+    pagina = (params[:pagina] || 1).to_i
 
-      else
-        if params[:nombre].strip.blank?
-          @taxones = scope.datos_basicos.offset((pagina-1)*por_pagina).limit(por_pagina).order(:nombre_cientifico)
-        else
-          @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina,
-                                                       solo_categoria: params[:solo_categoria]})
-        end
+    busqueda = BusquedaBasica.new
+    busqueda.params = params
+    busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
+    busqueda.original_url = request.original_url
+    busqueda.formato = request.format.symbol.to_s
+    busqueda.resultados_basica
 
-        @taxones.each do |t|
-          t.cual_nombre_comun_coincidio(params[:nombre])
-        end
-      end
-
-    else  # Es una busqueda para desplegar el TAB principal
-
-      # Fue una busqueda vacia, te da todos los resultados
-      if params[:nombre].strip.blank?
-        if !Lista::FORMATOS_DESCARGA.include?(params[:format])
-          @totales = if vista_general
-                       scope = Especie.where(estatus: 2)
-                       scope.count
-                     else
-                       scope = Especie
-                       scope.count
-                     end
-
-          @taxones = scope.datos_basicos.offset((pagina-1)*por_pagina).limit(por_pagina).order(:nombre_cientifico)
-
-          # Para separarlos por categoria
-          @por_categoria = scope.select('nombre_categoria_taxonomica, count(*) AS cuantos').categoria_taxonomica_join.adicional_join.group('nombre_categoria_taxonomica').
-              map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica, cuantos: t.cuantos, url: "#{request.original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
-
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
-          end
-        end
-
-      else  # Es una busqueda NO vacia en el nombre
-        @totales = Busqueda.count_basica(params[:nombre], {vista_general: vista_general, solo_categoria: params[:solo_categoria]})
-
-        # Hubo resultados
-        if @totales > 0
-
-          # Por si desea descargar el formato en excel o csv sin que haga todos los querys
-          if !Lista::FORMATOS_DESCARGA.include?(params[:format])
-            @taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, pagina: pagina, por_pagina: por_pagina})
-            @por_categoria = Busqueda.por_categoria_busqueda_basica(params[:nombre], {vista_general: vista_general, original_url: request.original_url})
-
-            #puts @taxones.to_sql
-            @taxones.each do |t|
-              t.cual_nombre_comun_coincidio(params[:nombre])
-            end
-          end
-
-        else # Si no hubo resultados, tratamos de encontrarlos con el fuzzy match
-          ids_comun = FUZZY_NOM_COM.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-          ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre], limit=CONFIG.limit_fuzzy)
-
-          if ids_comun.any? || ids_cientifico.any?
-            sql = "Especie.datos_basicos(['nombre_comun', 'ancestry_ascendente_directo', 'cita_nomenclatural']).nombres_comunes_join"
-
-            # Parte del estatus
-            if vista_general
-              sql << ".where('estatus=2')"
-            end
-
-            if ids_comun.any? && ids_cientifico.any?
-              sql << ".where(\"nombres_comunes.id IN (#{ids_comun.join(',')}) OR especies.id IN (#{ids_cientifico.join(',')})\")"
-            elsif ids_comun.any?
-              sql << ".caso_rango_valores('nombres_comunes.id', \"#{ids_comun.join(',')}\")"
-            elsif ids_cientifico.any?
-              sql << ".caso_rango_valores('especies.id', \"#{ids_cientifico.join(',')}\")"
-            end
-
-            query = eval(sql).distinct.to_sql
-            consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-            taxones = Especie.find_by_sql(consulta)
-
-            ids_totales = []
-
-            taxones.each do |taxon|
-              # Para evitar que se repitan los taxones con los joins
-              next if ids_totales.include?(taxon.id)
-              ids_totales << taxon.id
-
-              # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-              if taxon.nombre_comun.present?
-                distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_comun.downcase)
-                @taxones <<= taxon if distancia < 3
-              end
-
-              distancia = Levenshtein.distance(params[:nombre].downcase, taxon.nombre_cientifico.limpiar.downcase)
-              @taxones <<= taxon if distancia < 3
-            end
-          end
-
-          # Para que saga el total tambien con el fuzzy match
-          if @taxones.any?
-            @taxones.each do |t|
-              t.cual_nombre_comun_coincidio(params[:nombre], true)
-            end
-
-            @fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?'.html_safe
-          end
-
-          @totales = @taxones.length
-
-        end  # Fin de posibles resultados
-      end  #Fin nombre.blank?
-    end  # Fin solo_categoria
+    @totales = busqueda.totales
+    @por_categoria = busqueda.por_categoria || []
+    @taxones = busqueda.taxones
+    @fuzzy_match = busqueda.fuzzy_match
+    arbol = false
 
     response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
 
@@ -262,18 +164,16 @@ class BusquedasController < ApplicationController
 
         format.json { render json: @arboles.to_json }
 
-      elsif params[:solo_categoria].present? && @taxones.any? && pagina == 1
-        # Despliega el inicio de un TAB que no sea el default
+      elsif params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
         format.html { render :partial => 'busquedas/resultados' }
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel }
-      elsif pagina > 1 && @taxones.any?
+      elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
         # Despliega el paginado del TAB que tiene todos
         format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
-      elsif @taxones.empty? && pagina > 1
-        # Quiere decir que el paginado acabo en algun TAB
-        format.html { render text: '' }
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1  # Cuando no hay resultados en la busqueda o el scrolling
+        format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
         format.html { render action: 'resultados' }
@@ -283,90 +183,35 @@ class BusquedasController < ApplicationController
     end  # end respond_to
   end
 
-  def avanzada
-    busqueda = Especie.categoria_taxonomica_join
+  # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
+  def resultados_avanzada
+    pagina = (params[:pagina] || 1).to_i
 
-    conID = params[:id]
+    busqueda = BusquedaAvanzada.new
+    busqueda.params = params
+    busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
+    busqueda.original_url = request.original_url
+    busqueda.formato = request.format.symbol.to_s
+    busqueda.resultados_avanzada
 
-    # Para hacer la condicion con el nombre_comun
-    if conID.blank? && params[:nombre].present?
-      busqueda = busqueda.caso_nombre_comun_y_cientifico(params[:nombre].limpia_sql).nombres_comunes_join
-    end
+    @totales = busqueda.totales
+    @por_categoria = busqueda.por_categoria || []
+    @taxones = busqueda.taxones
 
-    # Parte de la categoria taxonomica
-    if conID.present? && params[:cat].present? && params[:nivel].present?
-      taxon = Especie.find(conID)
-
-      if taxon.is_root?
-        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{taxon.id}%' OR especies.id=#{taxon.id}")
-      else
-        ancestros = taxon.ancestry_ascendente_directo
-        busqueda = busqueda.where("ancestry_ascendente_directo LIKE '#{ancestros}/#{taxon.id}%' OR especies.id IN (#{taxon.path_ids.join(',')})")
-      end
-
-      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al taxon que escogio
-      busqueda = busqueda.where("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{params[:nivel]} '#{params[:cat]}'")
-    end
-
-    # Parte del estatus
-    if I18n.locale.to_s == 'es-cientifico'
-      busqueda = busqueda.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
-    else  # En la busqueda general solo el valido
-      busqueda = busqueda.where(estatus: 2)
-    end
-
-    # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-    busqueda = Busqueda.filtros_default(busqueda, params)
-
-    # Parte de consultar solo un TAB (categoria taxonomica), se tuvo que hacer con nombre_categoria taxonomica,
-    # ya que los catalogos no tienen estandarizados los niveles en la tabla categorias_taxonomicas  >.>
-    if params[:solo_categoria]
-      busqueda = busqueda.where("nombre_categoria_taxonomica='#{params[:solo_categoria].gsub('-', ' ')}' COLLATE Latin1_general_CI_AI")
-    end
-
-    # Para sacar los resultados por categoria
-    @por_categoria = Busqueda.por_categoria(busqueda, request.original_url) if params[:solo_categoria].blank?
-
-    pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : Busqueda::POR_PAGINA_PREDETERMINADO
-
-    @totales = busqueda.datos_count[0].totales
-
-    if @totales > 0
-
-      if params[:checklist] == '1' # Reviso si me pidieron una url que contien parametro checklist (Busqueda CON FILTROS)
-        @taxones = busqueda.datos_arbol_con_filtros
-        checklist
-      else
-        query = busqueda.datos_basicos.distinct.to_sql
-        consulta = Bases.distinct_limpio(query) << " ORDER BY nombre_cientifico ASC OFFSET #{(pagina-1)*por_pagina} ROWS FETCH NEXT #{por_pagina} ROWS ONLY"
-        @taxones = Especie.find_by_sql(consulta)
-
-        # Si solo escribio un nombre
-        if conID.blank? && params[:nombre].present?
-          @taxones.each do |t|
-            t.cual_nombre_comun_coincidio(params[:nombre])
-          end
-        end
-      end
-    end
-
-    response.headers['x-total-entries'] = @totales.to_s if @taxones.present?
+    response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 
     respond_to do |format|
-      # Para desplegar solo una categoria de resultados, o el paginado con el scrolling
-      if params[:solo_categoria].present? && @taxones.any? && pagina == 1
-        # Imprime el inicio de un TAB
+      if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
         format.html { render :partial => 'busquedas/resultados' }
         format.json { render json: {taxa: @taxones} }
-        format.xlsx { descargar_taxa_excel(busqueda) }
-      elsif pagina > 1 && @taxones.any?
+        format.xlsx { descargar_taxa_excel }
+      elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
         format.html { render :partial => 'busquedas/_resultados' }
         format.json { render json: {taxa: @taxones} }
-      elsif @taxones.empty? && pagina > 1
-        format.html { render text: '' }
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1  # Cuando no hay resultados en la busqueda o el scrolling
+        format.html { render plain: '' }
         format.json { render json: {taxa: []} }
-      elsif params[:checklist].present? && params[:checklist].to_i == 1
+      elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
         format.html { render 'busquedas/checklists' }
         format.pdf do  #Para imprimir el listado en PDF
           ruta = Rails.root.join('public', 'pdfs').to_s
@@ -386,51 +231,31 @@ class BusquedasController < ApplicationController
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
         end
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
-        # Parametros para poner en los filtros y saber cual escogio
-        @setParams = {}
-
-        params.each do |k,v|
-          # Evitamos valores vacios
-          next unless v.present?
-
-          case k
-            when 'id', 'nombre', 'por_pagina'
-              @setParams[k] = v
-            when 'edo_cons', 'dist', 'prior', 'estatus'
-              if @setParams[k].present?
-                @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-              else
-                @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-              end
-            else
-              next
-          end
-        end
+        filtros_iniciales
+        set_filtros
 
         format.html { render action: 'resultados' }
         format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
-        format.xlsx { descargar_taxa_excel(busqueda) }
+        format.xlsx { descargar_taxa_excel }
       end
 
     end  # end respond_to
   end
 
-  def descargar_taxa_excel(busqueda=nil)
+  # REVISADO: La descarga de taxa en busqueda basica o avanzada
+  def descargar_taxa_excel
     lista = Lista.new
     columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
     lista.columnas = columnas.join(',')
     lista.formato = 'xlsx'
     lista.cadena_especies = request.original_url
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
-    vista_general = I18n.locale.to_s == 'es' ? true : false
-    basica = params[:busqueda] == 'basica' ? true : false
+    @atributos = columnas
 
-    # Si es una descarga de la busqueda basica y viene del fuzzy match
-    if basica  && @taxones.present? && @taxones.any?
-      @atributos = columnas
-      @taxones = lista.datos_descarga(@taxones)
+    if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
       # el nombre de la lista es cuando la bajo ya que no metio un correo
       lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
+      @taxones = lista.datos_descarga(@taxones)
 
       if Rails.env.production?  # Solo en produccion la guardo
         render(xlsx: 'resultados') if lista.save
@@ -438,62 +263,48 @@ class BusquedasController < ApplicationController
         render xlsx: 'resultados'
       end
 
-    elsif @totales > 0
+    elsif @totales > 200  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
       # Para saber si el correo es correcto y poder enviar la descarga
-      con_correo = Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+      if Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
+        # el nombre de la lista es cuando la solicito? y el correo
+        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
-      if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
-        # el nombre de la lista es cuando la bajo ya que no metio un correo
-        lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-
-        if basica
-          taxones = Busqueda.basica(params[:nombre], {vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-        else  # Para la avanzada
-          query = busqueda.distinct.to_sql
-          consulta = Bases.distinct_limpio(query) << ' ORDER BY nombre_cientifico ASC'
-          taxones = Especie.find_by_sql(consulta)
+        if Rails.env.production?
+          lista.delay(queue: 'descargar_taxa').to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
+        else  # Para develpment o test
+          lista.to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
         end
 
-        @taxones = lista.datos_descarga(taxones)
-        @atributos = columnas
-
-        if Rails.env.production?  # Solo en produccion la guardo
-          render(xlsx: 'resultados') if lista.save
-        else
-          render xlsx: 'resultados'
-        end
-
-      else  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
-        if con_correo
-          # el nombre de la lista es cuando la solicito? y el correo
-          lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
-
-          if Rails.env.production?
-            if basica
-              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.delay(queue: 'descargar_taxa').to_excel(opts.merge(basica: basica, correo: params[:correo])) if lista.save
-            else
-              lista.delay(queue: 'descargar_taxa').to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
-            end
-
-          else  # Para develpment o test
-            if basica  # si es busqueda basica
-              opts = params.merge({vista_general: vista_general, todos: true, solo_categoria: params[:solo_categoria]})
-              lista.to_excel(opts.merge(basica: basica, correo: params[:correo]))
-            else
-              lista.to_excel({busqueda: busqueda.distinct.to_sql, avanzada: true, correo: params[:correo]}) if lista.save
-            end
-          end
-
-          render json: {estatus: 1}
-        else  # Por si no puso un correo valido
-          render json: {estatus: 0}
-        end
-
+        render json: {estatus: 1}
+      else  # Por si no puso un correo valido
+        render json: {estatus: 0}
       end
 
     else  # No entro a ningun condicional, es un error
       render json: {estatus: 0}
-    end  # end totales > 0
+    end  # end totoales
   end  # end metodo
+
+  # REVISADO: Parametros para poner en los filtros y saber cual escogio
+  def set_filtros
+    @setParams = {}
+
+    params.each do |k,v|
+      # Evitamos valores vacios
+      next unless v.present?
+
+      case k
+        when 'id', 'nombre', 'por_pagina'
+          @setParams[k] = v
+        when 'edo_cons', 'dist', 'prior', 'estatus'
+          if @setParams[k].present?
+            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+          else
+            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+          end
+        else
+          next
+      end
+    end
+  end
 end

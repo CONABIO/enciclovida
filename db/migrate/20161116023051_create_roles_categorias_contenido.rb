@@ -1,4 +1,4 @@
-class CreateRolesCategoriasContenido < ActiveRecord::Migration
+class CreateRolesCategoriasContenido < ActiveRecord::Migration[5.1]
   def change
     create_table :roles_categorias_contenido do |t|
       t.integer :categorias_contenido_id

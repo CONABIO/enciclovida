@@ -1,6 +1,6 @@
 # Este controlador tiene la finalidad de hacer contenido por paginas, ej la lista de invasoras
 class PaginasController < ApplicationController
-  skip_before_filter :set_locale
+  skip_before_action :set_locale
   layout false, :only => [:exoticas_invasoras_paginado]
 
   # La pagina cuando entran por get
@@ -54,7 +54,7 @@ class PaginasController < ApplicationController
         datos << t.adicional.try(:foto_principal)
         datos << t
 
-        if familia = t.ancestors.categoria_taxonomica_join.where("nombre_categoria_taxonomica = 'familia'")
+        if familia = t.ancestors.left_joins(:categoria_taxonomica).where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
           datos << familia.first.nombre_cientifico
         else
           datos << nil

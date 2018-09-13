@@ -1,4 +1,4 @@
-class CreateMetadatoEspecies < ActiveRecord::Migration
+class CreateMetadatoEspecies < ActiveRecord::Migration[5.1]
   def change
     create_table :metadato_especies, :force => true do |t|
       t.integer 'especie_id', null: false
