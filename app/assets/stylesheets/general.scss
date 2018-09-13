@@ -236,8 +236,8 @@ ul.social-buttons li a:active {
 /* Termina tipo distribucion */
 
 /* prioritarias */
-.alto-ev-icon, .medio-ev-icon, .bajo-ev-icon{color: #ff931e;}
-.alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+.alta-ev-icon, .media-ev-icon, .menor-ev-icon{color: #ff931e;}
+.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
 /* termina prioritarias */
 
 /* ambiente */
@@ -255,8 +255,7 @@ ul.social-buttons li a:active {
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -300,4 +299,23 @@ ul.social-buttons li a:active {
 }
 .media-tabs div.result-img-container a{
   cursor: pointer;
+}
+#map .glyphicon, #map span[class$="-ev-icon"]{
+  text-shadow: 2px 1px 1px rgba(255, 255, 255, 0.85);
+}
+.leaflet-control-layers-expanded{
+  background-color:rgba(211, 214, 197, 0.9)!important;
+}
+#map sub{
+  color: #b7b7b7;
+  background-color: #800000;
+}
+sub{
+  border-radius: 8px;
+  color: #333333;
+  background-color: #dddddd;
+  padding: 2px 4px;
+  margin-left: -2px;
+  font-size: .8em;
+  font-weight: bold;
 }

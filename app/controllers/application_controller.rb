@@ -3,15 +3,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :set_locale#, :authenticate  ##Autentica por credenciales generales
+  before_action :set_locale#, :authenticate  ##Autentica por credenciales generales
   before_action :configure_permitted_parameters, if: :devise_controller?
-
-  def get_flickraw
-    #current_user ? FlickrPhoto.flickraw_for_user(current_user) : flickr
-    FlickRaw.api_key = FLICKR_API_KEY
-    FlickRaw.shared_secret = FLICKR_SHARED_SECRET
-    flickr
-  end
 
   def to_boolean(str)
     str.downcase == 'true' ? true : false
@@ -21,13 +14,6 @@ class ApplicationController < ActionController::Base
     I18n.locale = cookies[:vista].present? ? cookies[:vista] : I18n.default_locale
   end
 
-
-  private
-
-  def dameLocaleFiltro
-    return unless filtro = Filtro.where(:sesion => request.session_options[:id]).first
-    filtro.locale
-  end
 
   protected
 
@@ -40,15 +26,9 @@ class ApplicationController < ActionController::Base
 
   # Atributos adicionales para el registro y autenticacion
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) << :email
-    devise_parameter_sanitizer.for(:sign_up) << :nombre
-    devise_parameter_sanitizer.for(:sign_up) << :apellido
-    devise_parameter_sanitizer.for(:sign_up) << :institucion
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :email, :password, :remember_me) }
-    devise_parameter_sanitizer.for(:account_update) << :email
-    devise_parameter_sanitizer.for(:account_update) << :nombre
-    devise_parameter_sanitizer.for(:account_update) << :apellido
-    devise_parameter_sanitizer.for(:account_update) << :institucion
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :nombre, :apellido, :institucion])
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :email, :password, :remember_me])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:email, :nombre, :apellido, :institucion])
   end
 
   def tiene_permiso?(nombre_rol, con_hijos=false)

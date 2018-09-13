@@ -1,12 +1,15 @@
 Buscador::Application.routes.draw do
 
-  resources :peces, :as => :pez do
+  resources :peces, :as => :pez, except: :index do
     collection do
       get :busqueda
       post :busqueda
       get :dameNombre
     end
   end
+
+  resources :criterios
+  resources :propiedades
 
   resources :regiones_mapas do
     collection do
@@ -89,16 +92,13 @@ Buscador::Application.routes.draw do
 
   resources :estatuses
 
-  resources :especies_catalogo do
-    collection do
-      get :autocomplete_catalogo_descripcion
-    end
-  end
+  resources :especies_catalogo
 
-  resources :especies, as: :especie do
+  resources :especies, :except => :show, as: :especie do
     resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
 
     collection do
+      get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }
       post :update_photos, :as => :update_photos_for
       get ':id/arbol' => 'especies#arbol'
       get :error
@@ -106,9 +106,9 @@ Buscador::Application.routes.draw do
       get ':id/observacion-naturalista/:observacion_id' => 'especies#observacion_naturalista'
       get ':id/ejemplares-snib' => 'especies#ejemplares_snib'
       get ':id/ejemplar-snib/:ejemplar_id' => 'especies#ejemplar_snib'
-      get ':id/arbol_nodo' => 'especies#arbol_nodo'
-      get ':id/hojas_arbol_nodo' => 'especies#hojas_arbol_nodo'
-      get ':id/hojas_arbol_identado' => 'especies#hojas_arbol_identado'
+      get ':id/arbol_nodo_inicial' => 'especies#arbol_nodo_inicial'
+      get ':id/arbol_nodo_hojas' => 'especies#arbol_nodo_hojas'
+      get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
@@ -116,6 +116,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
+      get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
     end
   end
 
@@ -125,38 +126,21 @@ Buscador::Application.routes.draw do
 
   resources :tipos_regiones
 
-  resources :regiones do
-    collection do
-      post :regiones
-    end
-  end
+  resources :regiones
 
-  resources :especies_regiones do
-    collection do
-      get :autocomplete_region_nombre
-    end
-  end
+  resources :especies_regiones
 
   resources :tipos_distribuciones
 
   resources :especies_estatus_bibliografia
 
-  resources :nombres_comunes do
-    collection do
-      get :buscar
-      get :autocomplete_nombre_comun_comun
-    end
-  end
+  resources :nombres_comunes
 
   resources :nombres_regiones
 
   resources :nombre_regiones_bibliografias
 
-  resources :bibliografias do
-    collection do
-      get :autocomplete_bibliografia_autor
-    end
-  end
+  resources :bibliografias
 
   match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get

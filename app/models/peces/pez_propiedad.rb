@@ -1,8 +1,6 @@
 class PezPropiedad < ActiveRecord::Base
 
-  establish_connection(:peces)
-  self.table_name='peces_propiedades'
-  self.primary_keys = :especie_id, :propiedad_id
+  self.table_name = "#{CONFIG.bases.pez}.peces_propiedades"
 
   belongs_to :pez, class_name: 'Pez', foreign_key: :especie_id
   belongs_to :propiedad

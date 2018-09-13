@@ -1,8 +1,6 @@
-#!/bin/env ruby
-# encoding: utf-8
 class EspeciesController < ApplicationController
 
-  skip_before_filter :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
+  skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
@@ -10,28 +8,27 @@ class EspeciesController < ApplicationController
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
-  before_action :only => [:arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado] do
+                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
+                                     :dame_nombre_con_formato]
+  before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
-  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] {tiene_permiso?('Administrador')}  # Minimo administrador
-
-  before_action :servicios, only: [:show]
+  before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] do
+    tiene_permiso?('Administrador')  # Minimo administrador
+  end
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo, :hojas_arbol_nodo, :hojas_arbol_identado, :comentarios,
+                          :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
-                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista, :cambia_id_naturalista]
+                          :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
+                          :cambia_id_naturalista, :dame_nombre_con_formato]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
-
-  #c.session.blank? || c.session['warden.user.user.key'].blank?
-  #}
-  #cache_sweeper :taxon_sweeper, :only => [:update, :destroy, :update_photos]
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
+                :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
 
   # GET /especies
   # GET /especies.json
@@ -42,40 +39,74 @@ class EspeciesController < ApplicationController
   # GET /especies/1
   # GET /especies/1.json
   def show
-
+    render 'especies/noPublicos' and return unless @especie.scat.Publico
     respond_to do |format|
       format.html do
 
-        if @species_or_lower = @especie.species_or_lower?
-          if proveedor = @especie.proveedor
-            geodatos = proveedor.geodatos
-            @geo = geodatos if geodatos[:cuales].any?
-          end
+        @datos = {}
+        if adicional = @especie.adicional
+          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        if adicional = @especie.adicional
-          @nombre_comun_principal = adicional.nombre_comun_principal
-        end
+        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
-          @con_naturalista = proveedor.naturalista_id if proveedor.naturalista_id.present?
-        end
+          naturalista_id = proveedor.naturalista_id
+          if naturalista_id.present?
+            @datos[:naturalista_api] = "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
+            @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
+          end
 
-        #para saber si es Ave TODO (parche feito)
-        if proveedor = @especie.proveedor
-          #@con_cornell = proveedor.cornell_id if proveedor.cornell_id.present?
-          @con_cornell = true
-        end
+          if @datos[:especie_o_inferior]
+            geodatos = proveedor.geodatos
 
-        # Para los comentarios
-        @cuantos = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
+            if geodatos[:cuales].any?
+              @datos[:geodatos] = geodatos
+              @datos[:solo_coordenadas] = true
+
+              # Para poner las variable con las que consulto el SNIB
+              if geodatos[:cuales].include?('snib')
+                if geodatos[:snib_mapa_json].present?
+                  @datos[:snib_url] = geodatos[:snib_mapa_json]
+                else
+                  reino = @especie.root.nombre_cientifico.estandariza
+                  catalogo_id = @especie.scat.catalogo_id
+                  @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+                end
+              end
+
+              # Para poner las variable con las que consulto de NaturaLista
+              if geodatos[:cuales].include?('naturalista')
+                if geodatos[:naturalista_mapa_json].present?
+                  @datos[:naturalista_url] = geodatos[:naturalista_mapa_json]
+                end
+              end
+
+              # Para poner las variable con las que consulto el Geoserver
+              if geodatos[:cuales].include?('geoserver')
+                if geodatos[:geoserver_url].present?
+                  @datos[:geoserver_url] = geodatos[:geoserver_url]
+                end
+              end
+
+            end  # End gedatos any?
+          end  # End especie o inferior
+        end  # End proveedor existe
+
+        # Para las variables restantes
+        @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
+        @datos[:taxon] = @especie.id
+        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:cual_ficha] = ''
+        @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
 
       format.json do
         @especie.e_geodata = []
 
-        if @especie.species_or_lower?
+        if @especie.especie_o_inferior?
           if proveedor = @especie.proveedor
             geodatos = proveedor.geodatos
             @especie.e_geodata = geodatos if geodatos[:cuales].any?
@@ -110,7 +141,7 @@ class EspeciesController < ApplicationController
         if p = @especie.proveedor
           fotos = p.fotos_naturalista
 
-          if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+          if fotos[:estatus] && fotos[:fotos].any?
             @fotos = []
 
             fotos[:fotos].each do |f|
@@ -129,13 +160,13 @@ class EspeciesController < ApplicationController
         # Fotos de BDI
         unless @fotos.present?
           fotos = @especie.fotos_bdi
-          @fotos = fotos[:fotos] if fotos[:estatus] == 'OK' && fotos[:fotos].any?
+          @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
         # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
         @describers = if CONFIG.taxon_describers
                         CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
                         [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
                       else
                         [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
@@ -283,79 +314,50 @@ class EspeciesController < ApplicationController
     end
   end
 
-  # Despliega el arbol, viene de la pestaña de la ficha
+  # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
+  def dame_nombre_con_formato
+  end
+
+  # REVISADO: Despliega el arbol identado o nodo
   def arbol
     if I18n.locale.to_s == 'es-cientifico'
-      obj_arbol_identado
-      render :partial => 'arbol_identado'
+      @taxones = Especie.arbol_identado_inicial(@especie)
+      render :partial => 'especies/arbol/arbol_identado_inicial'
     else
-      render :partial => 'arbol_nodo'
+      render :partial => 'especies/arbol/arbol_nodo_inicial'
     end
   end
 
-  # JSON que se ocupara para desplegar los datos en D3
-  def arbol_nodo
-    @children_array = []
+  # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
+  def arbol_nodo_inicial
+    hash_d3 = {}
+    taxones = Especie.arbol_nodo_inicial(@especie)
 
-    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").caso_rango_valores('especies.id',@especie.path_ids.join(',')).
-        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-        where(estatus: 2).order_por_categoria('DESC')
-
-    taxones.each_with_index do |t, i|
-      @i = i
-      children_hash = hash_arbol_nodo(t, arbol_inicial: true)
-
-      # Acumula el resultado del json anterior una posicion antes de la actual
-      @children_array << children_hash
+    taxones.reverse.each do |taxon|
+      if hash_d3.empty?
+        hash_d3 = taxon.arbol_nodo_hash
+      else  # El taxon anterior la pone como hija del taxon actual
+        parent = taxon.arbol_nodo_hash
+        parent[:children] = [hash_d3]
+        hash_d3 = parent
+      end
     end
 
-    # Regresa el ultimo que es el mas actual
-    json_d3 = @children_array.last
-
-    render :json => json_d3.to_json
+    render :json => hash_d3
   end
 
-  # JSON que despliega solo un nodo con sus hijos, para pegarlos en json ya construido con d3
-  def hojas_arbol_nodo
-    children_array = []
-
-    nivel_categoria = @especie.categoria_taxonomica.nivel1
-    ancestry = @especie.is_root? ? @especie.id : "#{@especie.ancestry_ascendente_directo}/%#{@especie.id}%"
-
-    taxones = Especie.select_basico(['ancestry_ascendente_directo', 'conteo', 'categorias_taxonomicas.nivel1']).datos_basicos.
-        categoria_conteo_join.where("categoria='7_00' OR categoria IS NULL").where("ancestry_ascendente_directo LIKE '#{ancestry}'").
-        where("nombre_categoria_taxonomica IN ('#{CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS.join("','")}')").
-        where("nivel1=#{nivel_categoria + 1} AND nivel3=0 AND nivel4=0").  # Con estas condiciones de niveles aseguro que es una categoria principal
-    where(estatus: 2)
-
-    taxones.each do |t|
-      children_hash = hash_arbol_nodo(t)
-
-      # Acumula el resultado del json anterior una posicion antes de la actual
-      children_array << children_hash
-    end
-
-    render :json => children_array.to_json
+  # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
+  def arbol_nodo_hojas
+    taxones = Especie.arbol_nodo_hojas(@especie)
+    render :json => taxones.map{|t| t.arbol_nodo_hash}
   end
 
-  def hojas_arbol_identado
-    hijos = @especie.child_ids
+  # REVISADO: JSON que despliega los hijos en el arbol identado, en la ficha de la especie
+  def arbol_identado_hojas
+    @taxones = Especie.arbol_identado_hojas(@especie)
+    @hojas = true
 
-    # Quita el propio ID del taxon para que no se repita cuando se despliegan en el arbol
-    taxon_orig = Especie.find(params[:origin_id])
-    taxon_orig_ancestros = taxon_orig.path_ids
-    hijos.delete_if {|h| taxon_orig_ancestros.include?(h) }
-
-    if hijos.any?
-      @taxones = Especie.datos_basicos.
-          caso_rango_valores('especies.id', hijos.join(',')).order(:nombre_cientifico)
-    else
-      @taxones = Especie.none
-    end
-
-    @despliega_o_contrae = true
-    render :partial => 'arbol_identado'
+    render :partial => 'especies/arbol/arbol_identado_hojas'
   end
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
@@ -386,7 +388,7 @@ class EspeciesController < ApplicationController
       bdi = @especie.fotos_bdi
     end
 
-    if bdi[:estatus] == 'OK'
+    if bdi[:estatus]
       @fotos = bdi[:fotos]
 
       respond_to do |format|
@@ -403,14 +405,14 @@ class EspeciesController < ApplicationController
             if bdi[:ultima].present?
               totales+= por_pagina*(bdi[:ultima]-1)
               fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
-              totales+= fbu[:fotos].count if fbu[:estatus] == 'OK'
-              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) +1
+              totales+= fbu[:fotos].count if fbu[:estatus]
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
         end  # End format html
       end  # End respond
 
-    else  # End estatus OK
+    else  # End estatus
       render :_error and return
     end
   end
@@ -419,7 +421,6 @@ class EspeciesController < ApplicationController
   def media_cornell
     type = params['type']
     page = params['page']
-    #@especie = Especie.find(params['id']) #no necesito pasar @especie a la vista
     taxonNC = Especie.find(params['id']).nombre_cientifico
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
@@ -431,7 +432,7 @@ class EspeciesController < ApplicationController
     fotos = if p = @especie.proveedor
               p.fotos_naturalista
             else
-              {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+              {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
             end
 
     render json: fotos
@@ -441,54 +442,21 @@ class EspeciesController < ApplicationController
     nombres_comunes = if p = @especie.proveedor
                         p.nombres_comunes_naturalista
                       else
-                        {estatus: 'error', msg: 'No hay resultados por nombre científico en naturalista'}
+                        {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
                       end
 
     render json: nombres_comunes
   end
 
   def nombres_comunes_todos
-    @nombres_comunes = @especie.nombres_comunes_todos
-  end
-
-  def edit_photos
-    @photos = @especie.taxon_photos.sort_by{|tp| tp.id}.map{|tp| tp.photo}
-  end
-
-  def update_photos
-    photos = retrieve_photos
-    errors = photos.map do |p|
-      p.valid? ? nil : p.errors.full_messages
-    end.flatten.compact
-
-    @especie.photos = photos
-    @especie.save
-
-    #unless photos.count == 0
-    #  Especie.delay(:priority => INTEGRITY_PRIORITY).update_ancestor_photos(@especie.id, photos.first.id)
-    #end
-    if errors.blank?
-      flash[:notice] = 'Las fotos fueron actualizadas satisfactoriamente'
-    else
-      flash[:error] = "Algunas fotos no pudieron ser guardadas, debido a: #{errors.to_sentence.downcase}"
-    end
-    redirect_to especie_path(@especie)
-  rescue Errno::ETIMEDOUT
-    flash[:error] = t(:request_timed_out)
-    redirect_to especie_path(@especie)
-=begin
-  rescue Koala::Facebook::APIError => e
-    raise e unless e.message =~ /OAuthException/
-    flash[:error] = t(:facebook_needs_the_owner_of_that_photo_to, :site_name_short => CONFIG.site_name_short)
-    redirect_back_or_default(taxon_path(@taxon))
-=end
+    @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
   # Viene de la pestaña de la ficha
   def describe
     @describers = if CONFIG.taxon_describers
                     CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.species_or_lower?
+                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
                     [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
                   else
                     [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
@@ -535,7 +503,7 @@ class EspeciesController < ApplicationController
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
             resp.delete(:ruta)
             render json: resp
@@ -548,7 +516,7 @@ class EspeciesController < ApplicationController
         format.kml do
           resp = p.observaciones_naturalista('.kml')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -560,7 +528,7 @@ class EspeciesController < ApplicationController
         format.kmz do
           resp = p.observaciones_naturalista('.kmz')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -586,7 +554,7 @@ class EspeciesController < ApplicationController
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
     else
-      render json: {estatus: 'error', msg: 'No existe naturalista_id'}.to_json
+      render json: {estatus: false, msg: 'No existe naturalista_id'}.to_json
     end
   end
 
@@ -603,7 +571,7 @@ class EspeciesController < ApplicationController
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
             resp.delete(:ruta)
             render json: resp
@@ -616,7 +584,7 @@ class EspeciesController < ApplicationController
         format.kml do
           resp = p.ejemplares_snib('.kml')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -628,7 +596,7 @@ class EspeciesController < ApplicationController
         format.kmz do
           resp = p.ejemplares_snib('.kmz')
 
-          if resp[:estatus] == 'OK'
+          if resp[:estatus]
             archivo = File.read(resp[:ruta])
             send_data archivo, :filename => resp[:ruta].split('/').last
           else
@@ -654,11 +622,11 @@ class EspeciesController < ApplicationController
       resp.delete(:ruta) if resp[:ruta].present?
       render json: resp.to_json
     else
-      render json: {estatus: 'error', msg: 'No existe en el SNIB'}.to_json
+      render json: {estatus: false, msg: 'No existe en el SNIB'}.to_json
     end
   end
 
-  # Muestra los comentarios relacionados a la especie, viene de la pestaña de la ficha
+  # Muestra los comentarios relacionados a la especie, viene de la ficha de la especie
   def comentarios
     @comentarios = Comentario.datos_basicos.where(especie_id: @especie).where('comentarios.estatus IN (2,3) AND ancestry IS NULL').order('comentarios.created_at DESC')
 
@@ -679,7 +647,7 @@ class EspeciesController < ApplicationController
     end
 
     if p.changed? && p.save
-      # 'cambio, y salvó
+      # cambio, y salvó
       @especie.borra_cache('observaciones_naturalista') if @especie.existe_cache?('observaciones_naturalista')
       redirect_to especie_path(@especie), notice: 'El cambio fue exitoso, puede que tarde un poco en lo que se actualiza el cache'
     else
@@ -688,91 +656,47 @@ class EspeciesController < ApplicationController
     end
   end
 
+
   private
 
   def set_especie(arbol = false)
-    begin
+    begin  # Coincidio y es el ID de la centralizacion
       @especie = Especie.find(params[:id])
-      suma_visita  # Servicio para sumar las visitas por especie, pase el parametro ya que no conserva la variable
-      cuantas_especies_inferiores(estadistica_id: 2)  # Servicio para poner el numero totales de especies del taxon
-      cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
+    rescue   #si no encontro el taxon, puede ser el ID viejo de millones
+      if id_millon = Adicional.where(idMillon: params[:id]).first
+        @especie = Especie.find(id_millon.especie_id)
+      else  # Tampoco era el ID de millon
+        render :_error and return
+      end
+    end
 
-      # Por si no viene del arbol, ya que no necesito encontrar el valido
-      if !arbol
-        if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
-          estatus = @especie.especies_estatus
+    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+    @especie.servicios if params[:action] == 'show'
 
-          if estatus.length == 1  # Nos aseguramos que solo haya un valido
-            begin
-              @especie = Especie.find(estatus.first.especie_id2)
-              redirect_to especie_path(@especie)
-            rescue
-              render :_error and return
-            end
-          elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+    # Por si no viene del arbol, ya que no necesito encontrar el valido
+    if !arbol
+      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
+        estatus = @especie.especies_estatus
+
+        if estatus.length == 1  # Nos aseguramos que solo haya un valido
+          begin
+            @especie = Especie.find(estatus.first.especie_id2)
+            redirect_to especie_path(@especie)
+          rescue
             render :_error and return
-          else  # Es sinonimo pero no tiene un valido asociado >.>!
-            if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
-              redirect_to especie_path(@especie) and return
-            end
           end
-        else
-          if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
+          render :_error and return
+        else  # Es sinonimo pero no tiene un valido asociado >.>!
+          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
             redirect_to especie_path(@especie) and return
           end
         end
-      end
-    rescue    #si no encontro el taxon
-      render :_error and return
-    end
-  end
-
-  # Suma una visita a la estadisticas
-  def suma_visita
-    # Me aseguro que viene de la ficha, para poner el contador y que es solo del formato html
-    if params[:action] == 'show' && request.format.html?
-      if Rails.env.production?
-        @especie.delay(queue: 'estadisticas').suma_visita
       else
-        @especie.suma_visita
-      end
-    end  # if show
-  end
-
-  # Cuenta en numero de especies o el numero de especies mas las inferiores de una taxon, depende del argumento
-  def cuantas_especies_inferiores(opc = {})
-    if params[:action] == 'show'
-      if Rails.env.production?
-        if !@especie.existe_cache?("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}")
-          @especie.delay(queue: 'estadisticas').cuantas_especies_inferiores(opc)
+        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+          redirect_to especie_path(@especie) and return
         end
-      else
-        @especie.cuantas_especies_inferiores(opc)
       end
-    end  # if show
-  end
-
-  # Actualiza las observaciones, los nombres comunes y las fotos
-  def servicios
-    # Para ctualizar los servicios del pez
-    pez = @especie.pez
-
-    # Para guardar los cambios en redis y las observacion
-    if Rails.env.production?
-      @especie.delay(queue: 'redis').guarda_redis
-
-      if !@especie.existe_cache?('observaciones_naturalista')
-        @especie.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
-      end
-
-      if !@especie.existe_cache?('ejemplares_snib')
-        @especie.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
-      end
-
-      pez.delay(queue: 'peces').save if pez
-    else
-      @especie.guarda_redis
-      pez.save if pez
     end
   end
 
@@ -785,126 +709,6 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
-  end
-
-  def obj_arbol_identado
-    @taxones = Especie.datos_basicos.select('CONCAT(nivel1,nivel2,nivel3,nivel4) as nivel').
-        caso_rango_valores('especies.id', @especie.path_ids.join(',')).order('nivel')
-  end
-
-  def hash_arbol_nodo(t, opts={})
-    children_hash = {}
-    categoria = t.nivel1
-
-    if categoria == 7
-      children_hash[:color] = '#748c17';
-    elsif categoria == 1
-      children_hash[:color] = '#c27113'
-    else
-      children_hash[:color] = '#C6DBEF'
-    end
-
-    radius_min_size = 8
-    radius_size = radius_min_size
-    children_hash[:radius_size] = radius_size
-
-    especies_o_inferiores = t.conteo.present? ? t.conteo : 0
-    children_hash[:especies_inferiores_conteo] = especies_o_inferiores
-
-    # Decide si es phylum o division (solo reino animalia)
-    nivel_especie = if t.root_id == 1000001
-                      children_hash[:es_phylum] = '1'
-                      '7100'
-                    else
-                      children_hash[:es_phylum] = '0'
-                      '7000'
-                    end
-
-    # URL para ver las especies o inferiores
-    url = "/busquedas/resultados?id=#{t.id}&busqueda=avanzada&por_pagina=50&nivel=%3D&cat=#{nivel_especie}&estatus[]=2"
-    children_hash[:especies_inferiores_url] = url
-
-    #  Radio de los nodos para un mejor manejo hacia D3
-    if especies_o_inferiores > 0
-
-      #  Radios varian de 60 a 40
-      if especies_o_inferiores >= 10000
-        size_per_radium_unit = (especies_o_inferiores-10000)/20
-        radius_size = ((especies_o_inferiores-10000)/size_per_radium_unit) + 40
-
-      elsif especies_o_inferiores >= 1000 && especies_o_inferiores <= 9999  # Radios varian de 40 a 30
-        radius_per_range = ((especies_o_inferiores)*10)/9999
-        radius_size = radius_per_range + 30
-
-      elsif especies_o_inferiores >= 100 && especies_o_inferiores <= 999  # Radios varian de 30 a 20
-        radius_per_range = ((especies_o_inferiores)*10)/999
-        radius_size = radius_per_range + 20
-
-      elsif especies_o_inferiores >= 10 && especies_o_inferiores <= 99  # Radios varian de 20 a 13
-
-        radius_per_range = ((especies_o_inferiores)*7)/99
-        radius_size = radius_per_range + 13
-
-      elsif especies_o_inferiores >= 1 && especies_o_inferiores <= 9  # Radios varian de 13 a 8
-
-        radius_per_range = ((especies_o_inferiores)*5)/9
-        radius_size = radius_per_range + radius_min_size
-
-      end  # End if especies_inferiores_conteo > 0
-
-      children_hash[:radius_size] = radius_size
-    end
-
-    children_hash[:especie_id] = t.id
-    children_hash[:nombre_cientifico] = t.nombre_cientifico
-    children_hash[:nombre_comun] = t.nombre_comun_principal.try(:capitalize)
-
-    # Pone la abreviacion de la categoria taxonomica
-    cat = I18n.transliterate(t.nombre_categoria_taxonomica).downcase
-    abreviacion_categoria = CategoriaTaxonomica::ABREVIACIONES[cat.to_sym].present? ? CategoriaTaxonomica::ABREVIACIONES[cat.to_sym] : ''
-    children_hash[:abreviacion_categoria] = abreviacion_categoria
-
-    if opts[:arbol_inicial]
-      if @i+1 != 1  # Si es taxon mas bajo no tiene hijos
-        children_hash[:children] = [@children_array[@i-1]]
-      end
-    end
-
-    children_hash
-  end
-
-  def retrieve_photos
-    #[retrieve_remote_photos, retrieve_local_photos].flatten.compact
-    [retrieve_remote_photos].flatten.compact
-  end
-
-  def retrieve_remote_photos
-    photo_classes = Photo.descendent_classes - [LocalPhoto]
-    photos = []
-    photo_classes.each do |photo_class|
-      param = photo_class.to_s.underscore.pluralize
-      next if params[param].blank?
-      params[param].reject {|i| i.blank?}.uniq.each do |photo_id|
-        if fp = photo_class.find_by_native_photo_id(photo_id)
-          photos << fp
-        else
-          pp = photo_class.get_api_response(photo_id)
-          photos << photo_class.new_from_api_response(pp, current_usuario.id) if pp
-        end
-      end
-    end
-    photos
-  end
-
-  def retrieve_local_photos
-    return [] if params[:local_photos].blank?
-    photos = []
-    params[:local_photos].reject {|i| i.blank?}.uniq.each do |photo_id|
-      if fp = LocalPhoto.find_by_native_photo_id(photo_id)
-        photos << fp
-      end
-    end
-    photos
   end
 
   def guardaRelaciones(tipoRelacion)
@@ -975,87 +779,87 @@ class EspeciesController < ApplicationController
 
   def valoresRelacion(tipoRelacion, atributos, nuevo=false, criterio=false)
     case tipoRelacion
-      when 'EspecieCatalogo'
-        if criterio
-          condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
-          {:catalogo_id => condicion[1].strip.to_i}
-        else
-          nuevo ? {:especie_id => @especie.id, :catalogo_id => atributos[:catalogo_id], :observaciones => atributos[:observaciones]} :
-              {:catalogo_id => atributos[:catalogo_id], :observaciones => atributos[:observaciones]}
-        end
+    when 'EspecieCatalogo'
+      if criterio
+        condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
+        {:catalogo_id => condicion[1].strip.to_i}
+      else
+        nuevo ? {:especie_id => @especie.id, :catalogo_id => atributos[:catalogo_id], :observaciones => atributos[:observaciones]} :
+            {:catalogo_id => atributos[:catalogo_id], :observaciones => atributos[:observaciones]}
+      end
 
-      when 'EspecieRegion'
-        if criterio
-          condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
-          {:region_id => condicion[1].strip.to_i}
-        else
-          nuevo ? {:especie_id => @especie.id, :region_id => atributos[:region_id], :tipo_distribucion_id => atributos[:tipo_distribucion_id],
-                   :observaciones => atributos[:observaciones]} :
-              {:region_id => atributos[:region_id], :tipo_distribucion_id => atributos[:tipo_distribucion_id],
-               :observaciones => atributos[:observaciones]}
-        end
+    when 'EspecieRegion'
+      if criterio
+        condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
+        {:region_id => condicion[1].strip.to_i}
+      else
+        nuevo ? {:especie_id => @especie.id, :region_id => atributos[:region_id], :tipo_distribucion_id => atributos[:tipo_distribucion_id],
+                 :observaciones => atributos[:observaciones]} :
+            {:region_id => atributos[:region_id], :tipo_distribucion_id => atributos[:tipo_distribucion_id],
+             :observaciones => atributos[:observaciones]}
+      end
 
-      when 'NombreRegion'
-        region ||=''
-        especie_params[:especies_regiones_attributes].each do |key, value|
-          if value.has_key?(:id)
-            id=value[:id].delete('[').delete(']').delete('"').split(',')
-            probableRegion=id[1].strip.to_i
-            region=value[:region_id] if probableRegion==atributos[:region_id].to_i
-          end
+    when 'NombreRegion'
+      region ||=''
+      especie_params[:especies_regiones_attributes].each do |key, value|
+        if value.has_key?(:id)
+          id=value[:id].delete('[').delete(']').delete('"').split(',')
+          probableRegion=id[1].strip.to_i
+          region=value[:region_id] if probableRegion==atributos[:region_id].to_i
         end
+      end
 
-        if criterio
-          condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
-          {:region_id => region, :nombre_comun_id => condicion[2].strip.to_i}
-        else
-          nuevo ? {:especie_id => @especie.id, :region_id => region, :nombre_comun_id => atributos[:nombre_comun_id],
-                   :observaciones => atributos[:observaciones]} :
-              {:nombre_comun_id => atributos[:nombre_comun_id], :observaciones => atributos[:observaciones]}
-        end
+      if criterio
+        condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
+        {:region_id => region, :nombre_comun_id => condicion[2].strip.to_i}
+      else
+        nuevo ? {:especie_id => @especie.id, :region_id => region, :nombre_comun_id => atributos[:nombre_comun_id],
+                 :observaciones => atributos[:observaciones]} :
+            {:nombre_comun_id => atributos[:nombre_comun_id], :observaciones => atributos[:observaciones]}
+      end
 
-      when 'NombreRegionBibliografia'
-        region ||=''
-        especie_params[:especies_regiones_attributes].each do |key, value|
-          if value.has_key?(:id)
-            id=value[:id].delete('[').delete(']').delete('"').split(',')
-            probableRegion=id[1].strip.to_i
-            region=value[:region_id] if probableRegion==atributos[:region_id].to_i
-          end
+    when 'NombreRegionBibliografia'
+      region ||=''
+      especie_params[:especies_regiones_attributes].each do |key, value|
+        if value.has_key?(:id)
+          id=value[:id].delete('[').delete(']').delete('"').split(',')
+          probableRegion=id[1].strip.to_i
+          region=value[:region_id] if probableRegion==atributos[:region_id].to_i
         end
+      end
 
-        nombre ||=''
-        especie_params[:nombres_regiones_attributes].each do |key, value|
-          if value.has_key?(:id)
-            id=value[:id].delete('[').delete(']').delete('"').split(',')
-            probableNombre=id[2].strip.to_i
-            nombre=value[:nombre_comun_id] if probableNombre==atributos[:nombre_comun_id].to_i
-          end
+      nombre ||=''
+      especie_params[:nombres_regiones_attributes].each do |key, value|
+        if value.has_key?(:id)
+          id=value[:id].delete('[').delete(']').delete('"').split(',')
+          probableNombre=id[2].strip.to_i
+          nombre=value[:nombre_comun_id] if probableNombre==atributos[:nombre_comun_id].to_i
         end
+      end
 
-        if criterio
-          condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
-          {:region_id => region, :nombre_comun_id => nombre, :bibliografia_id => condicion[3].strip.to_i}
-        else
-          nuevo ? {:especie_id => @especie.id, :region_id => region, :nombre_comun_id => nombre,
-                   :bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]} :
-              {:bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]}
-        end
+      if criterio
+        condicion=atributos[:id].delete('[').delete(']').delete('"').split(',')
+        {:region_id => region, :nombre_comun_id => nombre, :bibliografia_id => condicion[3].strip.to_i}
+      else
+        nuevo ? {:especie_id => @especie.id, :region_id => region, :nombre_comun_id => nombre,
+                 :bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]} :
+            {:bibliografia_id => atributos[:bibliografia_id], :observaciones => atributos[:observaciones]}
+      end
     end
   end
 
   def tipoDeBusqueda(tipo, columna, valor)
     case tipo.to_i
-      when 1
-        "caso_insensitivo('#{columna}', '#{valor}')"
-      when 2
-        "caso_empieza_con('#{columna}', '#{valor}')"
-      when 3
-        "caso_sensitivo('#{columna}', '#{valor}')"
-      when 4
-        "caso_termina_con('#{columna}', '#{valor}')"
-      when 5
-        "caso_rango_valores('#{columna}', \"#{valor}\")"
+    when 1
+      "caso_insensitivo('#{columna}', '#{valor}')"
+    when 2
+      "caso_empieza_con('#{columna}', '#{valor}')"
+    when 3
+      "caso_sensitivo('#{columna}', '#{valor}')"
+    when 4
+      "caso_termina_con('#{columna}', '#{valor}')"
+    when 5
+      "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
 end

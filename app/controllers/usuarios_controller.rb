@@ -1,11 +1,18 @@
 class UsuariosController < ApplicationController
-  skip_before_filter :set_locale, only: [:create, :update, :destroy, :cambia_locale]
+  skip_before_action :set_locale, only: [:create, :update, :destroy, :cambia_locale]
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
   layout :false, :only => [:cambia_locale]
-  before_action :only => [:index] {tiene_permiso?('Administrador')} # Minimo administrador
-  before_action :only => [:destroy] {tiene_permiso?('Super usuario')} # Solo ROOT tiene permiso de destruir MUAJAJAJA!
-  before_action :only => [:conabio] {tiene_permiso?('AdminComentarios', true)} # Minimo administrador de comentarios de área
+
+  before_action :only => [:index] do
+    tiene_permiso?('Administrador') # Minimo administrador
+  end
+  before_action :only => [:destroy] do
+    tiene_permiso?('Super usuario') # Solo ROOT tiene permiso de destruir MUAJAJAJA!
+  end
+  before_action :only => [:conabio] do
+    tiene_permiso?('AdminComentarios', true) # Minimo administrador de comentarios de área
+  end
   before_action do
     @no_render_busqueda_basica = true
   end
@@ -14,7 +21,6 @@ class UsuariosController < ApplicationController
   # GET /usuarios.json
   def index
     @usuarios = Usuario.join_userRolEspeciesCategoriasContenido.load
-    #@usuarios = Usuario.all
   end
 
   def conabio
@@ -77,8 +83,8 @@ class UsuariosController < ApplicationController
   end
 
   def cambia_locale
-    cookies[:vista] = {value: (cookies[:vista] == "es-cientifico" ? I18n.default_locale : "es-cientifico"), expires: 2.weeks.from_now}
-    render :text => 'ok'
+    cookies[:vista] = {value: (cookies[:vista] == 'es-cientifico' ? I18n.default_locale : 'es-cientifico'), expires: 2.weeks.from_now}
+    render json: {estatus: true}
   end
 
   private

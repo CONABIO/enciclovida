@@ -1,4 +1,4 @@
-class RemoveIconFieldsAndCreateIconIdFromAdicionales < ActiveRecord::Migration
+class RemoveIconFieldsAndCreateIconIdFromAdicionales < ActiveRecord::Migration[5.1]
   def change
     change_table(:adicionales) do |t|
       t.remove :icono

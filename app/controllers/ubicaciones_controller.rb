@@ -1,6 +1,6 @@
 class UbicacionesController < ApplicationController
 
-  skip_before_filter :verify_authenticity_token, :set_locale
+  skip_before_action :verify_authenticity_token, :set_locale
 
   # Registros con un radio alreadedor de tu ubicación
   def ubicacion
@@ -9,6 +9,9 @@ class UbicacionesController < ApplicationController
   # /explora-por-region
   def por_region
     @no_render_busqueda_basica = true
+    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+    @prioritarias = Catalogo.prioritarias
   end
 
   # Regresa el conteo por grupo del servicio de Abraham, no lo hago directo porque lo guardo en cache ya que

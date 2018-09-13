@@ -1,0 +1,29 @@
+/**
+El estilo de las observaciones
+**/
+.div-icon-naturalista {
+    color: #529214;
+    font-size: 1.8em;
+}
+
+/**
+El estilo del contorno del circulo
+**/
+.div-cluster-naturalista{
+    background-color: #d8b2b2;
+    opacity: 1!important;
+}
+
+/**
+El estilo del circulo
+**/
+.div-cluster-naturalista div{
+    background-color: #529214;
+}
+
+/**
+El estilo del numero dentro del circulo
+**/
+.div-cluster-naturalista div span{
+    color: white;
+}

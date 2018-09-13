@@ -1,4 +1,4 @@
-class TruncateAndPopulateRoles < ActiveRecord::Migration
+class TruncateAndPopulateRoles < ActiveRecord::Migration[5.1]
   def change
     ActiveRecord::Base.connection.execute("TRUNCATE TABLE roles")
 

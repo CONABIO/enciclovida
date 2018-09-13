@@ -1,4 +1,4 @@
-class AddAncestryToRoles < ActiveRecord::Migration
+class AddAncestryToRoles < ActiveRecord::Migration[5.1]
   def change
     change_table(:roles) do |t|
       t.remove :atributos_base

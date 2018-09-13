@@ -1,7 +1,6 @@
 class Propiedad < ActiveRecord::Base
 
-  establish_connection(:peces)
-  self.table_name='propiedades'
+  self.table_name = "#{CONFIG.bases.pez}.propiedades"
 
   has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
@@ -32,7 +31,7 @@ class Propiedad < ActiveRecord::Base
 
   def self.zonas
     zonas = where(nombre_propiedad: 'Zonas').first.children
-    zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i+1]}
+    zonas.each_with_index.map{|z, i| [z.nombre_propiedad, i]}
   end
 
   def self.catalogo

@@ -1,4 +1,4 @@
-class CreateEspeciesEstadistica < ActiveRecord::Migration
+class CreateEspeciesEstadistica < ActiveRecord::Migration[5.1]
   def up
     create_table :especies_estadistica do |t|
       t.integer :especie_id
