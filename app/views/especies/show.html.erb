@@ -69,6 +69,9 @@
       <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li>
+      <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+    </li>
+    <li>
       <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'noLoad', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
     </li>
     <li role="separator" class="divider"></li>
@@ -113,6 +116,9 @@
     </li>
     <li role="presentation" >
       <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
+    </li>
+    <li role="presentation" >
+      <a href="#noticias" aria-controls="noticias" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span><strong><small>Noticias</small></strong></a>
     </li>
   </ul>
 
@@ -203,6 +209,7 @@
 
     <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
+    <div id="noticias" role="tabpanel" class="tab-pane fade panel-body"></div>
   </div>
 
 </div>
