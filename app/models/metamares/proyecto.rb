@@ -9,4 +9,10 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :dato, class_name: 'Metamares::Dato'
   belongs_to :usuario, class_name: 'Usuario'
 
+  accepts_nested_attributes_for :info_adicional, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :periodo, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :region, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :institucion, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :dato, reject_if: :all_blank, allow_destroy: true
+
 end
