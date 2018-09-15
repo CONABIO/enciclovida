@@ -2,7 +2,7 @@ Buscador::Application.routes.draw do
 
   namespace :metamares do
     resources :admin
-    resources :front
+    resources :proyectos
   end
 
   resources :peces, :as => :pez, except: :index do
