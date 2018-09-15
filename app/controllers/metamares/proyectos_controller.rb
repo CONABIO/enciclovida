@@ -1,5 +1,7 @@
-class Metamares::FrontController < ApplicationController
+class Metamares::ProyectosController < ApplicationController
 
+  layout false
+  
   def index
     @proyectos = Metamares::Proyecto.all
   end
@@ -8,7 +10,7 @@ class Metamares::FrontController < ApplicationController
   end
 
   def new
-    @estatuse = Estatus.new
+    @proyecto = Metamares::Proyecto.new
   end
 
   def edit

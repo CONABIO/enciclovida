@@ -1,0 +1,10 @@
+<%= semantic_form_for @proyecto do |f| %>
+
+  <%= f.inputs :name => "Proyecto" do %>
+    <%= f.input :nombre_proyecto, label: 'Nombre(s)' %>
+    <%= f.input :financiamiento, label: 'Apellido(s)' %>
+  <% end %>
+
+  <%= render 'form_periodo', locals: {f: f} %>
+
+<% end %>
