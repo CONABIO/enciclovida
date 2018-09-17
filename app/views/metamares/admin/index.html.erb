@@ -20,9 +20,9 @@
       <td><%= usuario.email %></td>
       <td><%= usuario.nombre_rol %></td>
       <td>
-        <a href="#" onclick="return false;">
-          <i class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#edita-login"></i>
-        </a>
+        <%= link_to '<i class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#edita-login"></i>'.html_safe,
+                    edit_metamares_admin_url(usuario.id) %>
+        <i class="glyphicon glyphicon-remove"></i>
       </td>
     </tr>
   <% end %>
