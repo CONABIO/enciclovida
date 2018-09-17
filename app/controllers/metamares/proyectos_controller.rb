@@ -1,25 +1,21 @@
-class Metamares::FrontController < ApplicationController
-  #before_action :set_estatuse, only: [:show, :edit, :update, :destroy]
+class Metamares::ProyectosController < ApplicationController
 
-  # Muestra todos proyectos para el publico en general, en forma resumida para buscar
+  layout false
+
   def index
     @proyectos = Metamares::Proyecto.all
   end
 
-  # Muestra toda la informacion relacionada a un proyecto en cuestion
   def show
   end
 
-  # Crea un nuevo proyecto
   def new
-    @estatuse = Estatus.new
+    @metamares_proyecto = Metamares::Proyecto.new
   end
 
-  # Edita proyectos propios
   def edit
   end
 
-  # Para guardar el proyecto
   def create
     @estatuse = Estatus.new(estatuse_params)
 
@@ -34,7 +30,6 @@ class Metamares::FrontController < ApplicationController
     end
   end
 
-  # Para actualizar el proyecto
   def update
     respond_to do |format|
       if @estatuse.update(estatuse_params)
@@ -47,7 +42,6 @@ class Metamares::FrontController < ApplicationController
     end
   end
 
-  # Elimina un proyecto propio
   def destroy
     @estatuse.destroy
     respond_to do |format|
@@ -56,14 +50,14 @@ class Metamares::FrontController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_estatuse
-      @estatuse = Estatus.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def estatuse_params
-      params[:estatuse]
-    end
+  private
+
+  def set_estatuse
+    @estatuse = Estatus.find(params[:id])
+  end
+
+  def estatuse_params
+    params[:estatuse]
+  end
 end
