@@ -1,7 +1,7 @@
 class Metamares::ProyectosController < ApplicationController
 
   layout false
-  
+
   def index
     @proyectos = Metamares::Proyecto.all
   end
@@ -10,7 +10,7 @@ class Metamares::ProyectosController < ApplicationController
   end
 
   def new
-    @proyecto = Metamares::Proyecto.new
+    @metamares_proyecto = Metamares::Proyecto.new
   end
 
   def edit
