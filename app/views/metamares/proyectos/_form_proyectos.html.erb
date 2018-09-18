@@ -18,9 +18,12 @@
   <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo' %>
 
   <%= render partial: 'form_region', locals: { f: f } %>
-  <%= link_to_add_association 'Region', f, :periodo, partial: 'form_region' %>
+  <%= link_to_add_association 'Region', f, :region, partial: 'form_region' %>
+
+  <%= render partial: 'form_dato', locals: { f: f } %>
+  <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato' %>
 
   <%= render 'form_institucion', locals: { f: f } %>
-  <%= render 'form_datos', locals: { f: f } %>
+
 
 <% end %>
