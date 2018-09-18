@@ -1,0 +1,15 @@
+<%= f.semantic_fields_for :region do |f| %>
+
+  <%= f.inputs :region_titulo do %>
+    <%= f.input :nombre_region %>
+    <%= f.input :latitud, as: :number %>
+    <%= f.input :longitud, as: :number %>
+    <%#= f.input :poligono %>
+    <%= f.input :zona %>
+    <%= f.input :entidad %>
+    <%= f.input :cuenca %>
+    <%= f.input :anp %>
+    <%= f.input :comentarios %>
+  <% end %>
+
+<% end %>
