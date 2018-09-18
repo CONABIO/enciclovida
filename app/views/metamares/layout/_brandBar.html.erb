@@ -1,0 +1,24 @@
+<div id="brandBar" class="row" %>>
+  <div class="dropdown pull-right">
+    <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
+      <span class="caret"></span>
+      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
+      <% if usuario_signed_in? %>
+        <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false } %></li>
+        <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
+      <% else %>
+        <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_usuario_session_path, data: { turbolinks: false }) %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+    <%= link_to "<i class ='conabio_completo-ev-icon'></i>".html_safe, "http://www.biodiversidad.gob.mx/", :class => '', target: :_blank  %>
+  </div>
+  <div class="col-xs-5 col-sm-4 col-md-2 col-lg-2 col-xs-offset-0 col-sm-offset-1 col-md-offset-0 col-lg-offset-0">
+
+  </div>
+</div>

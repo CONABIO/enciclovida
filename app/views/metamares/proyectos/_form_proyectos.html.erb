@@ -1,0 +1,11 @@
+<%= semantic_form_for @metamares_proyecto do |f| %>
+
+  <%= f.inputs :proyecto_titulo do %>
+    <%#= f.input :nombre_proyecto, :label => I18n.t('formtastic.proyecto.labels.proyecto.nombre_proyecto') %>
+    <%= f.input :nombre_proyecto %>
+    <%= f.input :financiamiento %>
+  <% end %>
+
+  <%= render 'form_periodo', locals: {f: f} %>
+
+<% end %>
