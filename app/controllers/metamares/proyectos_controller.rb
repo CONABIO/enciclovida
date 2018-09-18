@@ -1,5 +1,9 @@
 class Metamares::ProyectosController < Metamares::MetamaresController
 
+  before_action :set_proyecto, only: [:edit, :update]
+
+  layout false
+
   def index
     @proyectos = Metamares::Proyecto.all
   end
@@ -8,7 +12,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def new
-    @metamares_proyecto = Metamares::Proyecto.new
+    @proyecto = Metamares::Proyecto.new
   end
 
   def edit
@@ -51,11 +55,15 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   private
 
-  def set_estatuse
-    @estatuse = Estatus.find(params[:id])
+  def set_proyecto
+    begin
+      @proyecto = Metamares::Proyecto.find(params[:id])
+    rescue
+      render :_error and return
+    end
+
   end
 
-  def estatuse_params
-    params[:estatuse]
+  def proyecto_params
   end
 end

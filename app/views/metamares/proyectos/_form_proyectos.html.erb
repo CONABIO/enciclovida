@@ -1,11 +1,22 @@
-<%= semantic_form_for @metamares_proyecto do |f| %>
+<%= semantic_form_for @proyecto do |f| %>
 
   <%= f.inputs :proyecto_titulo do %>
-    <%#= f.input :nombre_proyecto, :label => I18n.t('formtastic.proyecto.labels.proyecto.nombre_proyecto') %>
     <%= f.input :nombre_proyecto %>
     <%= f.input :financiamiento %>
+    <%= f.input :tipo_monitoreo %>
+    <%= f.input :objeto_monitoreo %>
+    <%= f.input :campo_investigacion %>
+    <%= f.input :campo_ciencia %>
+    <%= f.input :finalidad %>
+    <%= f.input :metodo %>
   <% end %>
 
-  <%= render 'form_periodo', locals: {f: f} %>
+  <%= render partial: 'form_info_adicional', locals: { f: f } %>
+  <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional' %>
+
+  <%= render 'form_periodo', locals: { f: f } %>
+  <%= render 'form_region', locals: { f: f } %>
+  <%= render 'form_institucion', locals: { f: f } %>
+  <%= render 'form_datos', locals: { f: f } %>
 
 <% end %>
