@@ -14,7 +14,9 @@
   <%= render partial: 'form_info_adicional', locals: { f: f } %>
   <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional' %>
 
-  <%= render 'form_periodo', locals: { f: f } %>
+  <%= render partial: 'form_periodo', locals: { f: f } %>
+  <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo' %>
+
   <%= render 'form_region', locals: { f: f } %>
   <%= render 'form_institucion', locals: { f: f } %>
   <%= render 'form_datos', locals: { f: f } %>

@@ -1,6 +1,6 @@
 class Metamares::ProyectosController < Metamares::MetamaresController
 
-  before_action :set_proyecto, only: [:edit, :update]
+  before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
 
   layout false
 
