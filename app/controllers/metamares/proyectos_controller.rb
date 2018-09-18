@@ -1,6 +1,4 @@
-class Metamares::ProyectosController < ApplicationController
-
-  layout false
+class Metamares::ProyectosController < Metamares::MetamaresController
 
   def index
     @proyectos = Metamares::Proyecto.all
