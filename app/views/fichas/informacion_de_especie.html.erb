@@ -2,14 +2,13 @@
 
 <div id='ficha'>
   <div>
-    <!-- Encabezado en el que se muestra el nombre de la especie -->
+    <!-- Encabezado en el que se muestran los accesos a las secciones informativas -->
     <%= render('fichas/secciones_info_especie/titulo', sin_info_msj: sin_info_msj) %>
   </div>
-  
 
-  <div class="container-fluid">
-    <div class="row xSection active">
-      <div class="col-md-12" id="clasiDescEsp">
+  <div class="container-fluid" id="clasiDescEsp">
+    <div class="row xSection">
+      <div class="col-md-12">
         <h4 class="text-left text-primary">Clasificación y descripción</h4>
       </div>
     </div>
@@ -17,9 +16,9 @@
   </div>
   
 
-  <div class="container-fluid">
+  <div class="container-fluid" id="distribucionEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="distribucionEspecie">
+      <div class="col-md-12">
         <h4 class="text-left text-primary">Distribución</h4>
       </div>
     </div>
@@ -27,18 +26,18 @@
   </div>
   
 
-  <div class="container-fluid">
+  <div class="container-fluid" id="ambienteDeEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="ambienteDeEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Tipo de ambiente en donde se desarrolla</h4>
       </div>
     </div>
     <%= render('fichas/secciones_info_especie/ambiente_de_desarrollo_de_especie', sin_info_msj: sin_info_msj) %>
   </div>
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="biologiaEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="biologiaEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Biología</h4>
       </div>
     </div>
@@ -46,9 +45,9 @@
   </div>
   
 
-  <div class="container-fluid">
+  <div class="container-fluid" id="ecologiaDemografiaEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="ecologiaDemografiaEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Ecología y demografía</h4>
       </div>
     </div>
@@ -56,9 +55,9 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="geneticaEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="geneticaEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Genética</h4>
       </div>
     </div>
@@ -66,9 +65,9 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="importanciaEspecie">
     <div class="row xSection">
-      <div class="col-md-12" id="importanciaEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Importancia</h4>
       </div>
     </div>
@@ -76,10 +75,10 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="estadoConservacionEspecie">
 
     <div class="row xSection">
-      <div class="col-md-12" id="estadoConservacionEspecie">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Estado de conservación</h4>
       </div>
     </div>
@@ -87,10 +86,10 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="especiesPrioritariasConservacion">
 
     <div class="row xSection">
-      <div class="col-md-12" id="especiesPrioritariasConservacion">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Especies prioritarias para la conservación</h4>
       </div>
     </div>
@@ -98,9 +97,9 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="necesidadesDeInformacion">
     <div class="row xSection">
-      <div class="col-md-12" id="necesidadesDeInformacion">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Necesidades de información</h4>
       </div>
     </div>
@@ -108,9 +107,9 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="metadatos">
     <div class="row xSection">
-      <div class="col-md-12" id="metadatos">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Metadatos</h4>
       </div>
     </div>
@@ -118,9 +117,9 @@
   </div>
 
   
-  <div class="container-fluid">
+  <div class="container-fluid" id="referencias">
     <div class="row xSection">
-      <div class="col-md-12" id="referencias">
+      <div class="col-md-12" >
         <h4 class="text-left text-primary">Referencias</h4>
       </div>
     </div>
@@ -135,24 +134,53 @@
 
 <script>
 
-    // Ocultar y mostrar una sección
-    var section = document.getElementsByClassName("xSection");
-    var i;
+    // Animación:
+    // Retardo para mostrar contenido de las secciones
+    var timer = 300;
+    // Retardo de scroll
+    var scrollTimer = 600;
 
+    // Inicialmente, todas las secciones deben de estar cerradas
+    $('.showInfo').hide(timer);
 
-    for (i = 0; i < section.length; i++) {
-        section[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var showInfo = this.nextElementSibling;
-            if (showInfo.style.maxHeight){
-                showInfo.style.maxHeight = null;
-            } else {
-                showInfo.style.maxHeight = showInfo.scrollHeight + "px";
-            }
-        });
+    // Funcionalidad en los botónes del header
+    $('.btn-ficha').on('click', function(e){
+        // - - - - - Scroll cuando se da clic para acceder a una sección:
+        // Alto del encabezado
+        var altoHeader = $("#inicio").height() + 30;
+        // Id de sección:
+        var idSection = this.getAttribute('id').substr(4);
+        // Acceso a la ubicación de dicha sección según id:
+        var ubicacion = $('#' + idSection).offset().top;
+        // Scroll hacia dicha sección:
+        $('html, body').animate({
+            scrollTop: ubicacion - altoHeader
+        }, scrollTimer);
+
+        //console.log("header: " + altoHeader)
+        showSection(idSection);
+    });
+
+    $('.xSection').on('click', function(e){
+        // Obtener el atributo id del padre para saber qué sección se debe abrir
+        var idSection = $(this).parent().attr("id");
+        showSection(idSection);
+    });
+
+    function showSection(idSection) {
+
+        var title = $( "#" + idSection).children()[0];
+        var content = $( "#" + idSection).children()[1];
+
+        if($(title).hasClass('active')) {
+            $(title).removeClass('active');
+            $(content).hide(timer);
+        } else {
+            $(title).addClass('active');
+            $(content).show(timer);
+        }
     }
-    var clasifDescEsp = document.getElementById('clasiDescEspInterno')
-    clasifDescEsp.style.maxHeight = clasifDescEsp.scrollHeight + "px";
+
 
     // Controlar el encabezado, para mostrar nombre de la especie y la sección en la que se encuentra
     var stickyOffset = $('.headCard').offset().top;
@@ -166,64 +194,12 @@
             sticky.addClass('headCardFixed');
             $(".hTituloEsp").css("font-size", "35px");
             $(".hSection").show();
-            $(".hSinonimoEsp").hide();
         }
         else {
             sticky.removeClass('headCardFixed');
-            $(".hSinonimoEsp").show();
             $(".hSection").hide();
         }
     });
 
-
-    // Para mostrar en el encabezado la sección que el usuario está viendo
-    // Funciona
-    $(window).on("scroll", function(){
-
-        if ($(this).scrollTop() >= $("#clasiDescEsp").offset().top - headerMeasure){
-            $(".hSection").text("Clasificación y descripción");
-        }
-        if ($(this).scrollTop() >= $("#distribucionEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Distribución");
-        }
-        if ($(this).scrollTop() >= $("#ambienteDeEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Tipo de ambiente en donde se desarrolla");
-        }
-        if ($(this).scrollTop() >= $("#biologiaEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Biología");
-        }
-        if ($(this).scrollTop() >= $("#ecologiaDemografiaEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Ecología y demografía");
-        }
-        if ($(this).scrollTop() >= $("#geneticaEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Genética");
-        }
-        if ($(this).scrollTop() >= $("#importanciaEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Importancia de la especie");
-        }
-        if ($(this).scrollTop() >= $("#estadoConservacionEspecie").offset().top - headerMeasure){
-            $(".hSection").text("Estado de conservación");
-        }
-        if ($(this).scrollTop() >= $("#especiesPrioritariasConservacion").offset().top - headerMeasure){
-            $(".hSection").text("Especies prioritarias para la conservación");
-        }
-        if ($(this).scrollTop() >= $("#necesidadesDeInformacion").offset().top - headerMeasure){
-            $(".hSection").text("Necesidades de información");
-        }
-        if ($(this).scrollTop() >= $("#metadatos").offset().top - headerMeasure){
-            $(".hSection").text("Metadatos");
-        }
-        if ($(this).scrollTop() >= $("#referencias").offset().top - headerMeasure){
-            $(".hSection").text("Referencias");
-        }
-    });
-
-    $('.btn-ficha').on('click', function(e){
-        e.preventDefault();
-        //console.log(this.getAttribute('href'));
-        location.hash = this.getAttribute('href');
-        var y = $(window).scrollTop();  //your current y position on the page
-        $(window).scrollTop(y-180);
-    });
 
 </script>

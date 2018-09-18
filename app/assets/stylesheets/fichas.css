@@ -1,14 +1,17 @@
+/* Estilo de la ficha: contenedor en general */
 #ficha {
     margin-bottom: 30px;
     margin-top: 30px;
     /*background-color: white;*/
 }
 
+/* Color de encabezado con botones a secciones cuando está fijo */
 .headCard {
     padding: 20px;
     background-color: #ececec;
 }
 
+/* Color de encabezado con botones a secciones cuando está flotante*/
 .headCardFixed {
     z-index: 10;
     position: fixed;
@@ -16,12 +19,13 @@
     width: 100%;
 }
 
+/* Color de las secciones de información */
 .xSection {
     cursor: pointer;
     width: 100%;
     border-width: 1px 0 0 0;
-    border-color: #6c3630;
-    border-style: solid;
+    border-color: rgba(119, 27, 34, .5);
+    border-style: dashed;
     transition: 0.5s;
 }
 
@@ -29,10 +33,6 @@
     content: "\2212"; /* Para mostrar "+" */
 }
 
-#ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
-    border-bottom: 0;  /* En los H's salía borde */
-    margin: 10px 0!important;
-}
 
 .xSection:after {
     content: '\002B';
@@ -41,9 +41,22 @@
     margin-left: 5px;
 }
 
+#ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
+    border-bottom: 0;  /* En los H's salía borde */
+    margin: 10px 0!important;
+}
+
+/* Contenido de una sección */
 .showInfo {
     padding: 0 1px 1px 0;
-    max-height: 0;
-    overflow: hidden;
+    display: block;
     transition: max-height 0.2s ease-out;
+}
+
+.btn-ficha {
+    color: #033B59;
+}
+
+.btn-ficha strong {
+    padding-left: 10px;
 }
