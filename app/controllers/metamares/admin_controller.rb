@@ -1,8 +1,4 @@
-class Metamares::AdminController < ApplicationController
-  before_action :authenticate_usuario!
-  before_action  do
-    tiene_permiso?('AdminMetamares')  # Minimo administrador
-  end
+class Metamares::AdminController < Metamares::MetamaresController
 
   before_action :set_usuario, only: [:edit, :update]
 
