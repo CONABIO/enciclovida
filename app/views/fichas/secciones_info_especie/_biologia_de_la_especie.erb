@@ -67,7 +67,7 @@
       <br>
 
 
-    <% else %>
+    <% elsif @historiaNatural.tipoReproduccion == 'veget'  %>
       <h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
       <br>
       <h4>Generalidades: </h4><p class="text-justify"><%= @infoReproduccion.descripcion.html_safe%></p>

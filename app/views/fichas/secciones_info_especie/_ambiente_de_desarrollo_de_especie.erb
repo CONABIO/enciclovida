@@ -16,7 +16,7 @@
         <ul>
           <li>
             <strong>Vegetación  en la que se desarrolla la especie: </strong>
-            <p class="text-justify"><%=@habitat.tipoVegetacion.html_safe%></p>
+            <p class="text-justify"><%=@habitat.tipoVegetacion.present? ? @habitat.tipoVegetacion.html_safe : (sin_info_msj) %></p>
           </li>
           <li>
             <strong>Hábitats antrópicos: </strong>
@@ -68,19 +68,19 @@
         <h4>Temperatura</h4>
         <p class="text-justify"><%=@habitat.temperaturainicial%>  - <%=@habitat.temperaturafinal%></p>
         <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.infoaddtemperatura.html_safe%></p>
+        <p class="text-justify"><%=@habitat.infoaddtemperatura.present? ? @habitat.infoaddtemperatura.html_safe : (sin_info_msj) %></p>
         <br>
 
         <h4>Precipitación</h4>
         <p class="text-justify"><%=@habitat.precipitacioninicial%>  - <%=@habitat.precipitacionfinal%></p>
         <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.infoaddprecipitacion.html_safe%></p>
+        <p class="text-justify"><%=@habitat.infoaddprecipitacion.present? ? @habitat.infoaddprecipitacion.html_safe : (sin_info_msj) %></p>
         <br>
 
         <h4>Rango de humedad relativa</h4>
         <p class="text-justify"><%=@habitat.humedadinicial%> - <%=@habitat.humedadfinal%></p>
         <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.infoaddhumedad.html_safe%></p>
+        <p class="text-justify"><%=@habitat.infoaddhumedad.present? ? @habitat.infoaddhumedad.html_safe : (sin_info_msj) %></p>
         <br>
 
         <h4>Geoforma</h4>
