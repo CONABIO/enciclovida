@@ -17,4 +17,10 @@
   <%= render partial: 'form_institucion', locals: { f: f } %>
   <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion' %>
 
+  <%= render partial: 'form_institucion', locals: { f: f } %>
+  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion' %>
+
+  <%= render partial: 'form_especies_estudiadas', locals: { f: f } %>
+  <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas' %>
+
 <% end %>

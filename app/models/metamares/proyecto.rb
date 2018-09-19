@@ -9,7 +9,7 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :institucion, class_name: 'Metamares::Institucion'
   has_one :ubicacion, through: :institucion, source: :ubicacion
   belongs_to :usuario, class_name: 'Usuario'
-  has_many :proyecto_especies
+  has_many :especies, class_name: 'Metamares::EspecieEstudiada'
 
   accepts_nested_attributes_for :info_adicional, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :periodo, reject_if: :all_blank, allow_destroy: true
@@ -17,5 +17,6 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :institucion, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :ubicacion, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :dato, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
 
 end

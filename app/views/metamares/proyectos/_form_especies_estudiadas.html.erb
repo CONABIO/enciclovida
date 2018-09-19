@@ -1,0 +1,9 @@
+<%= f.semantic_fields_for :especies do |f| %>
+
+  <%= f.inputs :especies_titulo do %>
+    <%= f.input :proyecto_id, as: :hidden %>
+    <%= f.input :nombre_cientifico %>
+    <%= f.input :especie_id %>
+  <% end %>
+
+<% end %>
