@@ -1,0 +1,13 @@
+<%= f.semantic_fields_for :ubicacion do |f| %>
+
+  <%= f.inputs :ubicacion_titulo do %>
+    <%= f.input :calle_numero %>
+    <%= f.input :colonia %>
+    <%= f.input :municipio %>
+    <%= f.input :ciudad %>
+    <%= f.input :entidad_federativa %>
+    <%= f.input :cp %>
+    <%= f.input :pais %>
+  <% end %>
+
+<% end %>
