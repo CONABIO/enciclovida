@@ -1,3 +1,4 @@
+#require 'httparty'
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
@@ -9,7 +10,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato]
+                                     :dame_nombre_con_formato, :noticias]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -24,7 +25,7 @@ class EspeciesController < ApplicationController
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
@@ -633,6 +634,19 @@ class EspeciesController < ApplicationController
     @comentarios.each do |c|
       c.cuantos = c.descendants.count
       c.completa_info((c.usuario_id if c.is_root?))
+    end
+  end
+
+  #muestra las noticias de google Noticias ¬¬
+  def noticias
+    require 'rss'
+
+    #xml = HTTParty.get("https://news.google.com/news?q=#{@especie.nombre_cientifico.limpiar}&output=rss").body
+    #xml = Nokogiri::XML(open("https://news.google.com/news?q=#{@especie.nombre_cientifico.limpiar}&output=rss"))
+    url = "https://news.google.com/news?q=#{@especie.nombre_cientifico.limpiar}&output=rss&hl=es-419&gl=MX&ceid=MX:es-419"
+    @noticias = ''
+    open(url) do |rss|
+      @noticias = RSS::Parser.parse(rss)
     end
   end
 

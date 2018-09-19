@@ -1,0 +1,6 @@
+<% @noticias.items[1..-1].each do |item| %>
+  <h5 class="text-right"><b><%= link_to item.title , item.link %></b></h5>
+  <%= item.description.gsub('<table', "<table class='table table-condensed table-responsive table-hover'").html_safe %>
+  <h5 class="text-right"><small><i>Publicado en: <%= item.pubDate.strftime('%d/%m/%y %H:%M') %></i></small></h5>
+  <hr />
+<% end %>
