@@ -23,4 +23,7 @@
   <%= render partial: 'form_especies_estudiadas', locals: { f: f } %>
   <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas' %>
 
+  <%= render partial: 'form_keywords', locals: { f: f } %>
+  <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords' %>
+
 <% end %>

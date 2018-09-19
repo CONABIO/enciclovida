@@ -1,0 +1,8 @@
+<%= f.semantic_fields_for :keywords do |f| %>
+
+  <%= f.inputs :keywords_titulo do %>
+    <%= f.input :proyecto_id, as: :hidden %>
+    <%= f.input :nombre_keyword %>
+  <% end %>
+
+<% end %>
