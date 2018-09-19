@@ -14,6 +14,7 @@
   <%= render partial: 'form_dato', locals: { f: f } %>
   <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato' %>
 
-  <%= render 'form_institucion', locals: { f: f } %>
+  <%= render partial: 'form_institucion', locals: { f: f } %>
+  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion' %>
 
 <% end %>
