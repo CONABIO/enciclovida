@@ -408,11 +408,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         if lengua.present?
           l = lengua.estandariza.gsub('-','_')
         else
-          lengua = 'nd'
+          l = 'nd'
         end
 
         # Los nombres comunes de naturalista en hash con la lengua
-        {I18n.t("lenguas.#{l}", default: lengua.capitalize) => nc['name'].capitalize}
+        {I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize}
       end
     else
       ncn = []
