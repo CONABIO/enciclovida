@@ -1,6 +1,6 @@
 class Organizacion < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'organizacion'
 
 	self.primary_key = 'organizacionId'

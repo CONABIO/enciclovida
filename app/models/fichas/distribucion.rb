@@ -1,8 +1,6 @@
 class Distribucion < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'distribucion'
 
 	self.primary_keys = :distribucionId,  :especieId

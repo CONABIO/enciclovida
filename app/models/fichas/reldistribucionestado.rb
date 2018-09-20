@@ -1,6 +1,6 @@
 class Reldistribucionestado < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'reldistribucionestado'
 
 	self.primary_keys = :distribucionId,  :estadoId

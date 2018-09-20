@@ -1,6 +1,6 @@
 class Relhabitatvegetacion < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'relhabitatvegetacion'
 
 	self.primary_keys = :habitatId,  :vegetacionId,  :observaciones

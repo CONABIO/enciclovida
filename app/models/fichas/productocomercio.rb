@@ -1,6 +1,6 @@
 class Productocomercio < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'productocomercio'
 
 	self.primary_keys = :especieId,  :tipoproducto,  :nacionalinternacional

@@ -1,6 +1,6 @@
 class Reldistribucionmunicipio < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'reldistribucionmunicipio'
 
 	self.primary_keys = :distribucionId,  :municipioId

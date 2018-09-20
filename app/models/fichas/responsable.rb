@@ -1,6 +1,6 @@
 class Responsable < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'responsable'
 
 	self.primary_key = 'responsableId'

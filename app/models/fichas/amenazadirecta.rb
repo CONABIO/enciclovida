@@ -1,8 +1,6 @@
 class Amenazadirecta < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'amenazadirecta'
 
 	self.primary_key = 'amenazaId'

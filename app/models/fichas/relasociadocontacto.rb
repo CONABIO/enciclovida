@@ -1,5 +1,5 @@
 class Relasociadocontacto < Ficha
-	#establish_connection(:fichasespecies)
+
 	# Asignación de tabla
 	self.table_name = 'relasociadocontacto'
 

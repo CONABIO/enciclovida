@@ -1,8 +1,6 @@
 class Cat_Gruposespecies < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'cat_gruposespecies'
 
 	self.primary_key = 'Id'

@@ -1,6 +1,6 @@
 class Pais < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'pais'
 
 	self.primary_key = 'paisId'

@@ -1,7 +1,6 @@
 class Metadatos < Ficha
 
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'metadatos'
 
 	self.primary_keys = :metadatosId,  :especieId
