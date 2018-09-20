@@ -1,6 +1,6 @@
-class Distribucion < ActiveRecord::Base
+class Distribucion < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'distribucion'

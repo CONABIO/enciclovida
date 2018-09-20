@@ -1,6 +1,6 @@
-class Nombrecomun < ActiveRecord::Base
+class Nombrecomun < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'nombrecomun'

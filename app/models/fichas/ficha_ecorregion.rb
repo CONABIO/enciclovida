@@ -1,5 +1,5 @@
-class Ficha_Ecorregion < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Ficha_Ecorregion < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'ecorregion'
 

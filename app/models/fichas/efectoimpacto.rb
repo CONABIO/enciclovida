@@ -1,5 +1,5 @@
-class Efectoimpacto < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Efectoimpacto < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'efectoimpacto'
 

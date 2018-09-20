@@ -1,5 +1,5 @@
-class Ecosistema < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Ecosistema < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'ecosistema'
 

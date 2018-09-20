@@ -1,5 +1,5 @@
-class Cat_Mes < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Cat_Mes < Ficha
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'cat_mes'

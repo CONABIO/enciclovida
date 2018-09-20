@@ -1,5 +1,5 @@
-class Organizacion < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Organizacion < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'organizacion'
 

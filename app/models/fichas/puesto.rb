@@ -1,5 +1,5 @@
-class Puesto < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Puesto < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'puesto'
 

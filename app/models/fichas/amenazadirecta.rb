@@ -1,6 +1,6 @@
-class Amenazadirecta < ActiveRecord::Base
+class Amenazadirecta < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'amenazadirecta'

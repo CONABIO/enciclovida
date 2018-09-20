@@ -1,5 +1,5 @@
-class Ciudad < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Ciudad < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'ciudad'
 

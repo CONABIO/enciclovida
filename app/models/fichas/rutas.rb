@@ -1,5 +1,5 @@
-class Rutas < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Rutas < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'rutas'
 

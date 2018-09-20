@@ -1,6 +1,6 @@
-class Tipoclima < ActiveRecord::Base
+class Tipoclima < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'tipoclima'

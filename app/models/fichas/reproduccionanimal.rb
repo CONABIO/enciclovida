@@ -1,6 +1,6 @@
-class Reproduccionanimal < ActiveRecord::Base
+class Reproduccionanimal < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'reproduccionanimal'

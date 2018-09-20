@@ -1,5 +1,5 @@
-class Estado < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class EstadoF < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'estado'
 

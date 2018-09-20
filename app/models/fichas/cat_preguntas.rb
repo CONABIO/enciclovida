@@ -1,5 +1,5 @@
-class Cat_Preguntas < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Cat_Preguntas < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'cat_preguntas'
 

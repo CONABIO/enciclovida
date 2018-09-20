@@ -1,6 +1,6 @@
-class Cat_Caracfruto < ActiveRecord::Base
+class Cat_Caracfruto < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'cat_caracfruto'

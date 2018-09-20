@@ -1,5 +1,5 @@
-class Observacionescarac < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Observacionescarac < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'observacionescarac'
 

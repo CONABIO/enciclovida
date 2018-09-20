@@ -1,6 +1,6 @@
-class Cat_Invasnoencat < ActiveRecord::Base
+class Cat_Invasnoencat < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'cat_invasnoencat'

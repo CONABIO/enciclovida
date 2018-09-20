@@ -1,6 +1,6 @@
-class Asociado < ActiveRecord::Base
+class Asociado < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'asociado'

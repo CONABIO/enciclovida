@@ -1,6 +1,6 @@
-class Interaccion < ActiveRecord::Base
+class Interaccion < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'interaccion'
 

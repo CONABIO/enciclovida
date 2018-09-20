@@ -1,5 +1,5 @@
-class Relecorregionhabitat < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Relecorregionhabitat < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'relecorregionhabitat'
 

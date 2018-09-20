@@ -1,5 +1,5 @@
-class Relhistorianaturalusos < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Relhistorianaturalusos < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'relhistorianaturalusos'
 

@@ -1,6 +1,6 @@
-class Cat_Estrategiatrofica < ActiveRecord::Base
+class Cat_Estrategiatrofica < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'cat_estrategiatrofica'

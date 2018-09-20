@@ -1,6 +1,6 @@
-class Habitat < ActiveRecord::Base
+class Habitat < Ficha
 
-	establish_connection(:fichasespecies)
+	#establish_connection(:fichasespecies)
 
  	# Asignación de tabla
 	self.table_name = 'habitat'

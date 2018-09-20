@@ -1,5 +1,5 @@
-class Vegetacion < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Vegetacion < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'vegetacion'
 

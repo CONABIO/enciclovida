@@ -1,5 +1,5 @@
-class Responsable < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Responsable < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'responsable'
 

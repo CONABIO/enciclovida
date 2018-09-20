@@ -1,5 +1,5 @@
-class Referenciabibliografica < ActiveRecord::Base
-	establish_connection(:fichasespecies)
+class Referenciabibliografica < Ficha
+	#establish_connection(:fichasespecies)
  	# Asignación de tabla
 	self.table_name = 'referenciabibliografica'
 
