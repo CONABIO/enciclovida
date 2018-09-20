@@ -129,7 +129,7 @@ class ValidacionAvanzada < Validacion
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    if validacion[:estatus]
+    if validacion[:estatus] && validacion[:valido_hasta].blank?
       taxon_estatus
     end
 

@@ -79,7 +79,7 @@ class Validacion
               self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
               return
             else
-              self.validacion = {taxones: taxones_con_distancia, msg: ''}
+              self.validacion = {taxones: taxones_con_distancia, msg: 'Existe más de una coincidencia'}
             end
           end
 
