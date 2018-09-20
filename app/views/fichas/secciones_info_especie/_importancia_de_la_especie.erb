@@ -1,36 +1,36 @@
 <div class="row showInfo">
   <div class="col-md-12 text-justify">
     <h4>Importancia biológica</h4>
-    <p><%= @historiaNatural.ImportanciaBiologica%></p>
+    <p><%=FichasController.convert_to_HTML(@historiaNatural.ImportanciaBiologica)%></p>
     <br>
     <h4>Función ecológica</h4>
-    <p><%= @historiaNatural.funcionEcologica%></p>
+    <p><%=FichasController.convert_to_HTML(@historiaNatural.funcionEcologica)%></p>
     <br>
     <h4>Importancia económica</h4>
-    <p><%= @historiaNatural.importanciaEconomica%></p>
+    <p><%=FichasController.convert_to_HTML(@historiaNatural.importanciaEconomica)%></p>
 
     <h4>Comercio</h4>
     <ol>
-      <li><strong>Comercio nacional </strong> <p><%= @historiaNatural.comercioNal%></p>
+      <li><strong>Comercio nacional </strong> <p><%=FichasController.convert_to_HTML(@historiaNatural.comercioNal)%></p>
         <ul>
-          <li><strong>Origen de los especímenes</strong><p><%= @historiaNatural.origenComNal%></p></li>
-          <li><strong>Propósito del comercio</strong><p><%= @historiaNatural.propositoComNal%></p></li>
+          <li><strong>Origen de los especímenes</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.origenComNal)%></p></li>
+          <li><strong>Propósito del comercio</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.propositoComNal)%></p></li>
         </ul>
       </li>
 
-      <li><strong>Comercio internacional </strong> <p><%= @historiaNatural.comInternacional%></p>
+      <li><strong>Comercio internacional </strong> <p><%=FichasController.convert_to_HTML(@historiaNatural.comInternacional)%></p>
         <ul>
-          <li><strong>Origen de los especímenes</strong><p><%= @historiaNatural.origenInternacional%></p></li>
-          <li><strong>Propósito del comercio</strong><p><%= @historiaNatural.propositoInternacional%></p></li>
+          <li><strong>Origen de los especímenes</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.origenInternacional)%></p></li>
+          <li><strong>Propósito del comercio</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.propositoInternacional)%></p></li>
           <li><strong>País de importación</strong><p></p></li>
         </ul>
       </li>
 
       <li><strong>Afectaciones de la actividad comercial </strong><p></p>
         <ul>
-          <li><strong>¿La especie se ve afectada por el comercio ilícito nacional?</strong><p><%= @historiaNatural.comercioIlicitoNal%></p></li>
-          <li><strong>¿La especie se ve afectada por el comercio ilícito internacional?</strong><p><%= @historiaNatural.comercioIlicitoInter%></p></li>
-          <li><strong>Efectos reales o potenciales del comercio en el manejo y conservación de la especie</strong><p><%= @historiaNatural.descComIlicito%></p></li>
+          <li><strong>¿La especie se ve afectada por el comercio ilícito nacional?</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.comercioIlicitoNal)%></p></li>
+          <li><strong>¿La especie se ve afectada por el comercio ilícito internacional?</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.comercioIlicitoInter)%></p></li>
+          <li><strong>Efectos reales o potenciales del comercio en el manejo y conservación de la especie</strong><p><%=FichasController.convert_to_HTML(@historiaNatural.descComIlicito)%></p></li>
         </ul>
       </li>
 
@@ -38,8 +38,8 @@
     <br>
 
     <h4>Importancia cultural y usos</h4>
-    <p><%=@culturaUsos.present? ? (@culturaUsos.descripcion) : (sin_info_msj)%></p>
+    <p><%=@culturaUsos.present? ? FichasController.convert_to_HTML(@culturaUsos.descripcion)  : (sin_info_msj)%></p>
     <h5>Información adicional</h5>
-    <p><%= @historiaNatural.importanciaEconomica%></p>
+    <p><%=FichasController.convert_to_HTML(@historiaNatural.importanciaEconomica)%></p>
   </div>
 </div>

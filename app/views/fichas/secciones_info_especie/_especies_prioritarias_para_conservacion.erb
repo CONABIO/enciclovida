@@ -8,14 +8,14 @@
     %>
         <h4> Esta especie si se encuentra enlistada como prioritaria:</h4>
         <ol>
-          <li><label>Listado en el que se encuentra</label><p class="text-justify"><%=@taxon.publicadaEn.html_safe%></p></li>
-          <li><label>Prioridad resultante del proceso</label><p class="text-justify"><%=@taxon.nivelPrioridad.html_safe%></p></li>
+          <li><label>Listado en el que se encuentra</label><p class="text-justify"><%=FichasController.convert_to_HTML(@taxon.publicadaEn)%></p></li>
+          <li><label>Prioridad resultante del proceso</label><p class="text-justify"><%=FichasController.convert_to_HTML(@taxon.nivelPrioridad)%></p></li>
         </ol>
 
         <h4>Justificación del estatus de especie prioritaria</h4>
-        <p class="text-justify"><%=@taxon.justificacionPrioritaria.html_safe%></p>
+        <p class="text-justify"><%=FichasController.convert_to_HTML(@taxon.justificacionPrioritaria)%></p>
     <% else %>
-      <h3><%=sin_info_msj%></h3>
+      <h3><%=FichasController.convert_to_HTML(nil)%></h3>
     <% end end %>
 
   </div>
