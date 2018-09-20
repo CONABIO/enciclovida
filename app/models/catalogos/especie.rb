@@ -123,6 +123,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
+  # Para mostrar solo los taxones publicos
+  scope :solo_publicos, -> { left_joins(:scat).where("#{Scat.attribute_alias(:publico)}=?", 1) }
   # Para que regrese las especies e inferiores
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
   # Scope para cargar el arbol nodo D3 en la ficha de la espcie
@@ -408,11 +410,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         if lengua.present?
           l = lengua.estandariza.gsub('-','_')
         else
-          lengua = 'nd'
+          l = 'nd'
         end
 
         # Los nombres comunes de naturalista en hash con la lengua
-        {I18n.t("lenguas.#{l}", default: lengua.capitalize) => nc['name'].capitalize}
+        {I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize}
       end
     else
       ncn = []
