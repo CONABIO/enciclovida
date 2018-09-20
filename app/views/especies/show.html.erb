@@ -79,8 +79,9 @@
     <% end %>
   </ul>
 </div>
-<%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'btn btn-basica btn-sm noLoad pull-right', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-
+<div class="btn-group pull-right" style="z-index: 1;">
+  <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'btn btn-basica btn-sm noLoad', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+</div>
 
 <div id="pestañas" class="panel row">
   <ul class="nav nav-tabs" role="tablist">

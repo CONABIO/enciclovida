@@ -1,6 +1,6 @@
-class Estado < ActiveRecord::Base
+class Estado < Snib
 
-  establish_connection(:snib)
+  #establish_connection(:snib)
   self.primary_key = 'entid'
 
   scope :campos_min, -> { select('entid AS region_id, entidad AS nombre_region').order(entidad: :asc) }

@@ -1,6 +1,6 @@
-class Ecorregion < ActiveRecord::Base
+class Ecorregion < Snib
 
-  establish_connection(:snib)
+  #establish_connection(:snib)
   self.table_name = 'ecorregiones1'
   self.primary_key = 'ecorid'
 

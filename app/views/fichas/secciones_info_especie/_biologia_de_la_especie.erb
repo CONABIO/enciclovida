@@ -1,0 +1,246 @@
+<div class="row showInfo">
+  <div class="col-md-12" id="biologiaEspecie">
+
+    <% if @historiaNatural.tipoReproduccion == 'animal' %>
+
+      <h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Animal</strong></h4>
+
+      <h4>Generalidades: </h4><p><%= @infoReproduccion.descripcion.html_safe%></p>
+
+      <div class="row">
+        <div class="col-md-6" style="border-color: #C1C1C1; border-right-style: dashed">
+          <ul type="dotted">
+          <li>
+            <strong>Dimorfismo sexual</strong><p><%= @infoReproduccion.dimorfismoSexual.html_safe%></p>
+            <h5>Coloración</h5> <p><%= @infoReproduccion.coloracion.html_safe%> </p>
+            <h5>Ornamentación</h5> <p><%= @infoReproduccion.ornamentacion.html_safe%> </p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.additionalInfoDimorfiasmo.html_safe%></p>
+          </li>
+          <li>
+            <strong>Sistemas de apareamiento</strong><p><%= @infoReproduccion.sistemaApareamiento%></p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionSistema%></p>
+          </li>
+          <li>
+            <strong>Número de eventos reproductivos</strong><p><%= @infoReproduccion.noEventos.html_safe %></p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionNoEventos.html_safe%></p>
+          </li>
+          <li>
+            <strong>Tiempo entre eventos reproductivos (meses)</strong><p></p>
+            <h5>Información adicional</h5><p></p>
+          </li>
+          <li>
+            <strong>Tipo de fecundación</strong><p> <%= @infoReproduccion.tipoFecundacion.html_safe%></p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionTipoFec.html_safe%></p>
+          </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul>
+          <li>
+            <strong>Edad o talla a la primera reproducción</strong><p><%= @infoReproduccion.edadPrimeraRepro.html_safe%></p>
+            <h5>Información adicional</h5><p></p>
+          </li>
+          <li>
+            <strong>Duración de vida reproductiva</strong><p><%= @infoReproduccion.duracionVidaRepro.html_safe%></p>
+            <h5>Información adicional</h5><p></p>
+          </li>
+          <li>
+            <strong>Epoca del año y frecuencia de apareamiento</strong><p> <%= @infoReproduccion.frecuenciaApareamineto.html_safe%></p>
+            <h5>Información adicional</h5><p></p>
+          </li>
+          <li>
+            <strong>Sitios de anidación o de crianza</strong><p><%= @infoReproduccion.sitioAnidacion%></p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionSitioAnidacion%></p>
+          </li>
+          <li>
+            <strong>Número de huevos o crias</strong><p><%= @infoReproduccion.noHuevosCrias.html_safe%></p>
+            <h5>Información adicional</h5><p></p>
+          </li>
+          <li>
+            <strong>Cuidado parental</strong><p><%= @infoReproduccion.cuidadoParental.html_safe%></p>
+            <h5>Tiempo del cuidado parental</h5><p><%= @infoReproduccion.tiempoCuidadoParental.html_safe%></p>
+            <h5>Información adicional</h5><p><%= @infoReproduccion.desCuidadoParental.html_safe%></p>
+          </li>
+          </ul>
+        </div>
+      </div>
+      <br>
+
+
+    <% elsif @historiaNatural.tipoReproduccion == 'veget'  %>
+      <h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
+      <br>
+      <h4>Generalidades: </h4><p class="text-justify"><%= @infoReproduccion.descripcion.html_safe%></p>
+      <br>
+      <div class="row">
+        <div class="col-md-6" style="border-color: #C1C1C1; border-right-style: dashed">
+
+          <ul type="dotted">
+            <li>
+              <strong>Tipos de expresión sexual</strong><p><%= @infoReproduccion.arregloEspacial%></p>
+              <h5>Flores: </h5>
+              <h5>Individuos: </h5>
+              <h5>Poblaciones: </h5>
+              <h5>Información adicional: </h5> <p><%= @infoReproduccion.descripcionArregloespacial%></p>
+            </li>
+            <li>
+              <strong>Aislamiento temporal o espacial de los órganos reproductores</strong><p><%= @infoReproduccion.aislamientoOrganos.html_safe%></p>
+              <h5>Información adicional</h5> <p><%= @infoReproduccion.descAislaOrganos.html_safe%></p>
+            </li>
+            <li>
+              <strong>Sistemas reproductivos asexuales</strong><p><%= @infoReproduccion.sistReproAsexuales.html_safe%></p>
+              <h5>Información adicional</h5><p><%= @infoReproduccion.DescsistReproAsexuales.html_safe%></p>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="col-md-6">
+          <ul>
+            <li>
+              <strong>Tipo de fecundación</strong><p><%= @infoReproduccion.fecuandacion.html_safe%></p>
+              <h5>Información adicional</h5><p><%= @infoReproduccion.descFecundacion.html_safe%></p>
+            </li>
+            <li>
+              <strong>Número de eventos reproductivos</strong><p><%= @infoReproduccion.noEventos.html_safe%></p>
+              <h5>Información adicional</h5><p><%= @infoReproduccion.descNoEventos.html_safe%></p>
+            </li>
+            <li>
+              <strong>Tipo de polinización</strong><p><%= @infoReproduccion.agentesPolinizacion.html_safe%></p>
+              <h5>Información adicional</h5><p><%= @infoReproduccion.descAgentesPol.html_safe%></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="col-md-12">
+          <br>
+          <h4 class="text-center"><strong>Floración, frutificación y semillas</strong> </h4>
+          <br>
+        </div>
+        <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed">
+          <h4 class="text-primary text-center">Floración</h4><br>
+          <ol type="A">
+            <li><strong>Horario de apertura de la flor:</strong> <p><%= @infoReproduccion.aperturaFlor.html_safe%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.descApertura.html_safe%></p></li>
+            <li><strong>Longevidad de la flor:</strong> <p><%= @infoReproduccion.tiempoFloracion.html_safe%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.addinfolongevidadflor.html_safe%></p></li>
+            <li><strong>Época de floración (inicio y término):</strong> <p><%= @infoReproduccion.mesInicio.html_safe + " - " + @infoReproduccion.mesFinal.html_safe%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.addinfotiempoflora.html_safe%></p></li>
+            <li><strong>Cantidad de néctar:</strong> <p><%= @infoReproduccion.cantidadnectarinicial.to_s + " - " + @infoReproduccion.cantidadnectarfinal.to_s%></p>
+              <br>Información adicional<p><%= @infoReproduccion.addinfocantidadnectar.html_safe%></p></li>
+            <li><strong>Cantidad de polen:</strong> <p><%= @infoReproduccion.cantidadpolen.html_safe%></p></li>
+          </ol>
+        </div>
+        <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed">
+          <h4 class="text-primary text-center">Frutificación</h4><br>
+          <ol type="A">
+            <li><strong>Época de fructificación (mes de inicio y término):</strong> <p><%= @infoReproduccion.mesInicialFructi.html_safe + " - " + @infoReproduccion.mesFinalFructi.html_safe%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.addinfotiempofructi.html_safe%></p></li>
+            <li><strong>Número de frutos:</strong> <p><%= @infoReproduccion.nofrutosinicial.to_s + " - " + @infoReproduccion.nofrutosfinal.to_s %></li>
+            <li><strong>Características del fruto</strong> <p><%= @infoReproduccion.caracFruto%></p></li>
+          </ol>
+          <strong> Información adicional</strong> <p><%= @infoReproduccion.descCaracFruto.html_safe%></p>
+
+        </div>
+        <div class="col-md-4">
+          <h4 class="text-primary text-center">Semillas</h4>
+          <br>
+          <ol type="A">
+            <li><strong>Número de semillas por fruto:</strong> <p><%= @infoReproduccion.nosemillasinicial%></p></li>
+            <li><strong>Tamaño promedio de las semillas:</strong> <p><%= @infoReproduccion.tamanioSemilla.html_safe%></p></li>
+            <li><strong>Características tóxicas:</strong> <p><%= @infoReproduccion.caracToxica.html_safe%></p></li>
+            <li><strong>Porcentaje de germinación:</strong> <p><%= @infoReproduccion.germinacioninicial%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.infoaddgerminacion.html_safe%></p>
+            </li>
+            <li><strong>Porcentaje de supervivencia de plántulas:</strong> <p><%= @infoReproduccion.plantulasinicial%></p>
+              <br>Información adicional: <p><%= @infoReproduccion.infoaddplantulas.html_safe%></p>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+    <%end%>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <br>
+      <h4 class="text-center"><strong>Más información</strong> </h4>
+      <br>
+    </div>
+    <div class="col-md-8">
+      <br>
+
+      <h4>Uso del hábitat </h4>
+      <p> <%=@habitat.uso.html_safe%></p>
+      <br>
+
+      <h4>Hábito en caso de plantas</h4>
+      <p> <%= @historiaNatural.present? ? (@historiaNatural.habitoPlantas) : (sin_info_msj)%></p>
+      <br>
+
+      <h4>Alimentación</h4> <p> <%=@historiaNatural.alimentacion%></p>
+      <h5>Información adicional</h5> <p> <%=@historiaNatural.descripcionAlimentacion%></p>
+      <br>
+
+      <h4>Estrategia trófica</h4> <p> <%=@historiaNatural.estrategiaTrofica%></p>
+      <h5>Información adicional</h5> <p> <%=@historiaNatural.descripcionEstrofica.html_safe%></p>
+      <br>
+
+      <h4>Técnica de forrajeo</h4> <p> <%=@historiaNatural.forrajeo%></p>
+      <h5>Información adicional</h5> <p> </p>
+      <br>
+
+      <h4>Dispersión</h4>
+      <ul type="none">
+        <li>
+          <h5>Tipo de dispersión</h5><p><%=@historiaNatural.tipoDispersion%></p>
+          <strong>Información adicional: <p><%=@historiaNatural.descTipoDispersion%></p></strong>
+        </li>
+        <li>
+          <h5>Estructura o individuo dispersado</h5><p><%=@historiaNatural.estructuraDispersora%></p>
+          <strong>Información adicional: <p><%=@historiaNatural.descEstDispersora%></p></strong>
+        </li>
+        <li>
+          <h5>Distancia de dispersión</h5><p><%= @historiaNatural.distanciadispercioninicial.to_s + " - " +@historiaNatural.distanciadispercionfinal.to_s %></p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-4" style="background-color: #EFEFEF; padding: 20px 30px 30px 15px;">
+
+      <h4 class="text-center">Conducta</h4> <p> <%=@historiaNatural.conducta.html_safe%></p>
+      <ol type="A">
+        <li><strong>Características conductuales</strong> <p class="text-justify"></p></li>
+
+        <li><strong>Estatus migratorio</strong> <p class="text-justify"> <%=@historiaNatural.migracion%></p>
+          <h5>Tipo de migración que realiza la especie</h5> <p class="text-justify"> <%=@historiaNatural.tipoMigracion%></p></li>
+
+        <li><strong>Hábito</strong> <p class="text-justify"> <%=@historiaNatural.habito%></p>
+          <h5>Información adicional</h5> <p class="text-justify"> </p></li>
+
+        <li><strong>Periodo de actividad</strong> <p class="text-justify"> <%=@historiaNatural.tipopHabito.html_safe%></p>
+          <h5>Información adicional</h5> <p class="text-justify"></p></li>
+
+        <li><strong>Hibernación</strong> <p class="text-justify"> <%=@historiaNatural.hibernacion.html_safe%></p>
+          <h5>Información adicional</h5> <p class="text-justify"> <%=@historiaNatural.infoaddhibernacion.html_safe%></p></li>
+
+        <li><strong>Territorialidad</strong> <p class="text-justify"> <%=@historiaNatural.territorialidad.html_safe%></p>
+          <h5>Información adicional</h5> <p class="text-justify"> <%=@historiaNatural.infoaddterritorialidad.html_safe%></p></li>
+
+        <li><strong>Ámbito hogareño (animales)</strong> <p class="text-justify"> <%=@historiaNatural.ambitoHogareno.html_safe%></p></li>
+
+        <li><strong>Mecanismos de defensa</strong> <p class="text-justify"> <%=@historiaNatural.mecanismosDefensa.html_safe%></p>
+          <h5>Información adicional</h5> <p class="text-justify"> <%=@historiaNatural.infoaddmecdefensa.html_safe%></p></li>
+
+        <li><strong>Organización social</strong> <p class="text-justify"> <%=@demografiaAmenazas.organizacionSocial.html_safe%></p>
+          <h5>Información adicional</h5> <p class="text-justify"> <%=@demografiaAmenazas.infoaddorgsocial.html_safe%></p></li>
+      </ol>
+    </div>
+  </div>
+</div>

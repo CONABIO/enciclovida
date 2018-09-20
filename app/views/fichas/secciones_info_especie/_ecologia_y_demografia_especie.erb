@@ -1,0 +1,29 @@
+<div class="row showInfo">
+  <div class="col-md-12 text-justify">
+    <h4>Tamaño poblacional</h4>
+    <ul>
+      <li><strong>Descripción del tamaño poblacional reportado en distintos lugares</strong> <p> <%= @demografiaAmenazas.tamanioPoblacional.html_safe %> </p></li>
+      <li><strong>Abundancia de individuos por región</strong><p> <%= @demografiaAmenazas.abundancia.html_safe %> </p></li>
+      <li><strong>Densidad (número de individuos por área)</strong><p> <%= @demografiaAmenazas.densidad %> </p></li>
+      <li><strong>Descripción del patrón de ocupación</strong>
+        <p> <%= @demografiaAmenazas.patronOcupacion %> </p>
+        <h5>Información adicional</h5>
+        <p> <%= @demografiaAmenazas.descripcionPatron %> </p>
+      </li>
+    </ul>
+    <br>
+
+    <h4>Parámetros poblacionales</h4>
+    <ul>
+      <li><strong>Parámetros poblacionales</strong><p><%= @demografiaAmenazas.parametrosPoblacionales %></p></li>
+      <li><strong>Población mínima viable</strong><p><%= @demografiaAmenazas.poblacionminviableinicial %></p></li>
+    </ul>
+    <br>
+
+    <h4>Interacciones</h4>
+    <p><%= @interaccion.interacciones if @interaccion.present? %></p>
+    <h5>Información adicional</h5>
+    <p><%= @demografiaAmenazas.infoAdicionalInteraccion %></p>
+
+  </div>
+</div>

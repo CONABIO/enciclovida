@@ -29,6 +29,7 @@
           <h5 class="text-primary"><strong>Escoger alguna especie por nombre:</strong></h5>
         
         <div class="ui-widget form-peces">
+          <%= hidden_field_tag :id %>
           <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
           <h6><i>Al escoger una especie en específico se bloquean los demás criterios</i></h6>
         </div>
