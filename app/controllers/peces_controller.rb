@@ -14,6 +14,8 @@ class PecesController < ApplicationController
   def show
     @pez = Pez.find(params[:id])
     @criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
+    #@criterios = acomoda_criterios(criterios)
+
     render :layout => false and return if params[:layout].present?
   end
 
@@ -130,5 +132,68 @@ class PecesController < ApplicationController
       valor_por_zona[z.to_i] = color_seleccionado
     end
     valor_por_zona.join('')
+  end
+
+  def acomoda_criterios(criterios_obj)
+    criterios = {}
+    criterios['Grupo'] = []
+    criterios['Características'] = []
+    criterios['Estado poblacional en el Pacífico'] = []
+    criterios['Estado poblacional en el Golfo de México y caribe'] = []
+    criterios['suma_caracteristicas'] = 0
+
+    criterios_obj.each do |c|
+      dato = {}
+      dato[:nombre] = c.nombre_propiedad
+      dato[:valor] = c.valor
+      dato[:tipo_propiedad] = c.tipo_propiedad
+
+      case c.ancestry
+      when Propiedad::NOM_ID.to_s
+        nombre_prop = c.nombre_propiedad.estandariza
+        criterios['suma_caracteristicas']+= c.valor
+        dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
+        criterios['Características'][0] = dato
+      when Propiedad::IUCN_ID.to_s
+        nombre_prop = c.nombre_propiedad.estandariza
+        criterios['suma_caracteristicas']+= c.valor
+        dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
+        criterios['Características'][1] = dato
+      when Propiedad::TIPO_CAPTURA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+        criterios['Características'][2] = dato
+      when Propiedad::TIPO_DE_VEDA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+
+        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+          dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
+        end
+
+        criterios['Características'][3] = dato
+      when Propiedad::PROCEDENCIA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+
+        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+          dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
+        end
+
+        criterios['Características'][4] = dato
+
+      when Propiedad::ZONAI
+        criterios['Estado poblacional en el Pacífico'][0] = dato
+      when Propiedad::ZONAII
+        criterios['Estado poblacional en el Pacífico'][1] = dato
+      when Propiedad::ZONAIII
+        criterios['Estado poblacional en el Pacífico'][2] = dato
+      when Propiedad::ZONAIV
+        criterios['Estado poblacional en el Golfo de México y caribe'][0] = dato
+      when Propiedad::ZONAV
+        criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
+      when Propiedad::ZONAVI
+        criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
+      end  # End case
+    end  # End each criterios
+
+    criterios
   end
 end

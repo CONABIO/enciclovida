@@ -53,4 +53,9 @@ module PecesHelper
     lista << '</ul>'
   end
 
+  # Muestra los criterios con el orden indicado
+  def muestraCriterios
+
+  end
+
 end
