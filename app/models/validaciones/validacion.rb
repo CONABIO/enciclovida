@@ -22,7 +22,7 @@ class Validacion
       return
     end
 
-    taxones = Especie.where(nombre_cientifico: nombre_cientifico.strip)
+    taxones = Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
@@ -31,7 +31,7 @@ class Validacion
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       puts "\n\nCoincidio mas de uno directo en la base"
-      self.validacion = {taxones: taxones, msg: ''}
+      self.validacion = {taxones: taxones, msg: 'Existe más de una coincidencia'}
       return
 
     else
@@ -40,11 +40,11 @@ class Validacion
       nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
       taxones = if nombres.length == 2  # Especie
-                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]} % #{nombres[1]}'")
+                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]} % #{nombres[1]}'")
                 elsif nombres.length == 3  # Infraespecie
-                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
                 elsif nombres.length == 1 # Genero o superior
-                  Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} LIKE '#{nombres[0]}'")
+                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}'")
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
@@ -52,12 +52,12 @@ class Validacion
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {taxones: taxones, msg: ''}
+        self.validacion = {taxones: taxones, msg: 'Existe más de una coincidencia'}
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
         puts "\n\nTratando de encontrar concidencias con el fuzzy match"
-        ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy)
+        ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
 
         if ids.present?
           taxones = Especie.where(id: ids)
@@ -65,7 +65,7 @@ class Validacion
 
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
-            distancia = Levenshtein.distance(nombre_cientifico.strip.downcase, taxon.nombre_cientifico.strip.downcase)
+            distancia = Levenshtein.distance(nombre_cientifico.limpia.downcase, taxon.nombre_cientifico.limpia.downcase)
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
           end
