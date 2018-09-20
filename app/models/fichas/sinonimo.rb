@@ -1,8 +1,6 @@
 class Sinonimo < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'sinonimo'
 
 	self.primary_keys = :especieId,  :nombreSimple,  :autoridad

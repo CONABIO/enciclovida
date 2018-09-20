@@ -1,8 +1,6 @@
 class Taxon < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'taxon'
 
 	self.primary_key = 'especieId'

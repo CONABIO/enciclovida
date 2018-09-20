@@ -1,8 +1,6 @@
 class Cat_Estrategiatrofica < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'cat_estrategiatrofica'
 
 	self.primary_key = 'IdEstrategia'

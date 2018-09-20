@@ -1,8 +1,6 @@
 class Legislacion < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'legislacion'
 
 	self.primary_keys = :legislacionId,  :especieId

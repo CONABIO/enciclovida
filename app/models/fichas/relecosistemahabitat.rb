@@ -1,6 +1,6 @@
 class Relecosistemahabitat < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'relecosistemahabitat'
 
 	self.primary_keys = :habitatId,  :ecosistemaid

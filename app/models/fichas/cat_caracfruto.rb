@@ -1,8 +1,6 @@
 class Cat_Caracfruto < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'cat_caracfruto'
 
 	self.primary_key = 'IdFruto'

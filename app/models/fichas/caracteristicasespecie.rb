@@ -1,8 +1,6 @@
 class Caracteristicasespecie < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'caracteristicasespecie'
 
 	self.primary_keys = :especieId,  :idpregunta,  :idopcion

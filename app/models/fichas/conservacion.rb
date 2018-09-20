@@ -1,6 +1,6 @@
 class Conservacion < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'conservacion'
 
 	self.primary_keys = :conservacionId,  :especieId

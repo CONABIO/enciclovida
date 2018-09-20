@@ -1,6 +1,6 @@
 class Relmetadatosasociado < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'relmetadatosasociado'
 
 	self.primary_keys = :asociadoId,  :metadatosId

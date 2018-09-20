@@ -1,6 +1,6 @@
 class Contacto < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'contacto'
 
 	self.primary_key = 'contactoId'

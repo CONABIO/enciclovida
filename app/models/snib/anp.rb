@@ -1,6 +1,5 @@
 class Anp < Snib
 
-  #establish_connection(:snib)
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'
 

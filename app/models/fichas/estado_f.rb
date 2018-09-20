@@ -1,6 +1,6 @@
 class EstadoF < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'estado'
 
 	self.primary_key = 'estadoId'

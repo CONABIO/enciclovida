@@ -1,8 +1,6 @@
 class Nombrecomun < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'nombrecomun'
 
 	self.primary_keys = :especieId,  :nombre

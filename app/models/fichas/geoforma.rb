@@ -1,8 +1,6 @@
 class Geoforma < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'geoforma'
 
 	self.primary_key = 'IdGeoforma'

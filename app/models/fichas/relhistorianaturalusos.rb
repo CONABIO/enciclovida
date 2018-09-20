@@ -1,6 +1,6 @@
 class Relhistorianaturalusos < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'relhistorianaturalusos'
 
 	self.primary_keys = :historiaNaturalId,  :culturaUsosId

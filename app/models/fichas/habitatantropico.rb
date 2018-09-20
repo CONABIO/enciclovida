@@ -1,6 +1,6 @@
 class Habitatantropico < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'habitatAntropico'
 
 	self.primary_key = 'habitatAntropicoId'

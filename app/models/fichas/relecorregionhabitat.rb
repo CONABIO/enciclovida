@@ -1,6 +1,6 @@
 class Relecorregionhabitat < Ficha
-	#establish_connection(:fichasespecies)
- 	# Asignación de tabla
+
+	# Asignación de tabla
 	self.table_name = 'relecorregionhabitat'
 
 	self.primary_keys = :habitatId,  :ecorregionId

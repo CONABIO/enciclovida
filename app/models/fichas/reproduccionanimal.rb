@@ -1,8 +1,6 @@
 class Reproduccionanimal < Ficha
 
-	#establish_connection(:fichasespecies)
-
- 	# Asignación de tabla
+	# Asignación de tabla
 	self.table_name = 'reproduccionanimal'
 
 	self.primary_key = 'reproduccionAnimalId'
