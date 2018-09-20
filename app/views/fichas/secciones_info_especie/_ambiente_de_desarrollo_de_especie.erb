@@ -3,8 +3,8 @@
   <div class="col-md-12">
     <br>
     <div class="row text-center" >
-      <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed"><h4>Ambiente:</h4><p><%= @ecorregion.present? ? (@ecorregion.descripcion.html_safe) : (sin_info_msj) %> </p></div>
-      <div class="col-md-4" style="border-color: #C1C1C1; border-right-style: dashed"><h4>Ecorregion:</h4><p><%=  @cat_eacorregionwwf.present? ? (@cat_eacorregionwwf.TipoEcorregion.html_safe) : (sin_info_msj) %></p></div>
+      <div class="col-md-4 ficaBordeSeparador"><h4>Ambiente:</h4><p><%= @ecorregion.present? ? (@ecorregion.descripcion.html_safe) : (sin_info_msj) %> </p></div>
+      <div class="col-md-4 ficaBordeSeparador"><h4>Ecorregion:</h4><p><%=  @cat_eacorregionwwf.present? ? (@cat_eacorregionwwf.TipoEcorregion.html_safe) : (sin_info_msj) %></p></div>
       <div class="col-md-4"><h4>Ecosistema:</h4><p><%=  @ecosistema.present? ? (@ecosistema.tipoecosistema.html_safe) : (sin_info_msj) %></p></div>
     </div>
     <br>
@@ -46,7 +46,8 @@
         <br>
 
         <h4>Tipo de suelo en el que se desarrolla la especie</h4>
-        <p class="text-justify"><%=@habitat.descripcionSuelo%></p>
+        <p class="text-justify"><%=@habitat.descripcionSuelo.present? ? @habitat.descripcionSuelo.html_safe : (sin_info_msj)%></p>
+
 
         <br>
 
@@ -56,13 +57,13 @@
 
       </div>
 
-      <div class="col-md-4" style="background-color: #EFEFEF; padding: 30px;">
+      <div class="col-md-4 fichaSeccionApartadosT2">
         <h4 class="text-center text-primary">Más información</h4>
 
         <h4>Clima</h4>
-        <p class="text-justify"><%=@habitat.tipoClimaId%></p>
+        <p class="text-justify"><%=@habitat.tipoClimaId.present? ? @habitat.tipoClimaId.html_safe : (sin_info_msj)%></p>
         <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.climaAdicional%></p>
+        <p class="text-justify"><%=@habitat.climaAdicional.present? ? @habitat.climaAdicional.html_safe : (sin_info_msj)%></p>
         <br>
 
         <h4>Temperatura</h4>
@@ -86,7 +87,7 @@
         <h4>Geoforma</h4>
         <p class="text-justify"><%=@geoforma.present? ? (@geoforma.descrpcion.html_safe) : (sin_info_msj)%></p>
         <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.descripcionGeoforma%></p>
+        <p class="text-justify"><%=@habitat.descripcionGeoforma.present? ? @habitat.descripcionGeoforma.html_safe : (sin_info_msj) %></p>
 
       </div>
     </div>

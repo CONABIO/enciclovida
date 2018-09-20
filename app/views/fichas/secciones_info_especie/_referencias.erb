@@ -1,5 +1,5 @@
 <div class="row showInfo">
   <div class="col-md-12">
-    <%= @referencias[0].referencia.html_safe %>
+    <%=FichasController.convert_to_HTML(@referencias[0].referencia)%>
   </div>
 </div>

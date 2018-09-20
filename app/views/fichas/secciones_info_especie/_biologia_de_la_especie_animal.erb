@@ -1,0 +1,63 @@
+
+<h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Animal</strong></h4>
+
+<h4>Generalidades: </h4><p><%= @infoReproduccion.descripcion.present? ? @infoReproduccion.descripcion.html_safe : (sin_info_msj)%></p>
+
+<div class="row">
+  <div class="col-md-6 ficaBordeSeparador">
+    <ul type="dotted">
+    <li>
+      <strong>Dimorfismo sexual</strong><p><%= @infoReproduccion.dimorfismoSexual.present? ? @infoReproduccion.dimorfismoSexual.html_safe : (sin_info_msj)%></p>
+      <h5>Coloración</h5> <p><%= @infoReproduccion.coloracion.present? ? @infoReproduccion.coloracion.html_safe : (sin_info_msj)%> </p>
+      <h5>Ornamentación</h5> <p><%= @infoReproduccion.ornamentacion.present? ? @infoReproduccion.ornamentacion.html_safe : (sin_info_msj)%> </p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.additionalInfoDimorfiasmo.present? ? @infoReproduccion.additionalInfoDimorfiasmo.html_safe : (sin_info_msj)%></p>
+    </li>
+    <li>
+      <strong>Sistemas de apareamiento</strong><p><%= @infoReproduccion.sistemaApareamiento.present? ? @infoReproduccion.sistemaApareamiento.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionSistema.present? ? @infoReproduccion.descripcionSistema.html_safe : (sin_info_msj)%></p>
+    </li>
+    <li>
+      <strong>Número de eventos reproductivos</strong><p><%= @infoReproduccion.noEventos.present? ? @infoReproduccion.noEventos.html_safe : (sin_info_msj) %></p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionNoEventos.present? ? @infoReproduccion.descripcionNoEventos.html_safe : (sin_info_msj)%></p>
+    </li>
+    <li>
+      <strong>Tiempo entre eventos reproductivos (meses)</strong><p></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Tipo de fecundación</strong><p> <%= @infoReproduccion.tipoFecundacion.present? ? @infoReproduccion.tipoFecundacion.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionTipoFec.present? ? @infoReproduccion.descripcionTipoFec.html_safe : (sin_info_msj)%></p>
+    </li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <ul>
+    <li>
+      <strong>Edad o talla a la primera reproducción</strong><p><%= @infoReproduccion.edadPrimeraRepro.present? ? @infoReproduccion.edadPrimeraRepro.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Duración de vida reproductiva</strong><p><%= @infoReproduccion.duracionVidaRepro.present? ? @infoReproduccion.duracionVidaRepro.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Epoca del año y frecuencia de apareamiento</strong><p> <%= @infoReproduccion.frecuenciaApareamineto.present? ? @infoReproduccion.frecuenciaApareamineto.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Sitios de anidación o de crianza</strong><p><%= @infoReproduccion.sitioAnidacion.present? ? @infoReproduccion.sitioAnidacion.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.descripcionSitioAnidacion.present? ? @infoReproduccion.descripcionSitioAnidacion.html_safe : (sin_info_msj)%></p>
+    </li>
+    <li>
+      <strong>Número de huevos o crias</strong><p><%= @infoReproduccion.noHuevosCrias.present? ? @infoReproduccion.noHuevosCrias.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Cuidado parental</strong><p><%= @infoReproduccion.cuidadoParental.present? ? @infoReproduccion.cuidadoParental.html_safe : (sin_info_msj)%></p>
+      <h5>Tiempo del cuidado parental</h5><p><%= @infoReproduccion.tiempoCuidadoParental.present? ? @infoReproduccion.tiempoCuidadoParental.html_safe : (sin_info_msj)%></p>
+      <h5>Información adicional</h5><p><%= @infoReproduccion.desCuidadoParental.present? ? @infoReproduccion.desCuidadoParental.html_safe : (sin_info_msj)%></p>
+    </li>
+    </ul>
+  </div>
+</div>
+<br>

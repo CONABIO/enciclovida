@@ -2,29 +2,29 @@
   <div class="col-md-12">
     <h4>Responsable</h4>
     <ul type="circle">
-      <li><p><strog>Nombre:</strog> <%= @responsable.nombre %> <%= @responsable.apellido %></p></li>
-      <li><p><strog>Puesto:</strog> <%= @puesto.nombrePuesto %> </p></li>
-      <li><p><strog>Organización:</strog> <%= @organizacion.nombre %></p></li>
+      <li><p><strog>Nombre:</strog> <%=FichasController.convert_to_HTML(@responsable.nombre)%> <%=FichasController.convert_to_HTML(@responsable.apellido)%></p></li>
+      <li><p><strog>Puesto:</strog> <%=FichasController.convert_to_HTML(@puesto.nombrePuesto)%> </p></li>
+      <li><p><strog>Organización:</strog> <%=FichasController.convert_to_HTML(@organizacion.nombre)%></p></li>
     </ul>
 
 
-    <br>Uri Icono: <%= @metadato.uriIcono %>
-    <br>Nombre metadato <%= @metadato.nombre %>
-    <br>Uri <%= @metadato.uri %>
-    <br>Título <%= @metadato.titulo %>
+    <br>Uri Icono: <%=FichasController.convert_to_HTML(@metadato.uriIcono)%>
+    <br>Nombre metadato <%=FichasController.convert_to_HTML(@metadato.nombre)%>
+    <br>Uri <%=FichasController.convert_to_HTML(@metadato.uri)%>
+    <br>Título <%=FichasController.convert_to_HTML(@metadato.titulo)%>
 
-    <br>Fecha de publicación <%= @metadato.fechaPublicacion %>
+    <br>Fecha de publicación <%=FichasController.convert_to_HTML(@metadato.fechaPublicacion)%>
 
-    <br>Capturista  <%= @asociado.rol  %>
-    <br>Tipo de asociación  <%= @asociado.tipoAsociacion  %>
-    <br>Nombre del país <%= @pais.nombrepais %>
-    <br>Nombre de la ciudad <%= @ciudad.nombreCiudad %>
-    <br>Punto de entrega <%= @contacto.puntoEntrega %>
-    <br>Area admin <%= @contacto.areaAdmin %>
-    <br>Código Postal <%= @contacto.codigoPostal %>
-    <br>Teléfono <%= @contacto.telefono %>
-    <br>Correo Electrónico <%= @contacto.correoElectronico %>
-    <br>Página Web <%= @contacto.paginaWeb %>
+    <br>Capturista  <%=FichasController.convert_to_HTML(@asociado.rol )%>
+    <br>Tipo de asociación  <%=FichasController.convert_to_HTML(@asociado.tipoAsociacion)%>
+    <br>Nombre del país <%=FichasController.convert_to_HTML(@pais.nombrepais)%>
+    <br>Nombre de la ciudad <%=FichasController.convert_to_HTML(@ciudad.nombreCiudad)%>
+    <br>Punto de entrega <%=FichasController.convert_to_HTML(@contacto.puntoEntrega)%>
+    <br>Area admin <%=FichasController.convert_to_HTML(@contacto.areaAdmin)%>
+    <br>Código Postal <%=FichasController.convert_to_HTML(@contacto.codigoPostal)%>
+    <br>Teléfono <%=FichasController.convert_to_HTML(@contacto.telefono)%>
+    <br>Correo Electrónico <%=FichasController.convert_to_HTML(@contacto.correoElectronico)%>
+    <br>Página Web <%=FichasController.convert_to_HTML(@contacto.paginaWeb)%>
 
   </div>
 </div>

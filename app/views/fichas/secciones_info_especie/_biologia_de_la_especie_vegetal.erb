@@ -1,0 +1,96 @@
+
+<h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
+<br>
+<h4>Generalidades: </h4><p class="text-justify"><%= @infoReproduccion.descripcion.present? ? @infoReproduccion.descripcion.html_safe : (sin_info_msj)%></p>
+<br>
+<div class="row">
+  <div class="col-md-6 ficaBordeSeparador">
+
+    <ul type="dotted">
+      <li>
+        <strong>Tipos de expresión sexual</strong><p><%= @infoReproduccion.arregloEspacial.present? ? @infoReproduccion.arregloEspacial.html_safe : (sin_info_msj)%></p>
+        <h5>Flores: </h5>
+        <h5>Individuos: </h5>
+        <h5>Poblaciones: </h5>
+        <h5>Información adicional: </h5> <p><%= @infoReproduccion.descripcionArregloespacial.present? ? @infoReproduccion.descripcionArregloespacial.html_safe : (sin_info_msj)%></p>
+      </li>
+      <li>
+        <strong>Aislamiento temporal o espacial de los órganos reproductores</strong><p><%= @infoReproduccion.aislamientoOrganos.present? ? @infoReproduccion.aislamientoOrganos.html_safe : (sin_info_msj)%></p>
+        <h5>Información adicional</h5> <p><%= @infoReproduccion.descAislaOrganos.present? ? @infoReproduccion.descAislaOrganos.html_safe : (sin_info_msj)%></p>
+      </li>
+      <li>
+        <strong>Sistemas reproductivos asexuales</strong><p><%= @infoReproduccion.sistReproAsexuales.present? ? @infoReproduccion.sistReproAsexuales.html_safe : (sin_info_msj)%></p>
+        <h5>Información adicional</h5><p><%= @infoReproduccion.DescsistReproAsexuales.present? ? @infoReproduccion.DescsistReproAsexuales.html_safe : (sin_info_msj)%></p>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <div class="col-md-6">
+    <ul>
+      <li>
+        <strong>Tipo de fecundación</strong><p><%= @infoReproduccion.fecuandacion.present? ? @infoReproduccion.fecuandacion.html_safe : (sin_info_msj)%></p>
+        <h5>Información adicional</h5><p><%= @infoReproduccion.descFecundacion.present? ? @infoReproduccion.descFecundacion.html_safe : (sin_info_msj)%></p>
+      </li>
+      <li>
+        <strong>Número de eventos reproductivos</strong><p><%= @infoReproduccion.noEventos.present? ? @infoReproduccion.noEventos.html_safe : (sin_info_msj)%></p>
+        <h5>Información adicional</h5><p><%= @infoReproduccion.descNoEventos.present? ? @infoReproduccion.descNoEventos.html_safe : (sin_info_msj)%></p>
+      </li>
+      <li>
+        <strong>Tipo de polinización</strong><p><%= @infoReproduccion.agentesPolinizacion.present? ? @infoReproduccion.agentesPolinizacion.html_safe : (sin_info_msj)%></p>
+        <h5>Información adicional</h5><p><%= @infoReproduccion.descAgentesPol.present? ? @infoReproduccion.descAgentesPol.html_safe : (sin_info_msj)%></p>
+      </li>
+    </ul>
+  </div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-md-12">
+    <br>
+    <h4 class="text-center"><strong>Floración, frutificación y semillas</strong> </h4>
+    <br>
+  </div>
+  <div class="col-md-4 ficaBordeSeparador">
+    <h4 class="text-primary text-center">Floración</h4><br>
+    <ol type="A">
+      <li><strong>Horario de apertura de la flor:</strong> <p><%= @infoReproduccion.aperturaFlor.present? ? @infoReproduccion.aperturaFlor.html_safe : (sin_info_msj)%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.descApertura.present? ? @infoReproduccion.descApertura.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Longevidad de la flor:</strong> <p><%= @infoReproduccion.tiempoFloracion.present? ? @infoReproduccion.tiempoFloracion.html_safe : (sin_info_msj)%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.addinfolongevidadflor.present? ? @infoReproduccion.addinfolongevidadflor.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Época de floración (inicio y término):</strong> <p><%= @infoReproduccion.mesInicio.html_safe + " - " + @infoReproduccion.mesFinal.html_safe%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.addinfotiempoflora.present? ? @infoReproduccion.addinfotiempoflora.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Cantidad de néctar:</strong> <p><%= @infoReproduccion.cantidadnectarinicial.to_s + " - " + @infoReproduccion.cantidadnectarfinal.to_s%></p>
+        <br>Información adicional<p><%= @infoReproduccion.addinfocantidadnectar.present? ? @infoReproduccion.addinfocantidadnectar.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Cantidad de polen:</strong> <p><%= @infoReproduccion.cantidadpolen.present? ? @infoReproduccion.cantidadpolen.html_safe : (sin_info_msj)%></p></li>
+    </ol>
+  </div>
+  <div class="col-md-4 ficaBordeSeparador">
+    <h4 class="text-primary text-center">Frutificación</h4><br>
+    <ol type="A">
+      <li><strong>Época de fructificación (mes de inicio y término):</strong> <p><%= @infoReproduccion.mesInicialFructi.html_safe + " - " + @infoReproduccion.mesFinalFructi.html_safe%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.addinfotiempofructi.present? ? @infoReproduccion.addinfotiempofructi.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Número de frutos:</strong> <p><%= @infoReproduccion.nofrutosinicial.to_s + " - " + @infoReproduccion.nofrutosfinal.to_s %></li>
+      <li><strong>Características del fruto</strong> <p><%= @infoReproduccion.caracFruto.present? ? @infoReproduccion.caracFruto : (sin_info_msj)%></p></li>
+    </ol>
+    <strong> Información adicional</strong> <p><%= @infoReproduccion.descCaracFruto.present? ? @infoReproduccion.descCaracFruto.html_safe : (sin_info_msj)%></p>
+
+  </div>
+  <div class="col-md-4">
+    <h4 class="text-primary text-center">Semillas</h4>
+    <br>
+    <ol type="A">
+      <li><strong>Número de semillas por fruto:</strong> <p><%= @infoReproduccion.nosemillasinicial.present? ? @infoReproduccion.nosemillasinicial : (sin_info_msj)%></p></li>
+      <li><strong>Tamaño promedio de las semillas:</strong> <p><%= @infoReproduccion.tamanioSemilla.present? ? @infoReproduccion.tamanioSemilla.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Características tóxicas:</strong> <p><%= @infoReproduccion.caracToxica.present? ? @infoReproduccion.caracToxica.html_safe : (sin_info_msj)%></p></li>
+      <li><strong>Porcentaje de germinación:</strong> <p><%= @infoReproduccion.germinacioninicial.present? ? @infoReproduccion.germinacioninicial.html_safe : (sin_info_msj)%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.infoaddgerminacion.present? ? @infoReproduccion.infoaddgerminacion.html_safe : (sin_info_msj)%></p>
+      </li>
+      <li><strong>Porcentaje de supervivencia de plántulas:</strong> <p><%= @infoReproduccion.plantulasinicial.present? ? @infoReproduccion.plantulasinicial.html_safe : (sin_info_msj)%></p>
+        <br>Información adicional: <p><%= @infoReproduccion.infoaddplantulas.present? ? @infoReproduccion.infoaddplantulas.html_safe : (sin_info_msj)%></p>
+      </li>
+    </ol>
+  </div>
+</div>
+
