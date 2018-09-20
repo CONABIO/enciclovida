@@ -59,7 +59,7 @@ class PecesController < ApplicationController
       @peces = Pez.filtros_peces
 
       # Busqueda por nombre científico o comunes
-      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
+      @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
 
       # Busqueda con estrella
       @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
