@@ -25,9 +25,7 @@ class New_Conabio_Service
     begin
       timed_out = Timeout::timeout(@timeout) do
         Rails.logger.debug "[DEBUG] #{self.class.name} getting #{request_uri}"
-        puts '-----------------1'
         Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
-        #Nokogiri::HTML(open(request_uri))
       end
     rescue Timeout::Error
       raise Timeout::Error, "#{@service_name} didn't respond within #{@timeout} seconds."
@@ -37,8 +35,7 @@ class New_Conabio_Service
   def get_uri(method, *args)
     arg = args.first unless args.first.is_a?(Hash)
     uri = "http://#{@server}#{method}"
-    #uri += "/#{arg}" if arg
-
+    
     Rails.logger.debug "[DEBUG] Invocando URL con los datos: " + uri
     URI.parse(URI.encode(uri))
   end
