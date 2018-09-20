@@ -22,7 +22,7 @@ class Validacion
       return
     end
 
-    taxones = Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
+    taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       puts "\n\nCoincidio busqueda exacta"
@@ -40,11 +40,11 @@ class Validacion
       nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
       taxones = if nombres.length == 2  # Especie
-                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]} % #{nombres[1]}'")
+                  Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]} % #{nombres[1]}'")
                 elsif nombres.length == 3  # Infraespecie
-                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+                  Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
                 elsif nombres.length == 1 # Genero o superior
-                  Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}'")
+                  Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}'")
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
@@ -60,7 +60,7 @@ class Validacion
         ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
 
         if ids.present?
-          taxones = Especie.where(id: ids)
+          taxones = Especie.solo_publicos.where(id: ids)
           taxones_con_distancia = []
 
           taxones.each do |taxon|
