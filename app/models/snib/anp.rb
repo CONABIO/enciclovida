@@ -1,6 +1,6 @@
-class Anp < ActiveRecord::Base
+class Anp < Snib
 
-  establish_connection(:snib)
+  #establish_connection(:snib)
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'
 
