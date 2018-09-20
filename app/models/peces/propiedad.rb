@@ -18,7 +18,7 @@ class Propiedad < ActiveRecord::Base
   scope :iucn, -> { where('ancestry=?', IUCN_ID) }
   scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
 
-  # Los IDS asignados, estos no deberían cambiar
+  # Los IDS asignados a los ancestros, estos no deberían cambiar
   NOM_ID = 318.freeze
   IUCN_ID = 319.freeze
   TIPO_CAPTURA_ID = 320.freeze
@@ -26,6 +26,13 @@ class Propiedad < ActiveRecord::Base
   TIPO_DE_VEDA_ID = 321.freeze
   ZONA_ID = 323.freeze
   GRUPO_ID = 317.freeze
+
+  ZONAI = '323/311'.freeze
+  ZONAII = '323/312'.freeze
+  ZONAIII = '323/313'.freeze
+  ZONAIV = '323/314'.freeze
+  ZONAV = '323/315'.freeze
+  ZONAVI = '323/316'.freeze
 
   PROPIEDADES_DEFAULT = [NOM_ID, IUCN_ID, TIPO_CAPTURA_ID, PROCEDENCIA_ID, TIPO_DE_VEDA_ID, ZONA_ID].freeze
 
