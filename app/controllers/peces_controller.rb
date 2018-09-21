@@ -64,9 +64,6 @@ class PecesController < ApplicationController
       # Busqueda por nombre científico o comunes
       @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
 
-      # Busqueda con estrella
-      @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
-
       # Busqueda con pesquerias
       @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
 
@@ -93,6 +90,9 @@ class PecesController < ApplicationController
         # Selecciono el valor de sin datos
         if params[:semaforo_recomendacion].include?('sn')
           rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
+          # Busqueda con estrella
+        elsif params[:semaforo_recomendacion].include?('star')
+          @peces = @peces.where(con_estrella: 1)
         else # Cualquier otra combinacion
           rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
         end
