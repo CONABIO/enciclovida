@@ -79,6 +79,12 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
 
+      # Filtro de grupo iconico
+      if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
+        ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
+        @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
+      end
+
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
