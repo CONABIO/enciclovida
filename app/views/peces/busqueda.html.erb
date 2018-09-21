@@ -25,9 +25,9 @@
         </div>
       </fieldset>
       <fieldset class="text-center">
-        
-          <h5 class="text-primary"><strong>Escoger alguna especie por nombre:</strong></h5>
-        
+
+        <h5 class="text-primary"><strong>Escoger alguna especie por nombre:</strong></h5>
+
         <div class="ui-widget form-peces">
           <%= hidden_field_tag :id %>
           <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
@@ -35,23 +35,25 @@
         </div>
         <%= hidden_field_tag(:especie_id) %>
       </fieldset>
+
       <fieldset class="text-center">
-        
-          <h5 class="text-primary"><strong>Ó escoger algún grupo:</strong></h5>
-        
+
+        <h5 class="text-primary"><strong>Ó escoger algún grupo:</strong></h5>
+
         <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-lg' ) %>
+          <%= checkboxGruposIconicos %>
         </div>
       </fieldset>
+
     </div>
 
     <div class="exacta col-xs-12 <%= 'col-sm-12 col-md-6 col-lg-5' if(@peces.nil?) %>"></div>
 
     <div class="zonificada col-xs-12 <%= 'col-sm-12 col-md-6 col-lg-7' if(@peces.nil?) %>">
       <fieldset class="text-center">
-        
-          <h5 class="text-primary"><strong>También puedes buscar por zonas marinas:</strong></h5>
-        
+
+        <h5 class="text-primary"><strong>También puedes buscar por zonas marinas:</strong></h5>
+
         <div class="checkbox col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= render :partial => 'peces/svg_zonas_marinas' %>
           <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
@@ -85,6 +87,10 @@
           <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
         </div>
 
+        <h5 class="text-primary"><strong>Ó escoger algún grupo:</strong></h5>
+        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-lg' ) %>
+        </div>
       </fieldset>
     </div>
 

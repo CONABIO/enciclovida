@@ -1,5 +1,19 @@
 module PecesHelper
 
+  def checkboxGruposIconicos
+    checkBoxes = ''
+
+    @grupos.each do |taxon|  # Para tener los grupos ordenados
+      checkBoxes << "<label>"
+      checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, false, id: "grupos_iconicos_#{taxon.id}")
+      checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-lg btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
+      checkBoxes << "</span>"
+      checkBoxes << "</label>"
+    end
+
+    checkBoxes.html_safe
+  end
+
   def checboxEstrella
     checkBox = ''
     checkBox << "<label>"
