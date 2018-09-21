@@ -62,4 +62,13 @@ module PecesHelper
 
   end
 
+  def valorAColor valor
+    color = case valor
+            when -10..4 then "v"
+            when 5..19 then "a"
+            else "r"
+            end
+    "btn-zona-#{color}"
+  end
+
 end
