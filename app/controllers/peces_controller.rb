@@ -198,17 +198,6 @@ class PecesController < ApplicationController
         criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
       when Propiedad::ZONAVI
         criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
-      else  # Para las pesquerias
-        if c.tipo_propiedad == 'Pesquerías en vías de sustentabilidad'
-          dato = {}
-          dato[:nombre] = c.nombre_propiedad
-          dato[:valor] = c.valor
-          dato[:tipo_propiedad] = c.tipo_propiedad
-
-          estado = c.parent
-
-          dato[:estado] = estado.nombre_propiedad
-        end
       end  # End case
     end  # End each criterios
 
