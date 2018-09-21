@@ -6,42 +6,32 @@ module PecesHelper
     @grupos.each do |taxon|  # Para tener los grupos ordenados
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, false, id: "grupos_iconicos_#{taxon.id}")
-      checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-lg btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
+      checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-xs btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
 
     checkBoxes.html_safe
-  end
-
-  def checboxEstrella
-    checkBox = ''
-    checkBox << "<label>"
-    checkBox << check_box_tag('con_estrella[]', '1', false, id: 'con_estrella')
-    checkBox << "<span title='Especies certificadas' class = 'btn btn-lg btn-basica btn-title btn-star'>"
-    checkBox << "<i class = 'glyphicon glyphicon-star'></i>"
-    checkBox << "</span>"
-    checkBox << "</label>"
-    checkBox.html_safe
   end
 
   def checkboxRecomendacion
     checkBoxes = ''
-    s = {:v => ['Recomendable','glyphicon glyphicon-ok-sign'], :a => ['Poco recomendable','glyphicon glyphicon-exclamation-sign'], :r => ['Evita','glyphicon glyphicon-minus-sign'], :sn => ['Sin datos','no-data-ev-icon']}
+    s = {:v => ['Recomendable','glyphicon glyphicon-ok-sign'], :a => ['Poco recomendable','glyphicon glyphicon-exclamation-sign'], :r => ['Evita','glyphicon glyphicon-minus-sign'], :star => ['Con estrella','glyphicon glyphicon-star'], :sn => ['Sin datos','no-data-ev-icon']}
     s.each do |k,v|
       checkBoxes << "<label>"
-      checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0]}")
+      checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0].parameterize}")
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-lg btn-basica btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}'></i>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
+      checkBoxes << "<br>" if k == :r
     end
 
     checkBoxes.html_safe
   end
 
-  def checkboxCriteriosPeces(cat, ico=false, titulo='')
-    checkBoxes="<h5><strong>#{titulo}</strong></h5>"
+  def checkboxCriteriosPeces(cat, ico=false, titulo=false)
+    checkBoxes= titulo ? "<h5><strong>#{titulo}</strong></h5>" : ""
 
     cat.each do |k, valores|
       valores.each do |edo, id|
@@ -70,6 +60,15 @@ module PecesHelper
   # Muestra los criterios con el orden indicado
   def muestraCriterios
 
+  end
+
+  def valorAColor valor
+    color = case valor
+            when -10..4 then "v"
+            when 5..19 then "a"
+            else "r"
+            end
+    "btn-zona-#{color}"
   end
 
 end
