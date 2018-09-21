@@ -257,7 +257,7 @@ class Pez < ActiveRecord::Base
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
-    valor+= pesquerias
+    #valor+= pesquerias
     self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)
