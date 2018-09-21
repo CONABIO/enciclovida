@@ -32,7 +32,7 @@
         </div>
       </fieldset>
 
-      <fieldset class="text-center">
+      <fieldset class="text-center exacta">
         <h5 class="text-primary"><strong>Busca por nombre:</strong></h5>
         <div class="ui-widget form-peces">
           <%= hidden_field_tag :id %>
@@ -43,13 +43,8 @@
       </fieldset>
     </div>
 
-    <div class="exacta col-xs-12 <%= 'col-sm-12 col-md-6 col-lg-5' if(@peces.nil?) %>">
-
-
-    </div>
 
     <div class="zonificada col-xs-12 <%= 'col-sm-12 col-md-7 col-lg-8' if(@peces.nil?) %>">
-
       <fieldset class="text-center">
         <h5 class="text-primary"><strong>Busca por zonas marinas:</strong></h5>
         <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
@@ -57,10 +52,13 @@
           <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
         </div>
       </fieldset>
-
     </div>
 
-    <div class="agrupada checkbox col-xs-12">
+    <div class="text-center col-xs-12" style="margin-top: -60px;">
+      <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
+    </div>
+
+    <div id="agrupada" class="agrupada checkbox col-xs-12">
       <fieldset class="text-center">
         <h5 class="text-primary"><strong>Complementa tu búsqueda:</strong></h5>
         <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">

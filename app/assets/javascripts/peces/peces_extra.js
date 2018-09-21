@@ -1,11 +1,9 @@
-var limpiaBusqueda = function()
-{
+var limpiaBusqueda = function(){
     $(".agrupada *, .recomendada *, #nombre").attr("disabled", false).removeClass("disabled");
     $( "#especie_id, #nombre" ).val('');
 };
 
-var bloqueaBusqueda = function()
-{
+var bloqueaBusqueda = function(){
 };
 
 $(document).ready(function(){
@@ -36,3 +34,16 @@ $(document).ready(function(){
         $("html,body").animate({scrollTop: 122}, 1000);
     });
 });
+
+var scroll_array = 1;
+
+var scrollToAnchor = function(){
+    if(scroll_array == 0){
+        $("html,body").animate({scrollTop: $('#busqueda_avanzada').offset().top},'slow');
+        scroll_array =  1;
+    }else{
+        $('html,body').animate({scrollTop: $('#scroll_down_up').offset().top},'slow');
+        scroll_array = 0;
+    }
+    $('#scroll_down_up span').toggleClass("glyphicon-menu-down glyphicon-menu-up");
+};

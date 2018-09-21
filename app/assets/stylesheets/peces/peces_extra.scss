@@ -1,3 +1,37 @@
+  .btn-circle {
+    visibility:visible !important;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%!important;
+    font-size: 32px;
+    color: #888888;
+    -webkit-transition: background .3s ease-in-out;
+    -moz-transition: background .3s ease-in-out;
+    transition: background .3s ease-in-out;
+  }
+  .btn-circle:hover,.btn-circle:focus{
+    outline: 0;
+    color: #f7f7f7;
+    background-color: rgba(51, 51, 51, 0.3);
+  }
+  .btn-circle span.animated {
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s;
+    -moz-transition-property: -moz-transform;
+    -moz-transition-duration: 1s;
+  }
+  .btn-circle:hover span.animated {
+    -webkit-animation-name: pulse;
+    -moz-animation-name: pulse;
+    -webkit-animation-duration: 1.5s;
+    -moz-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+  }
 .cobi-ev-icon:before{
   margin: 0;
   font-size: 2.5em;
