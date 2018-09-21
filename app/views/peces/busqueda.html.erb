@@ -6,9 +6,9 @@
 <div id="busqueda_avanzada">
 
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
-    <h4 class="text-success text-center">
+    <h2 class="text-success text-center titulo-busqueda-peces">
       <strong>Peces y mariscos comerciales</strong>
-    </h4>
+    </h2>
     <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button',
                    :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
     <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'},
@@ -40,7 +40,7 @@
 
         <h5 class="text-primary"><strong>Escoge por grupo icónico:</strong></h5>
 
-        <div class="col-xs-10 col-xs-offset-1 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+        <div class="col-xs-10 col-xs-offset-1 col-md-12 col-md-offset-0 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
           <%= checkboxGruposIconicos %>
         </div>
       </fieldset>
