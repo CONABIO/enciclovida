@@ -35,15 +35,15 @@ $(document).ready(function(){
     });
 });
 
-var scroll_array = 1;
+var scroll_array = false;
 
 var scrollToAnchor = function(){
-    if(scroll_array == 0){
+    if(scroll_array){
         $("html,body").animate({scrollTop: $('#busqueda_avanzada').offset().top},'slow');
-        scroll_array =  1;
+        scroll_array =  false;
     }else{
         $('html,body').animate({scrollTop: $('#scroll_down_up').offset().top},'slow');
-        scroll_array = 0;
+        scroll_array = true;
     }
     $('#scroll_down_up span').toggleClass("glyphicon-menu-down glyphicon-menu-up");
 };
