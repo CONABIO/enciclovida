@@ -48,7 +48,7 @@ fieldset{
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
-.zonificada span.zonas, .zonificada input{
+.zonificada label{
   display: none;
 }
 
@@ -279,8 +279,8 @@ path[id^=path_zonas_]:hover{fill: #17325f!important;}
 #earth-states, .modal-earth-states{fill: #f2ffbd;}
 #extranjero, .modal-extranjero{fill: #c1c1c1;}
 
-svg text{font-family: "texgyreadventorregular", "Helvetica", Arial; font-size: 1.25em;}
-text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;}
+svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
+text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;font-size: .5em}
 text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #fafafa;}
 
 text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .7em;}

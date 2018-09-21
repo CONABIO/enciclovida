@@ -30,8 +30,8 @@ module PecesHelper
     checkBoxes.html_safe
   end
 
-  def checkboxCriteriosPeces(cat, ico=false, titulo='')
-    checkBoxes="<h5><strong>#{titulo}</strong></h5>"
+  def checkboxCriteriosPeces(cat, ico=false, titulo=false)
+    checkBoxes= titulo ? "<h5><strong>#{titulo}</strong></h5>" : ""
 
     cat.each do |k, valores|
       valores.each do |edo, id|
