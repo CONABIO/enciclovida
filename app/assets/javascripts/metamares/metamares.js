@@ -19,3 +19,4 @@
 //= require i18n/translations
 //= require shared/general
 //= require metamares/metamares_extra
+//= require cocoon
