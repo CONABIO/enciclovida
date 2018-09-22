@@ -61,31 +61,37 @@
     <div id="agrupada" class="agrupada checkbox col-xs-12">
       <fieldset class="text-center">
         <h5 class="text-primary"><strong>Complementa tu búsqueda:</strong></h5>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
+        </div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
           <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
         </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+        <div class="clearfix hidden-lg"></div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
           <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
           <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map { |p| [p.nombre_comun_principal.present? ? "#{p.nombre_comun_principal} (#{ponItalicas(p)})".html_safe : ponItalicas(p), p.especie_id] }), :prompt => '- Selecciona una opción -', class: 'form-control input-lg') %>
         </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+        <div class="clearfix visible-lg-block"></div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <h5><strong>Selección por grupo de especies</strong></h5>
           <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-lg' ) %>
         </div>
+        <div class="clearfix hidden-lg"></div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
+        </div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
+        </div>
+        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+          <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
+        </div>
+
       </fieldset>
     </div>
 
