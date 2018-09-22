@@ -23,6 +23,36 @@ header {
   background-size: cover;
   -o-background-size: cover;
 }
+#buscadores{
+  background: rgba(51, 51, 51, 0.75);
+  padding-bottom: 15px;
+}
+#buscadores > h4{
+  padding: 5px 0;
+  margin: 0px;
+  color: #fafafa;
+}
+#buscadores .btn-busquedas{
+  border-radius: 0px;
+  padding: 15px 20px;
+  box-shadow: 3px 3px 5px #424242;
+  background: #ffffff60;
+}
+#buscadores .btn-busquedas:hover{
+  padding: 18px 25px;
+  outline: 0;
+  background: rgba(51, 51, 51, 0.75);
+}
+#buscadores .btn-busquedas i:before, #buscadores .btn-busquedas i:after{
+  font-size: 2.5em!important;
+  color: #423434 !important;
+  text-shadow: 2px 2px 2px #cecece;
+}
+#buscadores .btn-busquedas:hover i:before, #buscadores .btn-busquedas:hover i:after{
+  font-size: 2em!important;
+  color: #fafafa !important;
+  text-shadow: 2px 2px 2px #564c4c;
+}
 #news{
   color: #fafafa;
   padding: 0;

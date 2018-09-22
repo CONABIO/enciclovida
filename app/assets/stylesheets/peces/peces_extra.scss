@@ -33,15 +33,10 @@
   -moz-animation-timing-function: linear;
 }
 .cobi-ev-icon:before{
-  margin: 0;
-  font-size: 2.5em;
+  margin: 0 0 0 0;
+  font-size: 2.25em;
   color: #fdfdfd;
   /*color: #385888 /* Azul Cobi */
-}
-.titulo-busqueda-peces{
-  font-family: "texgyreadventorregular", "Helvetica", Arial;
-  /*font-size: 1.25em;*/
-  margin: 0px 0px 25px 0px;
 }
 .form-peces{
   margin-bottom: 15px;
@@ -64,8 +59,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   visibility: hidden;
 }
 fieldset{
-  border-top: 1px solid #ffffff;
-  padding-top: 8px;
+  padding-top: 10px;
 }
 .recomendada input:not([id^=grupos_iconicos_]) + span{
   color: #ececec;
@@ -74,10 +68,14 @@ fieldset{
   background-image: linear-gradient(to bottom, #ffffff 0%, #a3c0ca 90%);
 }
 .recomendada input + span{
-  border-radius: 50%;
+  border-radius: 35%;
   border: none;
   font-size: 2.25em;
   box-shadow: -1px 4px 7px #9c9696;
+}
+span.btn-zona-sn, span.btn-zona-star{
+  font-size: 2em!important;
+  padding: 2px 10px!important;
 }
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
