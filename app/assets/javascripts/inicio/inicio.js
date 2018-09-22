@@ -38,7 +38,7 @@ var setPaddingHeader = function()
     $('header').css('padding-bottom', (vacio));
     $('#news').css('margin-top', (30-vacio));
     $('#issues').css('height', (vacio-150));
-    $('#exploraRegion').css('margin-top', (10-vacio));
+    $('#buscadores').css('margin-top', (10-vacio));
 };
 
 $(document).ready(function(){
