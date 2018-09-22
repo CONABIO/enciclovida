@@ -1,20 +1,20 @@
 <%- content_for(:extracss) do -%>
   <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
-
+<% if(@peces.nil?) %>
+  <h2 class="text-success text-center titulo-busquedas">
+    <i class="peces-mariscos-comerciales-ev-icon"></i>
+    Búsqueda de peces y mariscos comerciales
+  </h2>
+  <hr />
+<% end %>
 <%= notice if notice.present? %>
 <div id="busqueda_avanzada">
-
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
-    <h2 class="text-success text-center titulo-busqueda-peces">
-      <strong>Peces y mariscos comerciales</strong>
-    </h2>
-    <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button',
-                   :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-    <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'},
-                   :class => "botones-peces btn btn-success pull-right", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+    <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button', :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+    <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-success pull-right", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
 
-    <div class="clearfix" style="padding-bottom: 10px;"></div>
+    <div class="clearfix"></div>
 
     <div class="recomendada col-xs-12 <%= 'col-sm-12 col-md-5 col-lg-4' if(@peces.nil?) %>">
 

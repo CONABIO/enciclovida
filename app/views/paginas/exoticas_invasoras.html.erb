@@ -1,81 +1,65 @@
 <% content_for(:title) do %>
-    <%= @titulo = 'Especies exóticas invasoras' %>
+  <%= @titulo = 'Especies exóticas invasoras' %>
 <% end %>
 
 <% content_for(:extrajs) do %>
-    <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% content_for(:delayedjs) do %>
-    <script>
-        var es_primero = null;
+  <script>
+      var es_primero = null;
 
-        $('.page-selection1').bootpag({
-            total: <%= @paginas %>,          // total pages
-            page: <%= @pagina.present? ? @pagina : 1 %>,            // default page
-            maxVisible: 5,     // visible pagination
-            leaps: true,         // next/prev leaps through maxVisible
-            firstLastUse: true,
-            first: '←',
-            last: '→'
-        }).on("page", function(event, pagina){
-            if (es_primero == pagina)
-                return;
-            else {
-                $.ajax(
-                        {
-                            url: "/exoticas-invasoras-paginado",
-                            type: 'GET',
-                            data: $('#form-exoticas').serialize() + '&pagina=' +pagina
+      $('.page-selection1').bootpag({
+          total: <%= @paginas %>,          // total pages
+          page: <%= @pagina.present? ? @pagina : 1 %>,            // default page
+          maxVisible: 5,     // visible pagination
+          leaps: true,         // next/prev leaps through maxVisible
+          firstLastUse: true,
+          first: '←',
+          last: '→'
+      }).on("page", function(event, pagina){
+          if (es_primero == pagina)
+              return;
+          else {
+              $.ajax(
+                  {
+                      url: "/exoticas-invasoras-paginado",
+                      type: 'GET',
+                      data: $('#form-exoticas').serialize() + '&pagina=' +pagina
 
-                        }).done(function(res)
-                        {
-                            $('#tbody').empty().append(res);
-                        });
-            }
+                  }).done(function(res)
+              {
+                  $('#tbody').empty().append(res);
+              });
+          }
 
-            es_primero = pagina;
-        });
+          es_primero = pagina;
+      });
 
-        $("#form-exoticas :input").on('change', function(){
-            $('#form-exoticas').submit();
-        });
-    </script>
+      $("#form-exoticas :input").on('change', function(){
+          $('#form-exoticas').submit();
+      });
+  </script>
 <% end %>
 
 <% content_for(:extracss) do %>
-    <style>
-        #tbody td {
-            vertical-align: middle;
-        }
-
-        #tbody tr td:nth-child(11) {
-            font-size: 1.5em;
-        }
-
-        #tbody tr td:nth-child(2) {
-            font-style: italic;
-        }
-
-        #tbody tr td:nth-child(1) {
-            width: 10%;
-        }
-
-        #tbody tr td:nth-child(2), #tbody tr td:nth-child(3) {
-            width: 13%;
-        }
-
-        #tbody tr td:nth-child(4), #tbody tr td:nth-child(5), #tbody tr td:nth-child(6), #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9) {
-            width: 6%;
-        }
-    </style>
+  <style>
+    #tbody td{vertical-align: middle;}
+    #tbody tr td:nth-child(11){font-size: 1.5em;}
+    #tbody tr td:nth-child(2){font-style: italic;}
+    #tbody tr td:nth-child(1){width: 10%;}
+    #tbody tr td:nth-child(2), #tbody tr td:nth-child(3){width: 13%;}
+    #tbody tr td:nth-child(4), #tbody tr td:nth-child(5), #tbody tr td:nth-child(6), #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9){width: 6%;}
+  </style>
 <% end %>
 
-<div class="col-xs-12 col-sm-11 col-md-11 col-lg-11">
-  <h3><%= @titulo %></h3>
-</div>
-
-<%= link_to "Descarga lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/Tabla exóticas.xlsx' %>
+<h2 class="text-success text-center titulo-busquedas">
+  <i class="exotica-invasora-ev-icon"></i>
+  Búsqueda de especies exóticas invasoras <br />
+  <%= link_to "Descargar lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/Tabla exóticas.xlsx', class: "btn btn-warning pull-right" %>
+</h2>
+<hr />
 <div class="text-center page-selection1"></div>
 
 <div class="pull-left" id="num-res-exoticas"></div>
@@ -86,33 +70,33 @@
     <thead>
     <tr>
       <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
-          <th >
-            <% case cabecera %>
-            <% when 'Grupo' %>
-                <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
-                Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Origen' %>
-                <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
-                Origen<br /><%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Presencia' %>
-                <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
-                Presencia<br /><%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Ambiente' %>
-                <% valor = @selected.present? && @selected[:ambiente].present? ? @selected[:ambiente][:valor] : nil %>
-                Ambiente<br /><%= select_tag :ambiente, options_for_select(@select[:ambientes], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Instrumento legal' %>
-                <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
-                Instrumento legal<br /><%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Estatus' %>
-                <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
-                Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
-            <% when 'Ficha' %>
-                <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
-                Ficha<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
-            <% else %>
-                <%= cabecera %>
-            <% end %>
-          </th>
+        <th >
+          <% case cabecera %>
+          <% when 'Grupo' %>
+            <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
+            Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Origen' %>
+            <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
+            Origen<br /><%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Presencia' %>
+            <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
+            Presencia<br /><%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Ambiente' %>
+            <% valor = @selected.present? && @selected[:ambiente].present? ? @selected[:ambiente][:valor] : nil %>
+            Ambiente<br /><%= select_tag :ambiente, options_for_select(@select[:ambientes], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Instrumento legal' %>
+            <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
+            Instrumento legal<br /><%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Estatus' %>
+            <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
+            Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
+          <% when 'Ficha' %>
+            <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
+            Ficha<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
+          <% else %>
+            <%= cabecera %>
+          <% end %>
+        </th>
       <% end %>
     </tr>
     </thead>

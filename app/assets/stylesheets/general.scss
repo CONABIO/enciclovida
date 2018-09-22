@@ -65,7 +65,10 @@
   /*font-size: 1.5em!important;*/
   color: #423434 !important;
 }
-
+.titulo-busquedas{
+  font-family: "texgyreadventorregular", "Helvetica", Arial;
+  margin: 0;
+}
 footer {
   padding: 25px 0;
   text-align: center;
@@ -80,25 +83,11 @@ footer.legal p {
   font-size:12px;
 }
 
-/*para los iconitos de la busqueda básica*/
+/*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
 #brandBar .btn-title[tooltip-title]:hover:after, #buscadores .btn-title[tooltip-title]:hover:after{
   left: initial;
   right: 50%;
   top: 95%;
-}
-.irBusquedaAvanzada {
-  margin: -24px 0px 0px 78px;
-}
-.irBusquedaAvanzada:hover {
-  margin-top: -4px;
-  margin-bottom: -9px;
-}
-.irBusquedaAvanzada > a {
-  font-weight: bold;
-  font-size: .8em;
-}
-.irBusquedaAvanzada:hover > a > span:nth-child(2) {
-  display: none !important;
 }
 
 .btn-title:hover {

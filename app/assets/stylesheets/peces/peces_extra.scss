@@ -38,11 +38,6 @@
   color: #fdfdfd;
   /*color: #385888 /* Azul Cobi */
 }
-.titulo-busqueda-peces{
-  font-family: "texgyreadventorregular", "Helvetica", Arial;
-  /*font-size: 1.25em;*/
-  margin: 0px 0px 25px 0px;
-}
 .form-peces{
   margin-bottom: 15px;
 }
@@ -64,8 +59,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   visibility: hidden;
 }
 fieldset{
-  border-top: 1px solid #ffffff;
-  padding-top: 8px;
+  padding-top: 10px;
 }
 .recomendada input:not([id^=grupos_iconicos_]) + span{
   color: #ececec;

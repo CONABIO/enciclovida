@@ -20,9 +20,12 @@
 
     <%= javascript_include_tag 'busquedas/region/por_region_extra', 'data-turbolinks-track' => true %>
 <% end %>
-
+<h2 class="text-success text-center titulo-busquedas">
+  <i class="globe-ev-icon"></i>
+  Búsqueda por región<br /><small id="contenedor-nombre-region">Selecciona una región (doble clic)</small>
+</h2>
+<hr />
 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-  <h5 class="text-left text-success" id="contenedor-nombre-region">Selecciona una región (doble clic)</h5>
   <div id="regiones" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 1 -->
     <%= render partial: 'tipos_regiones' %>
   </div>
