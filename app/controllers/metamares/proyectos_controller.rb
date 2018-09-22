@@ -19,15 +19,15 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def create
-    @estatuse = Estatus.new(estatuse_params)
+    @proyecto = Metamares::Proyecto.new(proyecto_params)
 
     respond_to do |format|
-      if @estatuse.save
-        format.html { redirect_to @estatuse, notice: 'Estatus was successfully created.' }
+      if @proyecto.save
+        format.html { redirect_to @proyecto, notice: 'El proyecto fue creado satisfactoriamente' }
         format.json { render action: 'show', status: :created, location: @estatuse }
       else
         format.html { render action: 'new' }
-        format.json { render json: @estatuse.errors, status: :unprocessable_entity }
+        format.json { render json: @proyecto.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -39,15 +39,15 @@ class Metamares::ProyectosController < Metamares::MetamaresController
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
-        format.json { render json: @estatuse.errors, status: :unprocessable_entity }
+        format.json { render json: @proyecto.errors, status: :unprocessable_entity }
       end
     end
   end
 
   def destroy
-    @estatuse.destroy
+    @proyecto.destroy
     respond_to do |format|
-      format.html { redirect_to estatuses_url }
+      format.html { redirect_to metamares_proyectos_path }
       format.json { head :no_content }
     end
   end
