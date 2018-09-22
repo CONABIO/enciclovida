@@ -1,7 +1,7 @@
-<div id="brandBar" class="row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url(\"/fondos/#{rand(1..16)}.jpg\");'".html_safe if params[:controller] != 'inicio' %>>
+<div id="brandBar" class="row " style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url('/fondos/#{rand(1..16)}.jpg'); ".html_safe if params[:controller] != 'inicio' %> <%= 'padding: 26px 0 0 0;'  unless (params[:controller] == 'inicio' || @no_render_busqueda_basica.present?) %>">
 
   <div class="dropdown pull-right">
-    <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button id="menuEsqSupDer" type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
       <span class="caret"></span>
       <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
@@ -10,8 +10,6 @@
       <li><%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b>
       <i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil,
                       :name => I18n.locale.to_s, :onClick => 'return cambiaLocale(this.name);', data: { turbolinks: false } %></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to "<b class='text-success'>Ir a la búsqueda de especies por estado / municipio</b>".html_safe, '/explora-por-region', :role => 'button', data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
       <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
