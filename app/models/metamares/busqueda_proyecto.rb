@@ -1,4 +1,4 @@
-class BusquedaProyecto
+class Metamares::BusquedaProyecto
   attr_accessor :params, :proyectos, :proyecto, :totales, :pagina, :por_pagina, :offset
 
   POR_PAGINA = [50, 100, 200]

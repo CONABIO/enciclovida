@@ -5,6 +5,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   #layout false
 
   def index
+    @form = Metamares::BusquedaProyecto.new
     @proyectos = Metamares::Proyecto.all
   end
 
