@@ -90,7 +90,7 @@
 
 <fieldset>
   <% @proyecto.especies.each do |e| %>
-    <%= e.especie_id.present? ? tituloNombreCientifico(Especie.find(e.especie_id)) : e.nombre_cientifico %>
+    <%= e.especie ? tituloNombreCientifico(e.especie, link: true).html_safe : e.nombre_cientifico %>
   <% end %>
 </fieldset>
 
