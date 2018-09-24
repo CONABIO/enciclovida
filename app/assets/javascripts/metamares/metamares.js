@@ -13,10 +13,13 @@
 //= require jquery
 //= require jquery_ujs
 //= require lib/jquery-ui
+//= require lib/jquery.soulmate
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require i18n/i18n.min
 //= require i18n/translations
 //= require shared/general
+//= require shared/soulmate
 //= require metamares/metamares_extra
 //= require cocoon
+

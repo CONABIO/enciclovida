@@ -8,6 +8,11 @@
   <title><%= yield :title %></title>
   <%# favicon_link_tag '/favicon.ico' %>
 
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = ['peces'];
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
 
   <%= javascript_include_tag 'metamares/metamares', 'data-turbolinks-track' => true %>
 
