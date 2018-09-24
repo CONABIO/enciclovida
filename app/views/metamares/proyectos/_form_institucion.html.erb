@@ -1,0 +1,12 @@
+<%= f.semantic_fields_for :institucion do |f| %>
+
+  <%= f.inputs :institucion_titulo do %>
+    <%= f.input :nombre_institucion %>
+    <%= f.input :sitio_web %>
+    <%= f.input :contacto %>
+    <%= f.input :correo_contacto %>
+  <% end %>
+
+<% end %>
+
+<%= render partial: 'form_ubicacion', locals: { f: f } %>

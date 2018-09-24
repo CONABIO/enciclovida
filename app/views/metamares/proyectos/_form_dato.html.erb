@@ -1,0 +1,18 @@
+<%= f.semantic_fields_for :dato do |f| %>
+
+  <%= f.inputs :dato_titulo do %>
+    <%= f.input :descarga_datos %>
+    <%= f.input :licencia_uso %>
+    <%= f.input :descripcion_base %>
+    <%= f.input :metadatos %>
+    <%= f.input :publicaciones %>
+    <%= f.input :publicacion_url %>
+    <%= f.input :descarga_informe %>
+    <%= f.input :forma_citar %>
+    <%= f.input :notas_adicionales %>
+    <%= f.input :restricciones %>
+    <%= f.input :numero_ejemplares %>
+    <%= f.input :tipo_unidad %>
+  <% end %>
+
+<% end %>

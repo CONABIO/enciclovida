@@ -1,0 +1,99 @@
+<fieldset>
+  <%= @proyecto.nombre_proyecto %>
+  <%= @proyecto.financiamiento %>
+  <%= @proyecto.tipo_monitoreo %>
+  <%= @proyecto.objeto_monitoreo %>
+  <%= @proyecto.campo_investigacion %>
+  <%= @proyecto.campo_ciencia %>
+  <%= @proyecto.finalidad %>
+  <%= @proyecto.metodo %>
+</fieldset>
+
+
+<% if info_adicional = @proyecto.info_adicional %>
+  <fieldset>
+    <%= info_adicional.informacion_objeto %>
+    <%= info_adicional.informacion_posterior %>
+    <%= info_adicional.informacion_adicional %>
+    <%= info_adicional.colaboradores %>
+    <%= info_adicional.instituciones_involucradas %>
+    <%= info_adicional.equipo %>
+    <%= info_adicional.comentarios %>
+  </fieldset>
+<% end %>
+
+<% if periodo = @proyecto.periodo %>
+  <fieldset>
+    <%= periodo.periodicidad %>
+    <%= periodo.periodo_monitoreo_desde %>
+    <%= periodo.periodo_monitoreo_hasta %>
+    <%= periodo.periodo_sistematico_desde %>
+    <%= periodo.periodo_sistematico_hasta %>
+    <%= periodo.periodo_monitoreo_desde %>
+    <%= periodo.periodo_monitoreo_hasta %>
+    <%= periodo.comentarios %>
+  </fieldset>
+<% end %>
+
+<% if region = @proyecto.region %>
+  <fieldset>
+    <%= region.nombre_region %>
+    <%= region.latitud %>
+    <%= region.longitud %>
+    <%= region.poligono %>
+    <%= region.zona %>
+    <%= region.entidad %>
+    <%= region.cuenca %>
+    <%= region.anp %>
+    <%= region.comentarios %>
+  </fieldset>
+<% end %>
+
+<% if dato = @proyecto.dato %>
+  <fieldset>
+    <%= dato.descarga_datos %>
+    <%= dato.licencia_uso %>
+    <%= dato.descripcion_base %>
+    <%= dato.metadatos %>
+    <%= dato.publicaciones %>
+    <%= dato.publicacion_url %>
+    <%= dato.descarga_informe %>
+    <%= dato.forma_citar %>
+    <%= dato.notas_adicionales %>
+    <%= dato.restricciones %>
+    <%= dato.numero_ejemplares %>
+    <%= dato.tipo_unidad %>
+  </fieldset>
+<% end %>
+
+<% if institucion = @proyecto.institucion %>
+  <fieldset>
+    <%= institucion.nombre_institucion %>
+    <%= institucion.sitio_web %>
+    <%= institucion.contacto %>
+    <%= institucion.correo_contacto %>
+
+    <% if ubicacion = institucion.ubicacion %>
+      <fieldset>
+        <%= ubicacion.calle_numero %>
+        <%= ubicacion.colonia %>
+        <%= ubicacion.municipio %>
+        <%= ubicacion.ciudad %>
+        <%= ubicacion.entidad_federativa %>
+        <%= ubicacion.cp %>
+        <%= ubicacion.pais %>
+      </fieldset>
+    <% end %>
+
+  </fieldset>
+<% end %>
+
+<fieldset>
+  <% @proyecto.especies.each do |e| %>
+    <%= e.especie ? tituloNombreCientifico(e.especie, link: true).html_safe : e.nombre_cientifico %>
+  <% end %>
+</fieldset>
+
+<fieldset>
+  <%= @proyecto.keywords.map(&:nombre_keyword).join(', ') %>
+</fieldset>

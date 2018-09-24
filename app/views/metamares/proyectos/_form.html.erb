@@ -1,0 +1,31 @@
+<%= semantic_form_for @proyecto do |f| %>
+
+  <%= render partial: 'form_proyecto', locals: { f: f } %>
+
+  <%= render partial: 'form_info_adicional', locals: { f: f } %>
+  <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional' %>
+
+  <%= render partial: 'form_periodo', locals: { f: f } %>
+  <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo' %>
+
+  <%= render partial: 'form_region', locals: { f: f } %>
+  <%= link_to_add_association 'Region', f, :region, partial: 'form_region' %>
+
+  <%= render partial: 'form_dato', locals: { f: f } %>
+  <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato' %>
+
+  <%= render partial: 'form_institucion', locals: { f: f } %>
+  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion' %>
+
+  <%= render partial: 'form_especies_estudiadas', locals: { f: f } %>
+  <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas' %>
+
+  <%= render partial: 'form_keywords', locals: { f: f } %>
+  <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords' %>
+
+  <%= f.actions do %>
+    <%= f.action :submit, :as => :button %>
+    <%= f.action :cancel, :as => :link %>
+  <% end %>
+
+<% end %>

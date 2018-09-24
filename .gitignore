@@ -40,6 +40,7 @@ pruebas_generales/
 db/buscador.dump.out
 db/seeds.rb
 db/respaldos/*
+db/metamares/metamares.mwb.bak
 app/assets/javascripts/i18n/translations.js
 tools/bitacoras/
 config/config.yml*
