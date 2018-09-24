@@ -21,5 +21,5 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
 
-  TIPO_MONITOREO = [['especie',1], ['grupo-especie',2], ['socio-economico',3], ['ecosistemas',4], ['fisico-quimico',5]]
+  TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
 end
