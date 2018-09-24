@@ -58,6 +58,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
                 break;
             case 'peces':
+                $('#id').attr('value', data.id);
                 bloqueaBusqueda();
                 break;
             case 'soloAsigna':

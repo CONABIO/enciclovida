@@ -3,8 +3,7 @@ class Metamares::AdminController < Metamares::MetamaresController
   before_action :set_usuario, only: [:edit, :update]
 
   def index
-    @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).
-        where('nombre_rol=?', 'AdminMetamares').uniq
+    @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).where("nombre_rol IN ('AdminMetamares', 'UsuariosMetamares')").order(:id).uniq
   end
 
   # GET /estatuses/1

@@ -60,8 +60,11 @@
 .menor-ev-icon:before { content: '\e83a'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83c'; } /* '' */
+.cobi-ev-icon:before { content: '\e83d'; } /* '' */
 .doc-text-ev-icon:before { content: '\e83e'; } /* '' */
+.peces-mariscos-comerciales-ev-icon:before { content: '\e83f'; } /* '' */
 .file-pdf-ev-icon:before { content: '\e840'; } /* '' */
+.globe-ev-icon:before { content: '\e841'; } /* '' */
 .vista-especialista-ev-icon:before { content: '\e842'; } /* '' */
 .archive-ev-icon:before { content: '\e843'; } /* '' */
 .marino-ev-icon:before { content: '\e844'; } /* '' */
@@ -71,6 +74,7 @@
 .pdf-ev-icon:before { content: '\e848'; } /* '' */
 .enciclovida_correo-ev-icon:before { content: '\e849'; } /* '' */
 .kml-ev-icon:before { content: '\e84a'; } /* '' */
+.busqueda-avanzada-ev-icon:before { content: '\e84b'; } /* '' */
 .flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
 .kmz-ev-icon:before { content: '\e84d'; } /* '' */
 .conabio-ev-icon:before { content: '\e84e'; } /* '' */
