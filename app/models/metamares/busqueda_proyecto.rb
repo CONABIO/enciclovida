@@ -6,8 +6,13 @@ class Metamares::BusquedaProyecto
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize
-    self.proyectos = Metamares::Proyecto.left_joins(:institucion, :especies, :especie, :adicional, :keywords, :region).distinct
+    self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :keywords, :region).distinct
     self.totales = 0
+  end
+
+  # REVISADO: Hace el query con los parametros elegidos
+  def consulta
+    self.proyectos = proyectos.where('nombre_proyecto REGEXP ?', params[:nombre_proyecto]) if params[:nombre_proyecto].present?
   end
 
   # REVISADO: Algunos valores como el offset, pagina y por pagina

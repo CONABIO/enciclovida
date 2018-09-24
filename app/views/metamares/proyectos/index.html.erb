@@ -1,7 +1,13 @@
-<%= form_for :proy do |f| %>
+<%= form_for :proy_b, method: :get do |f| %>
+  <%= f.text_field :nombre_proyecto %>
   <%= f.text_field :institucion %>
   <%= f.select :tipo_monitoreo, Metamares::Proyecto::TIPO_MONITOREO.map{ |a| [t("metamares.proyectos.busqueda.#{a.first}", default: a.first), a.last] } %>
   <%= f.text_field :nombre_comun %>
   <%= f.hidden_field :nombre_cientifico %>
   <%= f.select :tipo_monitoreo, Usuario.all.collect {|u| [u.id, u.id]} %>
+
+  <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...' } %>
+  <%= f.submit :Reiniciar, type: :reset %>
 <% end %>
+
+<%= @proyectos.inspect %>

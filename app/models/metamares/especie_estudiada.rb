@@ -4,5 +4,6 @@ class Metamares::EspecieEstudiada < ActiveRecord::Base
 
   belongs_to :proyecto, class_name: 'Metamares::Proyecto'
   belongs_to :especie, class_name: 'Especie'
+  has_one :adicional, through: :especie, source: :adicional
 
 end

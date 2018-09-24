@@ -5,8 +5,12 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   #layout false
 
   def index
-    @form = Metamares::BusquedaProyecto.new
-    @proyectos = Metamares::Proyecto.all
+    busqueda = Metamares::BusquedaProyecto.new
+    busqueda.params = proyecto_busqueda_params
+    busqueda.consulta
+
+    @proyectos = busqueda.proyectos
+    @totales = busqueda.totales
   end
 
   def show
@@ -87,5 +91,9 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                especies_attributes: [:id, :especie_id, :nombre_cientifico, :proyecto_id, :destroy],
                                                keywords_attributes: [:id, :nombre_keyword, :proyecto_id, :destroy]
                                                )
+  end
+
+  def proyecto_busqueda_params
+    params.require(:proy_b).permit(:nombre_proyecto, :institucion, :tipo_monitoreo, :nombre_comun, :nombre_cientifico, :tipo_monitoreo)
   end
 end
