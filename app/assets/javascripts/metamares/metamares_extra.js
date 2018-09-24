@@ -1,3 +1,3 @@
 $(document).ready(function() {
-    soulmateAsigna('peces', 'proy_b_nombre');
+    soulmateAsigna('metamares', 'proy_b_nombre');
 });

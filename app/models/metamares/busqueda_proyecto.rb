@@ -15,6 +15,12 @@ class Metamares::BusquedaProyecto
     self.proyectos = proyectos.where('nombre_proyecto REGEXP ?', params[:proyecto]) if params[:proyecto].present?
     self.proyectos = proyectos.where('nombre_institucion REGEXP ?', params[:institucion]) if params[:institucion].present?
     self.proyectos = proyectos.where(tipo_monitoreo: params[:tipo_monitoreo]) if params[:tipo_monitoreo].present?
+
+    if params[:especie_id].present?
+      self.proyectos = proyectos.where('especies_estudiadas.especie_id=?', params[:especie_id])
+    elsif params[:nombre].present?
+      self.proyectos = proyectos.where('especies_estudiadas.nombre_cientifico REGEXP ?', params[:nombre])
+    end
   end
 
   # REVISADO: Algunos valores como el offset, pagina y por pagina
