@@ -5,12 +5,17 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   #layout false
 
   def index
-    busqueda = Metamares::BusquedaProyecto.new
-    busqueda.params = proyecto_busqueda_params
-    busqueda.consulta
+    if params[:commit].present? && params[:commit] == 'Buscar'
+      busqueda = Metamares::BusquedaProyecto.new
+      busqueda.params = proyecto_busqueda_params
+      busqueda.consulta
 
-    @proyectos = busqueda.proyectos
-    @totales = busqueda.totales
+      @proyectos = busqueda.proyectos
+      @totales = busqueda.totales
+    else
+      @proyectos = Metamares::Proyecto.none
+      @totales = 0
+    end
   end
 
   def show
