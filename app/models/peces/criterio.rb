@@ -16,6 +16,7 @@ class Criterio < ActiveRecord::Base
   scope :nom, -> { select_join_propiedades.where("ancestry=?", Propiedad::NOM_ID) }
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
+  scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (163,164,166,167,169)") }
 
   validates_presence_of :propiedad_id
 
@@ -71,7 +72,7 @@ class Criterio < ActiveRecord::Base
           pesquerias: Pez.filtros_peces.where(con_estrella: 1).distinct,
           cnp: self.cnp_select,
           nom: self.nom,
-          iucn: self.iucn
+          iucn: self.iucn_solo_riesgo
       }
     end
 

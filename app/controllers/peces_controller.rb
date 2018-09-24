@@ -13,7 +13,9 @@ class PecesController < ApplicationController
   # GET /peces/1
   def show
     @pez = Pez.find(params[:id])
-    @criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
+    criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
+    @criterios = acomoda_criterios(criterios)
+    puts @criterios.inspect
     render :layout => false and return if params[:layout].present?
   end
 
@@ -54,15 +56,13 @@ class PecesController < ApplicationController
 
   def busqueda
     @filtros =  Criterio.dame_filtros
+    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS)
 
     if params[:commit].present?
       @peces = Pez.filtros_peces
 
       # Busqueda por nombre científico o comunes
-      @peces = @peces.where(especie_id: params[:especie_id]) if params[:especie_id].present?
-
-      # Busqueda con estrella
-      @peces = @peces.where(con_estrella: params[:con_estrella]) if params[:con_estrella].present?
+      @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
 
       # Busqueda con pesquerias
       @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
@@ -76,18 +76,29 @@ class PecesController < ApplicationController
       @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
 
+      # Filtro de grupo iconico
+      if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
+        ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
+        @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
+      end
+
+      # Busqueda con estrella
+      if params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')
+        @peces = @peces.where(con_estrella: 1)
+        params[:semaforo_recomendacion].delete('star')
+      end
+
       # Filtros del SEMAFORO de RECOMENDACIÓN
       if params[:semaforo_recomendacion].present? && params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
-      elsif params[:semaforo_recomendacion].present?
+      elsif  params[:semaforo_recomendacion].present?
         # Selecciono el valor de sin datos
         if params[:semaforo_recomendacion].include?('sn')
           rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
         else # Cualquier otra combinacion
           rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
         end
-
         @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
         regexp = dame_regexp_zonas(zonas: params[:zonas])
@@ -130,5 +141,68 @@ class PecesController < ApplicationController
       valor_por_zona[z.to_i] = color_seleccionado
     end
     valor_por_zona.join('')
+  end
+
+  def acomoda_criterios(criterios_obj)
+    criterios = {}
+    criterios['Grupo'] = []
+    criterios['Características'] = []
+    criterios['Estado poblacional en el Pacífico'] = []
+    criterios['Estado poblacional en el Golfo de México y caribe'] = []
+    criterios['suma_caracteristicas'] = 0
+
+    criterios_obj.each do |c|
+      dato = {}
+      dato[:nombre] = c.nombre_propiedad
+      dato[:valor] = c.valor
+      dato[:tipo_propiedad] = c.tipo_propiedad
+
+      case c.ancestry
+      when Propiedad::NOM_ID.to_s
+        nombre_prop = c.nombre_propiedad.estandariza
+        criterios['suma_caracteristicas']+= c.valor
+        dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
+        criterios['Características'][0] = dato
+      when Propiedad::IUCN_ID.to_s
+        nombre_prop = c.nombre_propiedad.estandariza
+        criterios['suma_caracteristicas']+= c.valor
+        dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
+        criterios['Características'][1] = dato
+      when Propiedad::TIPO_CAPTURA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+        criterios['Características'][2] = dato
+      when Propiedad::TIPO_DE_VEDA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+
+        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+          dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
+        end
+
+        criterios['Características'][3] = dato
+      when Propiedad::PROCEDENCIA_ID.to_s
+        criterios['suma_caracteristicas']+= c.valor
+
+        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+          dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
+        end
+
+        criterios['Características'][4] = dato
+
+      when Propiedad::ZONAI
+        criterios['Estado poblacional en el Pacífico'][0] = dato
+      when Propiedad::ZONAII
+        criterios['Estado poblacional en el Pacífico'][1] = dato
+      when Propiedad::ZONAIII
+        criterios['Estado poblacional en el Pacífico'][2] = dato
+      when Propiedad::ZONAIV
+        criterios['Estado poblacional en el Golfo de México y caribe'][0] = dato
+      when Propiedad::ZONAV
+        criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
+      when Propiedad::ZONAVI
+        criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
+      end  # End case
+    end  # End each criterios
+
+    criterios
   end
 end

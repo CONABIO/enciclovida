@@ -1,3 +1,43 @@
+.btn-circle {
+  visibility:visible !important;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%!important;
+  font-size: 32px;
+  color: #888888;
+  -webkit-transition: background .3s ease-in-out;
+  -moz-transition: background .3s ease-in-out;
+  transition: background .3s ease-in-out;
+}
+.btn-circle:hover,.btn-circle:focus{
+  outline: 0;
+  color: #f7f7f7;
+  background-color: rgba(51, 51, 51, 0.3);
+}
+.btn-circle span.animated {
+  -webkit-transition-property: -webkit-transform;
+  -webkit-transition-duration: 1s;
+  -moz-transition-property: -moz-transform;
+  -moz-transition-duration: 1s;
+}
+.btn-circle:hover span.animated {
+  -webkit-animation-name: pulse;
+  -moz-animation-name: pulse;
+  -webkit-animation-duration: 1.5s;
+  -moz-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+}
+.cobi-ev-icon:before{
+  margin: 0 0 0 0;
+  font-size: 2.25em;
+  color: #fdfdfd;
+  /*color: #385888 /* Azul Cobi */
+}
 .form-peces{
   margin-bottom: 15px;
 }
@@ -10,7 +50,6 @@
   background-color: #ddd;
 }
 input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
-  /*background-color: #e0e0e0;*/
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -20,22 +59,31 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   visibility: hidden;
 }
 fieldset{
-  border-top: 1px solid #ffffff;
   padding-top: 10px;
 }
-.recomendada input + span{
+.recomendada input:not([id^=grupos_iconicos_]) + span{
   color: #ececec;
-  border-radius: 50%;
+}
+.recomendada input[id^=grupos_iconicos_] + span{
+  background-image: linear-gradient(to bottom, #ffffff 0%, #a3c0ca 90%);
+}
+.recomendada input + span{
+  border-radius: 35%;
   border: none;
-  font-size: 2em;
+  font-size: 2.25em;
   box-shadow: -1px 4px 7px #9c9696;
+}
+span.btn-zona-sn, span.btn-zona-star{
+  font-size: 2em!important;
+  padding: 2px 10px!important;
 }
 .recomendada input:checked + span, .recomendada input + span:hover{
   color: #805050;
 }
-.zonificada span.zonas{
+.zonificada label{
   display: none;
 }
+
 .botones-peces{
   width: 20%;
   transition-delay: 0ms;
@@ -50,7 +98,7 @@ fieldset{
   content: " " attr(title) " ";
 }
 .resultados-peces{
-    text-align: center;
+  text-align: center;
 }
 .resultados-peces .result-img-container{
   margin: 4px;
@@ -121,19 +169,19 @@ fieldset{
   -webkit-transform:rotate(360deg);
 }
 .resultados-peces .result-img-container .result-nombre-container{
-    min-height: 44px;
-    padding: 0;
-    margin: 0;
-    background-color: #ececec;
-    position: relative;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  background-color: #ececec;
+  position: relative;
 
 }
 .resultados-peces .result-img-container h5{
-    margin: 0;
-    padding: 2px 5px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1em;
+  margin: 0;
+  padding: 2px 5px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1em;
 }
 .modal-header h5{
   text-align: center;
@@ -141,24 +189,24 @@ fieldset{
   font-size: 1.25em;
 }
 .result-datos-container{
-    width: 400px;
-    font-size: .85em;
+  width: 400px;
+  font-size: .85em;
 }
 .result-datos-container{
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .2s ease;
-    border: none;
-    top: 0%;
-    right: 0%;
-    overflow-y: hidden;
-    position: absolute;
-    z-index: 10;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .2s ease;
+  border: none;
+  top: 0%;
+  right: 0%;
+  overflow-y: hidden;
+  position: absolute;
+  z-index: 10;
 }
 .resultados-peces .result-img-container .btn-ficha:focus ~ .result-nombre-container .result-datos-container{
-    visibility: visible;
-    opacity: 1;
-    overflow-y: visible;
+  visibility: visible;
+  opacity: 1;
+  overflow-y: visible;
 }
 
 .btn-zona{
@@ -166,7 +214,7 @@ fieldset{
   padding: 2px 0px;
   font-weight: bold;
   text-align: center;
-/*  vertical-align: middle;*/
+  /*  vertical-align: middle;*/
   border-radius: 2px;
   color: #3a3a3a;
   margin: 0px 1px 0px 0px;
@@ -174,7 +222,7 @@ fieldset{
   font-size: .8em;
 }
 
-.btn-star{
+.btn-zona-star{
   fill: rgb(96, 145, 195);
   background: -moz-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, #d7ebff), color-stop(50%, #6091c3));
@@ -233,8 +281,7 @@ fieldset{
   fill: #dadada;
 }
 .btn-zona-n{
-  fill: none;
-  stroke-width: 0px;
+  fill: #d1d1d1;
   color: transparent!important;
 }
 .btn-zona-sn i:before{
@@ -256,20 +303,38 @@ path{
   stroke-opacity:1;
   stroke-width: .5px;
 }
-/*#path_zonas_pacifico-i{fill: #56a7d0;}
-#path_zonas_pacifico-ii{fill: #5488cb;}
-#path_zonas_pacifico-iii{fill: #446ea5;}
-#path_zonas_golfo-de-mexico-y-caribe-iv{fill: #83c0e4;}
-#path_zonas_golfo-de-mexico-y-caribe-v{fill: #83d1e4;}
-#path_zonas_golfo-de-mexico-y-caribe-vi{fill: #83e4df;}*/
-path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
-path[id^=path_zonas_]:hover{fill: #17325f!important; stroke: #999999!important; stroke-width: 2px;}
-.zona-seleccionada{fill: #17325f!important;}
-#sea-states,#modal_sea-states{fill: #b9da9d;}
-#earth-states, #modal_earth-states{fill: #f2ffbd;}
-#extranjero, #modal_extranjero{fill: #c1c1c1;}
 
+path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
+path[id^=path_zonas_]:hover{fill: #17325f!important;}
+.zona-seleccionada{fill: #17325f!important;}
+#sea-states, .modal-sea-states{fill: #b9da9d;}
+#earth-states, .modal-earth-states{fill: #f2ffbd;}
+#extranjero, .modal-extranjero{fill: #c1c1c1;}
+
+svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
+text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;font-size: .5em}
+text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #fafafa;}
+
+text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .7em;}
+
+#path_zonas_pacifico-i:hover ~ #titulo_zonas_pacifico-i, #path_zonas_pacifico-ii:hover ~ #titulo_zonas_pacifico-ii, #path_zonas_pacifico-iii:hover ~ #titulo_zonas_pacifico-iii, #path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-iv, #path_zonas_golfo-de-mexico-y-caribe-v:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-v, #path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-vi, .modal-path_zonas_pacifico-i:hover ~ .modal-titulo_zonas_pacifico-i, .modal-path_zonas_pacifico-ii:hover ~ .modal-titulo_zonas_pacifico-ii, .modal-path_zonas_pacifico-iii:hover ~ .modal-titulo_zonas_pacifico-iii, .modal-path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-iv, .modal-path_zonas_golfo-de-mexico-y-caribe-v:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-v, .modal-path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-vi{display:block;}
 
 .checkbox i{
   font-size: 1.7em;
+}
+.caracteristicas_pez, .edo_pob_pez, .edo_pob_pac_pez, .edo_pob_gol_pez{
+  /*padding: 20px;*/
+  -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.caracteristicas_pez{
+  background-color: rgba(95, 128, 87, 0.35);
+}
+.edo_pob_pez{}
+.edo_pob_pac_pez{
+  background-color: rgba(55, 123, 155, 0.31);
+}
+.edo_pob_gol_pez{
+  background-color: rgba(141, 186, 237, 0.31);
 }

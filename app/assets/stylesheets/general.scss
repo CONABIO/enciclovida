@@ -27,7 +27,7 @@
   background-size: cover !important;
   background-position: bottom !important;
   background-color: rgba(51, 51, 51, 0.75);
-  padding: 30px 0px;
+  padding: 30px;
 }
 #brandBar .dropdown {
   margin-top: -32px;
@@ -44,6 +44,31 @@
 #busqueda_basica{
   margin-top: 14px;
 }
+
+#brandBar .btn-busquedas{
+  padding: 4px 10px;
+  margin-top: -1px;
+  border-radius: 2px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+#brandBar .btn-busquedas:hover{
+  box-shadow: 3px 3px 5px #424242;
+  background: #ffffff60;
+}
+#brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after{
+  font-size: 1.75em!important;
+  color: #fafafa !important;
+  text-shadow: 1px 1px 1px #333333;
+}
+#brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after{
+  text-shadow: 1px 1px 1px #a0a0a0;
+  color: #423434 !important;
+}
+.titulo-busquedas{
+  font-family: "texgyreadventorregular", "Helvetica", Arial;
+  margin: 0;
+}
 footer {
   padding: 25px 0;
   text-align: center;
@@ -58,25 +83,11 @@ footer.legal p {
   font-size:12px;
 }
 
-/*para los iconitos de la busqueda básica*/
-#brandBar .btn-title[tooltip-title]:hover:after {
+/*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
+#brandBar .btn-title[tooltip-title]:hover:after, #buscadores .btn-title[tooltip-title]:hover:after{
   left: initial;
   right: 50%;
   top: 95%;
-}
-.irBusquedaAvanzada {
-  margin: -24px 0px 0px 78px;
-}
-.irBusquedaAvanzada:hover {
-  margin-top: -4px;
-  margin-bottom: -9px;
-}
-.irBusquedaAvanzada > a {
-  font-weight: bold;
-  font-size: .8em;
-}
-.irBusquedaAvanzada:hover > a > span:nth-child(2) {
-  display: none !important;
 }
 
 .btn-title:hover {

@@ -14,7 +14,7 @@ class Pez < ActiveRecord::Base
   has_one :adicional, :through => :especie, :source => :adicional
 
   scope :select_joins_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
-      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
+      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo") }
 
   scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
       order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC") }
@@ -31,6 +31,8 @@ class Pez < ActiveRecord::Base
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
+
+  GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Cnidaria Echinodermata Mollusca Mollusca Crustacea)
 
   # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
@@ -255,7 +257,7 @@ class Pez < ActiveRecord::Base
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
-    valor+= pesquerias
+    #valor+= pesquerias
     self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)
