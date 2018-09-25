@@ -1,31 +1,71 @@
-<%= semantic_form_for @proyecto do |f| %>
+<%= simple_form_for @proyecto do |f| %>
 
   <%= render partial: 'form_proyecto', locals: { f: f } %>
 
-  <%= render partial: 'form_info_adicional', locals: { f: f } %>
-  <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm' %>
+  <div id='infoAdicional'>
+    <%= f.simple_fields_for :info_adicional do |info| %>
+      <%= render partial: 'form_info_adicional', locals: { f: info } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_periodo', locals: { f: f } %>
-  <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm'  %>
+  <div id='periodo'>
+    <%= f.simple_fields_for :periodo do |periodo| %>
+      <%= render partial: 'form_periodo', locals: { f: periodo } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_region', locals: { f: f } %>
-  <%= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm'  %>
+  <div id='region'>
+    <%= f.simple_fields_for :region do |region| %>
+      <%= render partial: 'form_region', locals: { f: region } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_dato', locals: { f: f } %>
-  <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm'  %>
+  <div id='dato'>
+    <%= f.simple_fields_for :dato do |dato| %>
+      <%= render partial: 'form_dato', locals: { f: dato } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_institucion', locals: { f: f } %>
-  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm'  %>
+  <div id='institucion'>
+    <%= f.simple_fields_for :institucion do |institucion| %>
+      <%= render partial: 'form_institucion', locals: { f: institucion } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_especies_estudiadas', locals: { f: f } %>
-  <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm'  %>
+  <div id='ubicacion'>
+    <%= f.simple_fields_for :ubicacion do |ubicacion| %>
+      <%= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
+    <% end %>
+  </div>
 
-  <%= render partial: 'form_keywords', locals: { f: f } %>
-  <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm'  %>
+  <div id='especiesEstudiadas'>
+    <%= f.simple_fields_for :especies do |especie| %>
+      <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
+    <% end %>
+  </div>
 
-  <%= f.actions do %>
-    <%= f.action :submit, :as => :button, :button_html => { :class => 'btn btn-success btn-lg'} %>
-    <%= f.action :cancel, :as => :link, :button_html => { :class => 'btn btn-default btn-lg'} %>
-  <% end %>
+  <div id='keywords'>
+    <%= f.simple_fields_for :keywords do |kw| %>
+      <%= render partial: 'form_keywords', locals: { f: kw } %>
+    <% end %>
+  </div>
+
+
+  <%#= f.actions do %>
+  <%#= f.action :cancel, :as => :link, :button_html => { :class => 'btn btn-default btn-lg'} %>
+  <%# end %>
+
+  <div class='links'>
+    <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm' %>
+    <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Ubicacion', f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm'  %>
+    <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm'  %>
+  </div>
+
+  <%= f.submit %>
 
 <% end %>

@@ -1,13 +1,11 @@
-<%= f.semantic_fields_for :info_adicional do |f| %>
+<div class='nested-fields'>
+  <%= f.input :informacion_objeto %>
+  <%= f.input :informacion_posterior %>
+  <%= f.input :informacion_adicional %>
+  <%= f.input :colaboradores %>
+  <%= f.input :instituciones_involucradas %>
+  <%= f.input :equipo %>
+  <%= f.input :comentarios %>
 
-  <%= f.inputs :info_adicional_titulo do %>
-    <%= f.input :informacion_objeto, :input_html => { :class => 'form-control'} %>
-    <%= f.input :informacion_posterior, :input_html => { :class => 'form-control'} %>
-    <%= f.input :informacion_adicional, :input_html => { :class => 'form-control'} %>
-    <%= f.input :colaboradores, :input_html => { :class => 'form-control'} %>
-    <%= f.input :instituciones_involucradas, :input_html => { :class => 'form-control'} %>
-    <%= f.input :equipo, :input_html => { :class => 'form-control'} %>
-    <%= f.input :comentarios, :input_html => { :class => 'form-control'} %>
-  <% end %>
-
-<% end %>
+  <%= link_to_remove_association "Quitar info adicional", f, :class => 'btn btn-danger btn-sm' %>
+</div>

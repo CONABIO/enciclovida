@@ -1,12 +1,9 @@
-<%= f.semantic_fields_for :institucion do |f| %>
+<div class='nested-fields'>
+  <%= f.input :nombre_institucion %>
+  <%= f.input :sitio_web %>
+  <%= f.input :contacto %>
+  <%= f.input :correo_contacto %>
 
-  <%= f.inputs :institucion_titulo do %>
-    <%= f.input :nombre_institucion, :input_html => { :class => 'form-control'} %>
-    <%= f.input :sitio_web, :input_html => { :class => 'form-control'} %>
-    <%= f.input :contacto, :input_html => { :class => 'form-control'} %>
-    <%= f.input :correo_contacto, :input_html => { :class => 'form-control'} %>
-  <% end %>
+  <%= link_to_remove_association "Quitar institucion", f, :class => 'btn btn-danger btn-sm' %>
+</div>
 
-<% end %>
-
-<%= render partial: 'form_ubicacion', locals: { f: f } %>

@@ -1,9 +1,7 @@
-<%= f.semantic_fields_for :especies do |f| %>
+<div class='nested-fields'>
+  <%= f.input :proyecto_id, as: :hidden %>
+  <%= f.input :nombre_cientifico %>
+  <%= f.input :especie_id %>
 
-  <%= f.inputs :especies_titulo do %>
-    <%= f.input :proyecto_id, as: :hidden %>
-    <%= f.input :nombre_cientifico, :input_html => { :class => 'form-control'} %>
-    <%= f.input :especie_id, :input_html => { :class => 'form-control'} %>
-  <% end %>
-
-<% end %>
+  <%= link_to_remove_association "Quitar especies estudiadas", f, :class => 'btn btn-danger btn-sm' %>
+</div>
