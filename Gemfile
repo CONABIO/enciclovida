@@ -45,6 +45,7 @@ gem 'rubyzip', :require => 'zip'
 gem 'sass-rails', '~> 5.0'
 gem 'savon'  # Para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
+gem 'simple_form'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
