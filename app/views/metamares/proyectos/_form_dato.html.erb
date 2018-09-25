@@ -1,18 +1,18 @@
 <%= f.semantic_fields_for :dato do |f| %>
 
   <%= f.inputs :dato_titulo do %>
-    <%= f.input :descarga_datos %>
-    <%= f.input :licencia_uso %>
-    <%= f.input :descripcion_base %>
-    <%= f.input :metadatos %>
-    <%= f.input :publicaciones %>
-    <%= f.input :publicacion_url %>
-    <%= f.input :descarga_informe %>
-    <%= f.input :forma_citar %>
-    <%= f.input :notas_adicionales %>
-    <%= f.input :restricciones %>
-    <%= f.input :numero_ejemplares %>
-    <%= f.input :tipo_unidad %>
+    <%= f.input :descarga_datos, :input_html => { :class => 'form-control'} %>
+    <%= f.input :licencia_uso, :input_html => { :class => 'form-control'} %>
+    <%= f.input :descripcion_base, :input_html => { :class => 'form-control'} %>
+    <%= f.input :metadatos, :input_html => { :class => 'form-control'} %>
+    <%= f.input :publicaciones, :input_html => { :class => 'form-control'} %>
+    <%= f.input :publicacion_url, :input_html => { :class => 'form-control'} %>
+    <%= f.input :descarga_informe, :input_html => { :class => 'form-control'} %>
+    <%= f.input :forma_citar, :input_html => { :class => 'form-control'} %>
+    <%= f.input :notas_adicionales, :input_html => { :class => 'form-control'} %>
+    <%= f.input :restricciones, :input_html => { :class => 'form-control'} %>
+    <%= f.input :numero_ejemplares, :input_html => { :class => 'form-control'} %>
+    <%= f.input :tipo_unidad, :input_html => { :class => 'form-control'} %>
   <% end %>
 
 <% end %>

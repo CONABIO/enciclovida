@@ -1,14 +1,14 @@
 <%= f.semantic_fields_for :periodo do |f| %>
 
   <%= f.inputs :periodo_titulo do %>
-    <%= f.input :periodicidad %>
-    <%= f.input :periodo_monitoreo_desde %>
-    <%= f.input :periodo_monitoreo_hasta %>
-    <%= f.input :periodo_sistematico_desde %>
-    <%= f.input :periodo_sistematico_hasta %>
-    <%= f.input :monitoreo_desde %>
-    <%= f.input :monitoreo_hasta %>
-    <%= f.input :comentarios, as: :text %>
+    <%= f.input :periodicidad, :input_html => { :class => 'form-control'} %>
+    <%= f.input :periodo_monitoreo_desde, :input_html => { :class => 'form-control'} %>
+    <%= f.input :periodo_monitoreo_hasta, :input_html => { :class => 'form-control'} %>
+    <%= f.input :periodo_sistematico_desde, :input_html => { :class => 'form-control'} %>
+    <%= f.input :periodo_sistematico_hasta, :input_html => { :class => 'form-control'} %>
+    <%= f.input :monitoreo_desde, :input_html => { :class => 'form-control'} %>
+    <%= f.input :monitoreo_hasta, :input_html => { :class => 'form-control'} %>
+    <%= f.input :comentarios, as: :text, :input_html => { :class => 'form-control'} %>
   <% end %>
 
 <% end %>

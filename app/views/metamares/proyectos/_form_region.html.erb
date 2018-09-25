@@ -1,15 +1,15 @@
 <%= f.semantic_fields_for :region do |f| %>
 
   <%= f.inputs :region_titulo do %>
-    <%= f.input :nombre_region %>
-    <%= f.input :latitud, as: :number %>
-    <%= f.input :longitud, as: :number %>
+    <%= f.input :nombre_region, :input_html => { :class => 'form-control'} %>
+    <%= f.input :latitud, as: :number, :input_html => { :class => 'form-control'} %>
+    <%= f.input :longitud, as: :number, :input_html => { :class => 'form-control'} %>
     <%#= f.input :poligono %>
-    <%= f.input :zona %>
-    <%= f.input :entidad %>
-    <%= f.input :cuenca %>
-    <%= f.input :anp %>
-    <%= f.input :comentarios %>
+    <%= f.input :zona, :input_html => { :class => 'form-control'} %>
+    <%= f.input :entidad, :input_html => { :class => 'form-control'} %>
+    <%= f.input :cuenca, :input_html => { :class => 'form-control'} %>
+    <%= f.input :anp, :input_html => { :class => 'form-control'} %>
+    <%= f.input :comentarios, :input_html => { :class => 'form-control'} %>
   <% end %>
 
 <% end %>

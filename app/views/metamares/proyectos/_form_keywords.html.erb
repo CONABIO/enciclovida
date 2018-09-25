@@ -2,7 +2,7 @@
 
   <%= f.inputs :keywords_titulo do %>
     <%= f.input :proyecto_id, as: :hidden %>
-    <%= f.input :nombre_keyword %>
+    <%= f.input :nombre_keyword, :input_html => { :class => 'form-control'} %>
   <% end %>
 
 <% end %>
