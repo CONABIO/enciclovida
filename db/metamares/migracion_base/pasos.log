@@ -1,0 +1,12 @@
+start_year, end_year, date_time_point, publication_year, latitude, longitude 
+Quitar los saltos de linea en todo el csv
+Quitar todas las comillas dobles
+Guardar el archivo con otro nombre y separarlo por "|"
+Asegurarse que no existan comillas dobles
+Correr comando para crear los inserts:
+awk -F"|" '{print "("$1","$2","$3",`"$4"`,`"$5"`,`"$6"`,`"$7"`,"$8",`"$9"`,`"$10"`,`"$11"`,`"$12"`,"$13","$14","$15",`"$16"`,`"$17"`,`"$18"`,`"$19"`,`"$20"`,"$21",`"$22"`,`"$23"`,`"$24"`,`"$25"`,`"$26"`,`"$27"`,"$28","$29",`"$30"`,`"$31"`),"}' metamares_formateado.csv > metamares_tabla.sql
+Poner la cabecera de los datos y poner un ; al final
+INSERT INTO metadata (mmid,c_id,d_id,short_title,keywords,author,institution,dataset_available,subject_name,area,region,location,start_year,end_year,data_time_points,unit_type,temporal_resolution,spatial_resolution,dataset_title,compilation_title,publication_year,reference,user_contact,institution_type,research_fund,research_field,notes,lat,lon,se_interaction,science) VALUES
+
+:1,$ s/'/''/g
+:1,$ s/`/'/g
