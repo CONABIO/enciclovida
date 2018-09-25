@@ -21,9 +21,9 @@
 
     <div class="form-group">
       <div class="input-group">
-        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
+        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
         <div class="input-group-btn">
-          <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
+          <%= button_tag "<i class='glyphicon glyphicon-search' aria-hidden='true'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-busquedas btn-title", :title=>'Buscar' %>
         </div>
       </div>
       <% if params[:controller] != 'inicio' %>

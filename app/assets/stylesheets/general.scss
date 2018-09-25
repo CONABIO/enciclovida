@@ -37,32 +37,29 @@
   border-bottom-left-radius: 2px;
   font-weight: bold;
 }
-#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
-  margin-top: -1px;
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
-#busqueda_basica{
-  margin-top: 14px;
-}
 
+#brandBar .form-group{margin: 4px 0;}
+#brandBar .btn-group{min-width: 100%;}
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  padding: 5px 5%;
+  margin-top: -2px;
+}
 #brandBar .btn-busquedas{
-  padding: 4px 10px;
-  border-radius: 0px;
   outline: 0;
   background: rgba(255, 255, 255, 0.15);
 }
 #brandBar .btn-busquedas:hover{
-  /*padding: 5px 11px;*/
   box-shadow: 3px 3px 5px #424242;
   background: #ffffff60;
 }
 #brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after{
-  font-size: 1.75em!important;
+  font-size: 2em!important;
   color: #fafafa !important;
-  text-shadow: 2px 2px 2px #564c4c;
+  text-shadow: 1px 1px 1px #333333;
 }
 #brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after{
-  /*font-size: 1.5em!important;*/
+  text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
 .titulo-busquedas{

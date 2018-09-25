@@ -11,8 +11,6 @@
       <i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil,
                       :name => I18n.locale.to_s, :onClick => 'return cambiaLocale(this.name);', data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
-      <li><%= link_to "<b class='text-success'>Ir a la búsqueda de especies por estado / municipio</b>".html_safe, '/explora-por-region', :role => 'button', data: { turbolinks: false } %></li>
-      <li role="separator" class="divider"></li>
       <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
       <li><%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
