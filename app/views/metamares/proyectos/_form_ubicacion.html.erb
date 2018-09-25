@@ -1,13 +1,11 @@
-<%= f.semantic_fields_for :ubicacion do |f| %>
+<div class='nested-fields'>
+  <%= f.input :calle_numero %>
+  <%= f.input :colonia %>
+  <%= f.input :municipio %>
+  <%= f.input :ciudad %>
+  <%= f.input :entidad_federativa %>
+  <%= f.input :cp %>
+  <%= f.input :pais %>
 
-  <%= f.inputs :ubicacion_titulo do %>
-    <%= f.input :calle_numero, :input_html => { :class => 'form-control'} %>
-    <%= f.input :colonia, :input_html => { :class => 'form-control'} %>
-    <%= f.input :municipio, :input_html => { :class => 'form-control'} %>
-    <%= f.input :ciudad, :input_html => { :class => 'form-control'} %>
-    <%= f.input :entidad_federativa, :input_html => { :class => 'form-control'} %>
-    <%= f.input :cp, :input_html => { :class => 'form-control'} %>
-    <%= f.input :pais, :input_html => { :class => 'form-control'} %>
-  <% end %>
-
-<% end %>
+  <%#= link_to_remove_association "Quitar institucion", f, :class => 'btn btn-danger btn-sm' %>
+</div>
