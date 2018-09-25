@@ -37,18 +37,15 @@
   border-bottom-left-radius: 2px;
   font-weight: bold;
 }
-#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
-  margin-top: -1px;
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
-#busqueda_basica{
-  margin-top: 14px;
-}
 
+#brandBar .form-group{margin: 4px 0;}
+#brandBar .btn-group{min-width: 100%;}
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  padding: 5px 5%;
+  margin-top: -2px;
+}
 #brandBar .btn-busquedas{
-  padding: 4px 10px;
-  margin-top: -1px;
-  border-radius: 2px;
   outline: 0;
   background: rgba(255, 255, 255, 0.15);
 }
@@ -57,7 +54,7 @@
   background: #ffffff60;
 }
 #brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after{
-  font-size: 1.75em!important;
+  font-size: 2em!important;
   color: #fafafa !important;
   text-shadow: 1px 1px 1px #333333;
 }
