@@ -82,17 +82,17 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                                     :periodo_sistematico_desde, :periodo_sistematico_hasta,
                                                                     :monitoreo_desde, :monitoreo_hasta, :comentarios, :_destroy],
                                                region_attributes: [:id, :nombre_region, :latitud, :longitud, :poligono, :zona,
-                                                                   :entidad, :cuenca, :anp, :comentarios, :destroy],
+                                                                   :entidad, :cuenca, :anp, :comentarios, :_destroy],
                                                dato_attributes: [:id, :descarga_datos, :licencia_uso, :descripcion_base,
                                                                  :metadatos, :publicaciones, :publicacion_url, :descarga_informe,
                                                                  :forma_citar, :notas_adicionales, :restricciones,
-                                                                 :numero_ejemplares, :tipo_unidad, :destroy],
+                                                                 :numero_ejemplares, :tipo_unidad, :_destroy],
                                                institucion_attributes: [:id, :nombre_institucion, :sitio_web, :contacto,
-                                                                        :correo, :destroy],
+                                                                        :correo_contacto, :_destroy],
                                                ubicacion_attributes: [:id, :calle_numero, :colonia, :municipio, :ciudad,
-                                                                      :entidad_federativa, :cp, :pais, :destroy],
-                                               especies_attributes: [:id, :especie_id, :nombre_cientifico, :proyecto_id, :destroy],
-                                               keywords_attributes: [:id, :nombre_keyword, :proyecto_id, :destroy]
+                                                                      :entidad_federativa, :cp, :pais, :_destroy],
+                                               especies_attributes: [:id, :especie_id, :nombre_cientifico, :proyecto_id, :_destroy],
+                                               keywords_attributes: [:id, :nombre_keyword, :proyecto_id, :_destroy]
                                                )
   end
 

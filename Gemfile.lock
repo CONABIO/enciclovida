@@ -298,6 +298,9 @@ GEM
     selenium-webdriver (3.9.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
+    simple_form (4.0.1)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
     sinatra (2.0.1)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -417,6 +420,7 @@ DEPENDENCIES
   sdoc
   seed_dump
   selenium-webdriver
+  simple_form
   soulmate
   spring
   spring-watcher-listen (~> 2.0.0)

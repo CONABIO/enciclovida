@@ -3,29 +3,29 @@
   <%= render partial: 'form_proyecto', locals: { f: f } %>
 
   <%= render partial: 'form_info_adicional', locals: { f: f } %>
-  <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional' %>
+  <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm' %>
 
   <%= render partial: 'form_periodo', locals: { f: f } %>
-  <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo' %>
+  <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm'  %>
 
   <%= render partial: 'form_region', locals: { f: f } %>
-  <%= link_to_add_association 'Region', f, :region, partial: 'form_region' %>
+  <%= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm'  %>
 
   <%= render partial: 'form_dato', locals: { f: f } %>
-  <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato' %>
+  <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm'  %>
 
   <%= render partial: 'form_institucion', locals: { f: f } %>
-  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion' %>
+  <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm'  %>
 
   <%= render partial: 'form_especies_estudiadas', locals: { f: f } %>
-  <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas' %>
+  <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm'  %>
 
   <%= render partial: 'form_keywords', locals: { f: f } %>
-  <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords' %>
+  <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm'  %>
 
   <%= f.actions do %>
-    <%= f.action :submit, :as => :button %>
-    <%= f.action :cancel, :as => :link %>
+    <%= f.action :submit, :as => :button, :button_html => { :class => 'btn btn-success btn-lg'} %>
+    <%= f.action :cancel, :as => :link, :button_html => { :class => 'btn btn-default btn-lg'} %>
   <% end %>
 
 <% end %>
