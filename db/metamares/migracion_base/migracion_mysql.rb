@@ -94,7 +94,11 @@ def itera_metadata
 
     if proyecto.save
       if meta.keywords.estandariza.present? && meta.keywords.estandariza != 'na' # Keywords
-        meta.keywords.split(';').each do |nombre_keyword|
+        con_punto_coma = meta.keywords.split(';')
+        con_coma = meta.keywords.split(',')
+
+        mas_keywords = con_coma.length > con_punto_coma.length ? con_coma : con_punto_coma
+        mas_keywords.each do |nombre_keyword|
           next unless nombre_keyword.strip.present?
           k = proyecto.keywords.new
           k.nombre_keyword = nombre_keyword.strip
