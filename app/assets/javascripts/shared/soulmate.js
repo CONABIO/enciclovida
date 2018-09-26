@@ -65,7 +65,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
                 break;
             case 'metamares':
-                $('#especie_id').attr('value', data.id); // feliz?
+                $('#proy_b_especie_id').attr('value', data.id); // feliz?
                 break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica

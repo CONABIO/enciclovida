@@ -62,3 +62,6 @@ public/descargas_resultados/
 public/fotos_invasoras/
 public/validaciones/
 public/topojson/
+
+db/metamares/migracion_base/metamares*csv
+db/metamares/migracion_base/metamares*sql

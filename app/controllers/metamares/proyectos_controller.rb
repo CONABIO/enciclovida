@@ -11,8 +11,8 @@ class Metamares::ProyectosController < Metamares::MetamaresController
       @proyectos = busqueda.proyectos
       @totales = busqueda.totales
     else
-      @proyectos = Metamares::Proyecto.none
-      @totales = 0
+      @proyectos = Metamares::Proyecto.all
+      @totales = @proyectos.length
     end
   end
 
