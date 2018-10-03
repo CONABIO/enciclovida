@@ -1,4 +1,15 @@
-<%= simple_form_for @proyecto do |f| %>
+<%= simple_form_for @proyecto, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    #select:        :custom_multi_select
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    select:        :floating_labels_select
+} do |f| %>
 
   <%= render partial: 'form_proyecto', locals: { f: f } %>
 
