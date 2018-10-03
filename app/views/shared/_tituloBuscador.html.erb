@@ -1,9 +1,9 @@
 <% if(@peces.nil?) %>
-  <div class="contenedor-titulo-busquedas peces-mariscos-comerciales row">
+  <div class="contenedor-titulo-busquedas <%= icon_class %> row">
     <h1 class="text-success titulo-busquedas">
-      Peces y mariscos comerciales
-      <i class="peces-mariscos-comerciales-ev-icon"></i>
-      <hr class="liner liner-dark">
+      <%= titulo %>
+      <i class="<%= icon_class %>-ev-icon"></i>
+      <hr class="liner-dark">
     </h1>
   </div>
 <% end %>
