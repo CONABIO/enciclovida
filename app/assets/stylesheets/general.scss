@@ -19,6 +19,12 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'acumin-pro-extra-condensed';
+  src: url('/fonts/acumin-pro-extra-condensed.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
@@ -62,9 +68,29 @@
   text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
+.contenedor-titulo-busquedas{
+  height: 104px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
+}
 .titulo-busquedas{
-  font-family: "texgyreadventorregular", "Helvetica", Arial;
-  margin: 0;
+  width: 1032px;
+  margin: 8px auto;
+  font-size: 40px;
+  font-family: "acumin-pro-extra-condensed";
+  -webkit-text-shadow: 2px 2px 2px #000;
+  -moz-text-shadow: 2px 2px 2px #000;
+  -ms-text-shadow: 2px 2px 2px #000;
+  -o-text-shadow: 2px 2px 2px #000;
+  text-shadow: 2px 2px 2px #000;
+  color: #ffffff;
+}
+.contenedor-titulo-busquedas .liner-dark {
+  width: 50px;
+  height: 5px;
+  margin: 15px 0;
+  border: none;
+  background: #080808;
+  position: absolute;
 }
 footer {
   padding: 25px 0;
