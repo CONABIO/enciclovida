@@ -34,13 +34,13 @@
   <%= render :partial => 'peces/brandBar' %>
 </header>
 
-<section id="content">
-  <div class="container-fluid">
-    <div class="row main">
-      <div class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1'  %>">
-        <%= yield %>
-      </div>
-    </div>
+<header class="container-fluid">
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales'} %>
+</header>
+
+<section id="content" class="container-fluid">
+  <div class="row main">
+    <%= yield %>
   </div>
 </section>
 
