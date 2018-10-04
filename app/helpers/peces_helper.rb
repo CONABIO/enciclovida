@@ -16,15 +16,16 @@ module PecesHelper
 
   def checkboxRecomendacion
     checkBoxes = ''
-    s = {:v => ['Recomendable','glyphicon glyphicon-ok-sign'], :a => ['Poco recomendable','glyphicon glyphicon-exclamation-sign'], :r => ['Evita','glyphicon glyphicon-minus-sign'], :star => ['Con estrella','glyphicon glyphicon-star'], :sn => ['Sin datos','no-data-ev-icon']}
+    s = {:v => ['Recomendable','glyphicon glyphicon-ok-sign'], :a => ['Poco recomendable','glyphicon glyphicon-exclamation-sign'], :r => ['Evita','glyphicon glyphicon-minus-sign'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','glyphicon glyphicon-star'], :sn => ['Especies sin datos','no-data-ev-icon']}
     s.each do |k,v|
+      checkBoxes << "<small><b>#{v[0]}:</b></small>" if k == :star || k == :sn
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0].parameterize}")
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-lg btn-basica btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}'></i>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
-      checkBoxes << "<br>" if k == :r
+      #checkBoxes << "<br>" if k == :r
     end
 
     checkBoxes.html_safe
