@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?33408848');
-  src: font-url('enciclovida_font_icons.eot?33408848#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?33408848') format('woff2'),
-       font-url('enciclovida_font_icons.woff?33408848') format('woff'),
-       font-url('enciclovida_font_icons.ttf?33408848') format('truetype'),
-       font-url('enciclovida_font_icons.svg?33408848#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?43276302');
+  src: font-url('enciclovida_font_icons.eot?43276302#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?43276302') format('woff2'),
+       font-url('enciclovida_font_icons.woff?43276302') format('woff'),
+       font-url('enciclovida_font_icons.ttf?43276302') format('truetype'),
+       font-url('enciclovida_font_icons.svg?43276302#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?33408848#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?43276302#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -155,6 +155,7 @@
 .ev2-ev-icon:before { content: '\e861'; } /* '' */
 .map-ev-icon:before { content: '\e862'; } /* '' */
 .feather-ev-icon:before { content: '\e863'; } /* '' */
+.c3-conabio-ev-icon:before { content: '\e864'; } /* '' */
 .naturalista-2-ev-icon:before { content: '\e865'; } /* '' */
 .block-ev-icon:before { content: '\e866'; } /* '' */
 .biomex-ev-icon:before { content: '\e867'; } /* '' */
