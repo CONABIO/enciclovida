@@ -81,7 +81,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                periodo_attributes: [:id, :periodicidad, :periodo_monitore_desde, :periodo_monitore_hasta,
                                                                     :periodo_sistematico_desde, :periodo_sistematico_hasta,
                                                                     :monitoreo_desde, :monitoreo_hasta, :comentarios, :_destroy],
-                                               region_attributes: [:id, :nombre_region, :latitud, :longitud, :poligono, :zona,
+                                               region_attributes: [:id, :nombre_region, :latitud, :longitud, :poligono, :nombre_zona,
                                                                    :entidad, :cuenca, :anp, :comentarios, :_destroy],
                                                dato_attributes: [:id, :descarga_datos, :licencia_uso, :descripcion_base,
                                                                  :metadatos, :publicaciones, :publicacion_url, :descarga_informe,
