@@ -1,5 +1,5 @@
 <% if(@peces.nil?) %>
-  <div class="contenedor-titulo-busquedas <%= icon_class %> row">
+  <div class="contenedor-titulo-busquedas <%= icon_class %> row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), #544a22), url(\"/fondos/#{bgImg}.jpg\");'".html_safe %>>
     <h1 class="text-success titulo-busquedas">
       <%= titulo %>
       <i class="<%= icon_class %>-ev-icon"></i>

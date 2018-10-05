@@ -36,8 +36,10 @@
   padding: 30px;
 }
 #brandBar .dropdown {
-  margin-top: -32px;
-  margin-right: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1001;
 }
 #menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
   border-bottom-left-radius: 2px;

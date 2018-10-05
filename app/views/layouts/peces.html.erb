@@ -29,13 +29,13 @@
   <%= yield :extrajs %>
 </head>
 <body>
-
+<% bgImg = rand(1..16) %>
 <header class="container-fluid">
-  <%= render :partial => 'peces/brandBar' %>
+  <%= render :partial => 'peces/brandBar', locals: {bgImg: bgImg} %>
 </header>
 
 <header class="container-fluid">
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales'} %>
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales', bgImg: bgImg} %>
 </header>
 
 <section id="content" class="container-fluid">

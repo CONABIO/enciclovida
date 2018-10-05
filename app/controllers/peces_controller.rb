@@ -56,7 +56,8 @@ class PecesController < ApplicationController
 
   def busqueda
     @filtros =  Criterio.dame_filtros
-    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS)
+    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
+
 
     if params[:commit].present?
       @peces = Pez.filtros_peces
