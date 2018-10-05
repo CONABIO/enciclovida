@@ -18,7 +18,7 @@ module PecesHelper
     checkBoxes = ''
     s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :sn => ['Especies sin datos','semaforo-no-datos']}
     s.each do |k,v|
-      checkBoxes << "<small><b>#{v[0]}:</b></small>" if k == :star || k == :sn
+      checkBoxes << "<label><small><b>#{v[0]}:</b></small></label>" if k == :star || k == :sn
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0].parameterize}")
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"

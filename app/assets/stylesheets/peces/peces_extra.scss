@@ -59,6 +59,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
   box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
 }
+.recomendada label{
+  max-width: 120px;
+  vertical-align: middle;
+}
 .recomendada input:not(#nombre), .zonificada label{display: none;}
 .recomendada input + span {
   padding: 0px;
