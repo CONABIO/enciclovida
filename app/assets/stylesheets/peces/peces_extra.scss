@@ -60,8 +60,14 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
 }
 .recomendada label{
-  max-width: 120px;
+  max-width: 100px;
+  height: 65px;
   vertical-align: middle;
+}
+.recomendada label.info-label{
+  font-size: smaller;
+  border-left: 3px solid #DADADA;
+  margin-left: 3px;
 }
 .recomendada input:not(#nombre), .zonificada label{display: none;}
 .recomendada input + span {
