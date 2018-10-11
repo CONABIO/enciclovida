@@ -1,0 +1,29 @@
+es:
+  simple_form:
+    labels:
+      metamares_proyecto:
+        nombre_proyecto: Nombre corto
+        financiamiento: Financiamiento
+        tipo_monitoreo: Tipo de monitoreo
+        objeto_monitoreo: Objeto del monitoreo
+        campo_investigacion: Campo de investigación
+        campo_ciencia: Campo de la ciencia
+        finalidad: Finalidad
+        metodo: Método
+        periodicidad: Periodicidad
+    hints:
+      metamares_proyecto:
+        nombre_proyecto: Nombre corto de la colección de datos
+        financiamiento: ¿Quién financió la colección de datos?
+        campo_investigacion: ¿Cuál fue la razón principal por la que se recopilaron los datos?
+
+    "yes": 'Yes'
+    "no": 'No'
+    required:
+      text: 'required'
+      mark: '*'
+      # You can uncomment the line below if you need to overwrite the whole required html.
+      # When using html, text and mark won't be used.
+      # html: '<abbr title="required">*</abbr>'
+    error_notification:
+      default_message: "Please review the problems below:"
