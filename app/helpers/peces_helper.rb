@@ -70,7 +70,16 @@ module PecesHelper
             when 5..19 then "a"
             else "r"
             end
-    "btn-zona-#{color}"
+    color
   end
+
+    def valorAIcono valor
+    clase = case valor
+            when "v" then "semaforo-recomendable"
+            when "a" then "semaforo-moderado"
+            else "semaforo-evita"
+            end
+    clase
+    end
 
 end

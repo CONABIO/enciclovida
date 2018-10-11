@@ -10,6 +10,43 @@ $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
 
+    //$('[data-toggle="popover"]').popover();
+
+/*
+    $('[data-toggle="popover"]').popover({
+        html:true,
+        container: 'body',
+        placement:'bottom',
+        title: 'Criterios',
+        content:function() {
+            var button = $(this);
+            var idEspecie = $(button).data('especie-id');
+            var pestaña = '/peces/'+idEspecie+'?mini=true';
+            //console.log(pestaña);
+            //response = jQuery.get(pestaña)['responseText'];
+            //console.log(response['responseText']);
+            return pestaña;
+        }
+    });
+*/
+
+    $('[data-toggle="popover"]').one('click', function(){
+        var button = $(this);
+        var idEspecie = $(button).data('especie-id');
+        var pestaña = '/peces/'+idEspecie+'?mini=true';
+        jQuery.get(pestaña).done(function(data){
+            button.popover({
+                html:true,
+                container: 'body',
+                placement:'bottom',
+                title: 'Criterios',
+                trigger: 'focus',
+                content: data
+            }).popover('show');
+        });
+    });
+
+
     $('#multiModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
         var idEspecie = $(button).data('especie-id');
@@ -30,9 +67,9 @@ $(document).ready(function(){
         input.prop("checked", !input.prop("checked"));
     });
 
-    $(window).load(function(){
+    //$(window).load(function(){
         $("html,body").animate({scrollTop: 105}, 500);
-    });
+    //});
 });
 
 var scroll_array = false;

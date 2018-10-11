@@ -1,0 +1,12 @@
+<% @criterios["Características"].each do |c|  %>
+  <h4>
+  <small>    <%= c[:tipo_propiedad] %>  </small>
+
+    <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+      <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+    <% end %>
+    <button class = 'btn btn-xs btn-zona-<%= valorAColor c[:valor] %>'>
+        <i class = '<%=  valorAIcono(valorAColor c[:valor]) %>-ev-icon'></i>
+    </button>
+  </h4>
+<% end %>

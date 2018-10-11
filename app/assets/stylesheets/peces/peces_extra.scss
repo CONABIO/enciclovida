@@ -70,14 +70,16 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   margin-left: 3px;
 }
 .recomendada input:not(#nombre), .zonificada label{display: none;}
-.recomendada input + span {
+.recomendada input + span, .popover-content button {
   padding: 0px;
   text-shadow: 1px 1px 4px rgba(150, 150, 150, 1);
   margin: 0px -2px;
-  background: none;
   border: none;
   font-size: 3.5em;
   background: none;
+}
+.popover-content button{
+  font-size: 1.5em!important;
 }
 span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
 .recomendada input:checked + span, .recomendada input + span:hover{
@@ -109,7 +111,7 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
 .resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
   max-height: 150px;
   max-width: 300px;
-  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.9);
+  transition: all .2s ease-in-out;
   vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -128,11 +130,11 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.85);
-  -ms-transform:scale(.85); /* IE 9 */
-  -moz-transform:scale(.85); /* Firefox */
-  -webkit-transform:scale(.85); /* Safari and Chrome */
-  -o-transform:scale(.85); /* Opera */
+  transform:scale(.95);
+  -ms-transform:scale(.95); /* IE 9 */
+  -moz-transform:scale(.95); /* Firefox */
+  -webkit-transform:scale(.95); /* Safari and Chrome */
+  -o-transform:scale(.95); /* Opera */
   font-size: 6em;
 }
 .resultados-peces .btn-ficha:hover:after {
