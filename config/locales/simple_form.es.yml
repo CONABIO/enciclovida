@@ -10,12 +10,27 @@ es:
         campo_ciencia: Campo de la ciencia
         finalidad: Finalidad
         metodo: Método
-        periodicidad: Periodicidad
+        periodo:
+          periodicidad: Periodicidad del monitoreo
+          periodo_monitoreo_desde: Fecha de inicio del moniteo
+          periodo_monitoreo_hasta: Fecha de termino del monitoreo
+          periodo_sistematico_desde: Fecha de inicio del moniteo sistemático
+          periodo_sistematico_hasta: Fecha de termino del monitoreo sistemático
+          monitoreo_desde: Año de inicio del monitoreo
+          monitoreo_hasta: Año de finalización del monitoreo
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto de la colección de datos
         financiamiento: ¿Quién financió la colección de datos?
         campo_investigacion: ¿Cuál fue la razón principal por la que se recopilaron los datos?
+        periodo:
+          periodicidad: ¿Cada cuando se realiza el monitoreo?
+          periodo_monitoreo_desde: Un periodo de tiempo al año en el cual inicia el monitoreo
+          periodo_monitoreo_hasta: Un periodo de tiempo al año en el cual finaliza el monitoreo
+          periodo_sistematico_desde: ¿Desde que fecha se realiza un periodo sistemático?
+          periodo_sistematico_hasta: ¿Hasta que fecha se realiza un periodo sistemático?
+          monitoreo_desde: Fecha desde que se inicio con cualquier tipo de monitoreo
+          monitoreo_hasta: Fecha hasta que se finalizó con cualquier tipo de monitoreo
 
     "yes": 'Yes'
     "no": 'No'
