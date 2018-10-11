@@ -1,5 +1,4 @@
-<div id="brandBar" class="row " style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url('/fondos/#{rand(1..16)}.jpg'); ".html_safe if params[:controller] != 'inicio' %> <%= 'padding: 26px 0 0 0;'  unless (params[:controller] == 'inicio' || @no_render_busqueda_basica.present?) %>">
-
+<div id="brandBar" class="row " style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url('#{@bgImg}'); ".html_safe if params[:controller] != 'inicio' %> <%= 'padding: 26px 0 0 0;'  unless (params[:controller] == 'inicio' || @no_render_busqueda_basica.present?) %>">
   <%= render(:partial => 'shared/dropdown_menu') %>
 
   <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">

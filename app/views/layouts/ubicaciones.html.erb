@@ -39,8 +39,14 @@
 </head>
 <body>
 
+<%= yield :ribbon %>
+
 <header class="container-fluid">
   <%= render :partial => 'shared/brandBar' %>
+</header>
+
+<header class="container-fluid">
+  <%= yield :extra_title_header %>
 </header>
 
 <section id="content" class="container-fluid">
