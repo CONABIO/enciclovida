@@ -1,9 +1,12 @@
-<% if(@peces.nil?) %>
-  <div class="contenedor-titulo-busquedas <%= icon_class %> row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), #544a22), url(\"/fondos/#{bgImg}.jpg\");'".html_safe %>>
-    <h1 class="text-success titulo-busquedas">
-      <%= titulo %>
-      <i class="<%= icon_class %>-ev-icon"></i>
-      <hr class="liner-dark">
-    </h1>
-  </div>
-<% end %>
+<div class="contenedor-titulo-busquedas <%= icon_class %> row" style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), #544a22), url('#{@bgImg}');".html_safe %>">
+  <h1 class="text-success titulo-busquedas">
+    <%= titulo.html_safe %>
+    <i class="<%= icon_class %>-ev-icon"></i>
+    <% if local_assigns[:subtitulo] %>
+      <br><small id="contenedor-subtitulo-<%= icon_class %>"><%= subtitulo %></small>
+    <% end %>
+    <% unless local_assigns[:subtitulo] %>
+      <hr class="liner">
+    <% end %>
+  </h1>
+</div>

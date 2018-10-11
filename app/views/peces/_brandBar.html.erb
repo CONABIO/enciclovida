@@ -1,4 +1,4 @@
-<div id="brandBar" class="row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url(\"/fondos/#{bgImg}.jpg\");'".html_safe %>>
+<div id="brandBar" class="row" style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url('#{@bgImg}');".html_safe %>">
 
   <%= render(:partial => 'shared/dropdown_menu') %>
 

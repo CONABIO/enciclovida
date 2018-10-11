@@ -20,11 +20,11 @@
 
     <%= javascript_include_tag 'busquedas/region/por_region_extra', 'data-turbolinks-track' => true %>
 <% end %>
-<h1 class="text-success titulo-busquedas">
-  Búsqueda por región <i class="busqueda-region-ev-icon"></i><br />
-  <small id="contenedor-nombre-region">Selecciona una región (doble clic)</small>
-</h1>
-<hr />
+
+<% content_for(:extra_title_header) do %>
+  <%=  render :partial => 'shared/tituloBuscador', locals: {icon_class: 'busqueda-region', titulo: 'Búsqueda por region', subtitulo: 'Selecciona una región (doble clic)'} %>
+<% end %>
+
 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
   <div id="regiones" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 1 -->
     <%= render partial: 'tipos_regiones' %>

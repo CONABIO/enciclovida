@@ -29,13 +29,15 @@
   <%= yield :extrajs %>
 </head>
 <body>
-<% bgImg = rand(1..16) %>
+
+<%= yield :ribbon %>
+
 <header class="container-fluid">
-  <%= render :partial => 'peces/brandBar', locals: {bgImg: bgImg} %>
+  <%= render :partial => 'peces/brandBar' %>
 </header>
 
 <header class="container-fluid">
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales', bgImg: bgImg} %>
+  <%= yield :extra_title_header %>
 </header>
 
 <section id="content" class="container-fluid">
