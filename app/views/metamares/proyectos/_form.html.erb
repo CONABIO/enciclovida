@@ -14,38 +14,30 @@
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
       <li role="presentation" class="active">
-        <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Proyecto</a>
+        <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Colección</a>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional' %>
-        <%= link_to 'Info adicional', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
+        <%= link_to 'Datos', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo' %>
         <%= link_to 'Periodo', '#periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region' %>
-        <%= link_to 'Region', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
+        <%= link_to 'Información adicional', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato' %>
-        <%= link_to 'Dato', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+        <%= link_to 'Región', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion' %>
-        <%= link_to 'Institucion', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
+        <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Ubicacion', f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion, 'data-association-insertion-node' => '#ubicacion', 'data-association-insertion-method' => 'append', href: '#ubicacion' %>
-        <%= link_to 'Ubicacion', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
+        <%= link_to 'Ubicación', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
         <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
       </li>
       <li role="presentation" >
-        <%#= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
         <%= link_to 'Keywords', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
       </li>
     </ul>

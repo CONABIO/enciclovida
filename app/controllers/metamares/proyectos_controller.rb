@@ -14,7 +14,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
     #   @proyectos = Metamares::Proyecto.all
     #   @totales = @proyectos.length
     end
-    @proyectos = busqueda.proyectos.limit(5)
+    @proyectos = busqueda.proyectos.limit(100)
     @totales = busqueda.totales
   end
 
