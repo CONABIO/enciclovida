@@ -75,6 +75,12 @@ es:
           forma_citar: Forma de citar esta colección de datos
           numero_ejemplares: Cantidad de ejemplares disponibles en la colección de datos
           tipo_unidad: La unidad usada para la colección
+    placeholders:
+      proy_b:
+        proyecto: Nombre de la colección
+        institucion: Nombre de la institución
+        autor: Autor de la colección
+        nombre: Nombre común o científico
     options:
       metamares_proyecto:
         financiamiento:
