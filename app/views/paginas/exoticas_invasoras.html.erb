@@ -54,12 +54,10 @@
   </style>
 <% end %>
 
-<h2 class="text-success text-center titulo-busquedas">
-  <i class="exotica-invasora-ev-icon"></i>
-  Búsqueda de especies exóticas invasoras <br />
-  <%= link_to "Descargar lista &nbsp;<span class='glyphicon glyphicon-save'></span>".html_safe, '/Tabla exóticas.xlsx', class: "btn btn-warning pull-right" %>
-</h2>
-<hr />
+<% content_for(:extra_title_header) do %>
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'exotica-invasora', titulo: "Búsqueda de especies exóticas invasoras <a class='btn btn-warning pull-right' href='/Tabla exóticas.xlsx'>Descargar lista &nbsp;<span class='glyphicon glyphicon-save'></span></a>"} %>
+<% end %>
+
 <div class="text-center page-selection1"></div>
 
 <div class="pull-left" id="num-res-exoticas"></div>

@@ -13,105 +13,89 @@
                 'tooltip-title' => 'Administrar', class: 'btn btn-link btn-title pull-right' %>
   <% end %>
 
-  <% if @pez.imagen =~ URI::regexp %>
-    <div class="col-sm-6 col-md-7">
-      <%= render :partial => 'peces/svg_zonas_marinas_show', locals: {color_zona: @pez.valor_zonas.split('')} %>
-    </div>
-    <div class="col-xs-8 col-sm-6 col-md-5 col-xs-offset-2 col-sm-offset-0">
-      <%= image_tag(@pez.imagen, class: "img-responsive img-thumbnail img-rounded") %>
-        <span class="label btn-zona-v">Menor a 5 es recomendable</span><br>
-        <span class="label btn-zona-a">De 5 a 19 consume con cautela</span><br>
-        <span class="label btn-zona-r">Más de 20 evita</span><br>
-    </div>
-  <% else %>
-    <div class="col-xs-8 col-xs-offset-2">
-      <%= render :partial => 'peces/svg_zonas_marinas_show', locals: {color_zona: @pez.valor_zonas.split('')} %>
-    </div>
-  <% end %>
+  <!--div class="col-sm-6 col-md-7">
+      <%#= render :partial => 'peces/svg_zonas_marinas_show', locals: {color_zona: @pez.valor_zonas.split('')} %>
+    </div-->
+
 
   <div class="clearfix"></div>
 
-  <div class="col-xs-12">
-    <h3>Criterios globales</h3>
-    <div class="caracteristicas_pez jumbotron col-xs-12">
-      <% @criterios["Características"].each do |c|  %>
-        <div class="col-xs-4 col-xs-offset-1">
-          <b>
-            <%= c[:tipo_propiedad] %>
-            <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
-              <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-            <% end %>:
-          </b>
-        </div>
-        <div class="col-xs-4">
-          <small><%= c[:nombre] %></small>
-        </div>
-        <div class="col-xs-3">
-          <span class="badge"><%= c[:valor] %></span>
-        </div>
-        <div class="clearfix"></div>
-      <% end %>
-      <div class="col-xs-9">
-        <h4 class="text-center"><b>Suma de criterios globales: </b></h4>
+  <div class="caracteristicas_pez col-xs-12 col-md-6">
+    <h3 class="text-center text-primary">Criterios </h3>
+    <% @criterios["Características"].each do |c|  %>
+      <div class="col-xs-8 col-xs-offset-1">
+        <b>
+          <%= c[:tipo_propiedad] %>
+          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+          <% end %>
+        </b><br />
+        <small><i><%= c[:nombre] %></i></small>
       </div>
-      <div class="col-xs-3">
-        <h4><span class="badge <%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span></h4>
+      <div class="col-xs-2 col-xs-offset-1">
+        <span class="badge"><%= c[:valor] %></span>
       </div>
+      <div class="clearfix"></div>
+    <% end %>
+    <div class="col-xs-12">
+      <h4 class="text-center">
+        <b>Suma de criterios globales: </b>
+        <span class="badge <%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
+      </h4>
     </div>
   </div>
 
+  <% if @pez.imagen =~ URI::regexp %>
+    <div class=" img_pez col-xs-12 col-md-6">
+      <%= image_tag(@pez.imagen, class: "img-responsive img-thumbnail img-rounded") %>
+    </div>
+  <% end %>
 
   <div class="edo_pob_pez col-xs-12">
-    <h3>Estado de la población de la especie:<br \>
+    <h3 class="text-center text-primary">Estado de la población de la especie:<br \>
       <small>(Valoración del edo. de la población por zona + Suma de criterios globales = Valoración por zona)</small>
     </h3>
-    <div class="edo_pob_pac_pez jumbotron col-xs-12">
-      <% @criterios["Estado poblacional en el Pacífico"].each do |c|  %>
-        <div class="col-xs-4 col-xs-offset-1">
-          <b>
-            <%= c[:tipo_propiedad] %>
-            <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
-              <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-            <% end %>:
-          </b>
-        </div>
-        <div class="col-xs-4">
-          <small><%= c[:nombre] %></small>
-        </div>
-        <div class="col-xs-3">
+    <% @criterios["Estado poblacional en el Pacífico"].each do |c|  %>
+      <div class="col-xs-2 text-center">
+        <h4 class="btn-zona-show <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
+          <%= c[:tipo_propiedad] %>
+          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+          <% end %>
+          <br />
+          <small><i><%= c[:nombre] %></i></small>
+        </h4>
+        <h5 class="badge">
           <span class="badge <%= valorAColor c[:valor] %>"><%= c[:valor] %></span>
           <b>+</b>
           <span class="badge <%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
           <b>=</b>
-          <span class="badge "><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
-        </div>
-        <div class="clearfix"></div>
-      <% end %>
-    </div>
-    <div class="edo_pob_gol_pez jumbotron col-xs-12">
-      <% @criterios["Estado poblacional en el Golfo de México y caribe"].each do |c|  %>
-        <div class="col-xs-4 col-xs-offset-1">
-          <b>
-            <%= c[:tipo_propiedad] %>
-            <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
-              <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-            <% end %>:
-          </b>
-        </div>
-        <div class="col-xs-4">
-          <small><%= c[:nombre] %></small>
-        </div>
-        <div class="col-xs-3">
+          <span class="badge <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
+        </h5>
+      </div>
+    <% end %>
+    <% @criterios["Estado poblacional en el Golfo de México y caribe"].each do |c|  %>
+      <div class="col-xs-2 text-center">
+        <h4 class="btn-zona-show <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
+          <%= c[:tipo_propiedad] %>
+          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+          <% end %>
+          <br />
+          <small><i><%= c[:nombre] %></i></small>
+        </h4>
+        <h5 class="badge">
           <span class="badge <%= valorAColor c[:valor] %>"><%= c[:valor] %></span>
           <b>+</b>
           <span class="badge <%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
           <b>=</b>
-          <span class="badge"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
-        </div>
-        <div class="clearfix"></div>
-      <% end %>
-    </div>
+          <span class="badge <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
+        </h5>
+      </div>
+    <% end %>
   </div>
+
+
 
   <div class="col-xs-12">
     <hr />

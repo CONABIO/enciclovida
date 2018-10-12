@@ -141,7 +141,7 @@ var seleccionaMunicipio = function(region_id)
  */
 var nombreRegion = function(prop)
 {
-    $('#contenedor-nombre-region').html(prop.nombre_region);
+    $('#contenedor-subtitulo-busqueda-region').html(prop.nombre_region);
 };
 
 /**

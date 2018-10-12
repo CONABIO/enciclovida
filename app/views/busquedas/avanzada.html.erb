@@ -15,12 +15,11 @@
   <% end %>
 <% end %>
 
+
 <% if params[:action] != 'resultados' %>
-  <h2 class="text-success text-center titulo-busquedas">
-    <i class="busqueda-avanzada-ev-icon"></i>
-    Búsqueda avanzada<br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small>
-  </h2>
-  <hr />
+  <% content_for(:extra_title_header) do %>
+    <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'busqueda-avanzada', titulo: 'Búsqueda avanzada', subtitulo: '(Selecciona un ícono o una combinación de íconos y presiona buscar)'} %>
+  <% end %>
 <% end %>
 
 <div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">

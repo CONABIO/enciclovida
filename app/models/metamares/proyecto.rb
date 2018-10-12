@@ -7,7 +7,7 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :region, class_name: 'Metamares::RegionM'
   belongs_to :dato, class_name: 'Metamares::Dato'
   belongs_to :institucion, class_name: 'Metamares::Institucion'
-  has_one :ubicacion, through: :institucion, source: :ubicacion
+  has_one :ubicacion, through: :institucion, source: :ubicacion, inverse_of: :proyecto
   belongs_to :usuario, class_name: 'Usuario'
   has_many :especies, class_name: 'Metamares::EspecieEstudiada'
   has_many :keywords, class_name: 'Metamares::Keyword'

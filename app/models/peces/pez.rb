@@ -32,7 +32,7 @@ class Pez < ActiveRecord::Base
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
-  GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Cnidaria Echinodermata Mollusca Mollusca Crustacea)
+  GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Crustacea Mollusca Echinodermata)
 
   # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez

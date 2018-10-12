@@ -63,10 +63,8 @@ var tooltip = function()
 var refreshMediaQueries = function()
 {
     if (window.innerWidth < 992){
-        $('#basica .input-group').addClass('input-group-lg');
         $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
     }else{
-        $('#basica .input-group').removeClass('input-group-lg');
         $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
     }
 };

@@ -15,7 +15,6 @@ class PecesController < ApplicationController
     @pez = Pez.find(params[:id])
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
-    puts @criterios.inspect
     render :layout => false and return if params[:layout].present?
   end
 
@@ -56,7 +55,8 @@ class PecesController < ApplicationController
 
   def busqueda
     @filtros =  Criterio.dame_filtros
-    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS)
+    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
+
 
     if params[:commit].present?
       @peces = Pez.filtros_peces
@@ -150,12 +150,14 @@ class PecesController < ApplicationController
     criterios['Estado poblacional en el Pacífico'] = []
     criterios['Estado poblacional en el Golfo de México y caribe'] = []
     criterios['suma_caracteristicas'] = 0
+    criterios['otros'] = []
 
     criterios_obj.each do |c|
       dato = {}
       dato[:nombre] = c.nombre_propiedad
       dato[:valor] = c.valor
       dato[:tipo_propiedad] = c.tipo_propiedad
+      dato[:ancestry] = c.ancestry
 
       case c.ancestry
       when Propiedad::NOM_ID.to_s
@@ -200,6 +202,8 @@ class PecesController < ApplicationController
         criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
       when Propiedad::ZONAVI
         criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
+      else
+        criterios['otros'] << dato
       end  # End case
     end  # End each criterios
 
