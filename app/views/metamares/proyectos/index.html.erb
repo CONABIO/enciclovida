@@ -1,3 +1,26 @@
 <%= render partial: 'busqueda_proyectos' %>
-
-<%= @proyectos.inspect %>
+<hr >
+<table class="table table-condensed table-striped table-hover table-responsive">
+  <thead>
+  <tr class="success">
+    <th>ID</th>
+    <th>Nombre del proyecto</th>
+    <th>Autor</th>
+    <th>Campo de investigación</th>
+    <th>Nombre de la institución</th>
+    <th>Descarga de datos</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @proyectos.each do |p| %>
+    <tr>
+      <td><%= p.id %></td>
+      <td><%= p.nombre_proyecto %></td>
+      <td><%= p.autor %></td>
+      <td><%= p.campo_investigacion %></td>
+      <td><%= p.nombre_institucion %></td>
+      <td><%= p.descarga_datos %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
