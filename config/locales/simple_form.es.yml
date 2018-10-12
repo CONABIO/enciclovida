@@ -31,6 +31,16 @@ es:
           periodo_sistematico_hasta: ¿Hasta que fecha se realiza un periodo sistemático?
           monitoreo_desde: Fecha desde que se inicio con cualquier tipo de monitoreo
           monitoreo_hasta: Fecha hasta que se finalizó con cualquier tipo de monitoreo
+    options:
+      metamares_proyecto:
+        financiamiento:
+          aca_f: ACA_F
+          gov_f: GOV_F
+          igo_f: IGO_F
+          int_f: INT_F
+          ngo_f: NGO_F
+          private_f: Private_F
+          unknown: Unknown
 
     "yes": 'Yes'
     "no": 'No'

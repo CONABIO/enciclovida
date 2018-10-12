@@ -1,5 +1,5 @@
 <%= f.input :nombre_proyecto, required: true %>
-<%= f.input :financiamiento %>
+<%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS %>
 <%= f.input :tipo_monitoreo %>
 <%= f.input :objeto_monitoreo %>
 <%= f.input :campo_investigacion %>

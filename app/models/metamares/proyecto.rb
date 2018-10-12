@@ -22,5 +22,6 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
 
   TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
+  FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :PRIVATE_F, :Unknown]
 
 end
