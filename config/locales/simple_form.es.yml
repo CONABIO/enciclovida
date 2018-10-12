@@ -4,6 +4,7 @@ es:
       metamares_proyecto:
         nombre_proyecto: Nombre corto
         financiamiento: Financiamiento
+        autor: Autor
         tipo_monitoreo: Tipo de monitoreo
         objeto_monitoreo: Objeto del monitoreo
         campo_investigacion: Campo de investigación
@@ -18,6 +19,7 @@ es:
           periodo_sistematico_hasta: Fecha de termino del monitoreo sistemático
           monitoreo_desde: Año de inicio del monitoreo
           monitoreo_hasta: Año de finalización del monitoreo
+          comentarios: Comentarios
         region:
           nombre_ubicacion: Nombre de la ubicación
           nombre_zona: Nombre de la zona
@@ -27,6 +29,7 @@ es:
           Entidad: Entidad
           Cuenca: Cuenca
           anp: ANP
+          comentarios: Comentarios
         dato:
           titulo_conjunto_datos: Título de la coleccón de datos
           titulo_compilacion: Título de la compilación
@@ -43,6 +46,20 @@ es:
           notas_adicionales: Notas adicionales
           numero_ejemplares: Número de ejemplares
           tipo_unidad: Tipo de unidad
+        info_adicional:
+          informacion_objeto: Información del objeto
+          información_posterior: Información posterior al monitoreo
+          informacion_adicional: Información adicional
+          colaboradores: Colaboradores
+          instituciones_involucradas: Instituciones involucradas
+          equipo: Equipo
+          comentarios: Comentarios
+        institucion:
+          nombre_institucion: Nombre institución
+          tipo: Tipo de instiución
+          sitio_web: Sitio web
+          contacto: Nombre del contacto
+          correo_conatcto: Correo electrónico del contacto
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto de la colección de datos
