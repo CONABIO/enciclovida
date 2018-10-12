@@ -3,6 +3,6 @@
 <%= f.input :tipo_monitoreo %>
 <%= f.input :objeto_monitoreo %>
 <%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION %>
-<%= f.input :campo_ciencia %>
+<%= f.input :campo_ciencia, collection: Metamares::Proyecto::CAMPOS_CIENCIAS %>
 <%= f.input :finalidad %>
 <%= f.input :metodo %>

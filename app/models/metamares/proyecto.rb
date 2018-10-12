@@ -24,5 +24,6 @@ class Metamares::Proyecto < ActiveRecord::Base
   TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
   FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :PRIVATE_F, :Unknown]
   CAMPOS_INVESTIGACION = [:Aquaculture, :Conservation, :Ecology, :Fisheries, :Oceanography, :Other, :Sociology, :Tourism]
+  CAMPOS_CIENCIAS = ["Natural Science".to_sym, "Social Science".to_sym]
 
 end

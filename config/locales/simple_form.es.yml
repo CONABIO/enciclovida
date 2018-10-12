@@ -50,6 +50,9 @@ es:
           Other: Otro
           Sociology: Sociología
           Tourism: Turismo
+        campo_ciencia:
+          Natural Science: Ciencias naturales
+          "Social Science": Ciencias sociales
 
     "yes": 'Yes'
     "no": 'No'
