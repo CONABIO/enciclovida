@@ -34,13 +34,22 @@ es:
     options:
       metamares_proyecto:
         financiamiento:
-          aca_f: ACA_F
-          gov_f: GOV_F
-          igo_f: IGO_F
-          int_f: INT_F
-          ngo_f: NGO_F
-          private_f: Private_F
-          unknown: Unknown
+          ACA_F: ACA_F
+          GOV_F: GOV_F
+          IGO_F: IGO_F
+          INT_F: INT_F
+          NGO_F: NGO_F
+          Private_F: Private_F
+          Unknown: Unknown
+        campo_investigacion:
+          Aquaculture: Acuacultura
+          Conservation: Conservación
+          Ecology: Ecología
+          Fisheries: Pesca
+          Oceanography: Oceanografía
+          Other: Otro
+          Sociology: Sociología
+          Tourism: Turismo
 
     "yes": 'Yes'
     "no": 'No'

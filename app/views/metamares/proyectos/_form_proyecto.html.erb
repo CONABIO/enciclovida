@@ -2,7 +2,7 @@
 <%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS %>
 <%= f.input :tipo_monitoreo %>
 <%= f.input :objeto_monitoreo %>
-<%= f.input :campo_investigacion %>
+<%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION %>
 <%= f.input :campo_ciencia %>
 <%= f.input :finalidad %>
 <%= f.input :metodo %>
