@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :set_locale#, :authenticate  ##Autentica por credenciales generales
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_header_background
 
   def to_boolean(str)
     str.downcase == 'true' ? true : false
@@ -12,6 +13,10 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = cookies[:vista].present? ? cookies[:vista] : I18n.default_locale
+  end
+
+  def set_header_background
+    @bgImg = "/fondos/#{rand(1..16)}.jpg"
   end
 
 

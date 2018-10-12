@@ -31,7 +31,7 @@ $(document).ready(function(){
     });
 
     $(window).load(function(){
-        $("html,body").animate({scrollTop: 122}, 1000);
+        $("html,body").animate({scrollTop: 105}, 500);
     });
 });
 

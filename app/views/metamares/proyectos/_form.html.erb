@@ -8,75 +8,122 @@
     #select:        :custom_multi_select
     #date:          :horizontal_multi_select,
     #datetime:      :horizontal_multi_select,
-    select:        :floating_labels_select
-} do |f| %>
+    select:        :floating_labels_select } do |f| %>
 
-  <%= render partial: 'form_proyecto', locals: { f: f } %>
+  <div id="pestañas" class="panel row">
+    <ul class="nav nav-tabs links" role="tablist">
+      <li role="presentation" class="active">
+        <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Proyecto</a>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional' %>
+        <%= link_to 'Info adicional', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo' %>
+        <%= link_to 'Periodo', '#periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region' %>
+        <%= link_to 'Region', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato' %>
+        <%= link_to 'Dato', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion' %>
+        <%= link_to 'Institucion', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Ubicacion', f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion, 'data-association-insertion-node' => '#ubicacion', 'data-association-insertion-method' => 'append', href: '#ubicacion' %>
+        <%= link_to 'Ubicacion', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
+        <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
+      </li>
+      <li role="presentation" >
+        <%#= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
+        <%= link_to 'Keywords', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+      </li>
+    </ul>
 
-  <div id='infoAdicional'>
-    <%= f.simple_fields_for :info_adicional do |info| %>
-      <%= render partial: 'form_info_adicional', locals: { f: info } %>
-    <% end %>
+    <div class="tab-content">
+
+      <div id="proyecto" role="tabpanel" class="tab-pane fade in panel-body active">
+        <%= render partial: 'form_proyecto', locals: { f: f } %>
+      </div>
+
+      <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional' %>
+        <hr />
+        <%= f.simple_fields_for :info_adicional do |info| %>
+          <%= render partial: 'form_info_adicional', locals: { f: info } %>
+        <% end %>
+      </div>
+
+      <div id='periodo' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Periodo'.html_safe, f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo' %>
+        <hr />
+        <%= f.simple_fields_for :periodo do |periodo| %>
+          <%= render partial: 'form_periodo', locals: { f: periodo } %>
+        <% end %>
+      </div>
+
+      <div id='region' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Region'.html_safe, f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region' %>
+        <hr />
+        <%= f.simple_fields_for :region do |region| %>
+          <%= render partial: 'form_region', locals: { f: region } %>
+        <% end %>
+      </div>
+
+      <div id='dato' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dato'.html_safe, f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato' %>
+        <hr />
+        <%= f.simple_fields_for :dato do |dato| %>
+          <%= render partial: 'form_dato', locals: { f: dato } %>
+        <% end %>
+      </div>
+
+      <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion' %>
+        <hr />
+        <%= f.simple_fields_for :institucion do |institucion| %>
+          <%= render partial: 'form_institucion', locals: { f: institucion } %>
+        <% end %>
+      </div>
+
+      <div id='ubicacion' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ubicacion'.html_safe, f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion, 'data-association-insertion-node' => '#ubicacion', 'data-association-insertion-method' => 'append', href: '#ubicacion' %>
+        <hr />
+        <%= f.simple_fields_for :ubicacion do |ubicacion| %>
+          <%= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
+        <% end %>
+      </div>
+
+      <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Especies estudiadas'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
+        <hr />
+        <%= f.simple_fields_for :especies do |especie| %>
+          <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
+        <% end %>
+      </div>
+
+      <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Keywords'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
+        <hr />
+        <%= f.simple_fields_for :keywords do |kw| %>
+          <%= render partial: 'form_keywords', locals: { f: kw } %>
+        <% end %>
+      </div>
+    </div>
+
+    <%#= f.actions do %>
+    <%#= f.action :cancel, :as => :link, :button_html => { :class => 'btn btn-sm btn-lg'} %>
+    <%# end %>
+
+    <%= f.submit class: 'btn btn-sm btn-success' %>
   </div>
-
-  <div id='periodo'>
-    <%= f.simple_fields_for :periodo do |periodo| %>
-      <%= render partial: 'form_periodo', locals: { f: periodo } %>
-    <% end %>
-  </div>
-
-  <div id='region'>
-    <%= f.simple_fields_for :region do |region| %>
-      <%= render partial: 'form_region', locals: { f: region } %>
-    <% end %>
-  </div>
-
-  <div id='dato'>
-    <%= f.simple_fields_for :dato do |dato| %>
-      <%= render partial: 'form_dato', locals: { f: dato } %>
-    <% end %>
-  </div>
-
-  <div id='institucion'>
-    <%= f.simple_fields_for :institucion do |institucion| %>
-      <%= render partial: 'form_institucion', locals: { f: institucion } %>
-    <% end %>
-  </div>
-
-  <div id='ubicacion'>
-    <%= f.simple_fields_for :ubicacion do |ubicacion| %>
-      <%= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
-    <% end %>
-  </div>
-
-  <div id='especiesEstudiadas'>
-    <%= f.simple_fields_for :especies do |especie| %>
-      <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
-    <% end %>
-  </div>
-
-  <div id='keywords'>
-    <%= f.simple_fields_for :keywords do |kw| %>
-      <%= render partial: 'form_keywords', locals: { f: kw } %>
-    <% end %>
-  </div>
-
-
-  <%#= f.actions do %>
-  <%#= f.action :cancel, :as => :link, :button_html => { :class => 'btn btn-default btn-lg'} %>
-  <%# end %>
-
-  <div class='links'>
-    <%= link_to_add_association 'Info adicional', f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm' %>
-    <%= link_to_add_association 'Periodo', f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Region', f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Dato', f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Institucion', f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Ubicacion', f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Especies', f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm'  %>
-    <%= link_to_add_association 'Keywords', f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm'  %>
-  </div>
-
-  <%= f.submit %>
-
 <% end %>

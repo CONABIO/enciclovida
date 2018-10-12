@@ -1,100 +1,101 @@
 <%- content_for(:extracss) do -%>
   <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
-<% if(@peces.nil?) %>
-  <h2 class="text-success text-center titulo-busquedas">
-    <i class="peces-mariscos-comerciales-ev-icon"></i>
-    Búsqueda de peces y mariscos comerciales
-  </h2>
-  <hr />
+<% content_for(:extra_title_header) do %>
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales'} %>
 <% end %>
+
 <%= notice if notice.present? %>
-<div id="busqueda_avanzada">
+<div id="busqueda_avanzada" class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1'  %>">
   <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
-    <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button', :class => "botones-peces btn btn-default pull-left", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-    <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-success pull-right", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+
+
+    <h5 class="text-primary"><strong>Selecciona:</strong></h5>
+
+    <fieldset class=" recomendada col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+      <h5><strong>1. Peces o mariscos</strong></h5>
+      <%= checkboxGruposIconicos %>
+    </fieldset>
+
+    <fieldset class="recomendada col-xs-12 <%= 'col-sm-12 col-md-6' if(@peces.nil?) %> form-peces">
+      <h5>
+        <strong>2. Semáforo</strong> <em>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la poblacion</em>
+        <%= link_to "Más info <span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-basica btn-xs' %>
+      </h5>
+      <%= checkboxRecomendacion %>
+    </fieldset>
+
+    <fieldset class="zonificada col-xs-12 <%= 'col-md-6' if(@peces.nil?) %>">
+      <h5><strong>3. Región</strong></h5>
+      <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
+        <%= render :partial => 'peces/svg_zonas_marinas' %>
+        <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
+      </div>
+    </fieldset>
+
+    <fieldset class="exacta col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+      <h5><strong>También puedes buscar:</strong></h5>
+      <div class="col-xs-12 col-md-6">
+        <strong>Por especie</strong>
+        <%= hidden_field_tag :id %>
+        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-sm' %>
+      </div>
+      <!--h6><i>(Al escoger una especie se bloquean los demás criterios)</i></h6-->
+      <%= hidden_field_tag(:especie_id) %>
+      <div class="col-xs-12 col-md-6">
+        <strong>Por grupo</strong>
+        <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
+      </div>
+    </fieldset>
+
+    <div class="text-center">
+      <small>(Bajar para más filtros de búsqueda)</small>
+      <br />
+      <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
+      <hr>
+    </div>
+
+    <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
+      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button', :class => "botones-peces btn btn-lg pull-right", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+      <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-lg btn-success pull-left", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+    </div>
+
 
     <div class="clearfix"></div>
+    <hr>
 
-    <div class="recomendada col-xs-12 <%= 'col-sm-12 col-md-5 col-lg-4' if(@peces.nil?) %>">
+    <fieldset id="agrupada" class="agrupada checkbox col-xs-12">
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
+      </div>
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
+      </div>
 
-      <fieldset class="text-center">
-        <h5 class="text-primary"><strong>Selecciona las recomendaciones del semáforo:</strong></h5>
-        <div class="col-xs-12 form-peces">
-          <%= checkboxRecomendacion %>
-        </div>
-      </fieldset>
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
+      </div>
 
-      <fieldset class="text-center">
-        <h5 class="text-primary"><strong>Escoge por grupo icónico:</strong></h5>
-        <div class="col-xs-10 col-xs-offset-1 col-md-12 col-md-offset-0 <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= checkboxGruposIconicos %>
-        </div>
-      </fieldset>
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
+      </div>
 
-      <fieldset class="text-center exacta">
-        <h5 class="text-primary"><strong>Busca por nombre:</strong></h5>
-        <div class="ui-widget form-peces">
-          <%= hidden_field_tag :id %>
-          <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
-          <h6><i>Al escoger una especie se bloquean los demás criterios</i></h6>
-        </div>
-        <%= hidden_field_tag(:especie_id) %>
-      </fieldset>
-    </div>
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
+      </div>
+      <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
+      </div>
+      <!--div class="col-xs-12 <%#= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
+        <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
+        <%#= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map { |p| [p.nombre_comun_principal.present? ? "#{p.nombre_comun_principal} (#{ponItalicas(p)})".html_safe : ponItalicas(p), p.especie_id] }), :prompt => '- Selecciona una opción -', class: 'form-control input-lg') %>
+      </div-->
 
 
-    <div class="zonificada col-xs-12 <%= 'col-sm-12 col-md-7 col-lg-8' if(@peces.nil?) %>">
-      <fieldset class="text-center">
-        <h5 class="text-primary"><strong>Busca por zonas marinas:</strong></h5>
-        <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-          <%= render :partial => 'peces/svg_zonas_marinas' %>
-          <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
-        </div>
-      </fieldset>
-    </div>
 
-    <div class="text-center col-xs-12" style="margin-top: -60px;">
-      <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
-    </div>
-
-    <div id="agrupada" class="agrupada checkbox col-xs-12">
-      <fieldset class="text-center">
-        <h5 class="text-primary"><strong>Complementa tu búsqueda:</strong></h5>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
-        </div>
-        <div class="clearfix hidden-lg"></div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
-          <%= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map { |p| [p.nombre_comun_principal.present? ? "#{p.nombre_comun_principal} (#{ponItalicas(p)})".html_safe : ponItalicas(p), p.especie_id] }), :prompt => '- Selecciona una opción -', class: 'form-control input-lg') %>
-        </div>
-        <div class="clearfix visible-lg-block"></div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <h5><strong>Selección por grupo de especies</strong></h5>
-          <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-lg' ) %>
-        </div>
-        <div class="clearfix hidden-lg"></div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
-        </div>
-        <div class="clearfix"></div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
-        </div>
-        <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-          <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
-        </div>
-
-      </fieldset>
-    </div>
+    </fieldset>
 
   <% end -%>
 
 </div>
+<style>#soulmate{min-width: 500px; margin-top: 0;}</style>

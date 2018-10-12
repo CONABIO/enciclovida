@@ -19,6 +19,12 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'acumin-pro-extra-condensed';
+  src: url('/fonts/acumin-pro-extra-condensed.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
@@ -30,25 +36,25 @@
   padding: 30px;
 }
 #brandBar .dropdown {
-  margin-top: -32px;
-  margin-right: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1001;
 }
 #menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
   border-bottom-left-radius: 2px;
   font-weight: bold;
 }
-#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
-  margin-top: -1px;
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
-#busqueda_basica{
-  margin-top: 14px;
-}
 
+#brandBar .form-group{margin: 4px 0;}
+#brandBar .btn-group{min-width: 100%;}
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  padding: 5px 5%;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
 #brandBar .btn-busquedas{
-  padding: 4px 10px;
-  margin-top: -1px;
-  border-radius: 2px;
   outline: 0;
   background: rgba(255, 255, 255, 0.15);
 }
@@ -56,18 +62,43 @@
   box-shadow: 3px 3px 5px #424242;
   background: #ffffff60;
 }
-#brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after{
-  font-size: 1.75em!important;
+#brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after, .btn-busquedas b{
+  font-size: 2em!important;
   color: #fafafa !important;
   text-shadow: 1px 1px 1px #333333;
 }
-#brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after{
+#brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after, .btn-busquedas:hover b{
   text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
+.contenedor-titulo-busquedas{
+  height: 104px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
+  background: #544a22;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+}
 .titulo-busquedas{
-  font-family: "texgyreadventorregular", "Helvetica", Arial;
-  margin: 0;
+  width: 1032px;
+  margin: 8px auto;
+  font-size: 40px;
+  font-family: "acumin-pro-extra-condensed";
+  -webkit-text-shadow: 2px 2px 2px #000;
+  -moz-text-shadow: 2px 2px 2px #000;
+  -ms-text-shadow: 2px 2px 2px #000;
+  -o-text-shadow: 2px 2px 2px #000;
+  text-shadow: 2px 2px 2px #000;
+  color: #ffffff;
+}
+.contenedor-titulo-busquedas .liner {
+  width: 50px;
+  height: 5px;
+  margin: 15px 0;
+  border: none;
+  background: #fafafa;
+  position: absolute;
 }
 footer {
   padding: 25px 0;
