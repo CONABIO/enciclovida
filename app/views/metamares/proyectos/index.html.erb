@@ -15,7 +15,7 @@
   <% @proyectos.each do |p| %>
     <tr>
       <td><%= p.id %></td>
-      <td><%= p.nombre_proyecto %></td>
+      <td><%= link_to p.nombre_proyecto, metamares_proyecto_path(p) %></td>
       <td><%= p.autor %></td>
       <td><%= p.campo_investigacion %></td>
       <td><%= p.nombre_institucion %></td>

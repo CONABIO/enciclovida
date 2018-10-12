@@ -2,7 +2,7 @@ es:
   simple_form:
     labels:
       metamares_proyecto:
-        nombre_proyecto: Nombre corto
+        nombre_proyecto: Nombre de la colección de datos
         financiamiento: Financiamiento
         autor: Autor
         tipo_monitoreo: Tipo de monitoreo
@@ -62,7 +62,7 @@ es:
           correo_conatcto: Correo electrónico del contacto
     hints:
       metamares_proyecto:
-        nombre_proyecto: Nombre corto de la colección de datos
+        nombre_proyecto: Nombre corto para identificar la colección de datos
         financiamiento: ¿Quién financió la colección de datos?
         campo_investigacion: ¿Cuál fue la razón principal por la que se recopilaron los datos?
         periodo:
