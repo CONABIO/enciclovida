@@ -19,7 +19,14 @@ es:
           monitoreo_desde: Año de inicio del monitoreo
           monitoreo_hasta: Año de finalización del monitoreo
         region:
-          nombre_region: Nombre de la Región
+          nombre_ubicacion: Nombre de la ubicación
+          nombre_zona: Nombre de la zona
+          nombre_region: Nombre de la región
+          latitud: Latitud
+          longitug: Longitud
+          Entidad: Entidad
+          Cuenca: Cuenca
+          anp: ANP
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto de la colección de datos
@@ -34,7 +41,10 @@ es:
           monitoreo_desde: Fecha desde que se inicio con cualquier tipo de monitoreo
           monitoreo_hasta: Fecha hasta que se finalizó con cualquier tipo de monitoreo
         region:
+          nombre_ubicacion: Una categoría abierta para especificar una área
+          nombre_zona: Una categoría más acotada donde los datos fueron generados
           nombre_region: Una categoría de ubicación más específica
+          anp: Área Natural Protegida
     options:
       metamares_proyecto:
         financiamiento:
@@ -61,10 +71,15 @@ es:
           nombre_region:
             B. Camp. Caribe: Banco de Campeche / Mar Caribe
             Central Pacific: Pacífico Centro
-            Freshwater/Terrestrial: Agua dulce/Terrestre
+            Freshwater/Terrestrial: Dulceacuícola/Terrestre
             G. California: Golfo de California
             South Pacific: Pacífico Sur
             W. G. Mexico: Golfo de México oeste
+          nombre_zona:
+            Atlantic: Océano Atlántico
+            Freshwater/Terrestrial: Dulceacuícola/Terrestre
+            National: Nacional
+            Pacific: Pacífico
 
     "yes": 'Yes'
     "no": 'No'
