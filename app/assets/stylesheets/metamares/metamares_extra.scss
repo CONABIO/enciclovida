@@ -32,13 +32,16 @@ body{
   background-color: #800000;
   padding: 30px;
 }
+#content{
+  padding: 30px 10px;
+}
 #pestañas div.panel-body {
   background-color: #f7f2d930;
   border-left: 1px solid #d3d3d3;
   filter: drop-shadow(3px 3px 3px #cecece);
 }
 footer.legal {
-  background-color: #d9edf7;
+  background-color: #cecece;
   padding: 25px 0;
 }
 
