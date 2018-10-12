@@ -1,5 +1,5 @@
 <div class='nested-fields'>
-  <%= f.input :nombre_region %>
+  <%= f.input :nombre_region, collection: Metamares::RegionM::REGIONES %>
   <%= f.input :latitud, as: :float %>
   <%= f.input :longitud, as: :float %>
   <%= f.input :nombre_zona %>

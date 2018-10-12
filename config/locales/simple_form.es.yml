@@ -18,6 +18,8 @@ es:
           periodo_sistematico_hasta: Fecha de termino del monitoreo sistemático
           monitoreo_desde: Año de inicio del monitoreo
           monitoreo_hasta: Año de finalización del monitoreo
+        region:
+          nombre_region: Nombre de la Región
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto de la colección de datos
@@ -31,6 +33,8 @@ es:
           periodo_sistematico_hasta: ¿Hasta que fecha se realiza un periodo sistemático?
           monitoreo_desde: Fecha desde que se inicio con cualquier tipo de monitoreo
           monitoreo_hasta: Fecha hasta que se finalizó con cualquier tipo de monitoreo
+        region:
+          nombre_region: Una categoría de ubicación más específica
     options:
       metamares_proyecto:
         financiamiento:
@@ -52,7 +56,15 @@ es:
           Tourism: Turismo
         campo_ciencia:
           Natural Science: Ciencias naturales
-          "Social Science": Ciencias sociales
+          Social Science: Ciencias sociales
+        region:
+          nombre_region:
+            B. Camp. Caribe: Banco de Campeche / Mar Caribe
+            Central Pacific: Pacífico Centro
+            Freshwater/Terrestrial: Agua dulce/Terrestre
+            G. California: Golfo de California
+            South Pacific: Pacífico Sur
+            W. G. Mexico: Golfo de México oeste
 
     "yes": 'Yes'
     "no": 'No'
