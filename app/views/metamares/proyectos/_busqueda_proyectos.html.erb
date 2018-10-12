@@ -1,11 +1,12 @@
-<%= form_for :proy_b, method: :get do |f| %>
-  <%= f.text_field :proyecto %>
-  <%= f.text_field :institucion %>
-  <%= f.select :tipo_monitoreo, Metamares::Proyecto::TIPO_MONITOREO.sort.
-      map{ |a| [t("metamares.proyectos.busqueda.#{a}", default: a), a] }, prompt: '--- Todos ---' %>
-  <%= f.text_field :nombre %>
-  <%= f.hidden_field :especie_id %>
+<%= simple_form_for :proy_b, method: :get,  wrapper: :inline_form,
+                    html: { class: "form-inline" } do |f| %>
+  <%= f.input :proyecto, required: false %>
+  <%= f.input :institucion, required: false %>
+  <%= f.input :autor, required: false %>
+  <%= f.input :tipo_monitoreo, collection:Metamares::Proyecto::TIPO_MONITOREO.sort.map{ |a| [t("metamares.proyectos.busqueda.#{a}", default: a), a] }, prompt: '--- Todos ---', required: false %>
+  <%= f.input :nombre, required: false %>
+  <%= f.hidden_field :especie_id, class: 'form-control'  %>
 
-  <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...' } %>
-  <%= f.submit :Reiniciar, type: :reset %>
+  <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...', :class => 'btn btn-success'} %>
+  <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default' %>
 <% end %>

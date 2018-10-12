@@ -3,17 +3,19 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
 
   def index
+    busqueda = Metamares::BusquedaProyecto.new
     if params[:commit].present? && params[:commit] == 'Buscar'
-      busqueda = Metamares::BusquedaProyecto.new
       busqueda.params = proyecto_busqueda_params
       busqueda.consulta
 
-      @proyectos = busqueda.proyectos
-      @totales = busqueda.totales
-    else
-      @proyectos = Metamares::Proyecto.all
-      @totales = @proyectos.length
+    #   @proyectos = busqueda.proyectos
+    #   @totales = busqueda.totales
+    # else
+    #   @proyectos = Metamares::Proyecto.all
+    #   @totales = @proyectos.length
     end
+    @proyectos = busqueda.proyectos.limit(5)
+    @totales = busqueda.totales
   end
 
   def show
@@ -97,7 +99,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def proyecto_busqueda_params
-    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo)
+    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor)
   end
 
 end
