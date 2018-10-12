@@ -3,7 +3,7 @@
   <%= f.input :titulo_compilacion %>
   <%= f.input :descarga_datos %>
   <%= f.input :licencia_uso %>
-  <%= f.input :estatus_datos %>
+  <%= f.input :estatus_datos, collection: Metamares::Dato::ESTATUS_DATOS %>
   <%= f.input :descripcion_base %>
   <%= f.input :resolucion_temporal %>
   <%= f.input :resolucion_espacial %>

@@ -31,7 +31,7 @@ es:
           titulo_conjunto_datos: Título de la coleccón de datos
           titulo_compilacion: Título de la compilación
           descarga_datos: Descarga de datos
-          licencia_uso: Creative Commons para esta colección de datos
+          licencia_uso: Creative Commons
           estatus_datos: Disposición de datos al público
           descripcion_base: Descripción de la colección de datos
           resolucion_temporal: Resolución temporal
@@ -110,6 +110,11 @@ es:
             Freshwater/Terrestrial: Dulceacuícola/Terrestre
             National: Nacional
             Pacific: Pacífico
+        dato:
+          estatus_datos:
+            Public access: Acceso público
+            Restricted access: Acceso restringido
+            Private access: Acceso privado
 
     "yes": 'Yes'
     "no": 'No'
