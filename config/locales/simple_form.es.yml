@@ -27,6 +27,22 @@ es:
           Entidad: Entidad
           Cuenca: Cuenca
           anp: ANP
+        dato:
+          titulo_conjunto_datos: Título de la coleccón de datos
+          titulo_compilacion: Título de la compilación
+          descarga_datos: Descarga de datos
+          licencia_uso: Creative Commons para esta colección de datos
+          estatus_datos: Disposición de datos al público
+          descripcion_base: Descripción de la colección de datos
+          resolucion_temporal: Resolución temporal
+          resolucion_espacial: Resolución espacial
+          publicaciones: Publicaciones
+          publicacion_url: Enlace de la publicación
+          publicacion_anio: Año de la publicación
+          forma_citar: Cita
+          notas_adicionales: Notas adicionales
+          numero_ejemplares: Número de ejemplares
+          tipo_unidad: Tipo de unidad
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto de la colección de datos
@@ -45,6 +61,20 @@ es:
           nombre_zona: Una categoría más acotada donde los datos fueron generados
           nombre_region: Una categoría de ubicación más específica
           anp: Área Natural Protegida
+        dato:
+          titulo_conjunto_datos: Título original de la colección de los datos
+          titulo_compilacion: Nombre del documento o respositorio donde los datos estan disponibles
+          descarga_datos: Enlace de consulta, descarga, responsable o información acerca de la coleccòn
+          licencia_uso: Elige el Creative Commons adecuado para esta colección
+          estatus_datos: ¿Cómo quieres poner esta colección de datos visible al público?
+          resolucion_temporal: ¿Cuál es la resolución temporal de los datos?
+          resolucion_espacial: ¿Cuál es la resolución espacial de los datos?
+          publicaciones: Publicaciones donde la colección fue publicada
+          publicacion_url: Enlace de la pblicación
+          publicacion_anio: Año en que la colección de datos fue publicada
+          forma_citar: Forma de citar esta colección de datos
+          numero_ejemplares: Cantidad de ejemplares disponibles en la colección de datos
+          tipo_unidad: La unidad usada para la colección
     options:
       metamares_proyecto:
         financiamiento:
