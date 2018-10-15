@@ -128,9 +128,9 @@ footer.legal p {
 }
 .btn-title[tooltip-title]:hover:after {
   content: attr(tooltip-title);
-  font-size: small;
-  padding: 1px 4px;
-  color: #800000;
+  font-size: medium;
+  padding: 2px 4px;
+  color: #333;
   position: absolute;
   left: 50%;
   top: 95%;
