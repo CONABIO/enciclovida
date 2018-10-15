@@ -1,7 +1,6 @@
 <% @peces.each do |pez| %>
   <div class="result-img-container">
 
-
     <% if pez.con_estrella %>
       <i class="certificacion-ev-icon pull-right"></i>
     <% end %>
@@ -16,9 +15,7 @@
     <div class="result-nombre-container">
       <%= dibujaZonasPez(pez).html_safe %>
       <%= tituloNombreCientifico(pez.especie, :link => true).html_safe %>
-
     </div>
 
   </div>
-
 <% end %>

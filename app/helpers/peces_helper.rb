@@ -52,11 +52,16 @@ module PecesHelper
 
   def dibujaZonasPez pez
     @filtros[:zonas]
-    lista = '<ul>'<<'<small><b>Zonas: </b></small>'
-    @filtros[:zonas].each_with_index do |z, i|
-      lista << "<li tooltip-title='#{z[0]}' class='btn-title btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0].split(' ').last}</li>"
+    lista = ''
+    lista << "<ul><li>"
+    @filtros[:zonas][0..2].each_with_index do |z, i|
+      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
     end
-    lista << '</ul>'
+    lista << '</li><li>'
+    @filtros[:zonas][3..5].each_with_index do |z, i|
+      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
+    end
+    lista << '</li></ul>'
   end
 
   # Muestra los criterios con el orden indicado

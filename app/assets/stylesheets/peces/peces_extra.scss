@@ -72,7 +72,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .recomendada input:not(#nombre), .zonificada label{display: none;}
 .recomendada input + span, .popover-content button {
   padding: 0px;
-  text-shadow: 1px 1px 4px rgba(150, 150, 150, 1);
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
   margin: 0px -2px;
   border: none;
   font-size: 3.5em;
@@ -170,7 +170,13 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   margin: 0;
   background-color: #ececec;
   position: relative;
-
+}
+.result-nombre-container ul {
+  list-style: none;
+  padding: 0px;
+}
+.result-nombre-container li{
+  display: inline-table;
 }
 .resultados-peces .result-img-container h5{
   margin: 0;
@@ -206,14 +212,15 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
 }
 
 .btn-zona{
-  display: inline-table;
-  padding: 2px 0px;
+  display: block;
+  padding: 2px 4px;
   font-weight: bold;
   text-align: center;
   border-radius: 2px;
-  margin: 0px 1px 0px 0px;
-  width: 25px;
-  font-size: .8em;
+  margin: 2px 25px;
+  /*width: 30px;*/
+  /*height: 60px;*/
+  font-size: .85em;
 }
 .btn-zona, .label, .badge, .btn-zona-show{color: #fafafa!important;}
 .btn-zona-show{
@@ -222,9 +229,12 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   min-height: 100px;
 }
 .btn-zona-star{
-  background: #b98303;
-  fill: #b98303;
-  color: #b98303;
+  background: #DAA621;
+  fill: #DAA621;
+  color: #DAA621;
+}
+.btn-zona-star{
+  text-shadow: -1px 0px 0px #fafafa!important;
 }
 .btn-zona-v{
   color: #9ab635;
@@ -270,9 +280,9 @@ path[id^=path_zonas_]:hover{fill: #17325f!important;}
 
 svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
 text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;font-size: .5em}
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #fafafa;}
+text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #000b52;}
 
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .7em;}
+text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .55em; font-weight: bolder;}
 
 #path_zonas_pacifico-i:hover ~ #titulo_zonas_pacifico-i, #path_zonas_pacifico-ii:hover ~ #titulo_zonas_pacifico-ii, #path_zonas_pacifico-iii:hover ~ #titulo_zonas_pacifico-iii, #path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-iv, #path_zonas_golfo-de-mexico-y-caribe-v:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-v, #path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-vi, .modal-path_zonas_pacifico-i:hover ~ .modal-titulo_zonas_pacifico-i, .modal-path_zonas_pacifico-ii:hover ~ .modal-titulo_zonas_pacifico-ii, .modal-path_zonas_pacifico-iii:hover ~ .modal-titulo_zonas_pacifico-iii, .modal-path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-iv, .modal-path_zonas_golfo-de-mexico-y-caribe-v:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-v, .modal-path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-vi{display:block;}
 
