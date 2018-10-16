@@ -45,7 +45,7 @@ class Pmc::Propiedad < ActiveRecord::Base
     resp = Rails.cache.fetch('propiedades_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
       grouped_options = {}
 
-      Propiedad.all.each do |prop|
+      Pmc::Propiedad.all.each do |prop|
 
         next if prop.existe_propiedad?
         next if prop.is_root?

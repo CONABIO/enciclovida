@@ -13,7 +13,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # GET /peces/1
   def show
-    @pez = Pez.find(params[:id])
+    @pez = Pmc::Pez.find(params[:id])
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
     render :layout => false and return if params[:layout].present?
@@ -21,7 +21,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # GET /peces/new
   def new
-    @pez = Pez.new
+    @pez = Pmc::Pez.new
   end
 
   # GET /peces/1/edit
@@ -30,7 +30,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # POST /peces
   def create
-    @pez = Pez.new(pez_params)
+    @pez = Pmc::Pez.new(pez_params)
 
     if @pez.save
       redirect_to pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
@@ -56,11 +56,11 @@ class Pmc::PecesController < Pmc::PmcController
 
   def busqueda
     @filtros =  Criterio.dame_filtros
-    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
+    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
 
 
     if params[:commit].present?
-      @peces = Pez.filtros_peces
+      @peces = Pmc::Pez.filtros_peces
 
       # Busqueda por nombre científico o comunes
       @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
@@ -80,7 +80,7 @@ class Pmc::PecesController < Pmc::PmcController
       # Filtro de grupo iconico
       if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
         ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
-        @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
+        @peces = @peces.where("#{Pmc::Especie.table_name}.#{Pmc::Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
       end
 
       # Busqueda con estrella
@@ -114,9 +114,9 @@ class Pmc::PecesController < Pmc::PmcController
     tipo = params[:tipo]
     case tipo
     when 'cientifico'
-      render json: Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
+      render json: Pmc::Pez.nombres_cientificos_peces.where("nombre_cientifico LIKE ?", "%#{params[:term]}%").to_json
     when 'comunes'
-      render json: Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
+      render json: Pmc::Pez.nombres_comunes_peces.where("nombres_comunes LIKE ?", "%#{params[:term]}%").to_json
     else
       render json: [{error: 'no encontre'}].to_json
     end
@@ -125,7 +125,7 @@ class Pmc::PecesController < Pmc::PmcController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_pez
-    @pez = Pez.find(params[:id])
+    @pez = Pmc::Pez.find(params[:id])
   end
 
   # Only allow a trusted parameter "white list" through.
@@ -161,47 +161,47 @@ class Pmc::PecesController < Pmc::PmcController
       dato[:ancestry] = c.ancestry
 
       case c.ancestry
-      when Propiedad::NOM_ID.to_s
+      when Pmc::Propiedad::NOM_ID.to_s
         nombre_prop = c.nombre_propiedad.estandariza
         criterios['suma_caracteristicas']+= c.valor
         dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
         criterios['Características'][0] = dato
-      when Propiedad::IUCN_ID.to_s
+      when Pmc::Propiedad::IUCN_ID.to_s
         nombre_prop = c.nombre_propiedad.estandariza
         criterios['suma_caracteristicas']+= c.valor
         dato[:icono] = "#{nombre_prop}-ev-icon" if nombre_prop != 'no-aplica'
         criterios['Características'][1] = dato
-      when Propiedad::TIPO_CAPTURA_ID.to_s
+      when Pmc::Propiedad::TIPO_CAPTURA_ID.to_s
         criterios['suma_caracteristicas']+= c.valor
         criterios['Características'][2] = dato
-      when Propiedad::TIPO_DE_VEDA_ID.to_s
+      when Pmc::Propiedad::TIPO_DE_VEDA_ID.to_s
         criterios['suma_caracteristicas']+= c.valor
 
-        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+        if Pmc::Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
           dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
         end
 
         criterios['Características'][3] = dato
-      when Propiedad::PROCEDENCIA_ID.to_s
+      when Pmc::Propiedad::PROCEDENCIA_ID.to_s
         criterios['suma_caracteristicas']+= c.valor
 
-        if Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
+        if Pmc::Criterio::CON_ADVERTENCIA.include?(c.nombre_propiedad)
           dato[:advertencia] = 'glyphicon glyphicon-exclamation-sign'
         end
 
         criterios['Características'][4] = dato
 
-      when Propiedad::ZONAI
+      when Pmc::Propiedad::ZONAI
         criterios['Estado poblacional en el Pacífico'][0] = dato
-      when Propiedad::ZONAII
+      when Pmc::Propiedad::ZONAII
         criterios['Estado poblacional en el Pacífico'][1] = dato
-      when Propiedad::ZONAIII
+      when Pmc::Propiedad::ZONAIII
         criterios['Estado poblacional en el Pacífico'][2] = dato
-      when Propiedad::ZONAIV
+      when Pmc::Propiedad::ZONAIV
         criterios['Estado poblacional en el Golfo de México y caribe'][0] = dato
-      when Propiedad::ZONAV
+      when Pmc::Propiedad::ZONAV
         criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
-      when Propiedad::ZONAVI
+      when Pmc::Propiedad::ZONAVI
         criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
       else
         criterios['otros'] << dato

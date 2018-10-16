@@ -99,7 +99,7 @@ class Pmc::Pez < ActiveRecord::Base
 
     # Para actualizar o crear el valor de la nom
     if nom = especie.catalogos.nom.first
-      if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: nom.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end
@@ -120,7 +120,7 @@ class Pmc::Pez < ActiveRecord::Base
     criterio_id = 159
 
     if iucn = especie.catalogos.iucn.first
-      if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end
