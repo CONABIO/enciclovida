@@ -5,57 +5,14 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre]
+  before_action :authenticate_usuario!, :except => [:show, :index, :dameNombre]
   before_action :only => [:new, :update, :edit, :create, :destroy] do
     tiene_permiso?('AdminPeces', true)  # Minimo administrador
   end
 
-
-  # GET /peces/1
-  def show
-    @pez = Pmc::Pez.find(params[:id])
-    criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
-    @criterios = acomoda_criterios(criterios)
-    render :layout => false and return if params[:layout].present?
-  end
-
-  # GET /peces/new
-  def new
-    @pez = Pmc::Pez.new
-  end
-
-  # GET /peces/1/edit
-  def edit
-  end
-
-  # POST /peces
-  def create
-    @pez = Pmc::Pez.new(pez_params)
-
-    if @pez.save
-      redirect_to pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
-    else
-      render action: 'new'
-    end
-  end
-
-  # PATCH/PUT /peces/1
-  def update
-    if @pez.update_attributes(pez_params)
-      redirect_to @pez, notice: 'El Pez fue actualizado satisfactoriamente.'
-    else
-      render action: 'edit'
-    end
-  end
-
-  # DELETE /peces/1
-  def destroy
-    @pez.destroy
-    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
-  end
-
-  def busqueda
-    @filtros =  Criterio.dame_filtros
+  # Busqueda por pez y marisco
+  def index
+    @filtros =  Pmc::Criterio.dame_filtros
     @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
 
 
@@ -110,6 +67,49 @@ class Pmc::PecesController < Pmc::PmcController
     end
   end
 
+  # GET /peces/1
+  def show
+    @pez = Pmc::Pez.find(params[:id])
+    criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
+    @criterios = acomoda_criterios(criterios)
+    render :layout => false and return if params[:layout].present?
+  end
+
+  # GET /peces/new
+  def new
+    @pez = Pmc::Pez.new
+  end
+
+  # GET /peces/1/edit
+  def edit
+  end
+
+  # POST /peces
+  def create
+    @pez = Pmc::Pez.new(pez_params)
+
+    if @pez.save
+      redirect_to pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
+    else
+      render action: 'new'
+    end
+  end
+
+  # PATCH/PUT /peces/1
+  def update
+    if @pez.update_attributes(pez_params)
+      redirect_to @pez, notice: 'El Pez fue actualizado satisfactoriamente.'
+    else
+      render action: 'edit'
+    end
+  end
+
+  # DELETE /peces/1
+  def destroy
+    @pez.destroy
+    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
+  end
+
   def dameNombre
     tipo = params[:tipo]
     case tipo
@@ -122,7 +122,9 @@ class Pmc::PecesController < Pmc::PmcController
     end
   end
 
+
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_pez
     @pez = Pmc::Pez.find(params[:id])

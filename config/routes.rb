@@ -1,10 +1,8 @@
 Buscador::Application.routes.draw do
 
   namespace :pmc do
-    resources :peces, :as => :pez, except: :index do
+    resources :peces, :as => :pez do
       collection do
-        get :busqueda
-        post :busqueda
         get :dameNombre
       end
     end
@@ -12,8 +10,6 @@ Buscador::Application.routes.draw do
     resources :criterios
     resources :propiedades
   end
-
-  get 'peces' => 'peces#busqueda'
 
   resources :regiones_mapas do
     collection do
