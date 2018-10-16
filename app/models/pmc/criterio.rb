@@ -2,7 +2,7 @@ class Pmc::Criterio < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.criterios"
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :criterio_id
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :criterio_id
   has_many :peces, :through => :peces_criterios, :source => :pez
 
   belongs_to :propiedad
@@ -31,7 +31,7 @@ class Pmc::Criterio < ActiveRecord::Base
       resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
         grouped_options = {}
 
-        Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
+        Pmc::Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
           prop = c.propiedad
           next if prop.existe_propiedad?([Pmc::Propiedad::NOM_ID, Pmc::Propiedad::IUCN_ID])
           #next if prop.existe_propiedad?

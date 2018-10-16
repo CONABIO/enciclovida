@@ -3,11 +3,11 @@ class Pmc::Pez < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :especie_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie

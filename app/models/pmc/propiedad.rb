@@ -2,10 +2,10 @@ class Pmc::Propiedad < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.propiedades"
 
-  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :propiedad_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Criterio', :foreign_key => :propiedad_id
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id
 
   has_ancestry
 
