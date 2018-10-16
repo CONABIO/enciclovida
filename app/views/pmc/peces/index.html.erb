@@ -1,13 +1,14 @@
 <%- content_for(:extracss) do -%>
   <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
+
 <% content_for(:extra_title_header) do %>
   <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales'} %>
 <% end %>
 
 <%= notice if notice.present? %>
 <div id="busqueda_avanzada" class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1'  %>">
-  <%= form_tag busqueda_pez_index_path, :method => :post, :class => '', :id => :b_peces  do %>
+  <%= form_tag pmc_pez_index_path, :method => :get, :class => '', :id => :b_peces  do %>
 
 
     <h5 class="text-primary"><strong>Selecciona:</strong></h5>
@@ -28,7 +29,7 @@
     <fieldset class="zonificada col-xs-12 <%= 'col-md-6' if(@peces.nil?) %>">
       <h5><strong>3. Región</strong></h5>
       <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
-        <%= render :partial => 'peces/svg_zonas_marinas' %>
+        <%= render :partial => 'svg_zonas_marinas' %>
         <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
       </div>
     </fieldset>
@@ -90,9 +91,6 @@
         <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
         <%#= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map { |p| [p.nombre_comun_principal.present? ? "#{p.nombre_comun_principal} (#{ponItalicas(p)})".html_safe : ponItalicas(p), p.especie_id] }), :prompt => '- Selecciona una opción -', class: 'form-control input-lg') %>
       </div-->
-
-
-
     </fieldset>
 
   <% end -%>

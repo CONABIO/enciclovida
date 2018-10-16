@@ -37,7 +37,7 @@ class Pmc::PecesController < Pmc::PmcController
       # Filtro de grupo iconico
       if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
         ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
-        @peces = @peces.where("#{Pmc::Especie.table_name}.#{Pmc::Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
+        @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
       end
 
       # Busqueda con estrella
@@ -63,7 +63,7 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
-      render :file => 'peces/resultados'
+      render :file => 'pmc/peces/resultados'
     end
   end
 
