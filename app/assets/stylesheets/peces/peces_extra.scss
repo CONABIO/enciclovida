@@ -271,20 +271,19 @@ path{
   stroke-width: .5px;
 }
 
-path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
-path[id^=path_zonas_]:hover{fill: #17325f!important;}
-.zona-seleccionada{fill: #17325f!important;}
+path[id^=path_zonas_]{cursor: pointer;fill: #a0ccea;}
+path[id^=path_zonas_]:hover{fill: #a0ccea59;}
+.zona-seleccionada{
+  fill: #a0ccea45!important;
+  stroke: #018dc1 !important;
+  stroke-width: .65px!important;
+}
 #sea-states, .modal-sea-states{fill: #b9da9d;}
 #earth-states, .modal-earth-states{fill: #f2ffbd;}
-#extranjero, .modal-extranjero{fill: #c1c1c1;}
+#extranjero, .modal-extranjero{fill: #f0f0f0;}
 
 svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
-text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;font-size: .5em}
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #000b52;}
-
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .55em; font-weight: bolder;}
-
-#path_zonas_pacifico-i:hover ~ #titulo_zonas_pacifico-i, #path_zonas_pacifico-ii:hover ~ #titulo_zonas_pacifico-ii, #path_zonas_pacifico-iii:hover ~ #titulo_zonas_pacifico-iii, #path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-iv, #path_zonas_golfo-de-mexico-y-caribe-v:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-v, #path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-vi, .modal-path_zonas_pacifico-i:hover ~ .modal-titulo_zonas_pacifico-i, .modal-path_zonas_pacifico-ii:hover ~ .modal-titulo_zonas_pacifico-ii, .modal-path_zonas_pacifico-iii:hover ~ .modal-titulo_zonas_pacifico-iii, .modal-path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-iv, .modal-path_zonas_golfo-de-mexico-y-caribe-v:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-v, .modal-path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-vi{display:block;}
+text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder;}
 
 .checkbox i{
   font-size: 1.7em;
