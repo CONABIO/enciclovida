@@ -13,7 +13,7 @@ $(document).ready(function(){
     $('#multiModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
         var idEspecie = $(button).data('especie-id');
-        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
+        var pestaña = '/pmc/peces/'+idEspecie+'?layout=0 #panel-body';
         $('#multiModalBody').load(pestaña);
         $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
     });

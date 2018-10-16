@@ -26,7 +26,7 @@
       <div class="col-xs-8 col-xs-offset-1">
         <b>
           <%= c[:tipo_propiedad] %>
-          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+          <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
             <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
           <% end %>
         </b><br />
@@ -59,7 +59,7 @@
       <div class="col-xs-2 text-center">
         <h4 class="btn-zona-show <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
           <%= c[:tipo_propiedad] %>
-          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+          <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
             <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
           <% end %>
           <br />
@@ -78,7 +78,7 @@
       <div class="col-xs-2 text-center">
         <h4 class="btn-zona-show <%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
           <%= c[:tipo_propiedad] %>
-          <% if Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+          <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
             <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
           <% end %>
           <br />
