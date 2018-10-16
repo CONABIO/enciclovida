@@ -1,4 +1,5 @@
-class PecesController < ApplicationController
+class Pmc::PecesController < Pmc::PmcController
+
   before_action do
     @no_render_busqueda_basica = true
   end

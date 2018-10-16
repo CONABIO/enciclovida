@@ -1,4 +1,4 @@
-class Propiedad < ActiveRecord::Base
+class Pmc::Propiedad < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.propiedades"
 

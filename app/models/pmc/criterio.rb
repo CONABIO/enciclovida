@@ -1,4 +1,4 @@
-class Criterio < ActiveRecord::Base
+class Pmc::Criterio < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.criterios"
 

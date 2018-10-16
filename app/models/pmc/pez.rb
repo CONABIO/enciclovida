@@ -1,4 +1,4 @@
-class Pez < ActiveRecord::Base
+class Pmc::Pez < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
