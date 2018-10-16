@@ -15,7 +15,6 @@ class Pmc::PecesController < Pmc::PmcController
     @filtros =  Pmc::Criterio.dame_filtros
     @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
 
-
     if params[:commit].present?
       @peces = Pmc::Pez.filtros_peces
 
@@ -69,7 +68,6 @@ class Pmc::PecesController < Pmc::PmcController
 
   # GET /peces/1
   def show
-    @pez = Pmc::Pez.find(params[:id])
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
     render :layout => false and return if params[:layout].present?
