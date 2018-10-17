@@ -6,7 +6,8 @@
       <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
-      <li><%= link_to 'Búsqueda de colecciones', metamares_proyectos_path %></li>
+      <li><%= link_to 'Búsqueda de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Nuevo registro de colección', new_metamares_proyecto_path, data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
       <% if usuario_signed_in? %>
         <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false } %></li>

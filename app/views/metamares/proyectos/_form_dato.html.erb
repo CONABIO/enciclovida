@@ -2,7 +2,7 @@
   <%= f.input :titulo_conjunto_datos %>
   <%= f.input :titulo_compilacion %>
   <%= f.input :descarga_datos %>
-  <%= f.input :licencia_uso %>
+  <%= f.input :licencia_uso, collection: Metamares::Dato::CREATIVE_COMMONS %>
   <%= f.input :estatus_datos, collection: Metamares::Dato::ESTATUS_DATOS %>
   <%= f.input :descripcion_base %>
   <%= f.input :resolucion_temporal %>
