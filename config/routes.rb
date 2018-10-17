@@ -11,6 +11,8 @@ Buscador::Application.routes.draw do
     resources :propiedades
   end
 
+  get 'peces' => 'pmc/peces#index'
+
   resources :regiones_mapas do
     collection do
       get 'dame-tipo-region' => :dame_tipo_region

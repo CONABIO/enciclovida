@@ -62,7 +62,7 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
-      render :file => 'pmc/peces/resultados'
+      render :file => 'resultados'
     end
   end
 
