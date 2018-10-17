@@ -1,5 +1,5 @@
 var limpiaBusqueda = function(){
-    $(".agrupada *, .recomendada *, #nombre").attr("disabled", false).removeClass("disabled");
+    $(".porGrupo *, .porSemaforo *, .porZonas *, .porNombreGrupo * .porCriterios *, #nombre").attr("disabled", false).removeClass("disabled");
     $( "#especie_id, #nombre" ).val('');
 };
 
@@ -10,18 +10,20 @@ $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
 
-    $('#multiModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
+    $('[data-toggle="popover"]').one('click', function(){
+        var button = $(this);
         var idEspecie = $(button).data('especie-id');
-        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
-        $('#multiModalBody').load(pestaña);
-        $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
-    });
-
-    //Eliminar contenido del modal-body y modal header (para poder reutilizar el modal en peces)
-    $('#multiModal').on('hide.bs.modal', function(){
-        $('#multiModalBody').empty();
-        $('.modal-header h5').remove();
+        var pestaña = '/peces/'+idEspecie+'?mini=true';
+        jQuery.get(pestaña).done(function(data){
+            button.popover({
+                html:true,
+                container: 'body',
+                placement:'bottom',
+                title: 'Criterios',
+                trigger: 'focus',
+                content: data
+            }).popover('show');
+        });
     });
 
     $("path[id^=path_zonas_]").on('click', function(){
@@ -30,9 +32,9 @@ $(document).ready(function(){
         input.prop("checked", !input.prop("checked"));
     });
 
-    $(window).load(function(){
+    //$(window).load(function(){
         $("html,body").animate({scrollTop: 105}, 500);
-    });
+    //});
 });
 
 var scroll_array = false;

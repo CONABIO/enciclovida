@@ -15,7 +15,14 @@ class PecesController < ApplicationController
     @pez = Pez.find(params[:id])
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
-    render :layout => false and return if params[:layout].present?
+    respond_to do |format|
+      if params[:mini].present?
+        #render :partial => 'mini_show', :layout => false and return
+        render :partial => 'mini_show' and return
+      end
+      format.html # show.html.erb
+      format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
+    end
   end
 
   # GET /peces/new
