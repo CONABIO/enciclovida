@@ -87,7 +87,7 @@ class Pmc::PecesController < Pmc::PmcController
     @pez = Pmc::Pez.new(pez_params)
 
     if @pez.save
-      redirect_to pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
+      redirect_to pmc_pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
     else
       render action: 'new'
     end
@@ -105,7 +105,7 @@ class Pmc::PecesController < Pmc::PmcController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to '/peces/busqueda', notice: 'El pez fue destruido satisfactoriamente.'
+    redirect_to pmc_pez_index_patn, notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def dameNombre
@@ -130,7 +130,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+    params.require(:pmc_pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
                                 peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
