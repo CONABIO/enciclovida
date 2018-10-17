@@ -51,7 +51,7 @@
   padding: 1em 0;
   min-height: 125px;
 }
-.exacta input.disabled, .agrupada select.disabled, .recomendada input.disabled, .recomendada span.disabled, .recomendada select.disabled{
+.porNombreGrupo input.disabled, .porCriterios select.disabled, .porSemaforo input.disabled, .porSemaforo span.disabled, .porSemaforo select.disabled{
   color: #888;
   background-color: #ddd;
 }
@@ -59,18 +59,13 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
   box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
 }
-.recomendada label{
-  max-width: 100px;
-  height: 65px;
-  vertical-align: middle;
-}
-.recomendada label.info-label{
+.porSemaforo label:nth-of-type(4){
   font-size: smaller;
-  border-left: 3px solid #DADADA;
-  margin-left: 3px;
+  /*border-left: 1px solid #DADADA;*/
+  margin-left: 1.5em;
 }
-.recomendada input:not(#nombre), .zonificada label{display: none;}
-.recomendada input + span, .popover-content button {
+.porGrupo input, .porSemaforo input, .porZonas label{display: none;}
+.porSemaforo input + span, .porGrupo input + span, .popover-content button {
   padding: 0px;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
   margin: 0px -2px;
@@ -78,25 +73,23 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-size: 3.5em;
   background: none;
 }
-.popover-content button{
-  font-size: 1.5em!important;
-}
+.popover-content button{font-size: 1.5em!important;}
 span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
-.recomendada input:checked + span, .recomendada input + span:hover{
+.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover{
   color: #a0a0a0;
   text-shadow: 3px 2px 4px #ececec;
   border-radius: 50%;
 }
 
 .botones-peces{
-  width: 20%;
+  width: 45%;
   transition-delay: 0ms;
   transition-property: width;
   transition-duration: 500ms;
   transition-timing-function: ease-in-out;
 }
 .botones-peces:hover{
-  width: 75%;
+  width: 50%;
 }
 .botones-peces:hover:after{
   content: " " attr(title) " ";
