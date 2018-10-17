@@ -69,17 +69,17 @@ class Pmc::Propiedad < ActiveRecord::Base
 
   def nombre_zona_a_numero
     case nombre_propiedad
-      when 'Pacífico I'
+      when 'Pacífico norte'
         0
-      when 'Pacífico II'
+      when 'Golfo de California'
         1
-      when 'Pacífico III'
+      when 'Pacífico sur'
         2
-      when 'Golfo de México y Caribe IV'
+      when 'Golfo de México norte'
         3
-      when 'Golfo de México y Caribe V'
+      when 'Golfo de México sur'
         4
-      when 'Golfo de México y Caribe VI'
+      when 'Caribe'
         5
     end
   end

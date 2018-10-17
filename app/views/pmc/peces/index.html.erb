@@ -11,45 +11,46 @@
   <%= form_tag pmc_pez_index_path, :method => :get, :class => '', :id => :b_peces  do %>
 
 
-    <h5 class="text-primary"><strong>Selecciona:</strong></h5>
+    <h4 class="text-primary"><strong>Selecciona:</strong></h4>
 
-    <fieldset class=" recomendada col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-      <h5><strong>1. Peces o mariscos</strong></h5>
+    <fieldset class="porGrupo col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+      <h4><strong>1. Peces o mariscos</strong></h4>
       <%= checkboxGruposIconicos %>
     </fieldset>
 
-    <fieldset class="recomendada col-xs-12 <%= 'col-sm-12 col-md-6' if(@peces.nil?) %> form-peces">
+    <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-6' if(@peces.nil?) %> form-peces">
+      <h4>
+        <strong>2. Semáforo</strong>
+      </h4>
       <h5>
-        <strong>2. Semáforo</strong> <em>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la poblacion</em>
-        <%= link_to "Más info <span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-basica btn-xs' %>
+        <i>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la poblacion <%= link_to "Más info <span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-basica' %></i>
       </h5>
-      <%= checkboxRecomendacion %>
+      <%= checkboxSemaforo %>
     </fieldset>
 
-    <fieldset class="zonificada col-xs-12 <%= 'col-md-6' if(@peces.nil?) %>">
-      <h5><strong>3. Región</strong></h5>
+    <fieldset class="porZonas col-xs-12 <%= 'col-md-6' if(@peces.nil?) %>">
+      <h4><strong>3. Región</strong></h4>
       <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
         <%= render :partial => 'svg_zonas_marinas' %>
         <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
       </div>
     </fieldset>
 
-    <fieldset class="exacta col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
-      <h5><strong>También puedes buscar:</strong></h5>
-      <div class="col-xs-12 col-md-6">
+    <fieldset class="porNombreGrupo col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+      <h4><strong>También puedes buscar:</strong></h4>
+      <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por especie</strong>
         <%= hidden_field_tag :id %>
         <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-sm' %>
       </div>
-      <!--h6><i>(Al escoger una especie se bloquean los demás criterios)</i></h6-->
       <%= hidden_field_tag(:especie_id) %>
-      <div class="col-xs-12 col-md-6">
+      <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por grupo</strong>
         <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
       </div>
     </fieldset>
 
-    <div class="text-center">
+    <div class="text-center col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
       <small>(Bajar para más filtros de búsqueda)</small>
       <br />
       <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
@@ -65,7 +66,7 @@
     <div class="clearfix"></div>
     <hr>
 
-    <fieldset id="agrupada" class="agrupada checkbox col-xs-12">
+    <fieldset id="porCriterios" class="porCriterios checkbox col-xs-12">
       <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
         <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
       </div>
@@ -88,7 +89,7 @@
         <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
       </div>
       <!--div class="col-xs-12 <%#= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
-        <h5><strong>Especies en pesquerías con vías de sustentabilidad</strong></h5>
+        <h4><strong>Especies en pesquerías con vías de sustentabilidad</strong></h4>
         <%#= select_tag(:pesquerias, options_for_select(@filtros[:pesquerias].map { |p| [p.nombre_comun_principal.present? ? "#{p.nombre_comun_principal} (#{ponItalicas(p)})".html_safe : ponItalicas(p), p.especie_id] }), :prompt => '- Selecciona una opción -', class: 'form-control input-lg') %>
       </div-->
     </fieldset>

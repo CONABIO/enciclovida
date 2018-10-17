@@ -66,11 +66,16 @@ class Pmc::PecesController < Pmc::PmcController
     end
   end
 
-  # GET /peces/1
   def show
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
-    render :layout => false and return if params[:layout].present?
+    respond_to do |format|
+      if params[:mini].present?
+        render :partial => 'mini_show' and return
+      end
+      format.html # show.html.erb
+      format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
+    end
   end
 
   # GET /peces/new
@@ -131,7 +136,7 @@ class Pmc::PecesController < Pmc::PmcController
   # Only allow a trusted parameter "white list" through.
   def pez_params
     params.require(:pmc_pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
-                                peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
+                                    peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
   def dame_regexp_zonas(opc = {})

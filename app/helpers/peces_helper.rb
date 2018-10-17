@@ -14,11 +14,10 @@ module PecesHelper
     checkBoxes.html_safe
   end
 
-  def checkboxRecomendacion
+  def checkboxSemaforo
     checkBoxes = ''
     s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :sn => ['Especies sin datos','semaforo-no-datos']}
     s.each do |k,v|
-      checkBoxes << "<label class='info-label'><small><b>#{v[0]}:</b></small></label>" if k == :star || k == :sn
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0].parameterize}")
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"
@@ -52,11 +51,16 @@ module PecesHelper
 
   def dibujaZonasPez pez
     @filtros[:zonas]
-    lista = '<ul>'<<'<small><b>Zonas: </b></small>'
-    @filtros[:zonas].each_with_index do |z, i|
-      lista << "<li tooltip-title='#{z[0]}' class='btn-title btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0].split(' ').last}</li>"
+    lista = ''
+    lista << "<ul><li>"
+    @filtros[:zonas][0..2].each_with_index do |z, i|
+      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
     end
-    lista << '</ul>'
+    lista << '</li><li>'
+    @filtros[:zonas][3..5].each_with_index do |z, i|
+      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
+    end
+    lista << '</li></ul>'
   end
 
   # Muestra los criterios con el orden indicado
@@ -70,7 +74,16 @@ module PecesHelper
             when 5..19 then "a"
             else "r"
             end
-    "btn-zona-#{color}"
+    color
   end
+
+    def valorAIcono valor
+    clase = case valor
+            when "v" then "semaforo-recomendable"
+            when "a" then "semaforo-moderado"
+            else "semaforo-evita"
+            end
+    clase
+    end
 
 end
