@@ -1,5 +1,20 @@
 module PecesHelper
 
+  # Se duplico para utilizarla solo en los resultados, ya que rata de hacer el join con adicionales para cada uno de los peces
+  def tituloNombreCientificoPeces(taxon, params={})
+    nombre = taxon.nombre_comun_principal.try(:capitalize)
+
+    if params[:title]
+      nombre.present? ? "#{nombre} (#{taxon.nombre_cientifico})".html_safe : taxon.nombre_cientifico
+    elsif params[:link]
+      nombre.present? ? "<h5>#{nombre}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
+    elsif params[:show]
+      nombre.present? ? "#{nombre} (#{ponItalicas(taxon)})".html_safe : ponItalicas(taxon).html_safe
+    else
+      'Ocurrio un error en el nombre'.html_safe
+    end
+  end
+
   def checkboxGruposIconicos
     checkBoxes = ''
     grupos = params[:grupos_iconicos] || []
@@ -76,13 +91,13 @@ module PecesHelper
     color
   end
 
-    def valorAIcono valor
+  def valorAIcono valor
     clase = case valor
             when "v" then "semaforo-recomendable"
             when "a" then "semaforo-moderado"
             else "semaforo-evita"
             end
     clase
-    end
+  end
 
 end
