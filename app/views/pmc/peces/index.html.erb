@@ -40,13 +40,15 @@
       <h4><strong>También puedes buscar:</strong></h4>
       <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por especie</strong>
-        <%= hidden_field_tag :id %>
-        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-sm' %>
+        <%= hidden_field_tag :id, params.present? ? params[:id] : nil %>
+        <%= text_field_tag :nombre, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-sm' %>
       </div>
       <%= hidden_field_tag(:especie_id) %>
       <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por grupo</strong>
-        <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}), :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
+        <% puts params.inspect %>
+        <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}, params.present? ? params[:grupos] : nil),
+                       :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
       </div>
     </fieldset>
 

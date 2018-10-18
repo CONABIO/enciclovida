@@ -2,10 +2,11 @@ module PecesHelper
 
   def checkboxGruposIconicos
     checkBoxes = ''
+    grupos = params[:grupos_iconicos] || []
 
     @grupos.each do |taxon|  # Para tener los grupos ordenados
       checkBoxes << "<label>"
-      checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, false, id: "grupos_iconicos_#{taxon.id}")
+      checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, grupos.include?(taxon.id.to_s), id: "grupos_iconicos_#{taxon.id}")
       checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-xs btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
@@ -17,15 +18,16 @@ module PecesHelper
   def checkboxSemaforo
     checkBoxes = ''
     s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :sn => ['Especies sin datos','semaforo-no-datos']}
+    seleccionados = params[:semaforo_recomendacion] || []
+
     s.each do |k,v|
       checkBoxes << "<label>"
-      checkBoxes << check_box_tag('semaforo_recomendacion[]', k, false, id: "semaforo_recomendacion_#{v[0].parameterize}")
+      checkBoxes << check_box_tag('semaforo_recomendacion[]', k, seleccionados.include?(k.to_s), id: "semaforo_recomendacion_#{v[0].parameterize}")
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
       checkBoxes << "</span>"
 
       checkBoxes << "</label>"
-      #checkBoxes << "<br>" if k == :r
     end
 
     checkBoxes.html_safe
@@ -35,9 +37,11 @@ module PecesHelper
     checkBoxes= titulo ? "<h5><strong>#{titulo}</strong></h5>" : ""
 
     cat.each do |k, valores|
+      filtros = params[k] || []
+
       valores.each do |edo, id|
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag("#{k}[]", id, false, :id => "#{k}_#{edo.parameterize}")
+        checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo.parameterize}")
         checkBoxes << "<span title = '#{edo}' class = '#{k} btn btn-xs btn-basica btn-title #{'btn-default' unless ico}'>"
         checkBoxes << "#{edo}" unless ico
         checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>" if ico
@@ -61,11 +65,6 @@ module PecesHelper
       lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
     end
     lista << '</li></ul>'
-  end
-
-  # Muestra los criterios con el orden indicado
-  def muestraCriterios
-
   end
 
   def valorAColor valor
