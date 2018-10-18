@@ -71,6 +71,8 @@ class Pmc::PecesController < Pmc::PmcController
     @criterios = acomoda_criterios(criterios)
     respond_to do |format|
       if params[:mini].present?
+        @zonas = Pmc::Propiedad.zonas
+
         render :partial => 'mini_show' and return
       end
       format.html # show.html.erb

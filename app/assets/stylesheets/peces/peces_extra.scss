@@ -164,13 +164,14 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   background-color: #ececec;
   position: relative;
 }
-.result-nombre-container ul {
+.result-nombre-container ul, .popover-content ul {
   list-style: none;
   padding: 0px;
 }
-.result-nombre-container li{
+.result-nombre-container li, .popover-content li{
   display: inline-table;
 }
+.popover{max-width: none;}
 .resultados-peces .result-img-container h5{
   margin: 0;
   padding: 2px 5px;
