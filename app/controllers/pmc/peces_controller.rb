@@ -62,7 +62,7 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
-      render :file => 'pmc/peces/resultados'
+      render 'resultados'
     end
   end
 
@@ -72,7 +72,6 @@ class Pmc::PecesController < Pmc::PmcController
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
-
         render :partial => 'mini_show' and return
       end
       format.html # show.html.erb
