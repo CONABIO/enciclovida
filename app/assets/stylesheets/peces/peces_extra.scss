@@ -51,9 +51,10 @@
   padding: 1em 0;
   min-height: 125px;
 }
-.porNombreGrupo input.disabled, .porCriterios select.disabled, .porSemaforo input.disabled, .porSemaforo span.disabled, .porSemaforo select.disabled{
-  color: #888;
-  background-color: #ddd;
+.porGrupo span.disabled, .porGrupo input.disabled, .porSemaforo span.disabled, .porSemaforo input.disabled, .porZonas span.disabled, .porZonas input.disabled, .porZonas path.disabled, .porNombreGrupo input.disabled, .porNombreGrupo select.disabled, .porCriterios span.disabled, .porCriterios input.disabled, .porCriterios select.disabled{
+  color: #888!important;
+  background-color: #ddd!important;
+  fill: #ddd!important;
 }
 input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
@@ -272,9 +273,9 @@ path[id^=path_zonas_]:hover{fill: #a0ccea59;}
   stroke: #018dc1 !important;
   stroke-width: .65px!important;
 }
-#sea-states, .modal-sea-states{fill: #b9da9d;}
-#earth-states, .modal-earth-states{fill: #f2ffbd;}
-#extranjero, .modal-extranjero{fill: #f0f0f0;}
+#sea-states{fill: #b9da9d;}
+#earth-states{fill: #f2ffbd;}
+#extranjero{fill: #f0f0f0;}
 
 svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
 text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder;}

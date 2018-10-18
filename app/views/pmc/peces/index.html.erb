@@ -3,7 +3,7 @@
 <%- end -%>
 
 <% content_for(:extra_title_header) do %>
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: 'Peces y mariscos comerciales'} %>
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "<a href='/pmc/peces' class='text-info' data-turbolinks='false'>Peces y mariscos comerciales</a>"} %>
 <% end %>
 
 <%= notice if notice.present? %>
