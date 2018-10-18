@@ -1,67 +1,70 @@
 class Proveedor < ActiveRecord::Base
 
+  self.table_name = "#{CONFIG.bases.ev}.proveedores"
+
   belongs_to :especie
   attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
 
-  # Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
+  # REVISADO: Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
     ficha = ficha_naturalista_api_nodejs
-    return ficha unless ficha[:estatus] == 'OK'
+    return ficha unless ficha[:estatus]
 
     resultado = ficha[:ficha]['results'].first
     fotos = resultado['taxon_photos']
-    {estatus: 'OK', fotos: fotos}
+    {estatus: true, fotos: fotos}
   end
 
-  # Todos los nombres comunes de la ficha de naturalista
+  # REVISADO: Todos los nombres comunes de la ficha de naturalista
   def nombres_comunes_naturalista
     ficha = ficha_naturalista_api
-    return ficha unless ficha[:estatus] == 'OK'
+    return ficha unless ficha[:estatus]
 
     nombres_comunes = ficha[:ficha]['taxon_names']
     # Pone en la primera posicion el deafult_name
     nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: 'OK', nombres_comunes: nombres_comunes}
+    {estatus: true, nombres_comunes: nombres_comunes}
   end
 
-  # Consulta la fihca de naturalista por medio de su API nodejs
+  # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
   def ficha_naturalista_api_nodejs
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
       resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
       ficha = JSON.parse(resp)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: 'OK', ficha: ficha}
+    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
+    return {estatus: true, ficha: ficha}
   end
 
-  # Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
+  # REVISADO: Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
   def ficha_naturalista_api
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     begin
       resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
       ficha = JSON.parse(resp)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
-    return {estatus: 'error', msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
-    return {estatus: 'OK', ficha: ficha}
+    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
+    return {estatus: true, ficha: ficha}
   end
 
+  # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
   def geodatos
     geodatos = {}
     geodatos[:cuales] = []
@@ -79,77 +82,77 @@ class Proveedor < ActiveRecord::Base
     url = "#{CONFIG.site_url}especies/#{especie_id}/ejemplares-snib"
 
     resp = ejemplares_snib('.json')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'snib'
       geodatos[:snib_json] = "#{url}.json"
     end
 
     resp = ejemplares_snib('.kml')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kml] = "#{url}.kml"
     end
 
     resp = ejemplares_snib('.kmz')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'snib'
       geodatos[:snib_kmz] = "#{url}.kmz"
     end
 
     resp = ejemplares_snib('.json', true)
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
     url = "#{CONFIG.site_url}especies/#{especie_id}/observaciones-naturalista"
 
     resp = observaciones_naturalista('.json')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_json] = "#{url}.json"
     end
 
     resp = observaciones_naturalista('.kml')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kml] = "#{url}.kml"
     end
 
     resp = observaciones_naturalista('.kmz')
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
       geodatos[:naturalista_kmz] = "#{url}.kmz"
     end
 
     resp = observaciones_naturalista('.json', true)
-    if resp[:estatus] == 'OK'
+    if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
     geodatos
   end
 
-  # Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamente guardado del json
+  # REVISADO: Devuelve la informacion de una sola observacion,  de acuerdo al archivo previamente guardado del json
   def observacion_naturalista(observacion_id)
     resp = observaciones_naturalista('.json')
-    return resp unless resp[:estatus] == 'OK'
+    return resp unless resp[:estatus]
 
     output = `grep :#{observacion_id}, #{resp[:ruta]}`
-    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    return {estatus: false, msg: 'No encontro el ID'} unless output.present?
     obs = output.gsub('[{', '{').gsub('},', '}').gsub('}]', '}')
 
     begin
       resp.merge({observacion: JSON.parse(obs)})
     rescue
-      {estatus: 'error', msg: 'Error al parsear el json'}
+      {estatus: false, msg: 'Error al parsear el json'}
     end
   end
 
-  # Devuelve las observaciones de naturalista, ya se en cache de disco o consulta y arma la respuesta para guardarla, la respuesta depende del formato enviado, default es json
+  # REVISADO: Devuelve las observaciones de naturalista, la respuesta depende del formato enviado, default es json
   def observaciones_naturalista(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
 
@@ -162,13 +165,15 @@ class Proveedor < ActiveRecord::Base
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
-      {estatus: 'OK', ruta: archivo}
+      {estatus: true, ruta: archivo}
     else
-      {estatus: 'error', msg: 'No hay observaciones'}
+      {estatus: false, msg: 'No hay observaciones'}
     end
   end
 
+  # REVISADO: Guarda las observaciones de naturalista
   def guarda_observaciones_naturalista
+
     # Para no generar geodatos arriba de familia
     return unless especie.apta_con_geodatos?
 
@@ -178,10 +183,10 @@ class Proveedor < ActiveRecord::Base
     # Pone el cache para no volverlo a consultar
     especie.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
 
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
+     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
       resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus] == 'OK'
+      return resp unless resp[:estatus]
     end
 
     # Valida el paginado y los resultados
@@ -192,7 +197,7 @@ class Proveedor < ActiveRecord::Base
     kml_naturalista(inicio: true)
 
     validacion = valida_observaciones_naturalista
-    return validacion unless validacion[:estatus] == 'OK'
+    return validacion unless validacion[:estatus]
 
     # Para el paginado
     paginas = totales/CONFIG.inaturalist_por_pagina.to_i
@@ -206,7 +211,7 @@ class Proveedor < ActiveRecord::Base
       # Para consultar las demas paginas, si es que tiene mas de una
       for i in 2..paginas do
         validacion = valida_observaciones_naturalista({page: i})
-        return validacion unless validacion[:estatus] == 'OK'
+        return validacion unless validacion[:estatus]
         break if i == 50
       end
     end
@@ -217,6 +222,7 @@ class Proveedor < ActiveRecord::Base
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
     nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+
     archivo_observaciones = File.new("#{nombre}.json", 'w+')
     archivo_observaciones_mapa = File.new("#{nombre}_mapa.json", 'w+')
     archivo_observaciones_kml = File.new("#{nombre}.kml", 'w+')
@@ -237,42 +243,42 @@ class Proveedor < ActiveRecord::Base
     puts "\n\nGuardo observaciones de naturalista #{especie_id}"
   end
 
-  # Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
+  # REVISADO: Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
   def ejemplar_snib(ejemplar_id)
     resp = ejemplares_snib('.json')
-    return resp unless resp[:estatus] == 'OK'
+    return resp unless resp[:estatus]
 
     output = `grep #{ejemplar_id} #{resp[:ruta]}`
-    return {estatus: 'error', msg: 'No encontro el ID'} unless output.present?
+    return {estatus: false, msg: 'No encontro el ID'} unless output.present?
     ej = output.gsub('[{', '{').gsub('"},', '"}').gsub('}]', '}')
 
-    puts ej
     begin
       resp.merge({ejemplar: JSON.parse(ej)})
     rescue
-      {estatus: 'error', msg: 'Error al parsear el json'}
+      {estatus: false, msg: 'Error al parsear el json'}
     end
   end
 
-  # Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
+  # REVISADO: Devuelve los ejemplares del snib en diferentes formatos, json (default), kml y kmz
   def ejemplares_snib(formato = '.json', mapa = false)
     carpeta = carpeta_geodatos
 
     nombre = if mapa
-               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
+               carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
              else
-               nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+               carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
              end
 
     archivo = "#{nombre}#{formato}"
 
     if File.exist?(archivo)
-      {estatus: 'OK', ruta: archivo}
+      {estatus: true, ruta: archivo}
     else
-      {estatus: 'error', msg: 'No hay ejemplares en el SNIB'}
+      {estatus: false, msg: 'No hay ejemplares en el SNIB'}
     end
   end
 
+  # REVISADO: Guarda los distontos json asociados al SNIB
   def guarda_ejemplares_snib
     # Para no generar geodatos arriba de familia
     return unless especie.apta_con_geodatos?
@@ -286,8 +292,7 @@ class Proveedor < ActiveRecord::Base
     self.ejemplares = []
     self.ejemplares_mapa = []
     validacion = valida_ejemplares_snib
-    return validacion unless validacion[:estatus] == 'OK'
-
+    return validacion unless validacion[:estatus]
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
     nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
@@ -315,14 +320,14 @@ class Proveedor < ActiveRecord::Base
 
   private
 
-  # Crea o devuleve la capreta de los geodatos
+  # REVISADO: Crea o devuleve la capreta de los geodatos
   def carpeta_geodatos
     carpeta = Rails.root.join('public', 'geodatos', especie_id.to_s)
     FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
     carpeta
   end
 
-  # Solo los campos que ocupo en el mapa para no hacer muy grande la respuesta
+  # REVISADO: Solo los campos que ocupo en el mapa para no hacer muy grande la respuesta
   def limpia_observaciones_naturalista
     obs = Hash.new
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
@@ -336,7 +341,11 @@ class Proveedor < ActiveRecord::Base
     obs[:uri] = observacion['uri']
 
     if obs[:uri].present?
-      obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'www.naturalista.mx').gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
+      obs[:uri] = obs[:uri].gsub('inaturalist.org','naturalista.mx').gsub('conabio.inaturalist.org', 'naturalista.mx').
+          gsub('naturewatch.org.nz', 'naturalista.mx').gsub('conabio.naturalista.mx', 'naturalista.mx')
+
+      relativa = obs[:uri].split('naturalista.mx').last
+      obs[:uri] = "https://www.naturalista.mx#{relativa}"
     end
 
     obs[:longitude] = observacion['geojson']['coordinates'][0].to_f
@@ -353,9 +362,10 @@ class Proveedor < ActiveRecord::Base
     self.observaciones << observacion
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 0]
+    self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 2]
   end
 
+  # REVISADO: Valida que Naturalista tenga observaciones
   def valida_observaciones_naturalista(params = {})
     page = params[:page] || 1
 
@@ -363,12 +373,12 @@ class Proveedor < ActiveRecord::Base
       rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations?taxon_id=#{naturalista_id}&geo=true&&per_page=#{CONFIG.inaturalist_por_pagina}&page=#{page}", timeout: 20)
       res = JSON.parse(rest_client)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
     if res.blank?
       borrar_geodata('observaciones_')
-      return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'}
+      return {estatus: false, msg: 'La respuesta del servicio esta vacia'}
     end
 
     self.totales = res['total_results'] if params.blank? && totales.blank?  # Para la primera pagina de naturalista
@@ -376,12 +386,12 @@ class Proveedor < ActiveRecord::Base
 
     if totales.blank? || (totales.present? && totales <= 0)
       borrar_geodata('observaciones_')
-      return {estatus: 'error', msg: 'No hay observaciones pero existe el array'}
+      return {estatus: false, msg: 'No hay observaciones pero existe el array'}
     end
 
     if resultados.blank? || resultados.count == 0
       borrar_geodata('observaciones_')
-      return {estatus: 'error', msg: 'No hay observaciones'}
+      return {estatus: false, msg: 'No hay observaciones'}
     end
 
     resultados.each do |observacion|
@@ -390,9 +400,10 @@ class Proveedor < ActiveRecord::Base
       kml_naturalista(observacion: true)
     end
 
-    {estatus: 'OK'}
+    {estatus: true}
   end
 
+  # REVISADO: Transforma las observaciones de naturalista a kml
   def kml_naturalista(opc = {})
 
     if opc[:inicio]
@@ -465,43 +476,55 @@ class Proveedor < ActiveRecord::Base
     end
   end
 
-  # Solo las coordenadas y el ID
+  # REVISADO: Solo las coordenadas y el ID
   def limpia_ejemplares_snib
     # Para ver si es de aver aves el ejemplar
     aves = %w(averaves ebird)
     coleccion = ejemplar['coleccion'].downcase
     es_averaves = false
+    valor_coleccion = 1
 
     coleccion.split(' ').each do |col|
       break if es_averaves
-      es_averaves = true if aves.include?(col)
+
+      if aves.include?(col)
+        es_averaves = true
+      end
     end
 
-    # Para ver si la locacion no es de campo
-    locacion_no_campo = ejemplar['probablelocnodecampo'].estandariza == 'si' ? 1 : 0
+    # Para ver si la locacion no es de campo, tiene mas preferencia
+    if ejemplar['probablelocnodecampo'].try(:estandariza) == 'si'
+      valor_coleccion = 4
+    elsif es_averaves
+      valor_coleccion = 2
+    elsif ejemplar['ejemplarfosil'].try(:estandariza) == 'si'
+      valor_coleccion = 3
+    end
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
-    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], es_averaves ? 1: 0, locacion_no_campo]
+    self.ejemplares_mapa << [ejemplar['longitud'], ejemplar['latitud'], ejemplar['idejemplar'], valor_coleccion]
   end
 
+  # REVISADO: Valida los ejemplares del SNIB
   def valida_ejemplares_snib
     begin
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}&rd=#{especie.root.nombre_cientifico.downcase}&id=#{especie.catalogo_id}&fields=all", timeout: 3)
+      puts "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.downcase}/#{especie.scat.catalogo_id}?apiKey=enciclovida"
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}?apiKey=enciclovida", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
-      return {estatus: 'error', msg: e}
+      return {estatus: false, msg: e}
     end
 
     if resultados.blank?
       borrar_geodata('ejemplares_')
-      return {estatus: 'error', msg: 'La respuesta del servicio esta vacia'}
+      return {estatus: false, msg: 'La respuesta del servicio esta vacia'}
     end
 
     self.totales = resultados.count if totales.blank?  # Para la primera pagina de naturalista
 
     if totales.blank? || (totales.present? && totales <= 0)
       borrar_geodata('ejemplares_')
-      return {estatus: 'error', msg: 'No hay ejemplares'}
+      return {estatus: false, msg: 'No hay ejemplares'}
     end
 
     self.ejemplares_mapa = []
@@ -517,9 +540,10 @@ class Proveedor < ActiveRecord::Base
     # Exporta a kml los ejemplares
     kml_snib
 
-    {estatus: 'OK'}
+    {estatus: true}
   end
 
+  # REVISADO: Transforma los ejemplares del SNIB a kml
   def kml_snib
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
     nombre_cientifico = h.encode(especie.nombre_cientifico)
@@ -579,13 +603,14 @@ class Proveedor < ActiveRecord::Base
     self.kml << '</kml>'
   end
 
+  # REVISADO: Comprime el kml a kmz
   def kmz(nombre)
     archvo_zip = "#{nombre}.zip"
     system "zip -j #{archvo_zip} #{nombre}.kml"
     File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
-  # Borra el json, kml, kmz del taxon en cuestion, ya sea observaciones o ejemplares
+  # REVISADO: Borra el json, kml, kmz del taxon en cuestion, ya sea observaciones o ejemplares
   def borrar_geodata(tipo)
     ruta = Rails.root.join('public', 'geodatos', especie_id.to_s, "#{tipo}*")
     archivos = Dir.glob(ruta)
@@ -631,4 +656,5 @@ class Proveedor < ActiveRecord::Base
     end
     photos
   end
+
 end

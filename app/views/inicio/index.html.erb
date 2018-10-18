@@ -1,5 +1,21 @@
-<div class="text-center col-xs-12 col-sm-10 col-md-4 col-lg-4 col-xs-offset-0 col-sm-offset-1 col-md-offset-8 col-lg-offset-8" id="exploraRegion">
-  <a href="/explora-por-region" class="btn btn-success btn-block" target="_blank">¿Búsqueda de especies por estado / municipio?</a>
+<div class="text-center col-xs-12 col-sm-10 col-md-5 col-lg-4 col-xs-offset-0 col-sm-offset-1 col-md-offset-7 col-lg-offset-8" id="buscadores">
+  <h4><b>Prueba nuestras diferentes herramientas:</b></h4>
+  <a href="/avanzada" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda avanzada">
+    <i class="busqueda-avanzada-ev-icon"></i>
+  </a>
+  <a href="/explora-por-region" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda por región">
+    <i class="busqueda-region-ev-icon"></i>
+  </a>
+  <a href="/peces/busqueda" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Peces y mariscos comerciales">
+    <i class="peces-mariscos-comerciales-ev-icon"></i>
+  </a>
+  <a href="/exoticas-invasoras" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda de especies exóticas invasoras">
+    <i class="exotica-invasora-ev-icon"></i>
+  </a>
+  &middot;
+  <a href="http://proyecto-species.org/" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Explora datos ecológicos" data-confirm="La consulta externa a EncicloVida se realizará en una nueva ventana." target="_blank">
+    <i class='datos-ecologicos-ev-icon'></i>
+  </a>
 </div>
 <%= render :partial => 'inicio/index_news' %>
 <div class="text-center row" style="margin-top: -120px;">
@@ -22,10 +38,10 @@
           <div class="btn-group" role="group">
             <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-info dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
             <ul class="dropdown-menu">
-              <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs' %></li>
-              <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-              <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-              <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
+              <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos', data: { turbolinks: false } %></li>
+              <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias', data: { turbolinks: false } %></li>
             </ul>
           </div>
         </div>

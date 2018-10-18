@@ -22,69 +22,6 @@ es:
       icono: marino.png
       nombre: Oceánico
   arreglo_taxonomico: Clasificación
-  cat_riesgo:
-    en-peligro-de-extincion-p:
-      icono: nom059_p.png
-      nombre: En peligro de extinción (P)
-    amenazada-a:
-      icono: nom059_a.png
-      nombre: Amenazada (A)
-    probablemente-extinta-en-el-medio-silvestre-e:
-      icono: nom059_e.png
-      nombre: Probablemente extinta en el medio silvestre (E)
-    sujeta-a-proteccion-especial-pr:
-      icono: nom059_pr.png
-      nombre: Sujeta a protección especial (Pr)
-    extinto-ex:
-      icono: iucn_ex.png
-      nombre: Extinto (EX)
-    extinto-en-estado-silvestre-ew:
-      icono: iucn_ew.png
-      nombre: Extinto en estado silvestre (EW)
-    en-peligro-critico-cr:
-      icono: iucn_cr.png
-      nombre: En peligro crítico (CR)
-    en-peligro-en:
-      icono: iucn_en.png
-      nombre: En peligro (EN)
-    vulnerable-vu:
-      icono: iucn_vu.png
-      nombre: Vulnerable (VU)
-    riesgo-bajo-lr-dependiente-de-conservacion-cd:
-      icono: iucn_cd.png
-      nombre: "Riesgo bajo (LR): Dependiente de conservación (cd)"
-    datos-insuficientes-dd:
-      icono: iucn_dd.png
-      nombre: Datos insuficientes (DD)
-    no-evaluado-ne:
-      icono: iucn_ne.png
-      nombre: No evaluado (NE)
-    riesgo-bajo-lr-casi-amenazado-nt:
-      icono: iucn_nt.png
-      nombre: "Riesgo bajo (LR): Casi amenazado (nt)"
-    riesgo-bajo-lr-preocupacion-menor-lc:
-      icono: iucn_lc.png
-      nombre: "Riesgo bajo (LR): Preocupación menor (lc)"
-    iucn_ws:
-      ex: Extinto (EX)
-      ew: Extinto en estado silvestre (EW)
-      cr: En peligro crítico (CR)
-      en: En peligro (EN)
-      vu: Vulnerable (VU)
-      cd: "Riesgo bajo (LR): Dependiente de conservación (cd)"
-      dd: Datos insuficientes (DD)
-      ne: No evaluado (NE)
-      nt: "Riesgo bajo (LR): Casi amenazado (nt)"
-      lc: "Riesgo bajo (LR): Preocupación menor (lc)"
-    apendice-i:
-      icono: cites_i.png
-      nombre: Apéndice I
-    apendice-ii:
-      icono: cites_ii.png
-      nombre: Apéndice II
-    apendice-iii:
-      icono: cites_iii.png
-      nombre: Apéndice III
   cites: Comercio Internacional (CITES)
   columnas_obligatorias_excel:
     familia: familia
@@ -372,9 +309,22 @@ es:
       submit: Guardar %{model}
       update: Actualizar %{model}
   iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
+  iucn_ws:
+    ex: Extinto (EX)
+    ew: Extinto en estado silvestre (EW)
+    cr: En peligro crítico (CR)
+    en: En peligro (EN)
+    vu: Vulnerable (VU)
+    cd: "Riesgo bajo (LR): Dependiente de conservación (cd)"
+    dd: Datos insuficientes (DD)
+    ne: No evaluado (NE)
+    nt: "Riesgo bajo (LR): Casi amenazado (nt)"
+    lc: "Riesgo bajo (LR): Preocupación menor (lc)"
   lenguas:
     afrikaans: Afrikáans
+    albanian: Albanés
     bengali: Bengalí
+    bulgarian: Búlgaro
     cebuano: Cebuano
     chinese_traditional: Chino tradicional
     creole_french: Criollo (Francés)
@@ -383,6 +333,7 @@ es:
     dutch: Holandés
     english: Inglés
     espanol_mexico: Español
+    estonian: Estonio
     french: Francés
     gela: Gela
     german: Alemán
@@ -550,13 +501,6 @@ es:
     precision:
       format:
         delimiter: ''
-  prioritaria:
-    alto:
-      nombre: Prioritaria con grado alto para la conservación
-    medio:
-      nombre: Prioritaria con grado medio para la conservación
-    bajo:
-      nombre: Prioritaria con grado bajo para la conservación
   quality_grade:
     casual: casual
     research: investigación
@@ -582,27 +526,6 @@ es:
       long: ! '%d de %B de %Y %H:%M'
       short: ! '%d de %b %H:%M'
     pm: pm
-  tipo_distribucion:
-    nativa:
-      icono: nativa.png
-      nombre: Nativa
-    endemica:
-      icono: endemica.png
-      nombre: Endémica
-    no-endemica:
-      icono: nativa.png
-      nombre: Nativa
-    cuasiendemica:
-      nombre: Cuasiendémica
-    semiendemica:
-      nombre: Semindémica
-    exotica:
-      icono: exotica.png
-      nombre: Exótica
-    exotica-invasora:
-      icono: exotica-invasora.png
-      nombre: Exótica-Invasora
-
   valido_correcto: activos
   view_all_photos_tagged_taxon_html: Ver todas las fotos etiquetadas con %{taxon} en <nobr>Banco de Imag&eacute;nes &raquo;</nobr>
 

@@ -1,0 +1,13 @@
+<div class='nested-fields'>
+  <%= f.inputs do %>
+    <%
+      propiedad = f.object.criterio.propiedad
+      # Para no mostrar las categorias de riesgo, ya que estas vienen de catalogos
+      unless propiedad.existe_propiedad?([Pmc::Propiedad::NOM_ID, Pmc::Propiedad::IUCN_ID])
+    %>
+
+      <%= f.input :criterio_id, label: propiedad.tipo_propiedad, as: :select,
+                  collection: options_for_select(Pmc::Criterio.catalogo(propiedad), selected: f.object.criterio_id) %>
+    <% end %>
+  <% end %>
+</div>

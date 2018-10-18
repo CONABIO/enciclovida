@@ -38,13 +38,12 @@ db/blurrily/
 db/redis/
 pruebas_generales/
 db/buscador.dump.out
-app/assets/javascripts/i18n/
 db/seeds.rb
 db/respaldos/*
 app/assets/javascripts/i18n/translations.js
 tools/bitacoras/
 config/config.yml*
-config/database.yml*
+config/database.yml
 dump.rdb
 tools/campos_snib.csv
 tools/correspondencia_snib/
@@ -62,3 +61,4 @@ public/descargas_resultados/
 public/fotos_invasoras/
 public/validaciones/
 public/topojson/
+

@@ -1,5 +1,5 @@
-class Ecorregion < ActiveRecord::Base
-  establish_connection(:snib)
+class Ecorregion < Snib
+
   self.table_name = 'ecorregiones1'
   self.primary_key = 'ecorid'
 
@@ -8,4 +8,5 @@ class Ecorregion < ActiveRecord::Base
   scope :geojson_select, -> { select('ST_AsGeoJSON(the_geom) AS geojson') }
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(ecorid: region_id) }
+
 end

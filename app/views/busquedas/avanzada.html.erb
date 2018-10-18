@@ -1,26 +1,35 @@
+<% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'busquedas/avanzada/avanzada', 'data-turbolinks-track' => true %>
+<% end %>
 
-<%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+<% content_for(:delayedjs) do %>
+  <%= stylesheet_link_tag 'busquedas', 'data-turbolinks-track' => true %>
+
   <% if I18n.locale.to_s != 'es-cientifico' %>
-    <style type="text/css">
+    <style type="text/css" data-turbolinks-track="true">
 	    .soulmate-type-suggestions li{
 		    padding: 1em 0;
 		    min-height: 125px;
 	    }
     </style>
   <% end %>
-<%- end -%>
-<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
-  <% if params[:action] != 'resultados' %>
-    <h4 class="text-left text-success"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />
+<% end %>
+
+
+<% if params[:action] != 'resultados' %>
+  <% content_for(:extra_title_header) do %>
+    <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'busqueda-avanzada', titulo: 'Búsqueda avanzada', subtitulo: '(Selecciona un ícono o una combinación de íconos y presiona buscar)'} %>
   <% end %>
+<% end %>
+
+<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
     <div class="" id="panelFiltrosPt">
       <div class="text-left" id="panelFiltros">
         <% if I18n.locale.to_s == 'es-cientifico' %>
-          <%= render :partial => 'busqueda_avanzada_vista_avanzada' %>
+          <%= render :partial => 'busqueda_avanzada_vista_especialistas' %>
         <% else %>
-          <%= render :partial => 'busqueda_avanzada_vista_basica' %>
+          <%= render :partial => 'busqueda_avanzada_vista_general' %>
         <% end %>
         <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9' if(params[:action] !='resultados') %>">
           <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>

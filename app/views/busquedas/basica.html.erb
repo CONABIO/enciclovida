@@ -2,7 +2,7 @@
 <script data-turbolinks-track="true">
     $(document).ready(function(){
         // Asigna el soulmate a la caja nombre
-        soulmate_asigna();
+        soulmateAsigna();
     });
 </script>
 
@@ -21,11 +21,20 @@
 
     <div class="form-group">
       <div class="input-group">
-        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
+        <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
         <div class="input-group-btn">
-          <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success busquedas btn-title", :title=>'Buscar' %>
-          <%= link_to "<span class='glyphicon glyphicon-filter' aria-hidden='true'></span>".html_safe, avanzada_url, :class => "btn btn-warning btn-title", :title => 'Ir a la búsqueda avanzada' %>
+          <%= button_tag "<i class='glyphicon glyphicon-search' aria-hidden='true'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-busquedas btn-title", :title=>'Buscar' %>
         </div>
       </div>
+      <% if params[:controller] != 'inicio' %>
+        <div class="btn-group" role="group" aria-label="...">
+          <%= link_to "<i class='busqueda-avanzada-ev-icon'></i>".html_safe, avanzada_url, :class => "btn btn-busquedas btn-title", :title => 'Ir a la búsqueda avanzada', data: { turbolinks: false }  %>
+          <%= link_to "<i class='busqueda-region-ev-icon'></i>".html_safe, explora_por_region_url, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda por región', data: { turbolinks: false }  %>
+          <%= link_to "<i class='peces-mariscos-comerciales-ev-icon'></i>".html_safe, pmc_pez_index_path, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda de peces y mariscos comerciales', data: { turbolinks: false }  %>
+          <%= link_to "<i class='exotica-invasora-ev-icon'></i>".html_safe, exoticas_invasoras_url, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda de especies exóticas invasoras', data: { turbolinks: false }  %>
+          <%= link_to "<i class='datos-ecologicos-ev-icon'></i>".html_safe, "http://proyecto-species.org/", target: '_blank', :class => "btn btn-busquedas btn-basica btn-title", :title => 'Explora datos ecológicos', data: { turbolinks: false , confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }  %>
+        </div>
+        <% end %>
     </div>
 <% end %>
+

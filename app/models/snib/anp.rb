@@ -1,5 +1,5 @@
-class Anp < ActiveRecord::Base
-  establish_connection(:snib)
+class Anp < Snib
+
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'
 
@@ -8,4 +8,5 @@ class Anp < ActiveRecord::Base
   scope :geojson_select, -> { select('ST_AsGeoJSON(the_geom) AS geojson') }
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(anpestid: region_id) }
+
 end

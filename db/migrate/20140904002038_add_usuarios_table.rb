@@ -1,4 +1,4 @@
-class AddUsuariosTable < ActiveRecord::Migration
+class AddUsuariosTable < ActiveRecord::Migration[5.1]
   def change
     create_table "usuarios", force: true do |t|
       t.string   "usuario",                     null: false

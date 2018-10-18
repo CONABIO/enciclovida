@@ -1,0 +1,30 @@
+<div class="row showInfo">
+  <div class="col-md-12">
+    <h4>Responsable</h4>
+    <ul type="circle">
+      <li><p><strog>Nombre:</strog> <%= @responsable.nombre %> <%= @responsable.apellido %></p></li>
+      <li><p><strog>Puesto:</strog> <%= @puesto.nombrePuesto %> </p></li>
+      <li><p><strog>Organización:</strog> <%= @organizacion.nombre %></p></li>
+    </ul>
+
+
+    <br>Uri Icono: <%= @metadato.uriIcono %>
+    <br>Nombre metadato <%= @metadato.nombre %>
+    <br>Uri <%= @metadato.uri %>
+    <br>Título <%= @metadato.titulo %>
+
+    <br>Fecha de publicación <%= @metadato.fechaPublicacion %>
+
+    <br>Capturista  <%= @asociado.rol  %>
+    <br>Tipo de asociación  <%= @asociado.tipoAsociacion  %>
+    <br>Nombre del país <%= @pais.nombrepais %>
+    <br>Nombre de la ciudad <%= @ciudad.nombreCiudad %>
+    <br>Punto de entrega <%= @contacto.puntoEntrega %>
+    <br>Area admin <%= @contacto.areaAdmin %>
+    <br>Código Postal <%= @contacto.codigoPostal %>
+    <br>Teléfono <%= @contacto.telefono %>
+    <br>Correo Electrónico <%= @contacto.correoElectronico %>
+    <br>Página Web <%= @contacto.paginaWeb %>
+
+  </div>
+</div>

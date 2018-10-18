@@ -1,4 +1,4 @@
-class CreateValidaciones < ActiveRecord::Migration
+class CreateValidaciones < ActiveRecord::Migration[5.1]
   def change
     create_table :validaciones do |t|
       t.integer :usuario_id, :null => false

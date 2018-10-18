@@ -1,4 +1,4 @@
-class AlterPhotosNativeUrlToMax < ActiveRecord::Migration
+class AlterPhotosNativeUrlToMax < ActiveRecord::Migration[5.1]
   def up
     change_column :photos, :native_page_url, :text
   end

@@ -1,4 +1,4 @@
-class BorraTablasEstorbosas < ActiveRecord::Migration
+class BorraTablasEstorbosas < ActiveRecord::Migration[5.1]
   def change
     drop_table :metadatos
     drop_table :metadato_especies

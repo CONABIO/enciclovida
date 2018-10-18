@@ -7,7 +7,7 @@ Buscador::Application.configure do
   config.cache_classes = false            #esta linea es para que cargue el cache
 
   # Do not eager load code on boot.
-  config.eager_load = false
+  config.eager_load = true
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
@@ -28,4 +28,6 @@ Buscador::Application.configure do
   config.assets.debug = true
 
   config.assets.initialize_on_precompile = true
+
+  config.web_console.whitelisted_ips = '172.16.3.0/16'
 end

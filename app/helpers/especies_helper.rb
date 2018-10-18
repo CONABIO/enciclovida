@@ -1,4 +1,3 @@
-# coding: utf-8
 module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
@@ -16,9 +15,9 @@ module EspeciesHelper
                  end
                end
              end.try(:capitalize)
-  
+
     if I18n.locale.to_s == 'es-cientifico'
-      if taxon.species_or_lower?   # Las especies llevan otro tipo de formato en nombre
+      if taxon.especie_o_inferior?   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
         elsif params[:link]
@@ -46,7 +45,7 @@ module EspeciesHelper
 
     else   #vista general
 
-      if taxon.species_or_lower?  # Las especies llevan otro tipo de formato en nombre
+      if taxon.especie_o_inferior?  # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           nombre.present? ? "#{nombre} (#{taxon.nombre_cientifico})".html_safe : taxon.nombre_cientifico
         elsif params[:link]
@@ -103,288 +102,261 @@ module EspeciesHelper
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  def construye_arbol(taxon, params={})
-    nodos = "<li id='nodo_#{taxon.id}' class='links_arbol'>"
-    nodos << "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :id =>"link_#{taxon.id}", :class => 'sub_link_taxon btn btn-sm btn-link', :onclick => 'return despliegaOcontrae(this.id);')}"
-    nodos << " #{tituloNombreCientifico(taxon, :link => true)}"
+  # REVISADO: Regresa el arbol identado inicial en la ficha de especie
+  def dameArbolIdentadoInicial(taxones)
+    html = ''
 
-    nodos << '</li>' if params[:son_hojas]
-  end
-
-  def accionesEnlaces(modelo, accion, index=false)
-    case accion
-      when 'especies'
-        "#{link_to(image_tag('app/32x32/zoom.png'), modelo)}
-        #{link_to(image_tag('app/32x32/edit.png'), "/#{accion}/#{modelo.id}/edit")}
-        #{link_to(image_tag('app/32x32/trash.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
-      when 'listas'
-        index ?
-            "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
-            #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
-            #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
-            #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}" :
-            "#{link_to(image_tag('app/32x32/full_page.png'), modelo)}
-            #{link_to(image_tag('app/32x32/edit_page.png'), "/#{accion}/#{modelo.id}/edit")}
-            #{link_to(image_tag('app/32x32/add_page.png'), new_lista_path)}
-            #{link_to(image_tag('app/32x32/download_page.png'), "/listas/#{modelo.id}.csv")}
-            #{link_to(image_tag('app/32x32/delete_page.png'), "/#{accion}/#{modelo.id}", method: :delete, data: { confirm: "¿Estás seguro de eliminar esta #{accion.singularize}?" })}"
-    end
-  end
-
-  # Nombres comunes con su bibliografia como referencia
-  def dameNomComunesBiblio(taxon)
-    nombres_comunes = {}
-
-    taxon.especies_regiones.each do |er|
-
-      # Parte de los nombres comunes con la bibliografia
-      er.nombres_regiones.where(:region_id => er.region_id).each do |nombre|
-        if nombres_comunes[nombre.nombre_comun.id].nil?
-          # Nombre comun con su lengua
-          nombres_comunes[nombre.nombre_comun.id] = { nombre: nombre.nombre_comun.nombre_comun.capitalize, lengua: nombre.nombre_comun.lengua.downcase }
-
-          # Para una o mas bibliografias
-          nombres_comunes[nombre.nombre_comun.id][:bibliografia] = []
-          nombre.nombres_regiones_bibliografias.where(:region_id => nombre.region_id, :nombre_comun_id => nombre.nombre_comun_id).each do |biblio|
-            nombres_comunes[nombre.nombre_comun.id][:bibliografia] << biblio.bibliografia.cita_completa
-          end
-        end
-      end  # End each nombre
-    end  # End each especie_region
-
-    # Ordena por el nombre
-    nombres_comunes.sort_by {|k,v| v[:nombre]}
-  end
-
-  # La distribucion agrupada por el tipo de region
-  def dameDistribucion(taxon)
-    distribucion = {}
-
-    taxon.especies_regiones.each do |er|
-      tipo_reg = er.region.tipo_region
-      nivel_numero = "#{tipo_reg.nivel1}#{tipo_reg.nivel2}#{tipo_reg.nivel3}"
-      nivel = TipoRegion::REGION_POR_NIVEL[nivel_numero]
-      distribucion[nivel] = [] if distribucion[nivel].nil?
-
-      # Evita poner ND como una region
-      next if er.region.nombre_region.downcase == 'nd'
-
-      # Para poner los estados faltantes provenientes de municipios u otros tipos de regiones
-      if nivel_numero.to_i > 110
-        er.region.ancestors.joins(:tipo_region).where('nivel1 = ? AND nivel2 = ? AND nivel3= ?', 1,1,0).each do |r|
-          # Asigno el estado de una region menor a 110
-          distribucion[TipoRegion::REGION_POR_NIVEL['110']] = [] if distribucion[TipoRegion::REGION_POR_NIVEL['110']].nil?
-          distribucion[TipoRegion::REGION_POR_NIVEL['110']] << r.nombre_region
-        end
-      end
-
-      distribucion[nivel] << er.region.nombre_region
+    def creaLista(taxon, lista=nil)
+      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
+      nombre = tituloNombreCientifico(taxon, :link => true)
+      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
     end
 
-    # Para quitar el presente en Mexico, si es que tiene alguna distribucion estatal, municipal, etc.
-    presente = TipoRegion::REGION_POR_NIVEL['100']
-    if distribucion.count > 1 && distribucion.key?(presente)
-      distribucion.delete(presente)
-    end
-
-    # Ordena por el titulo del tipo de region
-    distribucion.sort
-  end
-
-  def dameStatus(taxon, opciones={})
-    estatus_a = []
-    taxon.especies_estatus.order('estatus_id ASC').each do |estatus|     # Checa si existe alguna sinonimia
-      begin
-        taxSinonimo = Especie.find(estatus.especie_id2)
-      rescue
-        break
-      end
-
-      if opciones[:tab_catalogos]
-        if taxon.estatus == 2                                              # Valido
-          est = "<li>#{tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)}"
-          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}</li>" : '</li>'
-          estatus_a << "#{est} #{obs}"
-        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
-          est = tituloNombreCientifico(taxSinonimo, :link => true)
-          obs = estatus.observaciones.present? ? "<br> <b>Observaciones: </b> #{estatus.observaciones}" : ''
-          estatus_a << "#{est} #{obs}"
-        else
-          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
-        end
-      else   # En esta no los pongo en lista
-        if taxon.estatus == 2                                              # Valido
-          estatus_a << tituloNombreCientifico(taxSinonimo, show: true, con_icono: false)
-        elsif taxon.estatus == 1 && taxon.especies_estatus.length == 1      # Sinonimo, en teoria ya no existe esta vista
-          estatus_a << tituloNombreCientifico(taxSinonimo, :link => true)
-        else
-          estatus_a << '<p><strong>Existe un problema con el estatus del nombre científico de este taxón</strong></p>'
-        end
-      end
-    end
-
-    if estatus_a.present?
-      if opciones[:tab_catalogos]
-        titulo = taxon.estatus == 2 ? '<strong>Sinónimos: </strong>' : '<strong>Aceptado como: </strong>'
-        taxon.estatus == 2 ? titulo << "<p><ul>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join('')}</ul></p>" : "<p>#{titulo}#{estatus_a.join('')}</p>"
+    taxones.reverse.each do |taxon|
+      if html.present?
+        html = creaLista(taxon, html)
       else
-        taxon.estatus == 2 ? "<strong>Sinónimos: </strong><small>#{estatus_a.map{|estat| estat.gsub('sinónimo','')}.join(', ')}</small>" : "<strong>Aceptado como: </strong>#{estatus_a.join(', ')}"
+        html = creaLista(taxon)
       end
-    else
-      ''
     end
+
+    html.html_safe
   end
 
-  def dameCaracteristica(taxon, opciones={})
-    catalogos = ''
-    comercio_int = ''
-    ambiente = []
-    prioritaria = []
-    cat_riesgo = Hash.new
+  # REVISADO: Regresa los taxones hijos del taxon en cuestion
+  def dameArbolIdentadoHojas(taxones)
+    html = ''
 
-    taxon.especies_catalogos.each do |e|
-      cat = e.catalogo
-      edo_conserv_nombre = cat.nom_cites_iucn
-      ambiente_nombre = cat.ambiente
+    taxones.reverse.each do |taxon|
+      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
+      nombre = tituloNombreCientifico(taxon, :link => true)
+      html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
+    end
 
-      if edo_conserv_nombre.present?
-        if opciones[:tab_catalogos]
-          catalogos << "<li>#{cat.descripcion}<small> (#{edo_conserv_nombre})</small></li>"
-        else # Para ordenar las categorias de riesgo y comercio
+    html.html_safe
+  end
 
-          if cat.nivel1 == 4 && cat.nivel2 == 1 && cat.nivel3 > 0  # NOM
-            cat_riesgo[:a] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 == 4 && cat.nivel2 == 2 && cat.nivel3 > 0  # IUCN
-            cat_riesgo[:b] = "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          elsif cat.nivel1 == 4 && cat.nivel2 == 3 && cat.nivel3 > 0  # CITES
-            comercio_int << "#{image_tag('app/categorias_riesgo/' << t("cat_riesgo.#{cat.descripcion.parameterize}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
+  # REVISADO: Nombres comunes con su bibliografia como referencia
+  def dameNomComunesBiblio(taxon)
+    html = ''
 
-          elsif cat.nivel1 == 4 && cat.nivel2 == 4 && cat.nivel3 > 0  # Prioritarias, DOF, CONABIO
-            prioritaria << "#{image_tag('app/prioritarias/' << t("cat_riesgo.#{cat.descripcion.downcase}.icono"), title: t("cat_riesgo.#{cat.descripcion.parameterize}.nombre"))}"
-          end
+    def creaLista(nombre, opc={})
+      # TODO: Poner las bibliografias en un modal, el actual esta roto
+      bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
+      html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
+
+      if bibliografias.any?
+        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+        html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+      end
+
+      html
+    end
+
+    taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
+      html << creaLista(nom, taxon: taxon)
+    end
+
+    "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe
+  end
+
+  # REVISADO: Otros atributos simples del modelo especie
+  def dameOtrosAtributos(taxon)
+    otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
+                  'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
+    html = ''
+
+    def creaContenedor(taxon, opc={})
+      valor = taxon.send(opc[:attr])
+
+      if valor.present?
+        "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
+      else
+        ''
+      end
+    end
+
+    otros_attr.each do |nom, attr|
+      html << creaContenedor(taxon, {nom: nom, attr: attr})
+    end
+
+    html.html_safe
+  end
+
+  # REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
+  def dameDistribucionLiteratura(taxon)
+    def creaLista(regiones)
+      lista = []
+
+      regiones.each do |id, datos|
+        lista << "<li>#{datos[:nombre]}</li>"
+        lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
+
+        if datos[:reg_desc].any?
+          sub_reg = creaLista(datos[:reg_desc])
+          lista << sub_reg
         end
       end
 
-      if ambiente_nombre.present?
-        if opciones[:tab_catalogos]
-          catalogos << "<li>#{cat.descripcion}<small> (#{ambiente_nombre})</small></li>"
-        else
-          ambiente << cat.descripcion
+      "</strong><ul>#{lista.join('')}</ul>"
+    end
+
+    regiones = taxon.regiones.select_observaciones.validas.distinct
+    reg_asignadas = Region.regiones_asignadas(regiones)
+    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
+  end
+
+  # REVISADO: Una misma funcion para sinonimos u homonimos
+  def dameSinonimosUhomonimos(taxon, opciones={})
+    def creaContenedor(recurso, opciones={})
+      "<strong>#{opciones[:tipo_recurso]}: </strong><small>#{recurso.join(', ')}</small>"
+    end
+
+    def creaLista(taxones, opciones={})
+      html = ''
+
+      taxones.each do |taxon|
+        html << "<li>#{tituloNombreCientifico(taxon, show: true)}</li>"
+
+        bibliografias = taxon.bibliografias.map(&:cita_completa)
+
+        if bibliografias.any?
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         end
       end
-    end  #Fin each
 
-    if catalogos.present?
-      "<p><strong>Característica del taxón:</strong><ul>#{catalogos}</ul></p>"
-    elsif cat_riesgo.any? || comercio_int.present? || ambiente.any?
-      res = Hash.new
-      res[:cat_riesgo] = cat_riesgo.sort.map{|k,v| v}.join(' ')
-      res[:comercio_int] = comercio_int
-      res[:ambiente] = ambiente.join(', ')
-      res
+      "<p><strong>#{opciones[:tipo_recurso]} </strong></p><ul>#{html}</ul>"
+    end
+
+    ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
+    return '' unless ids.any?
+    taxones = Especie.find(ids)
+
+    if opciones[:tab_catalogos]
+      creaLista(taxones, opciones).html_safe
     else
-      catalogos
+      recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
+      creaContenedor(recurso, opciones).html_safe
     end
   end
 
+  # REVISADO: Pone el estatus taxonómico de la especie, si no existe en la variable ESTATUS_SIGNIFICADO ponerla
+  def dameEstatus(taxon)
+    "<p><strong>Estatus taxonómico</strong><ul><li>#{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</li></ul></p>".html_safe
+  end
+
+  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
+  def dameCaracteristica(taxon)
+    html = ''
+    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria_bibliografia
+
+    def creaCaracteristica(valores)
+      html = ''
+      biblio = "<ul>#{valores[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+      biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
+      obs_html = valores[:observaciones].any? ? "<p>Observaciones: #{valores[:observaciones].join('<hr />')}</p>" : ''
+
+      valores[:descripciones].each do |l|
+        html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
+      end
+
+      "<p><strong>#{valores[:nombre_catalogo]}</strong><ul>#{html}</ul></p>"
+    end
+
+    caracteristicas.each do |key, valores|
+      html << creaCaracteristica(valores)
+    end
+
+    html.html_safe
+  end
+
+  # REVISADO: Regresa la distribucion de catalogos
+  def dameDistribucion(taxon)
+    html =''
+
+    def creaLista(distribucion)
+      "<li>#{distribucion}</li>"
+    end
+
+    distribuciones = taxon.tipo_distribucion(tab_catalogos: true).values.flatten.compact
+
+    distribuciones.each do |distribucion|
+      html << creaLista(distribucion)
+    end
+
+    html.present? ? "<p><strong>Tipo de distribución</strong><ul>#{html}</ul></p>".html_safe : html
+  end
+
+  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    caracteristicas = [taxon.nom_cites_iucn_ambiente_prioritaria(true),taxon.tipo_distribucion].flatten
+    caracteristicas = [taxon.tipo_distribucion.values, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
 
     caracteristicas.each{ |x|
-      n = t("cat_riesgo.#{x.parameterize}.nombre", :default => (t("tipo_distribucion.#{x.parameterize}.nombre", :default => (t("ambiente.#{x.parameterize}.nombre", :default => (t("prioritaria.#{x.parameterize}.nombre", :default => '')))))))
-      response << "<span class='btn-title' title='#{n}'><i class = '#{x}-ev-icon'></i></span>"
+      response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
     }
 
-    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600, 'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
+    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
+'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
     response.join.html_safe
   end
 
+  # REVISADO: Pone la simbologia en la ficha de la especie
   def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
-    def creaSpan(nombre, name, icono)
-      "<span title='#{nombre}' class='btn-title' alt='#{name}'>#{icono}</span>"
+
+    def creaSpan(recurso)
+      nombre = recurso.descripcion
+      icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
+      "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
-        next if Catalogo::IUCN_QUITAR_EN_FICHA.include?(edo)
-        nombre = t("cat_riesgo.#{edo.parameterize}.nombre")
-        name = "edo_cons_#{edo.parameterize}"
-        icono  = "<i class = '#{edo.parameterize}-ev-icon'></i>"
-        response[k]  = response[k].to_a << creaSpan(nombre, name, icono)
+        response[k] ||=[]
+        response[k] << creaSpan(edo)
       end
     end
 
-    TipoDistribucion::DISTRIBUCIONES_SOLO_BASICA.each do |tipoDist|
-      nombre = t("tipo_distribucion.#{tipoDist.parameterize}.nombre", :default => '')
-      name = "dist_#{tipoDist}"
-      icono =  "<i class = '#{tipoDist.parameterize}-ev-icon'></i>"
-
-      response[:tipoDistribucion] = response[:tipoDistribucion].to_a << creaSpan(nombre, name, icono)
+    TipoDistribucion.distribuciones.each do |tipoDist|
+      response[:tipoDistribucion] ||= []
+      response[:tipoDistribucion] << creaSpan(tipoDist)
     end
 
     Catalogo.ambiente_todos.each do |amb|
-      icono =  "<i class = 'ambiente #{amb.parameterize}-ev-icon'></i>"
-      name = "amb_#{amb}"
-      nombre = t("ambiente.#{amb.parameterize}.nombre", :default => '')
-      response[:ambiente] = response[:ambiente].to_a << creaSpan(nombre, name, icono)
+      response[:ambiente] ||=[]
+      response[:ambiente] << creaSpan(amb)
     end
 
-    Catalogo::NIVELES_PRIORITARIAS.each do |prior|
-      icono =  "<i class = '#{prior.parameterize}-ev-icon'></i>"
-      name = "prio_#{prior}"
-      nombre = t("prioritaria.#{prior.parameterize}.nombre", :default => '')
-      response[:prioritaria] = response[:prioritaria].to_a << creaSpan(nombre, name, icono)
+    Catalogo.prioritaria_todas.each do |prior|
+      response[:prioritaria] ||=[]
+      response[:prioritaria] << creaSpan(prior)
     end
+
     response
   end
 
   def ponBotonEditaIDNaturalista
-    button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe, id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
+    button_tag("Cambia URL Naturalista <span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>".html_safe,
+               id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
   end
 
-  def dameEspecieBibliografia(taxon)
-    biblio=''
-    taxon.especies_bibliografias.each do |bib|
-      biblio_comp = bib.bibliografia.cita_completa
-      biblio+="<li>#{bib.bibliografia.cita_completa}</li>" if biblio_comp.present?
+  # REVISADO: Regresa las bibliografias de la especie del nombre cientifico en el show de especies
+  def dameEspecieBibliografias(taxon)
+    html = []
+
+    taxon.bibliografias.each do |bib|
+      html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
     end
-    biblio.present? ? "<b>Bibliografía:</b><ul>#{biblio}</ul>" : biblio
-  end
 
-  def dameTaxonesInferiores(taxon)
-    hijos=''
-    child_ids = taxon.child_ids
-    return hijos unless child_ids.present?
-
-    Especie.datos_basicos.caso_rango_valores('especies.id', child_ids.join(',')).order('nombre_cientifico ASC').each do |subTaxon|
-      hijos << "<li>#{tituloNombreCientifico(subTaxon, :link => true)}</li>"
-    end
-    hijos.present? ? "<fieldset><legend class='leyenda'>Taxones Inferiores</legend><div id='hijos'><ul>#{hijos}</div></fieldset></ul>" : hijos
-  end
-
-  def photo_providers(licensed=false, photo_providers=nil)
-    providers=CONFIG.photo_providers ||= photo_providers || %W(conabio flickr eol wikimedia)
-    html='<ul>'
-    providers.each do |prov|
-      prov=prov.to_s.downcase
-
-      case prov
-        when 'flickr'
-          html+="<li>#{link_to("<span>De #{prov.titleize}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'wikimedia'
-          html+="<li>#{link_to("<span>De #{prov.titleize} Commons</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'eol', 'conabio'
-          html+="<li>#{link_to("<span>De #{prov.upcase}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-        when 'inat_obs'
-          title=licensed ? "#{t(:from_licensed_site_observations, :site_name => SITE_NAME_SHORT)}" :
-              "#{t(:from_your_site_observations, :site_name => SITE_NAME_SHORT)}"
-          html+="<li>#{link_to("<span>#{title}</span>".html_safe, "##{prov}_taxon_photos")}</li>"
-      end
-    end
-    "#{html}</ul>".html_safe
+    html.any? ? "<p><strong>Bibliografía del nombre científico</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
   end
 
   def esSinonimo (taxon)
@@ -396,13 +368,29 @@ module EspeciesHelper
 
   def imprimeMediaCornell(item,type)
     case type
-      when 'photo'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900", "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
-      when 'video'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
-      when 'audio'
-        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    when 'photo'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
+              "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
+              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
+    when 'video'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
+              "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    when 'audio'
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
+              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
+              "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
     end
+  end
+
+  def dejaComentario
+    link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
   end
 
 end

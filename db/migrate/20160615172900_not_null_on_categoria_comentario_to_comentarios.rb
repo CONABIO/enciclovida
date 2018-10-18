@@ -1,4 +1,4 @@
-class NotNullOnCategoriaComentarioToComentarios < ActiveRecord::Migration
+class NotNullOnCategoriaComentarioToComentarios < ActiveRecord::Migration[5.1]
   def change
     change_table(:comentarios) do |t|
       # El default ya no deberia cambiar

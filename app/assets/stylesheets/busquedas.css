@@ -156,8 +156,10 @@ div.result-img-container{
     position: relative;
 }
 .checkbox input, .radio input{
-    display: none;
-    margin: 0 !important;
+    /*display: none;*/
+    margin: 2px !important;
+    right: -4px;
+    top: -2px;
 }
 .checkbox input:checked+span, .checkbox input+span:hover, .radio input:checked+span, .radio input+span:hover{
 /*    padding-left: 6px;*/

@@ -1,6 +1,4 @@
 base: &base
-  # Bases de consulta y administracion
-  bases: [01-Echinodermata, 02-Crustaceos, 03-Hongos, 04-Invertebrados, 05-Moluscos, 06-Plantas, 07-Algas, 08-Vertebrados, 09-Diptera, 10-Arthropoda]
 
   # URL del sitio
   site_url: http://localhost:4000/
@@ -67,6 +65,7 @@ base: &base
     ficha_naturalista: 1.day
     ejemplares_snib: 1.day
     fichas: 1.week
+    iucn: 1.second
     busquedas_region:
       conteo_grupo: 1.week
       especies_grupo: 1.week
@@ -91,8 +90,8 @@ base: &base
 
   # Recaptcha de google
   recaptcha:
-    public_key: 99999999999999999999999999999999999999999
-    private_key: 99999999999999999999999999999999999999999
+    site_key: 99999999999999999999999999999999999999999
+    secret_key: 99999999999999999999999999999999999999999
 
   google_analytics:
     tracker_id: UA-999999-9
@@ -115,6 +114,15 @@ base: &base
     key: 9999999999999999999999999999
 
   correo_admin: coco@nana.bo.bo
+
+  peces:
+    anio: 2012
+
+  # Es necesario especificar los nombres de las bases, para no utilizar establish_connection en los modelos
+  bases:
+    cat: catalogocentralizado
+    ev: enciclovida
+    pez: peces
 
 ###--------------------Aun no se ocupan------------------------###
 

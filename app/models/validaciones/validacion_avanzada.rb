@@ -24,7 +24,6 @@ class ValidacionAvanzada < Validacion
     super
 
     sheet.parse(cabecera).each_with_index do |f, index|
-      next if index == 0
       self.fila = f
       self.nombre_cientifico = f['nombre_cientifico']
 
@@ -48,7 +47,7 @@ class ValidacionAvanzada < Validacion
         end
       end  # info estatus inicial
 
-      self.recurso_validado << asocia_respuesta  # Asocia cuanquier resultado
+      self.recurso_validado << asocia_respuesta  # Asocia cualquier resultado
     end  # sheet parse
 
     resp = escribe_excel
@@ -80,8 +79,24 @@ class ValidacionAvanzada < Validacion
 
         # Compara que la categoria taxonomica de la coincidencia sea la misma que la categoria que del ciclo
         if I18n.transliterate(validacion[:taxon].x_categoria_taxonomica).gsub(' ','_').downcase.strip == categoria
-          validacion[:msg] = "valido hasta #{validacion[:taxon].x_categoria_taxonomica}"
+          validacion[:msg] = "Válido hasta #{validacion[:taxon].x_categoria_taxonomica}"
           validacion[:valido_hasta] = true
+
+          validacion[:taxon].nombre_cientifico = nil
+
+          # Para poner el valor del autor en categorias mas abajo
+          case categoria
+          when 'genero'
+            validacion[:taxon].x_especie = nil
+          when 'familia'
+            validacion[:taxon].x_especie = nil
+            validacion[:taxon].x_genero = nil
+          when 'orden'
+            validacion[:taxon].x_especie = nil
+            validacion[:taxon].x_genero = nil
+            validacion[:taxon].x_orden = nil
+          end
+
           break
         else
           self.validacion[:estatus] = false
@@ -103,7 +118,6 @@ class ValidacionAvanzada < Validacion
 
       taxon.asigna_categorias  # Completa la informacion del taxon
       validacion[:taxon] = taxon
-      coincide_familia_orden?
 
       if validacion[:estatus]  # Puede que se quede con el primer caso que coincida la familia o el orden
         validacion[:msg] = 'Búsqueda similar'
@@ -115,7 +129,7 @@ class ValidacionAvanzada < Validacion
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
     puts "\n\nAsocia la respuesta con el excel"
-    if validacion[:estatus]
+    if validacion[:estatus] && validacion[:valido_hasta].blank?
       taxon_estatus
     end
 
@@ -178,40 +192,6 @@ class ValidacionAvanzada < Validacion
     end
   end
 
-  def coincide_familia_orden?  # Valida si coincide con la familia o el orden, en este punto ya tengo un taxon candidato
-    taxon = validacion[:taxon]
-
-    # Si no esta puesta la familia en el taxon que coincide, entonces quiere decir que ya subio hasta familia y no es igual, entonces no hubo coincidencias
-    if taxon.x_familia.blank?
-      validacion[:estatus] = false
-      validacion[:msg] = 'Sin coincidencias'
-      validacion[:salir] = true
-      return
-    end
-
-    if fila['familia'].present?  # Si escribio la familia en el excel entonces debe de coincidir
-      if fila['familia'].downcase.strip == taxon.x_familia.downcase.strip
-        validacion[:estatus] = true
-      else
-        validacion[:estatus] = false
-        validacion[:msg] = "No coincidio la famila - Orig: #{fila['familia']}; Enciclo: #{taxon.x_familia}"
-        validacion[:salir] = true
-      end
-    elsif fila['orden'].present?  # Si escribio el orden
-      if fila['orden'].downcase.strip == taxon.x_orden.downcase.strip
-        validacion[:estatus] = true
-      else
-        validacion[:estatus] = false
-        validacion[:msg] = "No coincidio el orden - Orig: #{fila['orden']}; Enciclo: #{taxon.x_orden}"
-        validacion[:salir] = true
-      end
-    else  # No tiene ni familia ni orden, entonces lo regreso false, ya que es ambiguo y no se puede decidir
-      validacion[:estatus] = false
-      validacion[:msg] = 'Sin coincidencias'
-    end
-
-    puts "\n\n\nResultado en familia u orden: #{validacion[:estatus].to_s}"
-  end
 
   private
 
@@ -290,7 +270,10 @@ class ValidacionAvanzada < Validacion
   # La validacion en comun, no importa si es simple o avanzada
   def validacion_interna
     validacion_interna_hash = {}
-    columnas = %w(SCAT_Reino_valido SCAT_Phylum-Division_valido SCAT_Clase_valido SCAT_Subclase_valido SCAT_Orden_valido SCAT_Suborden_valido SCAT_Infraorden_valido SCAT_Superfamilia_valido SCAT_Familia_valido SCAT_Genero_valido SCAT_Subgenero_valido SCAT_Especie_valido SCAT_AutorEspecie_valido SCAT_Infraespecie_valido SCAT_Categoria_valido SCAT_AutorInfraespecie_valido SCAT_NombreCient_valido SCAT_NOM-059 SCAT_IUCN SCAT_CITES SCAT_Distribucion SCAT_CatalogoDiccionario SCAT_Fuente ENCICLOVIDA)
+    columnas = %w(SCAT_Reino_valido SCAT_Phylum-Division_valido SCAT_Clase_valido SCAT_Subclase_valido SCAT_Orden_valido
+SCAT_Suborden_valido SCAT_Infraorden_valido SCAT_Superfamilia_valido SCAT_Familia_valido SCAT_Genero_valido SCAT_Subgenero_valido
+SCAT_Especie_valido SCAT_AutorEspecie_valido SCAT_Infraespecie_valido SCAT_Categoria_valido SCAT_AutorInfraespecie_valido
+SCAT_NombreCient_valido SCAT_NOM-059 SCAT_IUCN SCAT_CITES SCAT_Distribucion SCAT_CatalogoDiccionario SCAT_Fuente ENCICLOVIDA)
 
     if validacion[:estatus]
       taxon = validacion[:taxon]
@@ -330,10 +313,11 @@ class ValidacionAvanzada < Validacion
 
       validacion_interna_hash['SCAT_Categoria_valido'] = taxon.x_categoria_taxonomica || (fila['categoria_taxonomica'].present? ? [fila['categoria_taxonomica'], INFORMACION_ORIG] : '')
       validacion_interna_hash['SCAT_AutorInfraespecie_valido'] = taxon.x_nombre_autoridad_infraespecie || (fila['nombre_autoridad_infraespecie'].present? ? [fila['nombre_autoridad_infraespecie'], INFORMACION_ORIG] : '')
-      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico
+      validacion_interna_hash['SCAT_NombreCient_valido'] = taxon.nombre_cientifico || (fila['nombre_cientifico'].present? ? [fila['nombre_cientifico'], INFORMACION_ORIG] : '')
 
       # Para la NOM
-      nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
+      #nom = taxon.estados_conservacion.where('nivel1=4 AND nivel2=1 AND nivel3>0').distinct
+      nom = taxon.catalogos.nom
       if nom.length == 1
         taxon.x_nom = nom[0].descripcion
         validacion_interna_hash['SCAT_NOM-059'] = taxon.x_nom
@@ -342,7 +326,8 @@ class ValidacionAvanzada < Validacion
       end
 
       # Para IUCN
-      iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
+      #iucn = taxon.estados_conservacion.where('nivel1=4 AND nivel2=2 AND nivel3>0').distinct
+      iucn = taxon.catalogos.iucn
       if iucn.length == 1
         taxon.x_iucn = iucn[0].descripcion
         validacion_interna_hash['SCAT_IUCN'] = taxon.x_iucn
@@ -350,7 +335,8 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash['SCAT_IUCN'] = nil
       end
 
-      cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
+      #cites = taxon.estados_conservacion.where('nivel1=4 AND nivel2=3 AND nivel3>0').distinct
+      cites = taxon.catalogos.iucn
       if cites.length == 1
         taxon.x_cites = cites[0].descripcion
         validacion_interna_hash['SCAT_CITES'] = taxon.x_cites
@@ -359,6 +345,7 @@ class ValidacionAvanzada < Validacion
       end
 
       # Para el tipo de distribucion
+      #tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
       tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
 
       if tipos_distribuciones.any?
@@ -368,7 +355,7 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash['SCAT_Distribucion'] = nil
       end
 
-      validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sis_clas_cat_dicc
+      validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sist_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
       validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
 
@@ -377,20 +364,38 @@ class ValidacionAvanzada < Validacion
         validacion_interna_hash[columna] = nil  # Por default la pongo vacia
 
         case columna
-          when 'SCAT_Familia_valido'
-            validacion_interna_hash[columna] = [fila['familia'], INFORMACION_ORIG] if fila['familia'].present?
-          when 'SCAT_Genero_valido'
-            validacion_interna_hash[columna] = [fila['genero'], INFORMACION_ORIG] if fila['genero'].present?
-          when 'SCAT_Especie_valido'
-            validacion_interna_hash[columna] = [fila['especie'], INFORMACION_ORIG] if fila['especie'].present?
-          when 'SCAT_AutorEspecie_valido'
-            validacion_interna_hash[columna] = [fila['nombre_autoridad'], INFORMACION_ORIG] if fila['nombre_autoridad'].present?
-          when 'SCAT_Infraespecie_valido'
-            validacion_interna_hash[columna] = [fila['infraespecie'], INFORMACION_ORIG] if fila['infraespecie'].present?
-          when 'SCAT_Categoria_valido'
-            validacion_interna_hash[columna] = [fila['categoria_taxonomica'], INFORMACION_ORIG] if fila['categoria_taxonomica'].present?
-          when 'SCAT_NombreCient_valido'
-            validacion_interna_hash[columna] = [fila['nombre_cientifico'], INFORMACION_ORIG] if fila['nombre_cientifico'].present?
+        when 'SCAT_Reino_valido'
+          validacion_interna_hash[columna] = [fila['reino'], INFORMACION_ORIG] if fila['reino'].present?
+        when 'SCAT_Phylum-Division_valido'
+          validacion_interna_hash[columna] = [fila['division'], INFORMACION_ORIG] if fila['division'].present?
+        when 'SCAT_Clase_valido'
+          validacion_interna_hash[columna] = [fila['clase'], INFORMACION_ORIG] if fila['clase'].present?
+        when 'SCAT_Subclase_valido'
+          validacion_interna_hash[columna] = [fila['subclase'], INFORMACION_ORIG] if fila['subclase'].present?
+        when 'SCAT_Orden_valido'
+          validacion_interna_hash[columna] = [fila['orden'], INFORMACION_ORIG] if fila['orden'].present?
+        when 'SCAT_Suborden_valido'
+          validacion_interna_hash[columna] = [fila['suborden'], INFORMACION_ORIG] if fila['suborden'].present?
+        when 'SCAT_Infraorden_valido'
+          validacion_interna_hash[columna] = [fila['infraorden'], INFORMACION_ORIG] if fila['infraorden'].present?
+        when 'SCAT_Superfamilia_valido'
+          validacion_interna_hash[columna] = [fila['superfamilia'], INFORMACION_ORIG] if fila['superfamilia'].present?
+        when 'SCAT_Subgenero_valido'
+          validacion_interna_hash[columna] = [fila['subgenero'], INFORMACION_ORIG] if fila['subgenero'].present?
+        when 'SCAT_Familia_valido'
+          validacion_interna_hash[columna] = [fila['familia'], INFORMACION_ORIG] if fila['familia'].present?
+        when 'SCAT_Genero_valido'
+          validacion_interna_hash[columna] = [fila['genero'], INFORMACION_ORIG] if fila['genero'].present?
+        when 'SCAT_Especie_valido'
+          validacion_interna_hash[columna] = [fila['especie'], INFORMACION_ORIG] if fila['especie'].present?
+        when 'SCAT_AutorEspecie_valido'
+          validacion_interna_hash[columna] = [fila['nombre_autoridad'], INFORMACION_ORIG] if fila['nombre_autoridad'].present?
+        when 'SCAT_Infraespecie_valido'
+          validacion_interna_hash[columna] = [fila['infraespecie'], INFORMACION_ORIG] if fila['infraespecie'].present?
+        when 'SCAT_Categoria_valido'
+          validacion_interna_hash[columna] = [fila['categoria_taxonomica'], INFORMACION_ORIG] if fila['categoria_taxonomica'].present?
+        when 'SCAT_NombreCient_valido'
+          validacion_interna_hash[columna] = [fila['nombre_cientifico'], INFORMACION_ORIG] if fila['nombre_cientifico'].present?
         end
 
       end

@@ -19,6 +19,12 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'acumin-pro-extra-condensed';
+  src: url('/fonts/acumin-pro-extra-condensed.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
@@ -27,22 +33,74 @@
   background-size: cover !important;
   background-position: bottom !important;
   background-color: rgba(51, 51, 51, 0.75);
-  padding: 30px 0px;
+  padding: 30px;
 }
 #brandBar .dropdown {
-  margin-top: -32px;
-  margin-right: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1001;
 }
 #menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
   border-bottom-left-radius: 2px;
   font-weight: bold;
 }
-#brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
-  margin-top: -1px;
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
-#busqueda_basica{
-  margin-top: 14px;
+
+#brandBar .form-group{margin: 4px 0;}
+#brandBar .btn-group{min-width: 100%;}
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  padding: 5px 5%;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+#brandBar .btn-busquedas{
+  outline: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+#brandBar .btn-busquedas:hover{
+  box-shadow: 3px 3px 5px #424242;
+  background: #ffffff60;
+}
+#brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after, .btn-busquedas b{
+  font-size: 2em!important;
+  color: #fafafa !important;
+  text-shadow: 1px 1px 1px #333333;
+  margin-top: 6px;
+  margin-bottom: -5px;
+}
+#brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after, .btn-busquedas:hover b{
+  text-shadow: 1px 1px 1px #a0a0a0;
+  color: #423434 !important;
+}
+.contenedor-titulo-busquedas{
+  height: 104px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
+  background: #544a22;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+}
+.titulo-busquedas{
+  width: 1032px;
+  margin: 8px auto;
+  font-size: 40px;
+  font-family: "acumin-pro-extra-condensed";
+  -webkit-text-shadow: 2px 2px 2px #000;
+  -moz-text-shadow: 2px 2px 2px #000;
+  -ms-text-shadow: 2px 2px 2px #000;
+  -o-text-shadow: 2px 2px 2px #000;
+  text-shadow: 2px 2px 2px #000;
+  color: #ffffff;
+}
+.contenedor-titulo-busquedas .liner {
+  width: 50px;
+  height: 5px;
+  margin: 15px 0;
+  border: none;
+  background: #fafafa;
+  position: absolute;
 }
 footer {
   padding: 25px 0;
@@ -58,25 +116,11 @@ footer.legal p {
   font-size:12px;
 }
 
-/*para los iconitos de la busqueda básica*/
-#brandBar .btn-title[tooltip-title]:hover:after {
+/*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
+#brandBar .btn-title[tooltip-title]:hover:after, #buscadores .btn-title[tooltip-title]:hover:after{
   left: initial;
   right: 50%;
   top: 95%;
-}
-.irBusquedaAvanzada {
-  margin: -24px 0px 0px 78px;
-}
-.irBusquedaAvanzada:hover {
-  margin-top: -4px;
-  margin-bottom: -9px;
-}
-.irBusquedaAvanzada > a {
-  font-weight: bold;
-  font-size: .8em;
-}
-.irBusquedaAvanzada:hover > a > span:nth-child(2) {
-  display: none !important;
 }
 
 .btn-title:hover {
@@ -84,9 +128,9 @@ footer.legal p {
 }
 .btn-title[tooltip-title]:hover:after {
   content: attr(tooltip-title);
-  font-size: small;
-  padding: 1px 4px;
-  color: #800000;
+  font-size: medium;
+  padding: 2px 4px;
+  color: #333;
   position: absolute;
   left: 50%;
   top: 95%;
@@ -236,8 +280,8 @@ ul.social-buttons li a:active {
 /* Termina tipo distribucion */
 
 /* prioritarias */
-.alto-ev-icon, .medio-ev-icon, .bajo-ev-icon{color: #ff931e;}
-.alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+.alta-ev-icon, .media-ev-icon, .menor-ev-icon{color: #ff931e;}
+.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
 /* termina prioritarias */
 
 /* ambiente */
@@ -255,8 +299,7 @@ ul.social-buttons li a:active {
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alto-ev-icon:after, .medio-ev-icon:after, .bajo-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -300,4 +343,23 @@ ul.social-buttons li a:active {
 }
 .media-tabs div.result-img-container a{
   cursor: pointer;
+}
+#map .glyphicon, #map span[class$="-ev-icon"]{
+  text-shadow: 2px 1px 1px rgba(255, 255, 255, 0.85);
+}
+.leaflet-control-layers-expanded{
+  background-color:rgba(211, 214, 197, 0.9)!important;
+}
+#map sub{
+  color: #b7b7b7;
+  background-color: #800000;
+}
+sub{
+  border-radius: 8px;
+  color: #333333;
+  background-color: #dddddd;
+  padding: 2px 4px;
+  margin-left: -2px;
+  font-size: .8em;
+  font-weight: bold;
 }

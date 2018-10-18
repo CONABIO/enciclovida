@@ -1,4 +1,4 @@
-class CreateMetadatos < ActiveRecord::Migration
+class CreateMetadatos < ActiveRecord::Migration[5.1]
   def change
     create_table :metadatos do |t|
       t.string :object_name

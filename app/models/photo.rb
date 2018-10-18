@@ -1,4 +1,3 @@
-#encoding: utf-8
 class Photo
 
   attr_accessor :api_response, :id, :usuario_id, :native_photo_id, :square_url, :thumb_url, :small_url, :medium_url, :large_url, :original_url, :created_at, :updated_at, :native_page_url, :native_username, :native_realname, :license, :type, :file_content_type, :file_file_name, :file_file_size, :file_processing, :mobile, :file_updated_at, :metadata
@@ -149,7 +148,7 @@ class Photo
     photo_taxa = to_taxa if photo_taxa.blank?
     return if photo_taxa.blank?
     photo_taxa = photo_taxa.sort_by{|t| t.rank_level || Taxon::ROOT_LEVEL + 1}
-    photo_taxa.detect(&:species_or_lower?) || photo_taxa.first
+    photo_taxa.detect(&:especie_o_inferior?) || photo_taxa.first
   end
 
   # Sync photo object with its native source.  Implemented by descendents

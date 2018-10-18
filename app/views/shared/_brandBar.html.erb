@@ -1,38 +1,11 @@
-<div id="brandBar" class="row" <%= "style='  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url(\"/fondos/#{rand(1..16)}.jpg\");'".html_safe if params[:controller] != 'inicio' %>>
-
-  <div class="dropdown pull-right">
-    <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
-      <span class="caret"></span>
-      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
-      <li><%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b><i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil, :name => I18n.locale.to_s, :onClick => 'return cambia_locale(this.name);'%></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to "<b class='text-success'>Ir a la búsqueda de especies por estado / municipio</b>".html_safe, '/explora-por-region', :role => 'button' %></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button' %></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs' %></li>
-      <li><%= link_to 'Diferencia entre las vistas', inicio_acerca_path << '?tab=dosVistas' %></li>
-      <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos' %></li>
-      <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias' %></li>
-      <li role="separator" class="divider"></li>
-      <% if usuario_signed_in? %>
-        <li><%= link_to 'Administracion de comentarios', admin_path %></li>
-        <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path %></li>
-        <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe} %></li>
-      <% else %>
-        <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_usuario_session_path) %></li>
-      <% end %>
-    </ul>
-  </div>
+<div id="brandBar" class="row " style="<%= "background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8)), url('#{@bgImg}'); ".html_safe if params[:controller] != 'inicio' %> <%= 'padding: 26px 0 0 0;'  unless (params[:controller] == 'inicio' || @no_render_busqueda_basica.present?) %>">
+  <%= render(:partial => 'shared/dropdown_menu') %>
 
   <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
-      <%= link_to "<i class ='enciclo-ev-icon'></i><i class ='vida-ev-icon'></i>".html_safe, root_path, :class => ''  %>
+      <%= link_to "<i class ='enciclo-ev-icon'></i><i class ='vida-ev-icon'></i>".html_safe, root_path, :class => '', data: { turbolinks: false }  %>
   </div>
   <div class="col-xs-5 col-sm-4 col-md-2 col-lg-2 col-xs-offset-0 col-sm-offset-1 col-md-offset-0 col-lg-offset-0">
-    <%= link_to "<i class ='conabio_completo-ev-icon'></i>".html_safe, "http://www.biodiversidad.gob.mx/", :class => ''  %>
+    <%= link_to "<i class ='conabio_completo-ev-icon'></i>".html_safe, "http://www.biodiversidad.gob.mx/", :class => '', target: :_blank  %>
   </div>
   <div id="busqueda_basica" class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-1 ">
     <%= render(:template => 'busquedas/basica') unless @no_render_busqueda_basica.present? %>

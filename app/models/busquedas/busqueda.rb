@@ -1,14 +1,9 @@
 class Busqueda
+  attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato,
+                :pagina, :por_pagina, :offset, :taxon
+
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
-
-  NIVEL_CATEGORIAS_HASH = {
-      '>' => 'inferiores a',
-      '>=' => 'inferiores o iguales a',
-      '=' => 'iguales a',
-      '<=' => 'superiores o iguales a',
-      '<' => 'superiores a'
-  }
 
   NIVEL_CATEGORIAS = [
       ['inferior o igual a', '>='],
@@ -18,210 +13,104 @@ class Busqueda
       ['superior a', '<']
   ]
 
-  ICONOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
-  ICONOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
-  ICONOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+  GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
+  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria
+Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
+  GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
 
-  # Asocia el tipo de distribucion, categoria de riesgo y grado de prioridad
-  def self.filtros_default(busqueda, params = {})
-    # Parte del tipo de ditribucion
-    if params[:dist].present?
-      #######################  Quitar cuando se arregle en la base
-      if params[:dist].include?('Invasora') && params[:dist].length == 1  # Solo selecciono invasora
-        busqueda = busqueda.where('especies.invasora IS NOT NULL')
-      elsif params[:dist].include?('Invasora')  # No solo selecciono invasora, caso complejo
-        params[:dist].delete('Invasora')  # Para quitar invasora y no lo ponga en el join
-        busqueda = busqueda.where("tipos_distribuciones.descripcion NOT IN ('#{params[:dist].join("','")}') OR especies.invasora IS NOT NULL").tipo_distribucion_join
-      else  # Selecciono cualquiera menos invasora
-        busqueda = busqueda.where('tipos_distribuciones.descripcion' => params[:dist]).tipo_distribucion_join
-      end
-      #######################
+  # REVISADO: Inicializa los objetos busqueda
+  def initialize
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
+    self.totales = 0
+  end
+
+  # REVISADO: Filtros de tipos de distribucion
+  def tipo_distribucion
+    if params[:dist].present? && params[:dist].any?
+      self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)} IN (?)", params[:dist]).left_joins(:tipos_distribuciones)
     end
+  end
 
-    # Parte del edo. de conservacion y el nivel de prioritaria
+  # REVISADO: filtros de categorias de riesgo, nivel de prioridad
+  def estado_conservacion
     if params[:edo_cons].present? || params[:prior].present?
-      busqueda = busqueda.catalogos_join
-      busqueda = busqueda.where('catalogos.descripcion' => params[:edo_cons]).catalogos_join if params[:edo_cons].present?
-      busqueda = busqueda.where('catalogos.descripcion' => params[:prior]).catalogos_join if params[:prior].present?
+      catalogos = (params[:edo_cons] || []) + (params[:prior] || [])
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", catalogos).left_joins(:catalogos)
     end
-
-    busqueda
   end
 
-  def self.por_categoria(busqueda, original_url)
-    busqueda = busqueda.select('nombre_categoria_taxonomica, COUNT(DISTINCT especies.id) AS cuantos').adicional_join
-    busqueda = busqueda.group('nombre_categoria_taxonomica').order('nombre_categoria_taxonomica')
-    query_limpio = Bases.distinct_limpio(busqueda.to_sql)
-    query_limpio << ' ORDER BY nombre_categoria_taxonomica ASC'
-    Especie.find_by_sql(query_limpio).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
-                                               cuantos: t.cuantos, url: "#{original_url}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
+  # REVISADO: Por si selecciono un grupo iconico, eligio del autocomplete un taxon o escribio un nombre
+  def por_id_o_nombre
+    if params[:id].present?  # Tiene mas importancia si escogio por id
+      begin
+        self.taxon = Especie.find(params[:id])
+        true
+      rescue
+        self.taxones = Especie.none
+        false
+      end
+    elsif params[:nombre].present?
+      self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].strip).left_joins(:nombres_comunes)
+      true
+    else  # Si no esta presente que siga con el flujo del programa
+      true
+    end
   end
 
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.por_categoria_busqueda_basica(nombre, opts={})
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
+  # REVISADO: Los resultados por categoria taxonomica de acuerdo a las pestañas
+  def conteo_por_categoria_taxonomica
+    return if !(pagina == 1 && params[:solo_categoria].blank? && formato != 'xlsx')
 
-    campos.each do |c|
-      subquery = "SELECT nombre_categoria_taxonomica AS nom,especies.id AS esp
- FROM especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
+    por_categoria = taxones.
+        select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
+        group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
+        order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
-      if opts[:vista_general]
-        subquery << ' AND estatus=2'
-      end
-
-      union << subquery
-    end
-
-    query = 'SELECT nom AS nombre_categoria_taxonomica, count(esp) AS cuantos FROM (' + union.join(' UNION ') + ') especies GROUP BY nom ORDER BY nom ASC'
-
-    Especie.find_by_sql(query).map{|t| {nombre_categoria_taxonomica: t.nombre_categoria_taxonomica,
-                                        cuantos: t.cuantos, url: "#{opts[:original_url]}&solo_categoria=#{I18n.transliterate(t.nombre_categoria_taxonomica).downcase.gsub(' ','_')}"}}
+    self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
+                                                  cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}",
+                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id}}
   end
 
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.basica(nombre, opts={})
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
-
-    select = 'SELECT DISTINCT especies.id, nombre_cientifico, estatus, nombre_autoridad,
-adicionales.nombre_comun_principal, adicionales.foto_principal,
-categoria_taxonomica_id, categorias_taxonomicas.nombre_categoria_taxonomica, ancestry_ascendente_directo,
-cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales FROM ( '
-
-    from = ') especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- ORDER BY nombre_cientifico ASC'
-
-    if opts[:todos].blank? && opts[:pagina].present? && opts[:por_pagina].present?
-      from << " OFFSET #{(opts[:pagina]-1)*opts[:por_pagina]} ROWS FETCH NEXT #{opts[:por_pagina]} ROWS ONLY"
+  # REVISADO: Solo la categoria que escogi, en caso de haber escogido una pestaña en especifico
+  def solo_categoria
+    if params[:solo_categoria].present?
+      self.taxones = taxones.where(CategoriaTaxonomica.attribute_alias(:id) => params[:solo_categoria])
     end
-
-    campos.each do |c|
-      subquery = "SELECT especies.id, nombre_cientifico, estatus, nombre_autoridad,
- adicionales.nombre_comun_principal, adicionales.foto_principal,
- categoria_taxonomica_id, nombre_categoria_taxonomica, ancestry_ascendente_directo,
- cita_nomenclatural, nombres_comunes as nombres_comunes_adicionales
- FROM especies
- LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
- LEFT JOIN adicionales ON adicionales.especie_id=especies.id
- LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
- LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
- WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
-
-      if opts[:vista_general]
-        subquery << ' AND estatus=2'
-      end
-
-      if opts[:solo_categoria].present?
-        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
-      end
-
-      union << subquery
-    end
-
-    query = select + union.join(' UNION ') + from
-    Especie.find_by_sql(query)
   end
 
-  # Este UNION fue necesario, ya que hacerlo en uno solo, los contains llevan mucho mucho tiempo
-  def self.count_basica(nombre, opts={})
-    campos = %w(nombre_comun nombre_cientifico nombre_comun_principal)
-    union = []
-
-    campos.each do |c|
-      subquery = " SELECT especies.id AS esp
-FROM especies
-LEFT JOIN categorias_taxonomicas ON categorias_taxonomicas.id=especies.categoria_taxonomica_id
-LEFT JOIN adicionales ON adicionales.especie_id=especies.id
-LEFT JOIN nombres_regiones ON nombres_regiones.especie_id=especies.id
-LEFT JOIN nombres_comunes ON nombres_comunes.id=nombres_regiones.nombre_comun_id
-WHERE CONTAINS(#{c}, '\"#{nombre.limpia_sql}*\"')"
-
-      if opts[:vista_general]
-        subquery << ' AND estatus=2'
-      end
-
-      if opts[:solo_categoria].present?
-        subquery << " AND nombre_categoria_taxonomica='#{opts[:solo_categoria]}' COLLATE Latin1_general_CI_AI"
-      end
-
-      union << subquery
+  # REVISADO: Pone el estatus de acuerdo a la vista
+  def estatus
+    if es_cientifico
+      self.taxones = taxones.where(estatus: params[:estatus]) if params[:estatus].present? && params[:estatus].length > 0
+    else  # En la vista general solo el valido
+      self.taxones = taxones.where(estatus: 2)
     end
-
-    query = 'SELECT COUNT(DISTINCT esp) AS totales FROM (' + union.join(' UNION ') + ') AS suma'
-    res = Especie.find_by_sql(query)
-    res[0].totales
   end
 
-  def self.asigna_grupo_iconico
-    # Itera los grupos y algunos reinos
-    animalia_plantae = %w(Animalia Plantae)
-    complemento_reinos = %w(Protoctista Fungi Prokaryotae)
-    iconos_plantae = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+  # REVISADO: Condicion para regresar solo los taxones publicos
+  def solo_publicos
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+  end
 
-    Icono.all.map{|ic| [ic.id, ic.taxon_icono]}.each do |id, grupo|
-      puts grupo
-      ad = Adicional.none
-      taxon = Especie.where(:nombre_cientifico => grupo).first
-      puts "Hubo un error al buscar el taxon: #{grupo}" unless taxon
+  # REVISADO: ALgunos valores como el offset, pagina y por pagina
+  def paginado_y_offset
+    self.pagina = (params[:pagina] || 1).to_i
+    self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
+    self.offset = (pagina-1)*por_pagina
+  end
 
-      # solo animalia y plantae
-      if animalia_plantae.include?(grupo)
-        if ad = taxon.adicional
-          ad.icono_id = id
-        else
-          ad = taxon.crea_con_grupo_iconico(id)
-        end
+  # REVISADO: Por si carga la pagina de un inicio, o es una descarga
+  def dame_totales
+    if (pagina == 1 && params[:solo_categoria].blank?) || formato == 'xlsx'
+      self.totales = taxones.count
+    end
+  end
 
-      else  # Los grupos y reinos menos animalia y plantae
-        nivel = iconos_plantae.include?(grupo) ? 3000 : 3100
-        descendientes = taxon.subtree_ids
 
-        # Itero sobre los descendientes
-        descendientes.each do |descendiente|
-          begin
-            taxon_desc = Especie.find(descendiente)
-          rescue
-            next
-          end
+  protected
 
-          puts "\tDescendiente de #{grupo}: #{taxon_desc.nombre_cientifico}"
-
-          if !complemento_reinos.include?(grupo)
-            # No poner icono inferiores de clase
-            clase_desc = taxon_desc.categoria_taxonomica
-            nivel_desc = "#{clase_desc.nivel1}#{clase_desc.nivel2}#{clase_desc.nivel3}#{clase_desc.nivel4}".to_i
-            puts "\t\t#{nivel_desc > nivel ? 'Inferior a clase' : 'Superior a clase'}"
-            next if nivel_desc > nivel
-          end
-
-          if ad = taxon_desc.adicional
-            ad.icono_id = id
-          else
-            ad = taxon_desc.crea_con_grupo_iconico(id)
-          end
-
-          # Guarda el record
-          ad.save if ad.changed?
-
-        end  # Cierra el each de descendientes
-      end
-
-      # Por si no estaba definido cuando termino el loop
-      next unless ad.present?
-
-      # Guarda el record
-      ad.save if ad.changed?
-
-    end  # Cierra el iterador de grupos
+  # REVISADO: Regresa el ID de la centralizacion de acuerdo a uin nombre comun dado
+  def id_referencia_a_nombre_comun(id_referencia)
+    id_referencia.to_s[1..6].to_i
   end
 end
