@@ -1,7 +1,7 @@
 <div class='nested-fields'>
   <%= f.inputs do %>
       <%= f.input :propiedad_id, label: 'Nueva propiedad', as: :select, prompt: '-- Selecciona --',
-                  collection: grouped_options_for_select(Propiedad.catalogo) %>
-      <%= link_to_remove_association 'Quitar criterio', f %>
+                  collection: grouped_options_for_select(Pmc::Propiedad.catalogo) %>
+      <%= link_to_remove_association 'Quitar propiedad', f %>
   <% end %>
 </div>

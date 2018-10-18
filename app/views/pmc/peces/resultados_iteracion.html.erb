@@ -1,0 +1,20 @@
+<% @peces.each do |pez| %>
+  <div class="result-img-container">
+
+    <% if pez.con_estrella %>
+      <i class="certificacion-ev-icon pull-right"></i>
+    <% end %>
+    <% if pez.imagen =~ URI::regexp %>
+      <%= button_tag image_tag(pez.imagen, class: "img-responsive"), type: 'button', class: 'btn-ficha', "data-especie-id" => pez.especie_id, "data-toggle" => "popover" %>
+    <% else %>
+      <button class="btn-ficha" data-especie-id="<%= pez.especie_id %>" type="button" data-toggle="popover">
+        <i class="<%= pez.imagen %> icono-resultado-pez"></i>
+      </button>
+    <% end %>
+
+    <div class="result-nombre-container">
+      <%= tituloNombreCientificoPeces(pez, :link => true).html_safe %>
+    </div>
+
+  </div>
+<% end %>

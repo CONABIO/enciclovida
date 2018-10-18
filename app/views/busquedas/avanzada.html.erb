@@ -15,11 +15,14 @@
   <% end %>
 <% end %>
 
-<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
-  <% if params[:action] != 'resultados' %>
-    <h4 class="text-left text-success"><strong>Búsqueda avanzada</strong><br /><small>(Selecciona un ícono o una combinación de íconos y presiona buscar)</small></h4><hr />
-  <% end %>
 
+<% if params[:action] != 'resultados' %>
+  <% content_for(:extra_title_header) do %>
+    <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'busqueda-avanzada', titulo: 'Búsqueda avanzada', subtitulo: '(Selecciona un ícono o una combinación de íconos y presiona buscar)'} %>
+  <% end %>
+<% end %>
+
+<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
   <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
     <div class="" id="panelFiltrosPt">
       <div class="text-left" id="panelFiltros">

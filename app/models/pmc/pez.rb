@@ -1,20 +1,20 @@
-class Pez < ActiveRecord::Base
+class Pmc::Pez < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :especie_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
 
   scope :select_joins_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
-      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico") }
+      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo") }
 
   scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
       order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC") }
@@ -31,6 +31,8 @@ class Pez < ActiveRecord::Base
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
+
+  GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Crustacea Mollusca Echinodermata)
 
   # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
@@ -97,7 +99,7 @@ class Pez < ActiveRecord::Base
 
     # Para actualizar o crear el valor de la nom
     if nom = especie.catalogos.nom.first
-      if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: nom.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end
@@ -118,7 +120,7 @@ class Pez < ActiveRecord::Base
     criterio_id = 159
 
     if iucn = especie.catalogos.iucn.first
-      if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end
@@ -255,7 +257,7 @@ class Pez < ActiveRecord::Base
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
-    valor+= pesquerias
+    #valor+= pesquerias
     self.con_estrella = 1 if pesquerias != 0
 
     self.valor_por_zona = Array.new(6, valor)

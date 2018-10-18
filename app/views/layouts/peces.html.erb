@@ -30,19 +30,19 @@
 </head>
 <body>
 
+<%= yield :ribbon %>
+
 <header class="container-fluid">
-  <%= render :partial => 'shared/ribbon', locals: {texto: '¡Versión BETA!'} %>
-  <%= render :partial => 'peces/brandBar' %>
+  <%= render :partial => 'pmc/peces/brandBar' %>
 </header>
 
-<section id="content">
-  <div class="container-fluid">
-    <div class="row main">
-      <div class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' :
-                          'col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'  %>">
-        <%= yield %>
-      </div>
-    </div>
+<header class="container-fluid">
+  <%= yield :extra_title_header %>
+</header>
+
+<section id="content" class="container-fluid">
+  <div class="row main">
+    <%= yield %>
   </div>
 </section>
 

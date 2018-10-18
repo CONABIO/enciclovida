@@ -1,10 +1,10 @@
-class CriteriosController < ApplicationController
+class Pmc::CriteriosController < ApplicationController
   before_action :set_criterio, only: [:show, :edit, :update, :destroy]
 
   # GET /criterios
   # GET /criterios.json
   def index
-    @criterios = Criterio.all
+    @criterios = Pmc::Criterio.all
   end
 
   # GET /criterios/1
@@ -14,7 +14,7 @@ class CriteriosController < ApplicationController
 
   # GET /criterios/new
   def new
-    @criterio = Criterio.new
+    @criterio = Pmc::Criterio.new
   end
 
   # GET /criterios/1/edit
@@ -24,7 +24,7 @@ class CriteriosController < ApplicationController
   # POST /criterios
   # POST /criterios.json
   def create
-    @criterio = Criterio.new(criterio_params)
+    @criterio = Pmc::Criterio.new(criterio_params)
 
     respond_to do |format|
       if @criterio.save
@@ -64,7 +64,7 @@ class CriteriosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_criterio
-      @criterio = Criterio.find(params[:id])
+      @criterio = Pmc::Criterio.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

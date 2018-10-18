@@ -1,6 +1,4 @@
-<% puts form_params.inspect %>
 <%= semantic_form_for(@pez, form_params) do |f| %>
-<%#= semantic_form_for(@pez, url: pez_path) do |f| %>
   <% if @pez.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>

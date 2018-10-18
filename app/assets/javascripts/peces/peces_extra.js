@@ -1,29 +1,40 @@
-var limpiaBusqueda = function()
-{
-    $(".agrupada *, .recomendada *, #nombre").attr("disabled", false).removeClass("disabled");
-    $( "#especie_id, #nombre" ).val('');
+var limpiaBusqueda = function(){
+    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
+    var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
+    var inputsALimpiar = $(controles + ", " + visuales);
+    inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada");
+    $("#id, #nombre").val('');
+    inputsALimpiar.prop("checked", false);
 };
 
-var bloqueaBusqueda = function()
-{
+var bloqueaBusqueda = function(){
+    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
+    var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
+    var inputsABloquear = $(controles + ", " + visuales);
+    inputsABloquear.attr("disabled", true).addClass("disabled");
+    //inputsABloquear.val('');
+    inputsABloquear.prop("checked", false);
+
 };
 
 $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
 
-    $('#multiModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal IMPORTANTE
+    $('[data-toggle="popover"]').one('click', function(){
+        var button = $(this);
         var idEspecie = $(button).data('especie-id');
-        var pestaña = '/peces/'+idEspecie+'?layout=0 #panel-body';
-        $('#multiModalBody').load(pestaña);
-        $('.modal-header').append(button.siblings('.result-nombre-container').children('h5').clone());
-    });
-
-    //Eliminar contenido del modal-body y modal header (para poder reutilizar el modal en peces)
-    $('#multiModal').on('hide.bs.modal', function(){
-        $('#multiModalBody').empty();
-        $('.modal-header h5').remove();
+        var pestaña = '/pmc/peces/'+idEspecie+'?mini=true';
+        jQuery.get(pestaña).done(function(data){
+            button.popover({
+                html:true,
+                container: 'body',
+                placement:'bottom',
+                title: 'Criterios',
+                trigger: 'focus',
+                content: data
+            }).popover('show');
+        });
     });
 
     $("path[id^=path_zonas_]").on('click', function(){
@@ -32,7 +43,20 @@ $(document).ready(function(){
         input.prop("checked", !input.prop("checked"));
     });
 
-    $(window).load(function(){
-        $("html,body").animate({scrollTop: 122}, 1000);
-    });
+    //$(window).load(function(){
+        $("html,body").animate({scrollTop: 105}, 500);
+    //});
 });
+
+var scroll_array = false;
+
+var scrollToAnchor = function(){
+    if(scroll_array){
+        $("html,body").animate({scrollTop: $('#busqueda_avanzada').offset().top},'slow');
+        scroll_array =  false;
+    }else{
+        $('html,body').animate({scrollTop: $('#scroll_down_up').offset().top},'slow');
+        scroll_array = true;
+    }
+    $('#scroll_down_up span').toggleClass("glyphicon-menu-down glyphicon-menu-up");
+};

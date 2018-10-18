@@ -1,8 +1,48 @@
+.contenedor-titulo-busquedas.peces-mariscos-comerciales{
+  background: #544a22;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+}
+.btn-circle {
+  visibility:visible !important;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%!important;
+  font-size: 32px;
+  color: #888888;
+  -webkit-transition: background .3s ease-in-out;
+  -moz-transition: background .3s ease-in-out;
+  transition: background .3s ease-in-out;
+}
+.btn-circle:hover,.btn-circle:focus{
+  outline: 0;
+  color: #f7f7f7;
+  background-color: rgba(51, 51, 51, 0.3);
+}
+.btn-circle span.animated {
+  -webkit-transition-property: -webkit-transform;
+  -webkit-transition-duration: 1s;
+  -moz-transition-property: -moz-transform;
+  -moz-transition-duration: 1s;
+}
+.btn-circle:hover span.animated {
+  -webkit-animation-name: pulse;
+  -moz-animation-name: pulse;
+  -webkit-animation-duration: 1.5s;
+  -moz-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+}
 .cobi-ev-icon:before{
-  margin: 0;
-  font-size: 2.5em;
+  margin: 0 0 0 0;
+  font-size: 2.25em;
   color: #fdfdfd;
-  /*color: #385888 /* Azul Cobi */
 }
 .form-peces{
   margin-bottom: 15px;
@@ -11,52 +51,52 @@
   padding: 1em 0;
   min-height: 125px;
 }
-.exacta input.disabled, .agrupada select.disabled, .recomendada input.disabled, .recomendada span.disabled, .recomendada select.disabled{
-  color: #888;
-  background-color: #ddd;
+.porGrupo span.disabled, .porGrupo input.disabled, .porSemaforo span.disabled, .porSemaforo input.disabled, .porZonas span.disabled, .porZonas input.disabled, .porZonas path.disabled, .porNombreGrupo input.disabled, .porNombreGrupo select.disabled, .porCriterios span.disabled, .porCriterios input.disabled, .porCriterios select.disabled{
+  color: #888!important;
+  background-color: #ddd!important;
+  fill: #ddd!important;
 }
 input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
-  /*background-color: #e0e0e0;*/
-  outline: 0;
-  background-image: none;
-  -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
+  box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
 }
-.recomendada input:not(#nombre){
-  visibility: hidden;
+.porSemaforo label:nth-of-type(4){
+  font-size: smaller;
+  /*border-left: 1px solid #DADADA;*/
+  margin-left: 1.5em;
 }
-fieldset{
-  border-top: 1px solid #ffffff;
-  padding-top: 10px;
-}
-.recomendada input + span{
-  color: #ececec;
-  border-radius: 50%;
+.porGrupo input, .porSemaforo input, .porZonas label{display: none;}
+.porSemaforo input + span, .porGrupo input + span, .popover-content button {
+  padding: 0px;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
+  margin: 0px -2px;
   border: none;
-  font-size: 2em;
-  box-shadow: -1px 4px 7px #9c9696;
+  font-size: 3.5em;
+  background: none;
 }
-.recomendada input:checked + span, .recomendada input + span:hover{
-  color: #805050;
+.popover-content button{font-size: 1.5em!important;}
+span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
+.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover{
+  color: #a0a0a0;
+  text-shadow: 3px 2px 4px #ececec;
+  border-radius: 50%;
 }
-.zonificada span.zonas{
-  display: none;
-}
+
 .botones-peces{
-  width: 20%;
+  width: 45%;
   transition-delay: 0ms;
   transition-property: width;
   transition-duration: 500ms;
   transition-timing-function: ease-in-out;
 }
 .botones-peces:hover{
-  width: 75%;
+  width: 50%;
 }
 .botones-peces:hover:after{
   content: " " attr(title) " ";
 }
 .resultados-peces{
-    text-align: center;
+  text-align: center;
 }
 .resultados-peces .result-img-container{
   margin: 4px;
@@ -65,7 +105,7 @@ fieldset{
 .resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
   max-height: 150px;
   max-width: 300px;
-  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.9);
+  transition: all .2s ease-in-out;
   vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -84,11 +124,11 @@ fieldset{
   margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.85);
-  -ms-transform:scale(.85); /* IE 9 */
-  -moz-transform:scale(.85); /* Firefox */
-  -webkit-transform:scale(.85); /* Safari and Chrome */
-  -o-transform:scale(.85); /* Opera */
+  transform:scale(.95);
+  -ms-transform:scale(.95); /* IE 9 */
+  -moz-transform:scale(.95); /* Firefox */
+  -webkit-transform:scale(.95); /* Safari and Chrome */
+  -o-transform:scale(.95); /* Opera */
   font-size: 6em;
 }
 .resultados-peces .btn-ficha:hover:after {
@@ -108,38 +148,37 @@ fieldset{
   box-shadow: 0px 0px 2px #030303;
   background-color: #fafafa;
 }
-.resultados-peces .result-img-container .glyphicon-star{
-  font-size: 1.75em;
-  color: #fdca2d;
-  text-shadow: 2px 2px 4px #797341;
-  margin-left: -2em;
+.resultados-peces .result-img-container .certificacion-ev-icon{
+  font-size: 2.5em;
+  color: #b98303;
+  text-shadow: 1px 1px 4px #fffebf;
+  margin-left: -1.8em;
   border-radius: 50%;
-  padding: 5px;
-  background-color: rgba(96, 145, 195, 0.68);
-  -webkit-transition: -webkit-transform 1.5s ease-in-out;
-  -ms-transition: -ms-transform 1.5s ease-in-out;
-  transition: transform 1.5s ease-in-out;
-  z-index: 1;
-}
-.resultados-peces .result-img-container:hover .glyphicon-star {
-  transform:rotate(360deg);
-  -ms-transform:rotate(360deg);
-  -webkit-transform:rotate(360deg);
+  box-shadow: 1px 1px 3px rgba(102, 102, 102, 0.5);
+  background-color: rgba(236, 236, 236, 0.75);
+  position: relative;
 }
 .resultados-peces .result-img-container .result-nombre-container{
-    min-height: 44px;
-    padding: 0;
-    margin: 0;
-    background-color: #ececec;
-    position: relative;
-
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  background-color: #ececec;
+  position: relative;
 }
+.result-nombre-container ul, .popover-content ul {
+  list-style: none;
+  padding: 0px;
+}
+.result-nombre-container li, .popover-content li{
+  display: inline-table;
+}
+.popover{max-width: none;}
 .resultados-peces .result-img-container h5{
-    margin: 0;
-    padding: 2px 5px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1em;
+  margin: 0;
+  padding: 2px 5px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1em;
 }
 .modal-header h5{
   text-align: center;
@@ -147,107 +186,72 @@ fieldset{
   font-size: 1.25em;
 }
 .result-datos-container{
-    width: 400px;
-    font-size: .85em;
+  width: 400px;
+  font-size: .85em;
 }
 .result-datos-container{
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .2s ease;
-    border: none;
-    top: 0%;
-    right: 0%;
-    overflow-y: hidden;
-    position: absolute;
-    z-index: 10;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .2s ease;
+  border: none;
+  top: 0%;
+  right: 0%;
+  overflow-y: hidden;
+  position: absolute;
+  z-index: 10;
 }
 .resultados-peces .result-img-container .btn-ficha:focus ~ .result-nombre-container .result-datos-container{
-    visibility: visible;
-    opacity: 1;
-    overflow-y: visible;
+  visibility: visible;
+  opacity: 1;
+  overflow-y: visible;
 }
 
 .btn-zona{
-  display: inline-table;
-  padding: 2px 0px;
+  display: block;
+  padding: 2px 4px;
   font-weight: bold;
   text-align: center;
-/*  vertical-align: middle;*/
   border-radius: 2px;
-  color: #3a3a3a;
-  margin: 0px 1px 0px 0px;
-  width: 25px;
-  font-size: .8em;
+  margin: 2px 25px;
+  /*width: 30px;*/
+  /*height: 60px;*/
+  font-size: .85em;
 }
-
-.btn-star{
-  fill: rgb(96, 145, 195);
-  background: -moz-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, #d7ebff), color-stop(50%, #6091c3));
-  background: -webkit-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
-  background: -o-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
-  background: -ms-linear-gradient(top, #d7ebff 0%, #6091c3 50%);
-  background: linear-gradient(to bottom, #d7ebff 0%, #6091c3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#6091c3', GradientType=0);
-  color: #fdca2d!important;
-  text-shadow: 2px 2px 4px #6b600d;
+.btn-zona, .label, .badge, .btn-zona-show{color: #fafafa!important;}
+.btn-zona-show{
+  border-radius: 8px;
+  padding: 3px 6px;
+  min-height: 100px;
 }
-
+.btn-zona-star{
+  background: #DAA621;
+  fill: #DAA621;
+  color: #DAA621;
+}
+.btn-zona-star{
+  text-shadow: -1px 0px 0px #fafafa!important;
+}
 .btn-zona-v{
-  fill: rgba(146, 186, 37, 1);
-  background: rgba(224, 235, 195, 1);
-  background: -moz-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(224, 235, 195, 1)), color-stop(50%, rgba(146, 186, 37, 1)));
-  background: -webkit-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
-  background: -o-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
-  background: -ms-linear-gradient(top, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
-  background: linear-gradient(to bottom, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0ebc3', endColorstr='#92ba25', GradientType=0);
+  color: #9ab635;
+  background: #9ab635;
+  fill: #9ab635;
 }
 .btn-zona-a{
-  fill: rgba(255, 174, 41, 1);
-  background: rgba(255, 241, 184, 1);
-  background: -moz-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 241, 184, 1)), color-stop(50%, rgba(255, 174, 41, 1)));
-  background: -webkit-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
-  background: -o-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
-  background: -ms-linear-gradient(top, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 50%);
-  background: linear-gradient(to bottom, rgba(255, 241, 184, 1) 0%,   rgba(255, 174, 41, 1) 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff1b8', endColorstr='#ffae29', GradientType=0);
+  color: #ffc42d;
+  background: #ffc42d;
+  fill: #ffc42d;
 }
 .btn-zona-r{
-  fill: rgba(122, 26, 7, 1);
-  background: rgba(242, 131, 109, 1);
-  background: -moz-linear-gradient(top, rgba(242, 131, 109, 1) 0%,rgba(122, 26, 7, 1) 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242, 131,109, 1)), color-stop(100%, rgba(122, 26, 7, 1)));
-  background: -webkit-linear-gradient(top, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
-  background: -o-linear-gradient(top, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
-  background: -ms-linear-gradient(top, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
-  background: linear-gradient(to bottom, rgba(242, 131, 109, 1) 0%, rgba(122, 26, 7, 1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2836d', endColorstr='#7a1a07', GradientType=0);
+  color: #db0510;
+  background: #db0510;
+  fill: #db0510;
 }
 .btn-zona-s, .btn-zona-n, .btn-zona-sn{
-  background: #dadada;
-  background: -moz-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
-  background: -webkit-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
-  background: -o-linear-gradient(top, #dfdfdf 0%, #bababa 50%);
-  background: -ms-linear-gradient(top, #dadada 0%, #bababa 50%);
-  background: linear-gradient(to bottom, #dfdfdf 0%, #bababa 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', endColorstr='#bababa', GradientType=0);
+  background: #f9f9f9;
+  color: #f9f9f9;
+  fill: #f9f9f9;
 }
-.btn-zona-s{
-  fill: #dadada;
-}
-.btn-zona-n{
-  fill: #d1d1d1;
-  color: transparent!important;
-}
-.btn-zona-sn i:before{
-  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
-  margin-left: 0!important;
-  margin-right: 0!important;
-}
-
+.btn-zona-s, .btn-zona-n{/*Se deja regla por si se llegasen a ocupar posteriormente*/}
 
 /************* SVG Zonas marítimas ****************************/
 
@@ -262,26 +266,37 @@ path{
   stroke-width: .5px;
 }
 
-path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
-path[id^=path_zonas_]:hover{fill: #17325f!important;}
-.zona-seleccionada{fill: #17325f!important;}
-#sea-states, .modal-sea-states{fill: #b9da9d;}
-#earth-states, .modal-earth-states{fill: #f2ffbd;}
-#extranjero, .modal-extranjero{fill: #c1c1c1;}
+path[id^=path_zonas_]{cursor: pointer;fill: #a0ccea;}
+path[id^=path_zonas_]:hover{fill: #a0ccea59;}
+.zona-seleccionada{
+  fill: #a0ccea45!important;
+  stroke: #018dc1 !important;
+  stroke-width: .65px!important;
+}
+#sea-states{fill: #b9da9d;}
+#earth-states{fill: #f2ffbd;}
+#extranjero{fill: #f0f0f0;}
 
-svg text{font-family: "texgyreadventorregular", "Helvetica", Arial; font-size: 1.25em;}
-text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;}
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #fafafa;}
-
-#titulo_corto_zonas_pacifico-i, .modal-titulo_corto_zonas_pacifico-i{font-size: 1.5em;}
-#titulo_corto_zonas_pacifico-ii, .modal-titulo_corto_zonas_pacifico-ii{font-size: .75em;}
-#titulo_corto_zonas_pacifico-iii, .modal-titulo_corto_zonas_pacifico-iii{font-size: 1.5em;}
-#titulo_corto_zonas_golfo-de-mexico-y-caribe-iv, .modal-titulo_corto_zonas_golfo-de-mexico-y-caribe-iv{font-size: .8em;}
-#titulo_corto_zonas_golfo-de-mexico-y-caribe-v, .modal-titulo_corto_zonas_golfo-de-mexico-y-caribe-v{font-size: .7em;}
-#titulo_corto_zonas_golfo-de-mexico-y-caribe-vi, .modal-titulo_corto_zonas_golfo-de-mexico-y-caribe-vi{font-size: .6em;}
-
-#path_zonas_pacifico-i:hover ~ #titulo_zonas_pacifico-i, #path_zonas_pacifico-ii:hover ~ #titulo_zonas_pacifico-ii, #path_zonas_pacifico-iii:hover ~ #titulo_zonas_pacifico-iii, #path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-iv, #path_zonas_golfo-de-mexico-y-caribe-v:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-v, #path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-vi, .modal-path_zonas_pacifico-i:hover ~ .modal-titulo_zonas_pacifico-i, .modal-path_zonas_pacifico-ii:hover ~ .modal-titulo_zonas_pacifico-ii, .modal-path_zonas_pacifico-iii:hover ~ .modal-titulo_zonas_pacifico-iii, .modal-path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-iv, .modal-path_zonas_golfo-de-mexico-y-caribe-v:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-v, .modal-path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-vi{display:block;}
+svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
+text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder;}
 
 .checkbox i{
   font-size: 1.7em;
+}
+.caracteristicas_pez, .edo_pob_pez, .img_pez{
+  -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.caracteristicas_pez{
+/*  background-color: rgba(95, 128, 87, 0.35);*/
+}
+.edo_pob_pez{
+/*  background-color: rgba(55, 123, 155, 0.31);*/
+}
+.img_pez{
+/*  background-color: rgba(181, 185, 204, 0.31);*/
+}
+.edo_pob_pez h4{
+  min-height: 80px;
 }
