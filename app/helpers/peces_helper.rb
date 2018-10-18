@@ -1,6 +1,6 @@
 module PecesHelper
 
-  # Se duplico para utilizarla solo en los resultados, ya que rata de hacer el join con adicionales para cada uno de los peces
+  # Se duplico para utilizarla solo en los resultados, ya que rata de hacer el join con adicionales para cada uno de los peces #facepalm!! >.>! ¬.¬
   def tituloNombreCientificoPeces(taxon, params={})
     nombre = taxon.nombre_comun_principal.try(:capitalize)
 
@@ -69,14 +69,13 @@ module PecesHelper
   end
 
   def dibujaZonasPez pez
-    @filtros[:zonas]
     lista = ''
     lista << "<ul><li>"
-    @filtros[:zonas][0..2].each_with_index do |z, i|
+    @zonas[0..2].each_with_index do |z, i|
       lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
     end
     lista << '</li><li>'
-    @filtros[:zonas][3..5].each_with_index do |z, i|
+    @zonas[3..5].each_with_index do |z, i|
       lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
     end
     lista << '</li></ul>'
