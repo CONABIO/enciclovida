@@ -46,7 +46,6 @@
       <%= hidden_field_tag(:especie_id) %>
       <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por grupo</strong>
-        <% puts params.inspect %>
         <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}, params.present? ? params[:grupos] : nil),
                        :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
       </div>
