@@ -18,8 +18,11 @@ class Pmc::PecesController < Pmc::PmcController
     if params[:commit].present?
       @peces = Pmc::Pez.filtros_peces
 
-      # Busqueda por nombre científico o comunes
-      @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
+      if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
+        @peces = @peces.where(especie_id: params[:id])
+      elsif params[:nombre].present? # Busqueda por nombre científico o comunes
+        @peces = @peces.where("LOWER(nombres_comunes) REGEXP ? OR LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) REGEXP ?", params[:nombre].downcase, params[:nombre].downcase)
+      end
 
       # Busqueda con pesquerias
       @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
