@@ -1,9 +1,8 @@
 class Suelo < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'suelo'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.suelo"
 	self.primary_key = 'sueloId'
 
 	has_many :habitat, class_name: 'Habitat'
+
 end

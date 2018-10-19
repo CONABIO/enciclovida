@@ -1,8 +1,6 @@
 class Relhabitatvegetacion < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'relhabitatvegetacion'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.relhabitatvegetacion"
 	self.primary_keys = :habitatId,  :vegetacionId,  :observaciones
 
 	belongs_to :habitat, :class_name => 'Habitat', :foreign_key => 'habitatId'

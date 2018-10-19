@@ -1,8 +1,6 @@
 class Taxon < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'taxon'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.taxon"
 	self.primary_key = 'especieId'
 
 	has_many :caracteristicasEspecies, :class_name => 'Caracteristicasespecie', :foreign_key => 'especieId'

@@ -1,8 +1,6 @@
 class Efectoimpacto < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'efectoimpacto'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.efectoimpacto"
 	self.primary_key = 'efectoImpactoId'
 
 end

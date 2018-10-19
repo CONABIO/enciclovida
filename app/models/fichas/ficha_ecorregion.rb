@@ -1,8 +1,6 @@
 class Ficha_Ecorregion < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'ecorregion'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.ecorregion"
 	self.primary_key = 'ecorregionId'
 
 	has_many :relEcorregionesHabitats, class_name: 'Relecorregionhabitat'

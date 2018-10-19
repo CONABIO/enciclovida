@@ -1,8 +1,6 @@
 class Relhistorianaturalusos < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'relhistorianaturalusos'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.relhistorianaturalusos"
 	self.primary_keys = :historiaNaturalId,  :culturaUsosId
 
 	belongs_to :culturaUsos, :class_name => 'Culturausos', :foreign_key => 'culturaUsosId'

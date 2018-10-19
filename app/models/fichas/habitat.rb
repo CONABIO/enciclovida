@@ -1,8 +1,6 @@
 class Habitat < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'habitat'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.habitat"
 	self.primary_keys = :habitatId,  :especieId
 
 	belongs_to :geoforma, :class_name => 'Geoforma', :foreign_key => 'geoformaId'
@@ -17,4 +15,5 @@ class Habitat < Ficha
 
 	has_many :ecorregion, class_name: 'Ficha_Ecorregion', through: :relEcorregionesHabitats
   has_many :ecosistema, class_name: 'Ecosistema', through: :relEcosistemasHabitats
+
 end

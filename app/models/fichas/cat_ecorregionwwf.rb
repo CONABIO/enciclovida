@@ -1,6 +1,5 @@
 class Cat_Ecorregionwwf < Ficha
 
-	# Asignación manual a la tabla
-	self.table_name = 'cat_ecorregionwwf'
+	self.table_name = "#{CONFIG.bases.fichasespecies}.cat_ecorregionwwf"
 
 end

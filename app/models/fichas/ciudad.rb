@@ -1,11 +1,9 @@
 class Ciudad < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'ciudad'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.ciudad"
 	self.primary_key = 'ciudadId'
 
 	belongs_to :pais, :class_name => 'Pais', :foreign_key => 'paisId'
-
 	has_many :contactos, :class_name => 'Contacto'
+
 end

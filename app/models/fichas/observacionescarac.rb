@@ -1,8 +1,6 @@
 class Observacionescarac < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'observacionescarac'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.observacionescarac"
 	self.primary_keys = :especieId,  :idpregunta
 
 end

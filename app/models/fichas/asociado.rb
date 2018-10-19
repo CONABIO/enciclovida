@@ -1,8 +1,6 @@
 class Asociado < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'asociado'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.asociado"
 	self.primary_key = 'asociadoId'
 
 	belongs_to :responsable, :class_name => 'Responsable', :foreign_key => 'responsableId'

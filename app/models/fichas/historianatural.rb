@@ -1,8 +1,6 @@
 class Historianatural < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'historianatural'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.historianatural"
 	self.primary_keys = :historiaNaturalId,  :especieId
 
 	belongs_to :cat_estrategiaTrofica, :class_name => 'Cat_Estrategiatrofica', :foreign_key => 'IdEstrategia'

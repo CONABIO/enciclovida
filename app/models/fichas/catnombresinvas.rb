@@ -1,5 +1,5 @@
 class Catnombresinvas < Ficha
 
-	# Asignación manual a la tabla
-	self.table_name = 'catnombresinvas'
+	self.table_name = "#{CONFIG.bases.fichasespecies}.catnombresinvas"
+
 end

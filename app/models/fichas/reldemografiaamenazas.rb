@@ -1,8 +1,6 @@
 class Reldemografiaamenazas < Ficha
 
-	# Asignación de tabla
-	self.table_name = 'reldemografiaamenazas'
-
+	self.table_name = "#{CONFIG.bases.fichasespecies}.reldemografiaamenazas"
 	self.primary_keys = :demografiaAmenazasId,  :amenazaId
 
 	belongs_to :demografiaAmenazas, :class_name => 'Demografiaamenazas', :foreign_key => 'demografiaAmenazasId'
