@@ -17,4 +17,7 @@ class Taxon < Ficha
 	has_many :sinonimos , class_name: 'Sinonimo', :foreign_key => 'especieId'
 	has_many :referenciasBibliograficas, class_name: 'Referenciabibliografica', :foreign_key => 'especieId'
 
+  has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
+  has_one :especie, through: :especies_regiones, source: :especie
+
 end
