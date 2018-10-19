@@ -63,7 +63,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .porSemaforo label:nth-of-type(4){
   font-size: smaller;
   /*border-left: 1px solid #DADADA;*/
-  margin-left: 1.5em;
+  margin-left: 2em;
 }
 .porGrupo input, .porSemaforo input, .porZonas label{display: none;}
 .porSemaforo input + span, .porGrupo input + span, .popover-content button {
@@ -73,6 +73,11 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   border: none;
   font-size: 3.5em;
   background: none;
+}
+#porCriterios{
+  -webkit-transition: display .3s ease-in-out;
+  -moz-transition: display .3s ease-in-out;
+  transition: display .3s ease-in-out;
 }
 .popover-content button{font-size: 1.5em!important;}
 span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
