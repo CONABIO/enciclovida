@@ -1,4 +1,4 @@
-module PecesHelper
+  module PecesHelper
 
   # Se duplico para utilizarla solo en los resultados, ya que rata de hacer el join con adicionales para cada uno de los peces #facepalm!! >.>! ¬.¬
   def tituloNombreCientificoPeces(taxon, params={})
@@ -72,11 +72,11 @@ module PecesHelper
     lista = ''
     lista << "<ul><li>"
     @zonas[0..2].each_with_index do |z, i|
-      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i> - #{z[0]}</span>"
     end
     lista << '</li><li>'
     @zonas[3..5].each_with_index do |z, i|
-      lista << "<span class='label btn-zona btn-zona-#{pez.valor_zonas[i]}'>#{z[0]}</span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i> - #{z[0]}</span>"
     end
     lista << '</li></ul>'
   end
