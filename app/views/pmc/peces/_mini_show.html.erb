@@ -1,15 +1,21 @@
 <% @criterios["Características"].compact.each do |c|  %>
+  <% next if  c[:nombre] == 'No aplica' %>
   <h4>
-  <small>    <%= c[:tipo_propiedad] %>  </small>
-
+    <small><b><%= c[:tipo_propiedad] %></b></small>
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
     <% end %>
+    <br />
+    <small><%= c[:nombre] %></small>
     <!--button class = 'btn btn-xs btn-zona-<%#= valorAColor c[:valor] %>'>
         <i class = '<%#=  valorAIcono(valorAColor c[:valor]) %>-ev-icon'></i>
     </button-->
   </h4>
 <% end %>
 <hr />
+<h5>Estado de la veda</h5>
+<%#= @criterios["veda"]%>
+<hr />
+<h5>Estado de la población</h5>
 <%= dibujaZonasPez(@pez).html_safe %>
 <%# puts @pez.inspect %>

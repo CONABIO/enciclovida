@@ -31,7 +31,7 @@ $(document).ready(function(){
                 container: 'body',
                 placement:'bottom',
                 title: 'Criterios',
-                trigger: 'focus',
+                trigger: 'focus click',
                 content: data
             }).popover('show');
         });

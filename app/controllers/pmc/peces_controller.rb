@@ -75,7 +75,7 @@ class Pmc::PecesController < Pmc::PmcController
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
-        render :partial => 'mini_show' and return
+        render :partial => 'mini_show', locals: {pez: @pez} and return
       end
       format.html # show.html.erb
       format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
@@ -160,6 +160,7 @@ class Pmc::PecesController < Pmc::PmcController
     criterios['Estado poblacional en el Pacífico'] = []
     criterios['Estado poblacional en el Golfo de México y caribe'] = []
     criterios['suma_caracteristicas'] = 0
+    criterios['veda'] = ''
     criterios['otros'] = []
 
     criterios_obj.each do |c|
@@ -212,6 +213,8 @@ class Pmc::PecesController < Pmc::PmcController
         criterios['Estado poblacional en el Golfo de México y caribe'][1] = dato
       when Pmc::Propiedad::ZONAVI
         criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
+      when "321"
+        criterios['veda'] = dato
       else
         criterios['otros'] << dato
       end  # End case

@@ -72,11 +72,13 @@
     lista = ''
     lista << "<ul><li>"
     @zonas[0..2].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i> - #{z[0]}</span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i>"
+      lista << "<b>#{z[0]}</b></span>"
     end
     lista << '</li><li>'
     @zonas[3..5].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i> - #{z[0]}</span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i>"
+      lista << "<b>#{z[0]}</b></span>"
     end
     lista << '</li></ul>'
   end
