@@ -30,7 +30,7 @@ $(document).ready(function(){
                 html:true,
                 container: 'body',
                 placement:'bottom',
-                title: 'Criterios',
+                title: 'Criterios globales',
                 trigger: 'focus',
                 content: data
             }).popover('show');

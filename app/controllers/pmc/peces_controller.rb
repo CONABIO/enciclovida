@@ -75,7 +75,7 @@ class Pmc::PecesController < Pmc::PmcController
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
-        render :partial => 'mini_show' and return
+        render :partial => 'mini_show', locals: {pez: @pez} and return
       end
       format.html # show.html.erb
       format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
@@ -163,6 +163,7 @@ class Pmc::PecesController < Pmc::PmcController
     criterios['otros'] = []
 
     criterios_obj.each do |c|
+
       dato = {}
       dato[:nombre] = c.nombre_propiedad
       dato[:valor] = c.valor
