@@ -178,6 +178,8 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   display: inline-block;
 }
 .popover{max-width: none;}
+.popover i{font-size: 2em;}
+.popover-title{font-weight: bolder; text-align: center;}
 .resultados-peces .result-img-container h5{
   margin: 0;
   padding: 2px 5px;
@@ -218,11 +220,10 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   text-align: center;
   border-radius: 2px;
   margin: 2px 25px;*/
-  font-size: 2em;
   background: none!important;
   text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
-.btn-zona b{color: #333333; font-size: .5em;}
+.btn-zona b{color: #333333; font-size: .85em;}
 .label, .badge, .btn-zona-show{color: #fafafa!important;}
 .btn-zona-show{
   border-radius: 8px;

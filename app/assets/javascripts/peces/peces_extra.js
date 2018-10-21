@@ -30,8 +30,8 @@ $(document).ready(function(){
                 html:true,
                 container: 'body',
                 placement:'bottom',
-                title: 'Criterios',
-                trigger: 'focus click',
+                title: 'Criterios globales',
+                trigger: 'focus',
                 content: data
             }).popover('show');
         });

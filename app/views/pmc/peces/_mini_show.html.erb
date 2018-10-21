@@ -1,21 +1,19 @@
-<% @criterios["Características"].compact.each do |c|  %>
+<% @criterios["Características"].compact[0..1].each do |c|  %>
   <% next if  c[:nombre] == 'No aplica' %>
-  <h4>
-    <small><b><%= c[:tipo_propiedad] %></b></small>
+  <h5>
+    <b><%= c[:tipo_propiedad] %></b>
+    <i class='<%= c[:icono] %>'></i>
+  </h5>
+<% end %>
+<% @criterios["Características"].compact[2..4].each do |c|  %>
+  <% next if  c[:nombre] == 'Sin datos' %>
+  <h5>
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
     <% end %>
-    <br />
-    <small><%= c[:nombre] %></small>
-    <!--button class = 'btn btn-xs btn-zona-<%#= valorAColor c[:valor] %>'>
-        <i class = '<%#=  valorAIcono(valorAColor c[:valor]) %>-ev-icon'></i>
-    </button-->
-  </h4>
+    <b><%= c[:tipo_propiedad] %>: </b><em><%= c[:nombre] %></em>
+  </h5>
 <% end %>
 <hr />
-<h5>Estado de la veda</h5>
-<%#= @criterios["veda"]%>
-<hr />
-<h5>Estado de la población</h5>
+<h5><b>Estado de la población:</b></h5>
 <%= dibujaZonasPez(@pez).html_safe %>
-<%# puts @pez.inspect %>
