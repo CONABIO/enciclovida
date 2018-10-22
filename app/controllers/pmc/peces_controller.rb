@@ -54,7 +54,7 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif  params[:semaforo_recomendacion].present?
         # Selecciono el valor de sin datos
-        if params[:semaforo_recomendacion].include?('sn')
+        if params[:semaforo_recomendacion].include?('s')
           rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
         else # Cualquier otra combinacion
           rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')

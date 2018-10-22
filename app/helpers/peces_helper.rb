@@ -32,7 +32,7 @@
 
   def checkboxSemaforo
     checkBoxes = ''
-    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :sn => ['Especies sin datos','semaforo-no-datos']}
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
     seleccionados = params[:semaforo_recomendacion] || []
 
     s.each do |k,v|
