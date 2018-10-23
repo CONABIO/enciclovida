@@ -1,17 +1,17 @@
 <% @criterios["Características"].compact[0..1].each do |c|  %>
   <% next if  c[:nombre] == 'No aplica' %>
   <h5>
-    <b><%= c[:tipo_propiedad] %></b>
-    <i class='<%= c[:icono] %>'></i>
+    <b><%= c[:tipo_propiedad] %>: </b>
+    <i class='btn-title <%= c[:icono] %>' tooltip-title="<%= c[:nombre]%>"></i>
   </h5>
 <% end %>
 <% @criterios["Características"].compact[2..4].each do |c|  %>
   <% next if  c[:nombre] == 'Sin datos' %>
   <h5>
+    <b><%= c[:tipo_propiedad] %>: </b><em><%= c[:nombre] %></em>
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
     <% end %>
-    <b><%= c[:tipo_propiedad] %>: </b><em><%= c[:nombre] %></em>
   </h5>
 <% end %>
 <hr />

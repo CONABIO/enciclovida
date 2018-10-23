@@ -215,15 +215,12 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
 
 .btn-zona{
   display: block;
-/*padding: 2px 4px;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 2px;
-  margin: 2px 25px;*/
+  margin-right: 1em;
   background: none!important;
-  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
+  text-shadow: 1px 1px 1px rgb(175, 175, 175);
 }
-.btn-zona b{color: #333333; font-size: .85em;}
+.btn-zona b{color: #555555;}
+.btn-zona s{color: #777777; text-shadow: none;}
 .label, .badge, .btn-zona-show{color: #fafafa!important;}
 .btn-zona-show{
   border-radius: 8px;
@@ -253,13 +250,16 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   background: #db0510;
   fill: #db0510;
 }
-.btn-zona-s, .btn-zona-n, .btn-zona-sn{
-  background: #f9f9f9;
-  color: #f9f9f9;
-  fill: #f9f9f9;
+.btn-zona-s{
+  background: #fafafa;
+  color: #fafafa;
+  fill: #fafafa;
 }
-.btn-zona-s, .btn-zona-n{/*Se deja regla por si se llegasen a ocupar posteriormente*/}
-
+.btn-zona-n{
+  background: #c1008a;
+  color: #c1008a;
+  fill: #c1008a;
+}
 /************* SVG Zonas marítimas ****************************/
 
 path{
