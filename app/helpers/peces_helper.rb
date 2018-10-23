@@ -32,7 +32,7 @@
 
   def checkboxSemaforo
     checkBoxes = ''
-    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :sn => ['Especies sin datos','semaforo-no-datos']}
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
     seleccionados = params[:semaforo_recomendacion] || []
 
     s.each do |k,v|
@@ -55,11 +55,13 @@
       filtros = params[k] || []
 
       valores.each do |edo, id|
+        edo_p = edo.parameterize
+        next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
         checkBoxes << "<label>"
-        checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo.parameterize}")
+        checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo_p}")
         checkBoxes << "<span title = '#{edo}' class = '#{k} btn btn-xs btn-basica btn-title #{'btn-default' unless ico}'>"
         checkBoxes << "#{edo}" unless ico
-        checkBoxes << "<i class = '#{edo.parameterize}-ev-icon'></i>" if ico
+        checkBoxes << "<i class = '#{edo_p}-ev-icon'></i>" if ico
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
@@ -69,16 +71,20 @@
   end
 
   def dibujaZonasPez pez
+    s = {'v' => ['Recomendable','semaforo-recomendable'], 'a' => ['Poco recomendable','semaforo-moderado'], 'r' => ['Evita','semaforo-evita'], 's' => ['Especie sin datos','semaforo-no-datos'], 'n' => ['No se distribuye', '']}
+    puts '++++++'+pez.valor_zonas.inspect
     lista = ''
     lista << "<ul><li>"
     @zonas[0..2].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i>"
-      lista << "<b>#{z[0]}</b></span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]} btn-title' tooltip-title='#{s[pez.valor_zonas[i]][0]}'>"
+      lista << (pez.valor_zonas[i] == 'n' ? "<s>#{z[0]}</s>" : "<b>#{z[0]}</b>")
+      lista << "<i class = '#{s[pez.valor_zonas[i]][1]}-ev-icon'></i></span>"
     end
     lista << '</li><li>'
     @zonas[3..5].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]}'><i class = '#{valorAIcono(pez.valor_zonas[i])}-ev-icon'></i>"
-      lista << "<b>#{z[0]}</b></span>"
+      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i+3]} btn-title' tooltip-title='#{s[pez.valor_zonas[i+3]][0]}'>"
+      lista << (pez.valor_zonas[i+3] == 'n' ? "<s>#{z[0]}</s>" : "<b>#{z[0]}</b>")
+      lista << "<i class = '#{s[pez.valor_zonas[i+3]][1]}-ev-icon'></i></span>"
     end
     lista << '</li></ul>'
   end
@@ -96,7 +102,9 @@
     clase = case valor
             when "v" then "semaforo-recomendable"
             when "a" then "semaforo-moderado"
-            else "semaforo-evita"
+            when "r" then "semaforo-evita"
+            when "s" then "semaforo-no-datos"
+            else ""
             end
     clase
   end

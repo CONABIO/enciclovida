@@ -13,12 +13,12 @@
 
     <h4 class="text-primary"><strong>Selecciona:</strong></h4>
 
-    <fieldset class="porGrupo col-xs-12 <%= "col-md-4" if(@peces.nil?) %> form-peces">
+    <fieldset class="porGrupo col-xs-12 <%= "col-md-5" if(@peces.nil?) %> form-peces">
       <h4><strong>1. Peces o mariscos</strong></h4>
       <%= checkboxGruposIconicos %>
     </fieldset>
 
-    <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-8' if(@peces.nil?) %> form-peces">
+    <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-7' if(@peces.nil?) %> form-peces">
       <h4>
         <strong>2. Semáforo</strong><br />
         <small>
@@ -63,7 +63,6 @@
       <small>(Mostrar más filtros de búsqueda)</small>
       <br />
       <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
-      <hr>
     </div>
 
     <div class="clearfix"></div>
