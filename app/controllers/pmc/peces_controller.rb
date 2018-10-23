@@ -7,7 +7,7 @@ class Pmc::PecesController < Pmc::PmcController
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!, :except => [:show, :index, :dameNombre]
   before_action :only => [:new, :update, :edit, :create, :destroy] do
-    tiene_permiso?('AdminPeces', true)  # Minimo administrador
+    tiene_permiso?('AdminPeces', true)  # Minimo administrador... de peces duh!
   end
 
   # Busqueda por pez y marisco
@@ -75,7 +75,7 @@ class Pmc::PecesController < Pmc::PmcController
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
-        render :partial => 'mini_show', locals: {pez: @pez} and return
+        render :partial => 'mini_show' and return
       end
       format.html # show.html.erb
       format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
