@@ -10,7 +10,6 @@ module TaxonDescribers
         page = conabio_service.search(cat.catalogo_id)
         page.blank? ? nil : page
       end
-
     end
 
     private
