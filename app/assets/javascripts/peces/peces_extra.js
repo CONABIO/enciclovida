@@ -31,7 +31,7 @@ $(document).ready(function(){
                 container: 'body',
                 placement:'bottom',
                 title: 'Criterios globales',
-                trigger: 'click focus',
+                trigger: 'focus',
                 content: data
             }).popover('show');
         });

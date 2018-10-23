@@ -274,9 +274,9 @@ path{
 }
 
 path[id^=path_zonas_]{cursor: pointer;fill: #a0ccea;}
-path[id^=path_zonas_]:hover{fill: #a0ccea59;}
+path[id^=path_zonas_]:hover{fill: rgba(160, 204, 234, .59);}
 .zona-seleccionada{
-  fill: #a0ccea45!important;
+  fill: rgba(160, 204, 234, .45)!important;
   stroke: #018dc1 !important;
   stroke-width: .65px!important;
 }
