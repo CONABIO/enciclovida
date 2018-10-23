@@ -2,10 +2,6 @@
   <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
 
-<% content_for(:extra_title_header) do %>
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "<a href='/pmc/peces' class='text-info' data-turbolinks='false'>Peces y mariscos comerciales</a>"} %>
-<% end %>
-
 <%= notice if notice.present? %>
 <div id="busqueda_avanzada" class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1'  %>">
   <%= form_tag pmc_pez_index_path, :method => :get, :class => '', :id => :b_peces  do %>

@@ -37,8 +37,8 @@
 </header>
 
 <header class="container-fluid">
-  <%= yield :extra_title_header %>
-</header>
+     <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "<a href='/peces' class='text-info' data-turbolinks='false'>Peces y mariscos comerciales</a>"} %>
+ </header>
 
 <section id="content" class="container-fluid">
   <div class="row main">
