@@ -12,6 +12,7 @@ Buscador::Application.routes.draw do
   end
 
   get 'peces' => 'pmc/peces#index'
+  get 'peces/busqueda' => 'pmc/peces#index'
 
   resources :regiones_mapas do
     collection do
