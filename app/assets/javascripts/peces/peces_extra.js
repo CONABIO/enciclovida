@@ -30,7 +30,7 @@ $(document).ready(function(){
                 html:true,
                 container: 'body',
                 placement:'bottom',
-                title: 'Criterios',
+                title: 'Criterios globales',
                 trigger: 'focus',
                 content: data
             }).popover('show');
@@ -43,6 +43,15 @@ $(document).ready(function(){
         input.prop("checked", !input.prop("checked"));
     });
 
+    $(".porZonas input").each(function(index, item){
+        if($(item).prop('checked')){
+            $('#path_' + item.id).addClass('zona-seleccionada');
+            //console.log(index);
+            //console.log('<-- index y a continuacion  item-->');
+            //console.log(item);
+        }
+    });
+
     //$(window).load(function(){
         $("html,body").animate({scrollTop: 105}, 500);
     //});
@@ -52,9 +61,11 @@ var scroll_array = false;
 
 var scrollToAnchor = function(){
     if(scroll_array){
+        $('#porCriterios').css('display', 'none');
         $("html,body").animate({scrollTop: $('#busqueda_avanzada').offset().top},'slow');
         scroll_array =  false;
     }else{
+        $('#porCriterios').css('display', 'block');
         $('html,body').animate({scrollTop: $('#scroll_down_up').offset().top},'slow');
         scroll_array = true;
     }

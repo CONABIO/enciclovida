@@ -2,10 +2,6 @@
   <%= stylesheet_link_tag "soulmate", "data-turbolinks-track" => true %>
 <%- end -%>
 
-<% content_for(:extra_title_header) do %>
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "<a href='/pmc/peces' class='text-info' data-turbolinks='false'>Peces y mariscos comerciales</a>"} %>
-<% end %>
-
 <%= notice if notice.present? %>
 <div id="busqueda_avanzada" class="<%= @peces.present? ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1'  %>">
   <%= form_tag pmc_pez_index_path, :method => :get, :class => '', :id => :b_peces  do %>
@@ -13,22 +9,24 @@
 
     <h4 class="text-primary"><strong>Selecciona:</strong></h4>
 
-    <fieldset class="porGrupo col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+    <fieldset class="porGrupo col-xs-12 <%= "col-md-5" if(@peces.nil?) %> form-peces">
       <h4><strong>1. Peces o mariscos</strong></h4>
       <%= checkboxGruposIconicos %>
     </fieldset>
 
-    <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-6' if(@peces.nil?) %> form-peces">
+    <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-7' if(@peces.nil?) %> form-peces">
       <h4>
-        <strong>2. Semáforo</strong>
+        <strong>2. Semáforo</strong><br />
+        <small>
+          <i>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la poblacion) <%= link_to "Más info <span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-basica' %></i>
+      </small>
       </h4>
-      <h5>
-        <i>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la poblacion <%= link_to "Más info <span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-basica' %></i>
-      </h5>
       <%= checkboxSemaforo %>
     </fieldset>
 
-    <fieldset class="porZonas col-xs-12 <%= 'col-md-6' if(@peces.nil?) %>">
+    <div class="clearfix"></div>
+
+    <fieldset class="porZonas col-xs-12 <%= 'col-md-5' if(@peces.nil?) %>">
       <h4><strong>3. Región</strong></h4>
       <div class="checkbox col-xs-12 col-xs-offset-0  <%= "col-lg-12 col-lg-offset-0" if(@peces.nil?) %> form-peces">
         <%= render :partial => 'svg_zonas_marinas' %>
@@ -36,7 +34,7 @@
       </div>
     </fieldset>
 
-    <fieldset class="porNombreGrupo col-xs-12 <%= "col-md-6" if(@peces.nil?) %> form-peces">
+    <fieldset class="porNombreGrupo col-xs-12 <%= "col-md-7" if(@peces.nil?) %> form-peces">
       <h4><strong>También puedes buscar:</strong></h4>
       <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por especie</strong>
@@ -46,29 +44,27 @@
       <%= hidden_field_tag(:especie_id) %>
       <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
         <strong>Por grupo</strong>
-        <% puts params.inspect %>
-        <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}, params.present? ? params[:grupos] : nil),
-                       :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
+        <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}, params.present? ? params[:grupos] : nil), :prompt => '- - Grupo - -', :class => 'form-control input-sm' ) %>
       </div>
     </fieldset>
 
-    <div class="text-center col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
-      <small>(Bajar para más filtros de búsqueda)</small>
-      <br />
-      <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
-      <hr>
-    </div>
-
-    <div class="col-xs-12 <%= "col-md-6" if(@peces.nil?) %>">
+    <div class="col-xs-12 <%= "col-md-7" if(@peces.nil?) %>">
       <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span>".html_safe, :type => 'button', :class => "botones-peces btn btn-lg pull-right", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
       <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-lg btn-success pull-left", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
     </div>
 
 
+    <div class="text-center col-xs-12 <%= "col-md-7" if(@peces.nil?) %>">
+      <hr>
+      <small>(Mostrar más filtros de búsqueda)</small>
+      <br />
+      <a id="scroll_down_up" onclick="scrollToAnchor();" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
+    </div>
+
     <div class="clearfix"></div>
     <hr>
 
-    <fieldset id="porCriterios" class="porCriterios checkbox col-xs-12">
+    <fieldset id="porCriterios" class="porCriterios checkbox col-xs-12" style="display: none;">
       <div class="col-xs-12 <%= "col-md-6 col-lg-4" if(@peces.nil?) %> form-peces">
         <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
       </div>

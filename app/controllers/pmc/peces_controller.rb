@@ -18,8 +18,11 @@ class Pmc::PecesController < Pmc::PmcController
     if params[:commit].present?
       @peces = Pmc::Pez.filtros_peces
 
-      # Busqueda por nombre científico o comunes
-      @peces = @peces.where(especie_id: params[:id]) if params[:id].present?
+      if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
+        @peces = @peces.where(especie_id: params[:id])
+      elsif params[:nombre].present? # Busqueda por nombre científico o comunes
+        @peces = @peces.where("LOWER(nombres_comunes) REGEXP ? OR LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) REGEXP ?", params[:nombre].downcase, params[:nombre].downcase)
+      end
 
       # Busqueda con pesquerias
       @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
@@ -51,7 +54,7 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       elsif  params[:semaforo_recomendacion].present?
         # Selecciono el valor de sin datos
-        if params[:semaforo_recomendacion].include?('sn')
+        if params[:semaforo_recomendacion].include?('s')
           rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
         else # Cualquier otra combinacion
           rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
@@ -72,7 +75,7 @@ class Pmc::PecesController < Pmc::PmcController
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
-        render :partial => 'mini_show' and return
+        render :partial => 'mini_show', locals: {pez: @pez} and return
       end
       format.html # show.html.erb
       format.json { render json: {pez: @pez, criterios: @criterios}.to_json }
@@ -160,6 +163,7 @@ class Pmc::PecesController < Pmc::PmcController
     criterios['otros'] = []
 
     criterios_obj.each do |c|
+
       dato = {}
       dato[:nombre] = c.nombre_propiedad
       dato[:valor] = c.valor
