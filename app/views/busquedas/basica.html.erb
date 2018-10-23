@@ -30,7 +30,7 @@
         <div class="btn-group" role="group" aria-label="...">
           <%= link_to "<i class='busqueda-avanzada-ev-icon'></i>".html_safe, avanzada_url, :class => "btn btn-busquedas btn-title", :title => 'Ir a la búsqueda avanzada', data: { turbolinks: false }  %>
           <%= link_to "<i class='busqueda-region-ev-icon'></i>".html_safe, explora_por_region_url, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda por región', data: { turbolinks: false }  %>
-          <%= link_to "<i class='peces-mariscos-comerciales-ev-icon'></i>".html_safe, pmc_pez_index_path, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda de peces y mariscos comerciales', data: { turbolinks: false }  %>
+          <%= link_to "<i class='peces-mariscos-comerciales-ev-icon'></i>".html_safe, '/peces', :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda de peces y mariscos comerciales', data: { turbolinks: false }  %>
           <%= link_to "<i class='exotica-invasora-ev-icon'></i>".html_safe, exoticas_invasoras_url, :class => "btn btn-busquedas btn-basica btn-title", :title => 'Ir a la búsqueda de especies exóticas invasoras', data: { turbolinks: false }  %>
           <%= link_to "<i class='datos-ecologicos-ev-icon'></i>".html_safe, "http://proyecto-species.org/", target: '_blank', :class => "btn btn-busquedas btn-basica btn-title", :title => 'Explora datos ecológicos', data: { turbolinks: false , confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }  %>
         </div>
