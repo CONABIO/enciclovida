@@ -160,7 +160,7 @@ class Pmc::PecesController < Pmc::PmcController
     criterios['Estado poblacional en el Pacífico'] = []
     criterios['Estado poblacional en el Golfo de México y caribe'] = []
     criterios['suma_caracteristicas'] = 0
-    criterios['otros'] = []
+    criterios['otros'] = {}
 
     criterios_obj.each do |c|
 
@@ -214,7 +214,11 @@ class Pmc::PecesController < Pmc::PmcController
       when Pmc::Propiedad::ZONAVI
         criterios['Estado poblacional en el Golfo de México y caribe'][2] = dato
       else
-        criterios['otros'] << dato
+        if criterios['otros'][c.ancestry[0..6]]
+          criterios['otros'][c.ancestry[0..6]] << dato
+        else
+          criterios['otros'][c.ancestry[0..6]] = [dato]
+        end
       end  # End case
     end  # End each criterios
 

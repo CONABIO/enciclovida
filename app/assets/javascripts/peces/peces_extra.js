@@ -29,8 +29,13 @@ $(document).ready(function(){
             button.popover({
                 html:true,
                 container: 'body',
-                placement:'bottom',
-                title: 'Criterios globales',
+                placement: function(){
+                    if(($(window).width() - button.offset().left) < 500){
+                        return 'left';
+                    }else{
+                        return 'bottom';
+                    }
+                },
                 trigger: 'focus',
                 content: data
             }).popover('show');
@@ -46,15 +51,10 @@ $(document).ready(function(){
     $(".porZonas input").each(function(index, item){
         if($(item).prop('checked')){
             $('#path_' + item.id).addClass('zona-seleccionada');
-            //console.log(index);
-            //console.log('<-- index y a continuacion  item-->');
-            //console.log(item);
         }
     });
 
-    //$(window).load(function(){
-        $("html,body").animate({scrollTop: 105}, 500);
-    //});
+    $("html,body").animate({scrollTop: 105}, 500);
 });
 
 var scroll_array = false;
