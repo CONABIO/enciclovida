@@ -1,4 +1,4 @@
-  module PecesHelper
+module PecesHelper
 
   # Se duplico para utilizarla solo en los resultados, ya que rata de hacer el join con adicionales para cada uno de los peces #facepalm!! >.>! ¬.¬
   def tituloNombreCientificoPeces(taxon, params={})
@@ -70,23 +70,17 @@
     checkBoxes.html_safe
   end
 
-  def dibujaZonasPez pez
-    s = {'v' => ['Recomendable','semaforo-recomendable'], 'a' => ['Poco recomendable','semaforo-moderado'], 'r' => ['Evita','semaforo-evita'], 's' => ['Especie sin datos','semaforo-no-datos'], 'n' => ['No se distribuye', '']}
-    puts '++++++'+pez.valor_zonas.inspect
+  def dibujaZonasPez(c, i)
     lista = ''
-    lista << "<ul><li>"
-    @zonas[0..2].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i]} btn-title' tooltip-title='#{s[pez.valor_zonas[i]][0]}'>"
-      lista << (pez.valor_zonas[i] == 'n' ? "<s>#{z[0]}</s>" : "<b>#{z[0]}</b>")
-      lista << "<i class = '#{s[pez.valor_zonas[i]][1]}-ev-icon'></i></span>"
-    end
-    lista << '</li><li>'
-    @zonas[3..5].each_with_index do |z, i|
-      lista << "<span class='btn-zona btn-zona-#{pez.valor_zonas[i+3]} btn-title' tooltip-title='#{s[pez.valor_zonas[i+3]][0]}'>"
-      lista << (pez.valor_zonas[i+3] == 'n' ? "<s>#{z[0]}</s>" : "<b>#{z[0]}</b>")
-      lista << "<i class = '#{s[pez.valor_zonas[i+3]][1]}-ev-icon'></i></span>"
-    end
-    lista << '</li></ul>'
+    lista << "<span class='btn-zona btn-zona-#{@pez.valor_zonas[i]} btn-title' tooltip-title='#{c[:nombre]}'>"
+    lista << (c[:nombre] == 'No se distribuye' ? "<s>#{c[:tipo_propiedad]}</s>" : "<b>#{c[:tipo_propiedad]}</b>")
+    lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i></span>"
+    @criterios['otros'][c[:ancestry]].each{ |cert|
+      lista << "<span class='btn-zona btn-title' tooltip-title='#{cert[:nombre]}'>"
+      lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank')
+      lista << "</span>"
+    } if @pez.con_estrella && @criterios['otros'][c[:ancestry]]
+    lista
   end
 
   def valorAColor valor
