@@ -30,10 +30,14 @@ $(document).ready(function(){
                 html:true,
                 container: 'body',
                 placement: function(){
-                    if(($(window).width() - button.offset().left) < 500){
-                        return 'left';
+                    if($(window).width() < 990){
+                        return 'bottom'
                     }else{
-                        return 'bottom';
+                        if(($(window).width() - button.offset().left) < 600){
+                            return 'left';
+                        }else{
+                            return 'right';
+                        }
                     }
                 },
                 trigger: 'focus',

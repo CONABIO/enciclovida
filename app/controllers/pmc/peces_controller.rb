@@ -139,7 +139,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pmc_pez).permit(:especie_id, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+    params.require(:pmc_pez).permit(:especie_id, :veda_fechas, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
                                     peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
