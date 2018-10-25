@@ -20,6 +20,9 @@
     <% end %>
   <% end %>
 
+  <h3>Descripción de veda</h3>
+  <%= f.input :veda_fechas, as: :text %>
+
   <h3>Criterios asociados</h3>
   <div id='peces_criterios'>
     <%= f.semantic_fields_for :peces_criterios do |criterios| %>
