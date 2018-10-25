@@ -31,9 +31,9 @@
       <li role="presentation" >
         <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Ubicación', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
-      </li>
+      <!--li role="presentation" >
+        <%#= link_to 'Ubicación', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
+      </li-->
       <li role="presentation" >
         <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
       </li>
@@ -97,7 +97,7 @@
       </div>
 
       <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Especies estudiadas'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas', style: 'display: none;' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Especies estudiadas'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
         <hr />
         <%= f.simple_fields_for :especies do |especie| %>
           <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
@@ -105,7 +105,7 @@
       </div>
 
       <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Keywords'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords', style: 'display: none;' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Keywords'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
         <hr />
         <%= f.simple_fields_for :keywords do |kw| %>
           <%= render partial: 'form_keywords', locals: { f: kw } %>

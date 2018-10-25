@@ -82,7 +82,7 @@ es:
           titulo_conjunto_datos: Título original de la colección de los datos
           titulo_compilacion: Nombre del documento o respositorio donde los datos estan disponibles
           descarga_datos: Enlace de consulta, descarga, responsable o información acerca de la coleccòn
-          licencia_uso: Elige el Creative Commons adecuado para esta colección
+          licencia_uso: Por default tiene una licencia de atribución no comercial
           estatus_datos: ¿Cómo quieres poner esta colección de datos visible al público?
           resolucion_temporal: ¿Cuál es la resolución temporal de los datos?
           resolucion_espacial: ¿Cuál es la resolución espacial de los datos?
@@ -138,6 +138,8 @@ es:
             Public access: Acceso público
             Restricted access: Acceso restringido
             Private access: Acceso privado
+          #estatus_datos:
+          #  cc0:
 
     "yes": 'Yes'
     "no": 'No'
