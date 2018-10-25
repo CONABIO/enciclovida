@@ -43,6 +43,7 @@ module PecesHelper
       checkBoxes << "</span>"
 
       checkBoxes << "</label>"
+
     end
 
     checkBoxes.html_safe
@@ -73,8 +74,9 @@ module PecesHelper
   def dibujaZonasPez(c, i)
     lista = ''
     lista << "<span class='btn-zona btn-zona-#{@pez.valor_zonas[i]} btn-title' tooltip-title='#{c[:nombre]}'>"
-    lista << (c[:nombre] == 'No se distribuye' ? "<s>#{c[:tipo_propiedad]}</s>" : "<b>#{c[:tipo_propiedad]}</b>")
-    lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i></span>"
+    lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i>"
+    lista << "<b>#{c[:tipo_propiedad]}</b>"
+    lista << "</span>"
     @criterios['otros'][c[:ancestry]].each{ |cert|
       lista << "<span class='btn-zona btn-title' tooltip-title='#{cert[:nombre]}'>"
       lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank')
@@ -98,6 +100,7 @@ module PecesHelper
             when "a" then "semaforo-moderado"
             when "r" then "semaforo-evita"
             when "s" then "semaforo-no-datos"
+            when "n" then "block"
             else ""
             end
     clase
