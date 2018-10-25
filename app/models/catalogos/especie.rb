@@ -42,7 +42,7 @@ class Especie < ActiveRecord::Base
   :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
-                :e_tipo_distribucion, :e_estado_conservacion, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
+                :e_tipo_distribucion, :e_estado_conservacion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
 
   has_one :proveedor
   has_one :adicional
