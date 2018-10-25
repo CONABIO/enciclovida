@@ -40,7 +40,7 @@ $(document).ready(function(){
                         }
                     }
                 },
-                trigger: 'click',
+                trigger: 'focus',
                 content: data
             }).popover('show');
         });
