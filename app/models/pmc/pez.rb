@@ -1,13 +1,13 @@
-class Pez < ActiveRecord::Base
+class Pmc::Pez < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
 
-  has_many :peces_criterios, :class_name => 'PezCriterio', :foreign_key => :especie_id, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :especie_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
@@ -74,7 +74,7 @@ class Pez < ActiveRecord::Base
       if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
       elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
-        #self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
+        self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
       end
@@ -99,7 +99,7 @@ class Pez < ActiveRecord::Base
 
     # Para actualizar o crear el valor de la nom
     if nom = especie.catalogos.nom.first
-      if prop = Propiedad.where(nombre_propiedad: nom.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: nom.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end
@@ -120,7 +120,7 @@ class Pez < ActiveRecord::Base
     criterio_id = 159
 
     if iucn = especie.catalogos.iucn.first
-      if prop = Propiedad.where(nombre_propiedad: iucn.descripcion).first
+      if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
         end

@@ -1,10 +1,10 @@
-class PropiedadesController < ApplicationController
+class Pmc::PropiedadesController < ApplicationController
   before_action :set_propiedad, only: [:show, :edit, :update, :destroy]
 
   # GET /propiedades
   # GET /propiedades.json
   def index
-    @propiedades = Propiedad.all.order(ancestry: :asc)
+    @propiedades = Pmc::Propiedad.all.order(ancestry: :asc)
 
     render 'peces/propiedades/index'
   end
@@ -17,7 +17,7 @@ class PropiedadesController < ApplicationController
 
   # GET /propiedades/new
   def new
-    @propiedad = Propiedad.new
+    @propiedad = Pmc::Propiedad.new
   end
 
   # GET /propiedades/1/edit
@@ -27,7 +27,7 @@ class PropiedadesController < ApplicationController
   # POST /propiedades
   # POST /propiedades.json
   def create
-    @propiedad = Propiedad.new(propiedad_params)
+    @propiedad = Pmc::Propiedad.new(propiedad_params)
 
     respond_to do |format|
       if @propiedad.save
@@ -67,7 +67,7 @@ class PropiedadesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_propiedad
-      @propiedad = Propiedad.find(params[:id])
+      @propiedad = Pmc::Propiedad.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

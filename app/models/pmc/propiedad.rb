@@ -1,11 +1,11 @@
-class Propiedad < ActiveRecord::Base
+class Pmc::Propiedad < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.pez}.propiedades"
 
-  has_many :peces_propiedades, :class_name => 'PezPropiedad', :foreign_key => :propiedad_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Criterio', :foreign_key => :propiedad_id
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id
 
   has_ancestry
 
@@ -45,7 +45,7 @@ class Propiedad < ActiveRecord::Base
     resp = Rails.cache.fetch('propiedades_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
       grouped_options = {}
 
-      Propiedad.all.each do |prop|
+      Pmc::Propiedad.all.each do |prop|
 
         next if prop.existe_propiedad?
         next if prop.is_root?
@@ -69,17 +69,17 @@ class Propiedad < ActiveRecord::Base
 
   def nombre_zona_a_numero
     case nombre_propiedad
-      when 'Pacífico I'
+      when 'Pacífico norte'
         0
-      when 'Pacífico II'
+      when 'Golfo de California'
         1
-      when 'Pacífico III'
+      when 'Pacífico sur'
         2
-      when 'Golfo de México y Caribe IV'
+      when 'Golfo de México norte'
         3
-      when 'Golfo de México y Caribe V'
+      when 'Golfo de México sur'
         4
-      when 'Golfo de México y Caribe VI'
+      when 'Caribe'
         5
     end
   end

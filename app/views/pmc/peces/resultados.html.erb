@@ -1,11 +1,10 @@
-<%= render :partial => 'shared/multimodal' %>
-<div id="resultados-container" class="state-one">
+<div id="resultados-container" class="col-xs-12 state-one">
   <div class="row">
       <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
         <span class="glyphicon"></span></button>
   </div>
   <hr/>
-    <%= render :file => 'peces/busqueda' %>
+    <%= render :file => 'pmc/peces/index' %>
 
   <div id="pestañas" class="panel">
     <ul class="nav nav-tabs" data-tabs="tabs">
@@ -16,7 +15,7 @@
 
     <div class="tab-pane panel-body resultados-peces" id="todos">
         <div id="resultados">
-          <%= render :file => 'peces/resultados_iteracion' %>
+          <%= render :file => 'pmc/peces/resultados_iteracion' %>
         </div>
     </div>
   </div>

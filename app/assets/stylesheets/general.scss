@@ -66,6 +66,8 @@
   font-size: 2em!important;
   color: #fafafa !important;
   text-shadow: 1px 1px 1px #333333;
+  margin-top: 6px;
+  margin-bottom: -5px;
 }
 #brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after, .btn-busquedas:hover b{
   text-shadow: 1px 1px 1px #a0a0a0;
@@ -126,9 +128,9 @@ footer.legal p {
 }
 .btn-title[tooltip-title]:hover:after {
   content: attr(tooltip-title);
-  font-size: small;
-  padding: 1px 4px;
-  color: #800000;
+  font-size: medium;
+  padding: 2px 4px;
+  color: #333;
   position: absolute;
   left: 50%;
   top: 95%;

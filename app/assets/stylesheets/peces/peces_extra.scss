@@ -51,50 +51,51 @@
   padding: 1em 0;
   min-height: 125px;
 }
-.exacta input.disabled, .agrupada select.disabled, .recomendada input.disabled, .recomendada span.disabled, .recomendada select.disabled{
-  color: #888;
-  background-color: #ddd;
+.porGrupo span.disabled, .porGrupo input.disabled, .porSemaforo span.disabled, .porSemaforo input.disabled, .porZonas span.disabled, .porZonas input.disabled, .porZonas path.disabled, .porNombreGrupo input.disabled, .porNombreGrupo select.disabled, .porCriterios span.disabled, .porCriterios input.disabled, .porCriterios select.disabled{
+  color: #888!important;
+  background-color: #ddd!important;
+  fill: #ddd!important;
 }
 input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
   box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
 }
-.recomendada label{
-  max-width: 100px;
-  height: 65px;
-  vertical-align: middle;
-}
-.recomendada label.info-label{
+.porSemaforo label:nth-of-type(4){
   font-size: smaller;
-  border-left: 3px solid #DADADA;
-  margin-left: 3px;
+  /*border-left: 1px solid #DADADA;*/
+  margin-left: 2em;
 }
-.recomendada input:not(#nombre), .zonificada label{display: none;}
-.recomendada input + span {
+.porGrupo input, .porSemaforo input, .porZonas label{display: none;}
+.porSemaforo input + span, .porGrupo input + span{
   padding: 0px;
-  text-shadow: 1px 1px 4px rgba(150, 150, 150, 1);
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
   margin: 0px -2px;
-  background: none;
   border: none;
   font-size: 3.5em;
   background: none;
 }
-span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
-.recomendada input:checked + span, .recomendada input + span:hover{
-  color: #a0a0a0;
+#porCriterios{
+  -webkit-transition: display .3s ease-in-out;
+  -moz-transition: display .3s ease-in-out;
+  transition: display .3s ease-in-out;
+}
+.popover-content button{font-size: 1.5em!important;}
+/*span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}*/
+.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover{
+  color: #666666;
   text-shadow: 3px 2px 4px #ececec;
   border-radius: 50%;
 }
 
 .botones-peces{
-  width: 20%;
+  width: 45%;
   transition-delay: 0ms;
   transition-property: width;
   transition-duration: 500ms;
   transition-timing-function: ease-in-out;
 }
 .botones-peces:hover{
-  width: 75%;
+  width: 50%;
 }
 .botones-peces:hover:after{
   content: " " attr(title) " ";
@@ -103,13 +104,14 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   text-align: center;
 }
 .resultados-peces .result-img-container{
-  margin: 4px;
+  margin: 3px -4px;
   overflow: visible;
+  vertical-align: middle;
 }
 .resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
-  max-height: 150px;
-  max-width: 300px;
-  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.9);
+  max-height: 225px;
+  max-width: 225px;
+  transition: all .2s ease-in-out;
   vertical-align: middle;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -133,7 +135,7 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   -moz-transform:scale(.85); /* Firefox */
   -webkit-transform:scale(.85); /* Safari and Chrome */
   -o-transform:scale(.85); /* Opera */
-  font-size: 6em;
+  font-size: 7.5em;
 }
 .resultados-peces .btn-ficha:hover:after {
   content: 'Da click para más información';
@@ -152,24 +154,39 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   box-shadow: 0px 0px 2px #030303;
   background-color: #fafafa;
 }
-.resultados-peces .result-img-container .certificacion-ev-icon{
-  font-size: 2.5em;
+
+.result-img-container .certificacion-ev-icon, .popover-content .certificacion-ev-icon{
   color: #b98303;
-  text-shadow: 1px 1px 4px #fffebf;
-  margin-left: -1.8em;
-  border-radius: 50%;
-  box-shadow: 1px 1px 3px rgba(102, 102, 102, 0.5);
-  background-color: rgba(236, 236, 236, 0.75);
-  position: relative;
+  text-shadow: 1px 1px 1px #fffebf;
 }
-.resultados-peces .result-img-container .result-nombre-container{
+.resultados-peces .certificacion-ev-icon{
+  margin: -15px 0 0 -35px;
+  position: relative;
+  font-size: 2.5em;
+  border-radius: 50%;
+  background-color: rgb(236, 236, 236);
+  z-index: 1;
+}
+.resultados-peces .result-nombre-container{
   min-height: 44px;
   padding: 0;
   margin: 0;
   background-color: #ececec;
   position: relative;
-
 }
+.result-nombre-container ul, .popover-content ul {
+  list-style: none;
+  padding: 0px;
+}
+.result-nombre-container li, .popover-content li{
+  display: block;
+  vertical-align: middle;
+  height: 35px;
+}
+.popover{max-width: none; background-color: #DADADA;}
+.popover i{font-size: 1.85em;}
+.popover-title{font-weight: bolder; text-align: center;}
+.popover-content s, .popover-content b{color: #333333; text-shadow: none;}
 .resultados-peces .result-img-container h5{
   margin: 0;
   padding: 2px 5px;
@@ -182,47 +199,19 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   font-weight: bold;
   font-size: 1.25em;
 }
-.result-datos-container{
-  width: 400px;
-  font-size: .85em;
-}
-.result-datos-container{
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity .2s ease;
-  border: none;
-  top: 0%;
-  right: 0%;
-  overflow-y: hidden;
-  position: absolute;
-  z-index: 10;
-}
-.resultados-peces .result-img-container .btn-ficha:focus ~ .result-nombre-container .result-datos-container{
-  visibility: visible;
-  opacity: 1;
-  overflow-y: visible;
-}
-
 .btn-zona{
-  display: inline-table;
-  padding: 2px 0px;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 2px;
-  margin: 0px 1px 0px 0px;
-  width: 25px;
-  font-size: .8em;
-}
-.btn-zona, .label, .badge, .btn-zona-show{color: #fafafa!important;}
-.btn-zona-show{
-  border-radius: 8px;
-  padding: 3px 6px;
-  min-height: 100px;
+  display: inline-block;
+  background: none!important;
+  text-shadow: 1px 1px 2px #666666;
+  line-height: 35px;
 }
 .btn-zona-star{
-  background: #b98303;
-  fill: #b98303;
-  color: #b98303;
+  background: #DAA621;
+  fill: #DAA621;
+  color: #DAA621;
+}
+.btn-zona-star{
+  text-shadow: -1px 0px 0px #fafafa!important;
 }
 .btn-zona-v{
   color: #9ab635;
@@ -239,13 +228,16 @@ span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}
   background: #db0510;
   fill: #db0510;
 }
-.btn-zona-s, .btn-zona-n, .btn-zona-sn{
-  background: #f9f9f9;
-  color: #f9f9f9;
-  fill: #f9f9f9;
+.btn-zona-s{
+  background: #fafafa;
+  color: #fafafa;
+  fill: #fafafa;
 }
-.btn-zona-s, .btn-zona-n{/*Se deja regla por si se llegasen a ocupar posteriormente*/}
-
+.btn-zona-n{
+  background: #c1008a;
+  color: #c1008a;
+  fill: #c1008a;
+}
 /************* SVG Zonas marítimas ****************************/
 
 path{
@@ -259,20 +251,19 @@ path{
   stroke-width: .5px;
 }
 
-path[id^=path_zonas_]{cursor: pointer;fill: #56a7d0;}
-path[id^=path_zonas_]:hover{fill: #17325f!important;}
-.zona-seleccionada{fill: #17325f!important;}
-#sea-states, .modal-sea-states{fill: #b9da9d;}
-#earth-states, .modal-earth-states{fill: #f2ffbd;}
-#extranjero, .modal-extranjero{fill: #c1c1c1;}
+path[id^=path_zonas_]{cursor: pointer;fill: #a0ccea;}
+path[id^=path_zonas_]:hover{fill: rgba(160, 204, 234, .59);}
+.zona-seleccionada{
+  fill: rgba(160, 204, 234, .45)!important;
+  stroke: #018dc1 !important;
+  stroke-width: .65px!important;
+}
+#sea-states{fill: #b9da9d;}
+#earth-states{fill: #f2ffbd;}
+#extranjero{fill: #f0f0f0;}
 
 svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
-text[id^=titulo_zonas_], text[class^=modal-titulo_zonas_]{display:none;fill: #800000;font-weight: bold;font-size: .5em}
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{fill: #fafafa;}
-
-text[id^=titulo_corto_zonas_], text[class^=modal-titulo_corto_zonas_]{font-size: .7em;}
-
-#path_zonas_pacifico-i:hover ~ #titulo_zonas_pacifico-i, #path_zonas_pacifico-ii:hover ~ #titulo_zonas_pacifico-ii, #path_zonas_pacifico-iii:hover ~ #titulo_zonas_pacifico-iii, #path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-iv, #path_zonas_golfo-de-mexico-y-caribe-v:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-v, #path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ #titulo_zonas_golfo-de-mexico-y-caribe-vi, .modal-path_zonas_pacifico-i:hover ~ .modal-titulo_zonas_pacifico-i, .modal-path_zonas_pacifico-ii:hover ~ .modal-titulo_zonas_pacifico-ii, .modal-path_zonas_pacifico-iii:hover ~ .modal-titulo_zonas_pacifico-iii, .modal-path_zonas_golfo-de-mexico-y-caribe-iv:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-iv, .modal-path_zonas_golfo-de-mexico-y-caribe-v:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-v, .modal-path_zonas_golfo-de-mexico-y-caribe-vi:hover ~ .modal-titulo_zonas_golfo-de-mexico-y-caribe-vi{display:block;}
+text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder;}
 
 .checkbox i{
   font-size: 1.7em;

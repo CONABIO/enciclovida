@@ -3,6 +3,6 @@
     <% propiedad = f.object.propiedad %>
 
     <%= f.input :propiedad_id, label: propiedad.tipo_propiedad, as: :select,
-                collection: grouped_options_for_select(Propiedad.catalogo, selected: propiedad.id) %>
+                collection: grouped_options_for_select(Pmc::Propiedad.catalogo, selected: propiedad.id) %>
   <% end %>
 </div>
