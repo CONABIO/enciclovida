@@ -7,7 +7,7 @@
   <%= form_tag pmc_pez_index_path, :method => :get, :class => '', :id => :b_peces  do %>
 
 
-    <h4 class="text-primary"><strong>Selecciona:</strong></h4>
+    <h4 class="text-primary"><strong><%= @peces.present? ? 'Tu búsqueda se realizo con los siguientes filtros' : 'Selecciona'  %>:</strong></h4>
 
     <fieldset class="porGrupo col-xs-12 <%= "col-md-5" if(@peces.nil?) %> form-peces">
       <h4><strong>1. Peces o mariscos</strong></h4>
