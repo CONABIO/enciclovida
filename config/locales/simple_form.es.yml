@@ -34,7 +34,7 @@ es:
           titulo_conjunto_datos: Título de la coleccón de datos
           titulo_compilacion: Título de la compilación
           descarga_datos: Descarga de datos
-          licencia_uso: Creative Commons
+          licencia_uso: Creative commons
           estatus_datos: Disposición de datos al público
           descripcion_base: Descripción de la colección de datos
           resolucion_temporal: Resolución temporal
@@ -101,13 +101,13 @@ es:
     options:
       metamares_proyecto:
         financiamiento:
-          ACA_F: ACA_F
-          GOV_F: GOV_F
-          IGO_F: IGO_F
-          INT_F: INT_F
-          NGO_F: NGO_F
-          Private_F: Private_F
-          Unknown: Unknown
+          ACA_F: Por ley
+          GOV_F: Gubernamental
+          IGO_F: Gobierno internacional
+          INT_F: Internacional
+          NGO_F: Subsidio para la sustentabilidad
+          Private_F: Privado
+          Unknown: Desconocido
         campo_investigacion:
           Aquaculture: Acuacultura
           Conservation: Conservación
@@ -138,8 +138,15 @@ es:
             Public access: Acceso público
             Restricted access: Acceso restringido
             Private access: Acceso privado
-          #estatus_datos:
-          #  cc0:
+          licencia_uso:
+            cc0: Sin derechos de autor (CC0)
+            cc_by: Atribución (CC-BY)
+            cc_by_nc: Atribución - No comercial (CC-BY-NC)
+            cc_by_sa: Atribución - Compartir bajo la misma (CC-BY-SA)
+            cc_by_nd: Atribución - Sin obras derivadas (CC-BY-ND)
+            cc_by_nc_sa: Atribución - No comercial compartir bajo la misma licencia (CC-BY-NC-SA)
+            cc_by_nc_nd: Atribución - No comercial sin obras derivadas (CC-BY-NC-ND)
+            no_licence: Sin licencia, todos los derechos reservados
 
     "yes": 'Yes'
     "no": 'No'
