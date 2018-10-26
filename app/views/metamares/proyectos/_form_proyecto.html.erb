@@ -3,7 +3,7 @@
 <%= f.input :objeto_monitoreo %>
 <%= f.input :metodo %>
 <%= f.input :finalidad %>
-<%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION %>
-<%= f.input :campo_ciencia, collection: Metamares::Proyecto::CAMPOS_CIENCIAS %>
-<%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS %>
+<%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION, input_html: {class: 'form-control'} %>
+<%= f.input :campo_ciencia, collection: Metamares::Proyecto::CAMPOS_CIENCIAS, input_html: {class: 'form-control'} %>
+<%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS, input_html: {class: 'form-control'} %>
 
