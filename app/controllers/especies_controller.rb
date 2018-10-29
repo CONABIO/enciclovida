@@ -124,14 +124,14 @@ class EspeciesController < ApplicationController
         end
 
         @especie.e_categoria_taxonomica = @especie.categoria_taxonomica
-        @especie.e_tipo_distribucion = @especie.tipos_distribuciones
-        @especie.e_estado_conservacion = @especie.estados_conservacion
+        @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
+        @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
         @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
-                                                :e_estado_conservacion, :e_bibliografia, :e_fotos])
+                                                :e_caracteristicas, :e_bibliografia, :e_fotos])
       end
 
       format.pdf do

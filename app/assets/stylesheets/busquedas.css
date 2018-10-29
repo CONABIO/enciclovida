@@ -72,7 +72,7 @@ div.result-img-container{
     #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de buúsqueda";}
     #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
     #resultados-container.state-one #busqueda_avanzada{
-        width: 27%;
+        width: 30%;
         display: block;
     }
     #resultados-container.state-two #busqueda_avanzada{
@@ -80,7 +80,7 @@ div.result-img-container{
         display: none;
     }
     #resultados-container.state-one #pestañas{
-        width: 73%;
+        width: 70%;
     }
     #resultados-container.state-two #pestañas{
         width: 100%;

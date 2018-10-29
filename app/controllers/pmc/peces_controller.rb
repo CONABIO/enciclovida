@@ -45,7 +45,6 @@ class Pmc::PecesController < Pmc::PmcController
       # Busqueda con estrella
       if params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')
         @peces = @peces.where(con_estrella: 1)
-        params[:semaforo_recomendacion].delete('star')
       end
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
