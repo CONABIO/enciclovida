@@ -7,5 +7,5 @@
   <%= f.hidden_field :especie_id, class: 'form-control'  %>
 
   <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...', :class => 'btn btn-success'} %>
-  <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default' %>
+  <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')" %>
 <% end %>
