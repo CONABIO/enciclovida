@@ -30,10 +30,8 @@
   </tbody>
 </table>
 
-<% if @pagina == 1 && @proyectos.any? %>
-  <div class="text-center paginado-metamares"></div>
+<div class="text-center paginado-metamares"></div>
 
-  <script data-turbolinks-track="true">
-      paginadoMetamares(<%= @paginas || 1 %>, 1);
-  </script>
-<% end %>
+<script data-turbolinks-track="true">
+    paginadoMetamares(<%= @paginas %>, <%= @pagina %>);
+</script>

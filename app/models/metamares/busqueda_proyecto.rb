@@ -10,6 +10,7 @@ class Metamares::BusquedaProyecto
         distinct.select('proyectos.id, nombre_proyecto, autor, campo_investigacion, nombre_institucion, descarga_datos').
         where('estatus_datos = 1')
     self.totales = 0
+    self.params = {}
   end
 
   # REVISADO: Hace el query con los parametros elegidos

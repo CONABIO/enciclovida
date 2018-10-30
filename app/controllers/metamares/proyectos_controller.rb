@@ -7,16 +7,13 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
     if params[:commit].present? && params[:commit] == 'Buscar'
       busqueda.params = proyecto_busqueda_params
-      busqueda.consulta
-
-    #   @proyectos = busqueda.proyectos
-    #   @totales = busqueda.totales
-    # else
-    #   @proyectos = Metamares::Proyecto.all
-    #   @totales = @proyectos.length
+      busqueda.params[:pagina] = params[:pagina]
+    elsif params[:pagina].present?
+      busqueda.params = params
     end
 
-    @proyectos = busqueda.proyectos#.limit(100)
+    busqueda.consulta
+    @proyectos = busqueda.proyectos
     @totales = busqueda.totales
     @pagina = busqueda.pagina
     @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1

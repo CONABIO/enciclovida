@@ -1,11 +1,41 @@
 /**
+ * Quita parametros de la URL actual
+ * @param sParam
+ * @returns {string}
+ */
+var quitaParametros = function(sParam)
+{
+    var url = window.location.href.split('?')[0]+'?';
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] != sParam) {
+            url = url + sParameterName[0] + '=' + sParameterName[1] + '&'
+        }
+    }
+    return url.substring(0,url.length-1);
+};
+
+/**
  * Para el pagiando con de metamares
  * @param paginas
  * @param pagina
  */
 var paginadoMetamares = function(paginas, pagina)
 {
-    var es_primero = null;
+    console.log(pagina);
+    console.log(paginas);
+    href = quitaParametros('pagina');
+    var url = href.split('/').pop();
+
+    if (url == 'proyectos')
+        var param = '?';
+    else
+        var param = '&';
 
     $('.paginado-metamares').bootpag({
         total: paginas,          // total pages
@@ -15,23 +45,8 @@ var paginadoMetamares = function(paginas, pagina)
         firstLastUse: true,
         first: '←',
         last: '→'
-    }).on("page", function (event, pag) {
-        if (es_primero == pag)
-            return;
-        else {
-            $.ajax(
-                {
-                    url: '/especies/' + opciones.taxon + '/fotos-bdi.html',
-                    type: 'GET',
-                    data: {
-                        pagina: pag
-                    }
-                }).done(function (res) {
-                $('#paginado_fotos').empty().append(res);
-            });
-        }
-
-        es_primero = pag;
+    }).on("page", function(event, /* page number here */ num){
+        window.location.replace(href + param + "pagina=" + num);
     });
 };
 
