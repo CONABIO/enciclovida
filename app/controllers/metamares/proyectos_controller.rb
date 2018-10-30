@@ -4,6 +4,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   def index
     busqueda = Metamares::BusquedaProyecto.new
+
     if params[:commit].present? && params[:commit] == 'Buscar'
       busqueda.params = proyecto_busqueda_params
       busqueda.consulta
@@ -14,8 +15,11 @@ class Metamares::ProyectosController < Metamares::MetamaresController
     #   @proyectos = Metamares::Proyecto.all
     #   @totales = @proyectos.length
     end
-    @proyectos = busqueda.proyectos.limit(100)
+
+    @proyectos = busqueda.proyectos#.limit(100)
     @totales = busqueda.totales
+    @pagina = busqueda.pagina
+    @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1
   end
 
   def show

@@ -1,7 +1,10 @@
 <h3>Busqueda de colecciones de datos</h3>
+
 <hr />
 <%= render partial: 'busqueda_proyectos' %>
 <hr />
+
+<h5>Colecciones: <%= @totales %></h5>
 <table class="table table-condensed table-striped table-hover table-responsive">
   <thead>
   <tr class="success">
@@ -26,3 +29,11 @@
   <% end %>
   </tbody>
 </table>
+
+<% if @pagina == 1 && @proyectos.any? %>
+  <div class="text-center paginado-metamares"></div>
+
+  <script data-turbolinks-track="true">
+      paginadoMetamares(<%= @paginas || 1 %>, 1);
+  </script>
+<% end %>

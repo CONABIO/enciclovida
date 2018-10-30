@@ -14,6 +14,8 @@ class Metamares::BusquedaProyecto
 
   # REVISADO: Hace el query con los parametros elegidos
   def consulta
+    paginado_y_offset
+
     self.proyectos = proyectos.where('nombre_proyecto REGEXP ?', params[:proyecto]) if params[:proyecto].present?
     self.proyectos = proyectos.where('nombre_institucion REGEXP ?', params[:institucion]) if params[:institucion].present?
     self.proyectos = proyectos.where(tipo_monitoreo: params[:tipo_monitoreo]) if params[:tipo_monitoreo].present?
@@ -24,6 +26,9 @@ class Metamares::BusquedaProyecto
     elsif params[:nombre].present?
       self.proyectos = proyectos.where('especies_estudiadas.nombre_cientifico REGEXP ?', params[:nombre])
     end
+
+    self.totales = proyectos.count('proyectos.id')
+    self.proyectos = proyectos.offset(offset).limit(por_pagina)
   end
 
   # REVISADO: Algunos valores como el offset, pagina y por pagina

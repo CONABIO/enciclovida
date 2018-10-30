@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require lib/jquery-ui
 //= require lib/jquery.soulmate
+//= require lib/jquery.bootpag.min
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require i18n/i18n.min
