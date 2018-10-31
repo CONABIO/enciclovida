@@ -1,4 +1,13 @@
 es:
+  helpers:
+    cancel:
+      metamares_proyecto:
+        cancel: Cancelar
+    submit:
+      metamares_proyecto:
+        create: Guardar la colección
+        update: Actualiza la colección
+        cancel: Cancelar
   simple_form:
     labels:
       metamares_proyecto:
@@ -106,7 +115,7 @@ es:
           IGO_F: Gobierno internacional
           INT_F: Internacional
           NGO_F: Subsidio para la sustentabilidad
-          Private_F: Privado
+          PRIVATE_F: Privado
           Unknown: Desconocido
         campo_investigacion:
           Aquaculture: Acuacultura
