@@ -40,6 +40,10 @@
       <li role="presentation" >
         <%= link_to 'Keywords', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
       </li>
+      <li role="presentation" >
+        <%= link_to('<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' }) if !@proyecto.new_record? %>
+      </li>
     </ul>
 
     <div class="tab-content">

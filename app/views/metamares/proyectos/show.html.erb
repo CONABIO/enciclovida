@@ -30,6 +30,10 @@
     <li role="presentation" >
       <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'pull-right btn btn-sm btn-warning' %>
     </li>
+    <li role="presentation" >
+      <%= link_to '<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+                  class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
+    </li>
   </ul>
 
   <div class="tab-content">
@@ -80,7 +84,7 @@
       <ul class="list-group">
 
         <% if region = @proyecto.region %>
-          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_region') %></b>: <%= t("simple_form.options.metamares_proyecto.region.nombre_region.#{region.nombre_region.estandariza}") %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_region') %></b>: <%= t("simple_form.options.metamares_proyecto.region.nombre_region.#{region.nombre_region}") %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.latitud') %></b>: <%= region.latitud %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.longitud') %></b>: <%= region.longitud %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.poligono') %></b>: <%= region.poligono %></li>
