@@ -1,5 +1,5 @@
-start_year, end_year, date_time_point, publication_year, latitude, longitude 
-Quitar los saltos de linea en todo el csv
+start_year, end_year, date_time_point, publication_year, latitude, longitude
+Quitar los saltos de linea en todo el csv, comando de replace directo en excel
 Quitar todas las comillas dobles
 Guardar el archivo con otro nombre y separarlo por "|"
 Asegurarse que no existan comillas dobles
