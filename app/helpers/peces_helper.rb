@@ -41,9 +41,7 @@ module PecesHelper
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
       checkBoxes << "</span>"
-
       checkBoxes << "</label>"
-
     end
 
     checkBoxes.html_safe
@@ -54,7 +52,6 @@ module PecesHelper
 
     cat.each do |k, valores|
       filtros = params[k] || []
-
       valores.each do |edo, id|
         edo_p = edo.parameterize
         next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
@@ -67,7 +64,6 @@ module PecesHelper
         checkBoxes << "</label>"
       end
     end
-
     checkBoxes.html_safe
   end
 
@@ -83,6 +79,56 @@ module PecesHelper
       lista << "</span>"
     } if @pez.con_estrella && @criterios['otros'][c[:ancestry]]
     lista
+  end
+
+  def filtrosUsados
+    filtros_usados = ''
+
+    ###
+    grupos = params[:grupos_iconicos] || []
+    @grupos.each do |taxon|  # Para tener los grupos ordenados
+      filtros_usados << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-xs btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'></span>" if grupos.include?(taxon.id.to_s)
+    end
+
+    ###
+    seleccionados = params[:semaforo_recomendacion] || []
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
+    s.each do |k,v|
+      filtros_usados << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title #{v[1]}-ev-icon'></span>" if seleccionados.include?(k.to_s)
+    end
+    ###
+
+    [:zonas, :nom, :iucn, :tipo_vedas, :tipo_capturas, :procedencias, :cnp].each do |f|
+      filtros = params[f] || []
+
+      case f
+      when :zonas, :cnp
+        @filtros[f].each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title btn-default'>#{edo}</span>"
+          end
+        end
+      when :nom, :iucn
+        @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title #{edo_p}-ev-icon'></span>"
+          end
+        end
+      else
+        @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title btn-default'>#{edo}</span>"
+          end
+        end
+      end
+    end
+    filtros_usados
   end
 
   def valorAColor valor
