@@ -73,6 +73,12 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-size: 3.5em;
   background: none;
 }
+.filtrosUsados span{
+  padding: 0;
+  margin: 0 3px;
+  font-size: 1.25em;
+  background: none;
+}
 #porCriterios{
   -webkit-transition: display .3s ease-in-out;
   -moz-transition: display .3s ease-in-out;

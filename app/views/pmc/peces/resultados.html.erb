@@ -1,7 +1,15 @@
 <div id="resultados-container" class="col-xs-12 state-one">
   <div class="row">
-      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
-        <span class="glyphicon"></span></button>
+    <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
+      <span class="glyphicon"></span>
+    </button>
+    <div class="pull-left filtrosUsados">
+      <% fu = filtrosUsados.html_safe %>
+      <% unless fu == '' %>
+        <b>Los filtros que utilizados en esta búsqueda fueron: </b><%= fu %>
+      <% end %>
+    </div>
+
   </div>
   <hr/>
     <%= render :file => 'pmc/peces/index' %>
