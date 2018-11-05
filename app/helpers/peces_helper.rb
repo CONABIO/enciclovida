@@ -87,14 +87,14 @@ module PecesHelper
     ###
     grupos = params[:grupos_iconicos] || []
     @grupos.each do |taxon|  # Para tener los grupos ordenados
-      filtros_usados << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-xs btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'></span>" if grupos.include?(taxon.id.to_s)
+      filtros_usados << "<i title = '#{taxon.nombre_comun_principal}' class = 'btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'></i>" if grupos.include?(taxon.id.to_s)
     end
 
     ###
     seleccionados = params[:semaforo_recomendacion] || []
     s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
     s.each do |k,v|
-      filtros_usados << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title #{v[1]}-ev-icon'></span>" if seleccionados.include?(k.to_s)
+      filtros_usados << "<span title = '#{v[0]}' class = 'btn-title'><i class = 'btn-zona btn-zona-#{k} #{v[1]}-ev-icon'></i></span>" if seleccionados.include?(k.to_s)
     end
     ###
 
@@ -107,7 +107,7 @@ module PecesHelper
           edo_p = edo.parameterize
           next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
           if filtros.include?(id.to_s)
-            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title btn-default'>#{edo}</span>"
+            filtros_usados << "<i title = '#{edo}' class = '#{f} btn-title btn-default'>#{edo}</i>"
           end
         end
       when :nom, :iucn
@@ -115,7 +115,7 @@ module PecesHelper
           edo_p = edo.parameterize
           next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
           if filtros.include?(id.to_s)
-            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title #{edo_p}-ev-icon'></span>"
+            filtros_usados << "<span title = '#{edo}' class = 'btn-title'><i class = '#{f} #{edo_p}-ev-icon'></i></span>"
           end
         end
       else
@@ -123,7 +123,7 @@ module PecesHelper
           edo_p = edo.parameterize
           next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
           if filtros.include?(id.to_s)
-            filtros_usados << "<span title = '#{edo}' class = '#{f} btn btn-xs btn-basica btn-title btn-default'>#{edo}</span>"
+            filtros_usados << "<i title = '#{edo}' class = '#{f} btn-title btn-default'>#{edo}</i>"
           end
         end
       end

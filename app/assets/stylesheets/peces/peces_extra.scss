@@ -73,11 +73,20 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-size: 3.5em;
   background: none;
 }
-.filtrosUsados span{
-  padding: 0;
-  margin: 0 3px;
-  font-size: 1.25em;
+#toggleFiltros{
+  margin: 10px 0;
+}
+.filtrosUsados{
+  margin: 0 10px;
+}
+.filtrosUsados i{
+  padding: 2px;
+  margin: 0 6px;
   background: none;
+  border: none;
+}
+.filtrosUsados i:before, .filtrosUsados i:after{
+  font-size: 22px;
 }
 #porCriterios{
   -webkit-transition: display .3s ease-in-out;
@@ -103,6 +112,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 .botones-peces:hover:after{
   content: " " attr(title) " ";
+}
+.active{
+  font-size: 18px;
 }
 .resultados-peces{
   text-align: center;
@@ -197,11 +209,6 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-weight: bold;
   font-size: 1em;
 }
-.modal-header h5{
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.25em;
-}
 .btn-zona{
   display: inline-block;
   background: none!important;
@@ -233,7 +240,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   color: #fafafa;
   fill: #fafafa;
 }
-.btn-zona-n, .popover-content .btn-zona-s{
+.btn-zona-n, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
   background: #a0a0a0;
   color: #a0a0a0;
   fill: #a0a0a0;
