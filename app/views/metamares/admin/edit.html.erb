@@ -1,22 +1,18 @@
-<%= semantic_form_for @usuario, url: metamares_admin_path(@usuario) do |f| %>
+<%= simple_form_for @usuario, url: metamares_admin_path(@usuario) do |f| %>
 
-  <%= f.inputs :name => "usuario" do %>
-    <%= f.input :nombre, label: 'Nombre(s)' %>
-    <%= f.input :apellido, label: 'Apellido(s)' %>
-    <%= f.input :email, label: 'Correo electrónico' %>
-    <%= f.input :institucion, label: 'Institución' %>
-    <%= f.input :password, label: 'Contraseña', :hint => 'Dejar vacío si no se desea cambiar' %>
-    <%= f.input :password_confirmation, label: 'Confirma contraseña', :hint => 'Dejar vacío si no se desea cambiar' %>
-  <% end %>
+  <%= f.input :nombre, label: 'Nombre(s)', required: true %>
+  <%= f.input :apellido, label: 'Apellido(s)', required: true %>
+  <%= f.input :email, label: 'Correo electrónico', required: true, disabled: true %>
+  <%= f.input :institucion, label: 'Institución' %>
+  <%#= f.input :password, label: 'Contraseña', :hint => 'Dejar vacío si no se desea cambiar' %>
+  <%#= f.input :password_confirmation, label: 'Confirma contraseña', :hint => 'Dejar vacío si no se desea cambiar' %>
 
-  <%= f.semantic_fields_for :usuario_roles do |rol| %>
+  <%= f.simple_fields_for :usuario_roles do |rol| %>
     <%= rol.input :usuario_id, as: :hidden %>
     <%= rol.input :rol_id %>
   <% end %>
 
-  <%= f.actions do %>
-    <%= f.action :submit, :as => :button, label: @usuario.new_record? ? 'Crear' : 'Actualizar' %>
-    <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
-  <% end %>
+  <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), :back, { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>
