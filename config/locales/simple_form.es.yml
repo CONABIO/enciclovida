@@ -8,6 +8,10 @@ es:
         create: Guardar la colección
         update: Actualiza la colección
         cancel: Cancelar
+      usuario:
+        create: Crear cuenta
+        update: Actualizar cuenta
+        cancel: Cancelar
   simple_form:
     labels:
       metamares_proyecto:
@@ -69,6 +73,12 @@ es:
           sitio_web: Sitio web
           contacto: Nombre del contacto
           correo_conatcto: Correo electrónico del contacto
+      usuario:
+        nombre: Nombre(s)
+        apellido: Apellido(s)
+        email: Correo electrónico
+        institucion: Institución
+        rol: Rol
     hints:
       metamares_proyecto:
         nombre_proyecto: Nombre corto para identificar la colección de datos

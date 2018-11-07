@@ -1,26 +1,26 @@
 class Metamares::AdminController < Metamares::MetamaresController
 
+  before_action :authenticate_usuario!
+  before_action  do
+    tiene_permiso?('AdminMetamares')  # Minimo administrador
+  end
+
   before_action :set_usuario, only: [:edit, :update]
 
   def index
-    @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).where("nombre_rol IN ('AdminMetamares', 'UsuariosMetamares')").order(:id).uniq
+    @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).
+        where("nombre_rol IN ('AdminMetamares', 'AdminMetamaresManager', 'AdminMetamaresUsuarios')").order(:id).uniq
   end
 
-  # GET /estatuses/1
-  # GET /estatuses/1.json
   def show
   end
 
-  # GET /estatuses/new
   def new
-    @estatuse = Estatus.new
   end
 
   def edit
   end
 
-  # POST /estatuses
-  # POST /estatuses.json
   def create
     @estatuse = Estatus.new(estatuse_params)
 
@@ -38,7 +38,7 @@ class Metamares::AdminController < Metamares::MetamaresController
   def update
     respond_to do |format|
       if @usuario.update(usuario_params)
-        format.html { redirect_to :index, notice: 'El usuario se actualizó correctamente' }
+        format.html { redirect_to metamares_admin_index_path, notice: 'El usuario se actualizó correctamente' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -47,8 +47,6 @@ class Metamares::AdminController < Metamares::MetamaresController
     end
   end
 
-  # DELETE /estatuses/1
-  # DELETE /estatuses/1.json
   def destroy
     @estatuse.destroy
     respond_to do |format|
