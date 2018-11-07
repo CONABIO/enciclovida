@@ -9,7 +9,7 @@ class Metamares::AdminController < Metamares::MetamaresController
 
   def index
     @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).
-        where("nombre_rol IN ('AdminMetamares', 'AdminMetamaresManager', 'AdminMetamaresUsuarios')").order(:id).uniq
+        where("usuarios_roles.rol_id IN (#{Rol::METAMARES_ROLES.map{|r| r.to_s.to_i}.join(',')})").order(:id).uniq
   end
 
   def show

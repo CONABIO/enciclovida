@@ -166,6 +166,12 @@ es:
             cc_by_nc_sa: Atribución - No comercial compartir bajo la misma licencia (CC-BY-NC-SA)
             cc_by_nc_nd: Atribución - No comercial sin obras derivadas (CC-BY-NC-ND)
             no_licence: Sin licencia, todos los derechos reservados
+      usuario:
+        usuario_roles:
+          rol_id:
+            '20': Administrador
+            '21': Manager
+            '22': Usuario
 
     "yes": 'Yes'
     "no": 'No'
