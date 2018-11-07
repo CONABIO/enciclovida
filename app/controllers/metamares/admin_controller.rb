@@ -1,10 +1,15 @@
 class Metamares::AdminController < Metamares::MetamaresController
 
+  before_action :authenticate_usuario!
+  before_action  do
+    tiene_permiso?('AdminMetamares')  # Minimo administrador
+  end
+
   before_action :set_usuario, only: [:edit, :update]
 
   def index
     @usuarios = Usuario.select(:id, :nombre, :apellido, :email).select('nombre_rol').left_joins(:usuario_roles, :roles).
-        where("nombre_rol IN ('AdminMetamares', 'UsuariosMetamares')").order(:id).uniq
+        where("nombre_rol IN ('AdminMetamares', 'AdminMetamaresManager', 'AdminMetamaresUsuarios')").order(:id).uniq
   end
 
   def show

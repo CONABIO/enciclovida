@@ -1,6 +1,10 @@
 class Metamares::ProyectosController < Metamares::MetamaresController
 
   before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
+  before_action :authenticate_usuario!, except: [:index, :show]
+  before_action except: [:index, :show]  do
+    es_propietario?(@proyecto) || tiene_permiso?('AdminMetamaresManager')
+  end
 
   def index
     busqueda = Metamares::BusquedaProyecto.new
