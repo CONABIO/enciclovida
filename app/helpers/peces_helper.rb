@@ -42,7 +42,6 @@ module PecesHelper
       checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
       checkBoxes << "</span>"
-
       checkBoxes << "</label>"
 
     end
@@ -55,7 +54,6 @@ module PecesHelper
 
     cat.each do |k, valores|
       filtros = params[k] || []
-
       valores.each do |edo, id|
         edo_p = edo.parameterize
         next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
@@ -68,21 +66,71 @@ module PecesHelper
         checkBoxes << "</label>"
       end
     end
-
     checkBoxes.html_safe
   end
 
   def dibujaZonasPez(c, i)
     lista = ''
     lista << "<span class='btn-zona btn-zona-#{@pez.valor_zonas[i]} btn-title' tooltip-title='#{c[:nombre]}'>"
-    lista << (c[:nombre] == 'No se distribuye' ? "<s>#{c[:tipo_propiedad]}</s>" : "<b>#{c[:tipo_propiedad]}</b>")
-    lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i></span>"
+    lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i>"
+    lista << "<b>#{c[:tipo_propiedad]}</b>"
+    lista << "</span>"
     @criterios['otros'][c[:ancestry]].each{ |cert|
       lista << "<span class='btn-zona btn-title' tooltip-title='#{cert[:nombre]}'>"
       lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank')
       lista << "</span>"
     } if @pez.con_estrella && @criterios['otros'][c[:ancestry]]
     lista
+  end
+
+  def filtrosUsados
+    filtros_usados = ''
+
+    ###
+    grupos = params[:grupos_iconicos] || []
+    @grupos.each do |taxon|  # Para tener los grupos ordenados
+      filtros_usados << "<i title = '#{taxon.nombre_comun_principal}' class = 'btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'></i>" if grupos.include?(taxon.id.to_s)
+    end
+
+    ###
+    seleccionados = params[:semaforo_recomendacion] || []
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
+    s.each do |k,v|
+      filtros_usados << "<span title = '#{v[0]}' class = 'btn-title'><i class = 'btn-zona btn-zona-#{k} #{v[1]}-ev-icon'></i></span>" if seleccionados.include?(k.to_s)
+    end
+    ###
+
+    [:zonas, :nom, :iucn, :tipo_vedas, :tipo_capturas, :procedencias, :cnp].each do |f|
+      filtros = params[f] || []
+
+      case f
+      when :zonas, :cnp
+        @filtros[f].each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<i title = '#{edo}' class = '#{f} btn-title btn-default'>#{edo}</i>"
+          end
+        end
+      when :nom, :iucn
+        @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<span title = '#{edo}' class = 'btn-title'><i class = '#{f} #{edo_p}-ev-icon'></i></span>"
+          end
+        end
+      else
+        @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
+          edo_p = edo.parameterize
+          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+          if filtros.include?(id.to_s)
+            filtros_usados << "<i title = '#{edo}' class = '#{f} btn-title btn-default'>#{edo}</i>"
+          end
+        end
+      end
+    end
+    filtros_usados
   end
 
   def valorAColor valor
@@ -100,6 +148,7 @@ module PecesHelper
             when "a" then "semaforo-moderado"
             when "r" then "semaforo-evita"
             when "s" then "semaforo-no-datos"
+            when "n" then "block"
             else ""
             end
     clase
