@@ -8,8 +8,10 @@
   <%#= f.input :password_confirmation, label: 'Confirma contraseña', :hint => 'Dejar vacío si no se desea cambiar' %>
 
   <%= f.simple_fields_for :usuario_roles do |rol| %>
-    <%= rol.input :usuario_id, as: :hidden %>
-    <%= rol.input :rol_id %>
+    <% if Rol::METAMARES_ROLES.include?(rol.object.rol_id.to_s.to_sym) %>
+      <%= rol.input :usuario_id, as: :hidden %>
+      <%= rol.input :rol_id, collection: Rol::METAMARES_ROLES, input_html: {class: 'form-control'} %>
+    <% end %>
   <% end %>
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
