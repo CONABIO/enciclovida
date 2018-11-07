@@ -35,8 +35,8 @@ class Metamares::DirectorioController < Metamares::MetamaresController
 
   def update
     respond_to do |format|
-      if @directorio.update(usuario_params)
-        format.html { redirect_to metamares_directorio_index_path, notice: 'Los datos se actualizaron exitosamente' }
+      if @directorio.update(directorio_params)
+        format.html { redirect_to @directorio, notice: 'Los datos se actualizaron exitosamente' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -57,8 +57,7 @@ class Metamares::DirectorioController < Metamares::MetamaresController
   private
 
   def directorio_params
-    params.require(:directorio).permit(:nombre, :apellido, :email, :institucion, :password, :password_confirmation,
-                                    usuario_roles_attributes: [:id, :usuario_id, :rol_id, :done, :_destroy])
+    params.require(:metamares_directorio).permit(:cargo,  :grado_academico, :tema_estudio, :linea_investigacion, :region_estudio, :telefono)
   end
 
   def set_directorio
