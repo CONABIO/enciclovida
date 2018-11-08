@@ -4,6 +4,10 @@ es:
       metamares_proyecto:
         cancel: Cancelar
     submit:
+      metamares_directorio:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar
       metamares_proyecto:
         create: Guardar la colección
         update: Actualiza la colección
@@ -14,6 +18,13 @@ es:
         cancel: Cancelar
   simple_form:
     labels:
+      metamares_directorio:
+        cargo: Puesto/cargo
+        grado_academico: Grado académico
+        tema_estudio: Tema de estudio
+        linea_investigacion: Línea de investigación
+        region_estudio: Regón de estudio
+        telefono: Teléfono
       metamares_proyecto:
         nombre_proyecto: Nombre de la colección de datos
         financiamiento: Financiamiento
