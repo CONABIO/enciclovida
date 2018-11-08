@@ -11,6 +11,7 @@
       <li role="separator" class="divider"></li>
       <% if usuario_signed_in? %>
         <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false } %></li>
+        <li><%= link_to 'Datos personales', metamares_directorio_path(current_usuario.directorio), data: { turbolinks: false } %></li>
         <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
       <% else %>
         <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_usuario_session_path, data: { turbolinks: false }) %></li>

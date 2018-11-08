@@ -2,7 +2,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
   before_action :authenticate_usuario!, except: [:index, :show]
-  before_action except: [:index, :show]  do
+  before_action except: [:index, :show, :new]  do
     es_propietario?(@proyecto) || tiene_permiso?('AdminMetamaresManager')
   end
 
