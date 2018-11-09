@@ -2,7 +2,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
   before_action :authenticate_usuario!, except: [:index, :show]
-  before_action except: [:index, :show, :new]  do
+  before_action except: [:index, :show, :new, :create]  do
     es_propietario?(@proyecto) || tiene_permiso?('AdminMetamaresManager')
   end
 
@@ -85,12 +85,14 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                info_adicional_attributes: [:id, :informacion_objeto, :informacion_posterior,
                                                                            :informacion_adicional, :colaboradores,
                                                                            :instituciones_involucradas, :equipo, :comentarios, :_destroy],
-                                               periodo_attributes: [:id, :periodicidad, :periodo_monitore_desde, :periodo_monitore_hasta,
+                                               periodo_attributes: [:id, :periodicidad, :periodo_monitoreo_desde, :periodo_monitoreo_hasta,
                                                                     :periodo_sistematico_desde, :periodo_sistematico_hasta,
                                                                     :monitoreo_desde, :monitoreo_hasta, :comentarios, :_destroy],
-                                               region_attributes: [:id, :nombre_region, :latitud, :longitud, :poligono, :nombre_zona,
+                                               region_attributes: [:id, :nombre_region, :nombre_zona, :nombre_ubicacion, :latitud, :longitud, :poligono,
                                                                    :entidad, :cuenca, :anp, :comentarios, :_destroy],
-                                               dato_attributes: [:id, :descarga_datos, :licencia_uso, :descripcion_base,
+                                               dato_attributes: [:id, :titulo_conjunto_datos, :titulo_compilacion, :estatus_datos,
+                                                                 :resolucion_temporal, :resolucion_espacial, :publicacion_anio,
+                                                                 :descarga_datos, :licencia_uso, :descripcion_base,
                                                                  :metadatos, :publicaciones, :publicacion_url, :descarga_informe,
                                                                  :forma_citar, :notas_adicionales, :restricciones,
                                                                  :numero_ejemplares, :tipo_unidad, :_destroy],
