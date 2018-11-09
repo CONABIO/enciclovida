@@ -9,6 +9,6 @@
     <%= f.hidden_field :usuario_id, value: params[:proy_b][:usuario_id] %>
   <% end %>
 
-  <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...', :class => 'btn btn-success'} %>
+  <%= f.submit :Buscar, { 'data-disable-with' => t('helpers.submit.proy_b.buscando'), :class => 'btn btn-success', value: t('helpers.submit.proy_b.buscar') } %>
   <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')" %>
 <% end %>

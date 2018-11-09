@@ -1,7 +1,7 @@
 <% if params[:proy_b].present? && params[:proy_b][:usuario_id].present? %>
-  <h3>Mis colecciones de datos</h3>
+  <h3><%= t('titulos.mis_colecciones') %></h3>
 <% else %>
-  <h3>Busqueda global de colecciones de datos</h3>
+  <h3><%= t('titulos.colecciones_globales') %></h3>
 <% end %>
 
 <hr />

@@ -1,8 +1,5 @@
 es:
   helpers:
-    cancel:
-      metamares_proyecto:
-        cancel: Cancelar
     submit:
       metamares_directorio:
         create: Guardar
@@ -12,6 +9,10 @@ es:
         create: Guardar la colección
         update: Actualiza la colección
         cancel: Cancelar
+      proy_b:
+        buscar: Buscar
+        reiniciar: Reiniciar
+        buscando: Buscando ...
       usuario:
         create: Crear cuenta
         update: Actualizar cuenta
@@ -196,3 +197,9 @@ es:
       # html: '<abbr title="required">*</abbr>'
     error_notification:
       default_message: "Please review the problems below:"
+  titulos:
+    colecciones_globales: Busqueda global de colecciones
+    editar_coleccion: Actualizar información de la colección
+    informacion_coleccion: Información de la colección
+    mis_colecciones: Mis colecciones de datos
+    nueva_coleccion: Nuevo registro de colección
