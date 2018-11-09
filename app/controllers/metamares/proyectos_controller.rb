@@ -9,11 +9,9 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   def index
     busqueda = Metamares::BusquedaProyecto.new
 
-    if params[:commit].present? && params[:commit] == 'Buscar'
+    if params[:proy_b].present?
       busqueda.params = proyecto_busqueda_params
       busqueda.params[:pagina] = params[:pagina]
-    elsif params[:pagina].present?
-      busqueda.params = params
     end
 
     busqueda.consulta
@@ -106,7 +104,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def proyecto_busqueda_params
-    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor)
+    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor, :usuario_id)
   end
 
 end

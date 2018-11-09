@@ -1,4 +1,8 @@
-<h3>Busqueda de colecciones de datos</h3>
+<% if params[:proy_b].present? && params[:proy_b][:usuario_id].present? %>
+  <h3>Mis colecciones de datos</h3>
+<% else %>
+  <h3>Busqueda global de colecciones de datos</h3>
+<% end %>
 
 <hr />
 <%= render partial: 'busqueda_proyectos' %>

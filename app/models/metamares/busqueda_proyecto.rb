@@ -16,6 +16,7 @@ class Metamares::BusquedaProyecto
   # REVISADO: Hace el query con los parametros elegidos
   def consulta
     paginado_y_offset
+    proyectos_propios?
 
     self.proyectos = proyectos.where('nombre_proyecto REGEXP ?', params[:proyecto]) if params[:proyecto].present?
     self.proyectos = proyectos.where('nombre_institucion REGEXP ?', params[:institucion]) if params[:institucion].present?
@@ -32,11 +33,21 @@ class Metamares::BusquedaProyecto
     self.proyectos = proyectos.offset(offset).limit(por_pagina)
   end
 
+
+  private
+
   # REVISADO: Algunos valores como el offset, pagina y por pagina
   def paginado_y_offset
     self.pagina = (params[:pagina] || 1).to_i
     self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
     self.offset = (pagina-1)*por_pagina
+  end
+
+  # REVISADO: Condicion para ver sus proyectos, si esta en los params
+  def proyectos_propios?
+    if params[:usuario_id].present?
+      self.proyectos = proyectos.left_joins(:usuario).where('usuarios.id = ?', params[:usuario_id].to_i)
+    end
   end
 
 end
