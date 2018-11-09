@@ -53,7 +53,7 @@
       </div>
 
       <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional', style: 'display: none;' %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :info_adicional do |info| %>
           <%= render partial: 'form_info_adicional', locals: { f: info } %>
@@ -61,7 +61,7 @@
       </div>
 
       <div id='periodo' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Periodo'.html_safe, f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo', style: 'display: none;' %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Periodo'.html_safe, f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :periodo do |periodo| %>
           <%= render partial: 'form_periodo', locals: { f: periodo } %>
@@ -69,7 +69,7 @@
       </div>
 
       <div id='region' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Region'.html_safe, f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region', style: 'display: none;' %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Region'.html_safe, f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :region do |region| %>
           <%= render partial: 'form_region', locals: { f: region } %>
@@ -77,7 +77,7 @@
       </div>
 
       <div id='dato' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dato'.html_safe, f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato', style: 'display: none;' %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dato'.html_safe, f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :dato do |dato| %>
           <%= render partial: 'form_dato', locals: { f: dato } %>
