@@ -21,6 +21,8 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
 
+  validates_presence_of :nombre_proyecto
+
   TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
   FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :PRIVATE_F, :Unknown]
   CAMPOS_INVESTIGACION = [:Aquaculture, :Conservation, :Ecology, :Fisheries, :Oceanography, :Other, :Sociology, :Tourism]
