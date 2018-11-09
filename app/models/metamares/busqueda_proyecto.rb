@@ -7,7 +7,7 @@ class Metamares::BusquedaProyecto
   # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :keywords, :region, :dato).
-        distinct.select('proyectos.id, nombre_proyecto, autor, campo_investigacion, nombre_institucion, descarga_datos').
+        distinct.select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion, descarga_datos').
         where('estatus_datos = 1').order(updated_at: :desc, created_at: :desc, id: :desc)
     self.totales = 0
     self.params = {}

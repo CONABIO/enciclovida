@@ -14,6 +14,7 @@
     <th>Autor</th>
     <th>Campo de investigación</th>
     <th>Descarga de datos</th>
+    <th><%= t('simple_form.labels.metamares_proyecto.updated_at') %></th>
   </tr>
   </thead>
   <tbody>
@@ -25,6 +26,7 @@
       <td><%= p.autor %></td>
       <td><%= p.campo_investigacion %></td>
       <td><small><%= p.descarga_datos %></small></td>
+      <td><small><%= p.updated_at %></small></td>
     </tr>
   <% end %>
   </tbody>

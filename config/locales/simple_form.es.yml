@@ -36,7 +36,7 @@ es:
         finalidad: Finalidad
         metodo: Método
         updated_at: Fecha de última actualización
-        updated_at: Fecha de creación
+        created_at: Fecha de creación
         periodo:
           periodicidad: Periodicidad del monitoreo
           periodo_monitoreo_desde: Fecha de inicio del moniteo
