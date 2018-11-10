@@ -1,0 +1,61 @@
+<%= form_for(@usuario) do |f| %>
+
+    <table width="1000" id="tabla_form"><tr>
+      <td width="40%" valign="top">
+        <fieldset>
+          <legend class="leyenda">Datos</legend>
+          <div class="field">
+            <%= f.label :email %><br>
+            <%= f.text_field :email, :maxlength => 255, :size => 45, :placeholder => 'correo' %>
+          </div>
+          <div class="field">
+            <%= f.label :nombre %><br>
+            <%= f.text_field :nombre, :maxlength => 255, :size => 45, :placeholder => 'nombrel de usuario' %>
+          </div>
+          <div class="field">
+            <%= f.label :apellido %><br>
+            <%= f.text_field :apellido, :maxlength => 255, :size => 45, :placeholder => 'apellido del usuario' %>
+          </div>
+          <div class="field">
+            <%= f.label :institucion %><br>
+            <%= f.text_field :institucion, :maxlength => 255, :size => 45, :placeholder => 'institución' %>
+          </div>
+
+          <% if @usuario.new_record? %>
+              <div class="field">
+                <%= f.label :contrasenia, 'Contraseña' %><br>
+                <%= f.password_field :contrasenia, :maxlength => 255, :size => 45, :placeholder => 'Contraseña', :value => '' %>
+              </div>
+              <div class="field">
+                <%= f.label :confirma_contrasenia, 'Confirma contraseña' %><br>
+                <%= f.password_field :confirma_contrasenia, :maxlength => 255, :size => 45, :placeholder => 'Contraseña' %>
+              </div>
+          <% end %>
+        </fieldset>
+      </td>
+
+
+      <td width="60%" valign="top">
+        <% if @usuario.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@usuario.errors.count, "error") %>, porfavor corrige los siguientes campos:</h2>
+
+              <ul>
+                <% @usuario.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+        <% end %>
+      </td>
+    </tr></table>
+    <div class="pie">
+      <div class="actions">
+        <% if @usuario.new_record? %>
+            <%= f.submit('Crear cuenta', :disable_with => 'Creando ...') %>
+        <% else %>
+            <%= f.submit('Guardar', :disable_with => 'Guardando ...') %>
+        <% end %>
+      </div>
+    </div>
+<% end %>

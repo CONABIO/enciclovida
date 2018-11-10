@@ -3,6 +3,7 @@ Buscador::Application.routes.draw do
   namespace :metamares do
     resources :admin
     resources :proyectos
+    devise_for :usuarios, :controllers => { :sessions => "metamares/sessions" }
   end
 
   namespace :pmc do

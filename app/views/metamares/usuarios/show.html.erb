@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<% content_for(:title) do %>
+    <%= @titulo=@usuario.nombre + ' ' + @usuario.apellido%>
+<% end %>
+
+
+<div class="panel panel-body panel-warning">
+  <h4><%= @usuario.nombre %> <%= @usuario.apellido %> <small>(UsuarioID: <%= @usuario.id %>)</small></h4>
+  <small><%= @usuario.email %></small> <br />
+  <small><%= @usuario.institucion %></small>
+</div>
+<div class="panel panel-body panel-warning">
+  <h3>Se te asignaron los siguientes: <small><i>(vacío para todos)</i></small></h3>
+  <% roles = []%><% cat_con = []%><% taxonomia = []%>
+  <% @usuario_completo.each do |usuario| %>
+      <% roles << usuario.nombre_rol if usuario.nombre_rol.present? %>
+      <% cat_con << usuario.nombre_cc if usuario.nombre_cc.present? %>
+      <% taxonomia << usuario.nombre_cientifico if usuario.nombre_cientifico.present? %>
+      <% taxonomia[-1] << ' '+usuario.id_especie.to_s if usuario.id_especie.present? %>
+  <% end %>
+  <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3 col-lg-offset-2">
+    <h4>Roles:</h4>
+    <%= roles.uniq.join("<br />").html_safe  %>
+  </div>
+  <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4">
+    <h4>Categorías de contenido:</h4>
+    <%= cat_con.uniq.join("<br />").html_safe %>
+  </div>
+  <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3">
+    <h4>Taxonomía:</h4>
+    <%= taxonomia.uniq.join("<br />").html_safe%>
+  </div>
+</div>
+
+<p class="text-right">
+  <%= link_to 'Regresar', :back %>
+</p>

@@ -1,0 +1,10 @@
+<% content_for(:title) do %>
+    <%= @titulo="Ediatndo: #{link_to(gradoYnombre(@usuario), @usuario)}".html_safe %>
+<% end %>
+
+<div class="titulo">
+  <h1><%= @titulo %></h1>
+</div>
+
+<%= render 'form' %>
+
