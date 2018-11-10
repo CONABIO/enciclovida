@@ -1,19 +1,31 @@
 es:
   helpers:
-    cancel:
-      metamares_proyecto:
-        cancel: Cancelar
     submit:
+      metamares_directorio:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar
       metamares_proyecto:
         create: Guardar la colección
         update: Actualiza la colección
         cancel: Cancelar
+      proy_b:
+        buscar: Buscar
+        reiniciar: Reiniciar
+        buscando: Buscando ...
       usuario:
         create: Crear cuenta
         update: Actualizar cuenta
         cancel: Cancelar
   simple_form:
     labels:
+      metamares_directorio:
+        cargo: Puesto/cargo
+        grado_academico: Grado académico
+        tema_estudio: Tema de estudio
+        linea_investigacion: Línea de investigación
+        region_estudio: Regón de estudio
+        telefono: Teléfono
       metamares_proyecto:
         nombre_proyecto: Nombre de la colección de datos
         financiamiento: Financiamiento
@@ -24,6 +36,8 @@ es:
         campo_ciencia: Campo de la ciencia
         finalidad: Finalidad
         metodo: Método
+        updated_at: Fecha de última actualización
+        created_at: Fecha de creación
         periodo:
           periodicidad: Periodicidad del monitoreo
           periodo_monitoreo_desde: Fecha de inicio del moniteo
@@ -154,9 +168,9 @@ es:
             Pacific: Pacífico
         dato:
           estatus_datos:
-            Public access: Acceso público
-            Restricted access: Acceso restringido
-            Private access: Acceso privado
+            '1': Acceso público
+            '2': Acceso restringido
+            '3': Acceso privado
           licencia_uso:
             cc0: Sin derechos de autor (CC0)
             cc_by: Atribución (CC-BY)
@@ -183,3 +197,9 @@ es:
       # html: '<abbr title="required">*</abbr>'
     error_notification:
       default_message: "Please review the problems below:"
+  titulos:
+    colecciones_globales: Busqueda global de colecciones
+    editar_coleccion: Actualizar información de la colección
+    informacion_coleccion: Información de la colección
+    mis_colecciones: Mis colecciones de datos
+    nueva_coleccion: Nuevo registro de colección

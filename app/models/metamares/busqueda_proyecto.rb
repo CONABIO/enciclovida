@@ -7,8 +7,8 @@ class Metamares::BusquedaProyecto
   # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :keywords, :region, :dato).
-        distinct.select('proyectos.id, nombre_proyecto, autor, campo_investigacion, nombre_institucion, descarga_datos').
-        where('estatus_datos = 1')
+        distinct.select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion, descarga_datos').
+        where('estatus_datos = 1').order(updated_at: :desc, created_at: :desc, id: :desc)
     self.totales = 0
     self.params = {}
   end
@@ -16,6 +16,7 @@ class Metamares::BusquedaProyecto
   # REVISADO: Hace el query con los parametros elegidos
   def consulta
     paginado_y_offset
+    proyectos_propios?
 
     self.proyectos = proyectos.where('nombre_proyecto REGEXP ?', params[:proyecto]) if params[:proyecto].present?
     self.proyectos = proyectos.where('nombre_institucion REGEXP ?', params[:institucion]) if params[:institucion].present?
@@ -32,11 +33,21 @@ class Metamares::BusquedaProyecto
     self.proyectos = proyectos.offset(offset).limit(por_pagina)
   end
 
+
+  private
+
   # REVISADO: Algunos valores como el offset, pagina y por pagina
   def paginado_y_offset
     self.pagina = (params[:pagina] || 1).to_i
     self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
     self.offset = (pagina-1)*por_pagina
+  end
+
+  # REVISADO: Condicion para ver sus proyectos, si esta en los params
+  def proyectos_propios?
+    if params[:usuario_id].present?
+      self.proyectos = proyectos.left_joins(:usuario).where('usuarios.id = ?', params[:usuario_id].to_i)
+    end
   end
 
 end

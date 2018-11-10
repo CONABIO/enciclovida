@@ -7,7 +7,7 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :region, class_name: 'Metamares::RegionM', dependent: :destroy
   belongs_to :dato, class_name: 'Metamares::Dato', dependent: :destroy
   belongs_to :institucion, class_name: 'Metamares::Institucion'
-  has_one :ubicacion, through: :institucion, source: :ubicacion, inverse_of: :proyecto
+  has_one :ubicacion, through: :institucion, source: :ubicacion
   belongs_to :usuario, class_name: 'Usuario'
   has_many :especies, class_name: 'Metamares::EspecieEstudiada'
   has_many :keywords, class_name: 'Metamares::Keyword'
@@ -20,6 +20,8 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :dato, allow_destroy: true
   accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
+
+  validates_presence_of :nombre_proyecto
 
   TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
   FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :PRIVATE_F, :Unknown]

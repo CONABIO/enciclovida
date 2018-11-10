@@ -1,0 +1,13 @@
+<%= simple_form_for @directorio do |f| %>
+
+  <%= f.input :tema_estudio %>
+  <%= f.input :linea_investigacion %>
+  <%= f.input :region_estudio %>
+  <%= f.input :cargo %>
+  <%= f.input :grado_academico %>
+  <%= f.input :telefono %>
+
+  <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+  <%= link_to t('helpers.submit.usuario.cancel'), @directorio, { :class=>"btn btn-lg btn-block btn-default" } %>
+
+<% end %>

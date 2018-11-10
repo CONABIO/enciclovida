@@ -1,11 +1,14 @@
-<%= simple_form_for :proy_b, method: :get,  wrapper: :inline_form, html: { class: "form-inline" } do |f| %>
+<%= simple_form_for :proy_b, method: :get, wrapper: :inline_form, html: { class: "form-inline" } do |f| %>
   <%= f.input :proyecto, required: false, input_html: { value: (params[:proy_b][:proyecto] if params[:proy_b].present?) } %>
   <%= f.input :institucion, required: false, input_html: { value: (params[:proy_b][:institucion] if params[:proy_b].present?) } %>
   <%= f.input :autor, required: false, input_html: { value: (params[:proy_b][:autor] if params[:proy_b].present?) } %>
-  <%#= f.input :tipo_monitoreo, collection:Metamares::Proyecto::TIPO_MONITOREO.sort.map{ |a| [t("metamares.proyectos.busqueda.#{a}", default: a), a] }, prompt: '--- Todos ---', required: false %>
   <%= f.input :nombre, required: false, input_html: { value: (params[:proy_b][:nombre] if params[:proy_b].present?) } %>
   <%= f.hidden_field :especie_id, value: (params[:proy_b][:especie_id] if params[:proy_b].present?) %>
 
-  <%= f.submit :Buscar, { 'data-disable-with' => 'Buscando ...', :class => 'btn btn-success'} %>
+  <% if params[:proy_b].present? && params[:proy_b][:usuario_id].present? %>
+    <%= f.hidden_field :usuario_id, value: params[:proy_b][:usuario_id] %>
+  <% end %>
+
+  <%= f.submit :Buscar, { 'data-disable-with' => t('helpers.submit.proy_b.buscando'), :class => 'btn btn-success', value: t('helpers.submit.proy_b.buscar') } %>
   <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')" %>
 <% end %>

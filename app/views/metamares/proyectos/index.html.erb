@@ -1,4 +1,8 @@
-<h3>Busqueda de colecciones de datos</h3>
+<% if params[:proy_b].present? && params[:proy_b][:usuario_id].present? %>
+  <h3><%= t('titulos.mis_colecciones') %></h3>
+<% else %>
+  <h3><%= t('titulos.colecciones_globales') %></h3>
+<% end %>
 
 <hr />
 <%= render partial: 'busqueda_proyectos' %>
@@ -14,6 +18,7 @@
     <th>Autor</th>
     <th>Campo de investigación</th>
     <th>Descarga de datos</th>
+    <th><%= t('simple_form.labels.metamares_proyecto.updated_at') %></th>
   </tr>
   </thead>
   <tbody>
@@ -25,6 +30,7 @@
       <td><%= p.autor %></td>
       <td><%= p.campo_investigacion %></td>
       <td><small><%= p.descarga_datos %></small></td>
+      <td><small><%= p.updated_at %></small></td>
     </tr>
   <% end %>
   </tbody>
