@@ -81,12 +81,12 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 .filtrosUsados i{
   padding: 2px;
-  margin: 0 6px;
+  margin: 0 2px;
   background: none;
   border: none;
 }
 .filtrosUsados i:before, .filtrosUsados i:after{
-  font-size: 22px;
+  font-size: 40px;
 }
 #porCriterios{
   -webkit-transition: display .3s ease-in-out;
@@ -95,7 +95,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 .popover-content button{font-size: 1.5em!important;}
 .porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover{
-  color: #666666;
+  color: #555555;
   text-shadow: 3px 2px 4px #ececec;
   border-radius: 50%;
 }
@@ -201,7 +201,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .popover{max-width: none; background-color: #efefef;}
 .popover i{font-size: 2.25em;}
 .popover-title{font-weight: bolder; text-align: center;}
-.popover-content b{color: #505050; text-shadow: none;}
+.popover-content span:not(.btn-zona-n) b{color: #505050; text-shadow: none;}
+.popover a.btn-zona-star{background: none; border-radius: 2em;}
+.popover a.btn-zona-star:hover i{color: #444444!important;}
 .resultados-peces .result-img-container h5{
   margin: 0;
   padding: 2px 5px;
@@ -235,15 +237,15 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background: #db0510;
   fill: #db0510;
 }
-.btn-zona-s{
-  background: #fafafa;
-  color: #fafafa;
-  fill: #fafafa;
+.btn-zona-n{
+  background: #efefef;
+  color: #efefef;
+  fill: #efefef;
 }
-.btn-zona-n, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
-  background: #a0a0a0;
-  color: #a0a0a0;
-  fill: #a0a0a0;
+.btn-zona-s, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
+  background: #9a9a9a;
+  color: #9a9a9a;
+  fill: #9a9a9a;
 }
 /************* SVG Zonas marítimas ****************************/
 

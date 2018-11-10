@@ -1,4 +1,4 @@
-<div id="resultados-container" class="col-xs-12 state-one">
+<div id="resultados-container" class="col-xs-12 state-two">
   <div class="row">
     <button id="toggleFiltros" class="btn btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
       <span class="glyphicon"></span>
@@ -7,7 +7,7 @@
       <% fu = filtrosUsados.html_safe %>
       <% unless fu == '' %>
         <h5>
-          <b>Tu búsqueda se realizo con los siguientes filtros: </b>
+          <b>Tu búsqueda se realizó con los siguientes filtros: </b>
           <%= fu %>
         </h5>
       <% end %>

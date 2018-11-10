@@ -1,27 +1,4 @@
-<h4 class="text-center"><b>Criterios globales</b></h4>
-<% @criterios["Características"].compact[0..1].each do |c|  %>
-  <% next if  c[:nombre] == 'No aplica' %>
-  <p>
-    <b><%= c[:tipo_propiedad] %>: </b>
-    <i class='btn-title <%= c[:icono] %>' tooltip-title="<%= c[:nombre]%>"></i>
-  </p>
-<% end %>
-<% @criterios["Características"].compact[2..4].each do |c|  %>
-  <% next if  c[:nombre] == 'Sin datos' %>
-  <p>
-    <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
-      <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
-      <span class="btn-title" tooltip-title="<%= warning %>">
-        <i class="glyphicon glyphicon-exclamation-sign btn-title text-danger" aria-hidden="true" ></i>
-      </span>
-    <% end %>
-    <b><%= c[:tipo_propiedad] %>: </b>
-    <em><%= c[:nombre] %></em>
-  </p>
-<% end %>
-
-<hr />
-<h4 class="text-center"><b>Estado de la población</b></h4>
+<h4 class="text-center"><b>Recomendación</b></h4>
 <table class="table table-responsive table-condensed table-bordered">
   <tbody>
   <tr>
@@ -44,8 +21,35 @@
 </table>
 
 <hr />
-<h5>
-  <% if tiene_permiso?('AdminPeces', true) %>
+
+<h4 class="text-center"><b>Criterios globales</b></h4>
+<% @criterios["Características"].compact[0..1].each do |c|  %>
+  <% next if  c[:nombre] == 'No aplica' %>
+  <% next if  c[:nombre] == 'Riesgo bajo (LR): Preocupación menor (lc)' %>
+  <% next if  c[:nombre] == 'Datos insuficientes (DD)' %>
+  <% next if  c[:nombre] == 'Riesgo bajo (LR): Casi amenazado (nt)' %>
+  <p>
+    <b><%= c[:tipo_propiedad] %>: </b>
+    <i class='btn-title <%= c[:icono] %>' tooltip-title="<%= c[:nombre]%>"></i>
+  </p>
+<% end %>
+<% @criterios["Características"].compact[2..4].each do |c|  %>
+  <% next if  c[:nombre] == 'Sin datos' %>
+  <p>
+    <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+      <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
+      <span class="btn-title" tooltip-title="<%= warning %>">
+        <i class="glyphicon glyphicon-exclamation-sign btn-title text-danger" aria-hidden="true" ></i>
+      </span>
+    <% end %>
+    <b><%= c[:tipo_propiedad] %>: </b>
+    <em><%= c[:nombre] %></em>
+  </p>
+<% end %>
+
+<% if tiene_permiso?('AdminPeces', true) %>
+  <hr />
+  <h5>
     <%= link_to 'Ir especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
-  <% end %>
-</h5>
+  </h5>
+<% end %>
