@@ -5,6 +5,7 @@ Buscador::Application.routes.draw do
     resources :proyectos
     resources :directorio
     devise_for :usuarios, :controllers => { :sessions => "metamares/sessions" }
+    get 'graficas' => 'metamares#graficas'
   end
 
   namespace :pmc do

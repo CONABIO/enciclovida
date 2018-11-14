@@ -1,0 +1,29 @@
+<%= stylesheet_link_tag 'metamares/grafica_lineas', 'data-turbolinks-track' => true %>
+<script src="https://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
+
+<h3>Incorporación de la información</h3>
+<div class="chart-wrapper" id="chart-line1"></div>
+
+<script type="text/javascript">
+    d3.csv('/grafica_lineas_data.csv', function(error, data) {
+        data.forEach(function (d) {
+            d.year = +d.year;
+            d.variableA = +d.variableA;
+            d.variableB = +d.variableB;
+            d.variableC = +d.variableC;
+            d.variableD = +d.variableD;
+        });
+
+        var chart = makeLineChart(data, 'year', {
+            'Variable A': {column: 'variableA'},
+            'Variable B': {column: 'variableB'},
+            'Variable C': {column: 'variableC'},
+            'Variable D': {column: 'variableD'}
+        }, {xAxis: 'Years', yAxis: 'Amount'});
+        chart.bind("#chart-line1");
+        chart.render();
+
+    });
+</script>
+
+<%= javascript_include_tag 'metamares/grafica_lineas', 'data-turbolinks-track' => true %>
