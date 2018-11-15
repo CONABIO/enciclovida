@@ -49,17 +49,24 @@ body{
 /*    font-size: 1.4em;*/
 /*    cursor: pointer;*/
 }
-#contenedor_grupos sub {
-    bottom: -1.25em;
-    left: -1.0em;
+#contenedor_grupos small {
+/*    bottom: -1.25em;*/
+/*    left: -1.0em;*/
+  font-size: .75em;
+  border-radius: 8px;
+  color: #333333;
+  font-weight: bold;
+  left: -3px;
+  cursor: default;
 }
+
 .checkbox label, .radio label{
-    padding-left: 0px;
-    margin-left: -10px;
+/*    padding-left: 0px;*/
+/*    margin-left: -10px;*/
 }
-.checkbox input:checked{/*, .radio input:checked{*/
+.checkbox input, .radio input{
     display: block;
-    right: 0;
+    left: 0;
 }
 .explora_por{
     /*display: inline-block;*/
@@ -68,11 +75,15 @@ body{
     margin-right: 10px;
 }
 .animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon, .mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon, .bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon{
-    background-image: none!important;
-    font-size: 1.5em;
-    border-radius: 25px;
+    background-image: linear-gradient(to bottom, rgb(250, 250, 250) 0%, rgba(255, 255, 255, 0) 100%)!important;
+    /*font-size: 1.5em;*/
+    border-radius: 50%;
 }
-
+#contenedor_grupos span{/*creo son equivalentes*/
+  padding: 2px;
+  font-size: 2.5em;
+  margin: -10px 10px 6px -6px;
+}
 div.checkbox.explora_por h6{
     margin: 3px 6px 0 0;
     font-size: 10px;
