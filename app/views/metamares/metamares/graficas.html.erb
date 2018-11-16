@@ -5,7 +5,7 @@
 <div class="chart-wrapper" id="chart-line1"></div>
 
 <script type="text/javascript">
-    d3.csv('/grafica_lineas_data.csv', function(error, data) {
+    /*d3.csv('/grafica_lineas_data.csv', function(error, data) {
         data.forEach(function (d) {
             d.year = +d.year;
             d.variableA = +d.variableA;
@@ -25,6 +25,10 @@
         chart.bind("#chart-line1");
         chart.render();
 
+    });*/
+
+    d3.json("/data/employees.json", function(data) {
+        console.log(data[0]);
     });
 </script>
 
