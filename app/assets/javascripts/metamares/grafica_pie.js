@@ -32,8 +32,9 @@ var svg = d3.select("#grafica-pie").append("svg")
 
 svg.call(tip);
 
-d3.csv('/grafica_pie.csv', function(error, data) {
-    console.log(data);
+
+//d3.csv('/grafica_pie.csv', function(error, data) {
+d3.json("/metamares/grafica2", function(data) {
     data.forEach(function(d) {
         d.id     =  d.id;
         d.order  = +d.order;

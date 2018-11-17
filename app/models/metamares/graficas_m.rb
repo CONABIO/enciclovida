@@ -2,8 +2,8 @@ class Metamares::GraficasM
 
   attr_accessor :datos
 
-  def initialize
-    self.datos = {}
+  def initialize(params={})
+    self.datos = params[:tipo_dato] || {}
   end
 
   # Gráfica por año de publicacion contra campo de investigación
@@ -51,8 +51,25 @@ class Metamares::GraficasM
     self.datos = datos.map{ |year,valor| valor }
   end
 
+  # Gráfica por área, region o localidad
   def grafica2
+    max_score = 0
+    primero = true
 
+    q = Metamares::RegionM.select('COUNT(*) AS totales, nombre_region').group(:nombre_region).order('totales DESC')
+
+    q.each_with_index do |d, index|
+      if primero
+        max_score+= d.totales
+        primero = false
+      end
+
+      while d.nombre_region.nil?
+        d.nombre_region = 'NA'
+      end
+
+      self.datos << { id: d.nombre_region.estandariza, order: index + 1, score: d.totales*100/ max_score, weight: 1, label: d.nombre_region, totals:  }
+    end
   end
 
 end

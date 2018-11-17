@@ -14,8 +14,11 @@ class Metamares::MetamaresController < ApplicationController
     render json: g.datos
   end
 
-  # Gráfica con las regiones
+  # Gráfica por área, region o localidad
   def grafica2
+    g = Metamares::GraficasM.new(tipo_dato: [])
+    g.grafica2
 
+    render json: g.datos
   end
 end
