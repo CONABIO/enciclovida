@@ -57,7 +57,7 @@ module PecesHelper
         next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
         checkBoxes << "<label class = '#{k}'>"
         checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo_p}")
-        checkBoxes << "<span title = '#{edo}' class = 'btn-title'>"
+        checkBoxes << "<span title = '#{edo}' class = '#{'btn-title' if ico}'>"
         checkBoxes << "<b>#{edo}</b>" unless ico
         checkBoxes << "<i class='#{edo_p}-ev-icon'></i>" if ico
         checkBoxes << "</span>"
