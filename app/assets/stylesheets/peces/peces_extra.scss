@@ -61,19 +61,14 @@
 .echinodermata-ev-icon{color: #865a3c}
 .mollusca-ev-icon{color: #aa7961}
 .crustacea-ev-icon{color: #a0837c}
-/*input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
-  -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
-  box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
-}*/
+
 .porSemaforo label:nth-of-type(4){
   font-size: smaller;
   margin-left: 2em;
 }
 .porGrupo input, .porSemaforo input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
 .porSemaforo input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
-  /*padding: 0px;*/
-  /*text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);*/
-  /*margin: -4px;*/
+
   border: 2px solid transparent;
   font-size: 2.75em;
   background: none;
@@ -81,7 +76,6 @@
 }
 .porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
   color: #555555;
-  /*text-shadow: 3px 2px 4px #ececec;*/
   border-radius: 50%;
   border: 2px solid #991705;
 }
@@ -172,7 +166,9 @@ div.result-img-container{
     width: 100%;
   }
 }
-
+@media (min-width: 1200px) {
+  .porNombreGrupo{margin-top: -140px;}
+}
 /************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces{
   text-align: center;
@@ -187,8 +183,6 @@ div.result-img-container{
   max-width: 225px;
   transition: all .2s ease-in-out;
   vertical-align: middle;
-  /*border: 1px solid #ddd;*/
-  /*border-radius: 4px;*/
 }
 .resultados-peces i.icono-resultado-pez {
   transition: all .2s ease-in-out;
@@ -240,13 +234,6 @@ div.result-img-container{
   background-color: rgb(236, 236, 236);
   z-index: 1;
 }
-.resultados-peces .result-nombre-container{
-  /*min-height: 44px;*/
-  /*padding: 0;*/
-  /*margin: 0;*/
-  /*background-color: #ececec;*/
-  /*position: relative;*/
-}
 .result-nombre-container ul, .popover-content ul {
   list-style: none;
   padding: 0px;
@@ -269,7 +256,6 @@ div.result-img-container{
   padding: 2px 5px;
   text-align: center;
   font-weight: bold;
-  /*font-size: 1em;*/
 }
 .btn-zona{
   display: inline-block;
@@ -331,12 +317,8 @@ path[id^=path_zonas_]:hover{fill: rgba(160, 204, 234, .59);}
 #earth-states{fill: #f2ffbd;}
 #extranjero{fill: #f0f0f0;}
 
-/*svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}*/
 text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder; font-style: oblique;}
 
-.checkbox i{
-/*  font-size: 1.7em;*/
-}
 .caracteristicas_pez, .edo_pob_pez, .img_pez{
   -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
