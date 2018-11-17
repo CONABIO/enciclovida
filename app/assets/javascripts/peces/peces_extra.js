@@ -33,14 +33,14 @@ $(document).ready(function(){
                     if($(window).width() < 990){
                         return 'bottom'
                     }else{
-                        if(($(window).width() - button.offset().left) < 600){
+                        if(($(window).width() - button.offset().left) < $(window).width()/2){
                             return 'left';
                         }else{
                             return 'right';
                         }
                     }
                 },
-                trigger: 'focus',
+                trigger: 'click',
                 content: data
             }).popover('show');
         });
