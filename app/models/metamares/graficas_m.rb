@@ -68,7 +68,7 @@ class Metamares::GraficasM
         d.nombre_region = 'NA'
       end
 
-      self.datos << { id: d.nombre_region.estandariza, order: index + 1, score: d.totales*100/ max_score, weight: 1, label: d.nombre_region, totals:  }
+      self.datos << { id: d.nombre_region.estandariza, order: index + 1, score: d.totales*100/ max_score, weight: 1, label: d.nombre_region, totales: d.totales }
     end
   end
 
