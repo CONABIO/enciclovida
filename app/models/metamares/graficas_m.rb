@@ -51,4 +51,8 @@ class Metamares::GraficasM
     self.datos = datos.map{ |year,valor| valor }
   end
 
+  def grafica2
+
+  end
+
 end
