@@ -4,6 +4,7 @@
   <tr>
     <td>
       <ul>
+        <li class="text-center"><b><small>Pacífico</small></b></li>
         <% @criterios["Estado poblacional en el Pacífico"].compact.each_with_index do  |c, i| %>
           <li><%= dibujaZonasPez(c, i).html_safe %></li>
         <% end %>
@@ -11,6 +12,7 @@
     </td>
     <td>
       <ul>
+        <li class="text-center"><b><small>Golfo de México</small></b></li>
         <% @criterios["Estado poblacional en el Golfo de México y caribe"].compact.each_with_index do  |c, i| %>
           <li><%= dibujaZonasPez(c, i+3).html_safe %></li>
         <% end %>
@@ -20,9 +22,6 @@
   </tbody>
 </table>
 
-<hr />
-
-<h4 class="text-center"><b>Criterios globales</b></h4>
 <% @criterios["Características"].compact[0..1].each do |c|  %>
   <% next if  c[:nombre] == 'No aplica' %>
   <% next if  c[:nombre] == 'Riesgo bajo (LR): Preocupación menor (lc)' %>
@@ -34,20 +33,22 @@
   </p>
 <% end %>
 <% @criterios["Características"].compact[2..4].each do |c|  %>
+  <% next if  c[:valor] < 5 %>
   <% next if  c[:nombre] == 'Sin datos' %>
   <p>
+
+    <b><%= c[:tipo_propiedad] %>: </b>
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
       <span class="btn-title" tooltip-title="<%= warning %>">
         <i class="glyphicon glyphicon-exclamation-sign btn-title text-danger" aria-hidden="true" ></i>
       </span>
     <% end %>
-    <b><%= c[:tipo_propiedad] %>: </b>
     <em><%= c[:nombre] %></em>
   </p>
 <% end %>
 
-<% if tiene_permiso?('AdminPeces', true) %>
+<% if tiene_permiso?('AdminPeces') %>
   <hr />
   <h5>
     <%= link_to 'Ir especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
