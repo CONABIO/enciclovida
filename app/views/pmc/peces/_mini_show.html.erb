@@ -48,9 +48,21 @@
   </p>
 <% end %>
 
+<hr />
+
 <% if tiene_permiso?('AdminPeces') %>
-  <hr />
-  <h5>
-    <%= link_to 'Ir especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
-  </h5>
+  <div class="col-xs-12 col-md-6">
+    <h5>
+      <%= link_to 'Editar especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
+    </h5>
+  </div>
+
+  <div class="col-xs-12 col-md-6">
+    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
+  </div>
+
+<% else %>
+  <div class="col-xs-12 col-md-12">
+    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
+  </div>
 <% end %>
