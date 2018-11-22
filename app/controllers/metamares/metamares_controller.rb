@@ -4,6 +4,7 @@ class Metamares::MetamaresController < ApplicationController
 
   # La visualizacion por medio de D3
   def graficas
+
   end
 
 end

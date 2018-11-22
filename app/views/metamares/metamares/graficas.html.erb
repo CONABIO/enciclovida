@@ -15,10 +15,12 @@
         });
 
         var chart = makeLineChart(data, 'year', {
-            'Variable A': {column: 'variableA'},
-            'Variable B': {column: 'variableB'},
-            'Variable C': {column: 'variableC'},
-            'Variable D': {column: 'variableD'}
+            'Aquaculture': {column: 'variableA'},
+            'Fisheries': {column: 'variableB'},
+            'Oceanography': {column: 'variableC'},
+            'Sociology': {column: 'variableD'},
+            'Conservation': {column: 'variableE'},
+            'Ecology': {column: 'variableF'}
         }, {xAxis: 'Years', yAxis: 'Amount'});
         chart.bind("#chart-line1");
         chart.render();
