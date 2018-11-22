@@ -56,65 +56,133 @@
   background-color: #ddd!important;
   fill: #ddd!important;
 }
-input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
-  -webkit-box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
-  box-shadow: inset 3px 3px 3px rgba(165, 159, 159, 0.15);
-}
+.actinopterygii-ev-icon{color: #44997d}
+.chondrichthyes-ev-icon{color: #284559}
+.echinodermata-ev-icon{color: #865a3c}
+.mollusca-ev-icon{color: #aa7961}
+.crustacea-ev-icon{color: #a0837c}
+
 .porSemaforo label:nth-of-type(4){
   font-size: smaller;
-  /*border-left: 1px solid #DADADA;*/
   margin-left: 2em;
 }
-.porGrupo input, .porSemaforo input, .porZonas label{display: none;}
-.porSemaforo input + span, .porGrupo input + span{
-  padding: 0px;
-  text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
-  margin: 0px -2px;
-  border: none;
-  font-size: 3.5em;
+.porGrupo input, .porSemaforo input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
+.porSemaforo input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
+
+  border: 2px solid transparent;
+  font-size: 2.75em;
   background: none;
+  cursor: pointer;
+}
+.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
+  color: #555555;
+  border-radius: 50%;
+  border: 2px solid #991705;
+}
+#toggleFiltros{
+  margin: 10px 0;
 }
 #porCriterios{
   -webkit-transition: display .3s ease-in-out;
   -moz-transition: display .3s ease-in-out;
   transition: display .3s ease-in-out;
 }
-.popover-content button{font-size: 1.5em!important;}
-/*span.btn-zona-sn, span.btn-zona-star{font-size: 3em!important;}*/
-.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover{
-  color: #666666;
-  text-shadow: 3px 2px 4px #ececec;
-  border-radius: 50%;
+#porCriterios label{display: block;}
+#porCriterios label.nom, #porCriterios label.iucn {padding: 0px; display: inline-block}
+.filtrosUsados{
+  margin: 0 10px;
+}
+.filtrosUsados i{
+  padding: 2px;
+  margin: 0 2px;
+  background: none;
+  border: none;
+}
+.filtrosUsados i:before, .filtrosUsados i:after{
+  font-size: 40px;
+}
+.botones-peces{width: 40%;}
+
+/************************** INICIA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
+.resultados-peces, li.active > a {
+  font-size: 18px;
+}
+div.result-img-container{
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 5px 0px;
+  position: relative;
+}
+.nav:before, .nav:after {
+  content: " ";
+  display: inline-block;
+  padding-bottom: 32px;
 }
 
-.botones-peces{
-  width: 45%;
-  transition-delay: 0ms;
-  transition-property: width;
-  transition-duration: 500ms;
-  transition-timing-function: ease-in-out;
+#resultados-container #busqueda_avanzada, #resultados-container #pestañas{
+  float: left;
+  position: relative;
+  min-height: 1px;
+  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
-.botones-peces:hover{
-  width: 50%;
+@media (min-width: 993px){
+  #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros de búsqueda";}
+  #resultados-container.state-one #toggleFiltros span:before{content: "\e132";}
+  #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de búsqueda";}
+  #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
+  #resultados-container.state-one #busqueda_avanzada{
+    width: 30%;
+    display: block;
+  }
+  #resultados-container.state-two #busqueda_avanzada{
+    width: 0%;
+    display: none;
+  }
+  #resultados-container.state-one #pestañas{
+    width: 70%;
+  }
+  #resultados-container.state-two #pestañas{
+    width: 100%;
+  }
 }
-.botones-peces:hover:after{
-  content: " " attr(title) " ";
+@media (max-width: 992px){
+  #resultados-container.state-two #toggleFiltros:before{content: "Mostrar filtros de búsqueda ";}
+  #resultados-container.state-two #toggleFiltros span:after{content: "\e134";}
+  #resultados-container.state-one #toggleFiltros:before{content: "Ocultar filtros de búsqueda ";}
+  #resultados-container.state-one #toggleFiltros span:after{content: "\e133";}
+  #resultados-container.state-two #busqueda_avanzada{
+    width: 0%;
+    display: none;
+  }
+  #resultados-container.state-one #busqueda_avanzada{
+    width: 100%;
+    display: block;
+  }
+  #resultados-container.state-two #pestañas{
+    width: 100%;
+  }
+  #resultados-container.state-one #pestañas{
+    width: 100%;
+  }
 }
+@media (min-width: 1200px) {
+  .porNombreGrupo{margin-top: -140px;}
+}
+/************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces{
   text-align: center;
 }
 .resultados-peces .result-img-container{
-  margin: 3px -4px;
+  margin: 4px;
   overflow: visible;
   vertical-align: middle;
 }
 .resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
-  max-height: 225px;
+  max-height: 150px;
   max-width: 225px;
   transition: all .2s ease-in-out;
   vertical-align: middle;
-  border: 1px solid #ddd;
-  border-radius: 4px;
 }
 .resultados-peces i.icono-resultado-pez {
   transition: all .2s ease-in-out;
@@ -130,12 +198,12 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   margin: 0 auto;
 }
 .resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.85);
-  -ms-transform:scale(.85); /* IE 9 */
-  -moz-transform:scale(.85); /* Firefox */
-  -webkit-transform:scale(.85); /* Safari and Chrome */
-  -o-transform:scale(.85); /* Opera */
-  font-size: 7.5em;
+  transform:scale(.95);
+  -ms-transform:scale(.95); /* IE 9 */
+  -moz-transform:scale(.95); /* Firefox */
+  -webkit-transform:scale(.95); /* Safari and Chrome */
+  -o-transform:scale(.95); /* Opera */
+  font-size: 7.75em;
 }
 .resultados-peces .btn-ficha:hover:after {
   content: 'Da click para más información';
@@ -162,17 +230,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .resultados-peces .certificacion-ev-icon{
   margin: -15px 0 0 -35px;
   position: relative;
-  font-size: 2.5em;
+  font-size: 1.35em;
   border-radius: 50%;
   background-color: rgb(236, 236, 236);
   z-index: 1;
-}
-.resultados-peces .result-nombre-container{
-  min-height: 44px;
-  padding: 0;
-  margin: 0;
-  background-color: #ececec;
-  position: relative;
 }
 .result-nombre-container ul, .popover-content ul {
   list-style: none;
@@ -181,36 +242,31 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 .result-nombre-container li, .popover-content li{
   display: block;
   vertical-align: middle;
-  height: 35px;
+  height: 40px;
 }
-.popover{max-width: none; background-color: #DADADA;}
-.popover i{font-size: 1.85em;}
+.popover{max-width: none; background-color: #efefef;}
+.popover i:not(.glyphicon-exclamation-sign){font-size: 2.25em;}
+.popover i.glyphicon-exclamation-sign{font-size: 1.5em;}
 .popover-title{font-weight: bolder; text-align: center;}
-.popover-content s, .popover-content b{color: #333333; text-shadow: none;}
+.popover-content span:not(.btn-zona-n) b{color: #505050; text-shadow: none;}
+.popover-content button{font-size: 1.5em!important;}
+.popover a.btn-zona-star{background: none; border-radius: 2em;}
+.popover a.btn-zona-star:hover i{color: #444444!important;}
 .resultados-peces .result-img-container h5{
   margin: 0;
   padding: 2px 5px;
   text-align: center;
   font-weight: bold;
-  font-size: 1em;
-}
-.modal-header h5{
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.25em;
 }
 .btn-zona{
   display: inline-block;
   background: none!important;
-  text-shadow: 1px 1px 2px #666666;
   line-height: 35px;
 }
 .btn-zona-star{
   background: #DAA621;
   fill: #DAA621;
   color: #DAA621;
-}
-.btn-zona-star{
   text-shadow: -1px 0px 0px #fafafa!important;
 }
 .btn-zona-v{
@@ -228,15 +284,15 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   background: #db0510;
   fill: #db0510;
 }
-.btn-zona-s{
-  background: #fafafa;
-  color: #fafafa;
-  fill: #fafafa;
-}
 .btn-zona-n{
-  background: #c1008a;
-  color: #c1008a;
-  fill: #c1008a;
+  background: #efefef;
+  color: #efefef;
+  fill: #efefef;
+}
+.btn-zona-s, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
+  background: #9a9a9a;
+  color: #9a9a9a;
+  fill: #9a9a9a;
 }
 /************* SVG Zonas marítimas ****************************/
 
@@ -262,25 +318,11 @@ path[id^=path_zonas_]:hover{fill: rgba(160, 204, 234, .59);}
 #earth-states{fill: #f2ffbd;}
 #extranjero{fill: #f0f0f0;}
 
-svg text{font-family: "texgyreadventorregular", "Helvetica", Arial;}
-text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder;}
+text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #800000; font-size: .55em; font-weight: bolder; font-style: oblique;}
 
-.checkbox i{
-  font-size: 1.7em;
-}
 .caracteristicas_pez, .edo_pob_pez, .img_pez{
   -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.caracteristicas_pez{
-/*  background-color: rgba(95, 128, 87, 0.35);*/
-}
-.edo_pob_pez{
-/*  background-color: rgba(55, 123, 155, 0.31);*/
-}
-.img_pez{
-/*  background-color: rgba(181, 185, 204, 0.31);*/
 }
 .edo_pob_pez h4{
   min-height: 80px;
