@@ -121,6 +121,6 @@
   <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
+  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), @proyecto.new_record? ? metamares_proyectos_path : metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>
