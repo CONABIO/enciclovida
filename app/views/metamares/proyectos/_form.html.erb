@@ -85,7 +85,7 @@
       </div>
 
       <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;' %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :institucion do |institucion| %>
           <%= render partial: 'form_institucion', locals: { f: institucion } %>
@@ -121,6 +121,6 @@
   <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), :back, { :class=>"btn btn-lg btn-block btn-default" } %>
+  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

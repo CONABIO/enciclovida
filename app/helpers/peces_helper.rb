@@ -22,7 +22,7 @@ module PecesHelper
     @grupos.each do |taxon|  # Para tener los grupos ordenados
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, grupos.include?(taxon.id.to_s), id: "grupos_iconicos_#{taxon.id}")
-      checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn btn-xs btn-basica btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
+      checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
@@ -39,7 +39,7 @@ module PecesHelper
       checkBoxes << "<label class='info-label'><small><b>#{v[0]}:</b></small></label>" if k == :star || k == :sn
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, seleccionados.include?(k.to_s), id: "semaforo_recomendacion_#{v[0].parameterize}")
-      checkBoxes << "<span title = '#{v[0]}' class = 'btn btn-basica btn-zona-#{k} btn-title'>"
+      checkBoxes << "<span title = '#{v[0]}' class = 'btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
@@ -50,18 +50,18 @@ module PecesHelper
   end
 
   def checkboxCriteriosPeces(cat, ico=false, titulo=false)
-    checkBoxes= titulo ? "<h5><strong>#{titulo}</strong></h5>" : ""
+    checkBoxes= titulo ? "<h4><strong>#{titulo}</strong></h5>" : ""
 
     cat.each do |k, valores|
       filtros = params[k] || []
       valores.each do |edo, id|
         edo_p = edo.parameterize
         next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
-        checkBoxes << "<label>"
+        checkBoxes << "<label class = '#{k}'>"
         checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo_p}")
-        checkBoxes << "<span title = '#{edo}' class = '#{k} btn btn-xs btn-basica btn-title #{'btn-default' unless ico}'>"
-        checkBoxes << "#{edo}" unless ico
-        checkBoxes << "<i class = '#{edo_p}-ev-icon'></i>" if ico
+        checkBoxes << "<span title = '#{edo}' class = '#{'btn-title' if ico}'>"
+        checkBoxes << "<b>#{edo}</b>" unless ico
+        checkBoxes << "<i class='#{edo_p}-ev-icon'></i>" if ico
         checkBoxes << "</span>"
         checkBoxes << "</label>"
       end
@@ -71,14 +71,12 @@ module PecesHelper
 
   def dibujaZonasPez(c, i)
     lista = ''
-    lista << "<span class='btn-zona btn-zona-#{@pez.valor_zonas[i]} btn-title' tooltip-title='#{c[:nombre]}'>"
+    lista << "<span class='btn-zona btn-zona-#{@pez.valor_zonas[i]}' tooltip-title='#{c[:nombre]}'>"
     lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i>"
     lista << "<b>#{c[:tipo_propiedad]}</b>"
     lista << "</span>"
     @criterios['otros'][c[:ancestry]].each{ |cert|
-      lista << "<span class='btn-zona btn-title' tooltip-title='#{cert[:nombre]}'>"
-      lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank')
-      lista << "</span>"
+      lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank', class: 'btn btn-xs btn-basica btn-zona-star btn-title', "tooltip-title" => cert[:nombre] )
     } if @pez.con_estrella && @criterios['otros'][c[:ancestry]]
     lista
   end

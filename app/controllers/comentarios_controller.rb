@@ -212,8 +212,8 @@ class ComentariosController < ApplicationController
 
             EnviaCorreo.confirmacion_comentario(@comentario).deliver
 
-            #No  SÓLO aquí es donde hay q poner el envio a los responsables de contenido (también allá arriba cuando un usuario responde)
-            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+            # No  SÓLO aquí es donde hay q poner el envio a los responsables de contenido (también allá arriba cuando un usuario responde)
+            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver if dame_usuarios_envio.present?
             
             format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
           end

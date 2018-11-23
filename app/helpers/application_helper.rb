@@ -175,6 +175,6 @@ module ApplicationHelper
     # Si solicito vástagos, entonces basta con ser hijo del mínimo requerido:
     return true if con_hijos && roles_usuario.map(&:path_ids).flatten.include?(rol.id)
     # Si no requiero vastagos revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
-    return false unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.path_ids).any?
+    return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
   end
 end

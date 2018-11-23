@@ -38,6 +38,7 @@ es:
         metodo: Método
         updated_at: Fecha de última actualización
         created_at: Fecha de creación
+        institucion_id: Institución involucrada
         periodo:
           periodicidad: Periodicidad del monitoreo
           periodo_monitoreo_desde: Fecha de inicio del moniteo
@@ -98,6 +99,7 @@ es:
         nombre_proyecto: Nombre corto para identificar la colección de datos
         financiamiento: ¿Quién financió la colección de datos?
         campo_investigacion: ¿Cuál fue la razón principal por la que se recopilaron los datos?
+        institucion_id: Auto completa la institución, de no existir puedes asociar una institución en la pestaña correspondiente
         periodo:
           periodicidad: ¿Cada cuando se realiza el monitoreo?
           periodo_monitoreo_desde: Un periodo de tiempo al año en el cual inicia el monitoreo

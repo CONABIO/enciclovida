@@ -5,6 +5,8 @@ Buscador::Application.routes.draw do
     resources :proyectos
     resources :directorio
     get 'graficas' => 'metamares#graficas'
+    get 'grafica1' => 'metamares#grafica1'
+    get 'grafica2' => 'metamares#grafica2'
   end
 
   namespace :pmc do
