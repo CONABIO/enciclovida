@@ -79,7 +79,7 @@ Buscador::Application.routes.draw do
   resources :metadatos
 
   devise_for :usuarios
-  devise_for :metausuarios, :controllers => { :sessions => "metamares/sessions" }
+  devise_for :metausuarios, :controllers => {:confirmations => "metamares/metausuarios/confirmations", :mailer => "metamares/metausuarios/mailer", :passwords => "metamares/metausuarios/passwords", :registrations => "metamares/metausuarios/registrations", :unlocks => "metamares/metausuarios/unlocks", :sessions => "metamares/metausuarios/sessions"}
 
   resources :bitacoras
 
