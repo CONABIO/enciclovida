@@ -86,20 +86,18 @@
         <hr />
         <%= f.simple_fields_for :institucion do |institucion| %>
           <%= render partial: 'form_institucion', locals: { f: institucion } %>
-
-          <div id='ubicacion' role="tabpanel">
-            <%#= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ubicacion'.html_safe, f, :ubicacion, partial: 'form_ubicacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion, 'data-association-insertion-node' => '#ubicacion', 'data-association-insertion-method' => 'append', href: '#ubicacion' %>
-
-            <%= link_to_add_association 'Ubicación de la institución', f, :ubicacion, partial: 'form_ubicacion', force_non_association_create: true, 'data-association-insertion-method' => 'append' %>
-
-            <hr />
-            <%= f.simple_fields_for :ubicacion do |ubicacion| %>
-              <%= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
-            <% end %>
-          </div>
-
-
         <% end %>
+
+
+        <!--div id='ubicacion' role="tabpanel">
+          <%#= link_to_add_association 'Ubicación de la institución', f, :ubicacion, partial: 'form_ubicacion', 'data-association-insertion-method' => 'append' %>
+
+          <hr />
+          <%#= f.simple_fields_for :ubicacion do |ubicacion| %>
+            <%#= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
+          <%# end %>
+        </div-->
+
       </div>
 
       <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
