@@ -21,4 +21,11 @@ class Metamares::MetamaresController < ApplicationController
 
     render json: g.datos
   end
+
+  # Busca una institucion por slug
+  def dame_institucion
+    i = Metamares::Institucion.new
+    i.nombre_institucion = params[:nombre_institucion]
+    render json: i.busca_institucion
+  end
 end

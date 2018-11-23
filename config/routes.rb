@@ -8,6 +8,7 @@ Buscador::Application.routes.draw do
     get 'graficas' => 'metamares#graficas'
     get 'grafica1' => 'metamares#grafica1'
     get 'grafica2' => 'metamares#grafica2'
+    get 'dame-institucion' => 'metamares#dame_institucion'
   end
 
   namespace :pmc do
