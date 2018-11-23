@@ -1,0 +1,3 @@
+class Metausuario < Usuario
+
+end
