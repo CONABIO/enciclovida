@@ -1,0 +1,39 @@
+<h2>Estás a unos cuantos pasos de crear tu cuenta en EncicloVida</h2>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {:class => 'form-horizontal'}) do |f| %>
+  <% if devise_error_messages!.present? %>
+      <div class="alert alert-danger" role="alert">
+        <%= devise_error_messages! %>
+      </div>
+  <% end %>
+    <div class="panel panel-body panel-default">
+      <div class="form-group">
+        <h4><%= f.label :email %><small><i>: (es con el que iniciaras sesión en la plataforma)</i></small></h4>
+        <%= f.email_field :email, autofocus: true, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="panel panel-body panel-default">
+      <h4>Tus datos personales</h4>
+      <div class="form-group">
+        <%= f.label :nombre %>:
+        <%= f.text_field :nombre, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :apellido %>:
+        <%= f.text_field :apellido, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :institucion %><small><i> (opcional)</i></small>:
+        <%= f.text_field :institucion, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="panel panel-body panel-default">
+      <div class="form-group form-inline">
+        <%= f.label :password %>
+        <%= f.password_field :password, autocomplete: "off", class: 'form-control' %>
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control' %>
+      </div>
+      <%= f.submit 'Crear cuenta', class: 'btn btn-sm btn-block btn-success' %>
+    </div>
+<% end %>
+<%= render "devise/shared/links" %>

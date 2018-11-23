@@ -4,7 +4,6 @@ Buscador::Application.routes.draw do
     resources :admin
     resources :proyectos
     resources :directorio
-    devise_for :usuarios, :controllers => { :sessions => "metamares/sessions" }
     get 'graficas' => 'metamares#graficas'
   end
 
@@ -80,6 +79,8 @@ Buscador::Application.routes.draw do
   resources :metadatos
 
   devise_for :usuarios
+  devise_for :metausuarios, :controllers => { :sessions => "metamares/sessions" }
+
   resources :bitacoras
 
   resources :listas do
