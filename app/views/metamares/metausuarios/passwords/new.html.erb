@@ -1,12 +1,13 @@
-<h2>¿Olvidaste tu contraseña?</h2>
+<h1 class="text-center">¿Olvidaste tu contraseña?</h1>
 
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
   <%= devise_error_messages! %>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, autofocus: true %></div>
-
-  <div><%= f.submit 'Enviarme las instrucciones para recuperar mi contraseña' %></div>
+  <div class="form-group form-inline text-center">
+    <%= f.label :email %>
+    <%= f.email_field :email, autofocus: true, class: 'form-control' %>
+    <%= f.submit 'Recuperar contraseña', class: 'btn btn-warning'%>
+  </div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<hr />
+<%= render "metamares/metausuarios/shared/links" %>

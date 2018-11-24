@@ -1,16 +1,20 @@
-<h2>Cambia tu contraseña</h2>
+<h1 class="text-center">Cambia tu contraseña</h1>
 
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
   <%= f.hidden_field :reset_password_token %>
 
-  <div><%= f.label :password, 'Nueva contraseña' %><br />
-    <%= f.password_field :password, autofocus: true, autocomplete: "off" %></div>
+  <div class="form-group form-inline text-center">
+    <%= f.label :password %>
+    <%= f.password_field :password, autocomplete: "off", :class => 'form-control'  %>
 
-  <div><%= f.label :password_confirmation, 'Confirma la contraseña' %><br />
-    <%= f.password_field :password_confirmation, autocomplete: 'off' %></div>
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, autocomplete: "off", :class => 'form-control'  %>
+  </div>
+  </div>
 
-  <div><%= f.submit :Cambiar %></div>
+  <div><%= f.submit :Cambiar, :class => 'btn btn-sm btn-success' %></div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<hr />
+<%= render 'metamares/metausuarios/shared/links' %>
