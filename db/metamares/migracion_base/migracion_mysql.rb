@@ -24,11 +24,12 @@ def itera_metadata
 
     proyecto = Metamares::Proyecto.new
     proyecto.id = meta.mmid
-    proyecto.nombre_proyecto = meta.short_title
+    proyecto.nombre_proyecto = meta.short_title[0..254]
     proyecto.autor = meta.author unless meta.author.estandariza == 'na'
     proyecto.financiamiento = meta.research_fund unless meta.research_fund.estandariza == 'na'
     proyecto.campo_investigacion = meta.research_field unless meta.research_field.estandariza == 'na'
     proyecto.campo_ciencia = meta.science unless meta.science.estandariza == 'na'
+    proyecto.usuario_id = 1
 
     # Institucion
     if institucion = Metamares::Institucion.where(slug: meta.institution.estandariza).first
@@ -74,6 +75,13 @@ def itera_metadata
       proyecto.periodo_id = periodo.id
     end
 
+    # Informacion adicional
+    info_adicional = Metamares::InfoAdicional.new
+
+    if info_adicional.save
+      proyecto.info_adicional_id = info_adicional.id
+    end
+
     # Datos
     dato = Metamares::Dato.new
     dato.estatus_datos = meta.dataset_available
@@ -102,6 +110,7 @@ def itera_metadata
           next unless nombre_keyword.strip.present?
           k = proyecto.keywords.new
           k.nombre_keyword = nombre_keyword.strip
+          k.slug = nombre_keyword.estandariza
           k.save
         end
       end
@@ -118,8 +127,7 @@ def itera_metadata
 
         e.save
       end
-    end
-
+    end  # End proyecto.save
   end  # End each do meta
 end
 

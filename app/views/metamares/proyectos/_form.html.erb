@@ -101,7 +101,7 @@
       </div>
 
       <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Especies estudiadas'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una especie'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
         <hr />
         <%= f.simple_fields_for :especies do |especie| %>
           <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
@@ -109,7 +109,7 @@
       </div>
 
       <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Keywords'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una palabra clave'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
         <hr />
         <%= f.simple_fields_for :keywords do |kw| %>
           <%= render partial: 'form_keywords', locals: { f: kw } %>
@@ -121,6 +121,6 @@
   <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), @proyecto.new_record? ? metamares_proyectos_path : metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
+  <%= link_to t('helpers.submit.proy_b.cancel'), @proyecto.new_record? ? metamares_proyectos_path : metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

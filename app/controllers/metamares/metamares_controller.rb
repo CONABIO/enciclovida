@@ -33,6 +33,17 @@ class Metamares::MetamaresController < ApplicationController
     end
   end
 
+  # Busca un keyword por slug
+  def dame_keyword
+    k = Metamares::Keyword.new
+    k.nombre_keyword = params[:nombre_keyword]
+
+    respond_to do |format|
+      format.json { render json: k.busca_keyword.map{ |k| { id: k.nombre_keyword, value: k.nombre_keyword } } }
+      format.html { @keyword = k }
+    end
+  end
+
   protected
 
   def tiene_permiso?(nombre_rol, con_hijos=false)
