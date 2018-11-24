@@ -26,6 +26,10 @@ class Metamares::MetamaresController < ApplicationController
   def dame_institucion
     i = Metamares::Institucion.new
     i.nombre_institucion = params[:nombre_institucion]
-    render json: i.busca_institucion
+
+    respond_to do |format|
+      format.json { render json: i.busca_institucion.map{ |i| { id: i.id, value: i.nombre_institucion } } }
+      format.html { @institucion = i }
+    end
   end
 end

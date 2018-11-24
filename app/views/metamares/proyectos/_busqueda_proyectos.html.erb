@@ -2,7 +2,7 @@
   <%= f.input :proyecto, required: false, input_html: { value: (params[:proy_b][:proyecto] if params[:proy_b].present?) } %>
   <%= f.input :institucion, required: false, input_html: { value: (params[:proy_b][:institucion] if params[:proy_b].present?) } %>
   <%= f.input :autor, required: false, input_html: { value: (params[:proy_b][:autor] if params[:proy_b].present?) } %>
-  <%= f.input :nombre, required: false, input_html: { value: (params[:proy_b][:nombre] if params[:proy_b].present?) } %>
+  <%= f.input :nombre, required: false, input_html: { value: (params[:proy_b][:nombre] if params[:proy_b].present?), autocomplete: :off } %>
   <%= f.hidden_field :especie_id, value: (params[:proy_b][:especie_id] if params[:proy_b].present?) %>
 
   <% if params[:proy_b].present? && params[:proy_b][:usuario_id].present? %>

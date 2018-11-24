@@ -27,8 +27,6 @@ var quitaParametros = function(sParam)
  */
 var paginadoMetamares = function(paginas, pagina)
 {
-    console.log(pagina);
-    console.log(paginas);
     href = quitaParametros('pagina');
     var url = href.split('/').pop();
 
@@ -50,6 +48,26 @@ var paginadoMetamares = function(paginas, pagina)
     });
 };
 
+var dameInstitucion = function () {
+    $("#metamares_proyecto_nom_institucion").autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "/metamares/dame-institucion.json",
+                dataType: "json",
+                data: {
+                    nombre_institucion: request.term
+                },
+                success: function( data ) {
+                    response( data );
+                }
+            } );
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            $('#metamares_proyecto_institucion_id').val(ui.item.id);
+        }
+    });
+};
 
 $(document).ready(function() {
     soulmateAsigna('metamares', 'proy_b_nombre');

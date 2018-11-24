@@ -1,3 +1,8 @@
+<% content_for :extracss do %>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+<% end %>
+
 <%= f.input :nombre_proyecto, required: true %>
 <%= f.input :tipo_monitoreo %>
 <%= f.input :objeto_monitoreo %>
@@ -6,5 +11,11 @@
 <%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION, input_html: {class: 'form-control'} %>
 <%= f.input :campo_ciencia, collection: Metamares::Proyecto::CAMPOS_CIENCIAS, input_html: {class: 'form-control'} %>
 <%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS, input_html: {class: 'form-control'} %>
-<%= f.input :nom_institucion %>
+<%= f.input :nom_institucion, input_html: { autocomplete: :off } %>
 <%= f.input :institucion_id, as: :hidden %>
+
+<% content_for :delayedjs do %>
+  <script>
+      dameInstitucion();
+  </script>
+<% end %>

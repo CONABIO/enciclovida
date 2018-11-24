@@ -38,6 +38,9 @@
 
 <div class="text-center paginado-metamares"></div>
 
-<script data-turbolinks-track="true">
-    paginadoMetamares(<%= @paginas %>, <%= @pagina %>);
-</script>
+<% content_for :delayedjs do %>
+  <script data-turbolinks-track="true">
+      soulmateAsigna('metamares', 'proy_b_nombre');
+      paginadoMetamares(<%= @paginas %>, <%= @pagina %>);
+  </script>
+<% end %>
