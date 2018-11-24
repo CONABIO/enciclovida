@@ -28,7 +28,7 @@
       <li role="presentation" >
         <%= link_to 'Región', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
       </li>
-      <li role="presentation" >
+      <li role="presentation">
         <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
       </li>
       <li role="presentation" >
@@ -82,7 +82,7 @@
       </div>
 
       <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? || (!@proyecto.new_record? && !f.object.institucion) %>
         <hr />
         <%= f.simple_fields_for :institucion do |institucion| %>
           <%= render partial: 'form_institucion', locals: { f: institucion } %>

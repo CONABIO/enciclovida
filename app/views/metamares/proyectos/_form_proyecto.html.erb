@@ -11,11 +11,21 @@
 <%= f.input :campo_investigacion, collection: Metamares::Proyecto::CAMPOS_INVESTIGACION, input_html: {class: 'form-control'} %>
 <%= f.input :campo_ciencia, collection: Metamares::Proyecto::CAMPOS_CIENCIAS, input_html: {class: 'form-control'} %>
 <%= f.input :financiamiento, collection: Metamares::Proyecto::FINANCIAMIENTOS, input_html: {class: 'form-control'} %>
-<%= f.input :nom_institucion, input_html: { autocomplete: :off } %>
 <%= f.input :institucion_id, as: :hidden %>
+
+<% if @proyecto.new_record? || f.object.institucion_id.blank? %>
+  <%= f.input :nom_institucion, autocomplete: :off %>
+<%
+  else
+    institucion = Metamares::Institucion.find(f.object.institucion_id)
+%>
+  <%= f.input :nom_institucion, input_html: { value: institucion.nombre_institucion }, autocomplete: :off %>
+  <h5 class="text-right"><%= link_to 'Desvincular institución', nil, id: 'desvincula_inst' %></h5>
+<% end %>
 
 <% content_for :delayedjs do %>
   <script>
       dameInstitucion();
+      desvinculaInstitucion();
   </script>
 <% end %>
