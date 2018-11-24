@@ -92,7 +92,6 @@ var desvinculaInstitucion = function ()
  */
 var dameKeyword = function (keyword)
 {
-    
     keyword.autocomplete({
         source: function( request, response ) {
             $.ajax( {
