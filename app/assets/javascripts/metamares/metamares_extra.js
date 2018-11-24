@@ -48,6 +48,9 @@ var paginadoMetamares = function(paginas, pagina)
     });
 };
 
+/**
+ * Autocompletado con jquery ui
+ */
 var dameInstitucion = function ()
 {
     $("#metamares_proyecto_nom_institucion").autocomplete({
@@ -71,11 +74,15 @@ var dameInstitucion = function ()
     });
 };
 
-$(document).ready(function() {
+/**
+ * Desvincula el record en la interfaz
+ */
+var desvinculaInstitucion = function ()
+{
     $('#desvincula_inst').on('click', function () {
         $('#metamares_proyecto_institucion_id').val('');
         $("#institucion :input").attr("disabled", true);
         $("#metamares_proyecto_nom_institucion").val('');
         return false;
     });
-});
+};
