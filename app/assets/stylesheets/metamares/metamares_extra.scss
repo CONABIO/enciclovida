@@ -26,12 +26,12 @@
   font-style: normal;
 }
 body{
-  background-color: #dadada;
+  background-color: #fafafa;
 }
-#brandBar{
-  background-color: rgba(51, 51, 51, 0.75);
-  padding: 30px;
-}
+#brandBar, footer.legal{padding: 15px 0;}
+#brandBar{background-color: #333333;}
+footer.legal{background-color: #f3f3f3;}
+
 #content{
   padding: 30px 10px;
 }
@@ -40,56 +40,20 @@ body{
   border-left: 1px solid #d3d3d3;
   filter: drop-shadow(3px 3px 3px #cecece);
 }
-footer.legal {
-  background-color: #cecece;
-  padding: 25px 0;
-}
-
 #brandBar .dropdown {
   position: fixed;
-  right: 0;
+  left: 0;
   top: 0;
   z-index: 1001;
 }
-#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
-  border-bottom-left-radius: 2px;
-  font-weight: bold;
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
 
-#brandBar .form-group{margin: 4px 0;}
-#brandBar .btn-group{min-width: 100%;}
-#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
-  padding: 5px 5%;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-}
-.enciclovida_correo-ev-icon:before{
-  font-size: large;
-  width: 10em !important;
-  text-decoration: underline;
-}
-.biomex-ev-icon:before, .conabio-ev-icon:before{
-  width: 2.5em !important;
-  font-size: 3em;
+.conabio-ev-icon:before, .conabio_completo-ev-icon:before{
+  width: 4em!important;
+  font-size: 3.5em;
   color: #f7f7f7;
-}
-.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 4em;
-  width: 2em !important;
 }
-
-.ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
-.enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
-.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
-.ev2-ev-icon:before{margin-left: -1.25em;}
-
-.ev1-ev-icon:before { content: '\e84f'; }
-.vida-ev-icon:before { content: '\e850'; }
-.naturalista-3-ev-icon:before { content: '\e853'; }
-.naturalista-4-ev-icon:before { content: '\e854'; }
-.enciclo-ev-icon:before { content: '\e860'; }
 
 .soulmate-type-suggestions li{
   padding: 1em 0;
