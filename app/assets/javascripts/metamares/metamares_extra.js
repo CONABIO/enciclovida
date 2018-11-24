@@ -49,7 +49,7 @@ var paginadoMetamares = function(paginas, pagina)
 };
 
 /**
- * Autocompletado con jquery ui
+ * Autocompleta la institucion
  */
 var dameInstitucion = function ()
 {
@@ -84,5 +84,32 @@ var desvinculaInstitucion = function ()
         $("#institucion :input").attr("disabled", true);
         $("#metamares_proyecto_nom_institucion").val('');
         return false;
+    });
+};
+
+/**
+ * Autocompleta el keyword
+ */
+var dameKeyword = function (keyword)
+{
+    
+    keyword.autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "/metamares/dame-keyword.json",
+                dataType: "json",
+                data: {
+                    nombre_keyword: request.term
+                },
+                success: function( data ) {
+                    response( data );
+                }
+            } );
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            keyword.val(ui.item.id);
+
+        }
     });
 };
