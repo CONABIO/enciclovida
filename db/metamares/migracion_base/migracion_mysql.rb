@@ -24,7 +24,7 @@ def itera_metadata
 
     proyecto = Metamares::Proyecto.new
     proyecto.id = meta.mmid
-    proyecto.nombre_proyecto = truncate(meta.short_title, length: 255)
+    proyecto.nombre_proyecto = meta.short_title[0..254]
     proyecto.autor = meta.author unless meta.author.estandariza == 'na'
     proyecto.financiamiento = meta.research_fund unless meta.research_fund.estandariza == 'na'
     proyecto.campo_investigacion = meta.research_field unless meta.research_field.estandariza == 'na'
