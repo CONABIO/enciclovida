@@ -48,7 +48,8 @@ var paginadoMetamares = function(paginas, pagina)
     });
 };
 
-var dameInstitucion = function () {
+var dameInstitucion = function ()
+{
     $("#metamares_proyecto_nom_institucion").autocomplete({
         source: function( request, response ) {
             $.ajax( {
@@ -65,10 +66,16 @@ var dameInstitucion = function () {
         minLength: 2,
         select: function( event, ui ) {
             $('#metamares_proyecto_institucion_id').val(ui.item.id);
+            $("#institucion :input").attr("disabled", true);
         }
     });
 };
 
 $(document).ready(function() {
-    soulmateAsigna('metamares', 'proy_b_nombre');
+    $('#desvincula_inst').on('click', function () {
+        $('#metamares_proyecto_institucion_id').val('');
+        $("#institucion :input").attr("disabled", true);
+        $("#metamares_proyecto_nom_institucion").val('');
+        return false;
+    });
 });
