@@ -1,2 +1,2 @@
-class Metamares::Metausuarios::MailerController < Metamares::MetausuariosController
+class Metamares::Metausuarios::Mailer < ::Devise::Mailer
 end

@@ -1,2 +1,3 @@
-class Metamares::Metausuarios::ConfirmationsController < Metamares::MetausuariosController
+class Metamares::Metausuarios::ConfirmationsController < ::Devise::ConfirmationsController
+  layout 'metamares'
 end

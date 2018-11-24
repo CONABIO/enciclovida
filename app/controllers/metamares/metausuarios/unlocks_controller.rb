@@ -1,2 +1,3 @@
-class Metamares::Metausuarios::UnlocksController < Metamares::MetausuariosController
+class Metamares::Metausuarios::UnlocksController < ::Devise::UnlocksController
+  layout 'metamares'
 end

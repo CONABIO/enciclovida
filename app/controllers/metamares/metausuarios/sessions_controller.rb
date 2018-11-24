@@ -1,2 +1,3 @@
-class Metamares::Metausuarios::SessionsController < Metamares::MetausuariosController
+class Metamares::Metausuarios::SessionsController < ::Devise::SessionsController
+  layout 'metamares'
 end

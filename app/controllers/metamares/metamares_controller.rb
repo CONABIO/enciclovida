@@ -32,4 +32,25 @@ class Metamares::MetamaresController < ApplicationController
       format.html { @institucion = i }
     end
   end
+
+  protected
+
+  def tiene_permiso?(nombre_rol, con_hijos=false)
+    render 'shared/sin_permiso' and return unless metausuario_signed_in? #con esto aseguramos que el usuario ya inicio sesión
+    roles_usuario = current_metausuario.usuario_roles.map(&:rol)
+    #Si se es superusuario o algun otro tipo de root, entra a ALL
+    return if roles_usuario.map(&:depth).any?{|d| d < 1}
+    rol = Rol.find_by_nombre_rol(nombre_rol)
+    #Si solicito vástagos, entonces basta con ser hijo del mínimo requerido:
+    return if con_hijos && roles_usuario.map(&:path_ids).flatten.include?(rol.id)
+    #Si no requiero vastagos revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
+    render 'shared/sin_permiso' unless rol.present? && (roles_usuario.map(&:subtree_ids).flatten & rol.path_ids).any?
+  end
+
+  def es_propietario?(obj)
+    return false unless metausuario_signed_in?
+    usuario_id = obj.usuario_id
+    current_usuario.id == usuario_id
+  end
+
 end

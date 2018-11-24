@@ -1,2 +1,3 @@
-class Metamares::Metausuarios::PasswordsController < Metamares::MetausuariosController
+class Metamares::Metausuarios::PasswordsController < ::Devise::PasswordsController
+  layout 'metamares'
 end
