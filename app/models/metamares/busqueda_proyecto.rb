@@ -6,9 +6,9 @@ class Metamares::BusquedaProyecto
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize
-    self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :keywords, :region, :dato).
-        distinct.select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion, descarga_datos').
-        where('estatus_datos = 1').order(updated_at: :desc, created_at: :desc, id: :desc)
+    self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :dato).
+        distinct(:id).select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion, descarga_datos').
+        where('estatus_datos IN (1,2)').order(updated_at: :desc, created_at: :desc, id: :desc)
     self.totales = 0
     self.params = {}
   end
@@ -24,9 +24,9 @@ class Metamares::BusquedaProyecto
     self.proyectos = proyectos.where('autor REGEXP ?', params[:autor]) if params[:autor].present?
 
     if params[:especie_id].present?
-      self.proyectos = proyectos.where('especies_estudiadas.especie_id=?', params[:especie_id])
+      self.proyectos = proyectos.where('especies_estudiadas.especie_id=?', params[:especie_id]).left_joins({especies: [:especie, :adicional]})
     elsif params[:nombre].present?
-      self.proyectos = proyectos.where('especies_estudiadas.nombre_cientifico REGEXP ?', params[:nombre])
+      self.proyectos = proyectos.where('especies_estudiadas.nombre_cientifico REGEXP ?', params[:nombre]).left_joins({especies: [:especie, :adicional]})
     end
 
     self.totales = proyectos.count('proyectos.id')
