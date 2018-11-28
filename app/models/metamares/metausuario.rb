@@ -14,6 +14,6 @@ class Metausuario < Usuario
   end
 
   def añade_rol
-    self.reload.usuario_roles.new({"rol_id"=>"20"}).save
+    self.reload.usuario_roles.new({"rol_id"=>"22"}).save
   end
 end

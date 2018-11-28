@@ -61,7 +61,7 @@ class Metamares::MetamaresController < ApplicationController
   def es_propietario?(obj)
     return false unless metausuario_signed_in?
     usuario_id = obj.usuario_id
-    current_usuario.id == usuario_id
+    current_metausuario.id == usuario_id
   end
 
 end
