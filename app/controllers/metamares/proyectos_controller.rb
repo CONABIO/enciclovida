@@ -12,13 +12,24 @@ class Metamares::ProyectosController < Metamares::MetamaresController
     if params[:proy_b].present?
       busqueda.params = proyecto_busqueda_params
       busqueda.params[:pagina] = params[:pagina]
+
     end
 
+    busqueda.sin_limit = params[:commit] == 'Descargar' || params[:commit] == 'JSON'
     busqueda.consulta
-    @proyectos = busqueda.proyectos
-    @totales = busqueda.totales
-    @pagina = busqueda.pagina
-    @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1
+
+    case params[:commit]
+    when 'Descargar'
+      send_data busqueda.to_csv, filename: "busqueda.csv", disposition: 'attachment', type: :text
+    when 'JSON'
+      send_data busqueda.to_json, filename: "busqueda.json"
+    else
+      @proyectos = busqueda.proyectos
+      @totales = busqueda.totales
+      @pagina = busqueda.pagina
+      @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1
+    end
+
   end
 
   def show

@@ -1,5 +1,5 @@
 class Metamares::BusquedaProyecto
-  attr_accessor :params, :proyectos, :proyecto, :totales, :pagina, :por_pagina, :offset
+  attr_accessor :params, :proyectos, :proyecto, :totales, :pagina, :por_pagina, :offset, :sin_limit
 
   POR_PAGINA = [50, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
@@ -11,6 +11,7 @@ class Metamares::BusquedaProyecto
         where('estatus_datos IN (1,2)').order(updated_at: :desc, created_at: :desc, id: :desc)
     self.totales = 0
     self.params = {}
+    self.sin_limit = false
   end
 
   # REVISADO: Hace el query con los parametros elegidos
@@ -30,9 +31,21 @@ class Metamares::BusquedaProyecto
     end
 
     self.totales = proyectos.count('proyectos.id')
-    self.proyectos = proyectos.offset(offset).limit(por_pagina)
+    self.proyectos = proyectos.offset(offset).limit(por_pagina) unless self.sin_limit
+
   end
 
+  def to_csv
+    attributes = %w{id nombre_proyecto autor campo_investigacion updated_at nombre_institucion descarga_datos}
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      self.proyectos.each do |bp|
+        csv << attributes.map{ |attr| bp.send(attr) }
+      end
+    end
+  end
 
   private
 

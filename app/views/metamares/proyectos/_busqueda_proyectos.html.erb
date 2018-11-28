@@ -9,6 +9,8 @@
     <%= f.hidden_field :usuario_id, value: params[:proy_b][:usuario_id] %>
   <% end %>
 
-  <%= f.submit :Buscar, { 'data-disable-with' => t('helpers.submit.proy_b.buscando'), :class => 'btn btn-success', value: t('helpers.submit.proy_b.buscar') } %>
-  <%= f.submit :Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')" %>
+  <%= f.submit :Buscar, {:class => 'btn btn-success', value: t('helpers.submit.proy_b.buscar'), "data-disable-with" => false } %>
+  <%= f.submit :Descargar, { :class => 'btn btn-info', value: t('helpers.submit.proy_b.descargar'), "data-disable-with" => false } %>
+  <%= f.submit :JSON, { :class => 'btn btn-warning', value: 'JSON', "data-disable-with" => false } %>
+  <%= button_tag(:Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')") %>
 <% end %>
