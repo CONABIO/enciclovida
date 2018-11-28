@@ -3,8 +3,7 @@
 <div id="brandBar" class="row">
   <div class="dropdown pull-left">
     <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span class="caret"></span>
-      <%= usuario.present? ? usuario.nombre : ' Menú' %>
+      <%= usuario.present? ? usuario.nombre : ' Menú' %>. <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
       <% if usuario.present? %>
