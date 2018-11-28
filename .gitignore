@@ -42,6 +42,7 @@ db/seeds.rb
 db/respaldos/*
 db/metamares/metamares.mwb.bak
 app/assets/javascripts/i18n/translations.js
+public/javascripts/
 tools/bitacoras/
 config/config.yml*
 config/database.yml*
