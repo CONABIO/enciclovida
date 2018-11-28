@@ -22,6 +22,11 @@ def itera_metadata
   Metamares::Metadata.all.each do |meta|
     puts "\tRecord: #{meta.mmid}  ..." if OPTS[:debug]
 
+    if Metamares::Proyecto.where(id: meta.mmid).present?
+      puts "\t\tYa estaba en la base" if OPTS[:debug]
+      next
+    end
+
     proyecto = Metamares::Proyecto.new
     proyecto.id = meta.mmid
     proyecto.nombre_proyecto = meta.short_title[0..254]
