@@ -10,10 +10,10 @@ class Metausuario < Usuario
   end
 
   def añade_directorio
-    directorio.new.save
+    Metamares::Directorio.new(usuario_id: self.reload.id).save
   end
 
   def añade_rol
-    usuario_roles.new({"rol_id"=>"20"}).save
+    self.reload.usuario_roles.new({"rol_id"=>"20"}).save
   end
 end
