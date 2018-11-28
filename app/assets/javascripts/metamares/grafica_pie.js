@@ -11,7 +11,7 @@ var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([0, 0])
     .html(function(d) {
-        return d.data.label + ": <span style='color:orangered'>" + d.data.score + "</span>";
+        return I18n.t('simple_form.options.metamares_proyecto.region.nombre_region.' + d.data.label) + ": <span style='color:orangered'>" + d.data.totales + "</span>";
     });
 
 var arc = d3.svg.arc()
@@ -35,6 +35,7 @@ svg.call(tip);
 
 //d3.csv('/grafica_pie.csv', function(error, data) {
 d3.json("/metamares/grafica2", function(data) {
+    var totales = 0;
     data.forEach(function(d) {
         d.id     =  d.id;
         d.order  = +d.order;
@@ -43,6 +44,7 @@ d3.json("/metamares/grafica2", function(data) {
         d.score  = +d.score;
         d.width  = +d.weight;
         d.label  =  d.label;
+        totales  = totales+d.totales;
     });
 
     var path = svg.selectAll(".solidArc")
@@ -63,20 +65,11 @@ d3.json("/metamares/grafica2", function(data) {
         .attr("class", "outlineArc")
         .attr("d", outlineArc);
 
-
-    // calculate the weighted mean score
-    var score =
-        data.reduce(function(a, b) {
-            return a + (b.score * b.weight);
-        }, 0) /
-        data.reduce(function(a, b) {
-            return a + b.weight;
-        }, 0);
-
     svg.append("svg:text")
         .attr("class", "aster-score")
         .attr("dy", ".35em")
         .attr("text-anchor", "middle") // text-align: right
-        .text(Math.round(score));
+        .style("font-size", "2.5em")
+        .text(totales);
 
 });

@@ -45,6 +45,8 @@ module Buscador
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.time_zone = 'Mexico City'
 
+    config.middleware.use I18n::JS::Middleware
+
     #config.autoload_paths += %W(#{config.root}/lib)
     config.eager_load_paths << Rails.root.join('lib')
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]

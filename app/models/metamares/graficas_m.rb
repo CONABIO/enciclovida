@@ -9,7 +9,7 @@ class Metamares::GraficasM
   # Gráfica por año de publicacion contra campo de investigación
   def grafica1
     q = Metamares::Proyecto.select('COUNT(campo_investigacion) AS totales, publicacion_anio, campo_investigacion').
-        left_joins(:dato).where('publicacion_anio IS NOT NULL').group('publicacion_anio, campo_investigacion').order('publicacion_anio')
+        left_joins(:dato).where("publicacion_anio IS NOT NULL AND publicacion_anio > '2005/01/01'").group('publicacion_anio, campo_investigacion').order('publicacion_anio')
 
     q.each do |d|
       anio = d.publicacion_anio[0..3].to_i
@@ -56,7 +56,7 @@ class Metamares::GraficasM
     max_score = 0
     primero = true
 
-    q = Metamares::RegionM.select('COUNT(*) AS totales, nombre_region').group(:nombre_region).order('totales DESC')
+    q = Metamares::RegionM.select('COUNT(*) AS totales, nombre_region').group(:nombre_region).order('totales DESC').where('nombre_region IS NOT NULL')
 
     q.each_with_index do |d, index|
       if primero

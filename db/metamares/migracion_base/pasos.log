@@ -14,3 +14,9 @@ INSERT INTO metadata (mmid,c_id,d_id,short_title,keywords,author,institution,dat
 :1,$ s/,,/,NULL,/g       hacer este comando 2 veces
 
 Antes de meterlo a la base, poner: max_allowed_packet=1GB
+
+
+UPDATE regiones SET nombre_region='B Camp Caribe' WHERE nombre_region='B. Camp. Caribe';
+UPDATE regiones SET nombre_region='Freshwater_Terrestrial' WHERE nombre_region='Freshwater/Terrestrial';
+UPDATE regiones SET nombre_region='G California' WHERE nombre_region='G. California';
+UPDATE regiones SET nombre_region='W G Mexico' WHERE nombre_region='W. G. Mexico';

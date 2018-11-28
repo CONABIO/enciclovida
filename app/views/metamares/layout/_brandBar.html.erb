@@ -6,14 +6,13 @@
       <%= usuario.present? ? usuario.nombre : ' Menú' %>. <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
-      <% if usuario.present? %>
-        <li><%= link_to 'Búsqueda en mis colecciones', metamares_proyectos_path({'proy_b[usuario_id]': usuario.id}), data: { turbolinks: false } %></li>
-      <% end %>
-      <li><%= link_to 'Búsqueda global de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Búsqueda de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>
       <li><%= link_to 'Nuevo registro de colección', new_metamares_proyecto_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Gráficas', metamares_graficas_path, data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
 
       <% if usuario.present? %>
+        <li><%= link_to 'Mis colecciones', metamares_proyectos_path({'proy_b[usuario_id]': usuario.id}), data: { turbolinks: false } %></li>
         <li><%= link_to 'Configuración de tu cuenta', edit_metausuario_registration_path, data: { turbolinks: false } %></li>
         <li><%= link_to 'Datos personales', metamares_directorio_path(usuario.directorio), data: { turbolinks: false } %></li>
         <li><%= link_to 'Cerrar sesión', destroy_metausuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
