@@ -3,7 +3,7 @@
 <script src="https://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js" data-turbolinks-track="true"></script>
 
-<h3>Incorporación de la información</h3>
+<h3>Campo de investigación por año de publicación</h3>
 <div class="chart-wrapper" id="chart-line1"></div>
 
 <script type="text/javascript">
@@ -29,7 +29,7 @@
             'Sociology': {column: 'variableF'},
             'Tourism': {column: 'variableG'},
             'Other': {column: 'variableH'}
-        }, {xAxis: 'Years', yAxis: 'Amount'});
+        }, {xAxis: 'Años', yAxis: 'Número de colecciones'});
         chart.bind("#chart-line1");
         chart.render();
 
@@ -37,6 +37,7 @@
 </script>
 
 <hr />
+<h3>Número de colecciones por región</h3>
 <div id="grafica-pie"></div>
 
 <%= javascript_include_tag 'metamares/graficas', 'data-turbolinks-track' => true %>
