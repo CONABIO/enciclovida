@@ -112,3 +112,8 @@ var dameKeyword = function (keyword)
         }
     });
 };
+
+$(document).on('focus', '[id^=metamares_proyecto_especies][id$=_nombre_cientifico]', function() {
+    $('[id^=metamares_proyecto_especies][id$=_nombre_cientifico]').off();
+    soulmateAsigna('metamares_proy_esp', this.id);
+});
