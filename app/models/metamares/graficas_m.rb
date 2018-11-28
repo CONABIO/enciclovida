@@ -56,7 +56,7 @@ class Metamares::GraficasM
     max_score = 0
     primero = true
 
-    q = Metamares::RegionM.select('COUNT(*) AS totales, nombre_region').group(:nombre_region).order('totales DESC')
+    q = Metamares::RegionM.select('COUNT(*) AS totales, nombre_region').group(:nombre_region).order('totales DESC').where('nombre_region IS NOT NULL')
 
     q.each_with_index do |d, index|
       if primero
