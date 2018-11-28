@@ -155,7 +155,7 @@ es:
           IGO_F: Gobierno internacional
           INT_F: Internacional
           NGO_F: Subsidio para la sustentabilidad
-          PRIVATE_F: Privado
+          Private_F: Privado
           Unknown: Desconocido
         campo_investigacion:
           Aquaculture: Acuacultura

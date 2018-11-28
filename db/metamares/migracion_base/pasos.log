@@ -1,6 +1,7 @@
-start_year, end_year, date_time_point, publication_year, latitude, longitude
+dataset_available, start_year, end_year, date_time_point, publication_year, latitude, longitude, quitar los NA de estos campos que son ints
 Quitar los saltos de linea en todo el csv, comando de replace directo en excel
-Quitar todas las comillas dobles
+Volver a guardar por separador | y delimitador °
+Quitar todas las comillas dobles con vi
 Guardar el archivo con otro nombre y separarlo por "|"
 Asegurarse que no existan comillas dobles
 Correr comando para crear los inserts:
@@ -10,3 +11,6 @@ INSERT INTO metadata (mmid,c_id,d_id,short_title,keywords,author,institution,dat
 
 :1,$ s/'/''/g
 :1,$ s/`/'/g
+:1,$ s/,,/,NULL,/g       hacer este comando 2 veces
+
+Antes de meterlo a la base, poner: max_allowed_packet=1GB
