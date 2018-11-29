@@ -206,6 +206,13 @@ Buscador::Application.routes.draw do
   #  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - -
 
 
+  # I. Clasificación y descripción de la especie
+  get 'media_tropicos/:id' => 'tropicos#tropico_especie'
+
+
+
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
