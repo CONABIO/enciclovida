@@ -2,28 +2,28 @@
   <div class="col-md-12 text-justify">
     <h4>Tamaño poblacional</h4>
     <ul>
-      <li><strong>Descripción del tamaño poblacional reportado en distintos lugares</strong> <p> <%= @demografiaAmenazas.tamanioPoblacional.html_safe %> </p></li>
-      <li><strong>Abundancia de individuos por región</strong><p> <%= @demografiaAmenazas.abundancia.html_safe %> </p></li>
-      <li><strong>Densidad (número de individuos por área)</strong><p> <%= @demografiaAmenazas.densidad %> </p></li>
+      <li><strong>Descripción del tamaño poblacional reportado en distintos lugares</strong> <p> <%=FichasController.convert_to_HTML(@demografiaAmenazas.tamanioPoblacional)%> </p></li>
+      <li><strong>Abundancia de individuos por región</strong><p> <%=FichasController.convert_to_HTML(@demografiaAmenazas.abundancia)%> </p></li>
+      <li><strong>Densidad (número de individuos por área)</strong><p> <%=FichasController.convert_to_HTML(@demografiaAmenazas.densidad)%> </p></li>
       <li><strong>Descripción del patrón de ocupación</strong>
-        <p> <%= @demografiaAmenazas.patronOcupacion %> </p>
+        <p> <%=FichasController.convert_to_HTML(@demografiaAmenazas.patronOcupacion)%> </p>
         <h5>Información adicional</h5>
-        <p> <%= @demografiaAmenazas.descripcionPatron %> </p>
+        <p> <%=FichasController.convert_to_HTML(@demografiaAmenazas.descripcionPatron)%> </p>
       </li>
     </ul>
     <br>
 
     <h4>Parámetros poblacionales</h4>
     <ul>
-      <li><strong>Parámetros poblacionales</strong><p><%= @demografiaAmenazas.parametrosPoblacionales %></p></li>
-      <li><strong>Población mínima viable</strong><p><%= @demografiaAmenazas.poblacionminviableinicial %></p></li>
+      <li><strong>Parámetros poblacionales</strong><p><%=FichasController.convert_to_HTML(@demografiaAmenazas.parametrosPoblacionales)%></p></li>
+      <li><strong>Población mínima viable</strong><p><%=FichasController.convert_to_HTML(@demografiaAmenazas.poblacionminviableinicial)%></p></li>
     </ul>
     <br>
 
     <h4>Interacciones</h4>
-    <p><%= @interaccion.interacciones if @interaccion.present? %></p>
+    <p><%=@interaccion.present? ? FichasController.convert_to_HTML(@interaccion.interacciones) : (sin_info_msj)%></p>
     <h5>Información adicional</h5>
-    <p><%= @demografiaAmenazas.infoAdicionalInteraccion %></p>
+    <p><%=@demografiaAmenazas.present? ? FichasController.convert_to_HTML(@demografiaAmenazas.infoAdicionalInteraccion) : (sin_info_msj)%></p>
 
   </div>
 </div>

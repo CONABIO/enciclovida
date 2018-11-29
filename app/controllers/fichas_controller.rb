@@ -1,5 +1,5 @@
 class FichasController < ApplicationController
-  before_action :set_taxon 
+  before_action :set_taxon
 
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
@@ -16,7 +16,6 @@ class FichasController < ApplicationController
         sinonimo: @sinonimo
     }
   end
-
 
   # Distribución de la especie
   def distribucione_de_la_especie # especieId
@@ -210,7 +209,7 @@ class FichasController < ApplicationController
 
 
     respond_to do |format|
-      format.html { render :layout => false }
+      format.html #{ render :layout => false }
       format.json { render json: {
           taxon: @taxon,
           # I. Clasificación y descripción de la especie
@@ -238,9 +237,25 @@ class FichasController < ApplicationController
       }
     end
   end
-  
+
+  def self.convert_to_HTML(text)
+    # Verificar si hay información que mostrar
+    if text.present?
+      # Verificar que sea texto lo que se va a analizar
+      if text.is_a? String
+        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
+        @res = Nokogiri::HTML.fragment(text).to_html.html_safe
+      else
+        @res = text.to_s
+      end
+    else
+        @res = "Sin información disponible"
+    end
+
+    return @res
+    end
+
   private
-  
   def set_taxon
     @taxon = Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
   end
