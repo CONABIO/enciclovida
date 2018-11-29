@@ -1,14 +1,42 @@
-<h4 class="text-center"><b>Criterios globales</b></h4>
+<h4 class="text-center"><b>Recomendación</b></h4>
+<table class="table table-responsive table-condensed table-bordered">
+  <tbody>
+  <tr>
+    <td>
+      <ul>
+        <li class="text-center"><b><small>Pacífico</small></b></li>
+        <% @criterios["Estado poblacional en el Pacífico"].compact.each_with_index do  |c, i| %>
+          <li><%= dibujaZonasPez(c, i).html_safe %></li>
+        <% end %>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li class="text-center"><b><small>Golfo de México</small></b></li>
+        <% @criterios["Estado poblacional en el Golfo de México y caribe"].compact.each_with_index do  |c, i| %>
+          <li><%= dibujaZonasPez(c, i+3).html_safe %></li>
+        <% end %>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
 <% @criterios["Características"].compact[0..1].each do |c|  %>
   <% next if  c[:nombre] == 'No aplica' %>
+  <% next if  c[:nombre] == 'Riesgo bajo (LR): Preocupación menor (lc)' %>
+  <% next if  c[:nombre] == 'Datos insuficientes (DD)' %>
+  <% next if  c[:nombre] == 'Riesgo bajo (LR): Casi amenazado (nt)' %>
   <p>
     <b><%= c[:tipo_propiedad] %>: </b>
     <i class='btn-title <%= c[:icono] %>' tooltip-title="<%= c[:nombre]%>"></i>
   </p>
 <% end %>
 <% @criterios["Características"].compact[2..4].each do |c|  %>
+  <% next if  c[:valor] < 5 %>
   <% next if  c[:nombre] == 'Sin datos' %>
   <p>
+
     <b><%= c[:tipo_propiedad] %>: </b>
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
@@ -21,31 +49,20 @@
 <% end %>
 
 <hr />
-<h4 class="text-center"><b>Estado de la población</b></h4>
-<table class="table table-responsive table-condensed table-bordered">
-  <tbody>
-  <tr>
-    <td>
-      <ul>
-        <% @criterios["Estado poblacional en el Pacífico"].compact.each_with_index do  |c, i| %>
-          <li><%= dibujaZonasPez(c, i).html_safe %></li>
-        <% end %>
-      </ul>
-    </td>
-    <td>
-      <ul>
-        <% @criterios["Estado poblacional en el Golfo de México y caribe"].compact.each_with_index do  |c, i| %>
-          <li><%= dibujaZonasPez(c, i+3).html_safe %></li>
-        <% end %>
-      </ul>
-    </td>
-  </tr>
-  </tbody>
-</table>
 
-<hr />
-<h5>
-  <% if tiene_permiso?('AdminPeces', true) %>
-    <%= link_to 'Ir especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
-  <% end %>
-</h5>
+<% if tiene_permiso?('AdminPeces') %>
+  <div class="col-xs-12 col-md-6">
+    <h5>
+      <%= link_to 'Editar especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
+    </h5>
+  </div>
+
+  <div class="col-xs-12 col-md-6">
+    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
+  </div>
+
+<% else %>
+  <div class="col-xs-12 col-md-12">
+    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
+  </div>
+<% end %>

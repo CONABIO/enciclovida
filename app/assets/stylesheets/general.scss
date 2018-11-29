@@ -212,7 +212,10 @@ ul.social-buttons li a:focus,
 ul.social-buttons li a:active {
   background-color: #829e3d;
 }
-
+.main {
+  padding: 10px 25px;
+  background-color: #ececec;
+}
 /* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
 #pestañas{
   /*background-color: transparent;*/
@@ -221,18 +224,18 @@ ul.social-buttons li a:active {
   border-left: 1px solid #d3d3d3;
   border-right: 1px solid #d3d3d3;
   border-top: 1px solid #d3d3d3;
-  border-bottom: 0px;
+  border-bottom: 1px solid transparent;
   color: #777777;
 }
 .panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
   color: #800000;
-  background-color: #ececec;
+  background-color: #ffffff;
 }
 .panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
   /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
-  background-color: #ececec;
+  background-color: #ffffff;
   /*padding: 1.5em;*/
   margin-top: -1px;
   border-left: 1px solid #d3d3d3;
