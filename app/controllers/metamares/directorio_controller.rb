@@ -57,7 +57,8 @@ class Metamares::DirectorioController < Metamares::MetamaresController
   private
 
   def directorio_params
-    params.require(:metamares_directorio).permit(:cargo,  :grado_academico, :tema_estudio, :linea_investigacion, :region_estudio, :telefono)
+    params.require(:metamares_directorio).permit(:cargo, :grado_academico, :tema_estudio, :linea_investigacion,
+                                                 :region_estudio, :telefono, :pagina_web)
   end
 
   def set_directorio
