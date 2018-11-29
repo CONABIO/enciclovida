@@ -12,7 +12,6 @@ class Metamares::ProyectosController < Metamares::MetamaresController
     if params[:proy_b].present?
       busqueda.params = proyecto_busqueda_params
       busqueda.params[:pagina] = params[:pagina]
-
     end
 
     busqueda.sin_limit = params[:commit] == 'Descargar' || params[:commit] == 'JSON'
@@ -90,7 +89,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   def proyecto_params
     params.require(:metamares_proyecto).permit(:nombre_proyecto, :financiamiento, :tipo_monitoreo, :objeto_monitoreo,
-                                               :campo_investigacion, :campo_ciencia, :finalidad, :metodo, :usuario_id, :institucion_id,
+                                               :campo_investigacion, :campo_ciencia, :finalidad, :metodo, :usuario_id, :institucion_id, :autor,
                                                info_adicional_attributes: [:id, :informacion_objeto, :informacion_posterior,
                                                                            :informacion_adicional, :colaboradores,
                                                                            :instituciones_involucradas, :equipo, :comentarios, :_destroy],

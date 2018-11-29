@@ -103,6 +103,7 @@ es:
         rol: Rol
     hints:
       metamares_proyecto:
+        autor: Es el autor intelectual de los datos
         nombre_proyecto: Nombre corto para identificar la colección de datos
         financiamiento: ¿Quién financió la colección de datos?
         campo_investigacion: ¿Cuál fue la razón principal por la que se recopilaron los datos?
