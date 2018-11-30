@@ -45,6 +45,7 @@ gem 'rubyzip', :require => 'zip'
 gem 'sass-rails', '~> 5.0'
 gem 'savon'  # Para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
+gem 'simple_form'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
@@ -60,7 +61,7 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-group :development, :test do
+group :development, :test, :development_mac do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Adds support for Capybara system testing and selenium driver
@@ -68,7 +69,7 @@ group :development, :test do
   gem 'selenium-webdriver'
 end
 
-group :development do
+group :development, :development_mac do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
