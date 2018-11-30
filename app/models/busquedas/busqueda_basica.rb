@@ -35,6 +35,12 @@ class BusquedaBasica < Busqueda
 
   # REVISADO: Si no hubo resultados, tratamos de encontrarlos con el fuzzy match
   def resultados_fuzzy_match
+    if Rails.env.development_mac?
+      self.taxones = Especie.none
+      self.totales = 0
+      return
+    end
+
     ids_comun = FUZZY_NOM_COM.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).map{|n| id_referencia_a_nombre_comun(n.first) }.flatten.compact.uniq
     ids_cientifico = FUZZY_NOM_CIEN.find(params[:nombre].strip, limit=CONFIG.limit_fuzzy).map(&:first).flatten.compact.uniq
     ids_totales = []
