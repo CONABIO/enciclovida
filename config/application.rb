@@ -53,9 +53,6 @@ module Buscador
     # Para que no escape caracteres inecesarios como "&"
     config.active_support.escape_html_entities_in_json = false
 
-    # Para habilitar web console en otros enviroments
-    config.web_console.development_only = false
-
     # Para a configuracion del correo
     Mail.defaults do
       retriever_method(:imap, { :address => CONFIG.smtp.address,
