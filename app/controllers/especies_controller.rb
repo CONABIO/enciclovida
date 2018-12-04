@@ -22,7 +22,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
@@ -426,6 +426,17 @@ class EspeciesController < ApplicationController
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
     render :locals => {type: type, page: page}
+  end
+
+  # Servicio Tropicos
+  def media_tropicos
+
+    # Recuperar el Taxón
+    taxonNC = Especie.find(params['id']).nombre_cientifico
+    # Instanciar servicio:
+    ts_req = Tropicos_Service.new
+    @name_id = ts_req.get_id_name(taxonNC)
+    @array = ts_req.get_media(@name_id[0]["NameId"])
   end
 
   def fotos_naturalista
