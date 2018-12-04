@@ -40,8 +40,8 @@ $(document).ready(function(){
                         }
                     }
                 },
-                trigger: 'focus',
-                content: data
+                trigger: 'manual',
+                content: data,
             }).popover('show');
         });
     });
