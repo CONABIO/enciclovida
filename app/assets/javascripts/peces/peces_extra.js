@@ -43,6 +43,7 @@ $(document).ready(function(){
                 trigger: 'manual',
                 content: data,
             }).popover('show');
+            button.attr('onclick',"$(this).popover('show');");
         });
     });
 
