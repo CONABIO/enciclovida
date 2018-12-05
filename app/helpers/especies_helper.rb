@@ -389,6 +389,22 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     end
   end
 
+  def imprime_img_tropicos(item)
+
+    link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
+            "data-target" => "#modal_reproduce",
+            :class => "btn btn-link btn-title modal-buttons",
+            "data-observation"=> item['DetailUrl'],
+            "data-url" => item['DetailJpgUrl'],
+            "data-type" => 'photo',
+            "data-author" => "Pedro",
+            "data-date" => "Pedro",
+            "data-country" => "China",
+            "data-state" => "Joncon",
+            "data-locality" => "En la calle"
+            )
+  end
+
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
   end

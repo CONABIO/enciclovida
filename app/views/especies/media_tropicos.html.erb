@@ -1,24 +1,26 @@
 
-<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4 media-supplier">
-  <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-    <i class ='cornell_lab-ev-icon'></i>
-    <i class ='cornell_lab_colors-ev-icon'></i>
-  </div>
-  <div class="col-xs-12 col-sm-4 col-md-12 col-lg-12">
-    <i class ='macaulay_library-ev-icon'></i>
+<% if @array[0]["Error"].present? %>
+
+  <div class='result-img-container'>
+    <strong><%= @array[0]["Error"] %></strong>
   </div>
 
-</div>
+<% else %>
+
+  <div id="gallery">
+    <% @array.each do |item|  %>
+
+      <div class="result-img-container">
+        <%= imprime_img_tropicos(item) %>
+      </div>
+
+    <% end %>
+  </div>
+
+<% end %>
 
 <br>
-Hola Servicio Trópicos:
-
---
-<br>
-<%= @name_id %>
 
 
---
-<br>
+<%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
 
-<%= @array %>
