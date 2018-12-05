@@ -13,4 +13,7 @@
   <%= f.submit :Descargar, { :class => 'btn btn-info', value: t('helpers.submit.proy_b.descargar'), "data-disable-with" => false } %>
   <%= f.submit :JSON, { :class => 'btn btn-warning', value: 'JSON', "data-disable-with" => false } %>
   <%= button_tag(:Reiniciar, type: :reset, class: 'btn btn-default', onclick: "window.location.replace('/metamares/proyectos')") %>
+
+  <%= f.input :titulo_compilacion, required: false, input_html: { value: (params[:proy_b][:titulo_compilacion] if params[:proy_b].present?), autocomplete: :off } %>
+
 <% end %>

@@ -150,6 +150,7 @@ es:
         institucion: Nombre de la institución
         autor: Autor de la colección
         nombre: Nombre común o científico
+        titulo_compilacion: Título de la compilación
     options:
       metamares_proyecto:
         financiamiento:

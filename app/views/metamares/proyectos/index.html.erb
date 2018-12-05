@@ -14,6 +14,7 @@
   <tr class="success">
     <th>ID</th>
     <th>Nombre de la colección</th>
+    <th>Título de la compilación</th>
     <th>Nombre de la institución</th>
     <th>Autor</th>
     <th>Campo de investigación</th>
@@ -26,6 +27,7 @@
     <tr>
       <td><%= p.id %></td>
       <td><%= link_to p.nombre_proyecto, metamares_proyecto_path(p) %></td>
+      <td><%= p.titulo_compilacion %></td>
       <td><%= p.nombre_institucion %></td>
       <td><%= p.autor %></td>
       <td><%= p.campo_investigacion %></td>

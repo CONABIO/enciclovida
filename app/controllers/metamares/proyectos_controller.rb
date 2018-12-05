@@ -114,7 +114,8 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def proyecto_busqueda_params
-    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor, :usuario_id)
+    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor,
+                                   :titulo_compilacion, :usuario_id)
   end
 
 end
