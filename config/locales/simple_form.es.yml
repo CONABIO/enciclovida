@@ -200,6 +200,19 @@ es:
             cc_by_nc_sa: Atribución - No comercial compartir bajo la misma licencia (CC-BY-NC-SA)
             cc_by_nc_nd: Atribución - No comercial sin obras derivadas (CC-BY-NC-ND)
             no_licence: Sin licencia, todos los derechos reservados
+      proy_b:
+        nombre_region:
+          B Camp Caribe: Banco de Campeche / Mar Caribe
+          Central Pacific: Pacífico Centro
+          Freshwater_Terrestrial: Dulceacuícola/Terrestre
+          G California: Golfo de California
+          South Pacific: Pacífico Sur
+          W G Mexico: Oeste del Golfo de México
+        nombre_zona:
+          Atlantic: Océano Atlántico
+          Freshwater/Terrestrial: Dulceacuícola/Terrestre
+          National: Nacional
+          Pacific: Pacífico
       usuario:
         usuario_roles:
           rol_id:

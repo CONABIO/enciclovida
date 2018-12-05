@@ -6,8 +6,9 @@ class Metamares::BusquedaProyecto
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize
-    self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :dato).
-        distinct(:id).select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion, descarga_datos, titulo_compilacion').
+    self.proyectos = Metamares::Proyecto.left_joins(:institucion, {especies: [:especie, :adicional]}, :dato, :region).
+        distinct(:id).select(:id, :nombre_proyecto, :autor, :campo_investigacion, :updated_at).select('nombre_institucion,
+nombre_region, nombre_zona, descarga_datos, titulo_compilacion').
         where('estatus_datos IN (1,2)').order(updated_at: :desc, created_at: :desc, id: :desc)
     self.totales = 0
     self.params = {}
@@ -24,6 +25,8 @@ class Metamares::BusquedaProyecto
     self.proyectos = proyectos.where(tipo_monitoreo: params[:tipo_monitoreo]) if params[:tipo_monitoreo].present?
     self.proyectos = proyectos.where('autor REGEXP ?', params[:autor]) if params[:autor].present?
     self.proyectos = proyectos.where('titulo_compilacion REGEXP ?', params[:titulo_compilacion]) if params[:titulo_compilacion].present?
+    self.proyectos = proyectos.where('nombre_region REGEXP ?', params[:nombre_region]) if params[:nombre_region].present?
+    self.proyectos = proyectos.where('nombre_zona REGEXP ?', params[:nombre_zona]) if params[:nombre_zona].present?
 
     if params[:especie_id].present?
       self.proyectos = proyectos.where('especies_estudiadas.especie_id=?', params[:especie_id]).left_joins({especies: [:especie, :adicional]})
