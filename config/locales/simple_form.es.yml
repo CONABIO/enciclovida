@@ -30,6 +30,7 @@ es:
         telefono: Teléfono
         pagina_web: Página web
       metamares_proyecto:
+        id: ID
         nombre_proyecto: Nombre de la colección de datos
         financiamiento: Financiamiento
         autor: Autor
