@@ -201,6 +201,15 @@ es:
             cc_by_nc_nd: Atribución - No comercial sin obras derivadas (CC-BY-NC-ND)
             no_licence: Sin licencia, todos los derechos reservados
       proy_b:
+        campo_investigacion:
+          Aquaculture: Acuacultura
+          Conservation: Conservación
+          Ecology: Ecología
+          Fisheries: Pesca
+          Oceanography: Oceanografía
+          Other: Otro
+          Sociology: Sociología
+          Tourism: Turismo
         nombre_region:
           B Camp Caribe: Banco de Campeche / Mar Caribe
           Central Pacific: Pacífico Centro

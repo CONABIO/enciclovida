@@ -25,8 +25,10 @@ nombre_region, nombre_zona, descarga_datos, titulo_compilacion').
     self.proyectos = proyectos.where(tipo_monitoreo: params[:tipo_monitoreo]) if params[:tipo_monitoreo].present?
     self.proyectos = proyectos.where('autor REGEXP ?', params[:autor]) if params[:autor].present?
     self.proyectos = proyectos.where('titulo_compilacion REGEXP ?', params[:titulo_compilacion]) if params[:titulo_compilacion].present?
-    self.proyectos = proyectos.where('nombre_region REGEXP ?', params[:nombre_region]) if params[:nombre_region].present?
-    self.proyectos = proyectos.where('nombre_zona REGEXP ?', params[:nombre_zona]) if params[:nombre_zona].present?
+    self.proyectos = proyectos.where('titulo_compilacion REGEXP ?', params[:titulo_compilacion]) if params[:titulo_compilacion].present?
+    self.proyectos = proyectos.where('campo_investigacion=?', params[:campo_investigacion]) if params[:campo_investigacion].present?
+    self.proyectos = proyectos.where('nombre_region=?', params[:nombre_region]) if params[:nombre_region].present?
+    self.proyectos = proyectos.where('nombre_zona=?', params[:nombre_zona]) if params[:nombre_zona].present?
 
     if params[:especie_id].present?
       self.proyectos = proyectos.where('especies_estudiadas.especie_id=?', params[:especie_id]).left_joins({especies: [:especie, :adicional]})
