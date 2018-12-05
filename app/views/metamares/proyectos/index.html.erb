@@ -17,8 +17,7 @@
     <th>Título de la compilación</th>
     <th>Nombre de la institución</th>
     <th>Autor</th>
-    <th>Campo de investigación</th>
-    <th>Descarga de datos</th>
+    <th>Enlace origen</th>
     <th><%= t('simple_form.labels.metamares_proyecto.updated_at') %></th>
   </tr>
   </thead>
@@ -30,9 +29,16 @@
       <td><%= p.titulo_compilacion %></td>
       <td><%= p.nombre_institucion %></td>
       <td><%= p.autor %></td>
-      <td><%= p.campo_investigacion %></td>
-      <td><small><%= p.descarga_datos %></small></td>
-      <td><small><%= p.updated_at %></small></td>
+      <td><small>
+        <%=
+          begin
+            link_to("<i class='glyphicon glyphicon-new-window'></i>".html_safe, p.descarga_datos, target: :_blank) if !URI.parse(p.descarga_datos.strip).host.nil?
+          rescue URI::InvalidURIError
+              ''
+          end
+        %>
+      </small></td>
+      <td><small><%= p.updated_at.strftime("%Y/%m/%d") %></small></td>
     </tr>
   <% end %>
   </tbody>

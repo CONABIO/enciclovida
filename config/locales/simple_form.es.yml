@@ -39,7 +39,7 @@ es:
         campo_ciencia: Campo de la ciencia
         finalidad: Finalidad
         metodo: Método
-        updated_at: Fecha de última actualización
+        updated_at: Última actualización
         created_at: Fecha de creación
         institucion_id: Institución involucrada
         nom_institucion: Institución involucrada
@@ -65,7 +65,7 @@ es:
         dato:
           titulo_conjunto_datos: Título de la coleccón de datos
           titulo_compilacion: Título de la compilación
-          descarga_datos: Descarga de datos
+          descarga_datos: Enlace origen
           licencia_uso: Creative commons
           estatus_datos: Disposición de datos al público
           descripcion_base: Descripción de la colección de datos
