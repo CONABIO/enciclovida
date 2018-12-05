@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -431,12 +431,33 @@ class EspeciesController < ApplicationController
   # Servicio Tropicos
   def media_tropicos
 
-    # Recuperar el Taxón
-    taxonNC = Especie.find(params['id']).nombre_cientifico
-    # Instanciar servicio:
+    # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
-    @name_id = ts_req.get_id_name(taxonNC)
-    @array = ts_req.get_media(@name_id[0]["NameId"])
+
+    # Para saber si tiene proveedor asociado
+    prov = @especie.proveedor
+    if prov.present?
+
+      # Verificar si tiene ya el tropico_id (si se consultó anteriormente)
+      tropico_id = prov.tropico_id
+      if tropico_id.present?
+        # Si existe el tropico_id
+        @name_id = tropico_id
+      else
+        # No existe aún el tropico_id, buscarlo invocando el servicio:
+        @name_id = ts_req.get_id_name(@especie.nombre_cientifico)[0]["NameId"]
+        prov.update(tropico_id: @name_id)
+      end
+
+    else
+      # No existe aún la especie en proveedores ni el tropico_id, buscarlo invocando el servicio:
+      @name_id = ts_req.get_id_name(@especie.nombre_cientifico)[0]["NameId"]
+      Proveedor.create(especie_id: @especie.id, tropico_id: @name_id)
+    end
+
+    #Una vez obtenido el id de la especie, recuperar las imágenes
+    @array = ts_req.get_media(@name_id)
+
   end
 
   def fotos_naturalista
