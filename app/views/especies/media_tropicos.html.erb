@@ -1,26 +1,21 @@
+<div class="inner_media">
 
-<% if @array[0]["Error"].present? %>
+  <% if @array[0][:msg].present? %>
+    <div class='result-img-container'>
+      <strong><%= @array[0][:msg] %></strong>
+    </div>
+  <% else %>
 
-  <div class='result-img-container'>
-    <strong><%= @array[0]["Error"] %></strong>
-  </div>
+    <div id="gallery">
+      <% @array.each do |item|  %>
+        <div class="result-img-container">
+          <%= imprime_img_tropicos(item) %>
+        </div>
+      <% end %>
+    </div>
 
-<% else %>
+  <% end %>
 
-  <div id="gallery">
-    <% @array.each do |item|  %>
-
-      <div class="result-img-container">
-        <%= imprime_img_tropicos(item) %>
-      </div>
-
-    <% end %>
-  </div>
-
-<% end %>
-
-<br>
-
+</div>
 
 <%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
-

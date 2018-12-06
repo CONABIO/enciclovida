@@ -392,17 +392,37 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
   def imprime_img_tropicos(item)
 
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
-            "data-target" => "#modal_reproduce",
+            "data-target" => "#modal_reproduce_trop",
             :class => "btn btn-link btn-title modal-buttons",
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
-            "data-author" => "Pedro",
-            "data-date" => "Pedro",
-            "data-country" => "China",
-            "data-state" => "Joncon",
-            "data-locality" => "En la calle"
+            "data-author" => item['Copyright'] ||= 'Author',
+            "data-date" => item['PhotoDate'] ||= 'Date',
+            "data-country" => item['Caption'] ||= 'Country',
+            "data-state" => 'State',
+            "data-locality" => item['PhotoLocation'] ||= 'Locality'
             )
+
+    # Información útil de servicio trópicos
+    #  - - - Más comunes
+    # 'NameText'
+    # 'SpecimenText'
+    # 'Caption'
+    # 'ImageKindText'
+    # 'Copyright'
+    # 'LicenseUrl'
+    # 'LicenseName'
+    # 'Photographer'
+    # 'ThumbnailUrl'
+    # 'DetailUrl'
+    # 'DetailJpgUrl'
+    #
+    # - - - No en todos sale
+    # 'PhotoLocation'
+    # 'PhotoDate'
+    # 'ContactUrl'
+    # 'Contact'
   end
 
   def dejaComentario
