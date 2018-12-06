@@ -25,11 +25,13 @@ class Tropicos_Service
       pre_resu = RestClient.get(query)
       # Aun que no se encuentre la el nombre:
       resu = JSON.parse(pre_resu.body) if pre_resu.body.present?
+      Rails.logger.debug "[DEBUG] La respuesta del nombreID es: #{resu.to_s}"
+      resu = [{msg: "no se encontró coincidencia para #{name}"}] if resu[0]["Error"].present?
       resu
 
     rescue => e
       # el error 404, sólo sale cuando la URL está mal
-      [{msg: "Hubo algun error en la solicitud: #{e} \n intente de nuevo más tarde"}]
+      [{msg: "hubo algun error en la solicitud: #{e} \n intente de nuevo más tarde"}]
     end
   end
 
