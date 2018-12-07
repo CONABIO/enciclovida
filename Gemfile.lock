@@ -1,19 +1,10 @@
 GIT
-  remote: https://github.com/calonso-conabio/ancestry.git
+  remote: https://github.com/calonsot/ancestry.git
   revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
   ref: bfadb2c
   specs:
     ancestry (2.1.0)
       activerecord (>= 3.0.0)
-
-GIT
-  remote: https://github.com/calonso-conabio/blurrily.git
-  revision: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
-  ref: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
-  specs:
-    blurrily (1.0.2)
-      activesupport (~> 5)
-      eventmachine
 
 GIT
   remote: https://github.com/randym/axlsx.git
@@ -135,7 +126,6 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.7.0)
-    eventmachine (1.2.5)
     execjs (2.7.0)
     exifr (1.3.3)
     ffi (1.9.22)
@@ -376,7 +366,6 @@ DEPENDENCIES
   ancestry!
   axlsx!
   axlsx_rails
-  blurrily!
   bootstrap-sass (~> 3.3.6)
   byebug
   capybara (~> 2.13)
@@ -435,4 +424,4 @@ DEPENDENCIES
   zip-zip
 
 BUNDLED WITH
-   1.16.2
+   1.16.6

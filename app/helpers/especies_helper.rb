@@ -367,41 +367,50 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
   end
 
   def imprimeMediaCornell(item,type)
+    copyright = "Macaulay Library at The Cornell Lab of Ornithology"
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
-              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
+              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
-              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
               "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
-              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     end
   end
 
   def imprime_img_tropicos(item)
-
+    copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
-            "data-target" => "#modal_reproduce_trop",
+            "data-target" => "#modal_reproduce",
             :class => "btn btn-link btn-title modal-buttons",
+
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
+
             "data-author" => item['Copyright'] ||= 'Author',
+            "data-copyright" => copyright,
+
+            "data-title" => item['Caption'] ||= 'Título',
+
             "data-date" => item['PhotoDate'] ||= 'Date',
             "data-country" => item['Caption'] ||= 'Country',
             "data-state" => 'State',
             "data-locality" => item['PhotoLocation'] ||= 'Locality'
+
+
             )
 
     # Información útil de servicio trópicos
