@@ -43,8 +43,8 @@ db/respaldos/*
 app/assets/javascripts/i18n/*
 tools/bitacoras/
 config/config.yml*
-config/database.yml
-dump*.rdb
+config/database.yml*
+dump.rdb*
 tools/campos_snib.csv
 tools/correspondencia_snib/
 tools/correspondencia_geoserver/
