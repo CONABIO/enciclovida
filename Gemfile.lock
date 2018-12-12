@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/calonso-conabio/ancestry.git
+  remote: https://github.com/calonsot/ancestry.git
   revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
   ref: bfadb2c
   specs:
@@ -7,7 +7,7 @@ GIT
       activerecord (>= 3.0.0)
 
 GIT
-  remote: https://github.com/calonso-conabio/blurrily.git
+  remote: https://github.com/calonsot/blurrily.git
   revision: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
   ref: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
   specs:
@@ -135,7 +135,7 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.7.0)
-    eventmachine (1.2.5)
+    eventmachine (1.2.7)
     execjs (2.7.0)
     exifr (1.3.3)
     ffi (1.9.22)
