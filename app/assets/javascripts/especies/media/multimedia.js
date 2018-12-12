@@ -20,8 +20,30 @@ $(document).ready(function(){
         $('#modal_title').text(button.data('title'));
 
 
+        // En el caso de que el tipo sea image:
         if(button.data('type') == 'photo'){
-            media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
+
+            /* OPCIÓN 1: Inicial */
+
+            /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+            /* OPCIÓN 2: Imagen como fondo de un div del tamaño del contenedor */
+            //$("#img-container").css("height", $(window).height() * 0.75);
+
+            media = $(document.createElement("div")).attr('id', 'newID');
+            media.css({
+                'width' : '100%',
+                'height' : '100%',
+                'background' : 'url(' + button.data('url') +')',
+                'background-size': 'contain',
+                'background-position': 'center center',
+                'background-repeat':'no-repeat'
+            });
+
+            resizeImgContainer(button.data('url'));
+
+            /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
         }else{
             var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
             var source = $(document.createElement("source")).attr('src', button.data('url'));
@@ -65,3 +87,28 @@ $(document).ready(function(){
         return false;
     });
 });
+
+function resizeImgContainer(url_img) {
+
+    console.log("media: " + $("#newID").height());
+
+
+    var height = 0;
+    var img = new Image();
+    img.src = url_img;
+    var windowSpace = $(window).height() * 0.75;
+
+    img.onload = function() {
+        height = img.height;
+        // Verificar el tamaño en alto de la imagen:
+        if(height >= windowSpace) {
+            // Si es más grande que el alto del navegador, usar el alto de el tamaño el navegador para el contenedor
+            console.log("Height: " + height + " > " + windowSpace);
+            $("#img-container").css("height", windowSpace);
+        } else {
+            // Si es menor al tamaño del navegador, usar el alto de la imagen para el contenedor
+            console.log("Height: " + height + " < " + windowSpace);
+            $("#img-container").css("height", height);
+        }
+    };
+}
