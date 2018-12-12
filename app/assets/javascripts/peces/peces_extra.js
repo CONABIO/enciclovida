@@ -25,6 +25,7 @@ $(document).ready(function(){
         var button = $(this);
         var idEspecie = $(button).data('especie-id');
         var pestaña = '/pmc/peces/'+idEspecie+'?mini=true';
+        $('[data-toggle="popover"]').popover('hide');
         jQuery.get(pestaña).done(function(data){
             button.popover({
                 html:true,
@@ -40,9 +41,9 @@ $(document).ready(function(){
                         }
                     }
                 },
-                trigger: 'focus',
-                content: data
-            }).popover('show');
+                trigger: 'manual',
+                content: data,
+            }).popover('show').attr('onclick',"$('[data-toggle=\"popover\"]').not(this).popover('hide'); $(this).popover('show');");
         });
     });
 

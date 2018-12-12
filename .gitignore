@@ -40,7 +40,7 @@ pruebas_generales/
 db/buscador.dump.out
 db/seeds.rb
 db/respaldos/*
-app/assets/javascripts/i18n/translations.js
+app/assets/javascripts/i18n/*
 tools/bitacoras/
 config/config.yml*
 config/database.yml
@@ -61,4 +61,4 @@ public/descargas_resultados/
 public/fotos_invasoras/
 public/validaciones/
 public/topojson/
-
+public/javascripts
