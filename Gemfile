@@ -28,7 +28,7 @@ gem 'mail'
 gem 'mime-types'
 gem 'mysql2', '0.4.10'
 gem 'nokogiri'  # Hacer un parse con xml
-gem 'pg'
+#gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
 gem 'rack-contrib'
 gem 'rack-google-analytics'
@@ -61,7 +61,7 @@ group :doc do
 end
 
 group :development, :test, :production do
-  gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
+  #gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
 end
 
 group :development, :test, :development_mac do
