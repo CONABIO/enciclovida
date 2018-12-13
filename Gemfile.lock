@@ -200,6 +200,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     orm_adapter (0.5.0)
+    pg (1.0.0)
     public_suffix (3.0.2)
     puma (3.11.2)
     rack (2.0.4)
@@ -390,6 +391,7 @@ DEPENDENCIES
   mime-types
   mysql2 (= 0.4.10)
   nokogiri
+  pg
   puma (~> 3.7)
   rack-contrib
   rack-google-analytics

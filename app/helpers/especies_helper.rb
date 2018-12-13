@@ -395,24 +395,18 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
             "data-target" => "#modal_reproduce",
             :class => "btn btn-link btn-title modal-buttons",
-
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
-
-            "data-author" => item['Photographer'] ||= '',
+            "data-author" => item['Photographer'] ||= copyright,
             "data-copyright" => item['Copyright'] ||= copyright,
-
-            "data-title" => item['NameText'] ||= item['Caption'],
-
+            "data-title" => item['NameText'] ||= '',
             "data-locality" => item['PhotoLocation'] ||= 'No disponible',
-            "data-state" => 'State',
-            "data-country" => item['Caption'] ||= 'Country',
+            "data-state" => '', "data-country" => '',
             "data-date" => item['PhotoDate'] ||= '',
-
-            "data-specimen" => item['SpecimenText'] ||= "",
-            "data-descripcion" => item['ShortDescription'] ||= "",
-            "data-imgKind" => item['ImageKindText'] ||= ""
+            "data-tipodeimagen" => item['ImageKindText'],
+            "data-caption" => item['Caption'],
+            "data-descripcion" => item['ShortDescription']
             )
 
     # Información útil de servicio trópicos
@@ -434,10 +428,6 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     # 'LicenseUrl'
     # 'LicenseName'
     # 'Photographer'
-    # 'ThumbnailUrl'
-    # 'DetailUrl'
-    # 'DetailJpgUrl'
-
   end
 
   def dejaComentario

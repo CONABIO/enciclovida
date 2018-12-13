@@ -14,14 +14,12 @@ $(document).ready(function(){
         $('#modal_fecha').text(button.data('date'));
         $('#modal_observacion').attr('href', button.data('observation'));
         $('#modal_autor').text(button.data('author'));
-
         $('#modal_copyright').text(", " + button.data('copyright'));
-
         $('#modal_title').text(button.data('title'));
 
-        $('#modal_specimen').text(button.data('specimen'));
-        $('#modal_img_descripcion').text(button.data('descripcion'));
-        $('#modal_img_tipo').text(button.data('imgKind'));
+        if(typeof button.data('caption') !== 'undefined') $('#modal_caption').text("Caption: " + button.data('caption'));
+        if(typeof button.data('descripcion') !== 'undefined') $('#modal_imgDescripcion').text("Description: " + button.data('descripcion'));
+        if(typeof button.data('tipodeimagen') !== 'undefined') $('#modal_imgTipo').html("<i class='glyphicon glyphicon-camera'></i> " + button.data('tipodeimagen'));
 
         // En el caso de que el tipo sea image:
         if(button.data('type') == 'photo'){
@@ -30,7 +28,7 @@ $(document).ready(function(){
             media = $(document.createElement("img")).addClass('img-responsive').attr('src', button.data('url'));
             /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-            /* OPCIÓN 2: Imagen como fondo de un div del tamaño del contenedor */
+            /* OPCIÓN 2: Imágen como fondo de un div del tamaño del contenedor */
             media = $(document.createElement("div"));
             media.css({
                 'width' : '100%',
@@ -40,8 +38,8 @@ $(document).ready(function(){
                 'background-position': 'center center',
                 'background-repeat':'no-repeat'
             });
-            // Opción 2.1 $("#img-container").css("height", $(window).height() * 0.75);
-            // Opcoón 2.2
+            // Opción 2.1 $("#img-container").css("height", $(window).height() * 0.75); // Ocupar en todos los casos una vista que ocupe el 75% de la pantalla
+            // Opcoón 2.2: en base al tamaño de la imágen determinar la altura del modal
             resizeImgContainer(button.data('url'));
             /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -91,12 +89,13 @@ $(document).ready(function(){
 
 
 function resizeImgContainer(url_img) {
+
     var height = 0;
     var width = 0;
     var img = new Image();
-    img.src = url_img;
-    var windowSpace = $(window).height() * 0.75;
+    var windowSpace = $(window).height() * 0.75; // Obtener el 75% de la pantalla
 
+    img.src = url_img;
     img.onload = function() {
         height = img.height;
         width = img.width;
