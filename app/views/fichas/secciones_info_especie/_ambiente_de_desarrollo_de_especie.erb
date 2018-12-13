@@ -1,0 +1,95 @@
+<div class="row showInfo">
+
+  <div class="col-md-12">
+    <br>
+    <div class="row text-center" >
+      <div class="col-md-4 ficaBordeSeparador"><h4>Ambiente:</h4><p><%=@ecorregion.present? ? FichasController.convert_to_HTML(@ecorregion.descripcion) : (sin_info_msj) %> </p></div>
+      <div class="col-md-4 ficaBordeSeparador"><h4>Ecorregion:</h4><p><%=@cat_eacorregionwwf.present? ? FichasController.convert_to_HTML(@cat_eacorregionwwf.TipoEcorregion) : (sin_info_msj) %></p></div>
+      <div class="col-md-4"><h4>Ecosistema:</h4><p><%=@ecosistema.present? ? FichasController.convert_to_HTML(@ecosistema.tipoecosistema) : (sin_info_msj) %></p></div>
+    </div>
+    <br>
+
+    <div class="row text-justify" >
+      <div class="col-md-8">
+
+        <h4>Tipos de vegetación</h4>
+        <ul>
+          <li>
+            <strong>Vegetación  en la que se desarrolla la especie: </strong>
+            <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.tipoVegetacion) : (sin_info_msj) %> </p>
+          </li>
+          <li>
+            <strong>Hábitats antrópicos: </strong>
+            <p class="text-justify"><%=@habitatAntropico.present? ? FichasController.convert_to_HTML(@habitatAntropico.descripcion) : (sin_info_msj) %> </p>
+
+            <ol>
+              <li>
+                <%=@habitat.habitatAgropecuario == 'no' ? ("No se encuentra en hábitat agropecuario") : ("Si se encuentra en hábitat agropecuario")%>
+              </li>
+              <li>
+                <%=@habitat.zonaUrbana == 'no' ? ("No se encuentra en zonas urbanas") : ("Si se encuentra en zonas urbanas")%>
+              </li>
+              <li>
+                <%=@habitat.VegetacionSecundaria == 'no' ? ("No se encuentra en vegetación secundaria") : ("Si se encuentra en vegetación secundaria")%>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <strong>Tipo de vegetación secundaria</strong>
+            <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.tipoVegetacionSecundaria) : (sin_info_msj) %> </p>
+          </li>
+          <li>
+            <strong>Mencionar las especies asociadas</strong>
+            <br>
+          </li>
+        </ul>
+        <br>
+
+        <h4>Tipo de suelo en el que se desarrolla la especie</h4>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.descripcionSuelo) : (sin_info_msj) %> </p>
+
+
+        <br>
+
+        <h4>Información adicional</h4>
+        <p class="text-justify"><%=@suelo.present? ? FichasController.convert_to_HTML(@suelo.descripcion) : (sin_info_msj) %> </p>
+        <br>
+
+      </div>
+
+      <div class="col-md-4 fichaSeccionApartadosT2">
+        <h4 class="text-center text-primary">Más información</h4>
+
+        <h4>Clima</h4>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.tipoClimaId) : (sin_info_msj) %> </p>
+        <h5>Información adicional</h5>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.climaAdicional) : (sin_info_msj) %> </p>
+        <br>
+
+        <h4>Temperatura</h4>
+        <p class="text-justify"><%=@habitat.temperaturainicial%>  - <%=@habitat.temperaturafinal%> </p>
+        <h5>Información adicional</h5>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.infoaddtemperatura) : (sin_info_msj) %> </p>
+        <br>
+
+        <h4>Precipitación</h4>
+        <p class="text-justify"><%=@habitat.precipitacioninicial%>  - <%=@habitat.precipitacionfinal%></p>
+        <h5>Información adicional</h5>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.infoaddprecipitacion) : (sin_info_msj) %> </p>
+        <br>
+
+        <h4>Rango de humedad relativa</h4>
+        <p class="text-justify"><%=@habitat.humedadinicial%> - <%=@habitat.humedadfinal%></p>
+        <h5>Información adicional</h5>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.infoaddhumedad) : (sin_info_msj) %> </p>
+        <br>
+
+        <h4>Geoforma</h4>
+        <p class="text-justify"><%=@geoforma.present? ? FichasController.convert_to_HTML(@geoforma.descrpcion) : (sin_info_msj) %> </p>
+        <h5>Información adicional</h5>
+        <p class="text-justify"><%=@habitat.present? ? FichasController.convert_to_HTML(@habitat.descripcionGeoforma) : (sin_info_msj) %> </p>
+
+      </div>
+    </div>
+  </div>
+</div>

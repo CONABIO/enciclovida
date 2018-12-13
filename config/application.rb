@@ -16,11 +16,14 @@ OPTIONAL_PRIORITY = 4           # inconsequential stuff like updating wikipedia 
 
 Bundler.require(*Rails.groups)
 
+puts CONFIG.inspect
+
 # General settings
 IP = CONFIG.site_url.split(':')[1].gsub('//','')
 PORT = CONFIG.site_url.split(':')[2][0..-1]
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
+
 
 unless Rails.env.development_mac?
   require 'blurrily/client.rb'  #para el fuzzy match

@@ -2,12 +2,14 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
-    suma_visita_servicio
-    guarda_estadisticas_servicio
-    guarda_observaciones_naturalista_servicio
-    guarda_ejemplares_snib_servicio
-    guarda_redis_servicio
-    guarda_pez_servicios
+    if Rails.env.production?
+      suma_visita_servicio
+      guarda_estadisticas_servicio
+      guarda_observaciones_naturalista_servicio
+      guarda_ejemplares_snib_servicio
+      guarda_redis_servicio
+      guarda_pez_servicios
+    end
   end
 
   # REVISADO: Suma una visita a la estadisticas

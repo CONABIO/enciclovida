@@ -1,0 +1,95 @@
+
+<h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
+<br>
+<h4>Generalidades: </h4><p class="text-justify"><%=FichasController.convert_to_HTML(@infoReproduccion.descripcion)%></p>
+<br>
+<div class="row">
+  <div class="col-md-6 ficaBordeSeparador">
+    <ul type="dotted">
+      <li>
+        <strong>Tipos de expresión sexual</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.arregloEspacial)%></p>
+        <h5>Flores: </h5>
+        <h5>Individuos: </h5>
+        <h5>Poblaciones: </h5>
+        <h5>Información adicional: </h5> <p><%=FichasController.convert_to_HTML(@infoReproduccion.descripcionArregloespacial)%></p>
+      </li>
+      <li>
+        <strong>Aislamiento temporal o espacial de los órganos reproductores</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.aislamientoOrganos)%></p>
+        <h5>Información adicional</h5> <p><%=FichasController.convert_to_HTML(@infoReproduccion.descAislaOrganos)%></p>
+      </li>
+      <li>
+        <strong>Sistemas reproductivos asexuales</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.sistReproAsexuales)%></p>
+        <h5>Información adicional</h5><p><%=FichasController.convert_to_HTML(@infoReproduccion.DescsistReproAsexuales)%></p>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <div class="col-md-6">
+    <ul>
+      <li>
+        <strong>Tipo de fecundación</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.fecuandacion)%></p>
+        <h5>Información adicional</h5><p><%=FichasController.convert_to_HTML(@infoReproduccion.descFecundacion)%></p>
+      </li>
+      <li>
+        <strong>Número de eventos reproductivos</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.noEventos)%></p>
+        <h5>Información adicional</h5><p><%=FichasController.convert_to_HTML(@infoReproduccion.descNoEventos)%></p>
+      </li>
+      <li>
+        <strong>Tipo de polinización</strong><p><%=FichasController.convert_to_HTML(@infoReproduccion.agentesPolinizacion)%></p>
+        <h5>Información adicional</h5><p><%=FichasController.convert_to_HTML(@infoReproduccion.descAgentesPol)%></p>
+      </li>
+    </ul>
+  </div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-md-12">
+    <br>
+    <h4 class="text-center"><strong>Floración, frutificación y semillas</strong> </h4>
+    <br>
+  </div>
+  <div class="col-md-4 ficaBordeSeparador">
+    <h4 class="text-primary text-center">Floración</h4><br>
+    <ol type="A">
+      <li><strong>Horario de apertura de la flor:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.aperturaFlor)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.descApertura)%></p></li>
+      <li><strong>Longevidad de la flor:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.tiempoFloracion)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.addinfolongevidadflor)%></p></li>
+      <li><strong>Época de floración (inicio y término):</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.mesInicio) + " - " + FichasController.convert_to_HTML(@infoReproduccion.mesFinal)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.addinfotiempoflora)%></p></li>
+      <li><strong>Cantidad de néctar:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.cantidadnectarinicial) + " - " + FichasController.convert_to_HTML(@infoReproduccion.cantidadnectarfinal)%></p>
+        <br>Información adicional<p><%=FichasController.convert_to_HTML(@infoReproduccion.addinfocantidadnectar)%></p></li>
+      <li><strong>Cantidad de polen:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.cantidadpolen)%></p></li>
+    </ol>
+  </div>
+  <div class="col-md-4 ficaBordeSeparador">
+    <h4 class="text-primary text-center">Frutificación</h4><br>
+    <ol type="A">
+      <li><strong>Época de fructificación (mes de inicio y término):</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.mesInicialFructi) + " - " + FichasController.convert_to_HTML(@infoReproduccion.mesFinalFructi)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.addinfotiempofructi)%></p></li>
+      <li><strong>Número de frutos:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.nofrutosinicial) + " - " + FichasController.convert_to_HTML(@infoReproduccion.nofrutosfinal)%></li>
+      <li><strong>Características del fruto</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.caracFruto)%></p></li>
+    </ol>
+    <strong> Información adicional</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.descCaracFruto)%></p>
+
+  </div>
+  <div class="col-md-4">
+    <h4 class="text-primary text-center">Semillas</h4>
+    <br>
+    <ol type="A">
+      <li><strong>Número de semillas por fruto:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.nosemillasinicial)%></p></li>
+      <li><strong>Tamaño promedio de las semillas:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.tamanioSemilla)%></p></li>
+      <li><strong>Características tóxicas:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.caracToxica)%></p></li>
+      <li><strong>Porcentaje de germinación:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.germinacioninicial)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.infoaddgerminacion)%></p>
+      </li>
+      <li><strong>Porcentaje de supervivencia de plántulas:</strong> <p><%=FichasController.convert_to_HTML(@infoReproduccion.plantulasinicial)%></p>
+        <br>Información adicional: <p><%=FichasController.convert_to_HTML(@infoReproduccion.infoaddplantulas)%></p>
+      </li>
+    </ol>
+  </div>
+</div>
+
