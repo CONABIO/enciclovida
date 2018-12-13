@@ -400,20 +400,31 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
 
-            "data-author" => item['Copyright'] ||= 'Author',
-            "data-copyright" => copyright,
+            "data-author" => item['Photographer'] ||= '',
+            "data-copyright" => item['Copyright'] ||= copyright,
 
-            "data-title" => item['Caption'] ||= 'Título',
+            "data-title" => item['NameText'] ||= item['Caption'],
 
-            "data-date" => item['PhotoDate'] ||= 'Date',
-            "data-country" => item['Caption'] ||= 'Country',
+            "data-locality" => item['PhotoLocation'] ||= 'No disponible',
             "data-state" => 'State',
-            "data-locality" => item['PhotoLocation'] ||= 'Locality'
+            "data-country" => item['Caption'] ||= 'Country',
+            "data-date" => item['PhotoDate'] ||= '',
 
-
+            "data-specimen" => item['SpecimenText'] ||= "",
+            "data-descripcion" => item['ShortDescription'] ||= "",
+            "data-imgKind" => item['ImageKindText'] ||= ""
             )
 
     # Información útil de servicio trópicos
+    # Name: NameText || Caption
+    # Specimen: SpecimenText
+    # Short Description: ShortDescription
+    # Image Kind: ImageKindText
+    # Copyright: Copyright
+    # Photographer: Photographer
+    # Location: PhotoLocation
+    # Date: PhotoDate
+    #
     #  - - - Más comunes
     # 'NameText'
     # 'SpecimenText'
@@ -426,12 +437,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     # 'ThumbnailUrl'
     # 'DetailUrl'
     # 'DetailJpgUrl'
-    #
-    # - - - No en todos sale
-    # 'PhotoLocation'
-    # 'PhotoDate'
-    # 'ContactUrl'
-    # 'Contact'
+
   end
 
   def dejaComentario

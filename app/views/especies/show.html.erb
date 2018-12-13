@@ -180,7 +180,7 @@
     </div>
 
     <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-      <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-dialog modal-lg" id="modalTamanio" role="document">
         <div class="modal-content" style="background-color: #c5c5c5;">
 
           <div class="modal-header">
@@ -191,7 +191,7 @@
           <div class="modal-body text-success" id="modal_reproduce_body">
             <div class="row">
               <div class="col-md-9">
-                <div class="embed-responsive" id="img-container">
+                <div class="embed-responsive embed-responsive-16by9" id="img-container">
                 </div>
               </div>
               <div class="col-md-3">
@@ -200,6 +200,10 @@
                 <b id="modal_localidad"></b>
                 <h5 id="modal_ubicacion"></h5>
                 <small id="modal_fecha"></small>
+                <small id="modal_img_tipo"></small>
+                <hr>
+                <h5 id="modal_specimen"></h5>
+                <h5 id="modal_img_descripcion"></h5>
                 <hr>
                 <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
               </div>
