@@ -20,8 +20,6 @@ class Usuario < ActiveRecord::Base
   has_many :usuario_especies, :class_name=> 'UsuarioEspecie', :foreign_key => :usuario_id
   has_many :especies, :through => :usuario_especies, :source => :especie
 
-  has_one :directorio, :class_name=> 'Metamares::Directorio'
-
   attr_accessor :login
   validates :nombre, :apellido, presence: true
 

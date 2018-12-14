@@ -1,3 +1,4 @@
+<%= button_tag '<span class="glyphicon glyphicon-remove"></span>'.html_safe, type: 'button', class: 'btn btn-xs btn-link pull-right', onclick: "$('[data-especie-id=#{@pez[:especie_id]}]').popover('hide');" %>
 <h4 class="text-center"><b>Recomendación</b></h4>
 <table class="table table-responsive table-condensed table-bordered">
   <tbody>
@@ -33,36 +34,29 @@
   </p>
 <% end %>
 <% @criterios["Características"].compact[2..4].each do |c|  %>
-  <% next if  c[:valor] < 5 %>
+  <% next if  (c[:valor] < 5) && (c[:tipo_propiedad] != 'Veda') %>
   <% next if  c[:nombre] == 'Sin datos' %>
   <p>
 
     <b><%= c[:tipo_propiedad] %>: </b>
+
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
-      <span class="btn-title" tooltip-title="<%= warning %>">
-        <i class="glyphicon glyphicon-exclamation-sign btn-title text-danger" aria-hidden="true" ></i>
-      </span>
+      <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true" ></span>
+      <em> <%= c[:nombre] %> &middot; <small><%= warning %></small></em>
+    <% else %>
+      <em> <%= c[:nombre] %></em>
     <% end %>
-    <em><%= c[:nombre] %></em>
   </p>
 <% end %>
 
-<hr />
+<h4 class="pull-left">
+  <%= link_to '<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Realizar comentario <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@pez, {categorias_contenido_id: 36}), class: 'btn btn-warning btn-sm', target: '_blank' %>
+</h4>
+
 
 <% if tiene_permiso?('AdminPeces') %>
-  <div class="col-xs-12 col-md-6">
-    <h5>
-      <%= link_to 'Editar especie <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-title' %>
-    </h5>
-  </div>
-
-  <div class="col-xs-12 col-md-6">
-    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
-  </div>
-
-<% else %>
-  <div class="col-xs-12 col-md-12">
-    <%= link_to '¿Tienes un comentario?', new_especie_comentario_path(@pez, {categorias_contenido_id: 36}) %>
-  </div>
+  <h4 class="pull-right">
+    <b><small>Editar especie: </small></b><%= link_to '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-sm btn-title' %>
+  </h4>
 <% end %>

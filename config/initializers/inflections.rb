@@ -28,6 +28,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'usuario_rol', 'usuarios_roles'
   inflect.irregular 'rol_categorias_contenido', 'roles_categorias_contenido'
   inflect.irregular 'metamar', 'metamares'
+  inflect.irregular 'usuario_metamares', 'usuarios_metamares'
   inflect.irregular 'especy', 'especies'
   inflect.irregular 'pez', 'peces'
 end

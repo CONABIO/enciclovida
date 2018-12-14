@@ -5,7 +5,6 @@ gem 'activerecord-session_store'  # Pasa los request con POST a traves de la bas
 gem 'ancestry', git: 'https://github.com/calonso-conabio/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'  # Gema para exportar en excel
-gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
@@ -61,7 +60,11 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-group :development, :test do
+group :development, :test, :production do
+  gem 'blurrily', git: 'https://github.com/calonso-conabio/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
+end
+
+group :development, :test, :development_mac do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Adds support for Capybara system testing and selenium driver
@@ -69,7 +72,7 @@ group :development, :test do
   gem 'selenium-webdriver'
 end
 
-group :development do
+group :development, :development_mac do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'

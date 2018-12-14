@@ -21,13 +21,10 @@
       <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
     </li>
     <li role="presentation" >
-      <%= link_to 'Ubicación', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
-    </li>
-    <li role="presentation" >
       <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
     </li>
     <li role="presentation" >
-      <%= link_to 'Keywords', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+      <%= link_to 'Palabras claves', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
     </li>
     <li role="presentation" >
       <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'pull-right btn btn-sm btn-warning' %>
@@ -43,13 +40,14 @@
     <div id="proyecto" role="tabpanel" class="tab-pane fade in panel-body active">
       <ul class="list-group">
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.nombre_proyecto') %></b>: <%= @proyecto.nombre_proyecto %></li>
+        <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.autor') %></b>: <%= @proyecto.autor %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.tipo_monitoreo') %></b>: <%= @proyecto.tipo_monitoreo %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.objeto_monitoreo') %></b>: <%= @proyecto.objeto_monitoreo %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.metodo') %></b>: <%= @proyecto.metodo %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.finalidad') %></b>: <%= @proyecto.finalidad %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.campo_investigacion') %></b>: <%= t("simple_form.options.metamares_proyecto.campo_investigacion.#{@proyecto.campo_investigacion}", default: @proyecto.campo_investigacion) if @proyecto.campo_investigacion.present? %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.campo_ciencia') %></b>: <%= t("simple_form.options.metamares_proyecto.campo_ciencia.#{@proyecto.campo_ciencia}", default: @proyecto.campo_ciencia) if @proyecto.campo_ciencia.present? %></li>
-        <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.financiamiento') %></b>: <%= t("simple_form.options.metamares_proyecto.financiamiento.#{@proyecto.financiamiento}", deflaut: @proyecto.financiamiento) if @proyecto.financiamiento.present? %></li>
+        <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.financiamiento') %></b>: <%= t("simple_form.options.metamares_proyecto.financiamiento.#{@proyecto.financiamiento}", default: @proyecto.financiamiento) if @proyecto.financiamiento.present? %></li>
       </ul>
     </div>
 
@@ -59,14 +57,14 @@
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.titulo_conjunto_datos') %></b>: <%= dato.titulo_conjunto_datos %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.titulo_compilacion') %></b>: <%= dato.titulo_compilacion %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.descarga_datos') %></b>: <%= dato.descarga_datos %></li>
-          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.licencia_uso') %></b>: <%= dato.licencia_uso %></li>
-          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.estatus_datos') %></b>: <%= dato.estatus_datos %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.licencia_uso') %></b>: <%= t("simple_form.options.metamares_proyecto.dato.licencia_uso.#{dato.licencia_uso}", default: dato.licencia_uso) if dato.licencia_uso.present? %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.estatus_datos') %></b>: <%= t("simple_form.options.metamares_proyecto.dato.estatus_datos.#{dato.estatus_datos}", default: dato.estatus_datos) if dato.estatus_datos.present? %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.descripcion_base') %></b>: <%= dato.descripcion_base %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.resolucion_temporal') %></b>: <%= dato.resolucion_temporal %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.resolucion_espacial') %></b>: <%= dato.resolucion_espacial %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.publicaciones') %></b>: <%= dato.publicaciones %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.publicacion_url') %></b>: <%= dato.publicacion_url %></li>
-          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.publicacion_anio') %></b>: <%= dato.publicacion_anio %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.publicacion_fecha') %></b>: <%= dato.publicacion_fecha %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.forma_citar') %></b>: <%= dato.forma_citar %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.numero_ejemplares') %></b>: <%= dato.numero_ejemplares %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.tipo_unidad') %></b>: <%= dato.tipo_unidad %></li>
@@ -160,6 +158,6 @@
     </div>
   </div>
 
-<%= t('simple_form.labels.metamares_proyecto.updated_at') %>: <%= @proyecto.updated_at %>
+<%= t('simple_form.labels.metamares_proyecto.updated_at') %>: <%= @proyecto.updated_at.strftime("%Y/%m/%d") %>
 
 </div>

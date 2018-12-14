@@ -1,34 +1,29 @@
-<% usuario = usuario_signed_in? ? current_usuario : nil %>
+<% usuario = metausuario_signed_in?  ? current_metausuario : nil %>
 
 <div id="brandBar" class="row">
-  <div class="dropdown pull-right">
-    <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <%= usuario.present? ? usuario.nombre : ' Más' %>...
-      <span class="caret"></span>
-      <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
+  <div class="dropdown pull-left">
+    <button id="menuEsqSupDer" type="button" class="btn btn-xs btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <%= usuario.present? ? usuario.nombre : ' Menú' %>. <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
-      <% if usuario.present? %>
-        <li><%= link_to 'Búsqueda en mis colecciones', metamares_proyectos_path({'proy_b[usuario_id]': usuario.id}), data: { turbolinks: false } %></li>
-      <% end %>
-      <li><%= link_to 'Búsqueda global de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Búsqueda de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>
       <li><%= link_to 'Nuevo registro de colección', new_metamares_proyecto_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Gráficas', metamares_graficas_path, data: { turbolinks: false } %></li>
       <li role="separator" class="divider"></li>
 
       <% if usuario.present? %>
-        <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false } %></li>
+        <li><%= link_to 'Administración de usuarios', metamares_admin_index_path, data: { turbolinks: false } if tiene_permiso_metamares?('AdminMetamares') %></li>
+        <li><%= link_to 'Mis colecciones', metamares_proyectos_path({'proy_b[usuario_id]': usuario.id}), data: { turbolinks: false } %></li>
+        <li><%= link_to 'Configuración de tu cuenta', edit_metausuario_registration_path, data: { turbolinks: false } %></li>
         <li><%= link_to 'Datos personales', metamares_directorio_path(usuario.directorio), data: { turbolinks: false } %></li>
-        <li><%= link_to 'Cerrar sesión', destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
+        <li><%= link_to 'Cerrar sesión', destroy_metausuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
       <% else %>
-        <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_usuario_session_path, data: { turbolinks: false }) %></li>
+        <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_metausuario_session_path, data: { turbolinks: false }) %></li>
       <% end %>
     </ul>
   </div>
 
-  <div class="col-xs-5 col-sm-5 col-md-2 col-lg-2 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+  <div class="col-xs-12 text-center">
     <%= link_to "<i class ='conabio_completo-ev-icon'></i>".html_safe, 'http://www.biodiversidad.gob.mx/', :class => '', target: :_blank  %>
-  </div>
-  <div class="col-xs-5 col-sm-4 col-md-2 col-lg-2 col-xs-offset-0 col-sm-offset-1 col-md-offset-0 col-lg-offset-0">
-
   </div>
 </div>

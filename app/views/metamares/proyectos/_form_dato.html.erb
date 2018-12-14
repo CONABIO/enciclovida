@@ -10,12 +10,12 @@
   <%#= f.input :metadatos %>
   <%= f.input :publicaciones %>
   <%= f.input :publicacion_url %>
-  <%= f.input :publicacion_anio %>
+  <%= f.input :publicacion_fecha, html5: true %>
   <%#= f.input :descarga_informe %>
   <%= f.input :forma_citar %>
   <%#= f.input :restricciones %>
   <%#= f.input :interaccion %>
-  <%= f.input :numero_ejemplares %>
+  <%= f.input :numero_ejemplares, as: :integer %>
   <%= f.input :tipo_unidad %>
   <%= f.input :notas_adicionales %>
 </div>

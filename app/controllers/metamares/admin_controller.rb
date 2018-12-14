@@ -1,6 +1,6 @@
 class Metamares::AdminController < Metamares::MetamaresController
 
-  before_action :authenticate_usuario!
+  before_action :authenticate_metausuario!
   before_action  do
     tiene_permiso?('AdminMetamares')  # Minimo administrador
   end

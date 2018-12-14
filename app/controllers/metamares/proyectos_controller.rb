@@ -1,7 +1,7 @@
 class Metamares::ProyectosController < Metamares::MetamaresController
 
   before_action :set_proyecto, only: [:edit, :update, :show, :destroy]
-  before_action :authenticate_usuario!, except: [:index, :show]
+  before_action :authenticate_metausuario!, except: [:index, :show]
   before_action except: [:index, :show, :new, :create]  do
     es_propietario?(@proyecto) || tiene_permiso?('AdminMetamaresManager')
   end
@@ -14,11 +14,21 @@ class Metamares::ProyectosController < Metamares::MetamaresController
       busqueda.params[:pagina] = params[:pagina]
     end
 
+    busqueda.sin_limit = params[:commit] == 'Descargar' || params[:commit] == 'JSON'
     busqueda.consulta
-    @proyectos = busqueda.proyectos
-    @totales = busqueda.totales
-    @pagina = busqueda.pagina
-    @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1
+
+    case params[:commit]
+    when 'Descargar'
+      send_data busqueda.to_csv, filename: "busqueda.csv", disposition: 'attachment', type: :text
+    when 'JSON'
+      send_data busqueda.to_json, filename: "busqueda.json"
+    else
+      @proyectos = busqueda.proyectos
+      @totales = busqueda.totales
+      @pagina = busqueda.pagina
+      @paginas = @totales%busqueda.por_pagina == 0 ? @totales/busqueda.por_pagina : (@totales/busqueda.por_pagina) + 1
+    end
+
   end
 
   def show
@@ -79,7 +89,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   def proyecto_params
     params.require(:metamares_proyecto).permit(:nombre_proyecto, :financiamiento, :tipo_monitoreo, :objeto_monitoreo,
-                                               :campo_investigacion, :campo_ciencia, :finalidad, :metodo, :usuario_id,
+                                               :campo_investigacion, :campo_ciencia, :finalidad, :metodo, :usuario_id, :institucion_id, :autor,
                                                info_adicional_attributes: [:id, :informacion_objeto, :informacion_posterior,
                                                                            :informacion_adicional, :colaboradores,
                                                                            :instituciones_involucradas, :equipo, :comentarios, :_destroy],
@@ -89,7 +99,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                region_attributes: [:id, :nombre_region, :nombre_zona, :nombre_ubicacion, :latitud, :longitud, :poligono,
                                                                    :entidad, :cuenca, :anp, :comentarios, :_destroy],
                                                dato_attributes: [:id, :titulo_conjunto_datos, :titulo_compilacion, :estatus_datos,
-                                                                 :resolucion_temporal, :resolucion_espacial, :publicacion_anio,
+                                                                 :resolucion_temporal, :resolucion_espacial, :publicacion_fecha,
                                                                  :descarga_datos, :licencia_uso, :descripcion_base,
                                                                  :metadatos, :publicaciones, :publicacion_url, :descarga_informe,
                                                                  :forma_citar, :notas_adicionales, :restricciones,
@@ -104,7 +114,8 @@ class Metamares::ProyectosController < Metamares::MetamaresController
   end
 
   def proyecto_busqueda_params
-    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor, :usuario_id)
+    params.require(:proy_b).permit(:proyecto, :institucion, :tipo_monitoreo, :nombre, :especie_id, :tipo_monitoreo, :autor,
+                                   :titulo_compilacion, :nombre_zona, :nombre_region, :campo_investigacion, :usuario_id)
   end
 
 end

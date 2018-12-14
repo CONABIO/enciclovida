@@ -1,11 +1,11 @@
 class Metamares::DirectorioController < Metamares::MetamaresController
 
-  #before_action :authenticate_usuario!
-  #before_action  do
-  #  tiene_permiso?('AdminMetamares')  # Minimo administrador
-  #end
-
+  before_action :authenticate_metausuario!
   before_action :set_directorio, except: [:index, :new]
+  before_action  do
+    tiene_permiso?('AdminMetamares')  # Minimo administrador
+    es_propietario?(@directorio) || tiene_permiso?('AdminMetamaresManager')
+  end
 
   def index
   end
@@ -57,7 +57,8 @@ class Metamares::DirectorioController < Metamares::MetamaresController
   private
 
   def directorio_params
-    params.require(:metamares_directorio).permit(:cargo,  :grado_academico, :tema_estudio, :linea_investigacion, :region_estudio, :telefono)
+    params.require(:metamares_directorio).permit(:cargo, :grado_academico, :tema_estudio, :linea_investigacion,
+                                                 :region_estudio, :telefono, :pagina_web)
   end
 
   def set_directorio

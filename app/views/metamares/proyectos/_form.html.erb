@@ -28,21 +28,18 @@
       <li role="presentation" >
         <%= link_to 'Región', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
       </li>
-      <li role="presentation" >
+      <li role="presentation">
         <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
       </li>
-      <!--li role="presentation" >
-        <%#= link_to 'Ubicación', '#ubicacion' , :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion %>
-      </li-->
       <li role="presentation" >
         <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Keywords', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+        <%= link_to 'Palabras clave', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
       </li>
       <li role="presentation" >
         <%= link_to('<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
-                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' }) if !@proyecto.new_record? %>
+                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: '¿Estás seguro de eliminar esta colección?' }) if !@proyecto.new_record? %>
       </li>
     </ul>
 
@@ -85,23 +82,26 @@
       </div>
 
       <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? || (!@proyecto.new_record? && !f.object.institucion) %>
         <hr />
         <%= f.simple_fields_for :institucion do |institucion| %>
           <%= render partial: 'form_institucion', locals: { f: institucion } %>
         <% end %>
-      </div>
 
-      <div id='ubicacion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ubicacion'.html_safe, f, :ubicacion, :force_non_association_create => true, partial: 'form_ubicacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :ubicacion, 'data-association-insertion-node' => '#ubicacion', 'data-association-insertion-method' => 'append', href: '#ubicacion', style: 'display: none;' %>
-        <hr />
-        <%= f.simple_fields_for :ubicacion do |ubicacion| %>
-          <%= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
-        <% end %>
+
+        <!--div id='ubicacion' role="tabpanel">
+          <%#= link_to_add_association 'Ubicación de la institución', f, :ubicacion, partial: 'form_ubicacion', 'data-association-insertion-method' => 'append' %>
+
+          <hr />
+          <%#= f.simple_fields_for :ubicacion do |ubicacion| %>
+            <%#= render partial: 'form_ubicacion', locals: { f: ubicacion } %>
+          <%# end %>
+        </div-->
+
       </div>
 
       <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Especies estudiadas'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una especie'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
         <hr />
         <%= f.simple_fields_for :especies do |especie| %>
           <%= render partial: 'form_especies_estudiadas', locals: { f: especie } %>
@@ -109,7 +109,7 @@
       </div>
 
       <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Keywords'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una palabra clave'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
         <hr />
         <%= f.simple_fields_for :keywords do |kw| %>
           <%= render partial: 'form_keywords', locals: { f: kw } %>
@@ -121,6 +121,6 @@
   <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.cancel.metamares_proyecto.cancel'), metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
+  <%= link_to t('helpers.submit.proy_b.cancel'), @proyecto.new_record? ? metamares_proyectos_path : metamares_proyecto_path(@proyecto), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

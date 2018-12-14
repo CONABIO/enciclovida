@@ -9,22 +9,23 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :institucion, class_name: 'Metamares::Institucion'
   has_one :ubicacion, through: :institucion, source: :ubicacion
   belongs_to :usuario, class_name: 'Usuario'
-  has_many :especies, class_name: 'Metamares::EspecieEstudiada'
-  has_many :keywords, class_name: 'Metamares::Keyword'
+  has_many :especies, class_name: 'Metamares::EspecieEstudiada', dependent: :destroy
+  has_many :keywords, class_name: 'Metamares::Keyword', dependent: :destroy
 
   accepts_nested_attributes_for :info_adicional, allow_destroy: true
   accepts_nested_attributes_for :periodo, allow_destroy: true
   accepts_nested_attributes_for :region, allow_destroy: true
-  accepts_nested_attributes_for :institucion, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :ubicacion, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :institucion, reject_if: :all_blank
+  accepts_nested_attributes_for :ubicacion, reject_if: :all_blank
   accepts_nested_attributes_for :dato, allow_destroy: true
   accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
 
-  validates_presence_of :nombre_proyecto
+  validates_presence_of :nombre_proyecto, :usuario_id
+  attr_accessor :nom_institucion
 
   TIPO_MONITOREO = %w(especie grupo-especie socio-economico ecosistemas fisico-quimico)
-  FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :PRIVATE_F, :Unknown]
+  FINANCIAMIENTOS = [:ACA_F, :GOV_F, :IGO_F, :INT_F, :NGO_F, :Private_F, :Unknown]
   CAMPOS_INVESTIGACION = [:Aquaculture, :Conservation, :Ecology, :Fisheries, :Oceanography, :Other, :Sociology, :Tourism]
   CAMPOS_CIENCIAS = ['Natural Science'.to_sym, 'Social Science'.to_sym]
 

@@ -40,9 +40,10 @@ $(document).ready(function(){
                         }
                     }
                 },
-                trigger: 'focus',
-                content: data
+                trigger: 'manual',
+                content: data,
             }).popover('show');
+            button.attr('onclick',"$(this).popover('show');");
         });
     });
 

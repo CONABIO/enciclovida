@@ -1,9 +1,7 @@
-<div class='nested-fields'>
-  <%= f.input :nombre_institucion %>
+<div class="nested-fields">
+  <%= f.input :nombre_institucion, required: true %>
   <%= f.input :sitio_web %>
   <%= f.input :contacto %>
   <%= f.input :correo_contacto %>
-
-  <%#= link_to_remove_association "Quitar institucion", f, :class => 'btn btn-danger btn-sm' %>
 </div>
 
