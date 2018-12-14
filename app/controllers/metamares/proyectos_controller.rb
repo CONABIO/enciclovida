@@ -99,7 +99,7 @@ class Metamares::ProyectosController < Metamares::MetamaresController
                                                region_attributes: [:id, :nombre_region, :nombre_zona, :nombre_ubicacion, :latitud, :longitud, :poligono,
                                                                    :entidad, :cuenca, :anp, :comentarios, :_destroy],
                                                dato_attributes: [:id, :titulo_conjunto_datos, :titulo_compilacion, :estatus_datos,
-                                                                 :resolucion_temporal, :resolucion_espacial, :publicacion_anio,
+                                                                 :resolucion_temporal, :resolucion_espacial, :publicacion_fecha,
                                                                  :descarga_datos, :licencia_uso, :descripcion_base,
                                                                  :metadatos, :publicaciones, :publicacion_url, :descarga_informe,
                                                                  :forma_citar, :notas_adicionales, :restricciones,

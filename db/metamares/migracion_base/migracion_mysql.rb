@@ -96,7 +96,7 @@ def itera_metadata
     dato.resolucion_espacial = meta.spatial_resolution unless meta.spatial_resolution.estandariza == 'na'
     dato.titulo_compilacion = meta.compilation_title unless meta.compilation_title.estandariza == 'na'
     dato.titulo_conjunto_datos = meta.dataset_title unless meta.dataset_title.estandariza == 'na'
-    dato.publicacion_anio = "#{meta.publication_year}/01/01" unless meta.publication_year.nil?
+    dato.publicacion_fecha = "#{meta.publication_year}-01-01" unless meta.publication_year.nil?
     dato.descarga_datos = meta.reference unless meta.reference.estandariza == 'na'
     dato.notas_adicionales = meta.notes unless meta.notes.estandariza == 'na'
     dato.interaccion = meta.se_interaction unless meta.se_interaction.estandariza == 'na'

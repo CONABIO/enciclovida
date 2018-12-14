@@ -8,11 +8,11 @@ class Metamares::GraficasM
 
   # Gráfica por año de publicacion contra campo de investigación
   def grafica1
-    q = Metamares::Proyecto.select('COUNT(campo_investigacion) AS totales, publicacion_anio, campo_investigacion').
-        left_joins(:dato).where("publicacion_anio IS NOT NULL AND publicacion_anio > '2005/01/01'").group('publicacion_anio, campo_investigacion').order('publicacion_anio')
+    q = Metamares::Proyecto.select('COUNT(campo_investigacion) AS totales, publicacion_fecha, campo_investigacion').
+        left_joins(:dato).where("publicacion_fecha IS NOT NULL AND publicacion_fecha > '2005-01-01'").group('publicacion_fecha, campo_investigacion').order('publicacion_fecha')
 
     q.each do |d|
-      anio = d.publicacion_anio[0..3].to_i
+      anio = d.publicacion_fecha.strftime("%Y").to_i
 
       while datos[anio].nil?
         datos[anio] = {} unless datos[anio].present?

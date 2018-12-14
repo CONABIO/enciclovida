@@ -74,7 +74,7 @@ es:
           resolucion_espacial: Resolución espacial
           publicaciones: Publicaciones
           publicacion_url: Enlace de la publicación
-          publicacion_anio: Año de la publicación
+          publicacion_fecha: Fecha de la publicación
           forma_citar: Cita
           notas_adicionales: Notas adicionales
           numero_ejemplares: Número de ejemplares
@@ -133,7 +133,7 @@ es:
           resolucion_espacial: ¿Cuál es la resolución espacial de los datos?
           publicaciones: Publicaciones donde la colección fue publicada
           publicacion_url: Enlace de la pblicación
-          publicacion_anio: Año en que la colección de datos fue publicada
+          publicacion_fecha: Fecha en que la colección de datos fue publicada
           forma_citar: Forma de citar esta colección de datos
           numero_ejemplares: Cantidad de ejemplares disponibles en la colección de datos
           tipo_unidad: La unidad usada para la colección
