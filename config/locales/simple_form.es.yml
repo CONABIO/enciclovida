@@ -155,6 +155,8 @@ es:
     options:
       metamares_proyecto:
         financiamiento:
+          ACADEMIC_F: Académico
+          OSC_F: Organizacion de la Sociedad Civil
           ACA_F: Por ley
           GOV_F: Gubernamental
           IGO_F: Gobierno internacional
