@@ -56,7 +56,15 @@
         <% if dato = @proyecto.dato %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.titulo_conjunto_datos') %></b>: <%= dato.titulo_conjunto_datos %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.titulo_compilacion') %></b>: <%= dato.titulo_compilacion %></li>
-          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.descarga_datos') %></b>: <%= dato.descarga_datos %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.descarga_datos') %></b>:
+            <%=
+              begin
+                link_to(dato.descarga_datos, dato.descarga_datos, target: :_blank) if !URI.parse(dato.descarga_datos.strip).host.nil?
+              rescue URI::InvalidURIError
+                  dato.descarga_datos
+              end
+            %>
+          </li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.licencia_uso') %></b>: <%= t("simple_form.options.metamares_proyecto.dato.licencia_uso.#{dato.licencia_uso}", default: dato.licencia_uso) if dato.licencia_uso.present? %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.estatus_datos') %></b>: <%= t("simple_form.options.metamares_proyecto.dato.estatus_datos.#{dato.estatus_datos}", default: dato.estatus_datos) if dato.estatus_datos.present? %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.descripcion_base') %></b>: <%= dato.descripcion_base %></li>
@@ -126,17 +134,17 @@
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.contacto') %></b>: <%= institucion.contacto %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.correo_contacto') %></b>: <%= institucion.correo_contacto %></li>
 
-            <ul class="list-group">
-              <% if ubicacion = institucion.ubicacion %>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.calle_numero') %></b>: <%= ubicacion.calle_numero %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.colonia') %></b>: <%= ubicacion.colonia %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.municipio') %></b>: <%= ubicacion.municipio %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.ciudad') %></b>: <%= ubicacion.ciudad %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.entidad_federativa') %></b>: <%= ubicacion.entidad_federativa %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.cp') %></b>: <%= ubicacion.cp %></li>
-                <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.pais') %></b>: <%= ubicacion.pais %></li>
-              <% end %>
-            </ul>
+          <ul class="list-group">
+            <% if ubicacion = institucion.ubicacion %>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.calle_numero') %></b>: <%= ubicacion.calle_numero %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.colonia') %></b>: <%= ubicacion.colonia %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.municipio') %></b>: <%= ubicacion.municipio %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.ciudad') %></b>: <%= ubicacion.ciudad %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.entidad_federativa') %></b>: <%= ubicacion.entidad_federativa %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.cp') %></b>: <%= ubicacion.cp %></li>
+              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.pais') %></b>: <%= ubicacion.pais %></li>
+            <% end %>
+          </ul>
 
           </li>
         <% end %>
@@ -158,6 +166,6 @@
     </div>
   </div>
 
-<%= t('simple_form.labels.metamares_proyecto.updated_at') %>: <%= @proyecto.updated_at.strftime("%Y/%m/%d") %>
+  <%= t('simple_form.labels.metamares_proyecto.updated_at') %>: <%= @proyecto.updated_at.strftime("%Y/%m/%d") %>
 
 </div>
