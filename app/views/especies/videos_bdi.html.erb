@@ -13,3 +13,14 @@
 <%=
   #imprime_video_bdi(item, type)
 %>
+
+<% if @videos.any? %>
+  <% @videos.each do |video| %>
+    <div class="result-img-container">
+      <%= link_to (image_tag video.preview_img), video.url_acces, target: :_blank %>
+    </div>
+  <% end %>
+<% else %>
+  <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
+  </p>
+<% end %>

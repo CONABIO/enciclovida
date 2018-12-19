@@ -428,6 +428,33 @@ class EspeciesController < ApplicationController
       bdi = @especie.videos_bdi
     end
 
+    if bdi[:estatus]
+      @videos = bdi[:videos]
+
+      respond_to do |format|
+        format.json {render json: bdi}
+        format.html do
+
+          # El conteo de las paginas
+          totales = 0
+          por_pagina = 25
+
+          # Por ser la primera saco el conteo de paginas
+          if @pagina.blank?
+            # Saca el conteo de las fotos de bdi
+            if bdi[:ultima].present?
+              totales+= por_pagina*(bdi[:ultima]-1)
+              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
+              totales+= fbu[:fotos].count if fbu[:estatus]
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
+            end
+          end  # End pagina blank
+        end  # End format html
+      end  # End respond
+
+    else  # End estatus
+      render :_error and return
+    end
   end
 
   #servicio Macaulay Library (eBird)
