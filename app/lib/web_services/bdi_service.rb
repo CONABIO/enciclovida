@@ -18,10 +18,35 @@ class BDIService
 
   ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
 
+  ALBUM_VIDEOS = ['5121-Video']
+
   # Método para recuperar los videos
   def dame_videos(opts)
-    # URL FINAL ('5121-Video' pendiente)
-    #http://bdi.conabio.gob.mx/fotoweb/archives/5121-Video/?q='NOMBRE'
+    bdi = CONFIG.bdi_imagenes
+    videos = []
+    jres = videos_album(opts)
+
+    return {:estatus => 'OK', :ultima => nil, :videos => []} unless jres['data'].any?
+
+    jres['data'].each do |x|
+      video = Video.new
+      video.href_info = bdi + x['href']
+      video.url_acces = bdi + x['attributes']['videoattributes']['proxy']['videoHREF']
+      video.preview_img = x['previews'].present? ? bdi + x['previews'][0]['href'] : nil
+      video.autor = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
+      video.localidad = x['metadata']['90'].present? ? x['metadata']['90']['value'] : 'No disponible'
+      video.municipio = x['metadata']['300'].present? ? x['metadata']['300']['value'] : 'No disponible'
+      video.licencia = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
+      videos << video
+    end
+
+    if jres['paging'].present? && jres['paging']['next'].present?
+      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
+      {:estatus => true, :ultima => ultima, :videos => videos}
+    else
+      {:estatus => true, :ultima => nil, :videos => videos}
+    end
+
   end
 
   def dameFotos(opts)
@@ -61,20 +86,15 @@ class BDIService
   end
 
   def arma_y_consulta_url(opts)
-    Rails.logger.debug "[DEBUG] Se armará la consulta a BDI: "
     nombre = opts[:nombre].limpia_ws(true)
-    Rails.logger.debug "[DEBUG] Nombre: #{nombre}"
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
-    Rails.logger.debug "[DEBUG] url 1: #{url}"
     url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
-    Rails.logger.debug "[DEBUG] url 2: #{url}"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
-    Rails.logger.debug "[DEBUG] url 3: #{url}"
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     req['Accept'] = 'application/vnd.fotoware.assetlist+json'
-    Rails.logger.debug "[DEBUG] url final: #{url}"
+
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
       JSON.parse(res.body)
@@ -82,6 +102,14 @@ class BDIService
       {'data' => []}
     end
 
+  end
+
+  # Las fotos de acuerdo al album al que pertenece en BDI
+  def videos_album(opts)
+    taxon = opts[:taxon]
+    # Solo para el caso de los videos
+    opts.merge!({album: ALBUM_VIDEOS.first, nombre: taxon.nombre_cientifico, campo: 'q'})
+    return tiene_fotos?(opts)
   end
 
   # Las fotos de acuerdo al album al que pertenece en BDI

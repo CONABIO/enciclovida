@@ -423,10 +423,11 @@ class EspeciesController < ApplicationController
     @pagina = params['pagina']
 
     if @pagina.present?
-      bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
+      bdi = @especie.videos_bdi({pagina: @pagina.to_i})
     else
-      bdi = @especie.fotos_bdi
+      bdi = @especie.videos_bdi
     end
+
   end
 
   #servicio Macaulay Library (eBird)

@@ -344,6 +344,15 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
+  # REVISADO: Servicio que trae la respuesta de bdi
+  def videos_bdi(opts={})
+
+    bdi = BDIService.new
+
+    bdi.dame_videos(opts.merge({taxon: self, ilustraciones: true}))
+
+  end
+
   # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
   def dame_fotos_todas
     # Fotos de naturalista
