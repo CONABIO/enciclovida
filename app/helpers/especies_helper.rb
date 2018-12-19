@@ -366,6 +366,18 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     n.html_safe
   end
 
+
+  def imprime_video_bdi(item, type)
+    case type
+      when 'video' # Datos fasos por ahora
+        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
+                "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
+                "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+    end
+  end
+
   def imprimeMediaCornell(item,type)
     case type
     when 'photo'

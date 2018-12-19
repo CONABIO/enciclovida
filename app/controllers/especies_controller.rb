@@ -7,7 +7,7 @@ class EspeciesController < ApplicationController
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi,
+                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias]
@@ -23,7 +23,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
@@ -415,6 +415,17 @@ class EspeciesController < ApplicationController
 
     else  # End estatus
       render :_error and return
+    end
+  end
+
+  #Videos de BDI
+  def videos_bdi
+    @pagina = params['pagina']
+
+    if @pagina.present?
+      bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
+    else
+      bdi = @especie.fotos_bdi
     end
   end
 

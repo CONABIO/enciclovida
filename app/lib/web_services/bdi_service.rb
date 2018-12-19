@@ -18,6 +18,11 @@ class BDIService
 
   ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
 
+  # Método para recuperar los videos
+  def dame_videos(opts)
+    # URL FINAL ('5121-Video' pendiente)
+    #http://bdi.conabio.gob.mx/fotoweb/archives/5121-Video/?q='NOMBRE'
+  end
 
   def dameFotos(opts)
     bdi = CONFIG.bdi_imagenes
@@ -56,15 +61,20 @@ class BDIService
   end
 
   def arma_y_consulta_url(opts)
+    Rails.logger.debug "[DEBUG] Se armará la consulta a BDI: "
     nombre = opts[:nombre].limpia_ws(true)
+    Rails.logger.debug "[DEBUG] Nombre: #{nombre}"
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
+    Rails.logger.debug "[DEBUG] url 1: #{url}"
     url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
+    Rails.logger.debug "[DEBUG] url 2: #{url}"
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
+    Rails.logger.debug "[DEBUG] url 3: #{url}"
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     req['Accept'] = 'application/vnd.fotoware.assetlist+json'
-
+    Rails.logger.debug "[DEBUG] url final: #{url}"
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
       JSON.parse(res.body)
