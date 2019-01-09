@@ -376,6 +376,7 @@ DEPENDENCIES
   ancestry!
   axlsx!
   axlsx_rails
+  blurrily!
   bootstrap-sass (~> 3.3.6)
   byebug
   capybara (~> 2.13)
