@@ -1,5 +1,6 @@
 class FichasController < ApplicationController
   before_action :set_taxon
+  layout false
 
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
@@ -209,7 +210,7 @@ class FichasController < ApplicationController
 
 
     respond_to do |format|
-      format.html #{ render :layout => false }
+      format.html
       format.json { render json: {
           taxon: @taxon,
           # I. Clasificación y descripción de la especie
