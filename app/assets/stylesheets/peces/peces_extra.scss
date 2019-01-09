@@ -68,7 +68,6 @@
 }
 .porGrupo input, .porSemaforo input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
 .porSemaforo input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
-
   border: 2px solid transparent;
   font-size: 2.75em;
   background: none;
@@ -167,7 +166,7 @@ div.result-img-container{
   }
 }
 @media (min-width: 1200px) {
-  .porNombreGrupo{margin-top: -140px;}
+/*  .porNombreGrupo{margin-top: -140px;}*/
 }
 /************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces{
@@ -243,7 +242,7 @@ div.result-img-container{
   vertical-align: middle;
   height: 40px;
 }
-.popover{max-width: none; background-color: #efefef;}
+.popover{max-width: none; background-color: #ece4e4;}
 .popover i:not(.glyphicon-exclamation-sign){font-size: 2.25em;}
 .popover i.glyphicon-exclamation-sign{font-size: 1.5em;}
 .popover-title{font-weight: bolder; text-align: center;}
@@ -284,9 +283,9 @@ div.result-img-container{
   fill: #db0510;
 }
 .btn-zona-n{
-  background: #efefef;
-  color: #efefef;
-  fill: #efefef;
+  background: #ece4e4;
+  color: #ece4e4;
+  fill: #ece4e4;
 }
 .btn-zona-s, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
   background: #9a9a9a;
