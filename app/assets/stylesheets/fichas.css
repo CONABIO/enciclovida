@@ -60,3 +60,20 @@
 .btn-ficha strong {
     padding-left: 10px;
 }
+
+.ficaBordeSeparador {
+    border-color: #C1C1C1;
+    border-right-style: dashed;
+}
+
+/*T1: en las que hay secciones con espacios a los lados*/
+.fichaSeccionApartadosT1 {
+    background-color: #E5E5E5;
+    padding: 20px 30px 30px 15px;
+}
+
+/*T2: en las que hay secciones sin espacios de padding*/
+.fichaSeccionApartadosT2 {
+    background-color: #E5E5E5;
+    padding: 30px;
+}

@@ -115,6 +115,7 @@ Buscador::Application.routes.draw do
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
+      get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
@@ -204,6 +205,13 @@ Buscador::Application.routes.draw do
   # Información de una especie en particular según su ID
   get 'infoEspecie/:id' => 'fichas#informacion_de_especie'
   #  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - -
+
+
+  # I. Clasificación y descripción de la especie
+  get 'media_tropicos/:id' => 'tropicos#tropico_especie'
+
+
+
 
 
   # The priority is based upon order of creation: first created -> highest priority.

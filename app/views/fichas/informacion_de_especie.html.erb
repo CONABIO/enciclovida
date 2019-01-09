@@ -169,6 +169,9 @@
 
     function showSection(idSection) {
 
+        // Cerrar secciones
+        $('.showInfo').hide(timer);
+
         var title = $( "#" + idSection).children()[0];
         var content = $( "#" + idSection).children()[1];
 
@@ -182,7 +185,7 @@
     }
 
 
-    // Controlar el encabezado, para mostrar nombre de la especie y la sección en la que se encuentra
+    /*/ Controlar el encabezado, para mostrar nombre de la especie y la sección en la que se encuentra
     var stickyOffset = $('.headCard').offset().top;
     var headerMeasure = 120; // Pixeles extra para que el encabezado cambie el título al pasar cerca de el
 
@@ -200,6 +203,7 @@
             $(".hSection").hide();
         }
     });
+    */
 
 
 </script>

@@ -1,8 +1,8 @@
 <div class="row showInfo">
   <div class="col-md-8" style="padding: 0px 30px 30px 15px;">
-    <h4>Resumen de la especie</h4> <p class="text-justify"><%=(@taxon.resumenEspecie).html_safe %></p>
+    <h4>Resumen de la especie</h4> <p class="text-justify"><%=FichasController.convert_to_HTML(@taxon.resumenEspecie)%></p>
     <br><br>
-    <h4>Descripción de la especie</h4> <p class="text-justify"><%=(@taxon.descEspecie).html_safe %></p>
+    <h4>Descripción de la especie</h4> <p class="text-justify"><%=FichasController.convert_to_HTML(@taxon.descEspecie)%></p>
     <br><br>
     <table class="table table-striped table-bordered">
       <thead>
@@ -15,42 +15,42 @@
       <tbody>
       <tr>
         <th>Largo total en centímetros</th>
-        <td><%=@taxon.largoinicialmachos%></td>
-        <td><%=@taxon.largoinicialhembras%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.largoinicialmachos)%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.largoinicialhembras)%></td>
       </tr>
       <tr>
         <th>Longevidad</th>
-        <td><%=@taxon.edadinicialmachos%></td>
-        <td><%=@taxon.edadinicialhembras%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.edadinicialmachos)%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.edadinicialhembras)%></td>
       </tr>
       <tr>
         <th>Peso en gramos</th>
-        <td><%=@taxon.pesoinicialmachos%></td>
-        <td><%=@taxon.pesoinicialhembras%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.pesoinicialmachos)%></td>
+        <td><%=FichasController.convert_to_HTML(@taxon.pesoinicialhembras)%></td>
       </tr>
       </tbody>
     </table>
 
     <br>
     <h4>Categoría de riesgo según la NOM-059-SEMARNAT</h4>
-    <p class="text-justify"><%=@legislacion.infoAdicional.html_safe %></p>
-    <p class="text-justify"><%=@legislacion.estatusLegalProteccion.html_safe %></p>
+    <p class="text-justify"><%=FichasController.convert_to_HTML(@legislacion.infoAdicional)%></p>
+    <p class="text-justify"><%=FichasController.convert_to_HTML(@legislacion.estatusLegalProteccion)%></p>
 
   </div>
 
-  <div class="col-md-4" style="background-color: #EFEFEF; padding: 30px;">
+  <div class="col-md-4 fichaSeccionApartadosT2">
     <h4 class="text-center text-primary">Taxonomía</h4>
-    <p><strong>Reino: </strong><%=" " + @taxon.reino.html_safe %></p>
-    <p><strong>Phylum: </strong><%=" " + @taxon.divisionphylum.html_safe %></p>
-    <p><strong>Clase: </strong><%=" " + @taxon.clase.html_safe %></p>
-    <p><strong>Orden: </strong><%=" " + @taxon.orden.html_safe %></p>
-    <p><strong>Familia: </strong><%=" " + @taxon.familia.html_safe %></p>
+    <p><strong>Reino: </strong><%=" " + FichasController.convert_to_HTML(@taxon.reino)%></p>
+    <p><strong>Phylum: </strong><%=" " + FichasController.convert_to_HTML(@taxon.divisionphylum)%></p>
+    <p><strong>Clase: </strong><%=" " + FichasController.convert_to_HTML(@taxon.clase)%></p>
+    <p><strong>Orden: </strong><%=" " + FichasController.convert_to_HTML(@taxon.orden)%></p>
+    <p><strong>Familia: </strong><%=" " + FichasController.convert_to_HTML(@taxon.familia)%></p>
     <br>
     <h4 class="text-center text-primary">Nombre científico</h4>
-    <p><strong>Año: </strong> <%= @taxon.anio %></p>
-    <p><strong>Autor: </strong> <%= @taxon.autor.html_safe %></p>
+    <p><strong>Año: </strong> <%= FichasController.convert_to_HTML(@taxon.anio)%></p>
+    <p><strong>Autor: </strong> <%= FichasController.convert_to_HTML(@taxon.autor)%></p>
     <br>
     <h4 class="text-center text-primary">Información adicional</h4>
-    <p class="text-justify"><strong>Especies similares:</strong> <%=(@taxon.especiesSmilares).html_safe %></p>
+    <p class="text-justify"><strong>Especies similares:</strong> <%=FichasController.convert_to_HTML(@taxon.especiesSmilares)%></p>
   </div>
 </div>

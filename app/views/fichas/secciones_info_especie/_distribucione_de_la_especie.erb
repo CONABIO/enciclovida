@@ -1,27 +1,27 @@
 <div class="row showInfo">
   <div class="col-md-12">
     <h4>Región </h4>
-    <p class="text-justify"><%= @distribucion.infoAdicionalMun.html_safe %></p>
+    <p class="text-justify"><%=FichasController.convert_to_HTML(@distribucion.infoAdicionalMun)%></p>
 
     <h4>Estado del hábitat con respecto al desarrollo natural del taxón</h4>
-    <p class="text-justify"><%= @habitat.estadoHabitat.html_safe %></p>
+    <p class="text-justify"><%=FichasController.convert_to_HTML(@habitat.estadoHabitat)%></p>
     <br>
 
     <div class="row">
-      <div class="col-md-6" style="border-color: #C1C1C1; border-right-style: dashed">
+      <div class="col-md-6 ficaBordeSeparador">
         <h4>Distribución:</h4>
         <ul>
           <li>
             <h4>Histórica o potencial</h4>
-            <p class="text-justify"><%= (@distribucion.historicaPotencial).html_safe %></p>
+            <p class="text-justify"><%=FichasController.convert_to_HTML(@distribucion.historicaPotencial)%></p>
           </li>
           <li>
             <h4>Amplia o restringida</h4>
-            <p class="text-justify"><%= (@distribucion.historicaPotencial).html_safe %></p>
+            <p class="text-justify"><%=FichasController.convert_to_HTML(@distribucion.alcanceDistribucion)%></p>
           </li>
           <li>
             <h4>Información adicional</h4>
-            <p class="text-justify"><%= (@distribucion.infoAdicionalAlcance).html_safe  %></p>
+            <p class="text-justify"><%=FichasController.convert_to_HTML(@distribucion.infoAdicionalAlcance)%></p>
           </li>
         </ul>
       </div>
@@ -41,10 +41,10 @@
             <%end%>
           </li>
           <li>
-            <p class="text-justify"> <strong>Endémica a: </strong> <%= @endemica.endemicaA.html_safe  %></p>
+            <p class="text-justify"> <strong>Endémica a: </strong> <%=FichasController.convert_to_HTML(@endemica.endemicaA)%></p>
           </li>
           <li>
-            <p class="text-justify"> <strong>Información adicional </strong> <%= (@endemica.infoAdicionalEndemica).html_safe %></p>
+            <p class="text-justify"> <strong>Información adicional </strong> <%=FichasController.convert_to_HTML(@endemica.infoAdicionalEndemica)%></p>
           </li>
         </ul>
       </div>
