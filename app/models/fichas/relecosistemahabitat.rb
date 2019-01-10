@@ -1,4 +1,4 @@
-class Relecosistemahabitat < Ficha
+class Fichas::Relecosistemahabitat < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.relecosistemahabitat"
 	self.primary_keys = :habitatId,  :ecosistemaid

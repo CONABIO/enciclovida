@@ -1,4 +1,4 @@
-class Reldistribucionpais < Ficha
+class Fichas::Reldistribucionpais < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.reldistribucionpais"
 	self.primary_keys = :distribucionId,  :paisId,  :tipopais

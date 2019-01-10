@@ -1,4 +1,5 @@
-class FichasController < ApplicationController
+class Fichas::FrontController < Fichas::FichasController
+
   before_action :set_taxon
   layout false
 
@@ -114,7 +115,6 @@ class FichasController < ApplicationController
 
   # VIII. Estado de conservación de la especie
   def estado_de_conservacion_de_especie
-
 
     @conservacion = @taxon.conservacion.first
     @demografiaAmenazas = @taxon.demografiaAmenazas.first

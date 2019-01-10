@@ -1,4 +1,4 @@
-class Cat_Gruposespecies < Ficha
+class Fichas::Cat_Gruposespecies < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.cat_gruposespecies"
 	self.primary_key = 'Id'

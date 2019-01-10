@@ -1,4 +1,4 @@
-class MunicipioF < Ficha
+class Fichas::MunicipioF < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.municipio"
 	self.primary_key = 'municipioId'

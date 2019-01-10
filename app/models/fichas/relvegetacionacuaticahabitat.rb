@@ -1,4 +1,4 @@
-class Relvegetacionacuaticahabitat < Ficha
+class Fichas::Relvegetacionacuaticahabitat < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.relvegetacionacuaticahabitat"
 	self.primary_keys = :habitatId,  :vegetacionAcuaticaid

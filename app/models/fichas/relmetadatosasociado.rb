@@ -1,4 +1,4 @@
-class Relmetadatosasociado < Ficha
+class Fichas::Relmetadatosasociado < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.relmetadatosasociado"
 	self.primary_keys = :asociadoId,  :metadatosId

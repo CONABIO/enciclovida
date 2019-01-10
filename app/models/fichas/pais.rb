@@ -1,4 +1,4 @@
-class Pais < Ficha
+class Fichas::Pais < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.pais"
 	self.primary_key = 'paisId'

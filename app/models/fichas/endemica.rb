@@ -1,4 +1,4 @@
-class Endemica < Ficha
+class Fichas::Endemica < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.endemica"
 	self.primary_keys = :endemicaId,  :especieId

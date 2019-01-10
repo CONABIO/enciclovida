@@ -1,4 +1,4 @@
-class Legislacion < Ficha
+class Fichas::Legislacion < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.legislacion"
 	self.primary_keys = :legislacionId,  :especieId

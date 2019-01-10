@@ -1,4 +1,4 @@
-class Caracteristicasespecie < Ficha
+class Fichas::Caracteristicasespecie < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.caracteristicasespecie"
 	self.primary_keys = :especieId,  :idpregunta,  :idopcion

@@ -11,6 +11,10 @@ Buscador::Application.routes.draw do
     resources :propiedades
   end
 
+  namespace :fichas do
+    resources :front
+  end
+
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
 

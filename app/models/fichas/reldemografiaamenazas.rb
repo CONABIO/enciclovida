@@ -1,4 +1,4 @@
-class Reldemografiaamenazas < Ficha
+class Fichas::Reldemografiaamenazas < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.reldemografiaamenazas"
 	self.primary_keys = :demografiaAmenazasId,  :amenazaId

@@ -1,4 +1,4 @@
-class Sinonimo < Ficha
+class Fichas::Sinonimo < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.sinonimo"
 	self.primary_keys = :especieId,  :nombreSimple,  :autoridad

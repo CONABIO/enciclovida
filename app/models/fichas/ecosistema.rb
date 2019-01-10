@@ -1,4 +1,4 @@
-class Ecosistema < Ficha
+class Fichas::Ecosistema < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.ecosistema"
 	self.primary_key = 'ecosistemaid'

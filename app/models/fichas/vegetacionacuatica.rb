@@ -1,4 +1,4 @@
-class Vegetacionacuatica < Ficha
+class Fichas::Vegetacionacuatica < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.vegetacionacuatica"
 

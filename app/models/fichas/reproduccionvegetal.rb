@@ -1,4 +1,4 @@
-class Reproduccionvegetal < Ficha
+class Fichas::Reproduccionvegetal < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.reproduccionvegetal"
 	self.primary_key = 'reproduccionVegetalId'
