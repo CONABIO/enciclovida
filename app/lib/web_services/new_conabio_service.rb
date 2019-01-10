@@ -18,7 +18,6 @@ class New_Conabio_Service
     # Por prueba, se envia el taxón 1, pero q, se envía el que se va a buscar realmente
 
     if Fichas::Taxon.where(IdCAT: q).first
-      #request("infoEspecie/#{q}")
       request("fichas/front/#{q}")
     else
       nil

@@ -138,16 +138,15 @@ class Fichas::FrontController < Fichas::FichasController
     # A partir de la especie, acceder a:
     # I. Clasificación y descripción de la especie
     @nombre_comun = @taxon.nombreComun
-    @legislacion = @taxon.legislaciones.first
+    @legislacion = @taxon.legislaciones.first || Fichas::Legislacion.new
     @sinonimo = @taxon.sinonimos.first
 
     # II. Distribución de la especie
-    @distribucion = @taxon.distribuciones.first
-    @endemica = @taxon.endemicas.first
-    @habitat = @taxon.habitats.first
+    @distribucion = @taxon.distribuciones.first || Fichas::Distribucion.new
+    @endemica = @taxon.endemicas.first || Fichas::Endemica.new
 
+    @habitat = @taxon.habitats.first || Fichas::Habitat.new
     # III. Tipo de ambiente en donde se desarrolla la especie
-    #@habitat = @taxon.habitats.first
     @tipoClima = @habitat.tipoclima
     @suelo = @habitat.suelo
     @geoforma = @habitat.geoforma
@@ -157,26 +156,21 @@ class Fichas::FrontController < Fichas::FichasController
     @habitatAntropico = @habitat.habitatAntropico
 
     # IV. Biología de la especie
-    #@habitat = @taxon.habitats.first
-    @historiaNatural = @taxon.historiaNatural
-    @demografiaAmenazas = @taxon.demografiaAmenazas.first
-    @infoReproduccion = @historiaNatural.get_info_reproduccion
-
+    @demografiaAmenazas = @taxon.demografiaAmenazas.first || Fichas::Demografiaamenazas.new
     # V. Ecología y demografía de la especie
-    #@demograAmenazas = @taxon.demografiaAmenazas.first
     @interaccion = @demografiaAmenazas.interaccion
+    @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
 
     # VI. Genética de la especie
-    # @historianatural = taxon.historiaNatural
+    @historiaNatural = @taxon.historiaNatural || Fichas::Historianatural.new
+    @infoReproduccion = @historiaNatural.get_info_reproduccion
 
     # VII. Importancia de la especie
-    #@historiaNatural = taxon.historiaNatural
     @culturaUsos = @historiaNatural.culturaUsos.first
 
+
     # VIII. Estado de conservación de la especie
-    @conservacion = @taxon.conservacion.first
-    #@demografiaAmenazas = @taxon.demografiaAmenazas.first
-    @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
+    @conservacion = @taxon.conservacion.first || Fichas::Conservacion.new
 
     # IX. Especies prioritarias para la conservación
     # 
@@ -186,17 +180,20 @@ class Fichas::FrontController < Fichas::FichasController
 
     # XI. Metadatos:
     @metadato = @taxon.metadatos.first
-    @asociado = @metadato.asociado.first
-    @organizacion = @asociado.organizacion
-    @responsable = @asociado.responsable
-    @puesto = @asociado.puesto
-    @contacto = @asociado.contacto.first
-    @ciudad = @contacto.ciudad
-    @pais = @ciudad.pais
+
+    if @metadato && @asociado = @metadato.asociado.first
+      @organizacion = @asociado.organizacion
+      @responsable = @asociado.responsable
+      @puesto = @asociado.puesto
+      @contacto = @asociado.contacto.first
+
+      if @ciudad = @contacto.ciudad
+        @pais = @ciudad.pais
+      end
+    end
 
     # XII. Referencias: (Agregado)
     @referencias = @taxon.referenciasBibliograficas
-
 
     respond_to do |format|
       format.html
