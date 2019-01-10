@@ -6,7 +6,6 @@ class Fichas::FrontController < Fichas::FichasController
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
   def clasificacion_y_descripcion_de_especie # especieId
-
     @nombre_comun = @taxon.nombreComun
     @legislacion = @taxon.legislaciones.first
     @sinonimo = @taxon.sinonimos.first
@@ -21,7 +20,6 @@ class Fichas::FrontController < Fichas::FichasController
 
   # Distribución de la especie
   def distribucione_de_la_especie # especieId
-
     @distribucion = @taxon.distribuciones.first
     @endemica = @taxon.endemicas.first
     @habitat = @taxon.habitats.first
@@ -61,8 +59,7 @@ class Fichas::FrontController < Fichas::FichasController
 
   # IV. Biología de la especie
   def biologia_de_la_especie
-
-     # Obtener el id de especie
+    # Obtener el id de especie
     @habitat = @taxon.habitats.first
     @historiaNatural = @taxon.historiaNatural
     @demografiaAmenazas = @taxon.demografiaAmenazas.first
@@ -79,8 +76,7 @@ class Fichas::FrontController < Fichas::FichasController
 
   # V. Ecología y demografía de la especie
   def ecologia_y_demografia_de_especie
-
-     # Obtener el id de especie
+    # Obtener el id de especie
     @demograAmenazas = @taxon.demografiaAmenazas.first
     @interaccion = @demograAmenazas.interaccion
 
@@ -93,7 +89,6 @@ class Fichas::FrontController < Fichas::FichasController
 
   # VI. Genética de la especie
   def genetica_de_especie
-
     @historianatural = @taxon.historiaNatural
 
     render json: {
@@ -103,7 +98,6 @@ class Fichas::FrontController < Fichas::FichasController
 
   # VII. Importancia de la especie
   def importancia_de_especie
-
     @historiaNatural = @taxon.historiaNatural
     @culturaUsos = @historiaNatural.culturaUsos
 
@@ -115,7 +109,6 @@ class Fichas::FrontController < Fichas::FichasController
 
   # VIII. Estado de conservación de la especie
   def estado_de_conservacion_de_especie
-
     @conservacion = @taxon.conservacion.first
     @demografiaAmenazas = @taxon.demografiaAmenazas.first
     @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
@@ -129,21 +122,19 @@ class Fichas::FrontController < Fichas::FichasController
 
   # IX. Especies prioritarias para la conservación
   def especies_prioritarias_para_conservacion
-
-     # Obtener el id de especie
-
+    # Obtener el id de especie
     render json: { taxon: @taxon }
   end
 
   # X. Necesidades de información
   def necesidades_de_informacion
-
-     # Obtener el id de especie
-
+    # Obtener el id de especie
     render json: { taxon: @taxon }
   end
 
   def show
+    @sin_info_msj = 'Sin información disponible'
+
     # A partir de la especie, acceder a:
     # I. Clasificación y descripción de la especie
     @nombre_comun = @taxon.nombreComun
@@ -232,7 +223,7 @@ class Fichas::FrontController < Fichas::FichasController
           metadato: @metadato, asociado: @asociado, organizacion: @organizacion, responsable: @responsable, puesto: @puesto, contacto: @contacto, ciudad: @ciudad, pais: @pais,
           # XII. Referencias: (Agregado)
           referencias: @referencias
-        }
+      }
       }
     end
   end
@@ -248,11 +239,11 @@ class Fichas::FrontController < Fichas::FichasController
         @res = text.to_s
       end
     else
-        @res = "Sin información disponible"
+      @res = "Sin información disponible"
     end
 
     return @res
-    end
+  end
 
 
   private

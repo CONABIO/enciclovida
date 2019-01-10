@@ -2,9 +2,9 @@
   <div class="col-md-12" id="biologiaEspecie">
 
     <% if @historiaNatural.tipoReproduccion == 'animal' %>
-      <%= render('fichas/secciones_info_especie/biologia_de_la_especie_animal', sin_info_msj: sin_info_msj) %>
+      <%= render partial: 'biologia_de_la_especie_animal' %>
     <% elsif @historiaNatural.tipoReproduccion == 'veget'  %>
-      <%= render('fichas/secciones_info_especie/biologia_de_la_especie_vegetal', sin_info_msj: sin_info_msj) %>
+      <%= render partial: 'biologia_de_la_especie_vegetal' %>
     <%end%>
 
   </div>

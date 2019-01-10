@@ -21,9 +21,9 @@
     <br>
 
     <h4>Interacciones</h4>
-    <p><%=@interaccion.present? ? FichasController.convert_to_HTML(@interaccion.interacciones) : (sin_info_msj)%></p>
+    <p><%=@interaccion.present? ? FichasController.convert_to_HTML(@interaccion.interacciones) : (@sin_info_msj)%></p>
     <h5>Información adicional</h5>
-    <p><%=@demografiaAmenazas.present? ? FichasController.convert_to_HTML(@demografiaAmenazas.infoAdicionalInteraccion) : (sin_info_msj)%></p>
+    <p><%=@demografiaAmenazas.present? ? FichasController.convert_to_HTML(@demografiaAmenazas.infoAdicionalInteraccion) : (@sin_info_msj)%></p>
 
   </div>
 </div>

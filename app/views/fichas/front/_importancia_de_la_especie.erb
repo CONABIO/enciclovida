@@ -38,7 +38,7 @@
     <br>
 
     <h4>Importancia cultural y usos</h4>
-    <p><%=@culturaUsos.present? ? FichasController.convert_to_HTML(@culturaUsos.descripcion)  : (sin_info_msj)%></p>
+    <p><%=@culturaUsos.present? ? FichasController.convert_to_HTML(@culturaUsos.descripcion)  : (@sin_info_msj)%></p>
     <h5>Información adicional</h5>
     <p><%=FichasController.convert_to_HTML(@historiaNatural.importanciaEconomica)%></p>
   </div>

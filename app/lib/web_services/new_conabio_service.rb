@@ -17,7 +17,7 @@ class New_Conabio_Service
     # Llamar a 'infoEspecie', quien nos devolverá código html con la infomración de la especie
     # Por prueba, se envia el taxón 1, pero q, se envía el que se va a buscar realmente
 
-    if Taxon.where(IdCAT: q).first
+    if Fichas::Taxon.where(IdCAT: q).first
       #request("infoEspecie/#{q}")
       request("fichas/front/#{q}")
     else
