@@ -143,9 +143,7 @@ class Fichas::FrontController < Fichas::FichasController
     render json: { taxon: @taxon }
   end
 
-
-  def informacion_de_especie
-
+  def show
     # A partir de la especie, acceder a:
     # I. Clasificación y descripción de la especie
     @nombre_comun = @taxon.nombreComun
@@ -256,8 +254,11 @@ class Fichas::FrontController < Fichas::FichasController
     return @res
     end
 
+
   private
+
   def set_taxon
-    @taxon = Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
+    @taxon = Fichas::Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
   end
+
 end
