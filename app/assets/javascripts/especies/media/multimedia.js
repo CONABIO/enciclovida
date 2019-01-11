@@ -5,13 +5,14 @@ $(document).ready(function(){
         var media;
 
         var ubicacion = [];
-        [button.data('state'),button.data('country')].forEach(function(cValue){
+        [button.data('state'), button.data('country')].forEach(function(cValue){
             if(cValue != ''){ubicacion.push(cValue)}
         });
 
         $('#modal_localidad').text(button.data('locality'));
         //$('#modal_ubicacion').text(ubicacion.join(', '));
-        if(button.data('municipio') !== 'undefined') $('#modal_ubicacion').text(ubicacion.join(', '));
+        if(typeof button.data('municipio') !== 'undefined') $('#modal_ubicacion').text(ubicacion.join(', '));
+        console.log(button.data('municipio'));
         $('#modal_fecha').text(button.data('date'));
         $('#modal_observacion').attr('href', button.data('observation'));
         $('#modal_autor').text(button.data('author'));
