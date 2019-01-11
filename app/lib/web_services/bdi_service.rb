@@ -20,6 +20,31 @@ class BDIService
 
   ALBUM_VIDEOS = ['5121-Video']
 
+  def dameFotos(opts)
+    bdi = CONFIG.bdi_imagenes
+    fotos = []
+    jres = fotos_album(opts)
+    return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
+
+    jres['data'].each do |x|
+      foto = Photo.new
+      foto.large_url = bdi+x['previews'][3]['href']
+      foto.medium_url = bdi+x['previews'][7]['href']
+      foto.native_page_url = bdi+x['href']
+      foto.license = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
+      foto.square_url = bdi+x['previews'][10]['href']
+      foto.native_realname = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
+      fotos << foto
+    end
+
+    if jres['paging'].present? && jres['paging']['next'].present?
+      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
+      {:estatus => true, :ultima => ultima, :fotos => fotos}
+    else
+      {:estatus => true, :ultima => nil, :fotos => fotos}
+    end
+  end
+
   # Método para recuperar los videos
   def dame_videos(opts)
     bdi = CONFIG.bdi_imagenes
@@ -47,31 +72,6 @@ class BDIService
       {:estatus => true, :ultima => nil, :videos => videos}
     end
 
-  end
-
-  def dameFotos(opts)
-    bdi = CONFIG.bdi_imagenes
-    fotos = []
-    jres = fotos_album(opts)
-    return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
-
-    jres['data'].each do |x|
-      foto = Photo.new
-      foto.large_url = bdi+x['previews'][3]['href']
-      foto.medium_url = bdi+x['previews'][7]['href']
-      foto.native_page_url = bdi+x['href']
-      foto.license = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
-      foto.square_url = bdi+x['previews'][10]['href']
-      foto.native_realname = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
-      fotos << foto
-    end
-
-    if jres['paging'].present? && jres['paging']['next'].present?
-      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
-      {:estatus => true, :ultima => ultima, :fotos => fotos}
-    else
-      {:estatus => true, :ultima => nil, :fotos => fotos}
-    end
   end
 
   # Compruebo en los albunes para mandar una respuesta no vacia

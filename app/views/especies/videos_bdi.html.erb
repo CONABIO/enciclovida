@@ -1,26 +1,41 @@
-<div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 media-supplier">
-  <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
-    <i class ='conabio_completo-ev-icon'></i>
-  </div>
-  <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
-    <i class ='bdi-ev-icon'></i>
-  </div>
-  <div class="col-xs-12 col-sm-2 col-md-2 col-md-offset-2 col-lg-3 col-lg-offset-9">
-    <span class='glyphicon glyphicon-film' aria-hidden='true'></span>
-  </div>
-</div>
+<%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
 
-<%=
-  #imprime_video_bdi(item, type)
-%>
+<div id="paginado_fotos">
 
-<% if @videos.any? %>
-  <% @videos.each do |video| %>
-    <div class="result-img-container">
-      <%= link_to (image_tag video.preview_img), video.url_acces, target: :_blank %>
-    </div>
+  <% if @pagina.blank? && @videos.any? %>
+    <div class="text-center paginado_1"></div>
   <% end %>
-<% else %>
-  <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="http://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a>
-  </p>
-<% end %>
+
+  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 media-supplier">
+    <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+      <i class ='conabio_completo-ev-icon'></i>
+    </div>
+    <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+      <i class ='bdi-ev-icon'></i>
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2 col-md-offset-2 col-lg-3 col-lg-offset-9">
+      <span class='glyphicon glyphicon-film' aria-hidden='true'></span>
+    </div>
+  </div>
+
+  <% if @videos.any? %>
+    <% @videos.each do |video| %>
+      <div class="result-img-container">
+        <%= imprime_media_bdi(video, 'video') %>
+        <%= #link_to (image_tag video.preview_img), video.url_acces, target: :_blank
+        %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>Lo sentimos, no contamos con una imágen para esta especie</p>
+  <% end %>
+
+  <% if @pagina.blank? && @videos.any? %>
+    <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
+    <div class="text-center paginado_2"></div>
+    <script data-turbolinks-track="true">
+        paginadoFotosBDI(<%= @paginas || 1 %>, 1);
+    </script>
+  <% end %>
+
+</div>

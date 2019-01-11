@@ -367,15 +367,27 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
   end
 
 
-  def imprime_video_bdi(item, type)
+  def imprime_media_bdi(item, type)
+    copyright = "BDI - CONABIO"
     case type
-      when 'video' # Datos fasos por ahora
-        link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
+      when 'photo'
+        link_to("<img src='#{}' />".html_safe, '',
                 "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
-                "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
-                "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
-                "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+                "data-type" => 'photo',
+                "data-copyright" => copyright,
+                )
+      when 'video' # Datos fasos por ahora
+        link_to("<img src='#{item.preview_img}' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-copyright" => copyright,
+                "data-url" => item.url_acces,
+                "data-observation"=> item.href_info,
+                "data-type" => 'video',
+                "data-author" => "#{item.autor}, #{item.licencia}",
+                "data-locality" => item.localidad)
     end
+
+
   end
 
   def imprimeMediaCornell(item,type)
