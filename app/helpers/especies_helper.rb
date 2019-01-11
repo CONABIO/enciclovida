@@ -377,16 +377,17 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
                 "data-copyright" => copyright,
                 "data-url" => item.medium_url,
                 "data-author" => item.native_realname,
+                "data-locality" =>  "No disponible",
                 "data-observation"=> item.native_page_url
                 )
       when 'video' # Datos fasos por ahora
         link_to("<img src='#{item.preview_img}' />".html_safe, '',
                 "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
                 "data-type" => 'video',
-                "data-copyright" => copyright,
+                "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
                 "data-observation"=> item.href_info,
                 "data-url" => item.url_acces,
-                "data-author" => "#{item.autor}, #{item.licencia}",
+                "data-author" => item.autor,
                 "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
                 "data-state" =>  item.municipio.present? ? item.municipio : nil)
     end

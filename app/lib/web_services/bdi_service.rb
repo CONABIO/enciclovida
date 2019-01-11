@@ -61,7 +61,7 @@ class BDIService
       video.autor = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
       video.localidad = x['metadata']['90'].present? ? x['metadata']['90']['value'] : nil
       video.municipio = x['metadata']['300'].present? ? x['metadata']['300']['value'] : nil
-      video.licencia = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
+      video.licencia = x['metadata']['340'].present? ? x['metadata']['340']['value'] : nil
       videos << video
     end
 

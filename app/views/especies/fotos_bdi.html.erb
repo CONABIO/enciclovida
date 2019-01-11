@@ -21,7 +21,8 @@
   <% if @fotos.any? %>
     <% @fotos.each do |foto| %>
       <div class="result-img-container">
-        <%= imprime_media_bdi(foto, 'photo') %>
+        <%= imprime_media_bdi(foto, 'photo')
+        %>
         <%= #link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank
         %>
       </div>
