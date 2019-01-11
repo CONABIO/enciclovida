@@ -371,23 +371,25 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     copyright = "BDI - CONABIO"
     case type
       when 'photo'
-        link_to("<img src='#{}' />".html_safe, '',
+        link_to("<img src='#{item.medium_url}' />".html_safe, '',
                 "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
                 "data-type" => 'photo',
                 "data-copyright" => copyright,
+                "data-url" => item.medium_url,
+                "data-author" => item.native_realname,
+                "data-observation"=> item.native_page_url
                 )
       when 'video' # Datos fasos por ahora
         link_to("<img src='#{item.preview_img}' />".html_safe, '',
                 "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
-                "data-copyright" => copyright,
-                "data-url" => item.url_acces,
-                "data-observation"=> item.href_info,
                 "data-type" => 'video',
+                "data-copyright" => copyright,
+                "data-observation"=> item.href_info,
+                "data-url" => item.url_acces,
                 "data-author" => "#{item.autor}, #{item.licencia}",
-                "data-locality" => item.localidad)
+                "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
+                "data-state" =>  item.municipio.present? ? item.municipio : nil)
     end
-
-
   end
 
   def imprimeMediaCornell(item,type)

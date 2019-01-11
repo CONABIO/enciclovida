@@ -22,8 +22,6 @@
     <% @videos.each do |video| %>
       <div class="result-img-container">
         <%= imprime_media_bdi(video, 'video') %>
-        <%= #link_to (image_tag video.preview_img), video.url_acces, target: :_blank
-        %>
       </div>
     <% end %>
   <% else %>

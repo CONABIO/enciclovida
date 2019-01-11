@@ -1,3 +1,5 @@
+<%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
+
 <div id="paginado_fotos">
 
 	<% if @pagina.blank? && @fotos.any? %>
@@ -19,7 +21,9 @@
   <% if @fotos.any? %>
     <% @fotos.each do |foto| %>
       <div class="result-img-container">
-        <%= link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank %>
+        <%= imprime_media_bdi(foto, 'photo') %>
+        <%= #link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank
+        %>
       </div>
     <% end %>
   <% else %>
