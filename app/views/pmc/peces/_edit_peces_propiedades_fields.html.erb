@@ -1,8 +1,9 @@
 <div class='nested-fields'>
-  <%= f.inputs do %>
-    <% propiedad = f.object.propiedad %>
+  <%#= f.inputs do %>
+  <% propiedad = f.object.propiedad %>
 
-    <%= f.input :propiedad_id, label: propiedad.tipo_propiedad, as: :select,
-                collection: grouped_options_for_select(Pmc::Propiedad.catalogo, selected: propiedad.id) %>
-  <% end %>
+  <%= f.input :propiedad_id, label: propiedad.tipo_propiedad,
+              collection: Pmc::Propiedad.catalogo, selected: propiedad.id,
+              as: :grouped_select, group_method: :last %>
+  <%# end %>
 </div>
