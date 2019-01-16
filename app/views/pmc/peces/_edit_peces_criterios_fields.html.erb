@@ -5,7 +5,6 @@
 
     # Para no mostrar las categorias de riesgo, ya que estas vienen de catalogos
     unless propiedad.existe_propiedad?([Pmc::Propiedad::NOM_ID, Pmc::Propiedad::IUCN_ID])
-      puts Pmc::Criterio.catalogo(propiedad).inspect
   %>
 
     <%= f.input :criterio_id, collection: Pmc::Criterio.catalogo(propiedad), selected: f.object.criterio_id %>
