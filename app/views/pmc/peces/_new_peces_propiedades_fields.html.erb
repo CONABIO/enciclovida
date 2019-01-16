@@ -1,7 +1,5 @@
 <div class='nested-fields'>
-  <%#= f.inputs do %>
   <%= f.input :propiedad_id, label: 'Nueva propiedad', prompt: '-- Selecciona --',
-              collection: Pmc::Propiedad.catalogo, as: :grouped_select, group_method: :last %>
+              collection: Pmc::Propiedad.catalogo, as: :grouped_select, group_method: :last, input_html: { class: 'form-control' } %>
   <%= link_to_remove_association 'Quitar propiedad', f %>
-  <%# end %>
 </div>
