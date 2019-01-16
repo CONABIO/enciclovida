@@ -8,6 +8,7 @@
     <div class="col-xs-1">
       <%= link_to_remove_association('<span class="glyphicon glyphicon-remove"></span>'.html_safe, f, :class => 'btn btn-link btn') if propiedad.tipo_propiedad == 'Pesquerías en vías de sustentabilidad' %>
     </div>
+
     <div class="col-xs-11">
       <%= f.input :criterio_id, collection: Pmc::Criterio.catalogo(propiedad), selected: f.object.criterio_id,input_html: { class: 'form-control' }, label: propiedad.tipo_propiedad %>
     </div>
