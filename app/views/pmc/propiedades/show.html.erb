@@ -1,6 +1,37 @@
 <p id="notice"><%= notice %></p>
 
-<table>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    ID: <%= @propiedad.id %><h3 class="panel-title"><%= @propiedad.nombre_propiedad %></h3>
+  </div>
+
+  <div class="panel-body">
+    <i>Tipo de propiedad:</i> <%= @propiedad.tipo_propiedad.present? ? @propiedad.tipo_propiedad : 'Sin datos'.html_safe %>
+
+    <hr />
+
+    <% if @propiedad.is_root? %>
+      <i>Esta propiedad es un elemento padre</i>
+    <% else %>
+      <i>Propiedades más arriba:</i>
+      <%= @propiedad.ancestors.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
+    <% end %>
+
+    <hr />
+
+    <% if @propiedad.has_children? %>
+      <%= @propiedad.ancestors.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
+    <% else %>
+      <i>Propiedades más arriba:</i>
+      <i>Esta propiedad no tiene hijos directos</i>
+    <% end %>
+
+  </div>
+
+  <div class="panel-footer">Panel footer</div>
+</div>
+
+<table class="table table-condensed table-striped table-hover table-responsive">
   <thead>
   <tr>
     <th>ID</th>
@@ -13,18 +44,18 @@
   </thead>
 
   <tbody>
-    <tr>
-      <td><%= @propiedad.id %></td>
-      <td><%= @propiedad.nombre_propiedad %></td>
-      <td><%= @propiedad.tipo_propiedad %></td>
-      <td><%= @propiedad.ancestry %></td>
-      <td></td>
-      <td>
-        <%= link_to 'Editar', edit_propiedad_path(@propiedad) %> |
-        <%= link_to 'Destruir', @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
-      </td>
-    </tr>
+  <tr>
+    <td><%= @propiedad.id %></td>
+    <td><%= @propiedad.nombre_propiedad %></td>
+    <td><%= @propiedad.tipo_propiedad %></td>
+    <td><%= @propiedad.ancestry %></td>
+    <td></td>
+    <td>
+      <%= link_to 'Editar', edit_pmc_propiedad_path(@propiedad) %> |
+      <%= link_to 'Destruir', @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
+    </td>
+  </tr>
   </tbody>
 </table>
 
-<%= link_to 'Volver al panel de administración', propiedades_path %>
+<%= link_to 'Regresar a todas las propiedades', pmc_propiedades_path %>

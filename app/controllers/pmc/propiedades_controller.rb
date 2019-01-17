@@ -1,18 +1,19 @@
 class Pmc::PropiedadesController < ApplicationController
   before_action :set_propiedad, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action do
+    tiene_permiso?('AdminPeces', true)
+  end
 
   # GET /propiedades
   # GET /propiedades.json
   def index
     @propiedades = Pmc::Propiedad.all.order(ancestry: :asc)
-
-    render 'peces/propiedades/index'
   end
 
   # GET /propiedades/1
   # GET /propiedades/1.json
   def show
-    render 'peces/propiedades/show'
   end
 
   # GET /propiedades/new
