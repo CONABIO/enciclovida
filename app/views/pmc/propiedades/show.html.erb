@@ -2,13 +2,10 @@
 
 <div class="panel panel-primary">
   <div class="panel-heading">
-    ID: <%= @propiedad.id %><h3 class="panel-title"><%= @propiedad.nombre_propiedad %></h3>
+    ID: <%= @propiedad.id %><h3 class="panel-title"><%= "#{@propiedad.tipo_propiedad} - #{@propiedad.nombre_propiedad}" %></h3>
   </div>
 
   <div class="panel-body">
-    <i>Tipo de propiedad:</i> <%= @propiedad.tipo_propiedad.present? ? @propiedad.tipo_propiedad : 'Sin datos'.html_safe %>
-
-    <hr />
 
     <% if @propiedad.is_root? %>
       <i>Esta propiedad es un elemento padre</i>
@@ -19,43 +16,19 @@
 
     <hr />
 
-    <% if @propiedad.has_children? %>
-      <%= @propiedad.ancestors.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
+    <%
+      hijos = @propiedad.children
+      if hijos.any?
+    %>
+      <i>Hijos de esta propiedad:</i>
+      <%= hijos.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
     <% else %>
-      <i>Propiedades más arriba:</i>
-      <i>Esta propiedad no tiene hijos directos</i>
+      <i>Propiedades más abajo:</i> Esta propiedad no tiene hijos directos
     <% end %>
 
   </div>
 
-  <div class="panel-footer">Panel footer</div>
+  <div class="panel-footer"><%= link_to "<i class='glyphicon glyphicon-pencil'></i>".html_safe, edit_pmc_propiedad_path(@propiedad) %></div>
 </div>
-
-<table class="table table-condensed table-striped table-hover table-responsive">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Nombre propiedad</th>
-    <th>Tipo propiedad</th>
-    <th>Ancestros</th>
-    <th>Criterios vinculados</th>
-    <th></th>
-  </tr>
-  </thead>
-
-  <tbody>
-  <tr>
-    <td><%= @propiedad.id %></td>
-    <td><%= @propiedad.nombre_propiedad %></td>
-    <td><%= @propiedad.tipo_propiedad %></td>
-    <td><%= @propiedad.ancestry %></td>
-    <td></td>
-    <td>
-      <%= link_to 'Editar', edit_pmc_propiedad_path(@propiedad) %> |
-      <%= link_to 'Destruir', @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
-    </td>
-  </tr>
-  </tbody>
-</table>
 
 <%= link_to 'Regresar a todas las propiedades', pmc_propiedades_path %>
