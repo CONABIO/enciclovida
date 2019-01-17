@@ -13,7 +13,7 @@
 
   <% if @pez.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@pez.errors.count, 'error') %> errores prohibieron que el pez se guardara:</h2>
+      <h2><%= pluralize(@pez.errors.count, 'error') %> prohibieron que el pez se guardara:</h2>
 
       <ul>
         <% @pez.errors.full_messages.each do |msg| %>

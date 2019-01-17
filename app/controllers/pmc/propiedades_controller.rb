@@ -1,4 +1,5 @@
 class Pmc::PropiedadesController < ApplicationController
+
   before_action :set_propiedad, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_usuario!
   before_action do
@@ -73,6 +74,6 @@ class Pmc::PropiedadesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def propiedad_params
-      params.fetch(:propiedad, {})
+      params.require(:pmc_propiedad).permit(:nombre_propiedad, :tipo_propiedad, :descripcion, :ancestry)
     end
 end
