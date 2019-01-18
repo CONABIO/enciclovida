@@ -33,7 +33,7 @@ class Pmc::PropiedadesController < ApplicationController
 
     respond_to do |format|
       if @propiedad.save
-        format.html { redirect_to @propiedad, notice: 'Propiedad was successfully created.' }
+        format.html { redirect_to @propiedad, notice: 'La propiedad se creo correctamente.' }
         format.json { render :show, status: :created, location: @propiedad }
       else
         format.html { render :new }
@@ -47,7 +47,7 @@ class Pmc::PropiedadesController < ApplicationController
   def update
     respond_to do |format|
       if @propiedad.update(propiedad_params)
-        format.html { redirect_to @propiedad, notice: 'Propiedad was successfully updated.' }
+        format.html { redirect_to @propiedad, notice: 'La propiedad se actualizó correctamente.' }
         format.json { render :show, status: :ok, location: @propiedad }
       else
         format.html { render :edit }
@@ -61,7 +61,7 @@ class Pmc::PropiedadesController < ApplicationController
   def destroy
     @propiedad.destroy
     respond_to do |format|
-      format.html { redirect_to propiedades_url, notice: 'Propiedad was successfully destroyed.' }
+      format.html { redirect_to pmc_propiedades_path, notice: 'La propiedad se borró correctamente.' }
       format.json { head :no_content }
     end
   end

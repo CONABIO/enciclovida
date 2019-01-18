@@ -26,7 +26,7 @@
   <%= f.input :nombre_propiedad %>
   <%= f.input :tipo_propiedad %>
   <%= f.input :descripcion %>
-  <%= f.input :ancestry, collection: Pmc::Propiedad.por_ancestry, input_html: { class: 'form-control' } %>
+  <%= f.input :ancestry, collection: Pmc::Propiedad.dame_propiedades_por_ancestry, input_html: { class: 'form-control' } %>
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
   <%= link_to t('helpers.submit.peces.cancel'), @propiedad.new_record? ? pmc_propiedades_path : pmc_propiedades_path(@propiedad), { :class=>"btn btn-lg btn-block btn-default" } %>

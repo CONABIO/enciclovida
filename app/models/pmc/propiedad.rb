@@ -70,16 +70,20 @@ class Pmc::Propiedad < ActiveRecord::Base
     end
   end
 
-  def self.por_ancestry
-    all.order(:tipo_propiedad, :ancestry).map do |p|
-      ancestro = if p.is_root?
-                   p.id
-                 else
-                   "#{p.ancestry}/#{p.id}"
-                 end
+  def self.dame_propiedades_por_ancestry
+    options = []
 
-      [p.nombre_propiedad, ancestro]
+    all.each do |p|
+      next unless p.is_root?
+      options << [" - #{p.nombre_propiedad}", p.id]
+
+      p.descendants.each do |d|
+        guiones = " - "*(d.ancestry.split('/').count + 1)
+        options << ["#{guiones}#{d.nombre_propiedad}", "#{d.ancestry}/#{d.id}"]
+      end
     end
+
+    options
   end
 
   def existe_propiedad?(propiedades=nil)
