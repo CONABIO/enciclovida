@@ -1,0 +1,11 @@
+<div class='nested-fields'>
+
+  <div class="col-xs-1">
+    <%= link_to_remove_association('<span class="glyphicon glyphicon-remove"></span>'.html_safe, f, :class => 'btn btn-link btn') %>
+  </div>
+
+  <div class="col-xs-11">
+    <%= f.input :propiedad_id, as: :hidden %>
+    <%= f.input :valor, as: :integer %>
+  </div>
+</div>

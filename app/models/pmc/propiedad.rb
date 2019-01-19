@@ -5,7 +5,7 @@ class Pmc::Propiedad < ActiveRecord::Base
   has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy
 
   has_ancestry
 
@@ -20,6 +20,8 @@ class Pmc::Propiedad < ActiveRecord::Base
   scope :nom, -> { where('ancestry=?', NOM_ID) }
   scope :iucn, -> { where('ancestry=?', IUCN_ID) }
   scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
+
+  accepts_nested_attributes_for :criterios, reject_if: :all_blank, allow_destroy: true
 
   # Los IDS asignados a los ancestros, estos no deberían cambiar
   NOM_ID = 318.freeze

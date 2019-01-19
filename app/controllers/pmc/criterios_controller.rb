@@ -1,4 +1,4 @@
-class Pmc::CriteriosController < ApplicationController
+class Pmc::CriteriosController < Pmc::PmcController
   before_action :set_criterio, only: [:show, :edit, :update, :destroy]
 
   # GET /criterios
