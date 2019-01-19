@@ -1,0 +1,40 @@
+
+
+<% if @array[0]["Error"].present? %>
+
+  <div class='result-img-container'>
+    <strong><%= @array[0]["Error"] %></strong>
+  </div>
+
+<% else %>
+
+  <div id="gallery">
+    <% @array.each do |item|  %>
+      <secction class="thumb">
+        <a href="<%= item["DetailJpgUrl"] %>" class="image"><img src="<%= item["ThumbnailUrl"] %>"  title="<%= item["SpecimenText"] %>" alt="" /></a>
+        <h2>Título</h2>
+        <p>Descripción</p>
+      </secction>
+    <% end %>
+  </div>
+
+<% end %>
+
+<script src="https://rawgit.com/n33/jquery.poptrox/master/jquery.poptrox.js"></script>
+<script>
+    $(function() {
+        $('#gallery').poptrox({
+            usePopupCaption: true,
+            usePopupNav: true,
+            popupPadding: 0
+        });
+    });
+</script>
+
+<style>
+  article, details, figcaption, figure {
+    display: block;
+  }
+
+
+</style>

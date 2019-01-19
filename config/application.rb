@@ -22,6 +22,7 @@ PORT = CONFIG.site_url.split(':')[2][0..-1]
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
 
+
 unless Rails.env.development_mac?
   require 'blurrily/client.rb'  #para el fuzzy match
   FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')

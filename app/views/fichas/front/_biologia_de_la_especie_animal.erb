@@ -1,0 +1,63 @@
+
+<h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Animal</strong></h4>
+
+<h4>Generalidades: </h4><p><%=convierte_a_HTML(@infoReproduccion.descripcion)%></p>
+
+<div class="row">
+  <div class="col-md-6 ficaBordeSeparador">
+    <ul type="dotted">
+    <li>
+      <strong>Dimorfismo sexual</strong><p><%=convierte_a_HTML(@infoReproduccion.dimorfismoSexual)%></p>
+      <h5>Coloración</h5> <p><%=convierte_a_HTML(@infoReproduccion.coloracion)%> </p>
+      <h5>Ornamentación</h5> <p><%=convierte_a_HTML(@infoReproduccion.ornamentacion)%> </p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.additionalInfoDimorfiasmo)%></p>
+    </li>
+    <li>
+      <strong>Sistemas de apareamiento</strong><p><%=convierte_a_HTML(@infoReproduccion.sistemaApareamiento)%></p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.descripcionSistema)%></p>
+    </li>
+    <li>
+      <strong>Número de eventos reproductivos</strong><p><%=convierte_a_HTML(@infoReproduccion.noEventos) %></p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.descripcionNoEventos)%></p>
+    </li>
+    <li>
+      <strong>Tiempo entre eventos reproductivos (meses)</strong><p></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Tipo de fecundación</strong><p> <%=convierte_a_HTML(@infoReproduccion.tipoFecundacion)%></p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.descripcionTipoFec)%></p>
+    </li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <ul>
+    <li>
+      <strong>Edad o talla a la primera reproducción</strong><p><%=convierte_a_HTML(@infoReproduccion.edadPrimeraRepro)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Duración de vida reproductiva</strong><p><%=convierte_a_HTML(@infoReproduccion.duracionVidaRepro)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Epoca del año y frecuencia de apareamiento</strong><p> <%=convierte_a_HTML(@infoReproduccion.frecuenciaApareamineto)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Sitios de anidación o de crianza</strong><p><%=convierte_a_HTML(@infoReproduccion.sitioAnidacion)%></p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.descripcionSitioAnidacion)%></p>
+    </li>
+    <li>
+      <strong>Número de huevos o crias</strong><p><%=convierte_a_HTML(@infoReproduccion.noHuevosCrias)%></p>
+      <h5>Información adicional</h5><p></p>
+    </li>
+    <li>
+      <strong>Cuidado parental</strong><p><%=convierte_a_HTML(@infoReproduccion.cuidadoParental)%></p>
+      <h5>Tiempo del cuidado parental</h5><p><%=convierte_a_HTML(@infoReproduccion.tiempoCuidadoParental)%></p>
+      <h5>Información adicional</h5><p><%=convierte_a_HTML(@infoReproduccion.desCuidadoParental)%></p>
+    </li>
+    </ul>
+  </div>
+</div>
+<br>
