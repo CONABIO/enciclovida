@@ -166,10 +166,11 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-                  'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
+                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
     html = ''
 
     def creaContenedor(taxon, opc={})
+      puts opc[:attr].inspect
       valor = taxon.send(opc[:attr])
 
       if valor.present?

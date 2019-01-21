@@ -11,6 +11,7 @@
         <%= dameCaracteristica(@especie) %>
         <%= dameEspecieBibliografias(@especie) %>
         <%= dameOtrosAtributos(@especie) %>
+        <%= "<p><strong>Identificador único</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>
       </fieldset>
     </td>
 
