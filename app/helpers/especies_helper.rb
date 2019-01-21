@@ -173,6 +173,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
       valor = taxon.send(opc[:attr])
 
       if valor.present?
+        valor = valor.strftime('%Y-%m-%d') if opc[:attr] == 'updated_at'
         "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
       else
         ''
