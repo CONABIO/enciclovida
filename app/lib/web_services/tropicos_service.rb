@@ -17,7 +17,7 @@ class Tropicos_Service
     format = 'json'
     search_type = 'exact'
 
-    query = "#{CONFIG.tropicos.api}Search?name=#{name.gsub(' ', '+')}&type=#{search_type}&apikey=#{CONFIG.tropicos.key}&format=#{format}"
+    query = "#{CONFIG.tropicos.api}Search?name=#{name.strip.gsub(' ', '+')}&type=#{search_type}&apikey=#{CONFIG.tropicos.key}&format=#{format}"
     Rails.logger.debug "[DEBUG] Se realizará la busqueda del id de: '#{name}' porque no estuvo en la base de datos, URL: #{query}"
 
     begin
