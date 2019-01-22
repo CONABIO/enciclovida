@@ -5,7 +5,7 @@ especies/especies.js especies/fichas/fichas_extra.js especies/media/bdi.js espec
 inicio.css busquedas.css carrusel.css especies/obligatorios.js
 especies/arbol/arbol_identado.scss especies/arbol/arbol_nodo.css especies/arbol/arbol_nodo.js especies/arbol/arbol_identado.js
 busquedas/region/por_region.js busquedas/region/por_region.css busquedas/region/por_region_extra.js
-peces/peces.js peces/peces.css
+peces/peces.js peces/propiedades_extra.js peces/peces.css
 especies/mapa/mapa.js especies/mapa/mapa.css especies/mapa/mapa_delayed.js
 comentarios/comentarios.js
 )

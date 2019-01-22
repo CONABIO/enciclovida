@@ -67,12 +67,19 @@ class Pmc::PropiedadesController < Pmc::PmcController
   end
 
   def dame_tipo_propiedades
-    @propiedades = Pmc::Propiedad.where('tipo_propiedad REGEXP ?', 'veda').where('ancestry IS NOT NULL')
+    if params[:q].present?
+      propiedades = Pmc::Propiedad.where('tipo_propiedad REGEXP ?', params[:q]).where('ancestry IS NOT NULL')
+      res = propiedades.map { |p| { id: p.tipo_propiedad, value: p.tipo_propiedad } }.uniq.sort
+    else
+      res = []
+    end
 
-    render json: { estatus: true, resultados: @propiedades.map(&:tipo_propiedad).uniq.sort }
+    render json: res
   end
 
+
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_propiedad
       @propiedad = Pmc::Propiedad.find(params[:id])
