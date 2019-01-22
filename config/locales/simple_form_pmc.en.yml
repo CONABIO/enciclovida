@@ -1,5 +1,31 @@
-en:
+es:
+  helpers:
+    submit:
+      pmc_propiedad:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar
   simple_form:
+    hints:
+      pmc_propiedad:
+        nombre_propiedad: Este nombre se desplegará en la pagina, es recomendable un nombre corto y conciso
+        tipo_propiedad: Es una forma de agrupar las propiedades, se recomienda escoger de las existentes
+        descripcion: Ej. Para las pesquerías en vias de certificación de COBI es recomendable poner la localidad
+        ancestry: Asigna el padre de la propiedad, si se deja vacio indica que es una propiedad padre
+        criterios:
+          valor: Este valor es el que se sumará para obtener la recomendación en el semáforo
+    labels:
+      pmc_propiedad:
+        nombre_propiedad: Nombre de la propiedad
+        tipo_propiedad: Tipo de la propiedad
+        descripcion: Descripción
+        ancestry: Propiedad padre
+        criterios:
+          valor: Valor del criterio
+    placeholders:
+      pmc_propiedad:
+        tipo_propiedad: Autocompleta o crea una nueva
+
     "yes": 'Yes'
     "no": 'No'
     required:
