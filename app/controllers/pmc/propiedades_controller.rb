@@ -66,6 +66,12 @@ class Pmc::PropiedadesController < Pmc::PmcController
     end
   end
 
+  def dame_tipo_propiedades
+    @propiedades = Pmc::Propiedad.where('tipo_propiedad REGEXP ?', 'veda').where('ancestry IS NOT NULL')
+
+    render json: { estatus: true, resultados: @propiedades.map(&:tipo_propiedad).uniq.sort }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_propiedad
