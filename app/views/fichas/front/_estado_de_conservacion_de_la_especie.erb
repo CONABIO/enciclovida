@@ -1,0 +1,27 @@
+<div class="row showInfo">
+  <div class="col-md-12 text-justify">
+    <h4>Presiones o amenazas sobre la especie:</h4>
+    <p><%=@amenazaDirecta.present? ? convierte_a_HTML(@amenazaDirecta.presionesAmenazas): (@sin_info_msj)%></p>
+    <h5>Información adicional</h5> <p><%=@demografiaAmenazas.present? ? convierte_a_HTML(@demografiaAmenazas.descPresionesAmenazas): (@sin_info_msj)%></p>
+    <br>
+    <h4>Tendencia poblacional:</h4> <p><%=@demografiaAmenazas.present? ? convierte_a_HTML(@demografiaAmenazas.tendenciaPoblacional): (@sin_info_msj)%></p>
+    <h5>Información adicional</h5> <p><%=@demografiaAmenazas.present? ? convierte_a_HTML(@demografiaAmenazas.descTendenciaPoblacional): (@sin_info_msj)%></p>
+    <br>
+    <h4>Estado de conservación</h4><p><%=@demografiaAmenazas.present? ? convierte_a_HTML(@conservacion.estadoConser): (@sin_info_msj)%></p>
+    <br>
+    <h4>Manejo, aprovechamiento y acciones de conservación</h4><p><%=@conservacion.present? ? convierte_a_HTML(@conservacion.manejoAprov): (@sin_info_msj)%></p>
+    <ol>
+      <li><strong>Acciones de manejo y conservación de la especie</strong><p><%=@conservacion.present? ? convierte_a_HTML(@conservacion.descManejoAprov): (@sin_info_msj)%></p></li>
+      <li><strong>Esquema de manejo en el cual la especie es aprovechada o gestionada</strong></li>
+      <li><strong>Tipo de aprovechamiento de la especie</strong><p><%=@conservacion.present? ? convierte_a_HTML(@conservacion.tipoAprovEsp): (@sin_info_msj)%></p></li>
+    </ol>
+    <br>
+    <h4>Marco legal nacional e internacional</h4>
+    <ol>
+      <li><strong>Regulaciones aplicables a la especie</strong><p><%=@conservacion.present? ? convierte_a_HTML(@conservacion.marcolegal): (@sin_info_msj)%></p></li>
+      <li><strong>Tipo de veda</strong><p><%=@conservacion.present? ? convierte_a_HTML(@conservacion.tipoVeda): (@sin_info_msj)%></p></li>
+    </ol>
+    <h5>Información adicional</h5>
+
+  </div>
+</div>

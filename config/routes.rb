@@ -11,6 +11,42 @@ Buscador::Application.routes.draw do
     resources :propiedades
   end
 
+  namespace :fichas do
+    resources :front do
+      collection do
+        # I. Clasificación y descripción de la especie
+        get ':id/clasifDescEspecie' => 'fichas#clasificacion_y_descripcion_de_especie'
+
+        # II. Distribución de la especie
+        get ':id/distribucionEspeciespecie' => 'fichas#distribucione_de_la_especie'
+
+        # III.Tipo de ambiente en donde se desarrolla la especie
+        get ':id/ambienteDesarrolloEspecie' => 'fichas#ambiente_de_desarrollo_de_especie'
+
+        # IV. Biología de la especie
+        get ':id/biologiaEspecie' => 'fichas#biologia_de_la_especie'
+
+        # V. Ecología y demografía de la especie
+        get ':id/ecologiaYDemografiaEspecie' => 'fichas#ecologia_y_demografia_de_especie'
+
+        # VI. Genética de la especie
+        get ':id/geneticaEspecie' => 'fichas#genetica_de_especie'
+
+        # VII. Importancia de la especie
+        get ':id/importanciaEspecie' => 'fichas#importancia_de_especie'
+
+        # VIII. Estado de conservación de la especie
+        get ':id/estadoConservacionEspecie' => 'fichas#estado_de_conservacion_de_especie'
+
+        # IX. Especies prioritarias para la conservación
+        get ':id/especiesPrioritariasParaConservacion' => 'fichas#especies_prioritarias_para_conservacion'
+
+        # X. Necesidades de información
+        get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+      end
+    end
+  end
+
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
 
@@ -170,48 +206,8 @@ Buscador::Application.routes.draw do
     end
   end
 
-
-  #  - - - - - - - - * * Rutas de información de determinada especie (Según su id) * *  - - - - - - - -
-  # I. Clasificación y descripción de la especie
-  get 'clasifDescEspecie/:id' => 'fichas#clasificacion_y_descripcion_de_especie'
-
-  # II. Distribución de la especie
-  get 'distribucionEspeciespecie/:id' => 'fichas#distribucione_de_la_especie'
-
-  # III.Tipo de ambiente en donde se desarrolla la especie
-  get 'ambienteDesarrolloEspecie/:id' => 'fichas#ambiente_de_desarrollo_de_especie'
-
-  # IV. Biología de la especie
-  get 'biologiaEspecie/:id' => 'fichas#biologia_de_la_especie'
-
-  # V. Ecología y demografía de la especie
-  get 'ecologiaYDemografiaEspecie/:id' => 'fichas#ecologia_y_demografia_de_especie'
-
-  # VI. Genética de la especie
-  get 'geneticaEspecie/:id' => 'fichas#genetica_de_especie'
-
-  # VII. Importancia de la especie
-  get 'importanciaEspecie/:id' => 'fichas#importancia_de_especie'
-
-  # VIII. Estado de conservación de la especie
-  get 'estadoConservacionEspecie/:id' => 'fichas#estado_de_conservacion_de_especie'
-
-  # IX. Especies prioritarias para la conservación
-  get 'especiesPrioritariasParaConservacion/:id' => 'fichas#especies_prioritarias_para_conservacion'
-
-  # X. Necesidades de información
-  get 'necesidadesDeInformacion/:id' => 'fichas#necesidades_de_informacion'
-
-  # Información de una especie en particular según su ID
-  get 'infoEspecie/:id' => 'fichas#informacion_de_especie'
-  #  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - -
-
-
   # I. Clasificación y descripción de la especie
   get 'media_tropicos/:id' => 'tropicos#tropico_especie'
-
-
-
 
 
   # The priority is based upon order of creation: first created -> highest priority.

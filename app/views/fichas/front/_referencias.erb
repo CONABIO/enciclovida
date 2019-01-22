@@ -1,0 +1,5 @@
+<div class="row showInfo">
+  <div class="col-md-12">
+    <%=@referencias.present? ? convierte_a_HTML(@referencias[0].referencia) : (@sin_info_msj)%>
+  </div>
+</div>

@@ -1,10 +1,11 @@
-class FichasController < ApplicationController
+class Fichas::FrontController < Fichas::FichasController
+
   before_action :set_taxon
+  layout false
 
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
   def clasificacion_y_descripcion_de_especie # especieId
-
     @nombre_comun = @taxon.nombreComun
     @legislacion = @taxon.legislaciones.first
     @sinonimo = @taxon.sinonimos.first
@@ -19,7 +20,6 @@ class FichasController < ApplicationController
 
   # Distribución de la especie
   def distribucione_de_la_especie # especieId
-
     @distribucion = @taxon.distribuciones.first
     @endemica = @taxon.endemicas.first
     @habitat = @taxon.habitats.first
@@ -59,8 +59,7 @@ class FichasController < ApplicationController
 
   # IV. Biología de la especie
   def biologia_de_la_especie
-
-     # Obtener el id de especie
+    # Obtener el id de especie
     @habitat = @taxon.habitats.first
     @historiaNatural = @taxon.historiaNatural
     @demografiaAmenazas = @taxon.demografiaAmenazas.first
@@ -77,8 +76,7 @@ class FichasController < ApplicationController
 
   # V. Ecología y demografía de la especie
   def ecologia_y_demografia_de_especie
-
-     # Obtener el id de especie
+    # Obtener el id de especie
     @demograAmenazas = @taxon.demografiaAmenazas.first
     @interaccion = @demograAmenazas.interaccion
 
@@ -91,7 +89,6 @@ class FichasController < ApplicationController
 
   # VI. Genética de la especie
   def genetica_de_especie
-
     @historianatural = @taxon.historiaNatural
 
     render json: {
@@ -101,7 +98,6 @@ class FichasController < ApplicationController
 
   # VII. Importancia de la especie
   def importancia_de_especie
-
     @historiaNatural = @taxon.historiaNatural
     @culturaUsos = @historiaNatural.culturaUsos
 
@@ -113,8 +109,6 @@ class FichasController < ApplicationController
 
   # VIII. Estado de conservación de la especie
   def estado_de_conservacion_de_especie
-
-
     @conservacion = @taxon.conservacion.first
     @demografiaAmenazas = @taxon.demografiaAmenazas.first
     @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
@@ -128,36 +122,31 @@ class FichasController < ApplicationController
 
   # IX. Especies prioritarias para la conservación
   def especies_prioritarias_para_conservacion
-
-     # Obtener el id de especie
-
+    # Obtener el id de especie
     render json: { taxon: @taxon }
   end
 
   # X. Necesidades de información
   def necesidades_de_informacion
-
-     # Obtener el id de especie
-
+    # Obtener el id de especie
     render json: { taxon: @taxon }
   end
 
-
-  def informacion_de_especie
+  def show
+    @sin_info_msj = 'Sin información disponible'
 
     # A partir de la especie, acceder a:
     # I. Clasificación y descripción de la especie
     @nombre_comun = @taxon.nombreComun
-    @legislacion = @taxon.legislaciones.first
+    @legislacion = @taxon.legislaciones.first || Fichas::Legislacion.new
     @sinonimo = @taxon.sinonimos.first
 
     # II. Distribución de la especie
-    @distribucion = @taxon.distribuciones.first
-    @endemica = @taxon.endemicas.first
-    @habitat = @taxon.habitats.first
+    @distribucion = @taxon.distribuciones.first || Fichas::Distribucion.new
+    @endemica = @taxon.endemicas.first || Fichas::Endemica.new
 
+    @habitat = @taxon.habitats.first || Fichas::Habitat.new
     # III. Tipo de ambiente en donde se desarrolla la especie
-    #@habitat = @taxon.habitats.first
     @tipoClima = @habitat.tipoclima
     @suelo = @habitat.suelo
     @geoforma = @habitat.geoforma
@@ -167,26 +156,21 @@ class FichasController < ApplicationController
     @habitatAntropico = @habitat.habitatAntropico
 
     # IV. Biología de la especie
-    #@habitat = @taxon.habitats.first
-    @historiaNatural = @taxon.historiaNatural
-    @demografiaAmenazas = @taxon.demografiaAmenazas.first
-    @infoReproduccion = @historiaNatural.get_info_reproduccion
-
+    @demografiaAmenazas = @taxon.demografiaAmenazas.first || Fichas::Demografiaamenazas.new
     # V. Ecología y demografía de la especie
-    #@demograAmenazas = @taxon.demografiaAmenazas.first
     @interaccion = @demografiaAmenazas.interaccion
+    @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
 
     # VI. Genética de la especie
-    # @historianatural = taxon.historiaNatural
+    @historiaNatural = @taxon.historiaNatural || Fichas::Historianatural.new
+    @infoReproduccion = @historiaNatural.get_info_reproduccion
 
     # VII. Importancia de la especie
-    #@historiaNatural = taxon.historiaNatural
     @culturaUsos = @historiaNatural.culturaUsos.first
 
+
     # VIII. Estado de conservación de la especie
-    @conservacion = @taxon.conservacion.first
-    #@demografiaAmenazas = @taxon.demografiaAmenazas.first
-    @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
+    @conservacion = @taxon.conservacion.first || Fichas::Conservacion.new
 
     # IX. Especies prioritarias para la conservación
     # 
@@ -196,20 +180,23 @@ class FichasController < ApplicationController
 
     # XI. Metadatos:
     @metadato = @taxon.metadatos.first
-    @asociado = @metadato.asociado.first
-    @organizacion = @asociado.organizacion
-    @responsable = @asociado.responsable
-    @puesto = @asociado.puesto
-    @contacto = @asociado.contacto.first
-    @ciudad = @contacto.ciudad
-    @pais = @ciudad.pais
+
+    if @metadato && @asociado = @metadato.asociado.first
+      @organizacion = @asociado.organizacion
+      @responsable = @asociado.responsable
+      @puesto = @asociado.puesto
+      @contacto = @asociado.contacto.first
+
+      if @ciudad = @contacto.ciudad
+        @pais = @ciudad.pais
+      end
+    end
 
     # XII. Referencias: (Agregado)
     @referencias = @taxon.referenciasBibliograficas
 
-
     respond_to do |format|
-      format.html #{ render :layout => false }
+      format.html
       format.json { render json: {
           taxon: @taxon,
           # I. Clasificación y descripción de la especie
@@ -233,30 +220,16 @@ class FichasController < ApplicationController
           metadato: @metadato, asociado: @asociado, organizacion: @organizacion, responsable: @responsable, puesto: @puesto, contacto: @contacto, ciudad: @ciudad, pais: @pais,
           # XII. Referencias: (Agregado)
           referencias: @referencias
-        }
+      }
       }
     end
   end
 
-  def self.convert_to_HTML(text)
-    # Verificar si hay información que mostrar
-    if text.present?
-      # Verificar que sea texto lo que se va a analizar
-      if text.is_a? String
-        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
-        @res = Nokogiri::HTML.fragment(text).to_html.html_safe
-      else
-        @res = text.to_s
-      end
-    else
-        @res = "Sin información disponible"
-    end
-
-    return @res
-    end
 
   private
+
   def set_taxon
-    @taxon = Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
+    @taxon = Fichas::Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
   end
+
 end

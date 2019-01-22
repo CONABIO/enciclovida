@@ -1,8 +1,8 @@
-class Cat_Caracfruto < Ficha
+class Fichas::Cat_Caracfruto < ActiveRecord::Base
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.cat_caracfruto"
 	self.primary_key = 'IdFruto'
 
-	has_one :reproduccionVegetal , class_name: 'Reproduccionvegetal'
+	has_one :reproduccionVegetal , class_name: 'Fichas::Reproduccionvegetal'
 
 end

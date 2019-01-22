@@ -17,8 +17,8 @@ class New_Conabio_Service
     # Llamar a 'infoEspecie', quien nos devolverá código html con la infomración de la especie
     # Por prueba, se envia el taxón 1, pero q, se envía el que se va a buscar realmente
 
-    if Taxon.where(IdCAT: q).first
-      request("infoEspecie/#{q}")
+    if Fichas::Taxon.where(IdCAT: q).first
+      request("fichas/front/#{q}")
     else
       nil
     end
@@ -26,10 +26,10 @@ class New_Conabio_Service
 
   def request(method, *args)
     request_uri = get_uri(method, *args)
-    puts("Los argumentos son: #{args}")
+    Rails.logger.debug "Los argumentos son: #{args}"
+
     begin
       timed_out = Timeout::timeout(@timeout) do
-        Rails.logger.debug "[DEBUG] #{self.class.name} getting #{request_uri}"
         Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
       end
     rescue Timeout::Error

@@ -1,9 +1,7 @@
-<% sin_info_msj = "Sin información disponible" %>
-
 <div id='ficha'>
   <div>
     <!-- Encabezado en el que se muestran los accesos a las secciones informativas -->
-    <%= render('fichas/secciones_info_especie/titulo', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'titulo' %>
   </div>
 
   <div class="container-fluid" id="clasiDescEsp">
@@ -12,9 +10,8 @@
         <h4 class="text-left text-primary">Clasificación y descripción</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/clasificacion_y_descripcion_de_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'clasificacion_y_descripcion_de_especie' %>
   </div>
-  
 
   <div class="container-fluid" id="distribucionEspecie">
     <div class="row xSection">
@@ -22,9 +19,8 @@
         <h4 class="text-left text-primary">Distribución</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/distribucione_de_la_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'distribucione_de_la_especie' %>
   </div>
-  
 
   <div class="container-fluid" id="ambienteDeEspecie">
     <div class="row xSection">
@@ -32,18 +28,17 @@
         <h4 class="text-left text-primary">Ambiente</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/ambiente_de_desarrollo_de_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
   </div>
-  
+
   <div class="container-fluid" id="biologiaEspecie">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Biología</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/biologia_de_la_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'biologia_de_la_especie' %>
   </div>
-  
 
   <div class="container-fluid" id="ecologiaDemografiaEspecie">
     <div class="row xSection">
@@ -51,30 +46,27 @@
         <h4 class="text-left text-primary">Ecología</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/ecologia_y_demografia_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'ecologia_y_demografia_especie' %>
   </div>
 
-  
   <div class="container-fluid" id="geneticaEspecie">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Genética</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/genetica_de_la_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'genetica_de_la_especie' %>
   </div>
 
-  
   <div class="container-fluid" id="importanciaEspecie">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Importancia</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/importancia_de_la_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'importancia_de_la_especie' %>
   </div>
 
-  
   <div class="container-fluid" id="estadoConservacionEspecie">
 
     <div class="row xSection">
@@ -82,10 +74,9 @@
         <h4 class="text-left text-primary">Conservación</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/estado_de_conservacion_de_la_especie', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'estado_de_conservacion_de_la_especie' %>
   </div>
 
-  
   <div class="container-fluid" id="especiesPrioritariasConservacion">
 
     <div class="row xSection">
@@ -93,47 +84,42 @@
         <h4 class="text-left text-primary">Especies prioritarias para la conservación</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/especies_prioritarias_para_conservacion', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'especies_prioritarias_para_conservacion' %>
   </div>
 
-  
   <div class="container-fluid" id="necesidadesDeInformacion">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Necesidades de información</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/necesidades_de_informacion', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'necesidades_de_informacion' %>
   </div>
 
-  
   <div class="container-fluid" id="metadatos">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Metadatos</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/metadatos', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'metadatos' %>
   </div>
 
-  
   <div class="container-fluid" id="referencias">
     <div class="row xSection">
       <div class="col-md-12" >
         <h4 class="text-left text-primary">Referencias</h4>
       </div>
     </div>
-    <%= render('fichas/secciones_info_especie/referencias', sin_info_msj: sin_info_msj) %>
+    <%= render partial: 'referencias' %>
   </div>
 
   <!-- Agregar el botón de subir -->
-  <%= render('fichas/secciones_info_especie/boton_subir') %>
+  <%= render partial: 'boton_subir' %>
 
 </div>
 
-
 <script>
-
     // Animación:
     // Retardo para mostrar contenido de las secciones
     var timer = 300;
@@ -184,7 +170,6 @@
         }
     }
 
-
     /*/ Controlar el encabezado, para mostrar nombre de la especie y la sección en la que se encuentra
     var stickyOffset = $('.headCard').offset().top;
     var headerMeasure = 120; // Pixeles extra para que el encabezado cambie el título al pasar cerca de el
@@ -204,6 +189,5 @@
         }
     });
     */
-
 
 </script>
