@@ -14,8 +14,7 @@ var dameTipoPropiedad = function () {
         },
         minLength: 2,
         select: function( event, ui ) {
-            $('#metamares_proyecto_institucion_id').val(ui.item.id);
-            $("#institucion :input").attr("disabled", true);
+            $('#pmc_propiedad_tipo_propiedad').val(ui.item.id);
         }
     });
 };

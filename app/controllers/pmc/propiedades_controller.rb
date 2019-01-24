@@ -67,12 +67,12 @@ class Pmc::PropiedadesController < Pmc::PmcController
   end
 
   def dame_tipo_propiedades
-    if params[:q].present?
-      propiedades = Pmc::Propiedad.where('tipo_propiedad REGEXP ?', params[:q]).where('ancestry IS NOT NULL')
-      res = propiedades.map { |p| { id: p.tipo_propiedad, value: p.tipo_propiedad } }.uniq.sort
-    else
-      res = []
-    end
+    res = if params[:q].present?
+            propiedades = Pmc::Propiedad.select(:tipo_propiedad).where('tipo_propiedad REGEXP ?', Regexp.quote(params[:q])).where('ancestry IS NOT NULL').distinct
+            propiedades.map { |p| { id: p.tipo_propiedad, value: p.tipo_propiedad } }
+          else
+            []
+          end
 
     render json: res
   end
@@ -80,14 +80,14 @@ class Pmc::PropiedadesController < Pmc::PmcController
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_propiedad
-      @propiedad = Pmc::Propiedad.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_propiedad
+    @propiedad = Pmc::Propiedad.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def propiedad_params
-      params.require(:pmc_propiedad).permit(:nombre_propiedad, :tipo_propiedad, :descripcion, :ancestry,
-                                            criterios_attributes: [:id, :valor, :_destroy])
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def propiedad_params
+    params.require(:pmc_propiedad).permit(:nombre_propiedad, :tipo_propiedad, :descripcion, :ancestry,
+                                          criterios_attributes: [:id, :valor, :_destroy])
+  end
 end
