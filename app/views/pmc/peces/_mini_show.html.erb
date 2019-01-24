@@ -1,5 +1,5 @@
 <%= button_tag '<span class="glyphicon glyphicon-remove"></span>'.html_safe, type: 'button', class: 'btn btn-xs btn-link pull-right', onclick: "$('[data-especie-id=#{@pez[:especie_id]}]').popover('hide');" %>
-<h4 class="text-center"><b>Recomendación</b></h4>
+<h4 class="text-center"><b>Recomendación</b><%= muestraCertificacion.html_safe %></h4>
 <table class="table table-responsive table-condensed table-bordered">
   <tbody>
   <tr>
