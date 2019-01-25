@@ -1,8 +1,55 @@
-<%= semantic_form_for @propiedad do |f| %>
-  <%= f.inputs do %>
+<% content_for(:extrajs) do %>
+  <%= javascript_include_tag 'peces/propiedades_extra', 'data-turbolinks-track' => true %>
+<% end %>
+
+<%= simple_form_for @propiedad , wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
+} do |f| %>
+
+  <% if @propiedad.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@propiedad.errors.count, 'error') %> prohibieron que la propiedad se guardara:</h2>
+
+      <ul>
+        <% @propiedad.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 
-  <%= f.actions do %>
-    <%= f.action :submit, :as => :input %>
-  <% end %>
+  <%= f.input :nombre_propiedad %>
+  <%= f.input :tipo_propiedad %>
+  <%= f.input :descripcion %>
+  <%= f.input :ancestry, collection: Pmc::Propiedad.dame_propiedades_por_ancestry, input_html: { class: 'form-control' } %>
+
+  <h3>Propiedad a criterio</h3>
+  <div id='peces_criterios'>
+    <div class='links'>
+      <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asignar a un criterio'.html_safe, f, :criterios, partial: 'criterios',
+                                  'data-association-insertion-node' => '#peces_criterios', 'data-association-insertion-method' => 'append', :class => 'btn btn-info btn-sm' %>
+    </div>
+
+    <%= f.simple_fields_for :criterios do |criterios| %>
+      <%= render partial: 'criterios', locals: { f: criterios } %>
+    <% end %>
+
+  </div>
+
+  <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+  <%= link_to t('helpers.submit.pmc_propiedad.cancel'), @propiedad.new_record? ? pmc_propiedades_path : pmc_propiedades_path(@propiedad), { :class=>"btn btn-lg btn-block btn-default" } %>
+
 <% end %>
+
+<script>
+    dameTipoPropiedad();
+</script>

@@ -1,5 +1,5 @@
 <%= button_tag '<span class="glyphicon glyphicon-remove"></span>'.html_safe, type: 'button', class: 'btn btn-xs btn-link pull-right', onclick: "$('[data-especie-id=#{@pez[:especie_id]}]').popover('hide');" %>
-<h4 class="text-center"><b>Recomendación</b></h4>
+<h4 class="text-center"><b>Recomendación</b><%= muestraCertificacion.html_safe %></h4>
 <table class="table table-responsive table-condensed table-bordered">
   <tbody>
   <tr>
@@ -42,10 +42,10 @@
 
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
-      <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true" ></span>
-      <em> <%= c[:nombre] %> &middot; <small><%= warning %></small></em>
+      <em class="btn-title"><%= c[:nombre] %> &middot; <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true" ></span></em>
+      <strong class='popover-veda'><%= warning %></strong>
     <% else %>
-      <em> <%= c[:nombre] %></em>
+      <em><%= c[:nombre] %></em>
     <% end %>
   </p>
 <% end %>

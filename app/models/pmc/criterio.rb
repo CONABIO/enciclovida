@@ -5,7 +5,7 @@ class Pmc::Criterio < ActiveRecord::Base
   has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :criterio_id
   has_many :peces, :through => :peces_criterios, :source => :pez
 
-  belongs_to :propiedad
+  belongs_to :propiedad, :class_name => 'Pmc::Propiedad'
 
   scope :select_propiedades, -> { select('criterios.id, nombre_propiedad') }
   scope :select_join_propiedades, -> { select_propiedades.left_joins(:propiedad) }
@@ -18,7 +18,7 @@ class Pmc::Criterio < ActiveRecord::Base
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
   scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (163,164,166,167,169)") }
 
-  validates_presence_of :propiedad_id
+  validates_presence_of :propiedad_id, :valor
 
   CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
 
