@@ -5,9 +5,12 @@ class Pmc::Propiedad < ActiveRecord::Base
   has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy
 
   has_ancestry
+
+  validates_presence_of :nombre_propiedad
+  before_validation :valida_ancestry
 
   scope :grupos_conabio, -> { where('ancestry=?', GRUPO_ID).order(:nombre_propiedad) }
   scope :tipo_capturas, -> { where('ancestry=?', TIPO_CAPTURA_ID) }
@@ -17,6 +20,8 @@ class Pmc::Propiedad < ActiveRecord::Base
   scope :nom, -> { where('ancestry=?', NOM_ID) }
   scope :iucn, -> { where('ancestry=?', IUCN_ID) }
   scope :cnp, -> { where("ancestry REGEXP '323/31[123456]$'").where.not(tipo_propiedad: 'estado') }
+
+  accepts_nested_attributes_for :criterios, reject_if: :all_blank, allow_destroy: true
 
   # Los IDS asignados a los ancestros, estos no deberían cambiar
   NOM_ID = 318.freeze
@@ -61,6 +66,28 @@ class Pmc::Propiedad < ActiveRecord::Base
     resp
   end
 
+  def valida_ancestry
+    if ancestry.blank?
+      self.ancestry = nil
+    end
+  end
+
+  def self.dame_propiedades_por_ancestry
+    options = []
+
+    all.each do |p|
+      next unless p.is_root?
+      options << [" - #{p.nombre_propiedad}", p.id]
+
+      p.descendants.each do |d|
+        guiones = " - "*(d.ancestry.split('/').count + 1)
+        options << ["#{guiones}#{d.nombre_propiedad}", "#{d.ancestry}/#{d.id}"]
+      end
+    end
+
+    options
+  end
+
   def existe_propiedad?(propiedades=nil)
     propiedades ||= PROPIEDADES_DEFAULT
     return true if propiedades.include?(ancestry.to_i)
@@ -69,18 +96,18 @@ class Pmc::Propiedad < ActiveRecord::Base
 
   def nombre_zona_a_numero
     case nombre_propiedad
-      when 'Pacífico norte'
-        0
-      when 'Golfo de California'
-        1
-      when 'Pacífico sur'
-        2
-      when 'Golfo de México norte'
-        3
-      when 'Golfo de México sur'
-        4
-      when 'Caribe'
-        5
+    when 'Pacífico norte'
+      0
+    when 'Golfo de California'
+      1
+    when 'Pacífico sur'
+      2
+    when 'Golfo de México norte'
+      3
+    when 'Golfo de México sur'
+      4
+    when 'Caribe'
+      5
     end
   end
 

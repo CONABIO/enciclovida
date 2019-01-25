@@ -1,7 +1,19 @@
-<%= semantic_form_for(@pez, form_params) do |f| %>
+<%= simple_form_for @pez, **form_params, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
+} do |f| %>
+
   <% if @pez.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@pez.errors.count, "error") %> prohibited this pez from being saved:</h2>
+      <h2><%= pluralize(@pez.errors.count, 'error') %> prohibieron que el pez se guardara:</h2>
 
       <ul>
         <% @pez.errors.full_messages.each do |msg| %>
@@ -11,13 +23,11 @@
     </div>
   <% end %>
 
-  <%= f.inputs "", :id => "peces" do %>
-    <% if @pez.new_record? %>
-      <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
-    <% else %>
-      <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
-      <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
-    <% end %>
+  <% if @pez.new_record? %>
+    <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+  <% else %>
+    <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
+    <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
   <% end %>
 
   <h3>Descripción de veda</h3>
@@ -25,8 +35,8 @@
 
   <h3>Criterios asociados</h3>
   <div id='peces_criterios'>
-    <%= f.semantic_fields_for :peces_criterios do |criterios| %>
-      <%= render partial: 'edit_peces_criterios_fields', locals: {:f => criterios} %>
+    <%= f.simple_fields_for :peces_criterios do |criterios| %>
+      <%= render partial: 'edit_peces_criterios_fields', locals: { f: criterios } %>
     <% end %>
 
     <div class='links'>
@@ -36,8 +46,8 @@
 
   <h3>Propiedades</h3>
   <div id='peces_propiedades'>
-    <%= f.semantic_fields_for :peces_propiedades do |propiedades| %>
-      <%= render partial: 'edit_peces_propiedades_fields', locals: {:f => propiedades} %>
+    <%= f.simple_fields_for :peces_propiedades do |propiedades| %>
+      <%= render partial: 'edit_peces_propiedades_fields', locals: { f: propiedades } %>
     <% end %>
 
     <div class='links'>
@@ -45,13 +55,7 @@
     </div>
   </div>
 
-  <%= f.actions do %>
-    <% if @pez.new_record? %>
-      <%= f.action :submit, label: 'Crear pez' %>
-    <% else %>
-      <%= f.action :submit, label: 'Actualizar pez' %>
-    <% end %>
-    <%= f.action :cancel, :as => :link, label: 'Cancelar' %>
-  <% end %>
+  <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+  <%= link_to t('helpers.submit.peces.cancel'), @pez.new_record? ? pmc_pez_index_path : pmc_pez_path(@pez), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

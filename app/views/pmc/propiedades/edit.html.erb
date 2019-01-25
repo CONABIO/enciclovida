@@ -1,6 +1,7 @@
-<h1>Editing Propiedad</h1>
+<h3>Editar la propiedad</h3>
 
-<%= render 'form', propiedad: @propiedad %>
+<%= render 'form' %>
 
-<%= link_to 'Show', @propiedad %> |
-<%= link_to 'Back', propiedades_path %>
+<div class="text-right">
+<%= link_to "<i class='glyphicon glyphicon-trash'></i>".html_safe, @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir esta propiedad? Al hacerlo se eliminarán propiedades que sean hijas de esta, así como los cirterios asociados' } %>
+</div>
