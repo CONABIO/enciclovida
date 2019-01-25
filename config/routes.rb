@@ -11,6 +11,42 @@ Buscador::Application.routes.draw do
     resources :propiedades
   end
 
+  namespace :fichas do
+    resources :front do
+      collection do
+        # I. Clasificación y descripción de la especie
+        get ':id/clasifDescEspecie' => 'fichas#clasificacion_y_descripcion_de_especie'
+
+        # II. Distribución de la especie
+        get ':id/distribucionEspeciespecie' => 'fichas#distribucione_de_la_especie'
+
+        # III.Tipo de ambiente en donde se desarrolla la especie
+        get ':id/ambienteDesarrolloEspecie' => 'fichas#ambiente_de_desarrollo_de_especie'
+
+        # IV. Biología de la especie
+        get ':id/biologiaEspecie' => 'fichas#biologia_de_la_especie'
+
+        # V. Ecología y demografía de la especie
+        get ':id/ecologiaYDemografiaEspecie' => 'fichas#ecologia_y_demografia_de_especie'
+
+        # VI. Genética de la especie
+        get ':id/geneticaEspecie' => 'fichas#genetica_de_especie'
+
+        # VII. Importancia de la especie
+        get ':id/importanciaEspecie' => 'fichas#importancia_de_especie'
+
+        # VIII. Estado de conservación de la especie
+        get ':id/estadoConservacionEspecie' => 'fichas#estado_de_conservacion_de_especie'
+
+        # IX. Especies prioritarias para la conservación
+        get ':id/especiesPrioritariasParaConservacion' => 'fichas#especies_prioritarias_para_conservacion'
+
+        # X. Necesidades de información
+        get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+      end
+    end
+  end
+
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
 
@@ -116,6 +152,7 @@ Buscador::Application.routes.draw do
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
       get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
+      get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
@@ -169,6 +206,9 @@ Buscador::Application.routes.draw do
       put :rotate
     end
   end
+
+  # I. Clasificación y descripción de la especie
+  get 'media_tropicos/:id' => 'tropicos#tropico_especie'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
