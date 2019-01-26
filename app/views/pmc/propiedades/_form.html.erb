@@ -2,6 +2,10 @@
   <%= javascript_include_tag 'peces/propiedades_extra', 'data-turbolinks-track' => true %>
 <% end %>
 
+<% content_for :extracss do %>
+  <%= stylesheet_link_tag 'peces/propiedades_extra', 'data-turbolinks-track' => true %>
+<% end %>
+
 <%= simple_form_for @propiedad , wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
@@ -42,8 +46,9 @@
     <%= f.simple_fields_for :criterios do |criterios| %>
       <%= render partial: 'criterios', locals: { f: criterios } %>
     <% end %>
-
   </div>
+
+  <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
   <%= link_to t('helpers.submit.pmc_propiedad.cancel'), @propiedad.new_record? ? pmc_propiedades_path : pmc_propiedades_path(@propiedad), { :class=>"btn btn-lg btn-block btn-default" } %>
