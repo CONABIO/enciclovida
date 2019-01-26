@@ -8,7 +8,11 @@ Buscador::Application.routes.draw do
     end
 
     resources :criterios
-    resources :propiedades
+    resources :propiedades do
+      collection do
+        get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
+      end
+    end
   end
 
   namespace :fichas do
