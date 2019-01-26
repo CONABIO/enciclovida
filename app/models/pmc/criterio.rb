@@ -25,7 +25,16 @@ class Pmc::Criterio < ActiveRecord::Base
   def self.catalogo(prop = nil)
 
     if prop.present?
-      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] if p.criterios.present? }
+      prop.siblings.map do |p|
+        if p.criterios.present?
+
+          if prop.descripcion.present?
+            ["#{p.nombre_propiedad} - #{p.descripcion}", p.criterios.first.id]
+          else
+            [p.nombre_propiedad, p.criterios.first.id]
+          end
+        end
+      end
 
     else
       resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
@@ -34,11 +43,15 @@ class Pmc::Criterio < ActiveRecord::Base
         Pmc::Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
           prop = c.propiedad
           next if prop.existe_propiedad?([Pmc::Propiedad::NOM_ID, Pmc::Propiedad::IUCN_ID])
-          #next if prop.existe_propiedad?
           llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
           grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
-          grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+
+          if prop.descripcion.present?
+            grouped_options[llave_unica] << ["#{prop.nombre_propiedad} - #{prop.descripcion}", c.id]
+          else
+            grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+          end
         end
 
         grouped_options
