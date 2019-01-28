@@ -11,6 +11,7 @@ class Pmc::Propiedad < ActiveRecord::Base
 
   validates_presence_of :nombre_propiedad
   before_validation :valida_ancestry
+  after_save :genera_cache_filtros
 
   scope :grupos_conabio, -> { where('ancestry=?', GRUPO_ID).order(:nombre_propiedad) }
   scope :tipo_capturas, -> { where('ancestry=?', TIPO_CAPTURA_ID) }
@@ -109,6 +110,22 @@ class Pmc::Propiedad < ActiveRecord::Base
     when 'Caribe'
       5
     end
+  end
+
+  def self.borro_cache_filtros
+    Rails.cache.delete('criterios_catalogo') if Rails.cache.exist?('')
+    Rails.cache.delete('filtros_peces') if Rails.cache.exist?('filtros_peces')
+    Rails.cache.delete('propiedades_catalogo') if Rails.cache.exist?('propiedades_catalogo')
+  end
+
+  private
+
+
+  def genera_cache_filtros
+    Pmc::Propiedad.borro_cache_filtros
+    Pmc::Criterio.catalogo
+    Pmc::Criterio.dame_filtros
+    Pmc::Propiedad.catalogo
   end
 
 end
