@@ -55,6 +55,12 @@
     </div>
   </div>
 
+  <hr />
+
+  <%= link_to '¿Quieres añadir mas propiedades y criterios?', pmc_propiedades_path %>
+
+  <hr />
+
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
   <%= link_to t('helpers.submit.peces.cancel'), @pez.new_record? ? pmc_pez_index_path : pmc_pez_path(@pez), { :class=>"btn btn-lg btn-block btn-default" } %>
 
