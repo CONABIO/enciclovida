@@ -27,4 +27,3 @@ class IUCNService
   end
 
 end
-

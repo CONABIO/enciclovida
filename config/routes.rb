@@ -163,6 +163,10 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
+  #Aqui agregar ruta para despliegue de BHL
+  #get 'especies/ :id/bhl' => especies#bhl
+
+
   resources :photos, :only => [:show, :update, :destroy] do
     member do
       put :rotate

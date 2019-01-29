@@ -670,6 +670,11 @@ class EspeciesController < ApplicationController
     end
   end
 
+  #editar para poner informacion de bhl y crear vista
+  def bhl
+
+  end
+
 
   private
 
