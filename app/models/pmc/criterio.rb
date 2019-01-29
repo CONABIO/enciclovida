@@ -18,7 +18,7 @@ class Pmc::Criterio < ActiveRecord::Base
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
   scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (163,164,166,167,169)") }
 
-  validates_presence_of :propiedad_id, :valor
+  validates_presence_of :valor
 
   CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
 
