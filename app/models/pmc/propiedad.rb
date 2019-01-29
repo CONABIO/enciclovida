@@ -78,11 +78,11 @@ class Pmc::Propiedad < ActiveRecord::Base
 
     all.each do |p|
       next unless p.is_root?
-      options << [" - #{p.nombre_propiedad}", p.id]
+      options << [" - #{p.nombre_propiedad} - #{p.descripcion}", p.id]
 
       p.descendants.each do |d|
         guiones = " - "*(d.ancestry.split('/').count + 1)
-        options << ["#{guiones}#{d.nombre_propiedad}", "#{d.ancestry}/#{d.id}"]
+        options << ["#{guiones}#{d.nombre_propiedad} - #{d.descripcion}", "#{d.ancestry}/#{d.id}"]
       end
     end
 
