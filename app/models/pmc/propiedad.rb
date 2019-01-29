@@ -5,7 +5,7 @@ class Pmc::Propiedad < ActiveRecord::Base
   has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy, inverse_of: :propiedad
 
   has_ancestry
 
@@ -113,7 +113,7 @@ class Pmc::Propiedad < ActiveRecord::Base
   end
 
   def self.borro_cache_filtros
-    Rails.cache.delete('criterios_catalogo') if Rails.cache.exist?('')
+    Rails.cache.delete('criterios_catalogo') if Rails.cache.exist?('criterios_catalogo')
     Rails.cache.delete('filtros_peces') if Rails.cache.exist?('filtros_peces')
     Rails.cache.delete('propiedades_catalogo') if Rails.cache.exist?('propiedades_catalogo')
   end
