@@ -199,6 +199,30 @@ class Pmc::Pez < ActiveRecord::Base
     end
   end
 
+  # REVISADO: Pone el pez con el estatus valido
+  def actualiza_pez_valido
+    estatus = especie.especies_estatus
+
+    if estatus.length == 1
+      esp_id = Especie.find(estatus.first.especie_id2).id
+      peces_criterios.update_all(especie_id: esp_id)
+      peces_propiedades.update_all(especie_id: esp_id)
+      self.especie_id = esp_id
+      save
+    end
+  end
+
+  # REVISADO: Corre el proceso para todos los peces
+  def self.actualiza_todos_validos
+    all.each do |p|
+      if t = p.especie
+        next if t.estatus == 2
+        p.guardar_manual = true
+        p.actualiza_pez_valido
+      end
+    end
+  end
+
 
   private
 
