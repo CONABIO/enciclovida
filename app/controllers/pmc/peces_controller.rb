@@ -83,11 +83,13 @@ class Pmc::PecesController < Pmc::PmcController
 
   # GET /peces/new
   def new
+    @form_params = { url: '/pmc/peces', method: 'post' }
     @pez = Pmc::Pez.new
   end
 
   # GET /peces/1/edit
   def edit
+    @form_params = {}
   end
 
   # POST /peces

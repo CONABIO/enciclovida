@@ -1,12 +1,19 @@
 es:
   helpers:
     submit:
+      pmc_pez:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar
       pmc_propiedad:
         create: Guardar
         update: Actualizar
         cancel: Cancelar
   simple_form:
     hints:
+      pmc_pez:
+        nombre: Autocompleta el nombre científico y seleccionalo de la lista
+        veda_fechas: Descripción breve en caso de existir
       pmc_propiedad:
         nombre_propiedad: Este nombre se desplegará en la pagina, es recomendable un nombre corto y conciso
         tipo_propiedad: Es una forma de agrupar las propiedades, se recomienda escoger de las existentes
@@ -15,6 +22,9 @@ es:
         criterios:
           valor: Este valor es el que se sumará para obtener la recomendación en el semáforo
     labels:
+      pmc_pez:
+        nombre: Nombre científico
+        veda_fechas: Descripción de la veda
       pmc_propiedad:
         nombre_propiedad: Nombre de la propiedad
         tipo_propiedad: Tipo de la propiedad
