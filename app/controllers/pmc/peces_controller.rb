@@ -115,7 +115,7 @@ class Pmc::PecesController < Pmc::PmcController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to pmc_pez_index_patn, notice: 'El pez fue destruido satisfactoriamente.'
+    redirect_to '/pmc/peces', notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def dameNombre
