@@ -927,4 +927,9 @@ class EspeciesController < ApplicationController
       "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
+
+  def show_janium_records(taxon)
+
+  end
+
 end
