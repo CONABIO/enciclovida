@@ -1,4 +1,4 @@
-<%= simple_form_for @pez, **form_params, wrapper: :horizontal_form, wrapper_mappings: {
+<%= simple_form_for @pez, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
     file:          :horizontal_file,
@@ -24,11 +24,10 @@
   <% end %>
 
   <% if @pez.new_record? %>
-    <%= f.input :especie_id, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
-  <% else %>
-    <h2><%= tituloNombreCientifico(@pez.especie, show: true) %></h2>
-    <%= f.input :especie_id, as: :hidden, label: 'Pez', required: true, hint: 'Escribe el ID de la especie de acuerdo a Enciclovida' %>
+    <%= f.input :nombre, required: true %>
   <% end %>
+
+  <%= f.input :especie_id, as: :hidden, required: true %>
 
   <h3>Descripción de veda</h3>
   <%= f.input :veda_fechas, as: :text %>
@@ -44,7 +43,7 @@
     </div>
   </div>
 
-  <h3>Propiedades</h3>
+  <h3>Propiedades asociadas</h3>
   <div id='peces_propiedades'>
     <%= f.simple_fields_for :peces_propiedades do |propiedades| %>
       <%= render partial: 'edit_peces_propiedades_fields', locals: { f: propiedades } %>
@@ -58,10 +57,12 @@
   <hr />
 
   <%= link_to '¿Quieres añadir mas propiedades y criterios?', pmc_propiedades_path %>
+  <br />
+  <%= link_to '¿Quieres añadir una nueva especie?', new_pmc_pez_path %>
 
   <hr />
 
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.submit.peces.cancel'), @pez.new_record? ? pmc_pez_index_path : pmc_pez_path(@pez), { :class=>"btn btn-lg btn-block btn-default" } %>
+  <%= link_to t('helpers.submit.pmc_pez.cancel'), @pez.new_record? ? pmc_pez_index_path : pmc_pez_path(@pez), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

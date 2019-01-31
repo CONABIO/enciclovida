@@ -23,7 +23,7 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre
 
   validates_presence_of :especie_id
   before_save :actualiza_pez, unless: :guardar_manual
