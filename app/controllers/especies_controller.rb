@@ -724,7 +724,7 @@ class EspeciesController < ApplicationController
 
   def show_bioteca_records()
 
-    # Invocar el servicio web
+    # Variables de servicio web
     janium_location = "http://200.12.166.51/janium/services/soap.pl"
     janium_namespace = "http://janium.net/services/soap"
     janium_request = "JaniumRequest"
@@ -747,27 +747,36 @@ class EspeciesController < ApplicationController
         }
     }
 
+    # Invocar el servicio web
     # La respuesta será un SAVON response
     response = client.call("JaniumRequest", soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
-    # LA respuesta pasa a ser un XML
-    xml_response  = Nokogiri::XML(response.to_xml, nil, 'UTF-8')
+
+    # La respuesta pasa a ser un XML
+    doc = Nokogiri::XML.parse(response.to_xml)
+
+    @registros_janium = doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap')
+    Rails.logger.debug "[DEBUG] Se encontraron: #{@registros_janium.count} registros"
 
 
-    Rails.logger.debug "[DEBUG] JANIUM tiene: #{xml_response}"
+    # Buscar si existen registros
+    doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap').each do |registro|
+      Rails.logger.debug "[DEBUG] char_element.text: #{registro}"
+      #@registros_janium.insert(registro)
+    end
+
+
+    Rails.logger.debug "[DEBUG] FIN"
+
 
 =begin
-
   Nota: para llamar a un taxon describer, se ivoca un servicio existente a partir de una url, por ejemplo:
   /especies/:id/describe?from=TaxonDescriber
   FROM indica el TaxonDescriber :D y con "params[:from]" se recupera en la función
-
-
 
     if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
       # Especifico una descripcion y esta dentro de los permitidos
       d = TaxonDescribers.get_describer(params[:from])
       @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-
     else  # No especifico una descripcion y mandara a llamar el que encuentre
       @describers.each do |d|
         @describer = d
@@ -779,9 +788,7 @@ class EspeciesController < ApplicationController
         break unless @description.blank?
       end
     end
-
     @describer_url = @describer.page_url(@especie)
-
 =end
 
 

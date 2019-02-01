@@ -4,6 +4,10 @@
   <!-- Div qu contendrá todos los articulos que devuolverá el servicio Janium -->
   <div id="janium_records" class="row">
 
+    <%
+      @registros_janium.count.times do |num|
+    %>
+
     <!-- Div por cada articulo -->
     <div id="record_id" class="col-sm-12 col-md-12 record">
 
@@ -17,11 +21,13 @@
       <div class="record-info">
         <div class="row">
           <div class="col-md-3 text-center portada">
-            <img src="http://200.12.166.51/janium/Portadas/CBM2018/Nivel0/228.jpg" alt="">
+            <img src="http://200.12.166.51/janium/Mapas/panoncagw_s.png" alt="">
             <br><br> <a href="#" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
           </div>
           <div class="col-md-9 titulo">
-            <h3 class="text-warning">Diseño de corredores para los jaguares (Panthera onca) como herramienta de planeación para mantener la conectividad en el noroeste de la Selva Lacandona [ Reporte técnico ]</h3>
+            <h3 class="text-warning">
+              <%= @registros_janium.xpath('//soap:titulo', 'soap' => 'http://janium.net/services/soap')[num].text %>
+            </h3>
             <br>
             <div class="autores">
               <h5 class="autor">Autores:</h5>
@@ -29,6 +35,13 @@
                 <li>Medellín Legorreta, Rodrigo Antonio</li>
               </ul>
             </div>
+            <%
+              r = @registros_janium[num]
+
+            %>
+            <%=
+              r["titulo"]
+            %>
           </div>
         </div>
       </div>
@@ -63,11 +76,17 @@
         <button type="button" class="btn btn-outline-primary"><i class='glyphicon glyphicon-plus-sign'></i> Ver ficha completa</button>
       </div>
     </div>
-
+    <%
+      end
+    %>
   </div>
 </div>
 
 
+
+<%
+  # Esto va para assets
+%>
 <style>
 
   #janium_records {
@@ -95,8 +114,13 @@
     /* text-transform: uppercase; */
   }
 
+  .record-info img {
+    width: 180px;
+  }
+
   .record-more-info {
-    display: table;
+    display: none;
+    /*display: table;*/
     width: 100%;
     padding: 12px;
     background-color: #eee;
