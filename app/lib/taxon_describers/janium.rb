@@ -7,7 +7,10 @@ module TaxonDescribers
 
     def self.describe(taxon)
       Rails.logger.debug "[DEBUG] JANIUM buscará #{taxon.nombre_cientifico.limpiar.limpia}"
-      page = "<h1>Hasta que por fin funciona....</h1>"
+
+
+
+      page = show_janium_records
       page.blank? ? nil : page
     end
 
