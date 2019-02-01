@@ -204,7 +204,7 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
-  get '/janium_info/:id' => 'especies#show_bioteca_records'
+  get '/registros_bioteca/:name' => 'especies#show_bioteca_records'
 
 
   resources :photos, :only => [:show, :update, :destroy] do

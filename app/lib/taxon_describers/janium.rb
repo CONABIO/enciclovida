@@ -6,17 +6,17 @@ module TaxonDescribers
     end
 
     def self.describe(taxon)
-      Rails.logger.debug "[DEBUG] JANIUM buscará #{taxon.nombre_cientifico.limpiar.limpia}"
-
-
-
-      page = show_janium_records
-      page.blank? ? nil : page
+      if cat = taxon.present?
+        name_to_find = taxon.nombre_cientifico.limpiar.limpia.gsub(' ', '+')
+        Rails.logger.debug "[DEBUG] JANIUM buscará #{name_to_find}"
+        page = janium_service.search(name_to_find)
+        page.blank? ? nil : page
+      end
     end
 
     private
     def janium_service
-
+      @janium_service=Janium_Service.new(:timeout => 20)
     end
   end
 end

@@ -1,12 +1,12 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" integrity="sha384-PmY9l28YgO4JwMKbTvgaS7XNZJ30MK9FAZjjzXtlqyZCqBY6X6bXIkM++IkyinN+" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
 
 <div class="container">
   <!-- Div qu contendrá todos los articulos que devuolverá el servicio Janium -->
   <div id="janium_records" class="row">
     <%
       if @registros_janium[0].text != ""
+    %>
+        <h4 class="text-primary text-right"><%= @registros_janium.count %> resultado(s) encontrados</h4>
+    <%
         @registros_janium.count.times do |num|
     %>
 
@@ -49,11 +49,9 @@
             <br><br> <a href="<%= @registros_janium[num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
           </div>
           <div class="col-md-9 titulo">
-            <h3 class="text-warning">
-              <%= @registros_janium[num].xpath("//titulo").text %>
-            </h3>
+            <h4 class="text-primary text-justify"><%= @registros_janium[num].xpath("//titulo").text %></h4>
             <br>
-            <div class="autores">
+            <div class="autores text-left text-secondary">
               <%
                 autores = @registros_janium[num].xpath("//autores/autor")
 
@@ -61,7 +59,7 @@
                 if autores[0].text != ""
               %>
                   <h5 class="autor">Autores:</h5>
-                  <ul class="text-secondary">
+                  <ul>
               <%
                   autores.each do |autor|
               %>
@@ -111,6 +109,12 @@
     </div>
     <%
         end
+
+      else
+    %>
+
+      <h4 class="text"> No se encontró nada...</h4>
+    <%
       end
     %>
   </div>

@@ -743,7 +743,7 @@ class EspeciesController < ApplicationController
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: "poa+annua"
+            v: params[:name]
         }
     }
 
