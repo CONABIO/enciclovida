@@ -743,29 +743,40 @@ class EspeciesController < ApplicationController
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: "panthera+onca"
+            v: "poa+annua"
         }
     }
 
     # Invocar el servicio web
     # La respuesta será un SAVON response
-    response = client.call("JaniumRequest", soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
+    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
 
     # La respuesta pasa a ser un XML
     doc = Nokogiri::XML.parse(response.to_xml)
 
-    @registros_janium = doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap')
-    Rails.logger.debug "[DEBUG] Se encontraron: #{@registros_janium.count} registros"
+    @registros_janium = []
 
-
-    # Buscar si existen registros
+    # Iterar registros registros
     doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap').each do |registro|
-      Rails.logger.debug "[DEBUG] char_element.text: #{registro}"
-      #@registros_janium.insert(registro)
+      @registros_janium << Nokogiri::XML(registro.to_s)
+      #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
     end
 
+    request_message = {
+        :method => "RegistroBib/Detalle",
+        :arg => {
+            a: "ficha",
+            v: "14558"
+        }
+    }
 
-    Rails.logger.debug "[DEBUG] FIN"
+    # Invocar el servicio web
+    # La respuesta será un SAVON response
+    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
+
+    # La respuesta pasa a ser un XML
+    doc = Nokogiri::XML.parse(response.to_xml)
+    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc}"
 
 
 =begin
