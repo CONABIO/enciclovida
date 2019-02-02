@@ -16,25 +16,17 @@
       <div class="record-header">
         <div class="row">
           <div class="col-md-6">
-
             <%
               clasificaciones = @registros_janium[num].xpath("//clasificaciones/clasificacion")
-
               # Siempre hay clasificaciones, considerando que siempre existirá la etiqueta: </clasificaciones> (si, aun que esté vacía)
               if clasificaciones[0].text != ""
             %>
               <h5>
-                <%
-                  clasificaciones.each do |clasificacion|
-                %>
+                <% clasificaciones.each do |clasificacion| %>
                   <i class='glyphicon glyphicon-pushpin'> </i> <%= clasificacion.text %></li>
-                <%
-                  end
-                %>
+                <% end %>
               </h5>
-            <%
-              end
-            %>
+            <% end %>
           </div>
           <div class="col-md-6 text-right">
             <h5><i class='glyphicon glyphicon-calendar'></i> <%= @registros_janium[num].xpath("//fecha").text %></h5>
@@ -64,47 +56,23 @@
                   autores.each do |autor|
               %>
                     <li><%= autor.text %></li>
-              <%
-                  end
-              %>
+              <%  end %>
                   </ul>
-              <%
-                end
-              %>
+              <% end %>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Invocación al servicio Janium para recatar más información -->
-      <div class="record-more-info" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>">
-        <div class="row text-center">
-          <div class="col-md-4" style="border-right: #6c3630; border-width: 0 1px 0 0; border-style: dashed">
-            <h5>Pie de imprenta:</h5>
-            <p>México : Corredor Biológico Mesoamericano-México (CBMM) , 2013</div></p>
-          <div class="col-md-4" style="border-right: #6c3630; border-width: 0 1px 0 0; border-style: dashed">
-            <h5>Descripción:</h5>
-            <p>39 páginas</p>
+      <div class="record-more-info" id="detalle_<%= @registros_janium[num].xpath("//ficha").text %>"></div>
+      <div class="record-footer">
+        <div class="row">
+          <div class="col-sm-6 text-left">
           </div>
-          <div class="col-md-4">
-            <h5>Materias:</h5>
-            <i>Jaguar,
-              Conservación,
-              Conectividad ecológica,
-              Monitoreo biológico,
-              Chiapas,
-              Selva Maya Zoque,
-              Selva Lacandona</i>
+          <div class="col-sm-6 text-right">
+            <button type="button" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>" class="btn btn-outline-primary"><i class='glyphicon glyphicon-plus-sign'></i> Ver ficha completa</button>
           </div>
         </div>
-
-        <br><br>
-        <i id="">* Proyecto financiado por la SEMARNAT y la CONABIO Contrato número: CBM-M/UTRCHyT/CONABIO/003/2010</i>
-
-      </div>
-
-      <div class="record-footer">
-        <button type="button" class="btn btn-outline-primary"><i class='glyphicon glyphicon-plus-sign'></i> Ver ficha completa</button>
       </div>
     </div>
     <%
@@ -157,7 +125,7 @@
   }
 
   .record-more-info {
-    /*display: none;*/
+    /*display: table;*/
     display: table;
     width: 100%;
     padding: 12px;
@@ -170,8 +138,8 @@
     border-radius: 0 0 6px 6px;
     padding: 8px;
     margin-bottom: 25px;
-    text-align: right;
   }
+
 
   .portada {
 

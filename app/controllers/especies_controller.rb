@@ -722,7 +722,46 @@ class EspeciesController < ApplicationController
   end
 
 
-  def show_bioteca_records()
+  def show_bioteca_record_info
+    # Variables de servicio web
+    janium_location = "http://200.12.166.51/janium/services/soap.pl"
+    janium_namespace = "http://janium.net/services/soap"
+    janium_request = "JaniumRequest"
+
+    client = Savon.client(
+        endpoint: janium_location,
+        namespace: janium_namespace,
+        #logger:      Rails.logger,
+        #log_level:   :debug,
+        #log:         true,
+        ssl_version: :TLSv1,
+        pretty_print_xml: true
+    )
+
+    request_message = {
+        :method => "RegistroBib/Detalle",
+        :arg => {
+            a: "ficha",
+            v: params[:id]
+        }
+    }
+
+    # Invocar el servicio web
+    # La respuesta será un SAVON response
+    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
+
+    # La respuesta pasa a ser un XML
+    doc = Nokogiri::XML.parse(response.to_xml)
+    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc}"
+
+    respond_to do |format|
+      format.html {
+        render :partial => 'bioteca_info_record'
+      }
+    end
+  end
+
+  def show_bioteca_records
 
     # Variables de servicio web
     janium_location = "http://200.12.166.51/janium/services/soap.pl"
@@ -761,22 +800,6 @@ class EspeciesController < ApplicationController
       @registros_janium << Nokogiri::XML(registro.to_s)
       #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
     end
-
-    request_message = {
-        :method => "RegistroBib/Detalle",
-        :arg => {
-            a: "ficha",
-            v: "14558"
-        }
-    }
-
-    # Invocar el servicio web
-    # La respuesta será un SAVON response
-    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
-
-    # La respuesta pasa a ser un XML
-    doc = Nokogiri::XML.parse(response.to_xml)
-    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc}"
 
 
 =begin

@@ -37,6 +37,4 @@ class Janium_Service
     Rails.logger.debug "[DEBUG] Invocando URL con los datos: " + uri
     URI.parse(URI.encode(uri))
   end
-
 end
-

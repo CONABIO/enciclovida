@@ -204,7 +204,9 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
+  # Path's para acceder a servicio de Janium
   get '/registros_bioteca/:name' => 'especies#show_bioteca_records'
+  get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
 
 
   resources :photos, :only => [:show, :update, :destroy] do
