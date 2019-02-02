@@ -752,7 +752,16 @@ class EspeciesController < ApplicationController
 
     # La respuesta pasa a ser un XML
     doc = Nokogiri::XML.parse(response.to_xml)
-    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc}"
+
+    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc.xpath('//soap:etiqueta', 'soap' => 'http://janium.net/services/soap')}"
+
+    @detalle_ficha_janium = []
+
+    # Iterar registros registros
+    doc.xpath('//soap:etiquetas', 'soap' => 'http://janium.net/services/soap').each do |etiqueta|
+      @detalle_ficha_janium << Nokogiri::XML(etiqueta.to_s)
+      Rails.logger.debug "[DEBUG] registro agregado: #{etiqueta.to_s}"
+    end
 
     respond_to do |format|
       format.html {
@@ -772,8 +781,7 @@ class EspeciesController < ApplicationController
         endpoint: janium_location,
         namespace: janium_namespace,
         #logger:      Rails.logger,
-        #log_level:   :debug,
-        #log:         true,
+        #log_level:   :debug,        #log:         true,
         ssl_version: :TLSv1,
         pretty_print_xml: true
     )
@@ -800,31 +808,6 @@ class EspeciesController < ApplicationController
       @registros_janium << Nokogiri::XML(registro.to_s)
       #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
     end
-
-
-=begin
-  Nota: para llamar a un taxon describer, se ivoca un servicio existente a partir de una url, por ejemplo:
-  /especies/:id/describe?from=TaxonDescriber
-  FROM indica el TaxonDescriber :D y con "params[:from]" se recupera en la función
-
-    if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
-      # Especifico una descripcion y esta dentro de los permitidos
-      d = TaxonDescribers.get_describer(params[:from])
-      @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-    else  # No especifico una descripcion y mandara a llamar el que encuentre
-      @describers.each do |d|
-        @describer = d
-        @description = begin
-          d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-        rescue OpenURI::HTTPError, Timeout::Error => e
-          nil
-        end
-        break unless @description.blank?
-      end
-    end
-    @describer_url = @describer.page_url(@especie)
-=end
-
 
     respond_to do |format|
       format.html {
