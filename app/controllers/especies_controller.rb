@@ -10,7 +10,8 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias]
+                                     :dame_nombre_con_formato, :noticias,:bhl]
+
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -25,7 +26,7 @@ class EspeciesController < ApplicationController
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias,:bhl]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
@@ -476,6 +477,7 @@ class EspeciesController < ApplicationController
         break unless @description.blank?
       end
     end
+
 =begin
     if @describers.include?(TaxonDescribers::Wikipedia) && @especie.wikipedia_summary.blank?
       @taxon.wikipedia_summary(:refresh_if_blank => true)
@@ -672,7 +674,28 @@ class EspeciesController < ApplicationController
 
   #editar para poner informacion de bhl y crear vista
   def bhl
+    puts "aqui se ejecunta el render de bhl"
+    puts @especie.nombre_cientifico
+puts "Aqui mandamos la respuesta de bhl"
 
+    @describers = if CONFIG.taxon_describers
+                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
+                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
+                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
+                  else
+                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
+                  end
+
+    @describers.each do |p|
+      puts "valor de describers es #{p}"
+      @description = p
+      if p.equal?(TaxonDescribers::Bhl)
+         @contenifo = p.describe(@especie.nombre_cientifico)
+      else
+        puts "nelson mandela"
+      end
+    end
+    render json: @contenifo
   end
 
 

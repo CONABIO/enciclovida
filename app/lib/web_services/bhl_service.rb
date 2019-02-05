@@ -13,7 +13,7 @@ class BhlService
     rescue => e
       nil
     end
-    puts res.body
+     return res.body
   end
 end
 
