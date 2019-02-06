@@ -99,6 +99,7 @@ class Pmc::PecesController < Pmc::PmcController
     if @pez.save
       redirect_to pmc_pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
     else
+      @form_params = { url: '/pmc/peces', method: 'post' }
       render action: 'new'
     end
   end
@@ -140,7 +141,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pmc_pez).permit(:especie_id, :veda_fechas, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+    params.require(:pmc_pez).permit(:especie_id, :veda_fechas, :nombre, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
                                     peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 
