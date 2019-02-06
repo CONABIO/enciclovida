@@ -7,7 +7,7 @@ class Pmc::Pez < ActiveRecord::Base
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, inverse_of: :pez
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
