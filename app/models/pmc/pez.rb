@@ -3,11 +3,11 @@ class Pmc::Pez < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
 
-  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, inverse_of: :pez
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
@@ -23,10 +23,10 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre
 
   validates_presence_of :especie_id
-  before_save :actualiza_pez, unless: :guardar_manual
+  after_save :actualiza_pez, unless: :guardar_manual
   after_save :guarda_valor_zonas_y_total, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
