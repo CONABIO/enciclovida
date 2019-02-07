@@ -770,22 +770,24 @@ class EspeciesController < ApplicationController
     end
   end
 
+  # Función que invocará al servicio web "Janium"
   def show_bioteca_records
 
-    # Variables de servicio web
-    janium_location = "http://200.12.166.51/janium/services/soap.pl"
-    janium_namespace = "http://janium.net/services/soap"
-    janium_request = "JaniumRequest"
+    # Variable fianl que contendrá los registross encontrados por X especie
+    @registros_janium = []
 
+    # Crear el cliente Savon
     client = Savon.client(
-        endpoint: janium_location,
-        namespace: janium_namespace,
-        #logger:      Rails.logger,
-        #log_level:   :debug,        #log:         true,
+        endpoint: CONFIG.janium.location,
+        namespace: CONFIG.janium.namespace,
         ssl_version: :TLSv1,
         pretty_print_xml: true
+        #logger:      Rails.logger,
+        #log_level:   :debug,
+        #log:         true
     )
 
+    # Crear la solicitud (el mensaje) para generar un soap request
     request_message = {
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
@@ -795,18 +797,23 @@ class EspeciesController < ApplicationController
     }
 
     # Invocar el servicio web
-    # La respuesta será un SAVON response
-    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
+    begin
+      # La respuesta será un SAVON response
+      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
 
-    # La respuesta pasa a ser un XML
-    doc = Nokogiri::XML.parse(response.to_xml)
+      # La respuesta pasa a ser un XML
+      doc = Nokogiri::XML.parse(response.to_xml)
 
-    @registros_janium = []
+      # Iterar registros registros
+      doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap').each do |registro|
+        @registros_janium << Nokogiri::XML(registro.to_s)
+        #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
+      end
 
-    # Iterar registros registros
-    doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap').each do |registro|
-      @registros_janium << Nokogiri::XML(registro.to_s)
-      #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
+    rescue => ex
+      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
+      @registros_janium = []
+      logger.error ex.message
     end
 
     respond_to do |format|
