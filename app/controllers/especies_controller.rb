@@ -723,17 +723,16 @@ class EspeciesController < ApplicationController
 
 
   def show_bioteca_record_info
-    # Variables de servicio web
-    janium_location = "http://200.12.166.51/janium/services/soap.pl"
-    janium_namespace = "http://janium.net/services/soap"
-    janium_request = "JaniumRequest"
 
+    # Variable fianl que contendrá los detalles de X ficha seleccionada
+    @detalle_ficha_janium
+    @status_detalle_ficha_janium = false
+    @etiquetas = {}
+
+    # Crear el cliente Savon
     client = Savon.client(
-        endpoint: janium_location,
-        namespace: janium_namespace,
-        #logger:      Rails.logger,
-        #log_level:   :debug,
-        #log:         true,
+        endpoint: CONFIG.janium.location,
+        namespace: CONFIG.janium.namespace,
         ssl_version: :TLSv1,
         pretty_print_xml: true
     )
@@ -747,20 +746,40 @@ class EspeciesController < ApplicationController
     }
 
     # Invocar el servicio web
-    # La respuesta será un SAVON response
-    response = client.call(janium_request, soap_action: "#{janium_namespace}##{janium_request}", message: request_message)
+    begin
+      # La respuesta será un SAVON response
+      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
 
-    # La respuesta pasa a ser un XML
-    doc = Nokogiri::XML.parse(response.to_xml)
+      # La respuesta pasa a ser un XML
+      doc = Nokogiri::XML.parse(response.to_xml)
 
-    Rails.logger.debug "[DEBUG] La respuesta a más detalles es: #{doc.xpath('//soap:etiqueta', 'soap' => 'http://janium.net/services/soap')}"
+      # Extraemos el estatus de la respuesta
+      @status_detalle_ficha_janium =  doc.xpath('//soap:status', 'soap' => 'http://janium.net/services/soap').text
+      # Extraer el padre etiquetas
+      @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => 'http://janium.net/services/soap').to_s)
 
-    @detalle_ficha_janium = []
+      # Si el estatus es 'OK'
+      if @status_detalle_ficha_janium
+        # Iterar las etiquetas y extraer los titulos y textos
+        @detalle_ficha_janium.xpath("//etiquetas/etiqueta").each do |etiqueta|
+          content = Nokogiri::XML(etiqueta.to_s)
+          titulo = content.xpath("//etiqueta/etiqueta").text
+          texto = content.xpath("//etiqueta/texto").text
+          if @etiquetas[titulo].nil?
+            @etiquetas[titulo] = []
+            @etiquetas[titulo] << texto
+          else
+            @etiquetas[titulo] << texto
+          end
+        end
+      end
 
-    # Iterar registros registros
-    doc.xpath('//soap:etiquetas', 'soap' => 'http://janium.net/services/soap').each do |etiqueta|
-      @detalle_ficha_janium << Nokogiri::XML(etiqueta.to_s)
-      Rails.logger.debug "[DEBUG] registro agregado: #{etiqueta.to_s}"
+      Rails.logger.debug "[DEBUG] La ficha final es: #{@etiquetas}"
+
+    rescue => ex
+      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
+      @status_detalle_ficha_janium = false
+      logger.error ex.message
     end
 
     respond_to do |format|
