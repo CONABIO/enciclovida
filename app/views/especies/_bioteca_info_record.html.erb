@@ -25,19 +25,21 @@
         </div>
 <%
       end
+%>
+      <div class="text-center">
+        <h4>Compartir: </h4>
+        <ul class="list-inline social-buttons text-center">
+          <li><a name="tw_share" type="button" href="https://twitter.com/intent/tweet?url=<%= @url_detalle_ficha_janium %>&text=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="twitter-1-ev-icon"></i></a></li>
+          <li><a name="fb_share" type="button" href="https://www.facebook.com/sharer.php?u=<%= @url_detalle_ficha_janium %>&t=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="facebook-1-ev-icon"></i></a></li>
+        </ul>
+      </div>
+<%
     else
 %>
       <h4>No existen datos para esta consulta</h4>
 <%
     end
 %>
-    <div class="text-center">
-      <h4>Compartir: </h4>
-      <ul class="list-inline social-buttons text-center">
-        <li><a name="tw_share" type="button" href="https://twitter.com/intent/tweet?url=<%= @url_detalle_ficha_janium %>&text=Bioteca de CONABIO: " target="_blank"><i class="twitter-1-ev-icon"></i></a></li>
-        <li><a name="fb_share" type="button" href="https://www.facebook.com/sharer.php?u=<%= @url_detalle_ficha_janium %>&t=Bioteca de CONABIO: " target="_blank"><i class="facebook-1-ev-icon"></i></a></li>
-      </ul>
-    </div>
   </div>
 <%
   else

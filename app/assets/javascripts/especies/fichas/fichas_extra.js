@@ -14,10 +14,9 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', "[id^='ficha_']", function () {
+    $(document).off('click').on('click', "[id^='ficha_']", function () {
         var idFicha = $(this).attr('id').replace("ficha_", "");
         var detalleEstaVacio =  $('#detalle_' + idFicha).is(':empty');
-        console.log("La ficha a buscar será: " + idFicha);
 
         if (detalleEstaVacio) {
             jQuery.ajax({
@@ -30,8 +29,19 @@ $(document).ready(function() {
                 method: 'get',
                 url: '/registro_bioteca/' + idFicha
             });
+
+            // Si el detalle está vacío, asumimos que siempre aparecerá: Ver menos detalles
+            $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+
         } else {
 
+            if( $('#detalle_' + idFicha).hasClass( "detalle-oculto" ) ) {
+                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+            } else {
+                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-plus-sign'></i> Ver mas detalles");
+            }
+
+            $('#detalle_' + idFicha).toggleClass("detalle-oculto");
         }
 
         return false;
