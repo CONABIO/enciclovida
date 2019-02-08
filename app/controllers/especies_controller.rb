@@ -754,9 +754,10 @@ class EspeciesController < ApplicationController
       doc = Nokogiri::XML.parse(response.to_xml)
 
       # Extraemos el estatus de la respuesta
-      @status_detalle_ficha_janium =  doc.xpath('//soap:status', 'soap' => 'http://janium.net/services/soap').text
+      @status_detalle_ficha_janium = doc.xpath('//soap:status', 'soap' => 'http://janium.net/services/soap').text
       # Extraer el padre etiquetas
       @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => 'http://janium.net/services/soap').to_s)
+      @url_detalle_ficha_janium = doc.xpath('//soap:url_asociada', 'soap' => 'http://janium.net/services/soap').text
 
       # Si el estatus es 'OK'
       if @status_detalle_ficha_janium
