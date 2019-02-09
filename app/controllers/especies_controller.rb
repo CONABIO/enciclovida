@@ -814,7 +814,8 @@ class EspeciesController < ApplicationController
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: params[:name]
+            v: params[:name],
+            numero_de_pagina: '2'
         }
     }
 
@@ -829,6 +830,7 @@ class EspeciesController < ApplicationController
       # Extraer el estatus de la consulta:
       @status_fichas_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
       @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text
+      @registros_x_pagina_janium = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text
 
       Rails.logger.debug "[DEBUG] La doc final es: #{doc}"
       Rails.logger.debug "[DEBUG] @status_fichas_janium: #{@status_fichas_janium}"
