@@ -796,6 +796,7 @@ class EspeciesController < ApplicationController
     # Variable fianl que contendrá los registross encontrados por X especie
     @registros_janium = []
     @status_fichas_janium = ""
+    @registros_fichas_janium = "0"
 
     # Crear el cliente Savon
     client = Savon.client(
@@ -848,14 +849,14 @@ class EspeciesController < ApplicationController
       logger.error ex.message
     end
 
-    if @registros_fichas_janium == '0'
-      render plain: nil
-    else
+    if @registros_fichas_janium.to_i > 0
       respond_to do |format|
         format.html {
           render :partial => 'bioteca_records'
         }
       end
+    else
+      render plain: nil
     end
   end
 
