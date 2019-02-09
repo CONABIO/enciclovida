@@ -24,7 +24,7 @@ class EspeciesController < ApplicationController
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :show_bioteca_records, :show_bioteca_record_info]
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
@@ -754,10 +754,10 @@ class EspeciesController < ApplicationController
       doc = Nokogiri::XML.parse(response.to_xml)
 
       # Extraemos el estatus de la respuesta
-      @status_detalle_ficha_janium = doc.xpath('//soap:status', 'soap' => 'http://janium.net/services/soap').text
+      @status_detalle_ficha_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
       # Extraer el padre etiquetas
-      @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => 'http://janium.net/services/soap').to_s)
-      @url_detalle_ficha_janium = doc.xpath('//soap:url_asociada', 'soap' => 'http://janium.net/services/soap').text
+      @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => CONFIG.janium.namespace).to_s)
+      @url_detalle_ficha_janium = doc.xpath('//soap:url_asociada', 'soap' => CONFIG.janium.namespace).text
 
       # Si el estatus es 'OK'
       if @status_detalle_ficha_janium
@@ -775,7 +775,7 @@ class EspeciesController < ApplicationController
         end
       end
 
-      Rails.logger.debug "[DEBUG] La ficha final es: #{@etiquetas}"
+      Rails.logger.debug "[DEBUG] La ficha final es: #{doc}"
 
     rescue => ex
       # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
@@ -795,6 +795,7 @@ class EspeciesController < ApplicationController
 
     # Variable fianl que contendrá los registross encontrados por X especie
     @registros_janium = []
+    @status_fichas_janium = ""
 
     # Crear el cliente Savon
     client = Savon.client(
@@ -824,22 +825,37 @@ class EspeciesController < ApplicationController
       # La respuesta pasa a ser un XML
       doc = Nokogiri::XML.parse(response.to_xml)
 
-      # Iterar registros registros
-      doc.xpath('//soap:registro', 'soap' => 'http://janium.net/services/soap').each do |registro|
-        @registros_janium << Nokogiri::XML(registro.to_s)
-        #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
+      # Extraer el estatus de la consulta:
+      @status_fichas_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
+      @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text
+
+      Rails.logger.debug "[DEBUG] La doc final es: #{doc}"
+      Rails.logger.debug "[DEBUG] @status_fichas_janium: #{@status_fichas_janium}"
+      if @status_fichas_janium == 'ok'
+        # Iterar registros registros
+        doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
+          @registros_janium << Nokogiri::XML(registro.to_s)
+          #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
+        end
+      else
+        @status_fichas_janium = 'error'
       end
 
     rescue => ex
       # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
+      @status_fichas_janium = 'error'
       @registros_janium = []
       logger.error ex.message
     end
 
-    respond_to do |format|
-      format.html {
-        render :partial => 'bioteca_records'
-      }
+    if @registros_fichas_janium == '0'
+      render plain: nil
+    else
+      respond_to do |format|
+        format.html {
+          render :partial => 'bioteca_records'
+        }
+      end
     end
   end
 
