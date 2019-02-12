@@ -244,4 +244,5 @@ Buscador::Application.routes.draw do
   get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
   post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
+  mount Delayed::Web::Engine, at: '/jobs'
 end
