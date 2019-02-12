@@ -1,5 +1,7 @@
 Buscador::Application.routes.draw do
 
+  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
   namespace :pmc do
     resources :peces, :as => :pez do
       collection do
@@ -70,8 +72,6 @@ Buscador::Application.routes.draw do
   resources :usuarios_especie
 
   resources :usuarios_roles
-
-  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
   get 'explora-por-region' => 'ubicaciones#por_region'
