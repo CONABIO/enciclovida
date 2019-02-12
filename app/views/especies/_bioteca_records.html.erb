@@ -3,8 +3,39 @@
   if @registros_fichas_janium != '0'
 %>
   <div class="container">
+
+    <%
+      # En el caso en el que existan más más páginas con registros
+      if @registros_fichas_janium.to_i > @registros_x_pagina_janium.to_i
+        # Calcular las páginas paa mostrar resultados
+        t_paginas = @registros_fichas_janium / @registros_x_pagina_janium.round
+    %>
+        <nav aria-label="...">
+          <ul class="pagination">
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <% for pagina in (1..t_paginas) %>
+              <li class="page-item" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= pagina %>')"><%= pagina %></a></li>
+            <% end %>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
+
+      <% for pagina in (2..t_paginas) %>
+        <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show">
+          <h1>HOLA <%= pagina %></h1>
+        </div>
+      <% end %>
+
+    <%
+      end
+    %>
+
     <!-- Div qu contendrá todos los articulos que devuolverá el servicio Janium -->
-    <div id="janium_records" class="row">
+    <div id="janium_records-page-1" class="row janium_records">
         <h4 class="text-primary text-right"><%= @registros_fichas_janium %> resultado(s) encontrados</h4>
         <%
           @registros_janium.count.times do |num|
@@ -87,3 +118,6 @@
 <%
   end
 %>
+
+
+<%= javascript_include_tag 'especies/fichas/fichas_extra', 'data-turbolinks-track' => true %>

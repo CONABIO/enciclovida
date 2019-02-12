@@ -46,5 +46,28 @@ $(document).ready(function() {
 
         return false;
     });
-
 });
+
+function biotecaLoadPage(page) {
+
+    // Primero, verificamos la página en la que se encuentra
+    var paginaEstaVacia =  $('#janium_records-page-' + page).is(':empty');
+
+    $('.page-item').removeClass("active");
+    $("#button-janium_records-" + page).addClass("active");
+
+    // Si está vacía, hayq ue invocar al servicio web para agregare la info
+    if (paginaEstaVacia) {
+        console.log(page)
+
+    } else {
+
+        $('.janium_records').addClass("janium_records-not-show");
+
+        // Si no está vacia, sólo hay que mostrar el div
+        $('#janium_records-page-' + page).removeClass("janium_records-not-show");
+        console.log(page)
+    }
+
+
+}

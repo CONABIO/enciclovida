@@ -1,5 +1,13 @@
-#janium_records {
+.janium_records {
+  display: table;
+}
 
+.janium_records-not-show {
+  display: none
+}
+
+.page-janium_records-selected {
+  background-color: red;
 }
 
 .record {

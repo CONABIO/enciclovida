@@ -796,7 +796,8 @@ class EspeciesController < ApplicationController
     # Variable fianl que contendrá los registross encontrados por X especie
     @registros_janium = []
     @status_fichas_janium = ""
-    @registros_fichas_janium = "0"
+    @registros_fichas_janium
+    @registros_x_pagina_janium
 
     # Crear el cliente Savon
     client = Savon.client(
@@ -829,12 +830,13 @@ class EspeciesController < ApplicationController
 
       # Extraer el estatus de la consulta:
       @status_fichas_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
-      @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text
-      @registros_x_pagina_janium = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text
-
       Rails.logger.debug "[DEBUG] La doc final es: #{doc}"
       Rails.logger.debug "[DEBUG] @status_fichas_janium: #{@status_fichas_janium}"
       if @status_fichas_janium == 'ok'
+        # Extraer los registros:
+        @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
+        @registros_x_pagina_janium = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
+
         # Iterar registros registros
         doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
           @registros_janium << Nokogiri::XML(registro.to_s)
@@ -851,7 +853,7 @@ class EspeciesController < ApplicationController
       logger.error ex.message
     end
 
-    if @registros_fichas_janium.to_i > 0
+    if @registros_fichas_janium > 0
       respond_to do |format|
         format.html {
           render :partial => 'bioteca_records'
