@@ -725,28 +725,9 @@ class EspeciesController < ApplicationController
 
   #editar para poner informacion de bhl y crear vista
   def bhl
-    puts "aqui se ejecunta el render de bhl"
-    puts @especie.nombre_cientifico
-puts "Aqui mandamos la respuesta de bhl"
 
-    @describers = if CONFIG.taxon_describers
-                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                  else
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                  end
-
-    @describers.each do |p|
-      puts "valor de describers es #{p}"
-      @description = p
-      if p.equal?(TaxonDescribers::Bhl)
-         @contenifo = p.describe(@especie.nombre_cientifico)
-      else
-        puts "nelson mandela"
-      end
-    end
-    render json: @contenifo
+    bhlInfo = TaxonDescribers::Bhl.describe(@especie.nombre_cientifico)
+    @BhlInfo = JSON.parse(bhlInfo)
   end
 
 
