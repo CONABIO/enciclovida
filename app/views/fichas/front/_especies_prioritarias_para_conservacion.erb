@@ -1,0 +1,22 @@
+<div class="row showInfo">
+  <div class="col-md-12">
+
+    <% if @taxon.prioritaria == 'no'%>
+      <h4> Esta especie no se encuentra enlistada como prioritaria</h4>
+    <% else
+      if @taxon.prioritaria == 'si'
+    %>
+        <h4> Esta especie si se encuentra enlistada como prioritaria:</h4>
+        <ol>
+          <li><label>Listado en el que se encuentra</label><p class="text-justify"><%=convierte_a_HTML(@taxon.publicadaEn)%></p></li>
+          <li><label>Prioridad resultante del proceso</label><p class="text-justify"><%=convierte_a_HTML(@taxon.nivelPrioridad)%></p></li>
+        </ol>
+
+        <h4>Justificación del estatus de especie prioritaria</h4>
+        <p class="text-justify"><%=convierte_a_HTML(@taxon.justificacionPrioritaria)%></p>
+    <% else %>
+      <h3><%=convierte_a_HTML(nil)%></h3>
+    <% end end %>
+
+  </div>
+</div>

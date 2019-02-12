@@ -1,0 +1,29 @@
+<div class="row showInfo">
+  <div class="col-md-12 text-justify">
+    <h4>Tamaño poblacional</h4>
+    <ul>
+      <li><strong>Descripción del tamaño poblacional reportado en distintos lugares</strong> <p> <%=convierte_a_HTML(@demografiaAmenazas.tamanioPoblacional)%> </p></li>
+      <li><strong>Abundancia de individuos por región</strong><p> <%=convierte_a_HTML(@demografiaAmenazas.abundancia)%> </p></li>
+      <li><strong>Densidad (número de individuos por área)</strong><p> <%=convierte_a_HTML(@demografiaAmenazas.densidad)%> </p></li>
+      <li><strong>Descripción del patrón de ocupación</strong>
+        <p> <%=convierte_a_HTML(@demografiaAmenazas.patronOcupacion)%> </p>
+        <h5>Información adicional</h5>
+        <p> <%=convierte_a_HTML(@demografiaAmenazas.descripcionPatron)%> </p>
+      </li>
+    </ul>
+    <br>
+
+    <h4>Parámetros poblacionales</h4>
+    <ul>
+      <li><strong>Parámetros poblacionales</strong><p><%=convierte_a_HTML(@demografiaAmenazas.parametrosPoblacionales)%></p></li>
+      <li><strong>Población mínima viable</strong><p><%=convierte_a_HTML(@demografiaAmenazas.poblacionminviableinicial)%></p></li>
+    </ul>
+    <br>
+
+    <h4>Interacciones</h4>
+    <p><%=@interaccion.present? ? convierte_a_HTML(@interaccion.interacciones) : (@sin_info_msj)%></p>
+    <h5>Información adicional</h5>
+    <p><%=@demografiaAmenazas.present? ? convierte_a_HTML(@demografiaAmenazas.infoAdicionalInteraccion) : (@sin_info_msj)%></p>
+
+  </div>
+</div>

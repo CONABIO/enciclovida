@@ -2,8 +2,13 @@
  * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
  * @param tipo_busqueda
  */
-var soulmateAsigna = function(tipo_busqueda)
+var soulmateAsigna = function(tipo_busqueda, elem)
 {
+    if (elem == undefined)
+        var elemento = 'nombre';
+    else
+        var elemento = elem;
+
     var render = function(term, data, type, index, id)
     {
         if (I18n.locale == 'es-cientifico')
@@ -44,7 +49,7 @@ var soulmateAsigna = function(tipo_busqueda)
 
     var select = function(term, data, type)
     {
-        $('#nombre').val(term);
+        $('#' + elemento).val(term);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
 
         switch (tipo_busqueda){
@@ -56,6 +61,9 @@ var soulmateAsigna = function(tipo_busqueda)
                 $('#id').attr('value', data.id);
                 bloqueaBusqueda();
                 break;
+            case 'pmc_new':
+                $('#pmc_pez_especie_id').attr('value', data.id);
+                break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
                 break;
@@ -66,7 +74,7 @@ var soulmateAsigna = function(tipo_busqueda)
         }
     };
 
-    $('#nombre').soulmate({
+    $('#' + elemento).soulmate({
         url:            "http://"+ IP + ":" + PORT + "sm/search",
         types:          TYPES,
         renderCallback: render,

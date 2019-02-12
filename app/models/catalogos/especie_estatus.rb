@@ -12,6 +12,7 @@ class EspecieEstatus < ActiveRecord::Base
   belongs_to :especie, :foreign_key => attribute_alias(:especie_id1)
   belongs_to :especie, :foreign_key => attribute_alias(:especie_id2)
   belongs_to :estatus, :foreign_key => attribute_alias(:estatus_id)
+  has_many :bibliografias, class_name: 'EspecieEstatusBibliografia', :foreign_key => attribute_alias(:especie_id1)
 
   scope :sinonimos, -> { where(estatus_id: 1) }
   scope :homonimos, -> { where(estatus_id: 8) }
