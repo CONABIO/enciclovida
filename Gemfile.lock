@@ -120,6 +120,8 @@ GEM
     concurrent-ruby (1.1.4)
     crass (1.0.4)
     daemons (1.0.10)
+    delayed-web (0.4.5)
+      rails (>= 3.2.13)
     delayed_job (4.1.4)
       activesupport (>= 3.0, < 5.2)
     delayed_job_mongoid (2.3.0)
@@ -385,6 +387,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   composite_primary_keys
   daemons (= 1.0.10)
+  delayed-web
   delayed_job
   delayed_job_mongoid
   devise
@@ -435,4 +438,4 @@ DEPENDENCIES
   zip-zip
 
 BUNDLED WITH
-   1.16.6
+   2.0.1
