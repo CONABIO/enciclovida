@@ -119,10 +119,20 @@ class Pmc::Pez < ActiveRecord::Base
     # Para actualizar o crear el valor de iucn
     criterio_id = 159
 
+    # Para buscar en catalogos
     if iucn = especie.catalogos.iucn.first
       if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
+        end
+      end
+    else  # Para el servicio de IUCN
+      iucn = IUCNService.new
+      if resp = iucn.dameRiesgo(nombre: especie.nombre_cientifico.strip, id: especie_id)
+        if prop = Pmc::Propiedad.where(nombre_propiedad: resp).first
+          if crit = prop.criterios.where('anio=?', 2012).first
+            criterio_id = crit.id
+          end
         end
       end
     end
