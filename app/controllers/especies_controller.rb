@@ -806,7 +806,7 @@ class EspeciesController < ApplicationController
 
     # Recuperar parámetros
     @bioteca_name_to_find = params[:name]
-    @bioteca_curent_page = params[:n_page].to_i
+    params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
 
     # Crear la solicitud (el mensaje) para generar un soap request
     request_message = {

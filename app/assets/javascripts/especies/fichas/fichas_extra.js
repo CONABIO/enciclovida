@@ -40,7 +40,6 @@ $(document).ready(function() {
             } else {
                 $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-plus-sign'></i> Ver mas detalles");
             }
-
             $('#detalle_' + idFicha).toggleClass("detalle-oculto");
         }
 
@@ -48,20 +47,16 @@ $(document).ready(function() {
     });
 });
 
+// Función para cargar siguientes páginas de bioteca
 function biotecaLoadPage(taxon, page) {
 
     // Primero, verificamos la página en la que se encuentra
     var paginaEstaVacia =  $('#janium_records-page-' + page).is(':empty');
-
-    console.log(paginaEstaVacia)
-
-
     $('.page-item').removeClass("active");
     $("#button-janium_records-" + page).addClass("active");
 
     // Si está vacía, hayq ue invocar al servicio web para agregare la info
     if (paginaEstaVacia) {
-        console.log(page + " Está vacia")
         jQuery.ajax({
             success: function(html){
                 $('#janium_records-page-' + page).html(html);
@@ -81,7 +76,6 @@ function biotecaLoadPage(taxon, page) {
         $('.janium_records').addClass("janium_records-not-show");
         // Si no está vacia, sólo hay que mostrar el div
         $('#janium_records-page-' + page).removeClass("janium_records-not-show");
-        console.log(page)
     }
 
 

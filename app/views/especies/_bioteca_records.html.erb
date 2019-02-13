@@ -1,218 +1,108 @@
+<% # Si es la primera vez que se invoca la pagina 1, mostrar el páginado y los divs en los que se mostrarán los demás resultados: %>
+<%= @show_pagination ? "<div class='container'><div id='janium_records-page-1' class='row janium_records'>".html_safe : "".html_safe%>
 <%
-  # Si es la primera vez que se invoca la pagina 1, mostrar el páginado y los divs en los que se mostrarán los demás resultados
-  if @show_pagination
-%>
-  <div class="container">
-    <div id="janium_records-page-1" class="row janium_records janium_records">
-      <%
-        # Si al menos en el primer registro hay algo..
-        if !@registros_janium[0].text.blank?
-      %>
-        <h4 class="text-primary text-right"><%= @registros_fichas_janium %> resultado(s) encontrados</h4>
-        <%
-          @registros_janium.count.times do |num|
-        %>
-          <!-- Div por cada articulo -->
-          <div id="record_id_<%= @registros_janium[num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
-            <div class="record-header">
-              <div class="row">
-                <div class="col-md-6">
-                  <%
-                    clasificaciones = @registros_janium[num].xpath("//clasificaciones/clasificacion")
-                    # Siempre hay clasificaciones, considerando que siempre existirá la etiqueta: </clasificaciones> (si, aun que esté vacía)
-                    if clasificaciones[0].text != ""
-                  %>
-                    <h5>
-                      <% clasificaciones.each do |clasificacion| %>
-                        <i class='glyphicon glyphicon-pushpin'> </i> <%= clasificacion.text %></li>
-                      <% end %>
-                    </h5>
-                  <% end %>
-                </div>
-                <div class="col-md-6 text-right">
-                  <h5><i class='glyphicon glyphicon-calendar'></i> <%= @registros_janium[num].xpath("//fecha").text %></h5>
-                </div>
-              </div>
-            </div>
-
-            <div class="record-info">
-              <div class="row">
-                <div class="col-md-3 text-center portada">
-                  <img src="<%= @registros_janium[num].xpath("//portada/url").text %>" alt="">
-                  <br><br> <a href="<%= @registros_janium[num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
-                </div>
-                <div class="col-md-9 titulo">
-                  <h4 class="text-justify"><%= @registros_janium[num].xpath("//titulo").text %></h4>
-                  <br>
-                  <div class="autores text-left text-secondary">
-                    <%
-                      autores = @registros_janium[num].xpath("//autores/autor")
-
-                      # Siempre hay autores, considerando que siempre existirá la etiqueta: </autor> (si, aun que esté vacía)
-                      if autores[0].text != ""
-                    %>
-                      <h5 class="autor">Autores:</h5>
-                      <ul>
-                        <%
-                          autores.each do |autor|
-                        %>
-                          <li><%= autor.text %></li>
-                        <%  end %>
-                      </ul>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Invocación al servicio Janium para recatar más información -->
-            <div class="record-more-info" id="detalle_<%= @registros_janium[num].xpath("//ficha").text %>"></div>
-            <div class="record-footer">
-              <div class="row">
-                <div class="col-sm-6 text-left">
-                </div>
-                <div class="col-sm-6 text-right">
-                  <a type="button" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>" class="btn btn-outline-secondary"><i class='glyphicon glyphicon-plus-sign'></i> Ver más detalles</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        <%
-          end
-          else
-        %>
-        <%=  %>
-        <h2>No hay más que mostrar...</h2>
-      <%
-        end
-      %>
-    </div>
-<%
-    # Si es necesario crear los divs para mostrar más páginas..
-    if @registros_fichas_janium > @registros_x_pagina_janium
-      # Calcular las páginas paa mostrar resultados
-      t_paginas = @registros_fichas_janium / @registros_x_pagina_janium.round
-      t_paginas += 1 if (@registros_fichas_janium % @registros_x_pagina_janium) > 0
-%>
-      <% for pagina in (2..t_paginas) %>
-        <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show"></div>
-      <% end %>
-
-      <nav aria-label="...">
-        <ul class="pagination">
-          <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
-          <% for pagina in (1..t_paginas) %>
-            <li class="page-item" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
-          <% end %>
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
-        </ul>
-      </nav>
-<%
-    end
-%>
-  </div>
-<%
-  else
-%>
-
-  <%
-    # Si al menos en el primer registro hay algo..
-    if !@registros_janium[0].text.blank?
-
+  # Si al menos en el primer registro hay algo..
+  if !@registros_janium[0].text.blank?
     resultados_mostrados =  ((@bioteca_curent_page - 1) * @registros_x_pagina_janium) + @registros_janium.count
-  %>
-      <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @registros_fichas_janium %> resultado(s) encontrados</h4>
-  <%
-      @registros_janium.count.times do |num|
-  %>
-      <!-- Div por cada articulo -->
-      <div id="record_id_<%= @registros_janium[num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
-        <div class="record-header">
-          <div class="row">
-            <div class="col-md-6">
-              <%
-                clasificaciones = @registros_janium[num].xpath("//clasificaciones/clasificacion")
-                # Siempre hay clasificaciones, considerando que siempre existirá la etiqueta: </clasificaciones> (si, aun que esté vacía)
-                if clasificaciones[0].text != ""
-              %>
-                <h5>
-                  <% clasificaciones.each do |clasificacion| %>
-                    <i class='glyphicon glyphicon-pushpin'> </i> <%= clasificacion.text %></li>
-                  <% end %>
-                </h5>
-              <% end %>
-            </div>
-            <div class="col-md-6 text-right">
-              <h5><i class='glyphicon glyphicon-calendar'></i> <%= @registros_janium[num].xpath("//fecha").text %></h5>
-            </div>
-          </div>
-        </div>
-
-        <div class="record-info">
-          <div class="row">
-            <div class="col-md-3 text-center portada">
-              <img src="<%= @registros_janium[num].xpath("//portada/url").text %>" alt="">
-              <br><br> <a href="<%= @registros_janium[num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
-            </div>
-            <div class="col-md-9 titulo">
-              <h4 class="text-justify"><%= @registros_janium[num].xpath("//titulo").text %></h4>
-              <br>
-              <div class="autores text-left text-secondary">
-                <%
-                  autores = @registros_janium[num].xpath("//autores/autor")
-
-                  # Siempre hay autores, considerando que siempre existirá la etiqueta: </autor> (si, aun que esté vacía)
-                  if autores[0].text != ""
-                %>
-                  <h5 class="autor">Autores:</h5>
-                  <ul>
-                    <%
-                      autores.each do |autor|
-                    %>
-                      <li><%= autor.text %></li>
-                    <%  end %>
-                  </ul>
+%>
+  <!-- Div por cada articulo -->
+  <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @registros_fichas_janium %> resultado(s) encontrados</h4>
+  <% @registros_janium.count.times do |num| %>
+    <div id="record_id_<%= @registros_janium[num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
+      <div class="record-header">
+        <div class="row">
+          <div class="col-md-6">
+            <%
+              clasificaciones = @registros_janium[num].xpath("//clasificaciones/clasificacion")
+              # Siempre hay clasificaciones, considerando que siempre existirá la etiqueta: </clasificaciones> (si, aun que esté vacía)
+              if clasificaciones[0].text != ""
+            %>
+              <h5>
+                <% clasificaciones.each do |clasificacion| %>
+                  <i class='glyphicon glyphicon-pushpin'> </i> <%= clasificacion.text %></li>
                 <% end %>
-              </div>
-            </div>
+              </h5>
+            <% end %>
+          </div>
+          <div class="col-md-6 text-right">
+            <h5><i class='glyphicon glyphicon-calendar'></i> <%= @registros_janium[num].xpath("//fecha").text %></h5>
           </div>
         </div>
-        <!-- Invocación al servicio Janium para recatar más información -->
-        <div class="record-more-info" id="detalle_<%= @registros_janium[num].xpath("//ficha").text %>"></div>
-        <div class="record-footer">
-          <div class="row">
-            <div class="col-sm-6 text-left">
-            </div>
-            <div class="col-sm-6 text-right">
-              <a type="button" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>" class="btn btn-outline-secondary"><i class='glyphicon glyphicon-plus-sign'></i> Ver más detalles</a>
+      </div>
+
+      <div class="record-info">
+        <div class="row">
+          <div class="col-md-3 text-center portada">
+            <img src="<%= @registros_janium[num].xpath("//portada/url").text %>" alt="">
+            <br><br> <a href="<%= @registros_janium[num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
+          </div>
+          <div class="col-md-9 titulo">
+            <h4 class="text-justify"><%= @registros_janium[num].xpath("//titulo").text %></h4>
+            <br>
+            <div class="autores text-left text-secondary">
+              <%
+                autores = @registros_janium[num].xpath("//autores/autor")
+
+                # Siempre hay autores, considerando que siempre existirá la etiqueta: </autor> (si, aun que esté vacía)
+                if autores[0].text != ""
+              %>
+                <h5 class="autor">Autores:</h5>
+                <ul>
+                  <%
+                    autores.each do |autor|
+                  %>
+                    <li><%= autor.text %></li>
+                  <%  end %>
+                </ul>
+              <% end %>
             </div>
           </div>
         </div>
       </div>
-    <%
-      end
-      else
-    %>
-    <%=  %>
-    <h2>No hay más que mostrar...</h2>
+      <!-- Invocación al servicio Janium para recatar más información -->
+      <div class="record-more-info" id="detalle_<%= @registros_janium[num].xpath("//ficha").text %>"></div>
+      <div class="record-footer">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+          </div>
+          <div class="col-sm-6 text-right">
+            <a type="button" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>" class="btn btn-outline-secondary"><i class='glyphicon glyphicon-plus-sign'></i> Ver más detalles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%= @show_pagination ? "</div>".html_safe : ""%>
+  <% else %>
+    <h3>No hay más que mostrar...</h3>
+  <% end %>
   <%
+    if @show_pagination
+      # Si es necesario crear los divs para mostrar más páginas..
+      if @registros_fichas_janium > @registros_x_pagina_janium
+        # Calcular las páginas paa mostrar resultados
+        t_paginas = @registros_fichas_janium / @registros_x_pagina_janium.round
+        t_paginas += 1 if (@registros_fichas_janium % @registros_x_pagina_janium) > 0
+  %>
+        <% for pagina in (2..t_paginas) %>
+          <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show"></div>
+        <% end %>
+
+        <nav aria-label="...">
+          <ul class="pagination">
+            <li class="page-item disabled"><a class="page-link" tabindex="-1">Anterior</a></li>
+            <% for pagina in (1..t_paginas) %>
+              <% if pagina == 1 %>
+                <li class="page-item active" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
+              <% else %>
+                <li class="page-item" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
+              <% end %>
+            <% end %>
+            <li class="page-item"><a class="page-link">Siguiente</a></li>
+          </ul>
+        </nav>
+  <%
+      end
     end
   %>
-
-<%
-  end
-%>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<%= javascript_include_tag 'especies/fichas/fichas_extra', 'data-turbolinks-track' => true %>
+<%= @show_pagination ? "</div>".html_safe : ""%>
