@@ -793,12 +793,6 @@ class EspeciesController < ApplicationController
   # Función que invocará al servicio web "Janium"
   def show_bioteca_records
 
-    # Variable fianl que contendrá los registross encontrados por X especie
-    @registros_janium = []
-    @status_fichas_janium = ""
-    @registros_fichas_janium
-    @registros_x_pagina_janium
-
     # Crear el cliente Savon
     client = Savon.client(
         endpoint: CONFIG.janium.location,
@@ -810,13 +804,21 @@ class EspeciesController < ApplicationController
         #log:         true
     )
 
+    # Recuperar parámetros
+    @bioteca_name_to_find = params[:name]
+    @bioteca_curent_page = params[:n_page].to_i
+
     # Crear la solicitud (el mensaje) para generar un soap request
     request_message = {
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: params[:name],
-            numero_de_pagina: '2'
+            v: @bioteca_name_to_find
+
+        },
+        :arg2 => {
+            a: "numero_de_pagina",
+            v: @bioteca_curent_page
         }
     }
 
@@ -830,13 +832,12 @@ class EspeciesController < ApplicationController
 
       # Extraer el estatus de la consulta:
       @status_fichas_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
-      Rails.logger.debug "[DEBUG] La doc final es: #{doc}"
-      Rails.logger.debug "[DEBUG] @status_fichas_janium: #{@status_fichas_janium}"
+
       if @status_fichas_janium == 'ok'
+        @registros_janium = []
         # Extraer los registros:
         @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
         @registros_x_pagina_janium = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
-
         # Iterar registros registros
         doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
           @registros_janium << Nokogiri::XML(registro.to_s)
@@ -849,11 +850,14 @@ class EspeciesController < ApplicationController
     rescue => ex
       # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
       @status_fichas_janium = 'error'
-      @registros_janium = []
       logger.error ex.message
     end
 
+    # Si hay fichas que mostrar:
     if @registros_fichas_janium > 0
+      # Mostrar las páginas sólo si la pagina solicitada es nula (la 1) ( como la base)
+      !params[:n_page].present? || params[:n_page] == '1' ? @show_pagination = true : @show_pagination = false
+      # Responder con la plantilla hecha
       respond_to do |format|
         format.html {
           render :partial => 'bioteca_records'
