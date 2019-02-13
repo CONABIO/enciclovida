@@ -13,6 +13,7 @@ gem 'composite_primary_keys'  # Multiples llaves primarias
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
+gem 'delayed-web'
 gem 'devise'
 gem 'exifr'
 gem 'fontello_rails_converter'

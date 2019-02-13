@@ -7,7 +7,7 @@ class Pmc::Pez < ActiveRecord::Base
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, inverse_of: :pez
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
@@ -119,10 +119,20 @@ class Pmc::Pez < ActiveRecord::Base
     # Para actualizar o crear el valor de iucn
     criterio_id = 159
 
+    # Para buscar en catalogos
     if iucn = especie.catalogos.iucn.first
       if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
+        end
+      end
+    else  # Para el servicio de IUCN
+      iucn = IUCNService.new
+      if resp = iucn.dameRiesgo(nombre: especie.nombre_cientifico.strip, id: especie_id)
+        if prop = Pmc::Propiedad.where(nombre_propiedad: resp).first
+          if crit = prop.criterios.where('anio=?', 2012).first
+            criterio_id = crit.id
+          end
         end
       end
     end

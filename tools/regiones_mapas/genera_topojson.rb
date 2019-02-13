@@ -18,7 +18,7 @@ def topojson_por_region
   puts 'Generando los topojson por region' if OPTS[:debug]
 
   #regiones = %w(estado municipio anp ecorregion)
-  regiones = %w(estado)
+  regiones = %w(anp)
   ruta = Rails.root.join('public', 'topojson')
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
@@ -51,6 +51,7 @@ def topojson_por_region
       geojson[:features] << feature
       geojson_todos[:features] << feature
 
+=begin
       if region == 'municipio'
         archivo_topo = ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}.json")
         archivo_geo = ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}_geo.json")
@@ -60,6 +61,7 @@ def topojson_por_region
         archivo_geo = ruta.join("#{region}_#{reg.region_id}_geo.json")
         archivo_tmp = ruta.join("#{region}_#{reg.region_id}_tmp.json")
       end
+=end
 
       # Escribe a disco el archivo geojson
       #File.write(archivo_geo, geojson.to_json)
@@ -76,10 +78,10 @@ def topojson_por_region
     # Escribe a disco el archivo geojson
     File.write(archivo_geo_todos, geojson_todos.to_json)
 
-    if region == 'estado'
+    if %w(estado anp).include?(region)
       # Convierte a topojson
       topojson_todos = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
-      puts "Hubo un error al generar el municipio: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
+      puts "Hubo un error al generar la region: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
     end
 
   end  # End tipos regiones each
