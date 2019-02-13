@@ -84,23 +84,22 @@
         t_paginas = @registros_fichas_janium / @registros_x_pagina_janium.round
         t_paginas += 1 if (@registros_fichas_janium % @registros_x_pagina_janium) > 0
   %>
-        <% for pagina in (2..t_paginas) %>
-          <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show"></div>
-        <% end %>
-
-        <nav aria-label="...">
-          <ul class="pagination">
-            <li class="page-item disabled"><a class="page-link" tabindex="-1">Anterior</a></li>
-            <% for pagina in (1..t_paginas) %>
-              <% if pagina == 1 %>
-                <li class="page-item active" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
-              <% else %>
-                <li class="page-item" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
+        <div class="row">
+          <div class="col-md-12 text-center">
+          <% for pagina in (2..t_paginas) %>
+            <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show"></div>
+          <% end %>
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li id="button-janium-before" class="page-item disabled"><a class="page-link" tabindex="-1" onclick="changePage('<%= @bioteca_name_to_find%>', 'atras')">Anterior</a></li>
+              <% for pagina in (1..t_paginas) %>
+                <li class="page-item <%= pagina == 1 ? "active" : "" %> <%= pagina == t_paginas ? "last" : ""%>" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
               <% end %>
-            <% end %>
-            <li class="page-item"><a class="page-link">Siguiente</a></li>
-          </ul>
-        </nav>
+              <li id="button-janium-next" class="page-item"><a class="page-link" onclick="changePage('<%= @bioteca_name_to_find%>', 'siguiente')">Siguiente</a></li>
+            </ul>
+          </nav>
+          </div>
+        </div>
   <%
       end
     end
