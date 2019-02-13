@@ -113,6 +113,10 @@ base: &base
     api: https://api.macaulaylibrary.org/ml-catalog-api/ws3.0/partner/search/assets?
     key: 9999999999999999999999999999
 
+  tropicos:
+    api: http://services.tropicos.org/Name/
+    key: 9999999999999999999999999999999999
+
   correo_admin: coco@nana.bo.bo
 
   peces:

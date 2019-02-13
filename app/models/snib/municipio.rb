@@ -1,6 +1,5 @@
-class Municipio < ActiveRecord::Base
+class Municipio < Snib
 
-  establish_connection(:snib)
   self.primary_key = 'munid'
 
   scope :campos_min, -> { select('cve_mun AS region_id, cve_ent AS parent_id, municipio AS nombre_region, munid AS region_id_se').order(municipio: :asc) }

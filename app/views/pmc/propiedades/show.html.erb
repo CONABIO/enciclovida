@@ -1,30 +1,34 @@
 <p id="notice"><%= notice %></p>
 
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Nombre propiedad</th>
-    <th>Tipo propiedad</th>
-    <th>Ancestros</th>
-    <th>Criterios vinculados</th>
-    <th></th>
-  </tr>
-  </thead>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    ID: <%= @propiedad.id %><h3 class="panel-title"><%= "#{@propiedad.tipo_propiedad} - #{@propiedad.nombre_propiedad}" %></h3>
+  </div>
 
-  <tbody>
-    <tr>
-      <td><%= @propiedad.id %></td>
-      <td><%= @propiedad.nombre_propiedad %></td>
-      <td><%= @propiedad.tipo_propiedad %></td>
-      <td><%= @propiedad.ancestry %></td>
-      <td></td>
-      <td>
-        <%= link_to 'Editar', edit_propiedad_path(@propiedad) %> |
-        <%= link_to 'Destruir', @propiedad, method: :delete, data: { confirm: '¿Estás seguro de querer destruir este elemento?' } %>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <div class="panel-body">
 
-<%= link_to 'Volver al panel de administración', propiedades_path %>
+    <% if @propiedad.is_root? %>
+      <i>Esta propiedad es un elemento padre</i>
+    <% else %>
+      <i>Propiedades más arriba:</i>
+      <%= @propiedad.ancestors.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
+    <% end %>
+
+    <hr />
+
+    <%
+      hijos = @propiedad.children
+      if hijos.any?
+    %>
+      <i>Hijos de esta propiedad:</i>
+      <%= hijos.map { |p| link_to(p.nombre_propiedad, p) }.join(', ').html_safe %>
+    <% else %>
+      <i>Propiedades más abajo:</i> Esta propiedad no tiene hijos directos
+    <% end %>
+
+  </div>
+
+  <div class="panel-footer"><%= link_to "<i class='glyphicon glyphicon-pencil'></i>".html_safe, edit_pmc_propiedad_path(@propiedad) %></div>
+</div>
+
+<%= link_to 'Regresar a todas las propiedades', pmc_propiedades_path %>

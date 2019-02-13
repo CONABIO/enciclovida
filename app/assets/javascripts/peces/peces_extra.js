@@ -2,9 +2,8 @@ var limpiaBusqueda = function(){
     var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
     var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsALimpiar = $(controles + ", " + visuales);
-    inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada");
+    $('input, select, span, path').removeClass("disabled zona-seleccionada");
     $("#id, #nombre").val('');
-    inputsALimpiar.prop("checked", false);
 };
 
 var bloqueaBusqueda = function(){
@@ -12,9 +11,7 @@ var bloqueaBusqueda = function(){
     var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsABloquear = $(controles + ", " + visuales);
     inputsABloquear.attr("disabled", true).addClass("disabled");
-    //inputsABloquear.val('');
     inputsABloquear.prop("checked", false);
-
 };
 
 $(document).ready(function(){
@@ -25,6 +22,7 @@ $(document).ready(function(){
         var button = $(this);
         var idEspecie = $(button).data('especie-id');
         var pestaña = '/pmc/peces/'+idEspecie+'?mini=true';
+        $('[data-toggle="popover"]').popover('hide');
         jQuery.get(pestaña).done(function(data){
             button.popover({
                 html:true,
@@ -42,8 +40,7 @@ $(document).ready(function(){
                 },
                 trigger: 'manual',
                 content: data,
-            }).popover('show');
-            button.attr('onclick',"$(this).popover('show');");
+            }).popover('show').attr('onclick',"$('[data-toggle=\"popover\"]').not(this).popover('hide'); $(this).popover('show');");
         });
     });
 

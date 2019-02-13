@@ -1,3 +1,4 @@
+# coding: utf-8
 module ApplicationHelper
   def bitacora
     if usuario_signed_in?
@@ -189,4 +190,20 @@ module ApplicationHelper
     # Si no requiero vastagos revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
     return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
   end
+
+  def convierte_a_HTML(text)
+    # Verificar si hay información que mostrar
+    if text.present?
+      # Verificar que sea texto lo que se va a analizar
+      if text.is_a? String
+        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
+        Nokogiri::HTML.fragment(text).to_html.html_safe
+      else
+        text.to_s
+      end
+    else
+      'Sin información disponible'
+    end
+  end
+
 end

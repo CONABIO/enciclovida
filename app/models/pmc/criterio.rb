@@ -5,7 +5,7 @@ class Pmc::Criterio < ActiveRecord::Base
   has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :criterio_id
   has_many :peces, :through => :peces_criterios, :source => :pez
 
-  belongs_to :propiedad
+  belongs_to :propiedad, :class_name => 'Pmc::Propiedad'
 
   scope :select_propiedades, -> { select('criterios.id, nombre_propiedad') }
   scope :select_join_propiedades, -> { select_propiedades.left_joins(:propiedad) }
@@ -18,14 +18,23 @@ class Pmc::Criterio < ActiveRecord::Base
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
   scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (163,164,166,167,169)") }
 
-  validates_presence_of :propiedad_id
+  validates_presence_of :valor
 
   CON_ADVERTENCIA = ['Temporal fija', 'Temporal variable', 'Nacional e Importado'].freeze
 
   def self.catalogo(prop = nil)
 
     if prop.present?
-      prop.siblings.map { |p| [p.nombre_propiedad, p.criterios.first.id] if p.criterios.present? }
+      prop.siblings.map do |p|
+        if p.criterios.present?
+
+          if prop.descripcion.present?
+            ["#{p.nombre_propiedad} - #{p.descripcion}", p.criterios.first.id]
+          else
+            [p.nombre_propiedad, p.criterios.first.id]
+          end
+        end
+      end
 
     else
       resp = Rails.cache.fetch('criterios_catalogo', expires_in: eval(CONFIG.cache.peces.catalogos)) do
@@ -34,11 +43,15 @@ class Pmc::Criterio < ActiveRecord::Base
         Pmc::Criterio.select(:id, :propiedad_id).group(:propiedad_id).each do |c|
           prop = c.propiedad
           next if prop.existe_propiedad?([Pmc::Propiedad::NOM_ID, Pmc::Propiedad::IUCN_ID])
-          #next if prop.existe_propiedad?
           llave_unica = prop.ancestors.map(&:nombre_propiedad).join('/')
 
           grouped_options[llave_unica] = [] unless grouped_options.key?(llave_unica)
-          grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+
+          if prop.descripcion.present?
+            grouped_options[llave_unica] << ["#{prop.nombre_propiedad} - #{prop.descripcion}", c.id]
+          else
+            grouped_options[llave_unica] << [prop.nombre_propiedad, c.id]
+          end
         end
 
         grouped_options

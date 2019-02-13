@@ -4,9 +4,9 @@ class Comentario < ActiveRecord::Base
   self.primary_key = 'id'
 
   belongs_to :especie
-  belongs_to :usuario
-  belongs_to :usuario2, :class_name => 'Usuario', :foreign_key => 'usuario_id2', :dependent => :destroy
-  belongs_to :categorias_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categorias_contenido_id', :dependent => :destroy
+  belongs_to :usuario, optional: true
+  belongs_to :usuario2, :class_name => 'Usuario', :foreign_key => 'usuario_id2', optional: true
+  belongs_to :categorias_contenido, :class_name => 'CategoriasContenido', :foreign_key => 'categorias_contenido_id'
 
   has_ancestry
 
@@ -19,7 +19,6 @@ class Comentario < ActiveRecord::Base
   validates_presence_of :especie_id
   validates_presence_of :categorias_contenido_id
   validates_presence_of :nombre, :if => :inicio_sesion?
-
   validates_format_of :correo, :with => Usuario::CORREO_REGEX, :message => Usuario::CORREO_INVALIDO_MSG, :if => :inicio_sesion?
   validates_length_of :correo, :within => 6..100, :if => :inicio_sesion?
 

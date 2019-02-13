@@ -3,11 +3,11 @@ class Pmc::Pez < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.pez}.peces"
   self.primary_key = 'especie_id'
 
-  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy
+  has_many :peces_criterios, :class_name => 'Pmc::PezCriterio', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :criterios, :through => :peces_criterios, :source => :criterio
   has_many :criterio_propiedades, :through => :criterios, :source => :propiedad
 
-  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id
+  has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :especie_id, dependent: :destroy, inverse_of: :pez
   has_many :propiedades, :through => :peces_propiedades, :source => :propiedad
 
   belongs_to :especie
@@ -23,10 +23,10 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre
 
   validates_presence_of :especie_id
-  before_save :actualiza_pez, unless: :guardar_manual
+  after_save :actualiza_pez, unless: :guardar_manual
   after_save :guarda_valor_zonas_y_total, unless: :guardar_manual
 
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
@@ -119,10 +119,20 @@ class Pmc::Pez < ActiveRecord::Base
     # Para actualizar o crear el valor de iucn
     criterio_id = 159
 
+    # Para buscar en catalogos
     if iucn = especie.catalogos.iucn.first
       if prop = Pmc::Propiedad.where(nombre_propiedad: iucn.descripcion).first
         if crit = prop.criterios.where('anio=?', 2012).first
           criterio_id = crit.id
+        end
+      end
+    else  # Para el servicio de IUCN
+      iucn = IUCNService.new
+      if resp = iucn.dameRiesgo(nombre: especie.nombre_cientifico.strip, id: especie_id)
+        if prop = Pmc::Propiedad.where(nombre_propiedad: resp).first
+          if crit = prop.criterios.where('anio=?', 2012).first
+            criterio_id = crit.id
+          end
         end
       end
     end
@@ -199,6 +209,30 @@ class Pmc::Pez < ActiveRecord::Base
     end
   end
 
+  # REVISADO: Pone el pez con el estatus valido
+  def actualiza_pez_valido
+    estatus = especie.especies_estatus
+
+    if estatus.length == 1
+      esp_id = Especie.find(estatus.first.especie_id2).id
+      peces_criterios.update_all(especie_id: esp_id)
+      peces_propiedades.update_all(especie_id: esp_id)
+      self.especie_id = esp_id
+      save
+    end
+  end
+
+  # REVISADO: Corre el proceso para todos los peces
+  def self.actualiza_todos_validos
+    all.each do |p|
+      if t = p.especie
+        next if t.estatus == 2
+        p.guardar_manual = true
+        p.actualiza_pez_valido
+      end
+    end
+  end
+
 
   private
 
@@ -258,7 +292,12 @@ class Pmc::Pez < ActiveRecord::Base
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
     #valor+= pesquerias
-    self.con_estrella = 1 if pesquerias != 0
+
+    if pesquerias != 0
+      self.con_estrella = 1
+    else
+      self.con_estrella = 0
+    end
 
     self.valor_por_zona = Array.new(6, valor)
   end
