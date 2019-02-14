@@ -7,19 +7,14 @@ module TaxonDescribers
     end
 
     def self.describe(taxon)
-      puts "hola mundo estoy en taxon y soy el de bHL y contengo #{taxon} \n"
-      page = bhl_service.rescuApi(taxon.strip)
-      page.blank? ? nil : page
-      # puts "aqui ponemos lo que tiene page"
-      # puts page.class
-    end
+      puts "taxon  de bHL y contengo #{taxon.id} \n"
+      url = "http://localhost:3000/especies/#{taxon.id}/bhl"
+      puts "voy a buscar en #{url}"
+      escaped_address = URI.escape(url)
+      uri = URI.parse(escaped_address)
+      #response = Net::HTTP.get(uri)
+      doc = Nokogiri::HTML(open(uri))
 
-    private
-    def bhl_service
-      @bhl_service = BhlService.new
     end
-
   end
-
-
 end

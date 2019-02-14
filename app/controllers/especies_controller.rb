@@ -507,6 +507,7 @@ class EspeciesController < ApplicationController
 
   # Viene de la pestaña de la ficha
   def describe
+    puts "entrando al controlador de wikipedia"
     @describers = if CONFIG.taxon_describers
                     CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
                   elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
@@ -725,9 +726,11 @@ class EspeciesController < ApplicationController
 
   #editar para poner informacion de bhl y crear vista
   def bhl
-
-    bhlInfo = TaxonDescribers::Bhl.describe(@especie.nombre_cientifico)
-    @BhlInfo = JSON.parse(bhlInfo)
+    puts "entrando al controlador de BHL"
+    @bhlControl = BhlService.new
+    pagina = @bhlControl.rescuApi(@especie.nombre_cientifico)
+    #bhlInfo = TaxonDescribers::Bhl.describe(@especie.nombre_cientifico)
+    @BhlInfo = JSON.parse(pagina)
   end
 
 
