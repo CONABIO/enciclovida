@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :show_bioteca_records]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -804,8 +804,11 @@ class EspeciesController < ApplicationController
         #log:         true
     )
 
+    puts @especie.inspect
+    @bioteca_default_name = @especie.adicional.nombre_comun_principal
+
     # Recuperar parámetros
-    @bioteca_name_to_find = params[:name]
+    @bioteca_name_to_find = params[:id]
     params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
 
     # Crear la solicitud (el mensaje) para generar un soap request
@@ -872,6 +875,11 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
+    puts "----------"+params.inspect
+    puts "----------"+params[:id].inspect
+
+    puts "----------"+params[:id].to_i.inspect
+
     begin  # Coincidio y es el ID de la centralizacion
       @especie = Especie.find(params[:id])
     rescue   #si no encontro el taxon, puede ser el ID viejo de millones
