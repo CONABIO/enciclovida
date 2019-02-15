@@ -7,7 +7,7 @@
 }
 
 .page-janium_records-selected {
-  background-color: red;
+
 }
 
 .record {
@@ -15,20 +15,27 @@
 }
 
 .record-header {
-  background-color: darkgray;
+
+  border-style: solid;
   border-radius: 6px 6px 0 0;
+  border-color: darkgray;
+  border-width: 2px 2px 1px 2px;
   padding: 8px;
   margin-top: 25px;
-  color: white;
+
 }
 
 .record-info {
   display: table;
   width: 100%;
   padding: 12px;
-  background-color: #F4F4F4;
+
   /*border: 1px solid #ddd;*/
   /* text-transform: uppercase; */
+
+  border-style: solid;
+  border-color: darkgray;
+  border-width: 0 2px 0 2px;
 }
 
 .record-info img {
@@ -39,13 +46,17 @@
   display: table;
   width: 100%;
   padding: 12px;
-  background-color: #F4F4F4;
+  border-style: solid;
+  border-color: darkgray;
+  border-width: 0 2px 0 2px;
   /*border: 1px solid #ddd;*/
 }
 
 .record-footer {
-  background-color: darkgray;
+  border-style: solid;
   border-radius: 0 0 6px 6px;
+  border-color: darkgray;
+  border-width: 1px 2px 2px 2px;
   padding: 8px;
   margin-bottom: 25px;
 }
