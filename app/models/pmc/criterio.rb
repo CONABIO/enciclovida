@@ -16,7 +16,7 @@ class Pmc::Criterio < ActiveRecord::Base
   scope :nom, -> { select_join_propiedades.where("ancestry=?", Pmc::Propiedad::NOM_ID) }
   scope :iucn, -> { select_join_propiedades.where("ancestry=?", Pmc::Propiedad::IUCN_ID) }
   scope :cnp, -> { select_join_propiedades.where("ancestry REGEXP '323/31[123456]$'").where("tipo_propiedad != 'estado'") }
-  scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (163,164,166,167,169)") }
+  scope :iucn_solo_riesgo, -> { iucn.where("propiedades.id IN (400,401,403,404,402)") } #Hardcodear está MAL, hay que evitarlo @calonsot#
 
   validates_presence_of :valor
 
