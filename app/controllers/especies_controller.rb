@@ -9,7 +9,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :fotos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :show_bioteca_records]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -790,6 +790,13 @@ class EspeciesController < ApplicationController
     end
   end
 
+
+
+  #@bioteca_curent_page
+  #@registros_janium
+  #@registros_fichas_janium
+  #@registros_x_pagina_janium
+  #@registros_janium
   # Función que invocará al servicio web "Janium"
   def show_bioteca_records
 
@@ -799,16 +806,24 @@ class EspeciesController < ApplicationController
         namespace: CONFIG.janium.namespace,
         ssl_version: :TLSv1,
         pretty_print_xml: true
-        #logger:      Rails.logger,
-        #log_level:   :debug,
-        #log:         true
     )
 
-    puts @especie.inspect
-    @bioteca_default_name = @especie.adicional.nombre_comun_principal
+    # En la url, se recibe el id de la especie, se procede a buscarlo
+    especie = Especie.find(params[:id])
 
-    # Recuperar parámetros
-    @bioteca_name_to_find = params[:id]
+    # Extraer nombres
+    @bioteca_response = {
+        :id => especie.id,
+        :nombre => {
+          "comun" => especie.adicional.nombre_comun_principal,
+          "cientifico" => especie.NombreCompleto
+        }
+    }
+
+    # Por default, buscará por nombre científico
+    @bioteca_response[:busqueda_actual] = params[:t_name].present? ? @bioteca_response[:nombre][params[:t_name]] : @bioteca_response[:nombre]["cientifico"]
+
+    # Recuperar parámetro de paginado
     params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
 
     # Crear la solicitud (el mensaje) para generar un soap request
@@ -816,8 +831,7 @@ class EspeciesController < ApplicationController
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: @bioteca_name_to_find
-
+            v: @bioteca_response[:busqueda_actual]
         },
         :arg2 => {
             a: "numero_de_pagina",
@@ -834,9 +848,9 @@ class EspeciesController < ApplicationController
       doc = Nokogiri::XML.parse(response.to_xml)
 
       # Extraer el estatus de la consulta:
-      @status_fichas_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
+      @bioteca_response[:status_fichas] = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
 
-      if @status_fichas_janium == 'ok'
+      if @bioteca_response[:status_fichas] = 'ok'
         @registros_janium = []
         # Extraer los registros:
         @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
@@ -847,12 +861,13 @@ class EspeciesController < ApplicationController
           #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
         end
       else
-        @status_fichas_janium = 'error'
+        @bioteca_response[:status_fichas] = 'error'
       end
 
     rescue => ex
       # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
-      @status_fichas_janium = 'error'
+      @bioteca_response[:status_fichas] = 'error'
+      @registros_fichas_janium = 0
       logger.error ex.message
     end
 
@@ -875,11 +890,6 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
-    puts "----------"+params.inspect
-    puts "----------"+params[:id].inspect
-
-    puts "----------"+params[:id].to_i.inspect
-
     begin  # Coincidio y es el ID de la centralizacion
       @especie = Especie.find(params[:id])
     rescue   #si no encontro el taxon, puede ser el ID viejo de millones

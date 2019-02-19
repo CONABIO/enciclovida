@@ -1,12 +1,3 @@
-
-<h4>Buscar por: </h4>
-
-<uls class="nav nav-tabs">
-  <li class="active"><a class="btn btn-link"><%= @bioteca_name_to_find %></a></li>
-  <li class=""><a class="btn btn-link"><%= @bioteca_default_name  %></a></li>
-</uls>
-
-
 <% # Si es la primera vez que se invoca la pagina 1, mostrar el páginado y los divs en los que se mostrarán los demás resultados: %>
 <%= @show_pagination ? "<div class='container'><div id='janium_records-page-1' class='row janium_records'>".html_safe : "".html_safe%>
 <%
@@ -15,7 +6,7 @@
     resultados_mostrados =  ((@bioteca_curent_page - 1) * @registros_x_pagina_janium) + @registros_janium.count
 %>
   <!-- Div por cada articulo -->
-  <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @registros_fichas_janium %> resultado(s) encontrados para: <%= @bioteca_name_to_find %></h4>
+  <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @registros_fichas_janium %> resultado(s) encontrados para: <%= @bioteca_response[:busqueda_actual] %></h4>
   <% @registros_janium.count.times do |num| %>
     <div id="record_id_<%= @registros_janium[num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
       <div class="record-header">
