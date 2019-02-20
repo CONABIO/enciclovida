@@ -817,11 +817,9 @@ class EspeciesController < ApplicationController
         :nombre => {
           "comun" => especie.adicional.nombre_comun_principal,
           "cientifico" => especie.NombreCompleto
-        }
+        },
+        :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
     }
-
-    # Por default, buscará por nombre científico
-    @bioteca_response[:busqueda_actual] = params[:t_name].present? ? @bioteca_response[:nombre][params[:t_name]] : @bioteca_response[:nombre]["cientifico"]
 
     # Recuperar parámetro de paginado
     params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
@@ -831,7 +829,7 @@ class EspeciesController < ApplicationController
         :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
         :arg => {
             a: "terminos",
-            v: @bioteca_response[:busqueda_actual]
+            v: @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]]
         },
         :arg2 => {
             a: "numero_de_pagina",
@@ -875,6 +873,7 @@ class EspeciesController < ApplicationController
     if @registros_fichas_janium > 0
       # Mostrar las páginas sólo si la pagina solicitada es nula (la 1) ( como la base)
       !params[:n_page].present? || params[:n_page] == '1' ? @show_pagination = true : @show_pagination = false
+      !params[:n_page].present? && !params[:t_name].present? ? @show_find_by = true : @show_find_by = false
       # Responder con la plantilla hecha
       respond_to do |format|
         format.html {

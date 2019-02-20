@@ -14,6 +14,7 @@ $(document).ready(function() {
         });
     });
 
+    // Función para mostrar más detalles de una ficha en particular haciendo una llamada al servicio Bioteca
     $(document).off('click').on('click', "[id^='ficha_']", function () {
         var idFicha = $(this).attr('id').replace("ficha_", "");
         var detalleEstaVacio =  $('#detalle_' + idFicha).is(':empty');
@@ -50,7 +51,7 @@ $(document).ready(function() {
 // Función para llamar a la siguiente página desde botón siguiénte / atrás
 var biotecaCurrentPage = 1;
 var biotecaLastPage = 99;
-function changePage(taxon, action) {
+function changePage(taxon, tipo, action) {
     // Calcular página siguiente
     if (action === "siguiente") {
         if (biotecaCurrentPage < biotecaLastPage )
@@ -61,13 +62,13 @@ function changePage(taxon, action) {
         else
             biotecaCurrentPage = 1
     }
-    biotecaLoadPage(taxon, biotecaCurrentPage)
+    biotecaLoadPage(taxon, tipo, biotecaCurrentPage)
 }
 
 // Función para cargar siguientes páginas de bioteca
-function biotecaLoadPage(taxon, page) {
+function biotecaLoadPage(taxon, tipo, page) {
     // Primero, verificamos la página en la que se encuentra
-    var paginaEstaVacia =  $('#janium_records-page-' + page).is(':empty');
+    var paginaEstaVacia =  $('#janium_records-' + tipo + '-page-' + page).is(':empty');
     $('.page-item').removeClass("active");
     $("#button-janium_records-" + page).addClass("active");
 
@@ -75,22 +76,22 @@ function biotecaLoadPage(taxon, page) {
     if (paginaEstaVacia) {
         jQuery.ajax({
             success: function(html){
-                $('#janium_records-page-' + page).html(html);
+                $('#janium_records-' + tipo + '-page-' + page).html(html);
             },
             fail: function(){
-                $('#janium_records-page-' + page).html('Hubo un error al cargar los datos, por favor intentalo de nuevo.');
+                $('#janium_records-' + tipo + '-page-' + page).html('Hubo un error al cargar los datos, por favor intentalo de nuevo.');
             },
             method: 'get',
-            url: '/registros_bioteca/' + taxon + '/page=' + page
+            url: '/registros_bioteca/' + taxon + '/find_by=' + tipo + '/page=' + page
         });
 
-        $('.janium_records').addClass("janium_records-not-show");
-        $('#janium_records-page-' + page).removeClass("janium_records-not-show");
+        $('.janium_records_' + tipo).addClass("janium_records-not-show");
+        $('#janium_records-' + tipo + '-page-' + page).removeClass("janium_records-not-show");
 
     } else {
-        $('.janium_records').addClass("janium_records-not-show");
+        $('.janium_records_' + tipo).addClass("janium_records-not-show");
         // Si no está vacia, sólo hay que mostrar el div
-        $('#janium_records-page-' + page).removeClass("janium_records-not-show");
+        $('#janium_records-' + tipo + '-page-' + page).removeClass("janium_records-not-show");
     }
 
     // Control de botón: "Anterior"
@@ -108,4 +109,34 @@ function biotecaLoadPage(taxon, page) {
     }
 
     biotecaCurrentPage = parseInt(page);
+}
+
+// Cambiar el tipo de búsqueda
+function changeTBusqueda(tipo, taxon) {
+
+    var paginaEstaVacia =  $('#busqueda-' + tipo).is(':empty');
+
+    $('.busqueda-item').removeClass("active");
+    $("#item-busqueda-" + tipo).addClass("active");
+
+    $('.bioteca-records').css("display", "none");
+    $('#busqueda-' + tipo).css("display", "table");
+
+    // Si está vacía, hay que invocar al servicio web para agregare los resultados
+    if (paginaEstaVacia) {
+        console.log("Se invocará servicio");
+        jQuery.ajax({
+            success: function(html){
+                $('#busqueda-' + tipo).html(html);
+            },
+            fail: function(){
+                $('#busqueda-' + page).html('Hubo un error al cargar los datos, por favor intentalo de nuevo.');
+            },
+            method: 'get',
+            url: '/registros_bioteca/' + taxon + '/find_by=' + tipo
+        });
+
+    } else {
+
+    }
 }
