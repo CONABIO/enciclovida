@@ -793,6 +793,9 @@ class EspeciesController < ApplicationController
   # Función que invocará al servicio web "Janium"
   def show_bioteca_records
 
+    # Variable que contendrá todas las respuestas para la vista
+    @bioteca_response = {}
+
     # Crear el cliente Savon
     client = Savon.client(
         endpoint: CONFIG.janium.location,
@@ -801,37 +804,37 @@ class EspeciesController < ApplicationController
         pretty_print_xml: true
     )
 
-    # En la url, se recibe el id de la especie, se procede a buscarlo
-    especie = Especie.find(params[:id])
-
-    # Extraer nombres
-    @bioteca_response = {
-        :id => especie.id,
-        :nombre => {
-          "comun" => especie.adicional.nombre_comun_principal,
-          "cientifico" => especie.NombreCompleto
-        },
-        :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
-    }
-
-    # Recuperar parámetro de paginado
-    params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
-
-    # Crear la solicitud (el mensaje) para generar un soap request
-    request_message = {
-        :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
-        :arg => {
-            a: "terminos",
-            v: @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]]
-        },
-        :arg2 => {
-            a: "numero_de_pagina",
-            v: @bioteca_curent_page
-        }
-    }
-
     # Invocar el servicio web
     begin
+      # En la url, se recibe el id de la especie, se procede a buscarlo
+      especie = Especie.find(params[:id])
+
+      # Extraer nombres
+      @bioteca_response = {
+          :id => especie.id,
+          :nombre => {
+              "comun" => especie.adicional.nombre_comun_principal,
+              "cientifico" => especie.NombreCompleto
+          },
+          :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
+      }
+
+      # Recuperar parámetro de paginado
+      params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
+
+      # Crear la solicitud (el mensaje) para generar un soap request
+      request_message = {
+          :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
+          :arg => {
+              a: "terminos",
+              v: @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]]
+          },
+          :arg2 => {
+              a: "numero_de_pagina",
+              v: @bioteca_curent_page
+          }
+      }
+
       # La respuesta será un SAVON response
       response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
 
