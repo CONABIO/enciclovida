@@ -45,8 +45,26 @@
       <div class="record-info">
         <div class="row">
           <div class="col-md-3 text-center portada">
-            <img src="<%= @bioteca_response[:registros_janium][num].xpath("//portada/url").text %>" alt="">
-            <br><br> <a href="<%= @bioteca_response[:registros_janium][num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
+            <% if @bioteca_response[:registros_janium][num].xpath("//portada/url").text.include?("https://www.youtube.com")
+                 portada_url_array = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.split(',')
+                 portada_url_youtube =  portada_url_array[1].split('|')
+                 portada_url_youtube_limpio = portada_url_youtube[1].gsub("&hl=es_ES&fs=1%20", "")
+                 portada_url_youtube_limpio = portada_url_youtube_limpio.gsub("&hl=es_ES&fs=1", "")
+                 portada_url_youtube_limpio = portada_url_youtube_limpio.gsub("/v/", "/embed/")
+            %>
+              <iframe width="100%" src="<%=portada_url_youtube_limpio%>" allowfullscreen frameborder="0"></iframe>
+            <% else
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20%20%20', '')
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20%20', '')
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20', '')
+            %>
+              <img src="<%= portada_url %>" alt="">
+            <% end %>
+
+            <br><br>
+            <% if !@bioteca_response[:registros_janium][num].xpath("//portada/url_asociada").text.blank? %>
+              <a href="<%= @bioteca_response[:registros_janium][num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
+            <% end %>
           </div>
           <div class="col-md-9 titulo">
             <h4 class="text-justify"><%= @bioteca_response[:registros_janium][num].xpath("//titulo").text %></h4>
