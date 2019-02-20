@@ -2,9 +2,9 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
+    guarda_estadisticas_servicio
     if Rails.env.production?
       suma_visita_servicio
-      guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio
       guarda_redis_servicio
@@ -32,7 +32,7 @@ module CacheServices
   def guarda_estadisticas
     cuantas_especies_inferiores(estadistica_id: 2)
     cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies validas del taxon
     cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
   end
 
@@ -394,8 +394,8 @@ module CacheServices
 
     # Quiere decir que no existia la estadistica
     estadistica = especie_estadisticas.new
-    estadistica.estadistica_id = opc[:estadistica_id]
     estadistica.conteo = conteo
+    estadistica.estadistica_id = opc[:estadistica_id]
     estadistica.save
   end
 

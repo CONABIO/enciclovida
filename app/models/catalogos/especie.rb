@@ -69,7 +69,7 @@ class Especie < ActiveRecord::Base
   has_many :especie_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :bibliografias, :through => :especie_bibliografias, :source => :bibliografia
 
-  has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy
+  has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy, inverse_of: :especie
   has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
 
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
