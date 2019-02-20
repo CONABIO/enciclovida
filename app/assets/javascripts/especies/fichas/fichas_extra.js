@@ -111,16 +111,10 @@ function biotecaLoadPage(taxon, tipo, page) {
     biotecaCurrentPage = parseInt(page);
 }
 
-// Cambiar el tipo de búsqueda
+// Cambiar el tipo de búsqueda: por nombre científico o por nombre común
 function changeTBusqueda(tipo, taxon) {
-
+    //Verifica si se ha hecho ya la consulta
     var paginaEstaVacia =  $('#busqueda-' + tipo).is(':empty');
-
-    $('.busqueda-item').removeClass("active");
-    $("#item-busqueda-" + tipo).addClass("active");
-
-    $('.bioteca-records').css("display", "none");
-    $('#busqueda-' + tipo).css("display", "table");
 
     // Si está vacía, hay que invocar al servicio web para agregare los resultados
     if (paginaEstaVacia) {
@@ -135,8 +129,11 @@ function changeTBusqueda(tipo, taxon) {
             method: 'get',
             url: '/registros_bioteca/' + taxon + '/find_by=' + tipo
         });
-
-    } else {
-
     }
+
+    // En cuenlquier caso, hay que marcar y mostrar sólo la pestaña seleccionada
+    $('.busqueda-item').removeClass("active");
+    $("#item-busqueda-" + tipo).addClass("active");
+    $('.bioteca-records').css("display", "none");
+    $('#busqueda-' + tipo).css("display", "table");
 }

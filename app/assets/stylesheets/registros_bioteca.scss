@@ -1,38 +1,25 @@
-.janium_records {
+.janium_records_comun, .janium_records_cientifico {
   display: table;
+  width: 100%;
 }
 
 .janium_records-not-show {
   display: none
 }
 
-.page-janium_records-selected {
-
-}
-
-.record {
-
-}
-
 .record-header {
-
   border-style: solid;
   border-radius: 6px 6px 0 0;
   border-color: darkgray;
   border-width: 2px 2px 1px 2px;
   padding: 8px;
   margin-top: 25px;
-
 }
 
 .record-info {
   display: table;
   width: 100%;
   padding: 12px;
-
-  /*border: 1px solid #ddd;*/
-  /* text-transform: uppercase; */
-
   border-style: solid;
   border-color: darkgray;
   border-width: 0 2px 0 2px;
@@ -49,7 +36,6 @@
   border-style: solid;
   border-color: darkgray;
   border-width: 0 2px 0 2px;
-  /*border: 1px solid #ddd;*/
 }
 
 .record-footer {
@@ -70,5 +56,13 @@
 }
 
 .titulo {
+
+}
+
+.page-janium_records-selected {
+
+}
+
+.record {
 
 }

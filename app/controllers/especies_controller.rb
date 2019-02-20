@@ -790,13 +790,6 @@ class EspeciesController < ApplicationController
     end
   end
 
-
-
-  #@bioteca_curent_page
-  #@registros_janium
-  #@registros_fichas_janium
-  #@registros_x_pagina_janium
-  #@registros_janium
   # Función que invocará al servicio web "Janium"
   def show_bioteca_records
 
@@ -849,13 +842,15 @@ class EspeciesController < ApplicationController
       @bioteca_response[:status_fichas] = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
 
       if @bioteca_response[:status_fichas] = 'ok'
+        @bioteca_response[:registros_janium] = []
         @registros_janium = []
         # Extraer los registros:
-        @registros_fichas_janium = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
-        @registros_x_pagina_janium = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
+        @bioteca_response[:registros_fichas_janium] = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
+        @bioteca_response[:registros_x_pagina_janium] = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
+
         # Iterar registros registros
         doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
-          @registros_janium << Nokogiri::XML(registro.to_s)
+          @bioteca_response[:registros_janium] << Nokogiri::XML(registro.to_s)
           #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
         end
       else
@@ -865,12 +860,12 @@ class EspeciesController < ApplicationController
     rescue => ex
       # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
       @bioteca_response[:status_fichas] = 'error'
-      @registros_fichas_janium = 0
+      @bioteca_response[:registros_fichas_janium] = 0
       logger.error ex.message
     end
 
     # Si hay fichas que mostrar:
-    if @registros_fichas_janium > 0
+    if @bioteca_response[:registros_fichas_janium] > 0
       # Mostrar las páginas sólo si la pagina solicitada es nula (la 1) ( como la base)
       !params[:n_page].present? || params[:n_page] == '1' ? @show_pagination = true : @show_pagination = false
       !params[:n_page].present? && !params[:t_name].present? ? @show_find_by = true : @show_find_by = false
