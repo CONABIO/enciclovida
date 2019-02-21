@@ -1,4 +1,4 @@
-class Fichas::Productocomercio < ActiveRecord::Base
+class Fichas::Productocomercio < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.productocomercio"
 	self.primary_keys = :especieId,  :tipoproducto,  :nacionalinternacional

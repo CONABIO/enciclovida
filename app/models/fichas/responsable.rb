@@ -1,4 +1,4 @@
-class Fichas::Responsable < ActiveRecord::Base
+class Fichas::Responsable < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.responsable"
 	self.primary_key = 'responsableId'

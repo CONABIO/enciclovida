@@ -1,4 +1,4 @@
-class Fichas::Catnombresinvas < ActiveRecord::Base
+class Fichas::Catnombresinvas < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.catnombresinvas"
 

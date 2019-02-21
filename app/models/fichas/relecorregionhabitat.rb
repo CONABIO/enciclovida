@@ -1,4 +1,4 @@
-class Fichas::Relecorregionhabitat < ActiveRecord::Base
+class Fichas::Relecorregionhabitat < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.relecorregionhabitat"
 	self.primary_keys = :habitatId,  :ecorregionId

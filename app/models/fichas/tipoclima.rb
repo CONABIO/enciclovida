@@ -1,4 +1,4 @@
-class Fichas::Tipoclima < ActiveRecord::Base
+class Fichas::Tipoclima < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.tipoclima"
 	self.primary_key = 'tipoClimaId'
