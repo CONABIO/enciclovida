@@ -28,7 +28,7 @@ class EspeciesController < ApplicationController
 
   # Pone en cache el webservice que carga por default
   caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
-                :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
+                :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production? && (c.params[:from].present? && c.params[:from] != 'Conabio')
 
   # GET /especies
   # GET /especies.json
