@@ -344,6 +344,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
+  # Servicio que trae la respuesta de bdi para videos
+  def videos_bdi(opts={})
+    bdi = BDIService.new
+    bdi.dame_videos(opts.merge({taxon: self}))
+  end
+
   # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
   def dame_fotos_todas
     # Fotos de naturalista

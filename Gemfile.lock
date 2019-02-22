@@ -7,15 +7,6 @@ GIT
       activerecord (>= 3.0.0)
 
 GIT
-  remote: https://github.com/calonsot/blurrily.git
-  revision: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
-  ref: c0cbbd1e9961774a6b8e2546285d38095b4d1bfa
-  specs:
-    blurrily (1.0.2)
-      activesupport (~> 5)
-      eventmachine
-
-GIT
   remote: https://github.com/randym/axlsx.git
   revision: c8ac844572b25fda358cc01d2104720c4c42f450
   ref: c8ac844
@@ -378,7 +369,6 @@ DEPENDENCIES
   ancestry!
   axlsx!
   axlsx_rails
-  blurrily!
   bootstrap-sass (~> 3.3.6)
   byebug
   capybara (~> 2.13)
