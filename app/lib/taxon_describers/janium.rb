@@ -1,72 +1,23 @@
 module TaxonDescribers
   class Janium < Base
-    def describe(taxon, options={})
-
-      client2 = Savon.client(
-          :wsdl => "http://200.12.166.51/janium/services/soap.pl",
-          :open_timeout => 10,
-          :read_timeout => 10,
-          :log => false
-      )
-
-
-
-      client = Savon.client do
-        endpoint "http://200.12.166.51/janium/services/soap.pl"
-        namespace "http://janium.net/services/soap"
-      end
-
-
-
-      response = client.call('RegistroBib/BuscarPorPalabraClaveGeneral') do
-        message a: "terminos", v: "panthera+onca"
-      end
-
-      response = client.call('Sistema/Ping') do
-        message a: "terminos", v: "panthera+onca"
-      end
-
-      body_hash = {}
-      body_hash['method'] = 'RegistroBib/BuscarPorPalabraClaveGeneral'
-      body_hash['a'] = "RegistroBib/BuscarPorPalabraClaveGeneral"
-
-
-      response = client.call(:JaniumRequest, message: body_hash)
-
-
-    end
-
-    def page_url(taxon)
-
-    end
 
     def self.describer_name
-
+      'Janium - Bioteca'
     end
 
-    def data_objects_from_page(page, options = {})
+    def self.describe(taxon)
+      if cat = taxon.present?
+        name_to_find = taxon.id
+        Rails.logger.debug "[DEBUG] JANIUM buscará #{name_to_find}"
+        page = janium_service.search(name_to_find)
+        page.text.blank? ? nil : page
 
+      end
     end
 
-    protected
+    private
     def janium_service
-
+      @janium_service=Janium_Service.new(:timeout => 20)
     end
   end
 end
-
-
-##
-#
-# criterios de busqueda a enviar durante una consulta
-# name="metodo" value="RegistroBib/BuscarPorPalabraClaveGeneral">
-# name="a" value="terminos">
-# name="inicio" value="1">
-# name="v" id="busqueda">
-#
-# Forma en que se llama:
-# $client->callWs($_GET['metodo'], $_GET['a'], $_GET['v'], $_GET['numero_de_pagina']);
-#
-#
-# Respuesta
-# $fichas = $client->iteraResultados();

@@ -459,6 +459,17 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     # 'Photographer'
   end
 
+  # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
+  def es_url_valido(text)
+    begin
+      url = URI.parse(text.to_s)
+      url.kind_of?(URI::HTTP) || url.kind_of?(URI::HTTPS) ? resultado = "<a target='_blank' href='#{text}'>#{text}</a>".html_safe : resultado = text
+     rescue
+      resultado = text
+    end
+    resultado
+  end
+
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
   end
