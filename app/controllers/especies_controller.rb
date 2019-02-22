@@ -24,10 +24,10 @@ class EspeciesController < ApplicationController
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :show_bioteca_records, :show_bioteca_record_info]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especiesR/#{c.params[:id]}/#{c.params[:from]}" }, :if => (Rails.env.production? && :params_from_conabio_present?)
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -1091,7 +1091,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
   end
 
 end
