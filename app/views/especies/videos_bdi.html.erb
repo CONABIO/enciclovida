@@ -1,0 +1,39 @@
+<%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
+
+<div id="paginado_fotos">
+
+  <% if @pagina.blank? && @videos.any? %>
+    <div class="text-center paginado_1"></div>
+  <% end %>
+
+  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 media-supplier">
+    <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+      <i class ='conabio_completo-ev-icon'></i>
+    </div>
+    <div class="col-xs-6 col-sm-5 col-md-8 col-lg-12 text-left">
+      <i class ='bdi-ev-icon'></i>
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2 col-md-offset-2 col-lg-3 col-lg-offset-9">
+      <span class='glyphicon glyphicon-film' aria-hidden='true'></span>
+    </div>
+  </div>
+
+  <% if @videos.any? %>
+    <% @videos.each do |video| %>
+      <div class="result-img-container">
+        <%= imprime_media_bdi(video, 'video') %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>Lo sentimos, no contamos con un video para esta especie</p>
+  <% end %>
+
+  <% if @pagina.blank? && @videos.any? %>
+    <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
+    <div class="text-center paginado_2"></div>
+    <script data-turbolinks-track="true">
+        paginadoFotosBDI(<%= @paginas || 1 %>, 1);
+    </script>
+  <% end %>
+
+</div>
