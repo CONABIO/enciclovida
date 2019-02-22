@@ -6,7 +6,7 @@ class EspeciesController < ApplicationController
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi,
+                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos]
@@ -22,12 +22,12 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :show_bioteca_records, :show_bioteca_record_info]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especiesR/#{c.params[:id]}/#{c.params[:from]}" }, :if => (Rails.env.production? && :params_from_conabio_present?)
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especiesR/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -389,6 +389,45 @@ class EspeciesController < ApplicationController
 
     if bdi[:estatus]
       @fotos = bdi[:fotos]
+
+      respond_to do |format|
+        format.json {render json: bdi}
+        format.html do
+
+          # El conteo de las paginas
+          totales = 0
+          por_pagina = 25
+
+          # Por ser la primera saco el conteo de paginas
+          if @pagina.blank?
+            # Saca el conteo de las fotos de bdi
+            if bdi[:ultima].present?
+              totales+= por_pagina*(bdi[:ultima]-1)
+              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
+              totales+= fbu[:fotos].count if fbu[:estatus]
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
+            end
+          end  # End pagina blank
+        end  # End format html
+      end  # End respond
+
+    else  # End estatus
+      render :_error and return
+    end
+  end
+
+  #Videos de BDI
+  def videos_bdi
+    @pagina = params['pagina']
+
+    if @pagina.present?
+      bdi = @especie.videos_bdi({pagina: @pagina.to_i})
+    else
+      bdi = @especie.videos_bdi
+    end
+
+    if bdi[:estatus]
+      @videos = bdi[:videos]
 
       respond_to do |format|
         format.json {render json: bdi}
@@ -1089,9 +1128,9 @@ class EspeciesController < ApplicationController
     end
   end
 
-
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
   end
+
 end
