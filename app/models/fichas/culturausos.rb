@@ -1,4 +1,4 @@
-class Fichas::Culturausos < ActiveRecord::Base
+class Fichas::Culturausos < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.culturausos"
 	self.primary_key = 'culturaUsosId'

@@ -1,4 +1,4 @@
-class Fichas::Taxon < ActiveRecord::Base
+class Fichas::Taxon < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.taxon"
 	self.primary_key = 'especieId'

@@ -1,4 +1,4 @@
-class Fichas::Geoforma < ActiveRecord::Base
+class Fichas::Geoforma < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.geoforma"
 	self.primary_key = 'IdGeoforma'

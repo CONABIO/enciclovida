@@ -1,4 +1,4 @@
-class Fichas::Organizacion < ActiveRecord::Base
+class Fichas::Organizacion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.organizacion"
 	self.primary_key = 'organizacionId'
