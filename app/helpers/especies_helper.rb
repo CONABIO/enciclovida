@@ -368,6 +368,33 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     n.html_safe
   end
 
+
+  def imprime_media_bdi(item, type)
+    copyright = "BDI - CONABIO"
+    case type
+      when 'photo'
+        link_to("<img src='#{item.medium_url}' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-type" => 'photo',
+                "data-copyright" => copyright,
+                "data-url" => item.medium_url,
+                "data-author" => item.native_realname,
+                "data-locality" =>  "No disponible",
+                "data-observation"=> item.native_page_url
+                )
+      when 'video' # Datos fasos por ahora
+        link_to("<img src='#{item.preview_img}' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-type" => 'video',
+                "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
+                "data-observation"=> item.href_info,
+                "data-url" => item.url_acces,
+                "data-author" => item.autor,
+                "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
+                "data-state" =>  item.municipio.present? ? item.municipio : nil)
+    end
+  end
+
   def imprimeMediaCornell(item,type)
     copyright = "Macaulay Library at The Cornell Lab of Ornithology"
     case type
@@ -430,6 +457,17 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     # 'LicenseUrl'
     # 'LicenseName'
     # 'Photographer'
+  end
+
+  # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
+  def es_url_valido(text)
+    begin
+      url = URI.parse(text.to_s)
+      url.kind_of?(URI::HTTP) || url.kind_of?(URI::HTTPS) ? resultado = "<a target='_blank' href='#{text}'>#{text}</a>".html_safe : resultado = text
+     rescue
+      resultado = text
+    end
+    resultado
   end
 
   def dejaComentario
