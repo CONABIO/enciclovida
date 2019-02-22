@@ -205,7 +205,7 @@ Buscador::Application.routes.draw do
   get '/especies/:id/noticias' => 'especies#noticias'
 
   # Path's para acceder a servicio de Janium
-  get '/registros_bioteca/:name(/page=:n_page)' => 'especies#show_bioteca_records'
+  get '/registros_bioteca/:id(/find_by=:t_name)(/page=:n_page)' => 'especies#show_bioteca_records'
   get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
 
 

@@ -1,19 +1,31 @@
+<% if @show_find_by %>
+  <!-- Mostrar pestañas para diferentes tipos de búsqueda: --><br><br>
+  <ul class='nav nav-tabs'>
+    <li class='busqueda-item active' id="item-busqueda-cientifico"><a class='btn btn-link' onclick="changeTBusqueda('cientifico', <%= @bioteca_response[:id] %>)"><%= @bioteca_response[:nombre]["cientifico"] %></a></li>
+    <li class='busqueda-item' id="item-busqueda-comun"><a class='btn btn-link' onclick="changeTBusqueda('comun', <%= @bioteca_response[:id] %>)"><%= @bioteca_response[:nombre]["comun"]  %></a></li>
+  </ul>
+  <!-- Div para la búsqueda por nombre común y otro para la científica -->
+  <div class='container bioteca-records' id='busqueda-comun'></div>
+  <%= @show_find_by ? "<div class='container bioteca-records' id='busqueda-cientifico'>".html_safe : "".html_safe%>
+<% end %>
+
 <% # Si es la primera vez que se invoca la pagina 1, mostrar el páginado y los divs en los que se mostrarán los demás resultados: %>
-<%= @show_pagination ? "<div class='container'><div id='janium_records-page-1' class='row janium_records'>".html_safe : "".html_safe%>
+<%= @show_pagination ? "<div id='janium_records-#{@bioteca_response[:tipo_busqueda_actual]}-page-1' class='row janium_records_#{@bioteca_response[:tipo_busqueda_actual]}'>".html_safe : "".html_safe%>
+
 <%
   # Si al menos en el primer registro hay algo..
-  if !@registros_janium[0].text.blank?
-    resultados_mostrados =  ((@bioteca_curent_page - 1) * @registros_x_pagina_janium) + @registros_janium.count
+  if !@bioteca_response[:registros_janium][0].text.blank?
+    resultados_mostrados =  ((@bioteca_curent_page - 1) * @bioteca_response[:registros_x_pagina_janium]) +@bioteca_response[:registros_janium].count
 %>
   <!-- Div por cada articulo -->
-  <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @registros_fichas_janium %> resultado(s) encontrados</h4>
-  <% @registros_janium.count.times do |num| %>
-    <div id="record_id_<%= @registros_janium[num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
+  <h4 class="text-primary text-right"><%= resultados_mostrados %> de <%= @bioteca_response[:registros_fichas_janium] %> resultado(s) encontrados para: <%= @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]] %></h4>
+  <% @bioteca_response[:registros_janium].count.times do |num| %>
+    <div id="record_id_<%= @bioteca_response[:registros_janium][num].xpath("//ficha").text %>" class="col-sm-12 col-md-12 record">
       <div class="record-header">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 text-left">
             <%
-              clasificaciones = @registros_janium[num].xpath("//clasificaciones/clasificacion")
+              clasificaciones = @bioteca_response[:registros_janium][num].xpath("//clasificaciones/clasificacion")
               # Siempre hay clasificaciones, considerando que siempre existirá la etiqueta: </clasificaciones> (si, aun que esté vacía)
               if clasificaciones[0].text != ""
             %>
@@ -25,7 +37,7 @@
             <% end %>
           </div>
           <div class="col-md-6 text-right">
-            <h5><i class='glyphicon glyphicon-calendar'></i> <%= @registros_janium[num].xpath("//fecha").text %></h5>
+            <h5><i class='glyphicon glyphicon-calendar'></i> <%= @bioteca_response[:registros_janium][num].xpath("//fecha").text %></h5>
           </div>
         </div>
       </div>
@@ -33,15 +45,33 @@
       <div class="record-info">
         <div class="row">
           <div class="col-md-3 text-center portada">
-            <img src="<%= @registros_janium[num].xpath("//portada/url").text %>" alt="">
-            <br><br> <a href="<%= @registros_janium[num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
+            <% if @bioteca_response[:registros_janium][num].xpath("//portada/url").text.include?("https://www.youtube.com")
+                 portada_url_array = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.split(',')
+                 portada_url_youtube =  portada_url_array[1].split('|')
+                 portada_url_youtube_limpio = portada_url_youtube[1].gsub("&hl=es_ES&fs=1%20", "")
+                 portada_url_youtube_limpio = portada_url_youtube_limpio.gsub("&hl=es_ES&fs=1", "")
+                 portada_url_youtube_limpio = portada_url_youtube_limpio.gsub("/v/", "/embed/")
+            %>
+              <iframe width="100%" src="<%=portada_url_youtube_limpio%>" allowfullscreen frameborder="0"></iframe>
+            <% else
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20%20%20', '')
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20%20', '')
+                 portada_url = @bioteca_response[:registros_janium][num].xpath("//portada/url").text.gsub('%20', '')
+            %>
+              <img src="<%= portada_url %>" alt="">
+            <% end %>
+
+            <br><br>
+            <% if !@bioteca_response[:registros_janium][num].xpath("//portada/url_asociada").text.blank? %>
+              <a href="<%= @bioteca_response[:registros_janium][num].xpath("//portada/url_asociada").text %>" target="blank"><i class='glyphicon glyphicon-eye-open'></i> Ver en línea</a>
+            <% end %>
           </div>
           <div class="col-md-9 titulo">
-            <h4 class="text-justify"><%= @registros_janium[num].xpath("//titulo").text %></h4>
+            <h4 class="text-justify"><%= @bioteca_response[:registros_janium][num].xpath("//titulo").text %></h4>
             <br>
             <div class="autores text-left text-secondary">
               <%
-                autores = @registros_janium[num].xpath("//autores/autor")
+                autores = @bioteca_response[:registros_janium][num].xpath("//autores/autor")
 
                 # Siempre hay autores, considerando que siempre existirá la etiqueta: </autor> (si, aun que esté vacía)
                 if autores[0].text != ""
@@ -60,13 +90,13 @@
         </div>
       </div>
       <!-- Invocación al servicio Janium para recatar más información -->
-      <div class="record-more-info" id="detalle_<%= @registros_janium[num].xpath("//ficha").text %>"></div>
+      <div class="record-more-info" id="detalle_<%= @bioteca_response[:registros_janium][num].xpath("//ficha").text %>"></div>
       <div class="record-footer">
         <div class="row">
           <div class="col-sm-6 text-left">
           </div>
           <div class="col-sm-6 text-right">
-            <a type="button" id="ficha_<%= @registros_janium[num].xpath("//ficha").text %>" class="btn btn-outline-secondary"><i class='glyphicon glyphicon-plus-sign'></i> Ver más detalles</a>
+            <a type="button" id="ficha_<%= @bioteca_response[:registros_janium][num].xpath("//ficha").text %>" class="btn btn-link"><i class='glyphicon glyphicon-plus-sign'></i> Ver más detalles</a>
           </div>
         </div>
       </div>
@@ -79,29 +109,29 @@
   <%
     if @show_pagination
       # Si es necesario crear los divs para mostrar más páginas..
-      if @registros_fichas_janium > @registros_x_pagina_janium
+      if @bioteca_response[:registros_fichas_janium] > @bioteca_response[:registros_x_pagina_janium]
         # Calcular las páginas paa mostrar resultados
-        t_paginas = @registros_fichas_janium / @registros_x_pagina_janium.round
-        t_paginas += 1 if (@registros_fichas_janium % @registros_x_pagina_janium) > 0
+        t_paginas = @bioteca_response[:registros_fichas_janium] / @bioteca_response[:registros_x_pagina_janium].round
+        t_paginas += 1 if (@bioteca_response[:registros_fichas_janium] % @bioteca_response[:registros_x_pagina_janium]) > 0
   %>
+        <% for pagina in (2..t_paginas) %>
+          <div id="janium_records-<%=@bioteca_response[:tipo_busqueda_actual]%>-page-<%= pagina %>" class="row janium_records_<%=@bioteca_response[:tipo_busqueda_actual]%> janium_records-not-show"></div>
+        <% end %>
         <div class="row">
           <div class="col-md-12 text-center">
-          <% for pagina in (2..t_paginas) %>
-            <div id="janium_records-page-<%= pagina %>" class="row janium_records janium_records-not-show"></div>
-          <% end %>
-          <nav aria-label="...">
-            <ul class="pagination">
-              <li id="button-janium-before" class="page-item disabled"><a class="page-link" tabindex="-1" onclick="changePage('<%= @bioteca_name_to_find%>', 'atras')">Anterior</a></li>
-              <% for pagina in (1..t_paginas) %>
-                <li class="page-item <%= pagina == 1 ? "active" : "" %> <%= pagina == t_paginas ? "last" : ""%>" id="button-janium_records-<%= pagina %>"><a class="page-link" onclick="biotecaLoadPage('<%= @bioteca_name_to_find%>', '<%= pagina %>')"><%= pagina %></a></li>
-              <% end %>
-              <li id="button-janium-next" class="page-item"><a class="page-link" onclick="changePage('<%= @bioteca_name_to_find%>', 'siguiente')">Siguiente</a></li>
-            </ul>
-          </nav>
+            <nav aria-label="...">
+              <ul class="pagination">
+                <li id="button-janium-before" class="page-item btn btn-link disabled"><a class="page-link" tabindex="-1" onclick="changePage('<%=@bioteca_response[:id]%>', '<%=@bioteca_response[:tipo_busqueda_actual]%>', 'atras')">Anterior</a></li>
+                <% for pagina in (1..t_paginas) %>
+                  <li class="page-item <%= pagina == 1 ? "active" : "" %> <%= pagina == t_paginas ? "last" : ""%>" id="button-janium_records-<%= pagina %>"><a class="page-link btn btn-link" onclick="biotecaLoadPage('<%=@bioteca_response[:id]%>', '<%=@bioteca_response[:tipo_busqueda_actual]%>', '<%= pagina %>')"><%= pagina %></a></li>
+                <% end %>
+                <li id="button-janium-next" class="page-item btn btn-link"><a class="page-link" onclick="changePage('<%=@bioteca_response[:id]%>', '<%=@bioteca_response[:tipo_busqueda_actual]%>', 'siguiente')">Siguiente</a></li>
+              </ul>
+            </nav>
           </div>
         </div>
   <%
       end
     end
   %>
-<%= @show_pagination ? "</div>".html_safe : ""%>
+<%= @show_find_by ? "</div>".html_safe : "".html_safe%>

@@ -2,37 +2,40 @@
   # Si el estatus es OK
   if @status_detalle_ficha_janium == 'ok'
 %>
-  <div class="row text-justify">
+  <div class="text-justify" style="margin: 15px 0 15px 0;">
 <%
     if !@etiquetas.empty?
+%>
+    <dl class="dl-horizontal" style="margin: 10px;">
+<%
       @etiquetas.each do |etiqueta, valor|
 %>
-        <div class="col-md-12" style=" margin-bottom: 15px; border-color: white; border-width: 2px; border-style: solid">
-          <h5 style="font-weight: 900"><%= etiqueta %></h5>
-            <%
-              if valor.count > 1
-                valor.each do |value|
-            %>
-                  <li><%= value %></li>
-            <%
-                end
-              else
-            %>
-                <p><%= valor.last %></p>
-            <%
+        <dt style="white-space: pre-wrap; margin-bottom: 8px;"><%= etiqueta %></dt>
+        <dd>
+          <%
+            if valor.count > 1
+              valor.each do |value|
+          %>
+              <li><%= value %></li>
+          <%
               end
-            %>
-        </div>
+            else
+          %>
+              <%= es_url_valido(valor.last) %>
+          <%
+            end
+          %>
+        </dd>
+
 <%
       end
 %>
-      <div class="text-center">
-        <h4>Compartir: </h4>
-        <ul class="list-inline social-buttons text-center">
-          <li><a name="tw_share" type="button" href="https://twitter.com/intent/tweet?url=<%= @url_detalle_ficha_janium %>&text=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="twitter-1-ev-icon"></i></a></li>
-          <li><a name="fb_share" type="button" href="https://www.facebook.com/sharer.php?u=<%= @url_detalle_ficha_janium %>&t=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="facebook-1-ev-icon"></i></a></li>
-        </ul>
-      </div>
+    </dl>
+    <div class="text-center">
+      <h4>Compartir: </h4>
+      <a name="tw_share" class="btn btn-default" type="button" href="https://twitter.com/intent/tweet?url=<%= @url_detalle_ficha_janium %>&text=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="twitter-1-ev-icon"></i></a>
+      <a name="fb_share" class="btn btn-default" type="button" href="https://www.facebook.com/sharer.php?u=<%= @url_detalle_ficha_janium %>&t=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="facebook-1-ev-icon"></i></a>
+    </div>
 <%
     else
 %>
