@@ -1,4 +1,4 @@
-class Fichas::Interaccion < ActiveRecord::Base
+class Fichas::Interaccion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.interaccion"
 	self.primary_key = 'interaccionId'

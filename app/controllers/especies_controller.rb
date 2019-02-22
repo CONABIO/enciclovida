@@ -27,8 +27,7 @@ class EspeciesController < ApplicationController
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :show_bioteca_records, :show_bioteca_record_info]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
-                :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especiesR/#{c.params[:id]}/#{c.params[:from]}" }, :if => (Rails.env.production? && :params_from_conabio_present?)
 
   # GET /especies
   # GET /especies.json
@@ -1075,5 +1074,9 @@ class EspeciesController < ApplicationController
     end
   end
 
+  # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
+  def params_from_conabio_present?
+    params.present? && params[:from].present? && params[:from] != 'Conabio'
+  end
 
 end

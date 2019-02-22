@@ -1,4 +1,4 @@
-class Fichas::Metadatos < ActiveRecord::Base
+class Fichas::Metadatos < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.metadatos"
 	self.primary_keys = :metadatosId,  :especieId

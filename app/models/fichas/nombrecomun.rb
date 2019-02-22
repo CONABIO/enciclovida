@@ -1,4 +1,4 @@
-class Fichas::Nombrecomun < ActiveRecord::Base
+class Fichas::Nombrecomun < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.nombrecomun"
 	self.primary_keys = :especieId,  :nombre

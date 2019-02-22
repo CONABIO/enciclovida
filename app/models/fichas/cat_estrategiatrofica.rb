@@ -1,4 +1,4 @@
-class Fichas::Cat_Estrategiatrofica < ActiveRecord::Base
+class Fichas::Cat_Estrategiatrofica < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.cat_estrategiatrofica"
 	self.primary_key = 'IdEstrategia'

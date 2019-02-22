@@ -1,4 +1,4 @@
-class Fichas::Cat_Caracfruto < ActiveRecord::Base
+class Fichas::Cat_Caracfruto < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.cat_caracfruto"
 	self.primary_key = 'IdFruto'
