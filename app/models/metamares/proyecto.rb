@@ -1,4 +1,4 @@
-class Metamares::Proyecto < ActiveRecord::Base
+class Metamares::Proyecto < Metamares
 
   self.table_name = "#{CONFIG.bases.metamares}.proyectos"
 

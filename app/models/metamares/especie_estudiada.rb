@@ -1,4 +1,4 @@
-class Metamares::EspecieEstudiada < ActiveRecord::Base
+class Metamares::EspecieEstudiada < Metamares
 
   self.table_name = "#{CONFIG.bases.metamares}.especies_estudiadas"
 
