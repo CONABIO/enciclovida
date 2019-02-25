@@ -24,18 +24,25 @@ DROP TABLE IF EXISTS `datos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `datos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `descarga_datos` text,
-  `licencia_uso` text,
+  `descarga_datos` text COMMENT 'reference',
+  `estatus_datos` tinyint(2) NOT NULL DEFAULT '1' COMMENT 'dataset_available',
+  `licencia_uso` varchar(255) NOT NULL DEFAULT 'cc_by_nc',
   `descripcion_base` text,
   `metadatos` text,
   `publicaciones` text,
   `publicacion_url` varchar(1000) DEFAULT NULL,
+  `publicacion_fecha` date DEFAULT NULL COMMENT 'publication_year',
   `descarga_informe` varchar(1000) DEFAULT NULL,
   `forma_citar` text,
-  `notas_adicionales` text,
   `restricciones` text,
-  `numero_ejemplares` int(11) DEFAULT NULL,
-  `tipo_unidad` varchar(255) DEFAULT NULL,
+  `numero_ejemplares` int(11) DEFAULT NULL COMMENT 'data_time_points',
+  `tipo_unidad` varchar(255) DEFAULT NULL COMMENT 'unit_type',
+  `resolucion_temporal` varchar(255) DEFAULT NULL COMMENT 'temporal_resolution',
+  `resolucion_espacial` varchar(255) DEFAULT NULL COMMENT 'spatial_resolution',
+  `titulo_compilacion` varchar(255) DEFAULT NULL COMMENT 'compilation_title',
+  `titulo_conjunto_datos` varchar(255) DEFAULT NULL COMMENT 'dataset_title',
+  `interaccion` varchar(255) DEFAULT NULL COMMENT 'se_interaction',
+  `notas_adicionales` text COMMENT 'notes',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,16 +65,13 @@ DROP TABLE IF EXISTS `directorio`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `directorio` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombres` varchar(255) DEFAULT NULL,
-  `apellido_paterno` varchar(255) DEFAULT NULL,
-  `apellido_materno` varchar(255) DEFAULT NULL,
   `cargo` varchar(255) DEFAULT NULL,
   `grado_academico` varchar(255) DEFAULT NULL,
   `tema_estudio` varchar(255) DEFAULT NULL,
   `linea_investigacion` varchar(500) DEFAULT NULL,
   `region_estudio` varchar(255) DEFAULT NULL,
-  `correo` varchar(255) DEFAULT NULL,
   `telefono` varchar(255) DEFAULT NULL,
+  `pagina_web` varchar(255) DEFAULT NULL,
   `institucion_id` int(11) DEFAULT NULL,
   `usuario_id` int(11) DEFAULT NULL COMMENT 'ID de la tabla usuarios, de la base enciclovida',
   PRIMARY KEY (`id`),
@@ -96,7 +100,10 @@ CREATE TABLE `especies_estudiadas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `especie_id` int(11) DEFAULT NULL COMMENT 'ID de la tabla Nombre en catalogocentralizado',
   `nombre_cientifico` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `proyecto_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_especies_estudiadas_proyectos1_idx` (`proyecto_id`),
+  CONSTRAINT `fk_especies_estudiadas_proyectos1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -147,10 +154,12 @@ DROP TABLE IF EXISTS `instituciones`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `instituciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_institucion` varchar(255) NOT NULL,
+  `nombre_institucion` varchar(255) NOT NULL COMMENT 'institution',
+  `tipo` varchar(255) DEFAULT NULL COMMENT 'institution_type',
   `sitio_web` varchar(255) DEFAULT NULL,
-  `contacto` varchar(255) DEFAULT NULL,
-  `correo_contacto` varchar(255) DEFAULT NULL,
+  `contacto` varchar(255) DEFAULT NULL COMMENT 'user_contact',
+  `correo_contacto` varchar(255) DEFAULT NULL COMMENT 'user_contact',
+  `slug` varchar(255) DEFAULT NULL,
   `ubicacion_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_instituciones_ubicacones1_idx` (`ubicacion_id`),
@@ -176,8 +185,12 @@ DROP TABLE IF EXISTS `keywords`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_keyword` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `nombre_keyword` varchar(255) NOT NULL COMMENT 'keywords',
+  `slug` varchar(255) DEFAULT NULL,
+  `proyecto_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_keywords_proyectos1_idx` (`proyecto_id`),
+  CONSTRAINT `fk_keywords_proyectos1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -191,6 +204,59 @@ LOCK TABLES `keywords` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `metadata`
+--
+
+DROP TABLE IF EXISTS `metadata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `metadata` (
+  `mmid` int(11) DEFAULT NULL,
+  `c_id` int(11) DEFAULT NULL,
+  `d_id` int(11) DEFAULT NULL,
+  `short_title` varchar(512) DEFAULT NULL,
+  `keywords` text,
+  `author` varchar(512) DEFAULT NULL,
+  `institution` varchar(512) DEFAULT NULL,
+  `dataset_available` tinyint(1) DEFAULT NULL,
+  `subject_name` varchar(512) DEFAULT NULL,
+  `area` varchar(512) DEFAULT NULL,
+  `region` varchar(512) DEFAULT NULL,
+  `location` varchar(512) DEFAULT NULL,
+  `start_year` int(4) DEFAULT NULL,
+  `end_year` int(4) DEFAULT NULL,
+  `data_time_points` int(4) DEFAULT NULL,
+  `unit_type` varchar(512) DEFAULT NULL,
+  `temporal_resolution` varchar(512) DEFAULT NULL,
+  `spatial_resolution` varchar(512) DEFAULT NULL,
+  `dataset_title` varchar(512) DEFAULT NULL,
+  `compilation_title` varchar(512) DEFAULT NULL,
+  `publication_year` int(4) DEFAULT NULL,
+  `reference` varchar(512) DEFAULT NULL,
+  `user_contact` varchar(512) DEFAULT NULL,
+  `institution_type` varchar(512) DEFAULT NULL,
+  `research_fund` varchar(512) DEFAULT NULL,
+  `research_field` varchar(512) DEFAULT NULL,
+  `notes` varchar(512) DEFAULT NULL,
+  `lat` decimal(10,8) DEFAULT NULL,
+  `lon` decimal(11,8) DEFAULT NULL,
+  `se_interaction` varchar(512) DEFAULT NULL,
+  `science` varchar(512) DEFAULT NULL,
+  `fishing_region` varchar(512) DEFAULT NULL,
+  `common_name` varchar(512) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `metadata`
+--
+
+LOCK TABLES `metadata` WRITE;
+/*!40000 ALTER TABLE `metadata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `metadata` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `periodos`
 --
 
@@ -199,14 +265,14 @@ DROP TABLE IF EXISTS `periodos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `periodos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `peridiocidad` varchar(255) DEFAULT NULL,
+  `periodicidad` varchar(255) DEFAULT NULL,
   `periodo_monitoreo_desde` date DEFAULT NULL,
-  `periodo_monitoreo_hasta` varchar(45) DEFAULT NULL,
+  `periodo_monitoreo_hasta` date DEFAULT NULL,
   `periodo_sistematico_desde` date DEFAULT NULL,
-  `periodo_sistematico_hasta` varchar(45) DEFAULT NULL,
-  `monitoreo_desde` date DEFAULT NULL,
-  `monitoreo_hasta` varchar(45) DEFAULT NULL,
-  `cometarios` text,
+  `periodo_sistematico_hasta` date DEFAULT NULL,
+  `monitoreo_desde` date DEFAULT NULL COMMENT 'start_year',
+  `monitoreo_hasta` date DEFAULT NULL COMMENT 'end_year',
+  `comentarios` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -228,9 +294,10 @@ DROP TABLE IF EXISTS `proyectos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `proyectos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_proyecto` varchar(255) NOT NULL DEFAULT 'Sin nombre',
-  `financiamiento` text,
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'MMID',
+  `nombre_proyecto` varchar(255) NOT NULL COMMENT 'short_title',
+  `financiamiento` text COMMENT 'research_fund',
+  `autor` varchar(255) DEFAULT NULL COMMENT 'author',
   `tipo_monitoreo` varchar(255) DEFAULT NULL,
   `objeto_monitoreo` text,
   `campo_investigacion` varchar(255) DEFAULT NULL,
@@ -241,15 +308,17 @@ CREATE TABLE `proyectos` (
   `periodo_id` int(11) DEFAULT NULL,
   `region_id` int(11) DEFAULT NULL,
   `institucion_id` int(11) DEFAULT NULL,
-  `datos_id` int(11) DEFAULT NULL,
+  `dato_id` int(11) DEFAULT NULL,
   `usuario_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_proyectos_info_adicional_idx` (`info_adicional_id`),
   KEY `fk_proyectos_periodo1_idx` (`periodo_id`),
   KEY `fk_proyectos_ubicaciones1_idx` (`region_id`),
   KEY `fk_proyectos_instituciones1_idx` (`institucion_id`),
-  KEY `fk_proyectos_datos1_idx` (`datos_id`),
-  CONSTRAINT `fk_proyectos_datos1` FOREIGN KEY (`datos_id`) REFERENCES `datos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `fk_proyectos_datos1_idx` (`dato_id`),
+  CONSTRAINT `fk_proyectos_datos1` FOREIGN KEY (`dato_id`) REFERENCES `datos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyectos_info_adicional` FOREIGN KEY (`info_adicional_id`) REFERENCES `info_adicional` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyectos_instituciones1` FOREIGN KEY (`institucion_id`) REFERENCES `instituciones` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyectos_periodo1` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -282,7 +351,7 @@ CREATE TABLE `proyectos_especies` (
   KEY `fk_proyectos_especies_especies_estudiadas1_idx` (`especie_estudiada_id`),
   CONSTRAINT `fk_proyectos_especies_especies_estudiadas1` FOREIGN KEY (`especie_estudiada_id`) REFERENCES `especies_estudiadas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyectos_especies_proyectos1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,6 +360,7 @@ CREATE TABLE `proyectos_especies` (
 
 LOCK TABLES `proyectos_especies` WRITE;
 /*!40000 ALTER TABLE `proyectos_especies` DISABLE KEYS */;
+INSERT INTO `proyectos_especies` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4);
 /*!40000 ALTER TABLE `proyectos_especies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,7 +380,7 @@ CREATE TABLE `proyectos_keywords` (
   KEY `fk_proyectos_keywords_keywords1_idx` (`keywords_id`),
   CONSTRAINT `fk_proyectos_keywords_keywords1` FOREIGN KEY (`keywords_id`) REFERENCES `keywords` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyectos_keywords_proyectos1` FOREIGN KEY (`proyectos_id`) REFERENCES `proyectos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,6 +389,7 @@ CREATE TABLE `proyectos_keywords` (
 
 LOCK TABLES `proyectos_keywords` WRITE;
 /*!40000 ALTER TABLE `proyectos_keywords` DISABLE KEYS */;
+INSERT INTO `proyectos_keywords` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5);
 /*!40000 ALTER TABLE `proyectos_keywords` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,11 +402,12 @@ DROP TABLE IF EXISTS `regiones`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `regiones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_sitio` varchar(255) NOT NULL,
-  `latitud` varchar(45) DEFAULT NULL,
-  `longitud` varchar(45) DEFAULT NULL,
+  `nombre_region` varchar(255) DEFAULT NULL COMMENT 'region',
+  `nombre_zona` varchar(255) DEFAULT NULL COMMENT 'area',
+  `nombre_ubicacion` varchar(255) DEFAULT NULL COMMENT 'location',
+  `latitud` decimal(10,8) DEFAULT NULL COMMENT 'lat',
+  `longitud` decimal(11,8) DEFAULT NULL COMMENT 'lon',
   `poligono` varchar(500) DEFAULT NULL,
-  `zona` varchar(255) DEFAULT NULL,
   `entidad` varchar(255) DEFAULT NULL,
   `cuenca` varchar(255) DEFAULT NULL,
   `anp` varchar(255) DEFAULT NULL,
@@ -391,4 +463,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-02 23:20:50
+-- Dump completed on 2019-02-25  2:27:52
