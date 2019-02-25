@@ -6,8 +6,8 @@ class Metamares::Proyecto < ActiveRecord::Base
   belongs_to :periodo, class_name: 'Metamares::Periodo', dependent: :destroy
   belongs_to :region, class_name: 'Metamares::RegionM', dependent: :destroy
   belongs_to :dato, class_name: 'Metamares::Dato', dependent: :destroy
-  belongs_to :institucion, class_name: 'Metamares::Institucion'
-  has_one :ubicacion, through: :institucion, source: :ubicacion
+  belongs_to :institucion, class_name: 'Metamares::Institucion', inverse_of: :proyectos
+  #has_one :ubicacion, through: :institucion, source: :ubicacion
   belongs_to :usuario, class_name: 'Usuario'
   has_many :especies, class_name: 'Metamares::EspecieEstudiada', dependent: :destroy
   has_many :keywords, class_name: 'Metamares::Keyword', dependent: :destroy
@@ -16,7 +16,7 @@ class Metamares::Proyecto < ActiveRecord::Base
   accepts_nested_attributes_for :periodo, allow_destroy: true
   accepts_nested_attributes_for :region, allow_destroy: true
   accepts_nested_attributes_for :institucion, reject_if: :all_blank
-  accepts_nested_attributes_for :ubicacion, reject_if: :all_blank
+  #accepts_nested_attributes_for :ubicacion, reject_if: :all_blank
   accepts_nested_attributes_for :dato, allow_destroy: true
   accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true

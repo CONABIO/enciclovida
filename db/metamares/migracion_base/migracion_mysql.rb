@@ -56,6 +56,8 @@ def itera_metadata
 
       if institucion.save
         proyecto.institucion_id = institucion.id
+      else
+        puts "La institucion no se guardo ... #{institucion.errors.inspect}-#{institucion.inspect}" if OPTS[:debug]
       end
     end
 
@@ -132,6 +134,9 @@ def itera_metadata
 
         e.save
       end
+
+    else
+      puts "El proyecto no se guardo ... #{proyecto.errors.inspect}-#{proyecto.inspect}" if OPTS[:debug]
     end  # End proyecto.save
   end  # End each do meta
 end
