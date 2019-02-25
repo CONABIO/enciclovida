@@ -1,4 +1,4 @@
-class Metamares::Institucion < Metamares
+class Metamares::Institucion < MetamaresAbs
 
   self.table_name = "#{CONFIG.bases.metamares}.instituciones"
 

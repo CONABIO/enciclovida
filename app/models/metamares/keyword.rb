@@ -1,4 +1,4 @@
-class Metamares::Keyword < Metamares
+class Metamares::Keyword < MetamaresAbs
 
   self.table_name = "#{CONFIG.bases.metamares}.keywords"
 
