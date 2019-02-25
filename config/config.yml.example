@@ -46,7 +46,7 @@ base: &base
   nelng: -85.6933
 
   # Proveedores de fichas y fotos
-  taxon_describers: [conabio, eol, eoles, wikipediaes, wikipedia]
+  taxon_describers: [conabio, eol, eoles, wikipediaes, wikipedia, janium]
   photo_providers: [conabio, eol, wikimedia,flickr]
 
   # Usuario predeterminado para correr procesos desde los scripts de tools
@@ -112,6 +112,15 @@ base: &base
   cornell:
     api: https://api.macaulaylibrary.org/ml-catalog-api/ws3.0/partner/search/assets?
     key: 9999999999999999999999999999
+
+  tropicos:
+    api: http://services.tropicos.org/Name/
+    key: 9999999999999999999999999999999999
+
+  janium:
+    location: "http://200.12.166.51/janium/services/soap.pl"
+    namespace: "http://janium.net/services/soap"
+    request: "AAAAAAAAAAAAAaaaaaaaaaaaaaaa"
 
   correo_admin: coco@nana.bo.bo
 

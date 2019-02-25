@@ -75,10 +75,18 @@ module PecesHelper
     lista << "<i class = '#{valorAIcono(@pez[:valor_zonas][i])}-ev-icon'></i>"
     lista << "<b>#{c[:tipo_propiedad]}</b>"
     lista << "</span>"
-    @criterios['otros'][c[:ancestry]].each{ |cert|
-      lista << (link_to '<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank', class: 'btn btn-xs btn-basica btn-zona-star btn-title', "tooltip-title" => cert[:nombre] )
-    } if @pez.con_estrella && @criterios['otros'][c[:ancestry]]
     lista
+  end
+
+  def muestraCertificacion
+    html = ''
+
+    @pez.criterio_propiedades.pesquerias.each do |p|
+      html << link_to('<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank', class: 'btn btn-xs btn-basica btn-zona-star btn-title')
+      html << "<em class='popover-certificacion'><strong>#{p.nombre_propiedad}</strong><br /><small>#{p.descripcion}</small></em>"
+    end
+
+    html
   end
 
   def filtrosUsados

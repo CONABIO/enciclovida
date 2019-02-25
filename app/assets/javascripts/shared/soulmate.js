@@ -2,15 +2,17 @@
  * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
  * @param tipo_busqueda
  */
-var soulmateAsigna = function(tipo_busqueda, elem){
-    if (elem == undefined){
+var soulmateAsigna = function(tipo_busqueda, elem)
+{
+    if (elem == undefined)
         var elemento = 'nombre';
-    }else{
+    else
         var elemento = elem;
-    }
 
-    var render = function(term, data, type, index, id){
-        if (I18n.locale == 'es-cientifico'){
+    var render = function(term, data, type, index, id)
+    {
+        if (I18n.locale == 'es-cientifico')
+        {
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
             return nombres;
         }else{
@@ -47,7 +49,8 @@ var soulmateAsigna = function(tipo_busqueda, elem){
         }
     };
 
-    var select = function(term, data, type){
+    var select = function(term, data, type)
+    {
         $('#' + elemento).val(term);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
 
@@ -59,6 +62,9 @@ var soulmateAsigna = function(tipo_busqueda, elem){
             case 'peces':
                 $('#id').attr('value', data.id);
                 bloqueaBusqueda();
+                break;
+            case 'pmc_new':
+                $('#pmc_pez_especie_id').attr('value', data.id);
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff

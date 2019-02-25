@@ -1,7 +1,10 @@
 <div class='nested-fields'>
-  <%= f.inputs do %>
-      <%= f.input :criterio_id, label: 'Nuevo criterio', as: :select, prompt: '-- Selecciona --',
-                  collection: grouped_options_for_select(Pmc::Criterio.catalogo) %>
-      <%= link_to_remove_association 'Quitar criterio', f %>
-  <% end %>
+  <div class="col-xs-1">
+    <%= link_to_remove_association '<span class="glyphicon glyphicon-remove"></span>'.html_safe, f, :class => 'btn btn-link btn' %>
+  </div>
+
+  <div class="col-xs-11">
+    <%= f.input :criterio_id, label: 'Nuevo criterio', prompt: '-- Selecciona --',
+                collection: Pmc::Criterio.catalogo, as: :grouped_select, group_method: :last, input_html: { class: 'form-control' } %>
+  </div>
 </div>

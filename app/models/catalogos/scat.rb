@@ -9,4 +9,6 @@ class Scat < ActiveRecord::Base
   alias_attribute :publico, :Publico
   alias_attribute :nivel_de_revision, :Nivel_de_revision
 
+  has_one :especie, foreign_key: Especie.attribute_alias(:id)
+
 end

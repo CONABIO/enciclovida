@@ -166,13 +166,15 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-                  'Anotación' => 'anotacion', 'Identificador único' => 'id', 'Fecha de ultima modificación' => 'updated_at'}
+                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
     html = ''
 
     def creaContenedor(taxon, opc={})
+      puts opc[:attr].inspect
       valor = taxon.send(opc[:attr])
 
       if valor.present?
+        valor = valor.strftime('%Y-%m-%d') if opc[:attr] == 'updated_at'
         "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
       else
         ''
@@ -366,27 +368,106 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
     n.html_safe
   end
 
+
+  def imprime_media_bdi(item, type)
+    copyright = "BDI - CONABIO"
+    case type
+      when 'photo'
+        link_to("<img src='#{item.medium_url}' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-type" => 'photo',
+                "data-copyright" => copyright,
+                "data-url" => item.medium_url,
+                "data-author" => item.native_realname,
+                "data-locality" =>  "No disponible",
+                "data-observation"=> item.native_page_url
+                )
+      when 'video' # Datos fasos por ahora
+        link_to("<img src='#{item.preview_img}' />".html_safe, '',
+                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+                "data-type" => 'video',
+                "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
+                "data-observation"=> item.href_info,
+                "data-url" => item.url_acces,
+                "data-author" => item.autor,
+                "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
+                "data-state" =>  item.municipio.present? ? item.municipio : nil)
+    end
+  end
+
   def imprimeMediaCornell(item,type)
+    copyright = "Macaulay Library at The Cornell Lab of Ornithology"
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
-              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='')
+              "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
-              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
               "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
-              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='')
+              "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     end
+  end
+
+  def imprime_img_tropicos(item)
+    copyright = "Missouri Botanical Garden"
+    link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
+            "data-target" => "#modal_reproduce",
+            :class => "btn btn-link btn-title modal-buttons",
+            "data-observation"=> item['DetailUrl'],
+            "data-url" => item['DetailJpgUrl'],
+            "data-type" => 'photo',
+            "data-author" => item['Photographer'] ||= copyright,
+            "data-copyright" => item['Copyright'] ||= copyright,
+            "data-title" => item['NameText'] ||= '',
+            "data-locality" => item['PhotoLocation'] ||= 'No disponible',
+            "data-state" => '', "data-country" => '',
+            "data-date" => item['PhotoDate'] ||= '',
+            "data-tipodeimagen" => item['ImageKindText'],
+            "data-caption" => item['Caption'],
+            "data-descripcion" => item['ShortDescription']
+            )
+
+    # Información útil de servicio trópicos
+    # Name: NameText || Caption
+    # Specimen: SpecimenText
+    # Short Description: ShortDescription
+    # Image Kind: ImageKindText
+    # Copyright: Copyright
+    # Photographer: Photographer
+    # Location: PhotoLocation
+    # Date: PhotoDate
+    #
+    #  - - - Más comunes
+    # 'NameText'
+    # 'SpecimenText'
+    # 'Caption'
+    # 'ImageKindText'
+    # 'Copyright'
+    # 'LicenseUrl'
+    # 'LicenseName'
+    # 'Photographer'
+  end
+
+  # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
+  def es_url_valido(text)
+    begin
+      url = URI.parse(text.to_s)
+      url.kind_of?(URI::HTTP) || url.kind_of?(URI::HTTPS) ? resultado = "<a target='_blank' href='#{text}'>#{text}</a>".html_safe : resultado = text
+     rescue
+      resultado = text
+    end
+    resultado
   end
 
   def dejaComentario

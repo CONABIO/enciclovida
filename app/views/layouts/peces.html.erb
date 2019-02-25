@@ -13,8 +13,8 @@
       PORT = "<%= PORT %>";
   </script>
 
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
-  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => false %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";

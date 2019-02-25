@@ -17,14 +17,12 @@
     <fieldset class="porSemaforo col-xs-12 <%= 'col-sm-12 col-md-7 col-lg-4' if(@peces.nil?) %> form-peces">
       <h4>
         <strong>Semáforo</strong>
-        <%= link_to "<i><b>Más info </b></i><span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: ' btn btn-xs btn-link pull-right' %>
         <br />
           <small>(Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la población)</small>
+        <%= link_to "<b>Más info </b><span class='glyphicon glyphicon-question-sign'</span>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: ' btn btn-xs btn-link' %>
       </h4>
       <%= checkboxSemaforo %>
     </fieldset>
-
-    <div class="clearfix hidden-lg"></div>
 
     <fieldset class="porZonas col-xs-12 <%= 'col-md-5 col-lg-4' if(@peces.nil?) %>">
       <h4><strong>Región</strong></h4>
@@ -88,7 +86,8 @@
 
     <div class="text-center col-xs-10 col-xs-offset-1 <%= "col-md-8 col-md-offset-2" if(@peces.nil?) %>">
       <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-lg btn-success", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
-      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'button', :class => "botones-peces btn btn-lg btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'reset', :class => "botones-peces btn btn-lg btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
+    <!--input type="reset" value="reset" /-->
 
     </div>
   <% end -%>

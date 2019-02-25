@@ -2,10 +2,6 @@
   <%= @titulo = 'Especies exóticas invasoras' %>
 <% end %>
 
-<% content_for(:extrajs) do %>
-  <%= javascript_include_tag 'jquery.bootpag.min.js', 'data-turbolinks-track' => true %>
-<% end %>
-
 <% content_for(:delayedjs) do %>
   <script>
       var es_primero = null;

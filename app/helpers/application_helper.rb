@@ -91,8 +91,8 @@ module ApplicationHelper
                     :title => photo.attribution,
                     :id => "photo_#{photo.id}",
                     :class => "image #{size} img-thumbnail"),
-              #image_tag('silk/magnifier.png', :class => 'zoom_icon'),
-              #"<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe,
+          #image_tag('silk/magnifier.png', :class => 'zoom_icon'),
+          #"<span class='glyphicon glyphicon-search' aria-hidden='true'></span>".html_safe,
           photo.native_page_url,
           link_options
       )
@@ -102,12 +102,12 @@ module ApplicationHelper
   def native_url_for_photo(photo)
     return photo.native_page_url unless photo.native_page_url.blank?
     case photo.class.name
-      when "FlickrPhoto"
-        "http://flickr.com/photos/#{photo.native_username}/#{photo.native_photo_id}"
-      when "LocalPhoto"
-        url_for(photo.observations.first)
-      else
-        nil
+    when "FlickrPhoto"
+      "http://flickr.com/photos/#{photo.native_username}/#{photo.native_photo_id}"
+    when "LocalPhoto"
+      url_for(photo.observations.first)
+    else
+      nil
     end
   end
 
@@ -119,10 +119,10 @@ module ApplicationHelper
     datos[:rangos].each do |d|
       if d.instance_of? String
         case d
-          when '← Anterior', 'Siguiente →'
-            html << "<span class=\"previous_page disabled\">#{d}</span>"
-          when '...'
-            html << "<span class=\"gap\">#{d}</span>"
+        when '← Anterior', 'Siguiente →'
+          html << "<span class=\"previous_page disabled\">#{d}</span>"
+        when '...'
+          html << "<span class=\"gap\">#{d}</span>"
         end
       elsif d.instance_of? Array
         d.each do |pagina|  # Itera el arreglo para poner el link con el numero o solo el numero
@@ -178,6 +178,21 @@ module ApplicationHelper
     return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
   end
 
+  def convierte_a_HTML(text)
+    # Verificar si hay información que mostrar
+    if text.present?
+      # Verificar que sea texto lo que se va a analizar
+      if text.is_a? String
+        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
+        Nokogiri::HTML.fragment(text).to_html.html_safe
+      else
+        text.to_s
+      end
+    else
+      'Sin información disponible'
+    end
+  end
+
   def tiene_permiso_metamares?(nombre_rol, con_hijos=false)
     return false  unless metausuario_signed_in? # Con esto aseguramos que el usuario ya inicio sesión
     roles_usuario = current_metausuario.usuario_roles.map(&:rol)
@@ -189,4 +204,5 @@ module ApplicationHelper
     # Si no requiero vastagos revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
     return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
   end
+
 end

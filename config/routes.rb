@@ -1,5 +1,7 @@
 Buscador::Application.routes.draw do
 
+  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
   namespace :metamares do
     resources :admin
     resources :proyectos
@@ -19,7 +21,47 @@ Buscador::Application.routes.draw do
     end
 
     resources :criterios
-    resources :propiedades
+    resources :propiedades do
+      collection do
+        get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
+      end
+    end
+  end
+
+  namespace :fichas do
+    resources :front do
+      collection do
+        # I. Clasificación y descripción de la especie
+        get ':id/clasifDescEspecie' => 'fichas#clasificacion_y_descripcion_de_especie'
+
+        # II. Distribución de la especie
+        get ':id/distribucionEspeciespecie' => 'fichas#distribucione_de_la_especie'
+
+        # III.Tipo de ambiente en donde se desarrolla la especie
+        get ':id/ambienteDesarrolloEspecie' => 'fichas#ambiente_de_desarrollo_de_especie'
+
+        # IV. Biología de la especie
+        get ':id/biologiaEspecie' => 'fichas#biologia_de_la_especie'
+
+        # V. Ecología y demografía de la especie
+        get ':id/ecologiaYDemografiaEspecie' => 'fichas#ecologia_y_demografia_de_especie'
+
+        # VI. Genética de la especie
+        get ':id/geneticaEspecie' => 'fichas#genetica_de_especie'
+
+        # VII. Importancia de la especie
+        get ':id/importanciaEspecie' => 'fichas#importancia_de_especie'
+
+        # VIII. Estado de conservación de la especie
+        get ':id/estadoConservacionEspecie' => 'fichas#estado_de_conservacion_de_especie'
+
+        # IX. Especies prioritarias para la conservación
+        get ':id/especiesPrioritariasParaConservacion' => 'fichas#especies_prioritarias_para_conservacion'
+
+        # X. Necesidades de información
+        get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+      end
+    end
   end
 
   get 'peces' => 'pmc/peces#index'
@@ -41,8 +83,6 @@ Buscador::Application.routes.draw do
   resources :usuarios_especie
 
   resources :usuarios_roles
-
-  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
   get 'explora-por-region' => 'ubicaciones#por_region'
@@ -127,7 +167,9 @@ Buscador::Application.routes.draw do
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
+      get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
@@ -176,11 +218,19 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
+  # Path's para acceder a servicio de Janium
+  get '/registros_bioteca/:id(/find_by=:t_name)(/page=:n_page)' => 'especies#show_bioteca_records'
+  get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
+
+
   resources :photos, :only => [:show, :update, :destroy] do
     member do
       put :rotate
     end
   end
+
+  # I. Clasificación y descripción de la especie
+  get 'media_tropicos/:id' => 'tropicos#tropico_especie'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -213,4 +263,5 @@ Buscador::Application.routes.draw do
   get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
   post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
+  mount Delayed::Web::Engine, at: '/jobs'
 end

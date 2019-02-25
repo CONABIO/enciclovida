@@ -22,6 +22,7 @@ PORT = CONFIG.site_url.split(':')[2][0..-1]
 SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
 
+
 unless Rails.env.development_mac?
   require 'blurrily/client.rb'  #para el fuzzy match
   FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
@@ -30,6 +31,7 @@ end
 
 module Buscador
   class Application < Rails::Application
+    config.assets.precompile << 'delayed/web/application.css'
     config.load_defaults 5.1
     Encoding.default_external = Encoding::UTF_8
     Encoding.default_internal = Encoding::UTF_8
@@ -54,9 +56,6 @@ module Buscador
 
     # Para que no escape caracteres inecesarios como "&"
     config.active_support.escape_html_entities_in_json = false
-
-    # Para habilitar web console en otros enviroments
-    config.web_console.development_only = false
 
     # Para a configuracion del correo
     Mail.defaults do

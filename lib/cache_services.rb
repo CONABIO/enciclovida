@@ -2,20 +2,12 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
-    suma_visita_servicio
-    guarda_estadisticas_servicio
-    guarda_observaciones_naturalista_servicio
-    guarda_ejemplares_snib_servicio
-    guarda_redis_servicio
-    guarda_pez_servicios
-  end
-
-  # REVISADO: Suma una visita a la estadisticas
-  def suma_visita_servicio
     if Rails.env.production?
-      delay(queue: 'estadisticas').suma_visita
-    else
-      suma_visita
+      guarda_estadisticas_servicio
+      guarda_observaciones_naturalista_servicio
+      guarda_ejemplares_snib_servicio
+      guarda_redis_servicio
+      guarda_pez_servicios
     end
   end
 
@@ -30,7 +22,7 @@ module CacheServices
   def guarda_estadisticas
     cuantas_especies_inferiores(estadistica_id: 2)
     cuantas_especies_inferiores(estadistica_id: 3)  # Servicio para poner el numero totales de especies o inferiores del taxon
-    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
+    cuantas_especies_inferiores({estadistica_id: 22, validas: true})  # Servicio para poner el numero totales de especies validas del taxon
     cuantas_especies_inferiores({estadistica_id: 23, validas: true})  # Servicio para poner el numero totales de especies o inferiores validas del taxon
   end
 
@@ -156,6 +148,9 @@ module CacheServices
 
   # REVISADO: Gurada los nombres comunes y cientifico en redis
   def guarda_redis(opc={})
+    # Le suma la visita del usuario para que no truene corriendolo como un proceso separado
+    suma_visita
+
     # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
     self.x_foto_principal = nil
     self.x_nombre_comun_principal = nil
@@ -249,13 +244,7 @@ module CacheServices
     datos[:data] = {}
 
     guarda_fotos_nombres_servicios if opc[:consumir_servicios]
-
-    begin
-      visitas = especie_estadisticas.visitas
-    rescue  # Por si no existia la estadistica inicial
-      suma_visita
-      visitas = especie_estadisticas.visitas
-    end
+    visitas = especie_estadisticas.visitas
 
     # Asigna si viene la peticion de nombre comun
     if nc = opc[:nombre_comun]
@@ -392,8 +381,8 @@ module CacheServices
 
     # Quiere decir que no existia la estadistica
     estadistica = especie_estadisticas.new
-    estadistica.estadistica_id = opc[:estadistica_id]
     estadistica.conteo = conteo
+    estadistica.estadistica_id = opc[:estadistica_id]
     estadistica.save
   end
 
