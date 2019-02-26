@@ -133,20 +133,6 @@
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.sitio_web') %></b>: <%= institucion.sitio_web %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.contacto') %></b>: <%= institucion.contacto %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.correo_contacto') %></b>: <%= institucion.correo_contacto %></li>
-
-          <ul class="list-group">
-            <% if ubicacion = institucion.ubicacion %>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.calle_numero') %></b>: <%= ubicacion.calle_numero %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.colonia') %></b>: <%= ubicacion.colonia %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.municipio') %></b>: <%= ubicacion.municipio %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.ciudad') %></b>: <%= ubicacion.ciudad %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.entidad_federativa') %></b>: <%= ubicacion.entidad_federativa %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.cp') %></b>: <%= ubicacion.cp %></li>
-              <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.ubicacion.pais') %></b>: <%= ubicacion.pais %></li>
-            <% end %>
-          </ul>
-
-          </li>
         <% end %>
       </ul>
     </div>

@@ -6,7 +6,7 @@ class EspeciesController < ApplicationController
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi,
+                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos]
@@ -22,13 +22,12 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas),
-                :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" } if Rails.env.production?
+  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -417,6 +416,45 @@ class EspeciesController < ApplicationController
     end
   end
 
+  #Videos de BDI
+  def videos_bdi
+    @pagina = params['pagina']
+
+    if @pagina.present?
+      bdi = @especie.videos_bdi({pagina: @pagina.to_i})
+    else
+      bdi = @especie.videos_bdi
+    end
+
+    if bdi[:estatus]
+      @videos = bdi[:videos]
+
+      respond_to do |format|
+        format.json {render json: bdi}
+        format.html do
+
+          # El conteo de las paginas
+          totales = 0
+          por_pagina = 25
+
+          # Por ser la primera saco el conteo de paginas
+          if @pagina.blank?
+            # Saca el conteo de las fotos de bdi
+            if bdi[:ultima].present?
+              totales+= por_pagina*(bdi[:ultima]-1)
+              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
+              totales+= fbu[:fotos].count if fbu[:estatus]
+              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
+            end
+          end  # End pagina blank
+        end  # End format html
+      end  # End respond
+
+    else  # End estatus
+      render :_error and return
+    end
+  end
+
   #servicio Macaulay Library (eBird)
   def media_cornell
     type = params['type']
@@ -722,6 +760,168 @@ class EspeciesController < ApplicationController
   end
 
 
+  def show_bioteca_record_info
+
+    # Variable fianl que contendrá los detalles de X ficha seleccionada
+    @detalle_ficha_janium
+    @status_detalle_ficha_janium = false
+    @etiquetas = {}
+
+    # Crear el cliente Savon
+    client = Savon.client(
+        endpoint: CONFIG.janium.location,
+        namespace: CONFIG.janium.namespace,
+        ssl_version: :TLSv1,
+        pretty_print_xml: true
+    )
+
+    request_message = {
+        :method => "RegistroBib/Detalle",
+        :arg => {
+            a: "ficha",
+            v: params[:id]
+        }
+    }
+
+    # Invocar el servicio web
+    begin
+      # La respuesta será un SAVON response
+      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
+
+      # La respuesta pasa a ser un XML
+      doc = Nokogiri::XML.parse(response.to_xml)
+
+      # Extraemos el estatus de la respuesta
+      @status_detalle_ficha_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
+      # Extraer el padre etiquetas
+      @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => CONFIG.janium.namespace).to_s)
+      @url_detalle_ficha_janium = doc.xpath('//soap:url_asociada', 'soap' => CONFIG.janium.namespace).text
+
+      # Si el estatus es 'OK'
+      if @status_detalle_ficha_janium
+        # Iterar las etiquetas y extraer los titulos y textos
+        @detalle_ficha_janium.xpath("//etiquetas/etiqueta").each do |etiqueta|
+          content = Nokogiri::XML(etiqueta.to_s)
+          titulo = content.xpath("//etiqueta/etiqueta").text
+          texto = content.xpath("//etiqueta/texto").text
+          if @etiquetas[titulo].nil?
+            @etiquetas[titulo] = []
+            @etiquetas[titulo] << texto
+          else
+            @etiquetas[titulo] << texto
+          end
+        end
+      end
+
+      Rails.logger.debug "[DEBUG] La ficha final es: #{doc}"
+
+    rescue => ex
+      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
+      @status_detalle_ficha_janium = false
+      logger.error ex.message
+    end
+
+    respond_to do |format|
+      format.html {
+        render :partial => 'bioteca_info_record'
+      }
+    end
+  end
+
+  # Función que invocará al servicio web "Janium"
+  def show_bioteca_records
+
+    # Variable que contendrá todas las respuestas para la vista
+    @bioteca_response = {}
+
+    # Crear el cliente Savon
+    client = Savon.client(
+        endpoint: CONFIG.janium.location,
+        namespace: CONFIG.janium.namespace,
+        ssl_version: :TLSv1,
+        pretty_print_xml: true
+    )
+
+    # Invocar el servicio web
+    begin
+      # En la url, se recibe el id de la especie, se procede a buscarlo
+      especie = Especie.find(params[:id])
+
+      # Extraer nombres
+      @bioteca_response = {
+          :id => especie.id,
+          :nombre => {
+              "comun" => especie.adicional.nombre_comun_principal,
+              "cientifico" => especie.NombreCompleto
+          },
+          :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
+      }
+
+      # Recuperar parámetro de paginado
+      params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
+
+      # Crear la solicitud (el mensaje) para generar un soap request
+      request_message = {
+          :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
+          :arg => {
+              a: "terminos",
+              v: @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]]
+          },
+          :arg2 => {
+              a: "numero_de_pagina",
+              v: @bioteca_curent_page
+          }
+      }
+
+      # La respuesta será un SAVON response
+      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
+
+      # La respuesta pasa a ser un XML
+      doc = Nokogiri::XML.parse(response.to_xml)
+
+      # Extraer el estatus de la consulta:
+      @bioteca_response[:status_fichas] = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
+
+      if @bioteca_response[:status_fichas] = 'ok'
+        @bioteca_response[:registros_janium] = []
+        @registros_janium = []
+        # Extraer los registros:
+        @bioteca_response[:registros_fichas_janium] = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
+        @bioteca_response[:registros_x_pagina_janium] = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
+
+        # Iterar registros registros
+        doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
+          @bioteca_response[:registros_janium] << Nokogiri::XML(registro.to_s)
+          #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
+        end
+      else
+        @bioteca_response[:status_fichas] = 'error'
+      end
+
+    rescue => ex
+      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
+      @bioteca_response[:status_fichas] = 'error'
+      @bioteca_response[:registros_fichas_janium] = 0
+      logger.error ex.message
+    end
+
+    # Si hay fichas que mostrar:
+    if @bioteca_response[:registros_fichas_janium] > 0
+      # Mostrar las páginas sólo si la pagina solicitada es nula (la 1) ( como la base)
+      !params[:n_page].present? || params[:n_page] == '1' ? @show_pagination = true : @show_pagination = false
+      !params[:n_page].present? && !params[:t_name].present? ? @show_find_by = true : @show_find_by = false
+      # Responder con la plantilla hecha
+      respond_to do |format|
+        format.html {
+          render :partial => 'bioteca_records'
+        }
+      end
+    else
+      render plain: nil
+    end
+  end
+
+
   private
 
   def set_especie(arbol = false)
@@ -927,4 +1127,10 @@ class EspeciesController < ApplicationController
       "caso_rango_valores('#{columna}', \"#{valor}\")"
     end
   end
+
+  # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
+  def params_from_conabio_present?
+    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
+  end
+
 end

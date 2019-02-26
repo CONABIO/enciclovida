@@ -1,8 +1,8 @@
 class Metamares::DirectorioController < Metamares::MetamaresController
 
   before_action :authenticate_metausuario!
-  before_action :set_directorio, except: [:index, :new]
-  before_action  do
+  before_action :set_directorio, except: [:index, :new, :create]
+  before_action only: [:show, :edit, :update, :destroy, :index] do
     tiene_permiso?('AdminMetamares')  # Minimo administrador
     es_propietario?(@directorio) || tiene_permiso?('AdminMetamaresManager')
   end
@@ -14,20 +14,29 @@ class Metamares::DirectorioController < Metamares::MetamaresController
   end
 
   def new
+    @directorio = Metamares::Directorio.new
+    @form_params = { url: '/metamares/directorio', method: 'post' }
+
+    render 'edit'
   end
 
   def edit
+    @form_params = {}
   end
 
   def create
     @directorio = Metamares::Directorio.new(directorio_params)
+    @directorio.usuario_id = current_metausuario.id
 
     respond_to do |format|
       if @directorio.save
         format.html { redirect_to @directorio, notice: 'Los datos se actualizaron exitosamente.' }
         format.json { render action: 'show', status: :created, location: @directorio }
       else
-        format.html { render action: 'new' }
+        format.html {
+          @form_params = { url: '/metamares/directorio', method: 'post' }
+          render action: 'edit'
+        }
         format.json { render json: @estatuse.errors, status: :unprocessable_entity }
       end
     end

@@ -1,4 +1,4 @@
-class Metamares::Dato < ActiveRecord::Base
+class Metamares::Dato < MetamaresAbs
 
   self.table_name = "#{CONFIG.bases.metamares}.datos"
 

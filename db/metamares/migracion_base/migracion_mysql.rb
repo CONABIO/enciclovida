@@ -29,11 +29,11 @@ def itera_metadata
 
     proyecto = Metamares::Proyecto.new
     proyecto.id = meta.mmid
-    proyecto.nombre_proyecto = meta.short_title[0..254]
-    proyecto.autor = meta.author unless meta.author.estandariza == 'na'
-    proyecto.financiamiento = meta.research_fund unless meta.research_fund.estandariza == 'na'
-    proyecto.campo_investigacion = meta.research_field unless meta.research_field.estandariza == 'na'
-    proyecto.campo_ciencia = meta.science unless meta.science.estandariza == 'na'
+    proyecto.nombre_proyecto = meta.short_title[0..254] unless meta.short_title.estandariza == 'na'
+    proyecto.autor = meta.author
+    proyecto.financiamiento = meta.research_fund
+    proyecto.campo_investigacion = meta.research_field
+    proyecto.campo_ciencia = meta.science
     proyecto.usuario_id = 1
 
     # Institucion
@@ -42,7 +42,7 @@ def itera_metadata
     else
       institucion = Metamares::Institucion.new
       institucion.nombre_institucion = meta.institution
-      institucion.tipo = meta.institution_type unless meta.institution_type.estandariza == 'na'
+      institucion.tipo = meta.institution_type
       institucion.slug = meta.institution.estandariza
 
       # Para dividir el contacto
@@ -50,20 +50,22 @@ def itera_metadata
       contacto_datos = contacto.split(';')
 
       if contacto.estandariza.present? && contacto.estandariza != 'na' && contacto_datos.length > 1
-        institucion.contacto = contacto_datos[0].strip unless contacto_datos[0].estandariza == 'na'
+        institucion.contacto = contacto_datos[0].strip
         institucion.correo_contacto = contacto_datos[1].strip unless contacto_datos[1].estandariza == 'na'
       end
 
       if institucion.save
         proyecto.institucion_id = institucion.id
+      else
+        puts "La institucion no se guardo ... #{institucion.errors.inspect}-#{institucion.inspect}" if OPTS[:debug]
       end
     end
 
     # Region
     region = Metamares::RegionM.new
-    region.nombre_region = meta.region unless meta.region.estandariza == 'na'
-    region.nombre_zona = meta.area unless meta.area.estandariza == 'na'
-    region.nombre_ubicacion = meta.location unless meta.location.estandariza == 'na'
+    region.nombre_region = meta.fishing_region
+    region.nombre_zona = meta.area
+    region.nombre_ubicacion = meta.location
     region.latitud = meta.lat unless meta.lat.nil?
     region.longitud = meta.lon unless meta.lon.nil?
 
@@ -89,17 +91,17 @@ def itera_metadata
 
     # Datos
     dato = Metamares::Dato.new
-    dato.estatus_datos = meta.dataset_available unless meta.dataset_available.nil?
-    dato.numero_ejemplares = meta.data_time_points unless meta.data_time_points.nil?
-    dato.tipo_unidad = meta.unit_type unless meta.unit_type.estandariza == 'na'
-    dato.resolucion_temporal = meta.temporal_resolution unless meta.temporal_resolution.estandariza == 'na'
-    dato.resolucion_espacial = meta.spatial_resolution unless meta.spatial_resolution.estandariza == 'na'
+    dato.estatus_datos = 1
+    dato.numero_ejemplares = meta.data_time_points
+    dato.tipo_unidad = meta.unit_type
+    dato.resolucion_temporal = meta.temporal_resolution
+    dato.resolucion_espacial = meta.spatial_resolution
     dato.titulo_compilacion = meta.compilation_title unless meta.compilation_title.estandariza == 'na'
     dato.titulo_conjunto_datos = meta.dataset_title unless meta.dataset_title.estandariza == 'na'
     dato.publicacion_fecha = "#{meta.publication_year}-01-01" unless meta.publication_year.nil?
-    dato.descarga_datos = meta.reference unless meta.reference.estandariza == 'na'
-    dato.notas_adicionales = meta.notes unless meta.notes.estandariza == 'na'
-    dato.interaccion = meta.se_interaction unless meta.se_interaction.estandariza == 'na'
+    dato.descarga_datos = meta.reference
+    dato.notas_adicionales = meta.notes
+    dato.interaccion = meta.se_interaction
 
     if dato.save
       proyecto.dato_id = dato.id
@@ -132,6 +134,9 @@ def itera_metadata
 
         e.save
       end
+
+    else
+      puts "El proyecto no se guardo ... #{proyecto.errors.inspect}-#{proyecto.inspect}" if OPTS[:debug]
     end  # End proyecto.save
   end  # End each do meta
 end

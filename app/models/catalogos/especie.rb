@@ -69,7 +69,7 @@ class Especie < ActiveRecord::Base
   has_many :especie_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :bibliografias, :through => :especie_bibliografias, :source => :bibliografia
 
-  has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy
+  has_many :especie_estadisticas, :class_name => 'EspecieEstadistica', :dependent => :destroy, inverse_of: :especie
   has_many :estadisticas, :through => :especie_estadisticas, :source => :estadistica
 
   has_many :usuario_especies, :class_name => 'UsuarioEspecie', :foreign_key => :especie_id
@@ -342,6 +342,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     else
       bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
     end
+  end
+
+  # Servicio que trae la respuesta de bdi para videos
+  def videos_bdi(opts={})
+    bdi = BDIService.new
+    bdi.dame_videos(opts.merge({taxon: self}))
   end
 
   # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos

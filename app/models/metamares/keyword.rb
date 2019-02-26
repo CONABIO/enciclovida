@@ -1,4 +1,4 @@
-class Metamares::Keyword < ActiveRecord::Base
+class Metamares::Keyword < MetamaresAbs
 
   self.table_name = "#{CONFIG.bases.metamares}.keywords"
 

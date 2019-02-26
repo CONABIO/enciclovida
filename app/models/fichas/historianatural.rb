@@ -1,4 +1,4 @@
-class Fichas::Historianatural < ActiveRecord::Base
+class Fichas::Historianatural < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.historianatural"
 	self.primary_keys = :historiaNaturalId,  :especieId

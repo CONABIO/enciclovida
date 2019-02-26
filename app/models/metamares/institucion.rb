@@ -1,9 +1,9 @@
-class Metamares::Institucion < ActiveRecord::Base
+class Metamares::Institucion < MetamaresAbs
 
   self.table_name = "#{CONFIG.bases.metamares}.instituciones"
 
-  belongs_to :ubicacion, class_name: 'Metamares::Ubicacion', inverse_of: :institucion
-  has_many :proyectos, class_name: 'Metamares::Proyecto'
+  #belongs_to :ubicacion, class_name: 'Metamares::Ubicacion', inverse_of: :institucion, foreign_key: :ubicacion_id
+  has_many :proyectos, class_name: 'Metamares::Proyecto', inverse_of: :institucion
 
   before_save :actualiza_slug
   validates_presence_of :nombre_institucion
