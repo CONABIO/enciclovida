@@ -15,7 +15,7 @@
         <li><%= link_to 'Administración de usuarios', metamares_admin_index_path, data: { turbolinks: false } if tiene_permiso_metamares?('AdminMetamares') %></li>
         <li><%= link_to 'Mis colecciones', metamares_proyectos_path({'proy_b[usuario_id]': usuario.id}), data: { turbolinks: false } %></li>
         <li><%= link_to 'Configuración de tu cuenta', edit_metausuario_registration_path, data: { turbolinks: false } %></li>
-        <li><%= link_to 'Datos personales', metamares_directorio_path(usuario.directorio), data: { turbolinks: false } %></li>
+        <li><%= link_to 'Datos personales', usuario.directorio ? metamares_directorio_path(usuario.directorio) : new_metamares_directorio_path, data: { turbolinks: false } %></li>
         <li><%= link_to 'Cerrar sesión', destroy_metausuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
       <% else %>
         <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_metausuario_session_path, data: { turbolinks: false }) %></li>
