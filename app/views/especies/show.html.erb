@@ -93,9 +93,17 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="picture-ev-icon"></i><strong><small> Media </small></strong><span class="caret"></span></a>
 
       <ul class="dropdown-menu" style="z-index: 1001;">
-        <li class="dropdown-header">CONABIO - Banco de imágenes </li>
-        <li role="presentation">
-          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
+        <li class="dropdown-header">CONABIO - Banco de imágenes</li>
+        <li style="display: inline-block;" role="presentation">
+          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab">
+            <i class='glyphicon glyphicon-camera' aria-hidden='true'></i>
+          </a>
+        </li>
+        <li style="display: inline-block;" role="presentation">
+          <a href="#videos-bdi" aria-controls="videos-bdi" role="tab" data-toggle="tab">
+            <i class='glyphicon glyphicon-film' aria-hidden='true'></i>
+          </a>
+
         </li>
         <li role="separator" class="divider"></li>
         <li class="dropdown-header">Macaulay Library</li>
@@ -153,6 +161,13 @@
       </p>
     </div>
 
+    <div id="videos-bdi" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+    </div>
+
     <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
       <p class="text-center">
         <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
@@ -201,7 +216,6 @@
                 <h5 id="modal_ubicacion"></h5>
                 <small id="modal_fecha"></small><br>
                 <small id="modal_imgTipo"></small>
-                <hr>
                 <small id="modal_caption"></small><br>
                 <small id="modal_imgDescripcion"></small>
                 <hr>

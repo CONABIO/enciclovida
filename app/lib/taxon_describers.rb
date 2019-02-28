@@ -8,6 +8,7 @@ module TaxonDescribers
               when "conabio" then TaxonDescribers::Conabio.describe(taxon)
               when "wikipedia" then TaxonDescribers::Wikipedia.describe(taxon)
               when "bhl" then TaxonDescribers::Bhl.describe(taxon)
+              when "janium" then TaxonDescribers::Janium.describe(taxon)
             end
       return txt
     end

@@ -154,6 +154,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
       get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
@@ -205,6 +206,11 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
 
 
+  # Path's para acceder a servicio de Janium
+  get '/registros_bioteca/:id(/find_by=:t_name)(/page=:n_page)' => 'especies#show_bioteca_records'
+  get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
+
+
   resources :photos, :only => [:show, :update, :destroy] do
     member do
       put :rotate
@@ -245,4 +251,5 @@ Buscador::Application.routes.draw do
   get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
   post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
+  mount Delayed::Web::Engine, at: '/jobs'
 end
