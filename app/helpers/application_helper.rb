@@ -189,7 +189,7 @@ module ApplicationHelper
         text.to_s
       end
     else
-      'Sin información disponible'
+      ''
     end
   end
 
