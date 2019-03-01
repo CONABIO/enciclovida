@@ -80,7 +80,7 @@ module PecesHelper
     html = ''
 
     @pez.criterio_propiedades.pesquerias.each do |p|
-      html << link_to('<i class="certificacion-ev-icon"></i>'.html_safe, "http://www.pescaconfuturo.com/directorio-de-certificaciones", target: '_blank', class: 'btn btn-xs btn-basica btn-zona-star btn-title')
+      html << link_to('<i class="certificacion-ev-icon"></i>'.html_safe, "http://comepesca.com/conoce-comepesca/#directorio-comercial", target: '_blank', class: 'btn btn-xs btn-basica btn-zona-star btn-title')
       html << "<em class='popover-certificacion'><strong>#{p.nombre_propiedad}</strong><br /><small>#{p.descripcion}</small></em>"
     end
 
