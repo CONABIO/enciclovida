@@ -72,7 +72,10 @@
     <p><strong>Año: </strong> <%= convierte_a_HTML(@taxon.anio)%></p>
     <p><strong>Autor: </strong> <%= convierte_a_HTML(@taxon.autor)%></p>
     <br>
-    <h4 class="text-center text-primary">Información adicional</h4>
-    <p class="text-justify"><strong>Especies similares:</strong> <%=convierte_a_HTML(@taxon.especiesSmilares)%></p>
+
+    <% if @ficha[:taxon].especiesSmilares.present? %>
+      <h4 class="text-center text-primary">Especies similares</h4>
+      <p class="text-justify"><%= @ficha[:taxon].especiesSmilares.a_HTML %></p>
+    <% end %>
   </div>
 </div>
