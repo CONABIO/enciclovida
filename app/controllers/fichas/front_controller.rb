@@ -138,7 +138,7 @@ class Fichas::FrontController < Fichas::FichasController
     # A partir de la especie, acceder a:
     # I. Clasificación y descripción de la especie
     @nombre_comun = @taxon.nombreComun
-    @legislacion = @taxon.legislaciones.first || Fichas::Legislacion.new
+    @legislacion = @taxon.legislaciones || Fichas::Legislacion.new
     @sinonimo = @taxon.sinonimos.first
 
     # II. Distribución de la especie
@@ -199,7 +199,7 @@ class Fichas::FrontController < Fichas::FichasController
         taxon: @taxon,
         # I. Clasificación y descripción de la especie
         edad_peso_largo: @taxon.dame_edad_peso_largo,
-        nombre_comun: @nombre_comun, legislacion: @legislacion, sinonimo: @sinonimo,
+        nombre_comun: @nombre_comun, legislaciones: @legislacion, sinonimo: @sinonimo,
         # II. Distribución de la especie
         distribucion: @distribucion, endemica: @endemica, habitat: @habitat,
         # III. Tipo de ambiente en donde se desarrolla la especie

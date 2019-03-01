@@ -53,10 +53,10 @@
       </table>
     <% end %>
 
-    <br>
-    <h4>Categoría de riesgo según la NOM-059-SEMARNAT</h4>
-    <p class="text-justify"><%= @legislacion.infoAdicional %></p>
-    <p class="text-justify"><%= @legislacion.estatusLegalProteccion %></p>
+    <% if @ficha[:taxon].especiesSmilares.present? %>
+      <h4>Especies similares</h4>
+      <p class="text-justify"><%= @ficha[:taxon].especiesSmilares.a_HTML %></p>
+    <% end %>
 
   </div>
 
@@ -73,9 +73,7 @@
     <p><strong>Autor: </strong> <%= convierte_a_HTML(@taxon.autor)%></p>
     <br>
 
-    <% if @ficha[:taxon].especiesSmilares.present? %>
-      <h4 class="text-center text-primary">Especies similares</h4>
-      <p class="text-justify"><%= @ficha[:taxon].especiesSmilares.a_HTML %></p>
-    <% end %>
+    <%= dameCategoriasDeRiesgo %>
+
   </div>
 </div>
