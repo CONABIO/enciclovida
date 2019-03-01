@@ -1,7 +1,7 @@
 class Fichas::FrontController < Fichas::FichasController
 
   before_action :set_taxon
-  layout false
+  #layout false
 
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
@@ -195,33 +195,34 @@ class Fichas::FrontController < Fichas::FichasController
     # XII. Referencias: (Agregado)
     @referencias = @taxon.referenciasBibliograficas
 
+    @ficha = {
+        taxon: @taxon,
+        # I. Clasificación y descripción de la especie
+        nombre_comun: @nombre_comun, legislacion: @legislacion, sinonimo: @sinonimo,
+        # II. Distribución de la especie
+        distribucion: @distribucion, endemica: @endemica, habitat: @habitat,
+        # III. Tipo de ambiente en donde se desarrolla la especie
+        tipoClima: @tipoClima, suelo: @suelo, geoforma: @geoforma, ecorregion: @ecorregion, ecosistema: @ecosistema, cat_eacorregionwwf: @cat_eacorregionwwf,
+        # IV. Biología de la especie
+        historiaNatural: @historiaNatural, demografiaamenazas: @demografiaamenazas, infoReproduccion: @infoReproduccion,
+        # V. Ecología y demografía de la especie
+        interaccion: @interaccion,
+        # VI. Genética de la especie
+        # VII. Importancia de la especie
+        culturaUsos: @culturaUsos,
+        # VIII. Estado de conservación de la especie
+        amenazaDirecta: @amenazaDirecta, conservacion: @conservacion,
+        # IX. Especies prioritarias para la conservación
+        # X. Necesidades de información
+        # XI. Metadatos
+        metadato: @metadato, asociado: @asociado, organizacion: @organizacion, responsable: @responsable, puesto: @puesto, contacto: @contacto, ciudad: @ciudad, pais: @pais,
+        # XII. Referencias: (Agregado)
+        referencias: @referencias
+    }
+
     respond_to do |format|
       format.html
-      format.json { render json: {
-          taxon: @taxon,
-          # I. Clasificación y descripción de la especie
-          nombre_comun: @nombre_comun, legislacion: @legislacion, sinonimo: @sinonimo,
-          # II. Distribución de la especie
-          distribucion: @distribucion, endemica: @endemica, habitat: @habitat,
-          # III. Tipo de ambiente en donde se desarrolla la especie
-          tipoClima: @tipoClima, suelo: @suelo, geoforma: @geoforma, ecorregion: @ecorregion, ecosistema: @ecosistema, cat_eacorregionwwf: @cat_eacorregionwwf,
-          # IV. Biología de la especie
-          historiaNatural: @historiaNatural, demografiaamenazas: @demografiaamenazas, infoReproduccion: @infoReproduccion,
-          # V. Ecología y demografía de la especie
-          interaccion: @interaccion,
-          # VI. Genética de la especie
-          # VII. Importancia de la especie
-          culturaUsos: @culturaUsos,
-          # VIII. Estado de conservación de la especie
-          amenazaDirecta: @amenazaDirecta, conservacion: @conservacion,
-          # IX. Especies prioritarias para la conservación
-          # X. Necesidades de información
-          # XI. Metadatos
-          metadato: @metadato, asociado: @asociado, organizacion: @organizacion, responsable: @responsable, puesto: @puesto, contacto: @contacto, ciudad: @ciudad, pais: @pais,
-          # XII. Referencias: (Agregado)
-          referencias: @referencias
-      }
-      }
+      format.json { render json: @ficha }
     end
   end
 
