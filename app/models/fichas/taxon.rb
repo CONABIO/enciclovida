@@ -21,41 +21,23 @@ class Fichas::Taxon < Ficha
   has_one :especie, through: :scat, source: :especie
 
   # Devuelve las secciones que tienen información
-	def dame_datos_edad_peso_largo
+	def dame_edad_peso_largo
 		datos = {}
-		datos[:edad] = {}
-		datos[:peso] = {}
-		datos[:largo] = {}
 		datos[:estatus] = false
 
 		if edadinicialmachos.present? || edadfinalmachos.present? || edadinicialhembras.present? || edadfinalhembras.present?
-			datos[:edad][:datos] = []
-			datos[:edad][:datos][:estatus] = true
+			datos[:edad] = true
 			datos[:estatus] = true
-			datos[:edad][:datos][0] = edadinicialmachos
-			datos[:edad][:datos][1] = edadfinalmachos
-			datos[:edad][:datos][2] = edadinicialhembras
-			datos[:edad][:datos][3] = edadfinalhembras
 		end
 
 		if pesoinicialmachos.present? || pesofinalmachos.present? || pesoinicialhembras.present? || pesofinalhembras.present?
-			datos[:peso][:datos] = []
-			datos[:peso][:datos][:estatus] = true
-			datos[:estatus] = true
-			datos[:peso][:datos][0] = pesoinicialmachos
-			datos[:peso][:datos][1] = pesofinalmachos
-			datos[:peso][:datos][2] = pesoinicialhembras
-			datos[:peso][:datos][3] = pesofinalhembras
+			datos[:peso] = true
+			datos[:estatus] = true unless datos[:estatus]
 		end
 
 		if largoinicialmachos.present? || largofinalmachos.present? || largoinicialhembras.present? || largofinalhembras.present?
-			datos[:largo][:datos] = []
-			datos[:largo][:datos][:estatus] = true
-			datos[:estatus] = true
-			datos[:largo][:datos][0] = largoinicialmachos
-			datos[:largo][:datos][1] = largofinalmachos
-			datos[:largo][:datos][2] = largoinicialhembras
-			datos[:largo][:datos][3] = largofinalhembras
+			datos[:largo] = true
+			datos[:estatus] = true unless datos[:estatus]
 		end
 
 		datos

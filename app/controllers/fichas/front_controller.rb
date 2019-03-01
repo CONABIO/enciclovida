@@ -198,6 +198,7 @@ class Fichas::FrontController < Fichas::FichasController
     @ficha = {
         taxon: @taxon,
         # I. Clasificación y descripción de la especie
+        edad_peso_largo: @taxon.dame_edad_peso_largo,
         nombre_comun: @nombre_comun, legislacion: @legislacion, sinonimo: @sinonimo,
         # II. Distribución de la especie
         distribucion: @distribucion, endemica: @endemica, habitat: @habitat,
