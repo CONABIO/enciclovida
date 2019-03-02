@@ -87,9 +87,7 @@
 
     <div class="text-center col-xs-10 col-xs-offset-1 <%= "col-md-8 col-md-offset-2" if(@peces.nil?) %>">
       <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-lg btn-success", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
-      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'reset', :class => "botones-peces btn btn-lg btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
-    <!--input type="reset" value="reset" /-->
-
+      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'button', :class => "botones-peces btn btn-lg btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();', :value => 'reset' %>
     </div>
   <% end -%>
 
