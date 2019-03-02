@@ -12,10 +12,9 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Busqueda por pez y marisco
   def index
-    @filtros =  Pmc::Criterio.dame_filtros
-    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
-
     if params[:commit].present?
+      @filtros =  Pmc::Criterio.dame_filtros
+      @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 
       if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
@@ -65,6 +64,8 @@ class Pmc::PecesController < Pmc::PmcController
       end
 
       render 'resultados'
+    else
+      redirect_to '/pmc/peces?semaforo_recomendacion%5B%5D=star&commit=Buscar'
     end
   end
 
