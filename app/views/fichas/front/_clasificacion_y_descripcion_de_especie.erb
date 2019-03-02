@@ -62,15 +62,16 @@
 
   <div class="col-md-4 fichaSeccionApartadosT2">
     <h4 class="text-center text-primary">Taxonomía</h4>
-    <p><strong>Reino: </strong><%=" " + convierte_a_HTML(@taxon.reino)%></p>
-    <p><strong>Phylum: </strong><%=" " + convierte_a_HTML(@taxon.divisionphylum)%></p>
-    <p><strong>Clase: </strong><%=" " + convierte_a_HTML(@taxon.clase)%></p>
-    <p><strong>Orden: </strong><%=" " + convierte_a_HTML(@taxon.orden)%></p>
-    <p><strong>Familia: </strong><%=" " + convierte_a_HTML(@taxon.familia)%></p>
+    <p><strong>reino: </strong><%= @ficha[:especie].x_reino %></p>
+    <p><strong><%= @ficha[:especie].x_reino == 'Animalia' ? 'phylum' : 'división' %>: </strong><%= @ficha[:especie].x_division %></p>
+    <p><strong>clase: </strong><%= @ficha[:especie].x_clase %></p>
+    <p><strong>orden: </strong><%= @ficha[:especie].x_orden %></p>
+    <p><strong>familia: </strong><%= @ficha[:especie].x_familia %></p>
+    <p><strong>género: </strong><%= @ficha[:especie].x_genero %></p>
+    <p><strong>especie: </strong><%= @ficha[:especie].x_especie %></p>
     <br>
     <h4 class="text-center text-primary">Nombre científico</h4>
-    <p><strong>Año: </strong> <%= convierte_a_HTML(@taxon.anio)%></p>
-    <p><strong>Autor: </strong> <%= convierte_a_HTML(@taxon.autor)%></p>
+    <p><i><%= @ficha[:especie].nombre_cientifico %></i> <%= @ficha[:especie].nombre_autoridad %></p>
     <br>
 
     <%= dameCategoriasDeRiesgo %>

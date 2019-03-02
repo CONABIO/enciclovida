@@ -133,6 +133,9 @@ class Fichas::FrontController < Fichas::FichasController
   end
 
   def show
+    especie = @taxon.especie
+    especie.asigna_categorias
+
     @sin_info_msj = 'Sin información disponible'
 
     # A partir de la especie, acceder a:
@@ -196,7 +199,7 @@ class Fichas::FrontController < Fichas::FichasController
     @referencias = @taxon.referenciasBibliograficas
 
     @ficha = {
-        taxon: @taxon,
+        taxon: @taxon, especie: especie,
         # I. Clasificación y descripción de la especie
         edad_peso_largo: @taxon.dame_edad_peso_largo,
         nombre_comun: @nombre_comun, legislaciones: @legislacion, sinonimo: @sinonimo,
