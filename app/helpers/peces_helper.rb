@@ -93,7 +93,7 @@ module PecesHelper
     ###
     grupos = params[:grupos_iconicos] || []
     @grupos.each do |taxon|  # Para tener los grupos ordenados
-      filtros_usados << "<i title = '#{taxon.nombre_comun_principal}' class = 'btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'></i>" if grupos.include?(taxon.id.to_s)
+      filtros_usados << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn-title'><i class = '#{taxon.nombre_cientifico.parameterize}-ev-icon'></i></span>" if grupos.include?(taxon.id.to_s)
     end
 
     ###
@@ -134,6 +134,20 @@ module PecesHelper
         end
       end
     end
+
+    ###
+
+    grupo = params[:grupos] || ''
+    @filtros[:grupos].each do |g|
+      if g.id == grupo.to_i
+        filtros_usados << "<span title='Grupo seleccionado' class='btn-title'><i class='label label-primary'>#{g.nombre_propiedad}</i></span>"
+        break
+      end
+    end
+
+    filtros_usados << "<span title='Taxón seleccionado' class='btn-title'><i class='label label-primary'>#{params[:nombre]}</i></span>" if params[:nombre].present?
+
+
     filtros_usados
   end
 

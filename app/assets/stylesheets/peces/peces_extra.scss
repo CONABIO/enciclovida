@@ -88,19 +88,9 @@
 }
 #porCriterios label{display: block;}
 #porCriterios label.nom, #porCriterios label.iucn {padding: 0px; display: inline-block}
-.filtrosUsados{
-  margin: 0 10px;
-}
-.filtrosUsados i{
-  padding: 2px;
-  margin: 0 2px;
-  background: none;
-  border: none;
-}
-.filtrosUsados i:before, .filtrosUsados i:after{
-  font-size: 40px;
-}
-.botones-peces{}
+.filtrosUsados{margin: 0 10px;}
+.filtrosUsados .label{padding-bottom: 1px;}
+.filtrosUsados i:before, .filtrosUsados i:after{font-size: 40px;}
 
 /************************** INICIA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces, li.active > a {
@@ -186,9 +176,6 @@ div.result-img-container{
   #resultados-container.state-two #pestañas{
     width: 100%;
   }
-}
-@media (min-width: 1200px) {
-/*  .porNombreGrupo{margin-top: -140px;}*/
 }
 /************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces{
