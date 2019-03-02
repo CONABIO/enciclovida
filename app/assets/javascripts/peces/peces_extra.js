@@ -56,6 +56,9 @@ $(document).ready(function(){
     });
 
     $("html,body").animate({scrollTop: 105}, 500);
+
+    if($('#id').val()!=''){bloqueaBusqueda();}
+
 });
 
 var scroll_array = false;
