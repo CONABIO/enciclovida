@@ -2,8 +2,8 @@ var limpiaBusqueda = function(){
     var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
     var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsALimpiar = $(controles + ", " + visuales);
-    //$('input, select, span, path').removeClass("disabled zona-seleccionada");
-    inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada").prop("checked", false).val('');
+    inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada").prop("checked", false);
+    $("#id, #nombre, .porNombreGrupo input, .porNombreGrupo select").val('');
 };
 
 var bloqueaBusqueda = function(){

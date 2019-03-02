@@ -10,7 +10,7 @@
 
     <div class="text-right col-xs-12">
       <%= button_tag "<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-sm btn-success", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
-      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'button', :class => "botones-peces btn btn-sm btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();', :value => 'reset' %>
+      <%= button_tag "<span class='glyphicon glyphicon-repeat' aria-hidden='true'></span> Limpiar".html_safe, :type => 'button', :class => "botones-peces btn btn-sm btn-default", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>
     </div>
 
     <fieldset class="porGrupo col-xs-12 <%= "col-md-5 col-lg-4" if(@peces.nil?) %> form-peces">
