@@ -9,7 +9,7 @@ class IUCNService
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     begin
-      res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
+      res = Net::HTTP.start(uri.host, uri.port, :read_timeout => CONFIG.iucn.timeout ) {|http| http.request(req) }
       jres = JSON.parse(res.body)['result']
       jres[0]['category'] if jres.any?
     rescue => e
