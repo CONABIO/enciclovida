@@ -35,14 +35,15 @@
   <div id="especies" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><!-- 3 -->
     <%= render partial: 'especies' %>
   </div>
-</div>
 
-<div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-6 col-lg-7"><!-- 4 -->
   <div id="busqueda_avanzada" class="col-md-12">
     <%= render partial: 'filtros_busqueda_avanzada_bis' %>
   </div>
+</div>
 
-  <div id="map"></div>
+<div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-6 col-lg-7"><!-- 4 -->
+  <%= render partial: 'sidebar' %>
+  <div id="map" class="sidebar-map"></div>
 </div>
 
 
