@@ -300,4 +300,6 @@ $(document).ready(function(){
     {
         $("html,body").animate({scrollTop: 122}, 1000);
     });
+
+    L.control.sidebar('sidebar').addTo(map);
 });
