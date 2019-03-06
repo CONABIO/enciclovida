@@ -37,18 +37,16 @@ var cargaMapa = function (id)
 
     var zoom = L.control.zoom({
         zoomInTitle: 'Acercarse',
-        zoomOutTitle: 'Alejarse'
+        zoomOutTitle: 'Alejarse',
+        position: 'topright'
     });
 
     // https://github.com/brunob/leaflet.fullscreen
     var fullscreen = L.control.fullscreen({
-        position: 'topleft',
+        position: 'topright',
         title: 'Pantalla completa',
         titleCancel: 'Salir de pantalla completa'
     });
-
-    map.addControl(zoom);
-    map.addControl(fullscreen);
 
     map.setView(place, 5);  // Default place and zoom
 
@@ -60,4 +58,7 @@ var cargaMapa = function (id)
     };
 
     L.control.layers(baseMaps).addTo(map);
+    map.addControl(fullscreen);
+    map.addControl(zoom);
+
 };
