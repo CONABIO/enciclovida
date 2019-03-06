@@ -25,14 +25,23 @@
 
     <div class="sidebar-pane" id="grupos-region-tab">
       <h1 class="sidebar-header">Filtra por grupo<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+      <%= render partial: 'grupos' %>
     </div>
 
     <div class="sidebar-pane" id="distribucion-region-tab">
       <h1 class="sidebar-header">Filtra por tipo de distribución<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+
+      <div class="checkbox explora_por">
+        <%= checkboxTipoDistribucion.gsub('btn-basica ', '').html_safe %>
+      </div>
     </div>
 
     <div class="sidebar-pane" id="cat-riesgo-region-tab">
       <h1 class="sidebar-header">Filtra por categoria de riesgo<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+
+      <div class="checkbox explora_por">
+        <%= checkboxEstadoConservacion(true).gsub('btn-basica ', '').html_safe %>
+      </div>
     </div>
   </div>
 
