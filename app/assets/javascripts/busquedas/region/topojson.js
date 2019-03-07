@@ -1,4 +1,16 @@
 /**
+ * Carga los overlays necesarios e inicia el mapa
+ */
+var cargaMapaYoverlays = function ()
+{
+    var divisionEstatalOverlay = cargaDivisionEstatal();
+    var divisionANPOverlay = cargaDivisionANP();
+
+    cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
+    divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
+};
+
+/**
  * Carga la division estatal de un inicio
  */
 var cargaDivisionEstatal = function()
@@ -59,9 +71,6 @@ var cargaDivisionEstatal = function()
         });
     });
 
-    cargaMapa('map', {"División estatal": divisionEstatalOverlay});
-    divisionEstatalOverlay.addTo(map);
-
     divisionEstatalOverlay.on("add", function () {
         $('#svg-division-estatal').show();
     });
@@ -69,6 +78,8 @@ var cargaDivisionEstatal = function()
     divisionEstatalOverlay.on("remove", function () {
         $('#svg-division-estatal').hide();
     });
+
+    return divisionEstatalOverlay;
 };
 
 /**
@@ -128,6 +139,78 @@ var cargaDivisionMunicipal = function()
             muestraOcultaSvg(true);
         }
     });
+};
+
+/**
+ * Carga la divion por ANP
+ */
+var cargaDivisionANP = function()
+{
+    var divisionANPOverlay = L.d3SvgOverlay(function() {
+        if ($('#svg-division-ANP g').length > 0) return;
+
+        var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-ANP');
+        var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
+
+        d3.json('/topojson/anp.json', function (error, collection) {
+            var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
+            var path = d3.geo.path().projection(projectPoint);
+
+            var feature = g.selectAll('.region')
+                .data(topojson.feature(collection, collection.objects['collection']).features)
+                .enter()
+                .append('path')
+                .attr('class', 'region leaflet-clickable')
+                .on('mouseover', function(d){
+                    nombreRegion(opciones.datos[d.properties.region_id].properties);
+                })
+                .on('dblclick', function(d){
+                    seleccionaEstado(d.properties.region_id);
+                })
+                .each(function(d){
+                    // Asigna los valores la primera y unica vez que carga los estados
+                    opciones.datos[d.properties.region_id] = {};
+                    opciones.datos[d.properties.region_id].properties = d.properties;
+                    opciones.datos[d.properties.region_id].properties.layer = $(this);
+                    opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
+
+                    var bounds = d3.geo.bounds(d)
+                    opciones.datos[d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+
+                    completaSelect(opciones.datos[d.properties.region_id].properties);
+                });
+
+            map.on('zoomend', reinicia);
+            map.on('zoomstart', function(){muestraOcultaSvg();});
+            reinicia(); // Lo inicializa
+
+            // Reposiciona el svg si se realiza un zoom
+            function reinicia()
+            {
+                var bottomLeft = projectPoint(bounds[0]);
+                var topRight = projectPoint(bounds[1]);
+
+                svg.attr('width', topRight[0] - bottomLeft[0])
+                    .attr('height', bottomLeft[1] - topRight[1])
+                    .style('margin-left', bottomLeft[0] + 'px')
+                    .style('margin-top', topRight[1] + 'px');
+
+                g.attr('transform', 'translate(' + -bottomLeft[0] + ',' + -topRight[1] + ')');
+                feature.attr('d', path);
+                muestraOcultaSvg(true);
+            }
+        });
+    });
+
+    divisionANPOverlay.on("add", function () {
+        $('#svg-division-ANP').show();
+    });
+
+    divisionANPOverlay.on("remove", function () {
+        $('#svg-division-ANP').hide();
+    });
+
+    return divisionANPOverlay;
 };
 
 /**

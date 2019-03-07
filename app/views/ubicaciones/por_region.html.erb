@@ -13,8 +13,8 @@
         opciones.pagina_especies = 1;
         opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
         opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
-        
-        cargaDivisionEstatal();
+
+        cargaMapaYoverlays();
     </script>
 
     <%= javascript_include_tag 'busquedas/region/por_region_extra', 'data-turbolinks-track' => true %>
