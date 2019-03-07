@@ -56,13 +56,10 @@ var cargaDivisionEstatal = function()
                 feature.attr('d', path);
                 muestraOcultaSvg(true);
             }
-
-            //
         });
-
     });
 
-    L.control.layers({}, {"División estatal": divisionEstatalOverlay}).addTo(map);
+    cargaMapa('map', {"División estatal": divisionEstatalOverlay});
     divisionEstatalOverlay.addTo(map);
 
     divisionEstatalOverlay.on("add", function () {

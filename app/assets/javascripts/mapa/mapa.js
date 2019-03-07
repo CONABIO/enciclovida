@@ -2,7 +2,7 @@
  * Inicializa el mapa
  * @param id
  */
-var cargaMapa = function (id)
+var cargaMapa = function (id, overlay)
 {
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
@@ -57,8 +57,7 @@ var cargaMapa = function (id)
         "Vista Híbrida": GHM_layer
     };
 
-    L.control.layers(baseMaps).addTo(map);
+    L.control.layers(baseMaps, overlay).addTo(map);
     map.addControl(fullscreen);
     map.addControl(zoom);
-
 };
