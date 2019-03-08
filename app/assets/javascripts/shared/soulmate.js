@@ -64,6 +64,9 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             case 'pmc_new':
                 $('#pmc_pez_especie_id').attr('value', data.id);
                 break;
+            case 'busqueda_region':
+                $('#especie_id').attr('value', data.id);
+                break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
                 break;

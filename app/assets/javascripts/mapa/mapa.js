@@ -1,6 +1,7 @@
 /**
  * Inicializa el mapa
  * @param id
+ * @param overlay
  */
 var cargaMapa = function (id, overlay)
 {
