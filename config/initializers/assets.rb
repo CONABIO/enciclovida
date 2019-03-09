@@ -8,4 +8,5 @@ busquedas/region/por_region.js busquedas/region/por_region.css busquedas/region/
 peces/peces.js peces/propiedades_extra.js peces/peces.css peces/propiedades_extra.css
 especies/mapa/mapa.js especies/mapa/mapa.css especies/mapa/mapa_delayed.js
 comentarios/comentarios.js
+metamares/metamares.js metamares/metamares.css metamares/graficas.js metamares/graficas.css
 )

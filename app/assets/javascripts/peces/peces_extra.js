@@ -49,6 +49,7 @@ $(document).ready(function(){
         input.prop("checked", !input.prop("checked"));
     });
 
+
     $(".porZonas input").each(function(index, item){
         if($(item).prop('checked')){
             $('#path_' + item.id).addClass('zona-seleccionada');
