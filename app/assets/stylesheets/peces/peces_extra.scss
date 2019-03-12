@@ -47,6 +47,7 @@
 .form-peces{
   margin-bottom: 15px;
 }
+#soulmate{min-width: 500px; margin-top: 0!important;}
 .soulmate-type-suggestions li{
   padding: 1em 0;
   min-height: 125px;
@@ -88,19 +89,9 @@
 }
 #porCriterios label{display: block;}
 #porCriterios label.nom, #porCriterios label.iucn {padding: 0px; display: inline-block}
-.filtrosUsados{
-  margin: 0 10px;
-}
-.filtrosUsados i{
-  padding: 2px;
-  margin: 0 2px;
-  background: none;
-  border: none;
-}
-.filtrosUsados i:before, .filtrosUsados i:after{
-  font-size: 40px;
-}
-.botones-peces{width: 40%;}
+.filtrosUsados{margin: 0 10px;}
+.filtrosUsados .label{padding-bottom: 1px;}
+.filtrosUsados i:before, .filtrosUsados i:after{font-size: 40px;}
 
 /************************** INICIA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces, li.active > a {
@@ -125,10 +116,32 @@ div.result-img-container{
   min-height: 1px;
   transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
+#toggleFiltros{
+  position: absolute;
+  left: -35px;
+  top: 100px;
+  font-size: xx-large;
+}
+#toggleFiltros:hover:after{
+  font-size: small;
+  font-weight: bold;
+  padding: 3px;
+  color: #333;
+  position: absolute;
+  bottom: 0%;
+  margin-left: 4px;
+  white-space: nowrap;
+  z-index: 9999;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 0px 2px #030303;
+  -webkit-box-shadow: 0px 0px 2px #030303;
+  box-shadow: 0px 0px 2px #030303;
+  background-color: #fafafa;
+}
 @media (min-width: 993px){
-  #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros de búsqueda";}
+  #resultados-container.state-one #toggleFiltros:hover:after{content: " Ocultar los filtros de búsqueda";}
   #resultados-container.state-one #toggleFiltros span:before{content: "\e132";}
-  #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de búsqueda";}
+  #resultados-container.state-two #toggleFiltros:hover:after{content: " Mostrar los filtros de búsqueda";}
   #resultados-container.state-two #toggleFiltros span:before{content: "\e131";}
   #resultados-container.state-one #busqueda_avanzada{
     width: 30%;
@@ -146,27 +159,24 @@ div.result-img-container{
   }
 }
 @media (max-width: 992px){
-  #resultados-container.state-two #toggleFiltros:before{content: "Mostrar filtros de búsqueda ";}
-  #resultados-container.state-two #toggleFiltros span:after{content: "\e134";}
-  #resultados-container.state-one #toggleFiltros:before{content: "Ocultar filtros de búsqueda ";}
-  #resultados-container.state-one #toggleFiltros span:after{content: "\e133";}
+  #resultados-container.state-one #toggleFiltros:hover:after{content: "Mostrar los filtros de búsqueda";}
+  #resultados-container.state-one #toggleFiltros span:before{content: "\e134";}
+  #resultados-container.state-two #toggleFiltros:hover:after{content: "Ocultar los filtros de búsqueda";}
+  #resultados-container.state-two #toggleFiltros span:before{content: "\e133";}
   #resultados-container.state-two #busqueda_avanzada{
-    width: 0%;
-    display: none;
-  }
-  #resultados-container.state-one #busqueda_avanzada{
     width: 100%;
     display: block;
   }
-  #resultados-container.state-two #pestañas{
-    width: 100%;
+  #resultados-container.state-one #busqueda_avanzada{
+    width: 0%;
+    display: none;
   }
   #resultados-container.state-one #pestañas{
     width: 100%;
   }
-}
-@media (min-width: 1200px) {
-/*  .porNombreGrupo{margin-top: -140px;}*/
+  #resultados-container.state-two #pestañas{
+    width: 100%;
+  }
 }
 /************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
 .resultados-peces{
@@ -205,7 +215,7 @@ div.result-img-container{
   font-size: 7.75em;
 }
 .resultados-peces .btn-ficha:hover:after {
-  content: 'Da click para más información';
+  content: 'Click en la imagen para mayor información';
   font-size: smaller;
   font-weight: bold;
   padding: 4px;
@@ -221,6 +231,7 @@ div.result-img-container{
   box-shadow: 0px 0px 2px #030303;
   background-color: #fafafa;
 }
+
 .result-img-container .certificacion-ev-icon, .popover-content .certificacion-ev-icon{
   color: #b98303;
   text-shadow: 1px 1px 1px #fffebf;

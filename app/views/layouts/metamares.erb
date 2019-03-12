@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
+      xmlns:fb="http://www.facebook.com/2008/fbml"
+      xmlns:og="http://ogp.me/ns#">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
+  <meta name="keywords" content="<%= yield :meta_keywords %>">
+  <title><%= yield :title %></title>
+  <%# favicon_link_tag '/favicon.ico' %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = ['peces'];
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
+
+  <%= javascript_include_tag 'metamares/metamares', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
+  </script>
+
+  <%= stylesheet_link_tag 'metamares/metamares', 'data-turbolinks-track' => true %>
+
+  <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
+</head>
+<body>
+
+<header class="container-fluid">
+  <%= render :partial => 'metamares/layout/brandBar' %>
+</header>
+
+<section id="content"  class="container">
+  <div class="row main">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <%= yield %>
+    </div>
+  </div>
+</section>
+
+<footer class="legal">
+  <%= render :partial => 'metamares/layout/footer_legal' %>
+</footer>
+
+<%= yield :delayedjs %>
+</body>
+</html>

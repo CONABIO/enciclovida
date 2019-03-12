@@ -1,6 +1,18 @@
+# coding: utf-8
 Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
+  namespace :metamares do
+    resources :admin
+    resources :proyectos
+    resources :directorio
+    get 'graficas' => 'metamares#graficas'
+    get 'grafica1' => 'metamares#grafica1'
+    get 'grafica2' => 'metamares#grafica2'
+    get 'dame-institucion' => 'metamares#dame_institucion'
+    get 'dame-keyword' => 'metamares#dame_keyword'
+  end
 
   namespace :pmc do
     resources :peces, :as => :pez do
@@ -112,6 +124,8 @@ Buscador::Application.routes.draw do
   resources :metadatos
 
   devise_for :usuarios
+  devise_for :metausuarios, :controllers => {:confirmations => "metamares/metausuarios/confirmations", :passwords => "metamares/metausuarios/passwords", :registrations => "metamares/metausuarios/registrations", :unlocks => "metamares/metausuarios/unlocks", :sessions => "metamares/metausuarios/sessions"}
+
   resources :bitacoras
 
   resources :listas do
@@ -154,6 +168,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
       get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'

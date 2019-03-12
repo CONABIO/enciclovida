@@ -20,4 +20,27 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+  # Devuelve las secciones que tienen información
+	def dame_edad_peso_largo
+		datos = {}
+		datos[:estatus] = false
+
+		if edadinicialmachos.present? || edadfinalmachos.present? || edadinicialhembras.present? || edadfinalhembras.present?
+			datos[:edad] = true
+			datos[:estatus] = true
+		end
+
+		if pesoinicialmachos.present? || pesofinalmachos.present? || pesoinicialhembras.present? || pesofinalhembras.present?
+			datos[:peso] = true
+			datos[:estatus] = true unless datos[:estatus]
+		end
+
+		if largoinicialmachos.present? || largofinalmachos.present? || largoinicialhembras.present? || largofinalhembras.present?
+			datos[:largo] = true
+			datos[:estatus] = true unless datos[:estatus]
+		end
+
+		datos
+	end
+
 end

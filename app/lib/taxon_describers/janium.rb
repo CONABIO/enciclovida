@@ -2,7 +2,7 @@ module TaxonDescribers
   class Janium < Base
 
     def self.describer_name
-      'Janium - Bioteca'
+      'Bioteca CONABIO'
     end
 
     def self.describe(taxon)

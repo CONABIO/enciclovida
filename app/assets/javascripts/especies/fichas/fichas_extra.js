@@ -15,7 +15,7 @@ $(document).ready(function() {
     });
 
     // Función para mostrar más detalles de una ficha en particular haciendo una llamada al servicio Bioteca
-    $(document).off('click').on('click', "[id^='ficha_']", function () {
+    $('#describe').off('click').on('click', "[id^='ficha_']", function () {
         var idFicha = $(this).attr('id').replace("ficha_", "");
         var detalleEstaVacio =  $('#detalle_' + idFicha).is(':empty');
 
@@ -118,7 +118,6 @@ function changeTBusqueda(tipo, taxon) {
 
     // Si está vacía, hay que invocar al servicio web para agregare los resultados
     if (paginaEstaVacia) {
-        console.log("Se invocará servicio");
         jQuery.ajax({
             success: function(html){
                 $('#busqueda-' + tipo).html(html);

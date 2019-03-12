@@ -100,6 +100,7 @@ base: &base
   iucn:
     api: http://apiv3.iucnredlist.org
     token: 999999999999999999999999999999999999999999999999
+    timeout: 1
 
   github:
     api: https://api.github.com/repos/calonso-conabio/buscador
@@ -132,6 +133,7 @@ base: &base
     cat: catalogocentralizado
     ev: enciclovida
     pez: peces
+    metamares: metamares
 
 ###--------------------Aun no se ocupan------------------------###
 
