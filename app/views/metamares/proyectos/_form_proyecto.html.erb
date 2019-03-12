@@ -24,7 +24,7 @@
   <h5 class="text-right"><%= link_to 'Desvincular institución', nil, id: 'desvincula_inst' %></h5>
 <% end %>
 
-<% if tiene_permiso?('AdminMetamaresManager') %>
+<% if tiene_permiso?('AdminInfoceanosManager') %>
   <%= f.input :usuario_id, collection: Metausuario.new.dame_usuarios, input_html: { class: 'form-control' } %>
 <% else %>
   <%= f.input :usuario_id, as: :hidden , input_html: { value: current_metausuario.id } %>
