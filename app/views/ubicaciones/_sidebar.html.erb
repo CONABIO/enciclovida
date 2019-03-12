@@ -29,7 +29,7 @@
         <%= text_field_tag :nombre, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
 
         <hr />
-        <h4>Busca por el nombre de algún estado, municipio o ANP</h4>
+        <h4>Busca por estado, municipio o ANP</h4>
         <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
         <%= text_field_tag :region, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg' %>
       </div>
