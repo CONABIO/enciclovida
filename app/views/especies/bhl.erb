@@ -1,7 +1,10 @@
 
-<%#= @BhlInfo %>
-<% @BhlInfo['Result'].each do |p| %>
-  <div class="card" style="width: 18rem;">
+<%#= @BhlInfo /// @BhlInfo['Result']///@NuevoBHL[@contador] %>
+<!-- Div para cada resultado -->
+<% @contador =  0%>
+
+<%@SegundoNuevoBHL.each do |p| %>
+  <div class="card" >
     <ul class="list-group list-group-flush">
       <li class="list-group-item"><b>BHL type:</b><%= p['BHLType'] %></li>
       <li class="list-group-item"><b>Found In:</b><%= p['FoundIn'] %></li>
@@ -16,9 +19,7 @@
           <% end %>
         <% end %>
       </li>
-
-
-      <li class="list-group-item"><b>Part URL:</b><%= p['PartUrl'] %></li>
+      <li class="list-group-item"><b>Part URL:</b><a href=" <%= p['PartUrl'] %>" target="_blank"><%= p['PartUrl'] %></a></li>
       <li class="list-group-item"><b>Part ID:</b><%= p['PArtID'] %></li>
       <li class="list-group-item"><b>Genre:</b><%= p['Genre'] %></li>
       <li class="list-group-item"><b>Title:</b><%= p['Title'] %></li>
@@ -28,3 +29,10 @@
     </ul>
   </div>
 <% end %>
+
+<!-- Muestra los botonoes de siguiente y anterior
+con la cantidad de paginas para  buscar -->
+
+<%= will_paginate @SegundoNuevoBHL %>
+
+

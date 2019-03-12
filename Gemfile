@@ -53,7 +53,10 @@ gem 'uglifier'
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'
+gem 'will_paginate', '~> 3.1.0'
 gem 'zip-zip' # Needed by axlsx
+
+
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

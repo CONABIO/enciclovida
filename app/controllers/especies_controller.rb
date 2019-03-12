@@ -1,3 +1,5 @@
+require 'will_paginate/array'
+
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
@@ -762,15 +764,24 @@ class EspeciesController < ApplicationController
     end
   end
 
+
   #editar para poner informacion de bhl y crear vista
   def bhl
+
+    @TotalMostrar = 10
     puts "entrando al controlador de BHL"
     @bhlControl = BhlService.new
     pagina = @bhlControl.rescuApi(@especie.nombre_cientifico)
-    #bhlInfo = TaxonDescribers::Bhl.describe(@especie.nombre_cientifico)
-    @BhlInfo = JSON.parse(pagina)
-  end
 
+    @BhlInfo = JSON.parse(pagina)
+    @TamanioTotal = @BhlInfo["Result"].length
+
+
+    #Test de paginado
+    @NuevoBHL = @BhlInfo["Result"].each_slice(10).to_a
+    @SegundoNuevoBHL = @BhlInfo["Result"].paginate(:page => params[:page], :per_page => 10)
+
+  end
 
   def show_bioteca_record_info
 
@@ -925,7 +936,8 @@ class EspeciesController < ApplicationController
       # Responder con la plantilla hecha
       respond_to do |format|
         format.html {
-          render :partial => 'bioteca_records'
+          #render :partial => 'bioteca_records'
+          render '_bioteca_records'
         }
       end
     else
