@@ -1,4 +1,4 @@
-class Ecorregion < Snib
+class Ecorregion < Geoportal
 
   self.table_name = 'ecorregiones1'
   self.primary_key = 'ecorid'

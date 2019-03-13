@@ -1,4 +1,4 @@
-class Estado < Snib
+class Estado < Geoportal
 
   self.primary_key = 'entid'
 

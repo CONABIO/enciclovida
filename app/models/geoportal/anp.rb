@@ -1,4 +1,4 @@
-class Anp < Snib
+class Anp < Geoportal
 
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'

@@ -1,4 +1,4 @@
-class Municipio < Snib
+class Municipio < Geoportal
 
   self.primary_key = 'munid'
 
