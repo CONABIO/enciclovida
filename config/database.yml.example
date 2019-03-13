@@ -18,7 +18,7 @@ production:
   <<: *login
   database: enciclovida
 
-snib:
+geoportal:
   adapter: postgresql
   database: snib
   pool: 5
