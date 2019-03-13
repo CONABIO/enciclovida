@@ -1,0 +1,69 @@
+<%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
+} do |f| %>
+
+<% end %>
+<ul class="nav nav-tabs links" role="tablist">
+  <li role="presentation" class="active">
+    <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">I. Clasificación y descripción</a>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Distribución', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Ambiente', '#periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Biología', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Ecología', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
+  </li>
+  <li role="presentation">
+    <%= link_to 'Genética', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Importancia', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Conservación', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Especies prioritarias para la conservación', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Necesidades de información', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Metadatos', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+  </li>
+  <li role="presentation" >
+    <%= link_to 'Referencias', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+  </li>
+  <li role="presentation" >
+
+  </li>
+</ul>
+
+
+<div class="tab-content">
+
+  <div id="proyecto" role="tabpanel" class="tab-pane fade in panel-body active">
+    Hola
+  </div>
+
+  <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
+    <hr />
+    Hola 2
+  </div>
+
+</div>

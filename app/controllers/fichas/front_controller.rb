@@ -231,6 +231,7 @@ class Fichas::FrontController < Fichas::FichasController
   end
 
 
+
   private
 
   def set_taxon

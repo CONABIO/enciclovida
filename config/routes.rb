@@ -30,6 +30,7 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
+    resources :admin
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie
