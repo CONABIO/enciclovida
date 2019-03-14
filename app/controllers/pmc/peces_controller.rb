@@ -44,18 +44,19 @@ class Pmc::PecesController < Pmc::PmcController
       # Busqueda con estrella
       if params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')
         @peces = @peces.where(con_estrella: 1)
+        recomendacion = params[:semaforo_recomendacion]-['star']  # Quito este valor, para que no busque con expresiones regualres "star"
       end
 
       # Filtros del SEMAFORO de RECOMENDACIÓN
-      if params[:semaforo_recomendacion].present? && params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{params[:semaforo_recomendacion].join('')}]")
+      if recomendacion.present? && params[:zonas].present?
+        regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{recomendacion.join('')}]")
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
-      elsif  params[:semaforo_recomendacion].present?
+      elsif recomendacion.present?
         # Selecciono el valor de sin datos
-        if params[:semaforo_recomendacion].include?('sn')
-          rec = "[#{params[:semaforo_recomendacion].join('')}]{6}"
+        if recomendacion.include?('sn')
+          rec = "[#{recomendacion.join('')}]{6}"
         else # Cualquier otra combinacion
-          rec = params[:semaforo_recomendacion].map{ |r| r.split('') }.join('|')
+          rec = recomendacion.map{ |r| r.split('') }.join('|')
         end
         @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
       elsif params[:zonas].present?
