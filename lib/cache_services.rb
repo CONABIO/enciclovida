@@ -311,7 +311,8 @@ module CacheServices
 
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def nombre_comun_a_id_referencia(num_nombre)
-    # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
+    # El 1 inicial es para identificarlo, despues se forza el ID de la tabla nombre a 6 digitos y el numero de nombre comun a 3 digitos,
+    # dando un total de 10 digitos
     "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
