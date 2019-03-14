@@ -1,0 +1,40 @@
+es:
+  delayed/web:
+    views:
+      id: ID
+      job: Job
+      jobs: Jobs
+      status: Estatus
+      created_at: Creado en
+      run_at: Corrido en
+      attempts: No. Intentos
+      last_error: Último error
+      server_time: Hora servidor
+      handler: Handler
+      actions: Acciones
+      current_queue: Cola
+      buttons:
+        run_next: Corre siguiente
+        delete: Borrar
+      queue:
+        empty: Una cola vacía es una buena cola xD
+      errors:
+        empty: No hay error
+      statuses:
+        executing: Ejecutando
+        failed: Falló
+        queued: En cola
+      confirm:
+        delete: ¿Estas seguro que lo quieres borrar?
+    flashes:
+      jobs:
+        queued:
+          alert: 'El trabajo no se puede encolar debido a que se encuentra: %{status}'
+          notice: 'Trabajo en cola'
+        destroyed:
+          alert: 'El trabajo no se puede borrar debido a que se encuentra: %{status}'
+          notice: 'Trabajo destruido'
+
+  time:
+    formats:
+      short: '%d/%m/%Y at %r'

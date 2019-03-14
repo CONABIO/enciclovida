@@ -5,12 +5,13 @@ class Pmc::Propiedad < ActiveRecord::Base
   has_many :peces_propiedades, :class_name => 'Pmc::PezPropiedad', :foreign_key => :propiedad_id
   has_many :peces, :through => :peces_propiedades, :source => :pez
 
-  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy
+  has_many :criterios, :class_name => 'Pmc::Criterio', :foreign_key => :propiedad_id, dependent: :destroy, inverse_of: :propiedad
 
   has_ancestry
 
   validates_presence_of :nombre_propiedad
   before_validation :valida_ancestry
+  after_save :genera_cache_filtros
 
   scope :grupos_conabio, -> { where('ancestry=?', GRUPO_ID).order(:nombre_propiedad) }
   scope :tipo_capturas, -> { where('ancestry=?', TIPO_CAPTURA_ID) }
@@ -77,11 +78,11 @@ class Pmc::Propiedad < ActiveRecord::Base
 
     all.each do |p|
       next unless p.is_root?
-      options << [" - #{p.nombre_propiedad}", p.id]
+      options << [" - #{p.nombre_propiedad} - #{p.descripcion}", p.id]
 
       p.descendants.each do |d|
         guiones = " - "*(d.ancestry.split('/').count + 1)
-        options << ["#{guiones}#{d.nombre_propiedad}", "#{d.ancestry}/#{d.id}"]
+        options << ["#{guiones}#{d.nombre_propiedad} - #{d.descripcion}", "#{d.ancestry}/#{d.id}"]
       end
     end
 
@@ -109,6 +110,22 @@ class Pmc::Propiedad < ActiveRecord::Base
     when 'Caribe'
       5
     end
+  end
+
+  def self.borro_cache_filtros
+    Rails.cache.delete('criterios_catalogo') if Rails.cache.exist?('criterios_catalogo')
+    Rails.cache.delete('filtros_peces') if Rails.cache.exist?('filtros_peces')
+    Rails.cache.delete('propiedades_catalogo') if Rails.cache.exist?('propiedades_catalogo')
+  end
+
+  private
+
+
+  def genera_cache_filtros
+    Pmc::Propiedad.borro_cache_filtros
+    Pmc::Criterio.catalogo
+    Pmc::Criterio.dame_filtros
+    Pmc::Propiedad.catalogo
   end
 
 end

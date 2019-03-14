@@ -88,6 +88,6 @@ class Pmc::PropiedadesController < Pmc::PmcController
   # Never trust parameters from the scary internet, only allow the white list through.
   def propiedad_params
     params.require(:pmc_propiedad).permit(:nombre_propiedad, :tipo_propiedad, :descripcion, :ancestry,
-                                          criterios_attributes: [:id, :valor, :_destroy])
+                                          criterios_attributes: [:id, :propiedad_id, :valor, :_destroy])
   end
 end

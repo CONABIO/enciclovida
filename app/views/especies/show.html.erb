@@ -94,16 +94,23 @@
 
       <ul class="dropdown-menu" style="z-index: 1001;">
         <li class="dropdown-header">CONABIO - Banco de imágenes</li>
-        <li role="presentation">
-          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a>
+        <li style="display: inline-block;" role="presentation">
+          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab">
+            <i class='glyphicon glyphicon-camera' aria-hidden='true'></i>
+          </a>
         </li>
+        <!--li style="display: inline-block;" role="presentation">   Activar hasta nuevo aviso
+          <a href="#videos-bdi" aria-controls="videos-bdi" role="tab" data-toggle="tab">
+            <i class='glyphicon glyphicon-film' aria-hidden='true'></i>
+          </a>
+        </li-->
         <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Macaulay Library</li>
+        <li class="dropdown-header">Biblioteca MacCaulay</li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
         <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
         <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Trópicos Library</li>
+        <li class="dropdown-header">Biblioteca Tropicos (Plantas)</li>
         <li role="presentation"><a href="#media_tropicos" aria-controls="media_tropicos" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i>
           </a>
         </li>
@@ -150,6 +157,13 @@
       <p class="text-center">
         <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
       <h4>Cargando... Por favor, espera</h4>bdi
+      </p>
+    </div>
+
+    <div id="videos-bdi" role="tabpanel" class="tab-pane fade panel-body media-tabs">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
       </p>
     </div>
 
@@ -201,7 +215,6 @@
                 <h5 id="modal_ubicacion"></h5>
                 <small id="modal_fecha"></small><br>
                 <small id="modal_imgTipo"></small>
-                <hr>
                 <small id="modal_caption"></small><br>
                 <small id="modal_imgDescripcion"></small>
                 <hr>

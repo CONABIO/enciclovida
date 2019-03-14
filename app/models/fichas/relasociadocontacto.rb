@@ -1,4 +1,4 @@
-class Fichas::Relasociadocontacto < ActiveRecord::Base
+class Fichas::Relasociadocontacto < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.relasociadocontacto"
 	self.primary_keys = :asociadoId,  :contactoId

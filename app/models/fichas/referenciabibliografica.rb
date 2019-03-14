@@ -1,4 +1,4 @@
-class Fichas::Referenciabibliografica < ActiveRecord::Base
+class Fichas::Referenciabibliografica < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.referenciabibliografica"
 	self.primary_keys = :referenciaId,  :especieId

@@ -12,10 +12,9 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Busqueda por pez y marisco
   def index
-    @filtros =  Pmc::Criterio.dame_filtros
-    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
-
     if params[:commit].present?
+      @filtros =  Pmc::Criterio.dame_filtros
+      @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 
       if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
@@ -65,6 +64,8 @@ class Pmc::PecesController < Pmc::PmcController
       end
 
       render 'resultados'
+    else
+      redirect_to '/pmc/peces?semaforo_recomendacion%5B%5D=star&commit=Buscar'
     end
   end
 
@@ -83,11 +84,13 @@ class Pmc::PecesController < Pmc::PmcController
 
   # GET /peces/new
   def new
+    @form_params = { url: '/pmc/peces', method: 'post' }
     @pez = Pmc::Pez.new
   end
 
   # GET /peces/1/edit
   def edit
+    @form_params = {}
   end
 
   # POST /peces
@@ -97,6 +100,7 @@ class Pmc::PecesController < Pmc::PmcController
     if @pez.save
       redirect_to pmc_pez_path(@pez), notice: 'El pez fue creado satisfactoriamente.'
     else
+      @form_params = { url: '/pmc/peces', method: 'post' }
       render action: 'new'
     end
   end
@@ -113,7 +117,7 @@ class Pmc::PecesController < Pmc::PmcController
   # DELETE /peces/1
   def destroy
     @pez.destroy
-    redirect_to pmc_pez_index_patn, notice: 'El pez fue destruido satisfactoriamente.'
+    redirect_to '/pmc/peces', notice: 'El pez fue destruido satisfactoriamente.'
   end
 
   def dameNombre
@@ -138,7 +142,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   # Only allow a trusted parameter "white list" through.
   def pez_params
-    params.require(:pmc_pez).permit(:especie_id, :veda_fechas, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
+    params.require(:pmc_pez).permit(:especie_id, :veda_fechas, :nombre, peces_criterios_attributes: [:id, :criterio_id, :_destroy],
                                     peces_propiedades_attributes: [:id, :propiedad_id, :_destroy])
   end
 

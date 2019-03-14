@@ -39,20 +39,20 @@ header {
   background: #ffffff60;
 }
 #buscadores .btn-busquedas:hover{
-  padding: 8px 20px 8px 5px;
+  padding: 8px 14px;
   box-shadow: -1px -1px 1px #424242;
   outline: 0;
   background: rgba(51, 51, 51, 0.75);
 }
 #buscadores .btn-busquedas i:before, #buscadores .btn-busquedas i:after{
-  font-size: 3em!important;
+  font-size: 2.75em!important;
   color: #423434 !important;
   text-shadow: 1px 1px 0px #a0a0a0;
   margin-top: 10px;
   margin-bottom: -5px;
 }
 #buscadores .btn-busquedas:hover i:before, #buscadores .btn-busquedas:hover i:after{
-  font-size: 2.5em!important;
+  font-size: 2.25em!important;
   color: #fafafa !important;
   text-shadow: 2px 2px 2px #564c4c;
 }

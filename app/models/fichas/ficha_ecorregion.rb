@@ -1,4 +1,4 @@
-class Fichas::Ficha_Ecorregion < ActiveRecord::Base
+class Fichas::Ficha_Ecorregion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.ecorregion"
 	self.primary_key = 'ecorregionId'

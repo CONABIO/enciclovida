@@ -18,3 +18,7 @@ var dameTipoPropiedad = function () {
         }
     });
 };
+
+$('#content').ready(function(){
+    dameTipoPropiedad();
+});

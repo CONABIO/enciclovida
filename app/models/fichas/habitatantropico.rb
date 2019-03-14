@@ -1,4 +1,4 @@
-class Fichas::Habitatantropico < ActiveRecord::Base
+class Fichas::Habitatantropico < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.habitatAntropico"
 	self.primary_key = 'habitatAntropicoId'

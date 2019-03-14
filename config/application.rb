@@ -31,14 +31,17 @@ end
 
 module Buscador
   class Application < Rails::Application
+    config.assets.precompile << 'delayed/web/application.css'
     config.load_defaults 5.1
     Encoding.default_external = Encoding::UTF_8
     Encoding.default_internal = Encoding::UTF_8
 
     config.time_zone = 'Mexico City'
 
+    config.middleware.use I18n::JS::Middleware
+
     #config.autoload_paths += %W(#{config.root}/lib)
-    config.eager_load_paths << Rails.root.join('lib')
+    config.eager_load_paths += Dir[Rails.root.join('lib')]
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
     #config.sass.preferred_syntax=:sass
 

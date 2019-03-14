@@ -1,4 +1,18 @@
+# coding: utf-8
 Buscador::Application.routes.draw do
+
+  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
+  namespace :metamares do
+    resources :admin
+    resources :proyectos
+    resources :directorio
+    get 'graficas' => 'metamares#graficas'
+    get 'grafica1' => 'metamares#grafica1'
+    get 'grafica2' => 'metamares#grafica2'
+    get 'dame-institucion' => 'metamares#dame_institucion'
+    get 'dame-keyword' => 'metamares#dame_keyword'
+  end
 
   namespace :pmc do
     resources :peces, :as => :pez do
@@ -8,7 +22,7 @@ Buscador::Application.routes.draw do
     end
 
     resources :criterios
-    resources :propiedades do
+    resources :propiedades, as: :propiedad do
       collection do
         get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
       end
@@ -71,8 +85,6 @@ Buscador::Application.routes.draw do
 
   resources :usuarios_roles
 
-  #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
-
   get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
   get 'explora-por-region' => 'ubicaciones#por_region'
   get 'explora-por-region/especies-por-grupo' => 'ubicaciones#especies_por_grupo'
@@ -112,6 +124,8 @@ Buscador::Application.routes.draw do
   resources :metadatos
 
   devise_for :usuarios
+  devise_for :metausuarios, :controllers => {:confirmations => "metamares/metausuarios/confirmations", :passwords => "metamares/metausuarios/passwords", :registrations => "metamares/metausuarios/registrations", :unlocks => "metamares/metausuarios/unlocks", :sessions => "metamares/metausuarios/sessions"}
+
   resources :bitacoras
 
   resources :listas do
@@ -154,6 +168,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
+      get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'
       get ':id/media_tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
@@ -204,6 +219,11 @@ Buscador::Application.routes.draw do
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
+  # Path's para acceder a servicio de Janium
+  get '/registros_bioteca/:id(/find_by=:t_name)(/page=:n_page)' => 'especies#show_bioteca_records'
+  get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
+
+
   resources :photos, :only => [:show, :update, :destroy] do
     member do
       put :rotate
@@ -244,4 +264,5 @@ Buscador::Application.routes.draw do
   get 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
   post 'geojson-a-topojson' => 'webservice#geojson_a_topojson'
 
+  mount Delayed::Web::Engine, at: '/jobs'
 end

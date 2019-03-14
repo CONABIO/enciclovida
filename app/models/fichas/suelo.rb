@@ -1,4 +1,4 @@
-class Fichas::Suelo < ActiveRecord::Base
+class Fichas::Suelo < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.suelo"
 	self.primary_key = 'sueloId'
