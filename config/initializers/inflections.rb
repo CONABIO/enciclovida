@@ -31,4 +31,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'usuario_metamares', 'usuarios_metamares'
   inflect.irregular 'especy', 'especies'
   inflect.irregular 'pez', 'peces'
+  #inflect.irregular 'propiedade', 'propiedades'
+  inflect.irregular 'propiedad', 'propiedades'
+
 end
