@@ -32,7 +32,7 @@ module PecesHelper
 
   def checkboxSemaforo
     checkBoxes = ''
-    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Pesquerías que hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
     seleccionados = params[:semaforo_recomendacion] || []
 
     s.each do |k,v|
@@ -100,7 +100,7 @@ module PecesHelper
 
     ###
     seleccionados = params[:semaforo_recomendacion] || []
-    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Algunas pesquerías hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
+    s = {:v => ['Recomendable','semaforo-recomendable'], :a => ['Poco recomendable','semaforo-moderado'], :r => ['Evita','semaforo-evita'], :star => ['Pesquerías que hacen esfuerzos para ser sustentables','certificacion'], :s => ['Especies sin datos','semaforo-no-datos']}
     s.each do |k,v|
       filtros_usados << "<span title = '#{v[0]}' class = 'btn-title'><i class = 'btn-zona btn-zona-#{k} #{v[1]}-ev-icon'></i></span>" if seleccionados.include?(k.to_s)
     end
