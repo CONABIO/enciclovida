@@ -5,10 +5,13 @@
   <div class="row">
     <% fu = filtrosUsados.html_safe %>
     <% unless fu == '' %>
-      <h3 class="filtrosUsados">
-        <small><b>La presente consulta utilizó los siguientes filtros: </b></small>
-        <%= fu %>
-      </h3>
+      <div class="col-md-3">
+        <h4 class="filtrosUsados"><b>La presente consulta utilizó los siguientes filtros: </b></h4>
+        <h3 class="filtrosUsados"><small>(especies en orden decreciente de recomendación)</small></h3>
+      </div>
+      <div class="col-md-9">
+        <h3 class="filtrosUsados"><%= fu %></h3>
+      </div>
     <% end %>
 
 
