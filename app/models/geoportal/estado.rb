@@ -8,4 +8,23 @@ class Estado < Geoportal
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(entid: region_id) }
 
+  attr_accessor :redis
+
+  def asigna_redis
+    self.redis = {}
+    self.redis[:data] = {}
+
+    # El 2 inicial es para saber que en un region
+    # El 0 en la segunda posicion denota que es un estado
+    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
+    datos[:id] = "20#{entid.to_s.rjust(8,'0')}".to_i
+  end
+
+
+  private
+
+  def nombre_publico
+    I18n.t("estados.#{entidad.estandariza.gsub('-', '_')}")
+  end
+
 end
