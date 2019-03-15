@@ -41,6 +41,9 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
       end
 
+      # La asigno aqui para que se encuentre más abajo
+      recomendacion = params[:semaforo_recomendacion]
+
       # Busqueda con estrella
       if params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')
         @peces = @peces.where(con_estrella: 1)
