@@ -8,23 +8,38 @@ class Estado < Geoportal
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(entid: region_id) }
 
-  attr_accessor :redis
-
-  def asigna_redis
-    self.redis = {}
-    self.redis[:data] = {}
-
-    # El 2 inicial es para saber que en un region
-    # El 0 en la segunda posicion denota que es un estado
-    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
-    datos[:id] = "20#{entid.to_s.rjust(8,'0')}".to_i
-  end
-
 
   private
 
   def nombre_publico
     I18n.t("estados.#{entidad.estandariza.gsub('-', '_')}")
+  end
+
+  def asigna_redis
+    asigna_redis_id
+    self.redis[:data] = {}
+    self.redis[:term] = I18n.transliterate(nombre_publico.limpia).downcase
+    self.redis[:score] = 1000
+    self.redis[:data][:id] = entid
+    self.redis[:data][:nombre] = nombre_publico
+
+    redis.deep_stringify_keys!
+    Rails.logger.debug "[DEBUG] - Generando redis : #{redis}"
+  end
+
+  # Inicializa la base del loader
+  def asigna_loader
+    self.loader = Soulmate::Loader.new('estados')
+    Rails.logger.debug "[DEBUG] - Loader: #{loader}"
+  end
+
+  # Arma el ID de redis
+  def asigna_redis_id
+    # El 2 inicial es para saber que es un region
+    # El 0 en la segunda posicion denota que es un estado
+    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
+    self.redis = {} unless redis.present?
+    self.redis[:id] = "20#{entid.to_s.rjust(8,'0')}".to_i
   end
 
 end
