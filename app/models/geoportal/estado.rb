@@ -1,4 +1,4 @@
-class Estado < Geoportal
+class Geoportal::Estado < GeoportalAbs
 
   self.primary_key = 'entid'
 

@@ -1,4 +1,4 @@
-class Geoportal < ActiveRecord::Base
+class GeoportalAbs < ActiveRecord::Base
 
   self.abstract_class = true
   establish_connection(:geoportal)

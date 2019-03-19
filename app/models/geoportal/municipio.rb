@@ -1,4 +1,4 @@
-class Municipio < Geoportal
+class Geoportal::Municipio < GeoportalAbs
 
   self.primary_key = 'munid'
 

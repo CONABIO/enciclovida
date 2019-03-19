@@ -1,4 +1,4 @@
-class Anp < Geoportal
+class Geoportal::Anp < GeoportalAbs
 
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'

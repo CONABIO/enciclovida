@@ -1,4 +1,4 @@
-class Ecorregion < Geoportal
+class Geoportal::Ecorregion < GeoportalAbs
 
   self.table_name = 'ecorregiones1'
   self.primary_key = 'ecorid'
