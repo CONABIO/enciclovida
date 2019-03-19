@@ -24,13 +24,6 @@ class Geoportal::Estado < GeoportalAbs
     self.redis[:data][:nombre] = nombre_publico
 
     redis.deep_stringify_keys!
-    Rails.logger.debug "[DEBUG] - Generando redis : #{redis}"
-  end
-
-  # Inicializa la base del loader
-  def asigna_loader
-    self.loader = Soulmate::Loader.new('estados')
-    Rails.logger.debug "[DEBUG] - Loader: #{loader}"
   end
 
   # Arma el ID de redis
@@ -39,7 +32,7 @@ class Geoportal::Estado < GeoportalAbs
     # El 0 en la segunda posicion denota que es un estado
     # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
     self.redis = {} unless redis.present?
-    self.redis[:id] = "20#{entid.to_s.rjust(8,'0')}".to_i
+    self.redis["id"] = "20#{entid.to_s.rjust(8,'0')}".to_i
   end
 
 end
