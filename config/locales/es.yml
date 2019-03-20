@@ -1,4 +1,11 @@
 es:
+  anps_tipos:
+    apfyf: Áreas de protección de flora y fauna
+    aprn: Áreas de protección de recursos naturales
+    mn: Monumentos naturales
+    pn: Parques nacionales
+    rb: Reservas de la biosfera
+    sant: Santuarios
   ambiente:
     marino:
       icono: marino.png

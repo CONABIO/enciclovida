@@ -9,4 +9,32 @@ class Geoportal::Anp < GeoportalAbs
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(anpestid: region_id) }
 
+
+  private
+
+  def nombre_publico
+    nombre
+  end
+
+  def asigna_redis
+    asigna_redis_id
+    self.redis[:data] = {}
+    self.redis[:term] = nombre_publico.limpia.downcase
+    self.redis[:score] = 10
+    self.redis[:data][:id] = anpestid
+    self.redis[:data][:nombre] = nombre_publico
+    self.redis[:data][:tipo] = I18n.t("anps_tipos.#{cat_manejo.estandariza}")
+
+    redis.deep_stringify_keys!
+  end
+
+  # Arma el ID de redis
+  def asigna_redis_id
+    # El 2 inicial es para saber que es un region
+    # El 2 en la segunda posicion denota que es un estado
+    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
+    self.redis = {} unless redis.present?
+    self.redis["id"] = "22#{anpestid.to_s.rjust(8,'0')}".to_i
+  end
+
 end
