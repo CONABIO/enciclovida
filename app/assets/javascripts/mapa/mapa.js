@@ -29,6 +29,7 @@ var cargaMapa = function (id, overlay)
     map = L.map(id, {
         zoomControl: false,
         doubleClickZoom: false,
+        minZoom: 4,
         layers: [     // Existe un bug poniendo primero los layes de google
             OSM_layer,
             GTM_layer,
