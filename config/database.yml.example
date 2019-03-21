@@ -18,6 +18,15 @@ production:
   <<: *login
   database: enciclovida
 
+fichas:
+  adapter: mysql2
+  database: fichasespecies
+  pool: 5
+  username:
+  password:
+  host:
+  port: 3306
+
 geoportal:
   adapter: postgresql
   database: snib
