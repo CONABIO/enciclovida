@@ -2,7 +2,7 @@ class Metamares::AdminController < Metamares::MetamaresController
 
   before_action :authenticate_metausuario!
   before_action  do
-    tiene_permiso?('AdminMetamares')  # Minimo administrador
+    tiene_permiso?('AdminInfoceanos')  # Minimo administrador
   end
 
   before_action :set_usuario, only: [:edit, :update]

@@ -3,8 +3,8 @@ class Metamares::DirectorioController < Metamares::MetamaresController
   before_action :authenticate_metausuario!
   before_action :set_directorio, except: [:index, :new, :create]
   before_action only: [:show, :edit, :update, :destroy, :index] do
-    tiene_permiso?('AdminMetamares')  # Minimo administrador
-    es_propietario?(@directorio) || tiene_permiso?('AdminMetamaresManager')
+    tiene_permiso?('AdminInfoceanos')  # Minimo administrador
+    es_propietario?(@directorio) || tiene_permiso?('AdminInfoceanosManager')
   end
 
   def index

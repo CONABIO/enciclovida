@@ -5,7 +5,7 @@ class Metausuario < Usuario
   after_create :añade_directorio, :añade_rol
 
   def dame_usuarios
-    usuarios = Metausuario.left_joins(:roles).where("nombre_rol LIKE 'AdminMetamares%'")
+    usuarios = Metausuario.left_joins(:roles).where("nombre_rol LIKE 'AdminInfoceanos%'")
     usuarios.map { |u| ["#{u.apellido} #{u.nombre}", u.id]}
   end
 
