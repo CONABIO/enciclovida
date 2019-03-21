@@ -302,4 +302,15 @@ $(document).ready(function(){
     });
 
     L.control.sidebar('sidebar').addTo(map);
+
+    // Para asignar el redis adecuado de acuerdo a la caja de texto
+    $('#busqueda-region-tab').on('focus', '#nombre, #region', function() {
+        $('#nombre, #region').off();
+        var tipo_busqueda = $(this).attr('id');
+
+        if (tipo_busqueda == 'nombre')
+            soulmateAsigna('busqueda_region', this.id);
+        else
+            soulmateRegionAsigna(this.id);
+    });
 });

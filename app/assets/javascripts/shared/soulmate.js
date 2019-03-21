@@ -94,3 +94,37 @@ var soulmateAsigna = function(tipo_busqueda, elem)
         maxResults:     5
     });
 };
+
+/**
+ * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
+ * @elem al elemento al cual se le quiere poner redis
+ */
+var soulmateRegionAsigna = function(elem)
+{
+    if (elem == undefined) var elemento = 'region';
+    else var elemento = elem;
+
+    var render = function(term, data)
+    {
+        var html = '<h5>' + data.nombre + '</h5>';
+        if (data.tipo != undefined) html+= "<sub>" + data.tipo + "</sub>";
+
+        return html;
+    };
+
+    var select = function(term, data)
+    {
+        $('#' + elemento).val(term);
+        $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
+        $('#region_id').attr('value', data.id);
+    };
+
+    $('#' + elemento).soulmate({
+        url:            "http://"+ IP + ":" + PORT + "sm/search",
+        types:          ['estados','municipios','anps'],
+        renderCallback: render,
+        selectCallback: select,
+        minQueryLength: 2,
+        maxResults:     10
+    });
+};
