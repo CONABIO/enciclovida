@@ -23,7 +23,7 @@ var borraEjemplaresAnterioresSnib = function()
     }
 
     snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 },
+        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, disableClusteringAtZoom: 8,
         iconCreateFunction: function (cluster) {
             var markers = cluster.getAllChildMarkers();
             return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-snib',
