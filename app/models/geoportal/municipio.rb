@@ -18,7 +18,7 @@ class Geoportal::Municipio < GeoportalAbs
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
-    self.redis[:term] = municipio.limpia.downcase
+    self.redis[:term] = I18n.transliterate(municipio.limpia.downcase)
     self.redis[:score] = 100
     self.redis[:data][:id] = munid
     self.redis[:data][:nombre] = nombre_publico
