@@ -272,6 +272,8 @@ var geojsonSnib = function(url)
         url: url,
         dataType : "json",
         success : function (d){
+            if (d.estatus != undefined) d = d.resultados;
+
             ejemplares_conteo = d.length;
             colecciones_conteo = 0;
             observaciones_conteo = 0;

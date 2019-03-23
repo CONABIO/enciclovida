@@ -654,7 +654,7 @@ class EspeciesController < ApplicationController
 
       respond_to do |format|
         format.json do
-          resp = p.ejemplares_snib('.json')
+          resp = p.ejemplares_snib('.json', params[:mapa].present? ? true : false)
 
           headers['Access-Control-Allow-Origin'] = '*'
           headers['Access-Control-Allow-Methods'] = 'GET'

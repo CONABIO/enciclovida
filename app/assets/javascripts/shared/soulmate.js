@@ -68,6 +68,8 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'busqueda_region':
                 $('#especie_id').attr('value', data.id);
+                console.log('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
+                cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
@@ -125,6 +127,6 @@ var soulmateRegionAsigna = function(elem)
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
-        maxResults:     10
+        maxResults:     15
     });
 };
