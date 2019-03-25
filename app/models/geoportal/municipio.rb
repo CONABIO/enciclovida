@@ -15,6 +15,10 @@ class Geoportal::Municipio < GeoportalAbs
     "#{municipio}, #{I18n.t("estados.#{estado.estandariza.gsub('-', '_')}")}"
   end
 
+  def tipo
+    'Municipio'
+  end
+
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}

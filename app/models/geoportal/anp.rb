@@ -16,6 +16,10 @@ class Geoportal::Anp < GeoportalAbs
     nombre
   end
 
+  def tipo
+    I18n.t("anps_tipos.#{cat_manejo.estandariza}")
+  end
+
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
@@ -23,7 +27,7 @@ class Geoportal::Anp < GeoportalAbs
     self.redis[:score] = 10
     self.redis[:data][:id] = anpestid
     self.redis[:data][:nombre] = nombre_publico
-    self.redis[:data][:tipo] = I18n.t("anps_tipos.#{cat_manejo.estandariza}")
+    self.redis[:data][:tipo] = tipo
 
     redis.deep_stringify_keys!
   end
