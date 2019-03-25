@@ -1,8 +1,7 @@
 OPTS = Trollop::options do
   banner <<-EOS
 
-*** Guarda debajo de public los topojson generados de todas las regiones del SNIB, esto solo lo hará una vez,
-ya que despues los consultará bajo demanda
+*** Guarda los topojson generados de todas las regiones del Geoportal
 
 Usage:
 
@@ -27,48 +26,24 @@ def topojson_por_region
     topo = GeoATopo.new
     geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
-    region.camelize.constantize.campos_min.campos_geom.all.each do |reg|
-      puts "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
+    #region.camelize.constantize.campos_min.campos_geom.all.each do |reg|
+    Geoportal::Anp.campos_min.campos_geom.all.each do |reg|
+
+      puts "\t\tGenerando la región: #{reg.nombre_publico}" if OPTS[:debug]
 
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
+      feature[:properties][:nombre_region] = reg.nombre_publico
+      feature[:properties][:tipo] = reg.tipo
 
-      case region
-        when 'estado'
-          feature[:properties][:nombre_region] = I18n.t("estados.#{reg.nombre_region.estandariza}")
-        when 'municipio'
-          estado_id = Estado::CORRESPONDENCIA.index(reg.parent_id)
-          estado_nombre = I18n.t("estados.#{Estado.find(estado_id).entidad.estandariza}")
-          feature[:properties][:nombre_region] = "#{reg.nombre_region}, #{estado_nombre}"
-          feature[:properties][:parent_id] = reg.parent_id
-          feature[:properties][:region_id_se] = reg.region_id_se
-        when 'anp'
-          feature[:properties][:nombre_region] = "#{reg.nombre_region}, ANP"
-        else
-          feature[:properties][:nombre_region] = reg.nombre_region
-      end
+      #if region == 'municipio'
+      #  feature[:properties][:parent_id] = reg.parent_id
+      #  feature[:properties][:region_id_se] = reg.region_id_se
+      #end
 
       geojson[:features] << feature
       geojson_todos[:features] << feature
 
-=begin
-      if region == 'municipio'
-        archivo_topo = ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}.json")
-        archivo_geo = ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}_geo.json")
-        archivo_tmp = ruta.join("#{region}_#{reg.region_id}_#{reg.parent_id}_tmp.json")
-      else
-        archivo_topo = ruta.join("#{region}_#{reg.region_id}.json")
-        archivo_geo = ruta.join("#{region}_#{reg.region_id}_geo.json")
-        archivo_tmp = ruta.join("#{region}_#{reg.region_id}_tmp.json")
-      end
-=end
-
-      # Escribe a disco el archivo geojson
-      #File.write(archivo_geo, geojson.to_json)
-
-      # Convierte a topojson
-      #topojson = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo, o: archivo_topo, tmp: archivo_tmp})
-      #puts "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
     end  # End cada region each
 
     archivo_topo_todos = ruta.join("#{region}.json")
@@ -95,16 +70,17 @@ def topojson_municipios_por_estado
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
   Estado.campos_min.all.each do |e|
-    puts "Generando con estado: #{e.nombre_region}" if OPTS[:debug]
+    puts "Generando con estado: #{e.nombre_publico}" if OPTS[:debug]
     geojson = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
     estado_id = Estado::CORRESPONDENCIA[e.region_id]
     estado_nombre = I18n.t("estados.#{e.nombre_region.estandariza}")
 
     Municipio.campos_min.campos_geom.where(cve_ent: estado_id).each do |m|
-      puts "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
+      puts "\tGenerando con municipio: #{m.nombre_publico}" if OPTS[:debug]
       feature = {type: 'Feature', properties:{}}
       feature[:properties][:region_id] = m.region_id
-      feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}"
+      feature[:properties][:nombre_region] = nombre_publico
+      feature[:properties][:tipo] = tipo
       feature[:properties][:parent_id] = m.parent_id
       feature[:properties][:centroide] = [m.lat, m.long]
       feature[:properties][:region_id_se] = m.region_id_se
@@ -128,6 +104,6 @@ end
 start_time = Time.now
 
 topojson_por_region
-topojson_municipios_por_estado
+#topojson_municipios_por_estado
 
 puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
