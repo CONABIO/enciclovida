@@ -1,11 +1,13 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+    /*
     $(document).ready(function() {
-        $('#pestañas').tabs(); // Inicia los tabs
-        $('#pestañas > .nav a').click(function(){
-            $('#pestañas > .nav li').removeClass("active");
-            $(this).parent().addClass("active");
-        });
+    $('#pestañas').tabs(); // Inicia los tabs
+    $('#pestañas > .nav a').click(function(){
+    $('#pestañas > .nav li').removeClass("active");
+    $(this).parent().addClass("active");
     });
+    });
+    */
 </script>
 
 
@@ -14,12 +16,12 @@
   <h4 class="text-left text-success"><strong>Validaciones</strong><br /><small>(puedes validar una lista de taxones o subir un archivo)</small></h4><hr />
   <div id="pestañas" class="panel">
     <ul class="nav nav-tabs" data-tabs="tabs">
-      <li class="active"><a href="#simple"><span>Validación por nombre científico</span></a></li>
-      <li><a href="#excel"><span>Validación con más campos</span></a></li>
+      <li class="active"><a><span>Validación por nombre científico</span></a></li>
+      <li class="disabled"><a><span><s>Validación con más campos </s><small>(Temporalmente fuera de servicio)</small></s></a></li>
     </ul>
     <div>
       <div id="simple" class="tab-pane active"><%= render partial: 'simple' %></div>
-      <div id="excel" class="tab-pane"><%= render partial: 'avanzada' %></div>
+      <!--div id="excel" class="tab-pane"><%#= render partial: 'avanzada' %></div-->
     </div>
   </div>
 </div>
