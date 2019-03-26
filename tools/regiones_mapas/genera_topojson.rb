@@ -16,8 +16,7 @@ end
 def topojson_por_region
   puts 'Generando los topojson por region' if OPTS[:debug]
 
-  #regiones = %w(estado municipio anp ecorregion)
-  regiones = %w(anp)
+  regiones = %w(estado municipio anp ecorregion)
   ruta = Rails.root.join('public', 'topojson')
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
@@ -26,21 +25,13 @@ def topojson_por_region
     topo = GeoATopo.new
     geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
-    #region.camelize.constantize.campos_min.campos_geom.all.each do |reg|
-    Geoportal::Anp.campos_min.campos_geom.all.each do |reg|
-
+    "Geoportal::#{region.camelize}".constantize.campos_min.campos_geom.all.each do |reg|
       puts "\t\tGenerando la región: #{reg.nombre_publico}" if OPTS[:debug]
 
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
       feature[:properties][:nombre_region] = reg.nombre_publico
       feature[:properties][:tipo] = reg.tipo
-
-      #if region == 'municipio'
-      #  feature[:properties][:parent_id] = reg.parent_id
-      #  feature[:properties][:region_id_se] = reg.region_id_se
-      #end
-
       geojson[:features] << feature
       geojson_todos[:features] << feature
 
@@ -53,11 +44,10 @@ def topojson_por_region
     # Escribe a disco el archivo geojson
     File.write(archivo_geo_todos, geojson_todos.to_json)
 
-    if %w(estado anp).include?(region)
-      # Convierte a topojson
-      topojson_todos = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
-      puts "Hubo un error al generar la region: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
-    end
+    # Convierte a topojson
+    topojson_todos = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
+    File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
+    puts "Hubo un error al generar la region: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
 
   end  # End tipos regiones each
 end
