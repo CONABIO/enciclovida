@@ -21,8 +21,7 @@ Buscador::Application.routes.draw do
       end
     end
 
-    resources :criterios
-    resources :propiedades, as: :propiedad do
+    resources :propiedades do
       collection do
         get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
       end

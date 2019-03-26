@@ -63,9 +63,9 @@
 .mollusca-ev-icon{color: #aa7961}
 .crustacea-ev-icon{color: #a0837c}
 
-.porSemaforo label:nth-of-type(4){
+.porSemaforo label:nth-of-type(4), .porSemaforo label:nth-of-type(5){
   font-size: smaller;
-  margin-left: 2em;
+  margin-left: 1em;
 }
 .porGrupo input, .porSemaforo input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
 .porSemaforo input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
@@ -73,11 +73,22 @@
   font-size: 2.75em;
   background: none;
   cursor: pointer;
+  border-radius: 25%;
+  -webkit-transition: border-radius .3s ease-in-out;
+  -moz-transition: border-radius .3s ease-in-out;
+  transition: border-radius .3s ease-in-out;
 }
-.porSemaforo input:checked + span, .porSemaforo input + span:hover, .porGrupo input:checked + span, .porGrupo input + span:hover, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
+.porSemaforo input:checked + span, .porGrupo input:checked + span, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span{
   color: #555555;
-  border-radius: 50%;
+  border-radius: 50% !important;
   border: 2px solid #991705;
+}
+.porSemaforo input:checked + span:hover, .porGrupo input:checked + span:hover, #porCriterios .nom input:checked + span:hover , #porCriterios .iucn input:checked + span:hover{
+  border: 2px solid #991705;
+}
+.porSemaforo input + span:hover, .porGrupo input + span:hover, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
+  border: 2px solid rgba(153, 23, 5, 0.40);
+  border-radius: 25%;
 }
 #toggleFiltros{
   margin: 10px 0;
@@ -109,7 +120,6 @@ div.result-img-container{
   display: inline-block;
   padding-bottom: 32px;
 }
-
 #resultados-container #busqueda_avanzada, #resultados-container #pestañas{
   float: left;
   position: relative;
@@ -328,7 +338,7 @@ div.result-img-container{
   color: #ece4e4;
   fill: #ece4e4;
 }
-.btn-zona-s, .popover-content .btn-zona-s, .filtrosUsados .btn-zona-s{
+.btn-zona-sn, .popover-content .btn-zona-sn, .filtrosUsados .btn-zona-sn{
   background: #9a9a9a;
   color: #9a9a9a;
   fill: #9a9a9a;
