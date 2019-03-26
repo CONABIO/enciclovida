@@ -8,9 +8,6 @@ class Geoportal::Estado < GeoportalAbs
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(entid: region_id) }
 
-
-  private
-
   def nombre_publico
     I18n.t("estados.#{entidad.estandariza.gsub('-', '_')}")
   end
@@ -18,6 +15,9 @@ class Geoportal::Estado < GeoportalAbs
   def tipo
     'Estado'
   end
+
+
+  private
 
   def asigna_redis
     asigna_redis_id

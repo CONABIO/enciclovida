@@ -8,9 +8,6 @@ class Geoportal::Municipio < GeoportalAbs
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id, parent_id) { geojson_select.where(cve_mun: region_id, cve_ent: parent_id) }
 
-
-  private
-
   def nombre_publico
     "#{municipio}, #{I18n.t("estados.#{estado.estandariza.gsub('-', '_')}")}"
   end
@@ -18,6 +15,9 @@ class Geoportal::Municipio < GeoportalAbs
   def tipo
     'Municipio'
   end
+
+
+  private
 
   def asigna_redis
     asigna_redis_id
