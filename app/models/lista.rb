@@ -2,7 +2,7 @@ class Lista < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.ev}.listas"
 
-  attr_accessor :taxones, :taxon
+  attr_accessor :taxones, :taxon, :columnas_array
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
 
@@ -34,6 +34,7 @@ class Lista < ActiveRecord::Base
 
   def after_initialize
     self.taxones = []
+    self.columnas_array = []
   end
 
   # Crea el csv con los datos
@@ -60,14 +61,10 @@ class Lista < ActiveRecord::Base
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
-    cols = columnas  # Para no sobreescribir el atributo original columnas
+    cols = columnas_array if columnas_array.present?  # Para no sobreescribir el atributo original columnas
+    cols = columnas.split(',') if columnas.present?
 
-    # Por si es un string
-    if columnas.is_a?(String)
-      cols = columnas.split(',')
-    end
 
-    #puts self.columnas.class
     # Para la cabecera
     cols.each do |a|
       sheet.add_cell(0,columna,I18n.t("listas_columnas.generales.#{a}", default: I18n.t("listas_columnas.categorias.#{a}", default: a)))
@@ -182,10 +179,10 @@ class Lista < ActiveRecord::Base
   def asigna_datos
     return unless taxon.present?
 
-    if columnas.is_a?(String)
+    if columnas.present?
       cols = columnas.split(',')
-    elsif columnas.is_a?(Array)
-      cols = columnas
+    elsif columnas_array.present?
+      cols = columnas_array
     end
 
     cols.each do |col|
