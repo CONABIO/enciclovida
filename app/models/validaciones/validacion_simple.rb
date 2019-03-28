@@ -52,7 +52,7 @@ class ValidacionSimple < Validacion
   # Exporta la informacion, para que desde la lista guarde el excel
   def guarda_excel
     lista = Lista.new
-    lista.columnas_array = COLUMNAS_DEFAULT + Lista::COLUMNAS_GENERALES
+    lista.columnas_array = (COLUMNAS_DEFAULT + Lista::COLUMNAS_GENERALES + Lista::COLUMNAS_FOTOS)
     lista.taxones = recurso_validado
     lista.to_excel(asignar: true)  # Para que asigne los valores de las columnas
   end

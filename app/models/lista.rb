@@ -27,8 +27,9 @@ class Lista < ActiveRecord::Base
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
+  COLUMNAS_FOTOS = %w(x_foto_principal x_naturalista_fotos x_bdi_fotos)
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
-                        x_estatus x_tipo_distribucion x_foto_principal
+                        x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
@@ -188,52 +189,60 @@ class Lista < ActiveRecord::Base
     cols.each do |col|
 
       case col
-        when 'x_snib_id'
-          if proveedor = taxon.proveedor
-            self.taxon.x_snib_id = proveedor.snib_id
-          end
-        when 'x_snib_reino'
-          if proveedor = taxon.proveedor
-            self.taxon.x_snib_reino = proveedor.snib_reino
-          end
-        when 'x_naturalista_id'
-          if proveedor = taxon.proveedor
-            self.taxon.x_naturalista_id = proveedor.naturalista_id
-          end
-        when 'x_foto_principal'
-          if adicional = taxon.adicional
-            self.taxon.x_foto_principal = adicional.foto_principal
-          end
-        when 'x_nombre_comun_principal'
-          if adicional = taxon.adicional
-            self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
-          end
-        when 'x_categoria_taxonomica'
-          self.taxon.x_categoria_taxonomica = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
-        when 'x_estatus'
-          self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
-        when 'x_nombres_comunes'
-          nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
-          next unless nombres_comunes.any?
-          self.taxon.x_nombres_comunes = nombres_comunes.join(',')
-        when 'x_tipo_distribucion'
-          tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
-          next unless tipos_distribuciones.any?
-          self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
-        when 'x_nom'
-          nom = taxon.catalogos.nom.distinct
-          next unless nom.any?
-          self.taxon.x_nom = nom[0].descripcion
-        when 'x_iucn'
-          iucn = taxon.catalogos.iucn.distinct
-          next unless iucn.any?
-          self.taxon.x_iucn = iucn[0].descripcion
-        when 'x_cites'
-          cites = taxon.catalogos.cites.distinct
-          next unless cites.any?
-          self.taxon.x_cites = cites[0].descripcion
-        else
-          next
+      when 'x_snib_id'
+        if proveedor = taxon.proveedor
+          self.taxon.x_snib_id = proveedor.snib_id
+        end
+      when 'x_snib_reino'
+        if proveedor = taxon.proveedor
+          self.taxon.x_snib_reino = proveedor.snib_reino
+        end
+      when 'x_naturalista_id'
+        if proveedor = taxon.proveedor
+          self.taxon.x_naturalista_id = proveedor.naturalista_id
+        end
+      when 'x_foto_principal'
+        if adicional = taxon.adicional
+          self.taxon.x_foto_principal = adicional.foto_principal
+        end
+      when 'x_nombre_comun_principal'
+        if adicional = taxon.adicional
+          self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
+        end
+      when 'x_categoria_taxonomica'
+        self.taxon.x_categoria_taxonomica = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+      when 'x_estatus'
+        self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
+      when 'x_nombres_comunes'
+        nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
+        next unless nombres_comunes.any?
+        self.taxon.x_nombres_comunes = nombres_comunes.join(',')
+      when 'x_tipo_distribucion'
+        tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
+        next unless tipos_distribuciones.any?
+        self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
+      when 'x_nom'
+        nom = taxon.catalogos.nom.distinct
+        next unless nom.any?
+        self.taxon.x_nom = nom[0].descripcion
+      when 'x_iucn'
+        iucn = taxon.catalogos.iucn.distinct
+        next unless iucn.any?
+        self.taxon.x_iucn = iucn[0].descripcion
+      when 'x_cites'
+        cites = taxon.catalogos.cites.distinct
+        next unless cites.any?
+        self.taxon.x_cites = cites[0].descripcion
+      when 'x_naturalista_fotos'
+        next unless adicional = taxon.adicional
+        if proveedor = taxon.proveedor
+          self.taxon.x_naturalista_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/fotos-naturalista" if proveedor.naturalista_id.present? && adicional.foto_principal.present?
+        end
+      when 'x_bdi_fotos'
+        next unless adicional = taxon.adicional
+        self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/fotos-bdi" if adicional.foto_principal.present?
+      else
+        next
       end  # End switch
     end  # End each cols
 
