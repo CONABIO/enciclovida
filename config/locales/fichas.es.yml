@@ -11,12 +11,15 @@ es:
     labels:
       defaults:
         yes: si
+        no: no
       #taxon_clasificacion_y_descripcion:
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
         especiesSmilares: Especies similares
         origen: Origen
         descripcionOrigen: Descrición del orígen
+        nombreComun: Nombre común
+        sinonimo: Sinonimo
         longevidad: Longevidad (años)
         peso: Peso (gramos)
         largo: Largo (centímetros)

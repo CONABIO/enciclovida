@@ -9,7 +9,10 @@
 <%= f.input :especiesSmilares%>
 <%= f.input :origen%>
 <%= f.input :descripcionOrigen%>
-<%= f.input :descripcionOrigen%>
+
+<% nombreComun = f.object.nombreComun %>
+<%= f.input :nombreComun, input_html: { value: nombreComun.nombre }, autocomplete: :off %>
+
 <br>
 <h4><%= t('secciones_general.informacion_adicional') %></h4>
 <table class="table table-striped table-bordered">
