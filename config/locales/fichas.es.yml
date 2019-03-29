@@ -1,0 +1,34 @@
+es:
+
+  secciones_general:
+    informacion_adicional: Información adicional
+
+  secciones:
+    clasificacion_descripcion: Clasificación y descripción
+    distribucion: Distribución
+
+  simple_form:
+    labels:
+      defaults:
+        yes: si
+      #taxon_clasificacion_y_descripcion:
+        resumenEspecie: Resumen de la especie
+        descEspecie: Descripción de la especie
+        especiesSmilares: Especies similares
+        origen: Origen
+        descripcionOrigen: Descrición del orígen
+        longevidad: Longevidad (años)
+        peso: Peso (gramos)
+        largo: Largo (centímetros)
+        machos: Machos
+        hembras: Hembras
+
+        # distribucion
+        region: Región
+        historica_potencial: Histórica o potencial
+        amplia_restringida: Amplia o restringida
+        endemismo: Endemismo
+        con_sin: Sin
+        endemica a: Endémica a
+
+
