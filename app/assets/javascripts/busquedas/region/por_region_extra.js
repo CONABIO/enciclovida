@@ -74,12 +74,12 @@ var cargaEspecies = function()
                 if (taxon.nombre_comun == null) taxon.nombre_comun = '';
 
                 $('#contenedor_especies').append('<div class="result-img-container">' +
-                '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
-                '<div class="result-nombre-container">' +
-                '<span>' + taxon.nombre_comun + '</span><br />' +
-                '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
-                '</div>' +
-                '</div>');
+                    '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
+                    '<div class="result-nombre-container">' +
+                    '<span>' + taxon.nombre_comun + '</span><br />' +
+                    '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
+                    '</div>' +
+                    '</div>');
             });
         } else
             console.log(resp.msg);
@@ -90,29 +90,20 @@ var cargaEspecies = function()
 };
 
 /**
- * Pone los municipios correspondientes, selecciona el valor y carga la region
+ * Asigna algunos valores antes de cargar la region con topojon
  * @param valor
  */
-var seleccionaEstado = function(region_id)
+var seleccionaRegion = function(prop)
 {
-    $('#svg-division-municipal').remove();
+    var region_id = parseInt(prop.region_id);
+    $('#region_id').val(region_id);
+    $('#region').val(prop.nombre_region);
 
-    if (region_id == '')
-    {
-        $('#region_municipio').empty().append('<option value>- - - - - - - -</option>').prop('disabled', true);
-        opciones.estado_seleccionado = null;
-        opciones.tipo_region_seleccionado = null;
-    } else {
-        var region_id = parseInt(region_id);
-        $('#region_estado').val(region_id);
-        $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
-        $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);
-
-        opciones.estado_seleccionado = region_id;
-        opciones.municipio_seleccionado = null;
-        opciones.tipo_region_seleccionado = 'estado';
-        cargaRegion(opciones.datos[region_id].properties);
-    }
+    //$('#svg-division-municipal').remove();
+    //opciones.estado_seleccionado = region_id;
+    //opciones.municipio_seleccionado = null;
+    //opciones.tipo_region_seleccionado = 'estado';
+    cargaRegion(opciones.datos[prop.tipo][region_id].properties);
 };
 
 /**

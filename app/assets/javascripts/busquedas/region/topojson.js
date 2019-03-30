@@ -8,6 +8,8 @@ var cargaMapaYoverlays = function ()
 
     cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
     divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
+
+    console.log(opciones);
 };
 
 /**
@@ -31,22 +33,20 @@ var cargaDivisionEstatal = function()
                 .append('path')
                 .attr('class', 'region leaflet-clickable')
                 .on('mouseover', function(d){
-                    nombreRegion(opciones.datos[d.properties.region_id].properties);
+                    nombreRegion(d.properties);
                 })
                 .on('dblclick', function(d){
-                    seleccionaEstado(d.properties.region_id);
+                    seleccionaRegion(d.properties);
                 })
                 .each(function(d){
                     // Asigna los valores la primera y unica vez que carga los estados
-                    opciones.datos[d.properties.region_id] = {};
-                    opciones.datos[d.properties.region_id].properties = d.properties;
-                    opciones.datos[d.properties.region_id].properties.layer = $(this);
-                    opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
+                    if (opciones.datos["Estado"] === undefined) opciones.datos["Estado"] = {};
+                    opciones.datos["Estado"][d.properties.region_id] = {};
+                    opciones.datos["Estado"][d.properties.region_id].properties = d.properties;
+                    opciones.datos["Estado"][d.properties.region_id].properties.layer = $(this);
 
-                    var bounds = d3.geo.bounds(d)
-                    opciones.datos[d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
-
-                    completaSelect(opciones.datos[d.properties.region_id].properties);
+                    var bounds = d3.geo.bounds(d);
+                    opciones.datos["Estado"][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
                 });
 
             map.on('zoomend', reinicia);
@@ -222,15 +222,16 @@ var cargaRegion = function(prop)
 {
     switch(prop.tipo_region)
     {
-        case 'estado':
+        case 'estados':
             cargaDivisionMunicipal();
             break;
-        case 'municipio':
+        case 'municipios':
+            break;
+        case 'anps':
             break;
     }
 
     map.flyToBounds(prop.bounds);
-    cargaGrupos();
     borraEjemplaresAnterioresSnib();
     $('#svg-division-estatal .selecciona-region').attr('class', 'region');
     $('#svg-division-municipal .selecciona-region').attr('class', 'region');
