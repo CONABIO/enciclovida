@@ -10,8 +10,10 @@ es:
   simple_form:
     labels:
       defaults:
+        informacion_adicional: Información adicional
         yes: si
         no: no
+
       #taxon_clasificacion_y_descripcion:
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
@@ -25,13 +27,21 @@ es:
         largo: Largo (centímetros)
         machos: Machos
         hembras: Hembras
+        categoria_riesgo:
+          NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT
+          _2001: 2001
+          _2010: 2010
+        categoria_UICN:	Categoría de riesgo según UICN
+        categoria_CITES: Regulación del comercio internacional de la especie (CITES)
 
-        # distribucion
-        region: Región
+      ficha_distribucion:
+        region:
+          region: Región
+          distribucion_mundial: Distribución mundial
         historica_potencial: Histórica o potencial
+        estado_habitad_desarrollo_taxon: Estado del hábitat con respecto al desarrollo natural del taxón
         amplia_restringida: Amplia o restringida
-        endemismo: Endemismo
-        con_sin: Sin
-        endemica a: Endémica a
-
-
+        endemismo:
+          endemismo: Endemismo
+          endemica_mexico: ¿Endémica en México?
+          endemica_sin: Sin

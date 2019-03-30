@@ -1,17 +1,41 @@
 <% content_for :extracss do %>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+
 <% end %>
 
-<%= f.input :id, required: true, :disabled => true%>
-<%= f.input :resumenEspecie%>
-<%= f.input :descEspecie%>
-<%= f.input :especiesSmilares%>
-<%= f.input :origen%>
-<%= f.input :descripcionOrigen%>
+<%= f.input :id, required: true, :disabled => true %>
+<%= f.input :resumenEspecie %>
+<%= f.input :descEspecie %>
+<%= f.input :especiesSmilares %>
+<%= f.input :origen %>
+<%= f.input :descripcionOrigen %>
 
-<% nombreComun = f.object.nombreComun %>
-<%= f.input :nombreComun, input_html: { value: nombreComun.nombre }, autocomplete: :off %>
+<br>
+
+<%
+  # Recuperar las legislaciones
+  legislaciones = f.object.legislaciones
+  #f.input :legislacion, input_html: { value: legislacion.infoAdicional }, autocomplete: :off
+%>
+
+<h4><%= t('simple_form.labels.defaults.categoria_riesgo.NOM_059_SEMARNAT') %>:</h4>
+<%= f.input :_2001, input_html: { value: 1 } %>
+<%= f.input :_2010, input_html: { value: 1 } %>
+<%= f.input :informacion_adicional, :as => "text", input_html: { value: 1 } %>
+
+<%= f.input :categoria_UICN, input_html: { value: 1 } %>
+<%= f.input :informacion_adicional, :as => "text", input_html: { value: 1 } %>
+
+
+<%= f.input :categoria_CITES, input_html: { value: 1 } %>
+<%= f.input :informacion_adicional, :as => "text", input_html: { value: 1 } %>
+
+
+<%= f.simple_fields_for legislaciones do |lg| %>
+  <%= lg.object[0].inspect %>
+<% end %>
+
 
 <br>
 <h4><%= t('secciones_general.informacion_adicional') %></h4>
@@ -42,7 +66,8 @@
   </tbody>
 </table>
 
-
-<%
-#:input_html => {:style=> 'width: 100px, display: inline-block'}
-%>
+<style>
+  textarea.form-control {
+    min-height: 150px;
+  }
+</style>

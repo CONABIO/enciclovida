@@ -13,10 +13,10 @@
 
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
-      <li role="presentation" class="active">
+      <li role="presentation" >
         <a href="#clasificacion-descripcion" class="btn btn-sm" aria-controls="clasificacion-descripcion" role="tab" data-toggle="tab">Clasificación y descripción</a>
       </li>
-      <li role="presentation" >
+      <li role="presentation" class="active">
         <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
       </li>
       <li role="presentation" >
@@ -56,18 +56,16 @@
 
     <div class="tab-content">
 
-      <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
+      <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade panel-body">
         <%= render partial: 'form_clasificacion_y_descripcion', locals: { f: f } %>
       </div>
 
-      <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        Hola
+      <div id='distribucion' role="tabpanel" class="tab-pane fade in panel-body active">
+        <%= render partial: 'form_distribucion', locals: { f: f } %>
       </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        Hola
+        <%= render partial: 'form_ambiente', locals: { f: f } %>
       </div>
 
       <div id='biologia' role="tabpanel" class="tab-pane fade panel-body">
