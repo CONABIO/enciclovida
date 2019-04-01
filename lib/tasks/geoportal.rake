@@ -34,4 +34,19 @@ namespace :geoportal do
     geo.topojson_por_region('anp')
   end
 
+  desc "Genera/actualiza los estados, municipios y ANPs de la base del geoportal y crea los mapa con el topojson"
+  task todos: :environment do
+    regiones = %w(estado municipio anp)
+    
+    regiones.each do |region|
+      "Geoportal::#{region.camelize}".constantize.all.each do |reg|
+        reg.borra_redis
+        reg.guarda_redis
+      end
+
+      geo = GeoAtopo.new
+      geo.topojson_por_region(region)
+    end
+  end
+
 end
