@@ -10,7 +10,7 @@ class GeoAtopo
     geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
     "Geoportal::#{region.camelize}".constantize.campos_min.campos_geom.all.each do |reg|
-      Rails.logger.debug "[DEBUG]Generando la región: #{reg.nombre_publico}"
+      Rails.logger.debug "[DEBUG] - Generando la región: #{reg.nombre_publico}"
 
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}

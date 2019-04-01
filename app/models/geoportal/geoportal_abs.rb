@@ -24,7 +24,8 @@ class GeoportalAbs < ActiveRecord::Base
 
   # Inicializa la base del loader
   def asigna_loader
-    nombre_loader = self.class.name.demodulize.pluralize.estandariza
+    nombre_loader = self.class.name.demodulize
+    nombre_loader = nombre_loader.upcase if nombre_loader == 'Anp'
     self.loader = Soulmate::Loader.new(nombre_loader)
     Rails.logger.debug "[DEBUG] - Loader: #{loader.inspect}"
   end

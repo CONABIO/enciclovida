@@ -5,6 +5,7 @@ var cargaMapaYoverlays = function ()
 {
     var divisionEstatalOverlay = cargaDivision({tipo: 'estatal'});
     var divisionANPOverlay = cargaDivision({tipo: 'anp'});
+    //var divisionMunicipalOverlay = cargaDivision({tipo: 'municipal'});
 
     cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
     divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
