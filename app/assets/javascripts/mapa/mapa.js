@@ -3,7 +3,7 @@
  * @param id
  * @param overlay
  */
-var cargaMapa = function (id, overlay)
+var cargaMapa = function (id, overlay, opc)
 {
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
@@ -60,6 +60,9 @@ var cargaMapa = function (id, overlay)
     };
 
     L.control.layers(baseMaps, overlay).addTo(map);
-    map.addControl(fullscreen);
+
+    if (opc.pantalla_comp === undefined)
+        map.addControl(fullscreen);
+
     map.addControl(zoom);
 };

@@ -5,9 +5,9 @@ var cargaMapaYoverlays = function ()
 {
     divisionEstadoOverlay = cargaDivision({tipo: 'estado'});
     divisionANPOverlay = cargaDivision({tipo: 'anp'});
-    divisionMunicipalOverlay = cargaDivision({tipo: 'municipio'});
+    divisionMunicipioOverlay = cargaDivision({tipo: 'municipio'});
 
-    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipalOverlay});
+    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay}, {pantalla_comp : false});
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
     divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
     map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
