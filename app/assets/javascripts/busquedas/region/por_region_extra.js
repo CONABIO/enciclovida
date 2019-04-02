@@ -103,7 +103,7 @@ var seleccionaRegion = function(prop)
     //opciones.estado_seleccionado = region_id;
     //opciones.municipio_seleccionado = null;
     //opciones.tipo_region_seleccionado = 'estado';
-    cargaRegion(opciones.datos[prop.tipo][region_id].properties);
+    cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
 };
 
 /**
