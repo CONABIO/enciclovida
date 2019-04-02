@@ -68,7 +68,6 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'busqueda_region':
                 $('#especie_id').attr('value', data.id);
-                console.log('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 break;
             case 'soloAsigna':
@@ -119,6 +118,7 @@ var soulmateRegionAsigna = function(elem)
         $('#' + elemento).val(term);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
         $('#region_id').attr('value', data.id);
+        cargaRegion(opciones.datos[type][data.id].properties);
     };
 
     $('#' + elemento).soulmate({
@@ -129,4 +129,6 @@ var soulmateRegionAsigna = function(elem)
         minQueryLength: 2,
         maxResults:     15
     });
+
+    $('#' + elemento).attr('soulmate', 'true');
 };

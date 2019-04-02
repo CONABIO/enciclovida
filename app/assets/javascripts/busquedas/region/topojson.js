@@ -39,13 +39,13 @@ var cargaDivision = function(opc)
                 })
                 .each(function(d){
                     // Asigna los valores la primera y unica vez que carga los estados
-                    if (opciones.datos[d.properties.tipo] === undefined) opciones.datos[d.properties.tipo] = {};
-                    opciones.datos[d.properties.tipo][d.properties.region_id] = {};
-                    opciones.datos[d.properties.tipo][d.properties.region_id].properties = d.properties;
-                    opciones.datos[d.properties.tipo][d.properties.region_id].properties.layer = $(this);
+                    if (opciones.datos[opc.tipo] === undefined) opciones.datos[opc.tipo] = {};
+                    opciones.datos[opc.tipo][d.properties.region_id] = {};
+                    opciones.datos[opc.tipo][d.properties.region_id].properties = d.properties;
+                    opciones.datos[opc.tipo][d.properties.region_id].properties.layer = $(this);
 
                     var bounds = d3.geo.bounds(d);
-                    opciones.datos[d.properties.tipo][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+                    opciones.datos[opc.tipo][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
                 });
 
             map.on('zoomend', reinicia);
@@ -147,7 +147,7 @@ var cargaDivisionMunicipal = function()
  */
 var cargaRegion = function(prop)
 {
-    switch(prop.tipo_region)
+    /*switch(prop.tipo_region)
     {
         case 'estados':
             cargaDivisionMunicipal();
@@ -156,7 +156,7 @@ var cargaRegion = function(prop)
             break;
         case 'anps':
             break;
-    }
+    }*/
 
     map.flyToBounds(prop.bounds);
     borraEjemplaresAnterioresSnib();

@@ -296,12 +296,11 @@ $(document).ready(function(){
 
     // Para asignar el redis adecuado de acuerdo a la caja de texto
     $('#busqueda-region-tab').on('focus', '#nombre, #region', function() {
-        $('#nombre, #region').off();
+        if ($(this).attr('soulmate') == "true") return;
+
         var tipo_busqueda = $(this).attr('id');
 
-        if (tipo_busqueda == 'nombre')
-            soulmateAsigna('busqueda_region', this.id);
-        else
-            soulmateRegionAsigna(this.id);
+        if (tipo_busqueda == 'nombre') soulmateAsigna('busqueda_region', this.id);
+        else soulmateRegionAsigna(this.id);
     });
 });
