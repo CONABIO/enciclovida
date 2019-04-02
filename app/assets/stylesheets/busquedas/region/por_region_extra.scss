@@ -1,57 +1,56 @@
 body{
-    background-color: #ececec;
+  background-color: #ececec;
 }
 #map {
-    min-height: 650px;
-    width: 100%;
+  min-height: 650px;
+  width: 100%;
 }
 .panel-resultados {
-    text-align: left;
-    max-height: 400px;
-    overflow-y: scroll;
+  text-align: left;
+  max-height: 400px;
+  overflow-y: scroll;
 }
 .panel-resultados div.result-img-container .result-nombre-container{
-    margin: -5px 0px 0 0;
-    opacity: 0.85;
-    line-height: 11px;
-    min-height: 28px;
-    font-size: 11px;
-    background-color: #ecececce;
-    color: #332222;
-    /*font-weight: bold;*/
+  margin: -5px 0px 0 0;
+  opacity: 0.85;
+  line-height: 11px;
+  min-height: 28px;
+  font-size: 11px;
+  background-color: #ecececce;
+  color: #332222;
 }
 .panel-resultados div.result-img-container {
-    margin: 0 2px;
+  margin: 0 2px;
 }
 
 #especies img{max-height: 120px;}
 
 .region, .selecciona-region {
-    fill: black;
-    opacity: .2;
-    pointer-events: all!important;
+  pointer-events: all!important;
+  fill: #83b6d9;
+  opacity: .5;
 }
 .region {
-    stroke: #ffff00;
-    stroke-width: 1px;
+  stroke: #0a0a0a;
+  stroke-width: 1.3px;
 }
 .region:hover {
-    stroke: #ffff00;
-    opacity: .3;
-    stroke-width: 4px;
+  fill:transparent;
+  stroke: #ffa240;
+  stroke-width: 4px;
 }
 .selecciona-region {
-    stroke: #ffff00;
-    stroke-width: 4px;
-    opacity: .3;
+  fill:transparent;
+  stroke: #ffa240;
+  stroke-width: 4px;
 }
 #toggle-ba-icon {
-/*    font-size: 1.4em;*/
-/*    cursor: pointer;*/
+  /*    font-size: 1.4em;*/
+  /*    cursor: pointer;*/
 }
 #contenedor_grupos small {
-/*    bottom: -1.25em;*/
-/*    left: -1.0em;*/
+  /*    bottom: -1.25em;*/
+  /*    left: -1.0em;*/
   font-size: .75em;
   border-radius: 8px;
   color: #333333;
@@ -61,23 +60,23 @@ body{
 }
 
 .checkbox label, .radio label{
-/*    padding-left: 0px;*/
-/*    margin-left: -10px;*/
+  /*    padding-left: 0px;*/
+  /*    margin-left: -10px;*/
 }
 .checkbox input, .radio input{
-    display: block;
-    left: 0;
+  display: block;
+  left: 0;
 }
 .explora_por{
-    /*display: inline-block;*/
-    float: left;
-    /*box-shadow: 2px 2px #d5d5d5;*/
-    margin-right: 10px;
+  /*display: inline-block;*/
+  float: left;
+  /*box-shadow: 2px 2px #d5d5d5;*/
+  margin-right: 10px;
 }
 .animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon, .mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon, .bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon{
-    background-image: linear-gradient(to bottom, rgb(250, 250, 250) 0%, rgba(255, 255, 255, 0) 100%)!important;
-    /*font-size: 1.5em;*/
-    border-radius: 50%;
+  background-image: linear-gradient(to bottom, rgb(250, 250, 250) 0%, rgba(255, 255, 255, 0) 100%)!important;
+  /*font-size: 1.5em;*/
+  border-radius: 50%;
 }
 #contenedor_grupos span{/*creo son equivalentes*/
   padding: 2px;
@@ -85,10 +84,10 @@ body{
   margin: -10px 10px 6px -6px;
 }
 div.checkbox.explora_por h6{
-    margin: 3px 6px 0 0;
-    font-size: 10px;
-    text-align: center;
+  margin: 3px 6px 0 0;
+  font-size: 10px;
+  text-align: center;
 }
 div.checkbox.explora_por{
-    text-align: center;
+  text-align: center;
 }
