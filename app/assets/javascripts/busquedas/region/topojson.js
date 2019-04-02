@@ -3,12 +3,12 @@
  */
 var cargaMapaYoverlays = function ()
 {
-    var divisionEstatalOverlay = cargaDivision({tipo: 'estado'});
-    var divisionANPOverlay = cargaDivision({tipo: 'anp'});
+    divisionEstadoOverlay = cargaDivision({tipo: 'estado'});
+    divisionANPOverlay = cargaDivision({tipo: 'anp'});
     //var divisionMunicipalOverlay = cargaDivision({tipo: 'municipio'});
 
-    cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
-    divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
+    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay});
+    divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
     divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
     map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
 };
@@ -149,23 +149,38 @@ var cargaDivisionMunicipal = function()
  */
 var cargaRegion = function(prop)
 {
-    /*switch(prop.tipo_region)
+    switch(prop.tipo)
     {
-        case 'estados':
-            cargaDivisionMunicipal();
+        case 'Estado':
+            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            //cargaDivisionMunicipal();
             break;
-        case 'municipios':
+        case 'Municipio':
+            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
             break;
-        case 'anps':
+        case 'ANP':
+            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
             break;
-    }*/
+    }
 
+    if (!map.hasLayer(eval('division'+prop.tipo+'Overlay')))
+        map.addLayer(eval('division'+prop.tipo+'Overlay'));
+
+    quitaSeleccionRegion();
     map.flyToBounds(prop.bounds);
-    borraEjemplaresAnterioresSnib();
+    //borraEjemplaresAnterioresSnib();
+    prop.layer.attr('class', 'selecciona-region');
+};
+
+/**
+ * Sirve para que cuando se vuelva a activar la capa no se quede con alguna region seleccionada
+ */
+var quitaSeleccionRegion = function ()
+{
     $('#svg-division-estado .selecciona-region').attr('class', 'region');
     $('#svg-division-municipio .selecciona-region').attr('class', 'region');
     $('#svg-division-anp .selecciona-region').attr('class', 'region');
-    prop.layer.attr('class', 'selecciona-region');
 };
 
 /**
