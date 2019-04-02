@@ -3,9 +3,9 @@
  */
 var cargaMapaYoverlays = function ()
 {
-    var divisionEstatalOverlay = cargaDivision({tipo: 'estatal'});
+    var divisionEstatalOverlay = cargaDivision({tipo: 'estado'});
     var divisionANPOverlay = cargaDivision({tipo: 'anp'});
-    //var divisionMunicipalOverlay = cargaDivision({tipo: 'municipal'});
+    //var divisionMunicipalOverlay = cargaDivision({tipo: 'municipio'});
 
     cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
     divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
@@ -86,7 +86,7 @@ var cargaDivision = function(opc)
  */
 var cargaDivisionMunicipal = function()
 {
-    var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipal');
+    var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-municipio');
     var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
     d3.json('/topojson/estado_' + opciones.estado_seleccionado + '_division_municipal.json', function (error, collection) {
@@ -160,8 +160,8 @@ var cargaRegion = function(prop)
 
     map.flyToBounds(prop.bounds);
     borraEjemplaresAnterioresSnib();
-    $('#svg-division-estatal .selecciona-region').attr('class', 'region');
-    $('#svg-division-municipal .selecciona-region').attr('class', 'region');
+    $('#svg-division-estado .selecciona-region').attr('class', 'region');
+    $('#svg-division-municipio .selecciona-region').attr('class', 'region');
     prop.layer.attr('class', 'selecciona-region');
 };
 
@@ -173,12 +173,12 @@ var muestraOcultaSvg = function(caso)
 {
     if (caso)
     {
-        $('#svg-division-estatal').css('visibility', 'visible');
-        $('#svg-division-municipal').css('visibility', 'visible');
+        $('#svg-division-estado').css('visibility', 'visible');
+        $('#svg-division-municipio').css('visibility', 'visible');
         $('#svg-region').css('visibility', 'visible');
     } else {
-        $('#svg-division-estatal').css('visibility', 'hidden');
-        $('#svg-division-municipal').css('visibility', 'hidden');
+        $('#svg-division-estado').css('visibility', 'hidden');
+        $('#svg-division-municipio').css('visibility', 'hidden');
         $('#svg-region').css('visibility', 'hidden');
     }
 };

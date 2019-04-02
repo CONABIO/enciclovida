@@ -119,12 +119,11 @@ var soulmateRegionAsigna = function(elem)
         $('#' + elemento).val(term);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
         $('#region_id').attr('value', data.id);
-        console.log(type);
     };
 
     $('#' + elemento).soulmate({
         url:            "http://"+ IP + ":" + PORT + "sm/search",
-        types:          ['Estado','Municipio','ANP'],
+        types:          ['estado','municipio','anp'],
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
