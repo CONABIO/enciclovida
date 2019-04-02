@@ -16,6 +16,7 @@ class GeoAtopo
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
       feature[:properties][:nombre_region] = reg.nombre_publico
       feature[:properties][:tipo] = reg.tipo
+      feature[:properties][:tipo_region] = reg.try(:tipo_region)
       geojson[:features] << feature
       geojson_todos[:features] << feature
 

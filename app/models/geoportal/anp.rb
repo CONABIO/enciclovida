@@ -14,6 +14,10 @@ class Geoportal::Anp < GeoportalAbs
   end
 
   def tipo
+    'ANP'
+  end
+
+  def tipo_region
     I18n.t("anps_tipos.#{cat_manejo.estandariza}")
   end
 

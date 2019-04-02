@@ -162,6 +162,7 @@ var cargaRegion = function(prop)
     borraEjemplaresAnterioresSnib();
     $('#svg-division-estado .selecciona-region').attr('class', 'region');
     $('#svg-division-municipio .selecciona-region').attr('class', 'region');
+    $('#svg-division-anp .selecciona-region').attr('class', 'region');
     prop.layer.attr('class', 'selecciona-region');
 };
 
@@ -174,11 +175,13 @@ var muestraOcultaSvg = function(caso)
     if (caso)
     {
         $('#svg-division-estado').css('visibility', 'visible');
+        $('#svg-division-anp').css('visibility', 'visible');
         $('#svg-division-municipio').css('visibility', 'visible');
         $('#svg-region').css('visibility', 'visible');
     } else {
         $('#svg-division-estado').css('visibility', 'hidden');
         $('#svg-division-municipio').css('visibility', 'hidden');
+        $('#svg-division-anp').css('visibility', 'hidden');
         $('#svg-region').css('visibility', 'hidden');
     }
 };
