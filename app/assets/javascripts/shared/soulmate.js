@@ -108,7 +108,7 @@ var soulmateRegionAsigna = function(elem)
     var render = function(term, data)
     {
         var html = '<h5>' + data.nombre + '</h5>';
-        if (data.tipo != undefined) html+= "<sub>" + data.tipo + "</sub>";
+        if (data.tipo_region != undefined) html+= "<sub>" + data.tipo_region + "</sub>";
 
         return html;
     };
@@ -127,7 +127,7 @@ var soulmateRegionAsigna = function(elem)
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
-        maxResults:     15
+        maxResults:     10
     });
 
     $('#' + elemento).attr('soulmate', 'true');
