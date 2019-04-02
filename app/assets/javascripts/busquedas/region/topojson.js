@@ -5,9 +5,9 @@ var cargaMapaYoverlays = function ()
 {
     divisionEstadoOverlay = cargaDivision({tipo: 'estado'});
     divisionANPOverlay = cargaDivision({tipo: 'anp'});
-    //var divisionMunicipalOverlay = cargaDivision({tipo: 'municipio'});
+    divisionMunicipalOverlay = cargaDivision({tipo: 'municipio'});
 
-    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay});
+    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipalOverlay});
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
     divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
     map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
@@ -33,6 +33,9 @@ var cargaDivision = function(opc)
                 .enter()
                 .append('path')
                 .attr('class', 'region leaflet-clickable')
+                .attr('id', function(d){
+                    return "path-" + opc.tipo + "-" + d.properties.region_id
+                })
                 .on('mouseover', function(d){
                     nombreRegion(d.properties);
                 })
@@ -44,7 +47,6 @@ var cargaDivision = function(opc)
                     if (opciones.datos[opc.tipo] === undefined) opciones.datos[opc.tipo] = {};
                     opciones.datos[opc.tipo][d.properties.region_id] = {};
                     opciones.datos[opc.tipo][d.properties.region_id].properties = d.properties;
-                    opciones.datos[opc.tipo][d.properties.region_id].properties.layer = $(this);
 
                     var bounds = d3.geo.bounds(d);
                     opciones.datos[opc.tipo][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
@@ -170,7 +172,8 @@ var cargaRegion = function(prop)
     quitaSeleccionRegion();
     map.flyToBounds(prop.bounds);
     //borraEjemplaresAnterioresSnib();
-    prop.layer.attr('class', 'selecciona-region');
+
+    $('#path-' + prop.tipo.toLowerCase() + '-' + prop.region_id).attr('class', 'selecciona-region');
 };
 
 /**

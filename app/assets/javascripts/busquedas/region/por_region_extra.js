@@ -90,7 +90,7 @@ var cargaEspecies = function()
 };
 
 /**
- * Asigna algunos valores antes de cargar la region con topojon
+ * Asigna algunos valores antes de cargar la region con topojson
  * @param valor
  */
 var seleccionaRegion = function(prop)
@@ -103,6 +103,7 @@ var seleccionaRegion = function(prop)
     //opciones.estado_seleccionado = region_id;
     //opciones.municipio_seleccionado = null;
     //opciones.tipo_region_seleccionado = 'estado';
+
     cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
 };
 
