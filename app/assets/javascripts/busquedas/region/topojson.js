@@ -9,6 +9,8 @@ var cargaMapaYoverlays = function ()
 
     cargaMapa('map', {"División estatal": divisionEstatalOverlay, "División por ANP": divisionANPOverlay});
     divisionEstatalOverlay.addTo(map);  // carga de inicio la division estatal
+    divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
+    map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
 };
 
 /**
