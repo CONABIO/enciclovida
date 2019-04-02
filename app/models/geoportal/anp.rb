@@ -32,6 +32,7 @@ class Geoportal::Anp < GeoportalAbs
     self.redis[:data][:id] = anpestid
     self.redis[:data][:nombre] = nombre_publico
     self.redis[:data][:tipo] = tipo
+    self.redis[:data][:tipo_region] = tipo_region
 
     redis.deep_stringify_keys!
   end
