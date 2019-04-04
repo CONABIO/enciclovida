@@ -169,9 +169,18 @@ var dameUrlServicioSnibPorRegion = function(prop)
 /**
  * Para cuanod eliga alguna opcion el automáticamente culte la barra y pueda ver el resultado
  */
-var colapsaBarra  =function(){
+var colapsaBarra  =function()
+{
     $('#sidebar').addClass('collapsed');
     $('#sidebar .sidebar-tabs li').removeClass('active');
+};
+
+/**
+ * Asigna los datos del taxon para posteriormente ocuparlos en los ejemplares
+ */
+var asignaDatosTaxon = function(datos)
+{
+    opciones.datos.taxones[datos.id] = datos;
 };
 
 $(document).ready(function(){

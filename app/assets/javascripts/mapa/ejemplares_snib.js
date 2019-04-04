@@ -235,11 +235,17 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
-    // Sustituye las etiquetas h5 por h4 y centra el texto
-    var nombre_f = $('<textarea/>').html(opciones.nombre).text().replace(/<h5/g, "<h4 class='text-center'").replace(/<\/h5/g, "</h4");
-    var contenido = "";
+    var datos = opciones.datos.taxones[opciones.taxon];
 
-    contenido += "" + nombre_f + "";
+    if (datos !== undefined)
+    {
+        var nombre_comun = '';
+        if (datos.nombre_comundd !== undefined) var nombre_comun = '<h4 class="text-center">' + datos.nombre_comun + '</h4>';
+        var nombre = nombre_comun + '</h4><h4 class="text-center"><a href="/especies/' + datos.id + '"><i>' + datos.nombre_cientifico + '</i></a></h4>';
+    }
+
+    var contenido = "";
+    contenido += "" + nombre + "";
     contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
     contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
     contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";

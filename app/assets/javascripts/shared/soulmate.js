@@ -71,6 +71,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 opciones.taxon = data.id;
                 cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 colapsaBarra();
+                asignaDatosTaxon(data);
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
