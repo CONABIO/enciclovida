@@ -70,6 +70,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#especie_id').attr('value', data.id);
                 opciones.taxon = data.id;
                 cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
+                colapsaBarra();
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
@@ -120,6 +121,7 @@ var soulmateRegionAsigna = function(elem)
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
         $('#region_id').attr('value', data.id);
         cargaRegion(opciones.datos[type][data.id].properties);
+        colapsaBarra();
     };
 
     $('#' + elemento).soulmate({

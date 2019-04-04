@@ -166,6 +166,14 @@ var dameUrlServicioSnibPorRegion = function(prop)
     return snib_url;
 };
 
+/**
+ * Para cuanod eliga alguna opcion el automáticamente culte la barra y pueda ver el resultado
+ */
+var colapsaBarra  =function(){
+    $('#sidebar').addClass('collapsed');
+    $('#sidebar .sidebar-tabs li').removeClass('active');
+};
+
 $(document).ready(function(){
 
     /**
