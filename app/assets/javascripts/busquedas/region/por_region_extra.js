@@ -197,20 +197,6 @@ $(document).ready(function(){
     });
 
     /**
-     *  Cuando selecciona un estado de la lista
-     */
-    $('#regiones').on('change', '#region_estado', function(){
-        seleccionaEstado($(this).val());
-    });
-
-    /**
-     * Cuando selecciona un municipio de la lista
-     */
-    $('#regiones').on('change', '#region_municipio', function(){
-        seleccionaMunicipio($(this).val());
-    });
-
-    /**
      * Para los filtros default: distribucion y riesgo
      */
     $('#b_avanzada').on('change', ".checkbox input", function()

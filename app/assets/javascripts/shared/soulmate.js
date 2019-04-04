@@ -68,6 +68,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'busqueda_region':
                 $('#especie_id').attr('value', data.id);
+                opciones.taxon = data.id;
                 cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 break;
             case 'soloAsigna':
