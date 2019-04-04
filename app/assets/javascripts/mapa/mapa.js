@@ -5,6 +5,9 @@
  */
 var cargaMapa = function (id, overlay, opc)
 {
+    // Por si viene vacia la variable opc
+    if (opc === undefined) opc = {};
+
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
         zIndex: 1,
@@ -61,7 +64,7 @@ var cargaMapa = function (id, overlay, opc)
 
     L.control.layers(baseMaps, overlay).addTo(map);
 
-    if (opc.pantalla_comp === undefined)
+    if (opc.pantalla_comp)
         map.addControl(fullscreen);
 
     map.addControl(zoom);
