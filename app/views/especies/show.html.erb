@@ -3,8 +3,12 @@
   <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-      opciones = <%=raw @datos.to_json %>;
-      opciones.nombre = '<%= tituloNombreCientifico(@especie, link: true) %>';
+      opciones = <%=raw @datos.to_json %>;  // Para cargar toda la informacion en esta avriable
+      opciones.datos = {};
+      opciones.datos.taxones = {};
+      opciones.datos.taxones[opciones.especie_id] = {};
+      opciones.datos.taxones[opciones.especie_id].nombre_cientifico = opciones.nombre_cientifico;
+      opciones.datos.taxones[opciones.especie_id].nombre_comun = opciones.nombre_comun;
   </script>
 <% end %>
 

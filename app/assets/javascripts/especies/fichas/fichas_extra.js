@@ -3,7 +3,7 @@ $(document).ready(function() {
         opciones.cual_ficha = $(this).val();
 
         $.ajax({
-            url: "/especies/" + opciones.taxon + "/describe?from=" + opciones.cual_ficha,
+            url: "/especies/" + opciones.especie_id + "/describe?from=" + opciones.cual_ficha,
             method: 'get',
             success: function (data, status) {
                 $('.taxon_description').replaceWith(data);

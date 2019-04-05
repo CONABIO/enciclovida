@@ -5,7 +5,7 @@ $(document).ready(function(){
     $('#pestañas > .nav a').one('click',function(){
         if (!Boolean($(this).hasClass('noLoad'))){
             var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
-            var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
+            var pestaña = '/especies/' + opciones.especie_id + '/'+idPestaña;
             $(this.getAttribute('href')).load(pestaña, function () {
                 if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover({html: true});
             });
@@ -14,10 +14,10 @@ $(document).ready(function(){
 
     if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
 
-    $('#nombres_comunes_todos').load("/especies/" + opciones.taxon + "/nombres-comunes-todos");
+    $('#nombres_comunes_todos').load("/especies/" + opciones.especie_id + "/nombres-comunes-todos");
 
     $('#enlaces_externos').on('click', '#boton_pdf', function(){
-        window.open("/especies/" + opciones.taxon + ".pdf?from=" + opciones.cual_ficha);
+        window.open("/especies/" + opciones.especie_id + ".pdf?from=" + opciones.cual_ficha);
     });
 
     $(document).on('click', '.historial_ficha', function(){

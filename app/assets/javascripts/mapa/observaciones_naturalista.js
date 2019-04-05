@@ -136,7 +136,7 @@ var aniadePuntosNaturaLista = function()
 var observacionNaturalistaGeojson = function(layer, id)
 {
     $.ajax({
-        url: "/especies/" + opciones.taxon + "/observacion-naturalista/" + id,
+        url: "/especies/" + opciones.especie_id + "/observacion-naturalista/" + id,
         dataType : "json",
         success : function (res){
             if (res.estatus)
@@ -179,7 +179,7 @@ var observacionNaturalista = function(prop)
     contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ prop.uri +"' target='_blank'>ver la observación</a></dd>";
 
     // Para enviar un comentario acerca de un registro en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
+    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };

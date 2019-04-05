@@ -137,15 +137,6 @@ var nombreRegion = function(prop)
 };
 
 /**
- * Rellena las opciones de estado y municipio
- * @param prop
- */
-var completaSelect = function(prop)
-{
-    $('#region_' + prop.tipo_region).append("<option value='" + parseInt(prop.region_id) + "'>" + prop.nombre_region + '</option>');
-};
-
-/**
  * Devuelve la URL de las especies por region
  * @param prop
  * @returns {string}
@@ -200,10 +191,10 @@ $(document).ready(function(){
      */
     $('#contenedor_especies').on('click', '.especie_id', function(){
         cargaEjemplaresSnib($(this).attr('snib_url'));
-        opciones.taxon = $(this).attr('especie_id');
+        opciones.especie_id = $(this).attr('especie_id');
 
         $.ajax({
-            url: '/especies/' + opciones.taxon + '/dame-nombre-con-formato',
+            url: '/especies/' + opciones.especie_id + '/dame-nombre-con-formato',
             type: 'GET',
         }).done(function(nombre) {
             opciones.nombre = nombre;

@@ -210,7 +210,7 @@ var aniadePuntosSnib = function()
 var ejemplarSnibGeojson = function(layer, id)
 {
     $.ajax({
-        url: "/especies/" + opciones.taxon + "/ejemplar-snib/" + id,
+        url: "/especies/" + opciones.especie_id + "/ejemplar-snib/" + id,
         dataType : "json",
         success : function (res){
             if (res.estatus)
@@ -235,12 +235,13 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
-    var datos = opciones.datos.taxones[opciones.taxon];
+    console.log(opciones);
+    var datos = opciones.datos.taxones[opciones.especie_id];
 
     if (datos !== undefined)
     {
         var nombre_comun = '';
-        if (datos.nombre_comundd !== undefined) var nombre_comun = '<h4 class="text-center">' + datos.nombre_comun + '</h4>';
+        if (datos.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + datos.nombre_comun + '</h4>';
         var nombre = nombre_comun + '</h4><h4 class="text-center"><a href="/especies/' + datos.id + '"><i>' + datos.nombre_cientifico + '</i></a></h4>';
     }
 
@@ -262,7 +263,7 @@ var ejemplarSnib = function(prop)
     contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
 
     //Para enviar un comentario acerca de un ejemplar en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
+    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
         prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;

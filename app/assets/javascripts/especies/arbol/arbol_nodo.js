@@ -29,7 +29,7 @@ $(document).ready(function(){
     link = g.selectAll(".link");
     node = g.selectAll(".node");
 
-    d3.json("/especies/" + opciones.taxon + "/arbol_nodo_inicial", function(error, json) {
+    d3.json("/especies/" + opciones.especie_id + "/arbol_nodo_inicial", function(error, json) {
         if (error) throw error;
 
         root = json;

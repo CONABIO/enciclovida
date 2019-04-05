@@ -43,8 +43,10 @@ class EspeciesController < ApplicationController
       format.html do
 
         @datos = {}
+        @datos[:nombre_cientifico] = @especie.nombre_cientifico
+
         if adicional = @especie.adicional
-          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombre_comun] =  adicional.nombre_comun_principal
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
@@ -96,7 +98,7 @@ class EspeciesController < ApplicationController
 
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
-        @datos[:taxon] = @especie.id
+        @datos[:especie_id] = @especie.id
         @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
