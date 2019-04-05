@@ -6,14 +6,26 @@
   <a href class="btn btn-link btn-sm disabled"><b>Selecciona el nombre científico para ir a su página</b></a>
 </h5>
 
-<!-- Modal -->
-<%= render :partial => 'descarga_taxa' %>
-<%= search_field_tag 'nombre', nil, :class => 'form-control input-sm' %>
+<!-- Modal>
+<%#= render :partial => 'descarga_taxa' %>
+<%#= search_field_tag 'nombre', nil, :class => 'form-control input-sm' %>
 
 <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#myModal">
   Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
 </button>
 
-<%= link_to "Carga más <span class='glyphicon glyphicon-plus'></span>".html_safe, '', id: 'carga_mas_especies', class: 'btn btn-link btn-xs' %>
+<%#= link_to "Carga más <span class='glyphicon glyphicon-plus'></span>".html_safe, '', id: 'carga_mas_especies', class: 'btn btn-link btn-xs' %>
+< -->
 
-<div class="panel-resultados" id="contenedor_especies"></div>
+<div class="row" id="contenedor_especies">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="..." alt="...">
+      <div class="caption">
+        <h3>Thumbnail label</h3>
+        <p>...</p>
+        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+      </div>
+    </div>
+  </div>
+</div>
