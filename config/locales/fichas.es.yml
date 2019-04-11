@@ -1,5 +1,4 @@
 es:
-
   secciones_general:
     informacion_adicional: Información adicional
 
@@ -8,13 +7,25 @@ es:
     distribucion: Distribución
 
   simple_form:
+    placeholders:
+
+    hints:
+
+    options:
+      defaults:
+      #estatus_legal_proteccion:
+        Amenazadas: Amenazadas (A)
+        SujetasProteccionEspecial: Sujetas a protección especial (Pr)
+        PreocupacionMenor: Preocupación menor (LC least concern)
+
     labels:
       defaults:
         informacion_adicional: Información adicional
+        mas_informacion: Más información
         yes: si
         no: no
 
-      #taxon_clasificacion_y_descripcion:
+      #clasificacion_y_descripcion:
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
         especiesSmilares: Especies similares
@@ -34,14 +45,88 @@ es:
         categoria_UICN:	Categoría de riesgo según UICN
         categoria_CITES: Regulación del comercio internacional de la especie (CITES)
 
-      ficha_distribucion:
+
+      distribucion:
         region:
           region: Región
           distribucion_mundial: Distribución mundial
-        historica_potencial: Histórica o potencial
         estado_habitad_desarrollo_taxon: Estado del hábitat con respecto al desarrollo natural del taxón
+        historica_potencial: Histórica o potencial
         amplia_restringida: Amplia o restringida
         endemismo:
           endemismo: Endemismo
           endemica_mexico: ¿Endémica en México?
-          endemica_sin: Sin
+
+      ambiente:
+        Ambiente:
+        Ecorregion:
+        Ecosistema:
+        Clima:
+        Temperatura:
+        Precipitación:
+        Rango de humedad relativa:
+        Geoforma:
+
+        Tipos de vegetación:
+        Vegetación  en la que se desarrolla la especie:
+        Hábitats antrópicos:
+        Tipo de vegetación secundaria:
+        Mencionar las especies asociadas :
+        Tipo de suelo en el que se desarrolla la especie:
+
+      biologia:
+        Tipo de reproducción:
+          Vegetal:
+          Animal:
+        vegetal:
+          Generalidades:
+          Tipos de expresión sexual:
+          Flores:
+          Individuos:
+          Poblaciones:
+          Aislamiento temporal o espacial de los órganos reproductores:
+          Sistemas reproductivos asexuales:
+          Tipo de fecundación:
+          Número de eventos reproductivos:
+          Tipo de polinización:
+
+          Floración:
+            Horario de apertura de la flor:
+            Longevidad de la flor:
+            Época de floración (inicio y término):
+            Cantidad de néctar:
+            Cantidad de polen:
+          frutificación:
+            Época de fructificación (mes de inicio y término):
+            Número de frutos:
+            Características del fruto:
+          semillas:
+            Número de semillas por fruto:
+            tamaño promedio de las semillas:
+            Características tóxicas:
+            Porcentaje de germinación:
+            Porcentaje de supervivencia de plántulas:
+
+        mas_informacion_biologia:
+          Uso del hábitat:
+            Hábito en caso de plantas:
+            Alimentación:
+            Estrategia trófica:
+            Técnica de forrajeo:
+            Dispersión:
+            Tipo de dispersión:
+            Estructura o individuo dispersado:
+            Distancia de dispersión:
+
+          Conducta:
+            Características conductuales:
+            Estatus migratorio:
+              Tipo de migración que realiza la especie:
+            Hábito:
+            Periodo de actividad:
+            Hibernación:
+            Territorialidad:
+            Ámbito hogareño (animales):
+            Mecanismos de defensa:
+            Organización social:
+

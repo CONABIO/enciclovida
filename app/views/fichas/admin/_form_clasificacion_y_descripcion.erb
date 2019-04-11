@@ -1,25 +1,51 @@
 <% content_for :extracss do %>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
-
 <% end %>
 
-<%= f.input :id, required: true, :disabled => true %>
+<%= f.input :id, required: true, :as => :hidden, :disabled => true %>
 <%= f.input :resumenEspecie %>
 <%= f.input :descEspecie %>
 <%= f.input :especiesSmilares %>
 <%= f.input :origen %>
 <%= f.input :descripcionOrigen %>
 
-<br>
+<hr class="espacio_ficha">
 
+<h4><%= t('simple_form.labels.defaults.categoria_riesgo.NOM_059_SEMARNAT') %>:</h4>
 <%
   # Recuperar las legislaciones
   legislaciones = f.object.legislaciones
+
+  # Verificar que exista al menos una legislación
+  if legislaciones.any?
+    # Si existe algúna legislación, intentar extraer las 4 posibles:
+    legislaciones.each do |legislacion| %><%
+      if legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[0]
+      %><%= f.input :estatus_change, collection: Fichas::Legislacion::ESTATUS_LEGAL_PROTECCION, input_html: {class: 'form-control', value: legislacion.estatusLegalProteccion }%><%
+        puts legislacion.inspect, " - -  "
+      end
+    if legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[1]
+        puts legislacion.inspect, " - -  "
+      end
+      if legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[2]
+        puts legislacion.inspect, " - -  "
+      end
+      if legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[3]
+        puts legislacion.inspect, " - -  "
+      end
+    end
+
+  else
+    # Si no existe ninguna legislación, crear la relación
+    legislaciones = Fichas::Legislacion.new
+
+  end
+
   #f.input :legislacion, input_html: { value: legislacion.infoAdicional }, autocomplete: :off
+  # estatusLegalProteccion
 %>
 
-<h4><%= t('simple_form.labels.defaults.categoria_riesgo.NOM_059_SEMARNAT') %>:</h4>
 <%= f.input :_2001, input_html: { value: 1 } %>
 <%= f.input :_2010, input_html: { value: 1 } %>
 <%= f.input :informacion_adicional, :as => "text", input_html: { value: 1 } %>
@@ -32,12 +58,18 @@
 <%= f.input :informacion_adicional, :as => "text", input_html: { value: 1 } %>
 
 
+
+
+
 <%= f.simple_fields_for legislaciones do |lg| %>
-  <%= lg.object[0].inspect %>
+
+  <%= #lg.object.input :_2001, input_html: { value: lg.object.nombreLegislacion }
+  %>
 <% end %>
 
 
-<br>
+<hr class="espacio_ficha">
+
 <h4><%= t('secciones_general.informacion_adicional') %></h4>
 <table class="table table-striped table-bordered">
   <thead>
@@ -66,8 +98,11 @@
   </tbody>
 </table>
 
+
 <style>
-  textarea.form-control {
-    min-height: 150px;
+  .espacio_ficha {
+    border: lightgrey;
+    border-style: dashed;
+    border-width: 2px;
   }
 </style>

@@ -1,3 +1,29 @@
+<!-- Opción 1 -- >
+<script type="text/javascript" src="http://js.nicedit.com/nicEdit.js"></script> <script type="text/javascript">
+    //<![CDATA[
+    bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+    //]]>
+</script>
+<style>
+  textarea.form-control {
+    min-height: 200px;
+  }
+</style>
+<!-- -->
+
+<!-- Opción 2 -- >
+<script src="https://cloud.tinymce.com/4.9.2/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        plugins: [
+            "fullscreen"
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+    });
+</script>
+<!-- -->
+
 <%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
@@ -13,10 +39,10 @@
 
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
-      <li role="presentation" >
+      <li role="presentation" class="active">
         <a href="#clasificacion-descripcion" class="btn btn-sm" aria-controls="clasificacion-descripcion" role="tab" data-toggle="tab">Clasificación y descripción</a>
       </li>
-      <li role="presentation" class="active">
+      <li role="presentation">
         <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
       </li>
       <li role="presentation" >
@@ -56,11 +82,11 @@
 
     <div class="tab-content">
 
-      <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade panel-body">
+      <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <%= render partial: 'form_clasificacion_y_descripcion', locals: { f: f } %>
       </div>
 
-      <div id='distribucion' role="tabpanel" class="tab-pane fade in panel-body active">
+      <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
         <%= render partial: 'form_distribucion', locals: { f: f } %>
       </div>
 
@@ -119,3 +145,9 @@
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
 
 <% end %>
+
+<style>
+  textarea.form-control {
+    min-height: 200px;
+  }
+</style>

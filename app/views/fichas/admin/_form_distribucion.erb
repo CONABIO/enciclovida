@@ -23,7 +23,8 @@
 %>
 <%= f.input :palabrasClave, collection: algo, label_method: :nombrepais, input_html: { value: distribucion.distribucion } %>
 <%= f.input :historica_potencial, input_html: { value: distribucion.historicaPotencial }, :as => "text" %>
-<%= f.input :estado_habitad_desarrollo_taxon, input_html: { value: habitat.estadoHabitat } %>
+<%= #f.input :estado_habitad_desarrollo_taxon, input_html: { value: habitat.estadoHabitat }
+%>
 <%= f.input :informacion_adicional, input_html: { value: distribucion.infoAdicionalMun }, :as => "text" %>
 
 
