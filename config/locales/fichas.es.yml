@@ -13,7 +13,7 @@ es:
 
     options:
       defaults:
-      #estatus_legal_proteccion:
+      fichas_logislacion:
         Amenazadas: Amenazadas (A)
         SujetasProteccionEspecial: Sujetas a protección especial (Pr)
         PreocupacionMenor: Preocupación menor (LC least concern)
@@ -58,75 +58,134 @@ es:
           endemica_mexico: ¿Endémica en México?
 
       ambiente:
-        Ambiente:
-        Ecorregion:
-        Ecosistema:
-        Clima:
-        Temperatura:
-        Precipitación:
-        Rango de humedad relativa:
-        Geoforma:
-
-        Tipos de vegetación:
-        Vegetación  en la que se desarrolla la especie:
-        Hábitats antrópicos:
-        Tipo de vegetación secundaria:
-        Mencionar las especies asociadas :
-        Tipo de suelo en el que se desarrolla la especie:
+        ambiente: Ambiente
+        ecorregion: Ecorregion
+        ecosistema: Ecosistema
+        clima: Clima
+        temperatura: Temperatura
+        precipitacion: Precipitación
+        rango_de_humedad_relativa: Rango de humedad relativa
+        geoforma: Geoforma
+        tipos_de_vegetacion: Tipos de vegetación
+        vegetacion__en_la_que_se_desarrolla_la_especie: Vegetación  en la que se desarrolla la especie
+        habitats_antropicos: Hábitats antrópicos
+        tipo_de_vegetacion_secundaria: Tipo de vegetación secundaria
+        mencionar_las_especies_asociadas_: Mencionar las especies asociadas
+        tipo_de_suelo_en_el_que_se_desarrolla_la_especie: Tipo de suelo en el que se desarrolla la especie
 
       biologia:
-        Tipo de reproducción:
-          Vegetal:
-          Animal:
-        vegetal:
-          Generalidades:
-          Tipos de expresión sexual:
-          Flores:
-          Individuos:
-          Poblaciones:
-          Aislamiento temporal o espacial de los órganos reproductores:
-          Sistemas reproductivos asexuales:
-          Tipo de fecundación:
-          Número de eventos reproductivos:
-          Tipo de polinización:
+        tipo_de_reproduccion: Tipo de reproducción
+        vegetal: Vegetal
+        animal: Animal
+        vegetal: vegetal
+        generalidades: Generalidades
+        tipos_de_expresion_sexual: Tipos de expresión sexual
+        flores: Flores
+        individuos: Individuos
+        poblaciones: Poblaciones
+        aislamiento_temporal_o_espacial_de_los_organos_reproductores: Aislamiento temporal o espacial de los órganos reproductores
+        sistemas_reproductivos_asexuales: Sistemas reproductivos asexuales
+        tipo_de_fecundacion: Tipo de fecundación
+        numero_de_eventos_reproductivos: Número de eventos reproductivos
+        tipo_de_polinizacion: Tipo de polinización
+        floracion: Floración
+        horario_de_apertura_de_la_flor: Horario de apertura de la flor
+        longevidad_de_la_flor: Longevidad de la flor
+        epoca_de_floracion_(inicio_y_termino): Época de floración (inicio y término)
+        cantidad_de_nectar: Cantidad de néctar
+        cantidad_de_polen: Cantidad de polen
+        frutificacion: frutificación
+        epoca_de_fructificacion: Época de fructificación (mes de inicio y término)
+        numero_de_frutos: Número de frutos
+        caracteristicas_del_fruto: Características del fruto
+        semillas: semillas
+        numero_de_semillas_por_fruto: Número de semillas por fruto
+        tamaño_promedio_de_las_semillas: tamaño promedio de las semillas
+        caracteristicas_toxicas: Características tóxicas
+        porcentaje_de_germinacion: Porcentaje de germinación
+        porcentaje_de_supervivencia_de_plantulas: Porcentaje de supervivencia de plántulas
+        mas_informacion_biologia: mas_informacion_biologia
+        uso_del_habitat: Uso del hábitat
+        habito_en_caso_de_plantas: Hábito en caso de plantas
+        alimentacion: Alimentación
+        estrategia_trofica: Estrategia trófica
+        tecnica_de_forrajeo: Técnica de forrajeo
+        dispersion: Dispersión
+        tipo_de_dispersion: Tipo de dispersión
+        estructura_o_individuo_dispersado: Estructura o individuo dispersado
+        distancia_de_dispersion: Distancia de dispersión
+        conducta: Conducta
+        caracteristicas_conductuales: Características conductuales
+        estatus_migratorio: Estatus migratorio
+        tipo_de_migracion_que_realiza_la_especie: Tipo de migración que realiza la especie
+        habito: Hábito
+        periodo_de_actividad: Periodo de actividad
+        hibernacion: Hibernación
+        territorialidad: Territorialidad
+        ambito_hogareño_(animales): Ámbito hogareño (animales)
+        mecanismos_de_defensa: Mecanismos de defensa
+        organizacion_social: Organización social
 
-          Floración:
-            Horario de apertura de la flor:
-            Longevidad de la flor:
-            Época de floración (inicio y término):
-            Cantidad de néctar:
-            Cantidad de polen:
-          frutificación:
-            Época de fructificación (mes de inicio y término):
-            Número de frutos:
-            Características del fruto:
-          semillas:
-            Número de semillas por fruto:
-            tamaño promedio de las semillas:
-            Características tóxicas:
-            Porcentaje de germinación:
-            Porcentaje de supervivencia de plántulas:
+      ecologia:
+        tamaño_poblacional: Tamaño poblacional
+        descripcion_del_tamaño_poblacional_reportado_en_distintos_lugares: a) Descripción del tamaño poblacional reportado en distintos lugares
+        abundancia_de_individuos_por_region: b) Abundancia de individuos por región
+        densidad_(numero_de_individuos_por_area): c) Densidad (número de individuos por área)
+        descripcion_del_patron_de_ocupacion: d) Descripción del patrón de ocupación
+        informacion_adicional: d) i Información adicional
+        parametros_poblacionales: Parámetros poblacionales
+        parametros_poblacionales: a) Parámetros poblacionales
+        poblacion_minima_viable: b) Población mínima viable
+        interacciones: Interacciones
+        interacciones: i Interacciones
+        informacion_adicional: ii Información adicional
 
-        mas_informacion_biologia:
-          Uso del hábitat:
-            Hábito en caso de plantas:
-            Alimentación:
-            Estrategia trófica:
-            Técnica de forrajeo:
-            Dispersión:
-            Tipo de dispersión:
-            Estructura o individuo dispersado:
-            Distancia de dispersión:
+      genetica:
+        variabilidad_genetica: Variabilidad genética
+        descripcion_de_la_variabilidad_genetica: a) Descripción de la variabilidad genética
+        marcadores_utilizados_para_describir_la_variabilidad: b) Marcadores utilizados para describir la variabilidad
+        secuencias_publicadas_para_la_especie: Secuencias publicadas para la especie
+        mexbol/codigo_de_barras: MEXBOL/Código de barras
 
-          Conducta:
-            Características conductuales:
-            Estatus migratorio:
-              Tipo de migración que realiza la especie:
-            Hábito:
-            Periodo de actividad:
-            Hibernación:
-            Territorialidad:
-            Ámbito hogareño (animales):
-            Mecanismos de defensa:
-            Organización social:
+      importancia:
+        importancia_biologica: a) Importancia biológica
+        funcion_ecologica: b) Función ecológica
+        importancia_economica: Importancia económica
+        comercio_nacional: a) Comercio nacional
+        origen_de_los_especimenes: Origen de los especímenes
+        proposito_del_comercio: Propósito del comercio
+        comercio_internacional: b) Comercio internacional
+        origen_de_los_especimenes: Origen de los especímenes
+        proposito_del_comercio: Propósito del comercio
+        pais_de_importacion: País de importación
+        afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
+        ¿la_especie_se_ve_afectada_por_el_comercio_ilicito_nacional?: i. ¿La especie se ve afectada por el comercio ilícito nacional?
+        ¿la_especie_se_ve_afectada_por_el_comercio_ilicito_internacional?: ii. ¿La especie se ve afectada por el comercio ilícito internacional?
+        efectos_reales_o_potenciales_del_comercio_en_el_manejo_y_conservacion_de_la_especie: iii. Efectos reales o potenciales del comercio en el manejo y conservación de la especie
+        importancia_cultural_y_usos: Importancia cultural y usos
+        informacion_adicional: Información adicional
+        estado_de_conservacion_de_la_especie: Estado de conservación de la especie
 
+      estado_de_conservacion:
+        presiones_o_amenazas_sobre_la_especie: Presiones o amenazas sobre la especie
+        presiones_o_amenazas_sobre_la_especie_+_info: Presiones o amenazas sobre la especie + Info
+        tendencia_poblacional: Tendencia poblacional
+        tendencia_poblacional_+_info: Tendencia poblacional + info
+        estado_de_conservacion: Estado de conservación
+        manejo_aprovechamiento_y_acciones_de_conservacion: Manejo, aprovechamiento y acciones de conservación
+        describir_acciones_de_manejo_y_conservacion_de_la_especie: a) Describir acciones de manejo y conservación de la especie
+        esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+        indicar_el_tipo_de_aprovechamiento_de_la_especie: c) Indicar el tipo de aprovechamiento de la especie
+        marco_legal_nacional_e_internacional: Marco legal nacional e internacional
+        regulaciones_aplicables_a_la_especie: a) Regulaciones aplicables a la especie
+        tipo_de_veda: b) Tipo de veda
+        informacion_adicional: Información adicional
+
+      prioritarias_conservacion:
+        prioritaria: ¿Se encuentra enlistada como especie prioritaria?
+        publicadaEn: ¿En qué listado se encuentra?
+        nivelPrioridad: Prioridad resultante del proceso
+        justificacionPrioritaria: Justificación del estatus de especie prioritaria
+
+      necesidades:
+        necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie

@@ -12,15 +12,9 @@
 
 <hr class="espacio_ficha">
 
-<h4><%= t('simple_form.labels.defaults.categoria_riesgo.NOM_059_SEMARNAT') %>:</h4>
+<h4 class="titulo_subseccion"><%= t('simple_form.labels.defaults.categoria_riesgo.NOM_059_SEMARNAT') %>:</h4>
 <%
   legislaciones = f.object.legislaciones # Recuperar las legislaciones
-%>
-
-<%= legislaciones.any? {|legislacion| legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[3]}
-%>
-
-<%
 
   # Buscar la legislacion: NOM-059-SEMARNAT 2001  - - - -
   if legislaciones.any? { |legislacion| legislacion.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[0]}
@@ -30,7 +24,7 @@
     nleg = f.object.legislaciones.new
     nleg.nombreLegislacion = Fichas::Legislacion::TIPOS_LEGISLACIONES[0] # Asignar nombre de la legislación
     %>
-    <%= f.input :_2001, input_html: { value: nleg.estatusLegalProteccion} %>
+    <%= f.input :_2001,  input_html: { value: nleg.estatusLegalProteccion} %>
     <%= f.input :informacion_adicional, :as => "text", input_html: { value: nleg.infoAdicional } %>
     <%
   end
@@ -131,6 +125,10 @@
     border-style: dashed;
     border-width: 2px;
   }
+
+    .titulo_subseccion {
+
+    }
 </style>
 
 
