@@ -1,7 +1,6 @@
-"use strict"
+"use strict";
 
-var knex = require('knex')
-    ({ client: 'pg', connection: { host: 'localhost', port: '5432', user: '', password: '', database: '' } });
+require('./config.js');
 
 var tablas = {
     'anfibios': 'snibanfigw',
@@ -40,6 +39,8 @@ function getmun(req) {
             })
     })
 }
+
+
 function conteo() {
     return new Promise((resolve, reject) => {
         knex
@@ -52,6 +53,8 @@ function conteo() {
             })
     })
 }
+
+
 function taxonMuni(req) {
     let idedo = req.params['idedo']
     let idmun = req.params['idmun']

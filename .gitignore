@@ -67,3 +67,4 @@ db/metamares/migracion_base/metamares*sql
 db/metamares/migracion_base/*sql
 public/javascripts
 vendor/SNIBappRest/node_modules
+vendor/SNIBappRest/controller/config.js
