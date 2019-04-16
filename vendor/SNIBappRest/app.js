@@ -57,7 +57,7 @@ server.register([
         }
     });
 
-    server.route({
+/*    server.route({
         path: '/ejemplo/07/059/aves',
         method: 'GET',
         config: {
@@ -106,6 +106,74 @@ server.register([
             handler: function (request, reply) {
                 query
                     .getmun(request)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+*/
+
+    server.route({
+        path: '/especies/estado/{entid}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por el estado y/o opciones seleccionadas',
+            notes: 'Para mayor información acerca de "entid" consultar el servicio de regiones por estado',
+            validate: {
+                params: {
+                    entid: Joi.string().required().valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado')
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .taxonEdoTotal(request)
+                    .then(dato => {
+
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especies/municipio/{munid}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por el municipio y/o opciones seleccionadas',
+            notes: 'Para mayor información acerca de "munid" consultar el servicio de regiones por municipio',
+            validate: {
+                params: {
+                    munid: Joi.string().required().default('1').description('Identificador del municipio'),
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .taxonMuni(request)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especies/anp/{anpestid}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por la ANP y/o opciones seleccionadas',
+            notes: 'Para mayor información acerca de "anpestid" consultar el servicio de regiones por ANP',
+            validate: {
+                params: {
+                    anpestid: Joi.string().required().default('1').description('Identificador del municipio'),
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .taxonMuni(request)
                     .then(dato => {
                     reply(dato)
                 })
