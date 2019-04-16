@@ -79,7 +79,7 @@ server.register([
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Consulta los estados por "entid"',
+            description: 'Consulta todos los estados',
             notes: '----',
             handler: function (request, reply) {
                 query
@@ -92,17 +92,12 @@ server.register([
     });
 
     server.route({
-        path: '/municipios/{idedo}',
+        path: '/regiones/municipios',
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Contiene el nombre de los municipio',
+            description: 'Consulta todos los estados',
             notes: '----',
-            validate: {
-                params: {
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
-                }
-            },
             handler: function (request, reply) {
                 query
                     .getmun(request)

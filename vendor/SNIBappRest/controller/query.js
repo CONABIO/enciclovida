@@ -20,27 +20,24 @@ function getedo() {
         knex
             .select(knex.raw('entid, entidad'))
             .from('estados')
-            /*.groupByRaw('entid,estado')*/
             .orderBy('entid')
             .then(dato => {
                 resolve(dato)
             })
     })
 }
-function getmun(req) {
-    let idedo = req.params['idedo']
+
+function getmun() {
     return new Promise((resolve, reject) => {
         knex
-            .select(knex.raw('cve_ent,cve_mun, municipio'))
+            .select(knex.raw('munid, municipio'))
             .from('municipios')
-            .whereRaw(`cve_ent='${idedo}'`)
-            .orderBy('cve_mun')
+            .orderBy('munid')
             .then(dato => {
                 resolve(dato)
             })
     })
 }
-
 
 function conteo() {
     return new Promise((resolve, reject) => {
