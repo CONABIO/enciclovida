@@ -56,7 +56,7 @@ server.register([
             reply.redirect('/docs')
         }
     });
-    
+
     server.route({
         path: '/regiones/estados',
         method: 'GET',
@@ -122,7 +122,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .taxonEdoTotal(request)
+                    .EspeciesEstado(request)
                     .then(dato => {
 
                     reply(dato)
