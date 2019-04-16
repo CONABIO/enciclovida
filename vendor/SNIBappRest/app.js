@@ -56,24 +56,7 @@ server.register([
             reply.redirect('/docs')
         }
     });
-
-/*    server.route({
-        path: '/ejemplo/07/059/aves',
-        method: 'GET',
-        config: {
-            tags: ['api'],
-            description: 'Ejemplo',
-            notes: 'Prueba del conteo de especies por estado y municipio podriamos realizarlas con el estado de "Chiapas" y el municipio de "Ocosingo"',
-            handler: function (request, reply) {
-                query
-                    .conteo()
-                    .then(dato => {
-                    reply(dato)
-                })
-            }
-        }
-    });
-*/
+    
     server.route({
         path: '/regiones/estados',
         method: 'GET',
@@ -101,6 +84,23 @@ server.register([
             handler: function (request, reply) {
                 query
                     .getmun(request)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/regiones/anps',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Consulta todas las ANPs',
+            notes: '----',
+            handler: function (request, reply) {
+                query
+                    .getanp(request)
                     .then(dato => {
                     reply(dato)
                 })

@@ -30,13 +30,25 @@ function getedo() {
 function getmun() {
     return new Promise((resolve, reject) => {
         knex
-            .select(knex.raw('munid, municipio'))
+            .select(knex.raw('munid, municipio, estado'))
             .from('municipios')
             .orderBy('munid')
             .then(dato => {
                 resolve(dato)
             })
     })
+}
+
+function getanp() {
+    return new Promise((resolve, reject) => {
+        knex
+        .select(knex.raw('anpestid, nombre, cat_manejo, estados, municipios'))
+            .from('anpestat')
+            .orderBy('anpestid')
+            .then(dato => {
+            resolve(dato)
+        })
+})
 }
 
 function conteo() {
@@ -51,7 +63,6 @@ function conteo() {
             })
     })
 }
-
 
 function taxonMuni(req) {
     let idedo = req.params['idedo']
@@ -185,6 +196,7 @@ function taxonMunTotal(req) {
 module.exports = {
     getedo,
     getmun,
+    getanp,
     conteo,
     taxonMuni,
     taxonEdo,
