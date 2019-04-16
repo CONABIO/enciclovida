@@ -13,14 +13,15 @@ var tablas = {
     'plantas': 'snibplangw',
     'protoctistas': 'snibprotgw',
     'reptiles': 'snibreptgw'
-}
+};
+
 function getedo() {
     return new Promise((resolve, reject) => {
         knex
-            .select(knex.raw('cve_ent, estado'))
-            .from('municipios')
-            .groupByRaw('cve_ent,estado')
-            .orderBy('cve_ent')
+            .select(knex.raw('entid, entidad'))
+            .from('estados')
+            /*.groupByRaw('entid,estado')*/
+            .orderBy('entid')
             .then(dato => {
                 resolve(dato)
             })

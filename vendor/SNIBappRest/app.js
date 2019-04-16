@@ -73,13 +73,13 @@ server.register([
             }
         }
     });
-
+*/
     server.route({
-        path: '/estados',
+        path: '/regiones/estados',
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Contiene el nombre de los estados',
+            description: 'Consulta los estados por "entid"',
             notes: '----',
             handler: function (request, reply) {
                 query
@@ -112,7 +112,6 @@ server.register([
             }
         }
     });
-*/
 
     server.route({
         path: '/especies/estado/{entid}',
