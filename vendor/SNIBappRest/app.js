@@ -145,7 +145,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .taxonMuni(request)
+                    .EspeciesMunicipio(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -167,7 +167,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .taxonMuni(request)
+                    .EspeciesANP(request)
                     .then(dato => {
                     reply(dato)
                 })
