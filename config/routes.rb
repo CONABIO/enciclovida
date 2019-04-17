@@ -84,13 +84,13 @@ Buscador::Application.routes.draw do
 
   resources :usuarios_roles
 
-  get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
-  get 'explora-por-region' => 'ubicaciones#por_region'
-  get 'explora-por-region/especies-por-grupo' => 'ubicaciones#especies_por_grupo'
-  get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
-  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
-  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
-  get 'explora-por-region/conteo-por-grupo' => 'ubicaciones#conteo_por_grupo'
+  get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
+  get 'explora-por-region' => 'busquedas_regiones#por_region'
+  get 'explora-por-region/especies-por-region' => 'busquedas_regiones#especies_por_region'
+  get 'municipios-por-estado' => 'busquedas_regiones#municipios_por_estado'
+  get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
+  get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
+  get 'explora-por-region/conteo-por-grupo' => 'busquedas_regiones#conteo_por_grupo'
 
   get "busquedas/basica"
   get "busquedas/avanzada"

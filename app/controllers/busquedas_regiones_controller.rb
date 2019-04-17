@@ -1,4 +1,4 @@
-class UbicacionesController < ApplicationController
+class BusquedasRegionesController < ApplicationController
 
   skip_before_action :verify_authenticity_token, :set_locale
 
@@ -102,17 +102,5 @@ class UbicacionesController < ApplicationController
     end
   end
 
-
-  private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_ubicacion
-    @ubicacion = Metadato.find(params[:id])
-  end
-
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def ubicacion_params
-    params.require(:ubicacion).permit(:path, :object_name, :artist, :copyright)
-  end
 end
 
