@@ -46,8 +46,8 @@ var parametros = function(prop)
  * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
  * ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
 
-var cargaEspecies = function()
-{
+ var cargaEspecies = function()
+ {
     $.ajax({
         url: '/explora-por-region/especies-por-grupo',
         method: 'GET',
@@ -87,7 +87,7 @@ var cargaEspecies = function()
         console.log('Falló la carga de especies de enciclovida');
     });
 };
-*/
+ */
 
 /**
  * Consulta el servicio nodejs para sacar el listado de especies por region
@@ -96,43 +96,46 @@ var cargaEspecies = function()
 {
     $.ajax({
         url: '/explora-por-region/especies',
-        method: 'GET'
-        /*data: parametros()*/
+        method: 'GET',
+        data: $('#busqueda_region').serialize()
     }).done(function(resp) {
 
-        console.log('aqui');
-        /*if (resp.estatus)  // Para asignar los resultados con o sin filtros
+        console.log(resp);
+        if (resp.estatus)  // Para asignar los resultados con o sin filtros
         {
-            if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
-            $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
+            if (resp.totales > 0)
+            {
+                $.each(resp.resultados, function(index, taxon){
+                    var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
+                        municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
+                    if (url == undefined) return;
 
-            $.each(resp.resultados, function(index, taxon){
-                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
-                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
-                if (url == undefined) return;
+                    // Las que no tiene imagen se le pega la fuente
+                    if (taxon.foto == null)
+                        var recurso = '<i class="ev1-ev-icon"></i>';
+                    else
+                        var recurso = '<img src="' + taxon.foto + '"/>';
 
-                // Las que no tiene imagen se le pega la fuente
-                if (taxon.foto == null)
-                    var recurso = '<i class="ev1-ev-icon"></i>';
-                else
-                    var recurso = '<img src="' + taxon.foto + '"/>';
+                    // Las que no tienen nombre común se le pondra vacío
+                    if (taxon.nombre_comun == null) taxon.nombre_comun = '';
 
-                // Las que no tienen nombre común se le pondra vacío
-                if (taxon.nombre_comun == null) taxon.nombre_comun = '';
+                    $('#contenedor_especies').append('<div class="result-img-container">' +
+                        '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
+                        '<div class="result-nombre-container">' +
+                        '<span>' + taxon.nombre_comun + '</span><br />' +
+                        '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
+                        '</div>' +
+                        '</div>');
+                });
 
-                $('#contenedor_especies').append('<div class="result-img-container">' +
-                    '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
-                    '<div class="result-nombre-container">' +
-                    '<span>' + taxon.nombre_comun + '</span><br />' +
-                    '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
-                    '</div>' +
-                    '</div>');
-            });
+            } else
+                consle.log(resp.msg);
+
         } else
             console.log(resp.msg);
-*/
+
     }).fail(function() {
-        console.log('Falló la carga de especies de enciclovida');
+        console.log(resp.msg);
     });
 };
 
@@ -145,12 +148,12 @@ var seleccionaRegion = function(prop)
     var region_id = parseInt(prop.region_id);
     $('#region_id').val(region_id);
     $('#region').val(prop.nombre_region);
-    $('#tipo_region').val(prop.tipo_region.toLowerCase());
+    $('#tipo_region').val(prop.tipo.toLowerCase());
 
     //$('#svg-division-municipal').remove();
 
     cargaEspecies();
-    cargaRegion(opciones.datos[prop.tipo_region.toLowerCase()][region_id].properties);
+    cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
 };
 
 /**

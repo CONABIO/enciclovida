@@ -48,11 +48,13 @@ class BusquedasRegionesController < ApplicationController
   end
 =end
 
-  def especies_por_region
+  def especies
     br = BusquedaRegion.new
     br.params = params
-    br.especies_por_grupo
+    br.especies
 
+    render json: br.resp
+=begin
     # El paginado para que no se atasque
     por_pagina = 10
     pagina = params[:pagina].present? ? params[:pagina].to_i : 1
@@ -67,7 +69,8 @@ class BusquedasRegionesController < ApplicationController
       br.resp[:msg] = 'No hay más resultados'
     end
 
-    render json: br.resp
+
+=end
   end
 
   # Devuelve los municipios por el estado seleccionado
