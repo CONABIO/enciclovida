@@ -34,7 +34,7 @@ var cargaGrupos = function()
  */
 var parametros = function(prop)
 {
-    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo: opciones.grupo_seleccionado, region_id: , pagina: opciones.pagina_especies, nombre: $('#nombre').val() };
+    var params_generales = { region_id: $('#region_id').val(), pagina: opciones.filtro.pagina_especies, especie_id: $('#espcie_id').val() };
 
     if (prop != undefined)
         params_generales = Object.assign({},params_generales, prop);
@@ -95,11 +95,13 @@ var cargaEspecies = function()
 var cargaEspecies = function()
 {
     $.ajax({
-        url: '/explora-por-region/especies-por-region',
-        method: 'GET',
-        data: parametros()
+        url: '/explora-por-region/especies',
+        method: 'GET'
+        /*data: parametros()*/
     }).done(function(resp) {
-        if (resp.estatus)  // Para asignar los resultados con o sin filtros
+
+        console.log('aqui');
+        /*if (resp.estatus)  // Para asignar los resultados con o sin filtros
         {
             if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
             $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
@@ -128,7 +130,7 @@ var cargaEspecies = function()
             });
         } else
             console.log(resp.msg);
-
+*/
     }).fail(function() {
         console.log('Falló la carga de especies de enciclovida');
     });

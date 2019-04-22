@@ -86,8 +86,7 @@ Buscador::Application.routes.draw do
 
   get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
   get 'explora-por-region' => 'busquedas_regiones#por_region'
-  get 'explora-por-region/especies-por-region' => 'busquedas_regiones#especies_por_region'
-  get 'municipios-por-estado' => 'busquedas_regiones#municipios_por_estado'
+  get 'explora-por-region/especies' => 'busquedas_regiones#especies_por_region'
   get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
   get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
   get 'explora-por-region/conteo-por-grupo' => 'busquedas_regiones#conteo_por_grupo'
@@ -253,8 +252,6 @@ Buscador::Application.routes.draw do
 
   # Para las validaciones de taxones la simple y la avanzada
   get 'validaciones' => 'validaciones#index'
-  #get 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
-  #get 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
 
