@@ -3,9 +3,9 @@
  */
 var cargaMapaYoverlays = function ()
 {
-    divisionEstadoOverlay = cargaDivision({tipo: 'estado'});
-    divisionANPOverlay = cargaDivision({tipo: 'anp'});
-    divisionMunicipioOverlay = cargaDivision({tipo: 'municipio'});
+    divisionEstadoOverlay = cargaDivision({tipo_region: 'estado'});
+    divisionANPOverlay = cargaDivision({tipo_region: 'anp'});
+    divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
 
     cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay}, {pantalla_comp : false});
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
@@ -19,12 +19,12 @@ var cargaMapaYoverlays = function ()
 var cargaDivision = function(opc)
 {
     var divisionOverlay = L.d3SvgOverlay(function() {
-        if ($('#svg-division-' + opc.tipo + ' g').length > 0) return;
+        if ($('#svg-division-' + opc.tipo_region + ' g').length > 0) return;
 
-        var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-' + opc.tipo);
+        var svg = d3.select(map.getPanes().overlayPane).append('svg').attr('id', 'svg-division-' + opc.tipo_region);
         var g = svg.append('g').attr('class', 'leaflet-zoom-hide');
 
-        d3.json('/topojson/' + opc.tipo + '.json', function (error, collection) {
+        d3.json('/topojson/' + opc.tipo_region + '.json', function (error, collection) {
             var bounds = d3.geo.bounds(topojson.feature(collection, collection.objects['collection']));
             var path = d3.geo.path().projection(projectPoint);
 
@@ -34,7 +34,7 @@ var cargaDivision = function(opc)
                 .append('path')
                 .attr('class', 'region leaflet-clickable')
                 .attr('id', function(d){
-                    return "path-" + opc.tipo + "-" + d.properties.region_id
+                    return "path-" + opc.tipo_region + "-" + d.properties.region_id
                 })
                 .on('mouseover', function(d){
                     nombreRegion(d.properties);
@@ -44,12 +44,12 @@ var cargaDivision = function(opc)
                 })
                 .each(function(d){
                     // Asigna los valores la primera y unica vez que carga los estados
-                    if (opciones.datos[opc.tipo] === undefined) opciones.datos[opc.tipo] = {};
-                    opciones.datos[opc.tipo][d.properties.region_id] = {};
-                    opciones.datos[opc.tipo][d.properties.region_id].properties = d.properties;
+                    if (opciones.datos[opc.tipo_region] === undefined) opciones.datos[opc.tipo_region] = {};
+                    opciones.datos[opc.tipo_region][d.properties.region_id] = {};
+                    opciones.datos[opc.tipo_region][d.properties.region_id].properties = d.properties;
 
                     var bounds = d3.geo.bounds(d);
-                    opciones.datos[opc.tipo][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
+                    opciones.datos[opc.tipo_region][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
                 });
 
             map.on('zoomend', reinicia);
@@ -75,11 +75,11 @@ var cargaDivision = function(opc)
     });
 
     divisionOverlay.on("add", function () {
-        $('#svg-division-' + opc.tipo).show();
+        $('#svg-division-' + opc.tipo_region).show();
     });
 
     divisionOverlay.on("remove", function () {
-        $('#svg-division-' + opc.tipo).hide();
+        $('#svg-division-' + opc.tipo_region).hide();
     });
 
     return divisionOverlay;

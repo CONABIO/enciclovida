@@ -34,23 +34,68 @@ var cargaGrupos = function()
  */
 var parametros = function(prop)
 {
-    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo: opciones.grupo_seleccionado, estado_id: opciones.estado_seleccionado,
-        municipio_id: opciones.municipio_seleccionado, pagina: opciones.pagina_especies, nombre: $('#nombre').val() };
+    var params_generales = { tipo_region: opciones.tipo_region_seleccionado, grupo: opciones.grupo_seleccionado, region_id: , pagina: opciones.pagina_especies, nombre: $('#nombre').val() };
 
     if (prop != undefined)
         params_generales = Object.assign({},params_generales, prop);
 
-    return $('#b_avanzada').serialize() + '&' + $.param(params_generales);
+    return $('#b_region').serialize() + '&' + $.param(params_generales);
 };
 
 /**
  * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
  * ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
- */
+
 var cargaEspecies = function()
 {
     $.ajax({
         url: '/explora-por-region/especies-por-grupo',
+        method: 'GET',
+        data: parametros()
+    }).done(function(resp) {
+        if (resp.estatus)  // Para asignar los resultados con o sin filtros
+        {
+            if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
+            $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
+
+            $.each(resp.resultados, function(index, taxon){
+                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
+                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
+                if (url == undefined) return;
+
+                // Las que no tiene imagen se le pega la fuente
+                if (taxon.foto == null)
+                    var recurso = '<i class="ev1-ev-icon"></i>';
+                else
+                    var recurso = '<img src="' + taxon.foto + '"/>';
+
+                // Las que no tienen nombre común se le pondra vacío
+                if (taxon.nombre_comun == null) taxon.nombre_comun = '';
+
+                $('#contenedor_especies').append('<div class="result-img-container">' +
+                    '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
+                    '<div class="result-nombre-container">' +
+                    '<span>' + taxon.nombre_comun + '</span><br />' +
+                    '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
+                    '</div>' +
+                    '</div>');
+            });
+        } else
+            console.log(resp.msg);
+
+    }).fail(function() {
+        console.log('Falló la carga de especies de enciclovida');
+    });
+};
+*/
+
+/**
+ * Consulta el servicio nodejs para sacar el listado de especies por region
+ */
+var cargaEspecies = function()
+{
+    $.ajax({
+        url: '/explora-por-region/especies-por-region',
         method: 'GET',
         data: parametros()
     }).done(function(resp) {
@@ -98,13 +143,12 @@ var seleccionaRegion = function(prop)
     var region_id = parseInt(prop.region_id);
     $('#region_id').val(region_id);
     $('#region').val(prop.nombre_region);
+    $('#tipo_region').val(prop.tipo_region.toLowerCase());
 
     //$('#svg-division-municipal').remove();
-    //opciones.estado_seleccionado = region_id;
-    //opciones.municipio_seleccionado = null;
-    //opciones.tipo_region_seleccionado = 'estado';
 
-    cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
+    cargaEspecies();
+    cargaRegion(opciones.datos[prop.tipo_region.toLowerCase()][region_id].properties);
 };
 
 /**

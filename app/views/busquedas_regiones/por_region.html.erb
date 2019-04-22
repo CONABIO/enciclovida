@@ -7,13 +7,8 @@
         opciones.solo_coordenadas = true;
         opciones.datos = {};
         opciones.datos.taxones = {};
-        opciones.tipo_region_seleccionado = null;
-        opciones.estado_seleccionado = null;
-        opciones.municipio_seleccionado = null;
-        opciones.grupo_seleccionado = null;
-        opciones.reino_seleccionado = null;
+        opciones.filtros = {};
         opciones.pagina_especies = 1;
-        opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
         opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
 
         cargaMapaYoverlays();
