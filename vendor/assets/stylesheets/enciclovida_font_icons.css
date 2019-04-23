@@ -1,0 +1,173 @@
+@font-face {
+  font-family: 'enciclovida_font_icons';
+  src: url('../font/enciclovida_font_icons.eot?53085474');
+  src: url('../font/enciclovida_font_icons.eot?53085474#iefix') format('embedded-opentype'),
+       url('../font/enciclovida_font_icons.woff2?53085474') format('woff2'),
+       url('../font/enciclovida_font_icons.woff?53085474') format('woff'),
+       url('../font/enciclovida_font_icons.ttf?53085474') format('truetype'),
+       url('../font/enciclovida_font_icons.svg?53085474#enciclovida_font_icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'enciclovida_font_icons';
+    src: url('../font/enciclovida_font_icons.svg?53085474#enciclovida_font_icons') format('svg');
+  }
+}
+*/
+ 
+ [class$="-ev-icon"]:before, [class*="-ev-icon "]:before {
+  font-family: "enciclovida_font_icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.aves-ev-icon:before { content: '\e800'; } /* '' */
+.reptilia-ev-icon:before { content: '\e801'; } /* '' */
+.amphibia-ev-icon:before { content: '\e802'; } /* '' */
+.actinopterygii-ev-icon:before { content: '\e803'; } /* '' */
+.petromyzontidae-ev-icon:before { content: '\e804'; } /* '' */
+.myxini-ev-icon:before { content: '\e805'; } /* '' */
+.animalia-ev-icon:before { content: '\e806'; } /* '' */
+.mammalia-ev-icon:before { content: '\e807'; } /* '' */
+.chondrichthyes-ev-icon:before { content: '\e808'; } /* '' */
+.cnidaria-ev-icon:before { content: '\e809'; } /* '' */
+.arachnida-ev-icon:before { content: '\e80a'; } /* '' */
+.myriapoda-ev-icon:before { content: '\e80b'; } /* '' */
+.annelida-ev-icon:before { content: '\e80c'; } /* '' */
+.insecta-ev-icon:before { content: '\e80d'; } /* '' */
+.porifera-ev-icon:before { content: '\e80e'; } /* '' */
+.echinodermata-ev-icon:before { content: '\e80f'; } /* '' */
+.mollusca-ev-icon:before { content: '\e810'; } /* '' */
+.crustacea-ev-icon:before { content: '\e811'; } /* '' */
+.plantae-ev-icon:before { content: '\e812'; } /* '' */
+.bryophyta-ev-icon:before { content: '\e813'; } /* '' */
+.pteridophyta-ev-icon:before { content: '\e814'; } /* '' */
+.cycadophyta-ev-icon:before { content: '\e815'; } /* '' */
+.gnetophyta-ev-icon:before { content: '\e816'; } /* '' */
+.liliopsida-ev-icon:before { content: '\e817'; } /* '' */
+.coniferophyta-ev-icon:before { content: '\e818'; } /* '' */
+.magnoliopsida-ev-icon:before { content: '\e819'; } /* '' */
+.fungi-ev-icon:before { content: '\e81a'; } /* '' */
+.prokaryotae-ev-icon:before { content: '\e81b'; } /* '' */
+.protoctista-ev-icon:before { content: '\e81c'; } /* '' */
+.sujeta-a-proteccion-especial-pr-ev-icon:before { content: '\e81d'; } /* '' */
+.sujeta-a-proteccion-especial-pr-2-ev-icon:before { content: '\e81e'; } /* '' */
+.amenazada-a-ev-icon:before { content: '\e81f'; } /* '' */
+.amenazada-a-2-ev-icon:before { content: '\e820'; } /* '' */
+.en-peligro-de-extincion-p-ev-icon:before { content: '\e821'; } /* '' */
+.en-peligro-de-extincion-p-2-ev-icon:before { content: '\e822'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before { content: '\e823'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-2-ev-icon:before { content: '\e824'; } /* '' */
+.no-evaluado-ne-ev-icon:before { content: '\e825'; } /* '' */
+.datos-insuficientes-dd-ev-icon:before { content: '\e826'; } /* '' */
+.riesgo-bajo-lr-preocupacion-menor-lc-ev-icon:before { content: '\e827'; } /* '' */
+.riesgo-bajo-lr-casi-amenazado-nt-ev-icon:before { content: '\e828'; } /* '' */
+.vulnerable-vu-ev-icon:before { content: '\e829'; } /* '' */
+.en-peligro-en-ev-icon:before { content: '\e82a'; } /* '' */
+.en-peligro-critico-cr-ev-icon:before { content: '\e82b'; } /* '' */
+.extinto-en-estado-silvestre-ew-ev-icon:before { content: '\e82c'; } /* '' */
+.extinto-ex-ev-icon:before { content: '\e82d'; } /* '' */
+.apendice-i-ev-icon:before { content: '\e82e'; } /* '' */
+.apendice-ii-ev-icon:before { content: '\e82f'; } /* '' */
+.apendice-iii-ev-icon:before { content: '\e830'; } /* '' */
+.endemica-ev-icon:before { content: '\e831'; } /* '' */
+.endemica-2-ev-icon:before { content: '\e832'; } /* '' */
+.nativa-ev-icon:before { content: '\e833'; } /* '' */
+.nativa-2-ev-icon:before { content: '\e834'; } /* '' */
+.exotica-ev-icon:before { content: '\e835'; } /* '' */
+.exotica-2-ev-icon:before { content: '\e836'; } /* '' */
+.prioritarias-ev-icon:before { content: '\e837'; } /* '' */
+.alta-ev-icon:before { content: '\e838'; } /* '' */
+.media-ev-icon:before { content: '\e839'; } /* '' */
+.menor-ev-icon:before { content: '\e83a'; } /* '' */
+.dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
+.newspaper-ev-icon:before { content: '\e83c'; } /* '' */
+.cobi-ev-icon:before { content: '\e83d'; } /* '' */
+.doc-text-ev-icon:before { content: '\e83e'; } /* '' */
+.busqueda-avanzada-ev-icon:before { content: '\e83f'; } /* '' */
+.file-pdf-ev-icon:before { content: '\e840'; } /* '' */
+.globe-ev-icon:before { content: '\e841'; } /* '' */
+.vista-especialista-ev-icon:before { content: '\e842'; } /* '' */
+.archive-ev-icon:before { content: '\e843'; } /* '' */
+.marino-ev-icon:before { content: '\e844'; } /* '' */
+.salobre-ev-icon:before { content: '\e845'; } /* '' */
+.terrestre-ev-icon:before { content: '\e846'; } /* '' */
+.naturalista-ev-icon:before { content: '\e847'; } /* '' */
+.busqueda-region-ev-icon:before { content: '\e848'; } /* '' */
+.enciclovida_correo-ev-icon:before { content: '\e849'; } /* '' */
+.peces-mariscos-comerciales-ev-icon:before { content: '\e84a'; } /* '' */
+.datos-ecologicos-ev-icon:before { content: '\e84b'; } /* '' */
+.flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
+.semaforo-moderado-ev-icon:before { content: '\e84d'; } /* '' */
+.conabio-ev-icon:before { content: '\e84e'; } /* '' */
+.ev1-ev-icon:before { content: '\e84f'; } /* '' */
+.vida-ev-icon:before { content: '\e850'; } /* '' */
+.bone-ev-icon:before { content: '\e851'; } /* '' */
+.spin3-ev-icon:before { content: '\e852'; } /* '' */
+.naturalista-3-ev-icon:before { content: '\e853'; } /* '' */
+.naturalista-4-ev-icon:before { content: '\e854'; } /* '' */
+.picture-ev-icon:before { content: '\e855'; } /* '' */
+.cites-ev-icon:before { content: '\e856'; } /* '' */
+.vimeo-ev-icon:before { content: '\e857'; } /* '' */
+.youtube-ev-icon:before { content: '\e858'; } /* '' */
+.facebook-1-ev-icon:before { content: '\e859'; } /* '' */
+.soundcloud-ev-icon:before { content: '\e85a'; } /* '' */
+.twitter-1-ev-icon:before { content: '\e85b'; } /* '' */
+.semarnat-ev-icon:before { content: '\e85c'; } /* '' */
+.semaforo-recomendable-ev-icon:before { content: '\e85d'; } /* '' */
+.instagram-ev-icon:before { content: '\e85e'; } /* '' */
+.semaforo-no-datos-ev-icon:before { content: '\e85f'; } /* '' */
+.enciclo-ev-icon:before { content: '\e860'; } /* '' */
+.ev2-ev-icon:before { content: '\e861'; } /* '' */
+.certificacion-ev-icon:before { content: '\e862'; } /* '' */
+.feather-ev-icon:before { content: '\e863'; } /* '' */
+.semaforo-evita-ev-icon:before { content: '\e864'; } /* '' */
+.naturalista-2-ev-icon:before { content: '\e865'; } /* '' */
+.block-ev-icon:before { content: '\e866'; } /* '' */
+.biomex-ev-icon:before { content: '\e867'; } /* '' */
+.vista-general-ev-icon:before { content: '\e868'; } /* '' */
+.exotica-invasora-ev-icon:before { content: '\e869'; } /* '' */
+.exotica-invasora-2-ev-icon:before { content: '\e86a'; } /* '' */
+.invertebrados-ev-icon:before { content: '\e86b'; } /* '' */
+.conabio_completo-ev-icon:before { content: '\e86c'; } /* '' */
+.cornell_lab-ev-icon:before { content: '\e86d'; } /* '' */
+.cornell_lab_red-ev-icon:before { content: '\e86e'; } /* '' */
+.cornell_lab_yellow-ev-icon:before { content: '\e86f'; } /* '' */
+.macaulay_library-ev-icon:before { content: '\e870'; } /* '' */
+.bdi-ev-icon:before { content: '\e871'; } /* '' */
+.circle-ev-icon:before { content: '\f111'; } /* '' */
+.copyright-ev-icon:before { content: '\f1f9'; } /* '' */
