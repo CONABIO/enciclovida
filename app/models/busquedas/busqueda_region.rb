@@ -2,12 +2,21 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :key_especies, :key_especies_con_filtro, :url_especies
 
+  def initialize
+    self.taxones = []
+    self.totales = 0
+  end
+
   # Regresa un listado de especies por pagina, de acuerdo a la region
   def especies
     self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region.especies)) do
       url = "#{CONFIG.busquedas_region_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
       dame_especies(url)
     end
+
+    dame_especies_filtros_adicionales
+    dame_especies_por_pagina
+    self.resp[:resultados] = nil
   end
 
   # REVISADO: Cache para obtener el conteo de especies por grupo
@@ -90,6 +99,7 @@ class BusquedaRegion < Busqueda
 
   private
 
+  # Pregunta al Servicio por el listado completo de las especies, previamente en cache
   def dame_especies(url)
     begin
       rest = RestClient.get(url)
@@ -99,11 +109,48 @@ class BusquedaRegion < Busqueda
       if totales > 0
         {estatus: true, resultados: res, totales: totales}
       else
-        {estatus: true, resultados: res, totales: totales, msg: 'No hay más especies'}
+        {estatus: false, totales: totales, msg: 'No hay especies con esa busqueda'}
       end
 
     rescue => e
       {estatus: false, msg: e.message}
+    end
+  end
+
+  # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
+  def dame_especies_filtros_adicionales
+  end
+
+  def dame_especies_por_pagina
+    self.por_pagina = 6
+    self.pagina = params[:pagina] || 1
+    self.totales = resp[:totales]
+
+    if resp[:estatus] && resp[:totales] > 0
+      if especies = resp[:resultados][(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
+        asocia_informacion_taxon(especies)
+        resp[:taxones] = taxones
+      else
+        resp[:taxones] = taxones
+        resp[:msg] = 'No hay más especies'
+      end
+    end
+  end
+
+  # Asocia la información a desplegar en la vista
+  def asocia_informacion_taxon(especies)
+    especies.each do |e|
+      if scat = Scat.where(catalogo_id: e['idnombrecatvalido']).first
+        next unless especie = scat.especie
+
+        if a = especie.adicional
+          especie.x_foto_principal = a.foto_principal if a.foto_principal.present?
+          especie.x_nombre_comun_principal = a.nombre_comun_principal if a.nombre_comun_principal.present?
+        end
+
+        self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
+                          nombre_comun: especie.x_nombre_comun_principal, nregistros: e['nregistros'], foto_principal: especie.x_foto_principal }
+      end
     end
   end
 
