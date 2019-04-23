@@ -274,6 +274,9 @@ module CacheServices
       datos[:data][:foto] = x_square_url  # Foto square_url
     end
 
+
+
+
     datos[:data][:publico] = 0
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
     datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]

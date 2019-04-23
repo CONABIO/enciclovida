@@ -23,8 +23,9 @@
     # Crear la legislación y asignar el nombre
     nleg = f.object.legislaciones.new
     nleg.nombreLegislacion = Fichas::Legislacion::TIPOS_LEGISLACIONES[0] # Asignar nombre de la legislación
+    puts "No habia"
     %>
-    <%= f.input :_2001,  input_html: { value: nleg.estatusLegalProteccion} %>
+    <%= f.input :SEMARNAT_2001, collection: Fichas::Legislacion::ESTATUS_LEGAL_PROTECCION, input_html: {class: 'form-control', value: nleg.estatusLegalProteccion} %>
     <%= f.input :informacion_adicional, :as => "text", input_html: { value: nleg.infoAdicional } %>
     <%
   end

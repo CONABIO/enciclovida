@@ -9,6 +9,8 @@ class Fichas::Legislacion < Ficha
 	# Legislaciones existentes
 	TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
 
+	attr_accessor :SEMARNAT_2001
+
 	def existe_legislacion(lista, num)
 		lista.each do |a|
 			if a.nombreLegislacion == Fichas::Legislacion::TIPOS_LEGISLACIONES[num]

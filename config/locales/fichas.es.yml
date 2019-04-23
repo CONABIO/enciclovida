@@ -13,10 +13,14 @@ es:
 
     options:
       defaults:
-      fichas_logislacion:
-        Amenazadas: Amenazadas (A)
-        SujetasProteccionEspecial: Sujetas a protección especial (Pr)
-        PreocupacionMenor: Preocupación menor (LC least concern)
+        yes: Si
+        no: No
+
+      fichas_legislacion:
+        SEMARNAT_2001:
+          Amenazadas: Amenazadas (A)
+          SujetasProteccionEspecial: Sujetas a protección especial (Pr)
+          PreocupacionMenor: Preocupación menor (LC least concern)
 
     labels:
       defaults:
