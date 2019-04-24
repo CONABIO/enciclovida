@@ -274,9 +274,6 @@ module CacheServices
       datos[:data][:foto] = x_square_url  # Foto square_url
     end
 
-
-
-
     datos[:data][:publico] = 0
     datos[:data][:nombre_cientifico] = nombre_cientifico.limpia
     datos[:data][:estatus] = Especie::ESTATUS_VALOR[estatus]
@@ -420,5 +417,91 @@ module CacheServices
     return if File.exists?(archivo)
     guarda_observaciones_naturalista
   end
+
+  def itera_especies
+    especies_todas = Especie.all
+    especies_todas.each do |especie_x|
+=begin
+   estatus = x_especie.proveedor.fotos_naturalista[:estatus]
+   if estatus
+     puts x_especie.proveedor.fotos_naturalista[:fotos].count
+   else
+     puts "No hay fotos"
+   end
+=end
+      if especie_x.proveedor != nil
+        datos_estadisticas(especie_x)
+      else
+        puts "sin proveedor"
+      end
+    end
+  end
+
+  def datos_estadisticas(especie)
+
+    puts "\n\n * * * * * * * *"
+    # Guardar estadísticas:
+    # 1. Visitas a la especie o grupo
+
+    # 2. Número de especies
+
+    # 3. Número de especies e inferiores
+
+    # 4. Nombres comunes de NaturaLista
+    nombres_comunes_naturalista = especie.proveedor.nombres_comunes_naturalista[:nombres_comunes].count
+    puts "Nombres comunes de naturalista: #{nombres_comunes_naturalista}"
+
+    # 5. Nombres comunes de CONABIO
+    nombres_comunes_conabio = especie.nombres_comunes.count
+    puts "Nombres comunes de conabio: #{nombres_comunes_conabio}"
+
+    # 6. Fotos en NaturaLista
+    fotos_naturalista = especie.proveedor.fotos_naturalista[:fotos].count
+    puts "Fotos naturalista: #{fotos_naturalista}"
+
+    # 7. Fotos en el Banco de Imágenes de CONABIO
+    fotos_bdi = especie.fotos_bdi[:fotos].count
+    puts "Fotos BDI: #{fotos_bdi}"
+
+
+    # 8. Fotos en EOL
+    #   - EolController
+
+    # 9. Fotos en Wikimedia
+    #   - WikimediaCommonsController
+
+    # 10. Fotos en flickr
+    #   - flickr/photo_fields ?
+
+    # 11. Fichas revisadas de CONABIO
+    #   - Extraer de FESPECIES
+
+    # 12. Fichas en revisión de CONABIO
+
+    # 13. Fichas de EOL-español
+
+    # 14. Fichas de EOL-ingles
+
+    # 15. Fichas de Wikipedia-español
+
+    # 16. Fichas de Wikipedia-ingles
+
+    # 17. Ejemplares en el SNIB
+    ejemplares_snib = especie.proveedor.ejemplares_snib
+    puts "Ejemplares en el SNIB: #{ejemplares_snib}"
+
+
+
+    # 18. Ejemplares en el SNIB (aVerAves)
+
+    # 19. Observaciones en NaturaLista (grado de investigación)
+
+    # 20. Observaciones en NaturaLista (grado casual)
+
+    # 21. Mapas de distribución
+
+    true
+  end
+
 
 end
