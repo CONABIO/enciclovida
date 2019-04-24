@@ -3,21 +3,35 @@
   <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
 <% end %>
 
-
-<% # Extraer del taxón
-# ecorregion
-# cat_eacorregionwwf
-# ecosistema
-# habitat
-# suelo
-# geoforma
+<div class='nested-fields'>
+<%= # f.input :descripcion
+%>
+<%= # f.input :TipoEcorregion
+%>
+<%= # f.input :tipoecosistema
 %>
 
+<%= f.input :tipoVegetacion %>
+<%= f.input :habitatAgropecuario %>
+<%= f.input :zonaUrbana %>
+<%= f.input :VegetacionSecundaria %>
+<%= f.input :tipoVegetacionSecundaria %>
+<%= f.input :intervaloaltitudinalinicial %>
+<%= f.input :infoAddintervaloaltitudinal %>
+<%= f.input :tipoClimaId %>
+<%= f.input :climaAdicional %>
+<%= f.input :temperaturainicial %>
+<%= f.input :infoaddtemperatura %>
+<%= f.input :precipitacioninicial %>
+<%= f.input :infoaddprecipitacion %>
+<%= f.input :humedadinicial %>
+<%= f.input :infoaddhumedad %>
+<%= f.input :descripcionSuelo %>
 
-<%= f.input :id, required: true, :disabled => true %>
-<%= f.input :resumenEspecie %>
-<%= f.input :descEspecie %>
-<%= f.input :especiesSmilares %>
-<%= f.input :origen %>
-<%= f.input :descripcionOrigen %>
-
+<%= # f.input :Descripcion
+%>
+<%= # f.input :descrpcion
+%>
+<%= # f.input :descripcionGeoforma
+%>
+</div>

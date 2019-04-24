@@ -1,6 +1,6 @@
 es:
-  secciones_general:
-    informacion_adicional: Información adicional
+  general:
+    informacion_de_ficha: Información de la ficha
 
   secciones:
     clasificacion_descripcion: Clasificación y descripción

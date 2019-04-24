@@ -3,6 +3,35 @@
   <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
 <% end %>
 
+<div class='nested-fields'>
+<%= #f.input :exoticaMundial
+%>
+<%= f.input :historicaPotencial %>
+<%=
+  # f.input :estadoHabitat (habitat)
+%>
+<%= f.input :infoAdicionalMun %>
+<%= f.input :alcanceDistribucion %>
+<%= f.input :infoAdicionalAlcance %>
+<%= # f.input :endemicaMexico
+%>
+<%= # f.input :endemicaA
+%>
+<%= # f.input :infoAdicionalEndemica
+%>
+</div>
+
+
+
+
+<%
+=begin
+
+
+
+
+
+
 <%
   paises = Fichas::Pais.all
 %>
@@ -91,5 +120,7 @@ region:
           endemismo: Endemismo
           endemica_mexico: ¿Endémica en México?
           endemica_sin: Sin
+
+
 =end
 %>
