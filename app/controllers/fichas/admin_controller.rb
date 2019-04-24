@@ -7,8 +7,8 @@ class Fichas::AdminController < Fichas::FichasController
     @form_params = { url: '/fichas/admin', method: 'post' }
   end
 
-  def show
-
+  def show # Redireccionar a la vista front de la ficha
+    redirect_to "http://#{IP}:#{PORT}fichas/front/#{params[:id]}"
   end
 
   def create
