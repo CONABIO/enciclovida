@@ -6,8 +6,8 @@
         <img src="<%= t[:foto_principal] %>" alt="<%= t[:nombre_cientifico] %>" height="200px;">
         <div class="caption">
           <h4><strong><%= t[:nombre_comun] %></strong></h4>
-          <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}" %></h5>
-          <p><a href="#" class="btn btn-primary" role="button"><%= t[:nregistros] %> registro(s)</a></p>
+          <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}", target: :_blank %></h5>
+          <p><a href="#" class="btn btn-primary" role="button">Ver <%= t[:nregistros] %> registro(s)</a></p>
         </div>
       </div>
     </div>

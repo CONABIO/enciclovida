@@ -9,14 +9,21 @@ class BusquedaRegion < Busqueda
 
   # Regresa un listado de especies por pagina, de acuerdo a la region
   def especies
+    guarda_cache_especies
+    dame_especies_filtros_adicionales
+    dame_especies_por_pagina
+    self.resp[:resultados] = nil
+  end
+
+  def guarda_cache_especies
     self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region.especies)) do
       url = "#{CONFIG.busquedas_region_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
       dame_especies(url)
     end
+  end
 
-    dame_especies_filtros_adicionales
-    dame_especies_por_pagina
-    self.resp[:resultados] = nil
+  def borra_cache_especies
+    Rails.cache.delete("especies_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("especies_#{params[:tipo_region]}_#{params[:region_id]}")
   end
 
   # REVISADO: Cache para obtener el conteo de especies por grupo
@@ -102,7 +109,7 @@ class BusquedaRegion < Busqueda
   # Pregunta al Servicio por el listado completo de las especies, previamente en cache
   def dame_especies(url)
     begin
-      rest = RestClient.get(url)
+      rest = RestClient.get(url, read_timeout: 1000000000, timeout: 1000000000, open_timeout: 10000000000)
       res = JSON.parse(rest)
       totales = res.length
 

@@ -22,8 +22,8 @@ function getedo() {
             .from('estados')
             .orderBy('entid')
             .then(dato => {
-            resolve(dato)
-        })
+            resolve(dato);
+})
 })
 }
 
@@ -67,7 +67,7 @@ function EspeciesEstado(req) {
             .with('protoctistas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM estados WHERE entid = '${entid}' AND entid = snibprotgw.entid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('reptiles', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM estados WHERE entid = '${entid}' AND entid = snibreptgw.entid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('total', knex.raw(
-                `
+                    `
         SELECT anfibios.idnombrecatvalido, anfibios.count AS nregistros FROM sp_snibanfigw INNER JOIN anfibios ON sp_snibanfigw.spid=anfibios.spid
         UNION SELECT aves.idnombrecatvalido, aves.count AS nregistros FROM sp_snibavesgw INNER JOIN aves ON sp_snibavesgw.spid=aves.spid
         UNION SELECT bacterias.idnombrecatvalido, bacterias.count AS nregistros FROM sp_snibbactgw INNER JOIN bacterias ON sp_snibbactgw.spid=bacterias.spid
@@ -104,7 +104,7 @@ function EspeciesMunicipio(req) {
             .with('protoctistas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE munid = '${munid}' AND munid = snibprotgw.munid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('reptiles', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE munid = '${munid}' AND munid = snibreptgw.munid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('total', knex.raw(
-                `
+                    `
         SELECT anfibios.idnombrecatvalido, anfibios.count AS nregistros FROM sp_snibanfigw INNER JOIN anfibios ON sp_snibanfigw.spid=anfibios.spid
         UNION SELECT aves.idnombrecatvalido, aves.count AS nregistros FROM sp_snibavesgw INNER JOIN aves ON sp_snibavesgw.spid=aves.spid
         UNION SELECT bacterias.idnombrecatvalido, bacterias.count AS nregistros FROM sp_snibbactgw INNER JOIN bacterias ON sp_snibbactgw.spid=bacterias.spid
@@ -141,7 +141,7 @@ function EspeciesANP(req) {
             .with('protoctistas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibprotgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('reptiles', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibreptgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('total', knex.raw(
-                `
+                    `
         SELECT anfibios.idnombrecatvalido, anfibios.count AS nregistros FROM sp_snibanfigw INNER JOIN anfibios ON sp_snibanfigw.spid=anfibios.spid
         UNION SELECT aves.idnombrecatvalido, aves.count AS nregistros FROM sp_snibavesgw INNER JOIN aves ON sp_snibavesgw.spid=aves.spid
         UNION SELECT bacterias.idnombrecatvalido, bacterias.count AS nregistros FROM sp_snibbactgw INNER JOIN bacterias ON sp_snibbactgw.spid=bacterias.spid
@@ -227,7 +227,7 @@ function taxonEdoTotal2(req) {
             .with('protoctistas', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibprotgw.munid /*and snibprotgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
             .with('reptiles', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibreptgw.munid /*and snibreptgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
             .with('total', knex.raw(
-                `
+                    `
         select 'Anfibios'::VARCHAR as grupo,COUNT as total from anfibios
         union select 'Aves'::VARCHAR as grupo, COUNT as total from aves
         union select 'Bacterias'::VARCHAR as grupo, COUNT as total from bacterias
@@ -286,7 +286,7 @@ function taxonMunTotal(req) {
             .with('protoctistas', knex.raw(`SELECT COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and cve_mun = '${mun}' and munid = snibprotgw.munid /*and snibprotgw.comentarioscat=''*/  ) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid`))
             .with('reptiles', knex.raw(`SELECT COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and cve_mun = '${mun}' and munid = snibreptgw.munid /*and snibreptgw.comentarioscat=''*/  ) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid`))
             .with('total', knex.raw(
-                `
+                    `
         select 'Anfibios'::VARCHAR as grupo, count(*) as total from anfibios
         union select 'Aves'::VARCHAR as grupo, count(*) as total from aves
         union select 'Bacterias'::VARCHAR as grupo, count(*) as total from bacterias

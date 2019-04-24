@@ -10,6 +10,8 @@ server.connection({
     labels: ['api']
 });
 
+server.timeout = 1000*60*5;
+
 server.register([
     require('inert'),
     require('vision'),
@@ -68,6 +70,7 @@ server.register([
                 query
                     .getedo()
                     .then(dato => {
+                    console.log('aca');
                     reply(dato)
                 })
             }
@@ -124,7 +127,6 @@ server.register([
                 query
                     .EspeciesEstado(request)
                     .then(dato => {
-
                     reply(dato)
                 })
             }
