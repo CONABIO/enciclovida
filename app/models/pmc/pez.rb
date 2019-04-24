@@ -240,6 +240,7 @@ class Pmc::Pez < ActiveRecord::Base
   def valor_zona_a_color
     valor_por_zona.each_with_index do |zona, i|
       next unless zona.class == Integer # Por si ya tiene asignada una letra
+      next if i == 6  # Para dejar el valor de nacional o importado
 
       case zona
       when -5..4
@@ -290,12 +291,10 @@ class Pmc::Pez < ActiveRecord::Base
 
     # Para la procedencia, si es un caso especial en caso de ser importado
     procedencia = propiedades.procedencias.map(&:valor).inject(:+).to_i
-    self.caso_especial = true if procedencia >= 20
     valor+= procedencia
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
-    #valor+= pesquerias
 
     if pesquerias != 0
       self.con_estrella = 1
@@ -304,5 +303,14 @@ class Pmc::Pez < ActiveRecord::Base
     end
 
     self.valor_por_zona = Array.new(6, valor)
+
+    # Quiere decir que es importado con huella ecológica alta
+    if procedencia >= 20
+      self.valor_por_zona << 0
+      self.caso_especial = true
+    else
+      self.valor_por_zona << 1
+    end
   end
+
 end
