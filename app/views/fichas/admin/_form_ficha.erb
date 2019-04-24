@@ -83,40 +83,57 @@
     <div class="tab-content">
 
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
+        <hr />
         <%= render partial: 'form_clasificacion_y_descripcion', locals: { f: f } %>
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= render partial: 'form_distribucion', locals: { f: f } %>
+        <hr />
+        <%= f.simple_fields_for :distribuciones  do |info| %>
+          <%= render partial: 'form_distribucion', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
-        <%= render partial: 'form_ambiente', locals: { f: f } %>
+        <hr />
+        <%= f.simple_fields_for :habitats do |info| %>
+          <%= render partial: 'form_ambiente', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='biologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <%= f.simple_fields_for :historianatural do |info| %>
+          <%= render partial: 'form_biologia', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='ecologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
+          <%= render partial: 'form_ecologia', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='genetica' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'form_genetica', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='importancia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'form_importancia', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <%= f.simple_fields_for :conservacion do |info| %>
+          <%= render partial: 'form_conservacion', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
@@ -128,6 +145,20 @@
         <hr />
         <%= render partial: 'form_necesiades_informacion', locals: { f: f } %>
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
