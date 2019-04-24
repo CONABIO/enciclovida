@@ -23,7 +23,7 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre, :caso_especial
 
   validates_presence_of :especie_id
   after_save :actualiza_pez, unless: :guardar_manual
@@ -71,9 +71,9 @@ class Pmc::Pez < ActiveRecord::Base
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
 
-      if propiedad.nombre_propiedad == 'No se distribuye'  # Quitamos la zona
+      if propiedad.nombre_propiedad == 'No se distribuye' && !caso_especial  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
-      elsif propiedad.nombre_propiedad == 'Estatus no definido' # La zona se muestra en gris
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !caso_especial  # La zona se muestra en gris
         self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
@@ -285,9 +285,13 @@ class Pmc::Pez < ActiveRecord::Base
     propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
     valor+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
     valor+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
-    valor+= propiedades.procedencias.map(&:valor).inject(:+).to_i
     valor+= propiedades.nom.map(&:valor).inject(:+).to_i
     valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
+
+    # Para la procedencia, si es un caso especial en caso de ser importado
+    procedencia = propiedades.procedencias.map(&:valor).inject(:+).to_i
+    self.caso_especial = true if procedencia >= 20
+    valor+= procedencia
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
