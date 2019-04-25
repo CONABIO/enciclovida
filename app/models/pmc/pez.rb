@@ -23,7 +23,7 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre, :importada, :en_riesgo
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre, :importada, :nacional_importada, :en_riesgo, :veda_perm_dep
 
   validates_presence_of :especie_id
   after_save :actualiza_pez, unless: :guardar_manual
@@ -73,7 +73,7 @@ class Pmc::Pez < ActiveRecord::Base
 
       if propiedad.nombre_propiedad == 'No se distribuye' && !importada  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
-      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !importada && !en_riesgo  # La zona se muestra en gris
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !importada && !en_riesgo && !veda_perm_dep  # La zona se muestra en gris
         self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
@@ -285,9 +285,11 @@ class Pmc::Pez < ActiveRecord::Base
 
     propiedades = criterio_propiedades.select('valor').where('anio=?', anio)
     valor+= propiedades.tipo_capturas.map(&:valor).inject(:+).to_i
-    valor+= propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
-    valor+= propiedades.nom.map(&:valor).inject(:+).to_i
-    valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
+
+    # Para la veda permanente o deportiva
+    veda = propiedades.tipo_vedas.map(&:valor).inject(:+).to_i
+    valor+= veda
+    self.veda_perm_dep = true if veda >= 20
 
     # Para la nom
     nom = propiedades.nom.map(&:valor).inject(:+).to_i
