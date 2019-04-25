@@ -73,7 +73,7 @@ class Pmc::Pez < ActiveRecord::Base
 
       if propiedad.nombre_propiedad == 'No se distribuye' && !importada  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
-      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !importada && !en_riesgo && !veda_perm_dep  # La zona se muestra en gris
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !nacional_importada && !en_riesgo && !veda_perm_dep  # La zona se muestra en gris
         self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
@@ -302,8 +302,12 @@ class Pmc::Pez < ActiveRecord::Base
     self.en_riesgo = true if iucn >= 20
 
     # Para la procedencia, si es un caso especial en caso de ser importado
+    procedencia_texto = criterio_propiedades.procedencias.first.try(:nombre_propiedad)
     procedencia = propiedades.procedencias.map(&:valor).inject(:+).to_i
     valor+= procedencia
+
+    self.importada = true if procedencia >= 20 && procedencia_texto == 'Importado (huella ecológica alta)'
+    self.nacional_importada = true if procedencia >= 20 && procedencia_texto == 'Nacional e Importado (huella ecológica alta)'
 
     # Para asignar el campo con_estrella que se asocia a las pesquerias sustentables
     pesquerias = propiedades.pesquerias.map(&:valor).inject(:+).to_i
@@ -316,10 +320,9 @@ class Pmc::Pez < ActiveRecord::Base
 
     self.valor_por_zona = Array.new(6, valor)
 
-    # Quiere decir que es importado con huella ecológica alta
-    if procedencia >= 20
+    # Quiere decir que es importado
+    if importada
       self.valor_por_zona << 0
-      self.importada = true
     else
       self.valor_por_zona << 1
     end
