@@ -23,7 +23,7 @@ class Pmc::Pez < ActiveRecord::Base
   scope :nombres_cientificos_peces, -> { select(:especie_id).select("nombre_cientifico as label")}
   scope :nombres_comunes_peces, -> { select(:especie_id).select("nombres_comunes as label")}
 
-  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre, :caso_especial
+  attr_accessor :guardar_manual, :anio, :valor_por_zona, :nombre, :importada, :en_riesgo
 
   validates_presence_of :especie_id
   after_save :actualiza_pez, unless: :guardar_manual
@@ -71,9 +71,9 @@ class Pmc::Pez < ActiveRecord::Base
     criterio_propiedades.select('propiedades.*, valor').cnp.where('anio=?', anio).each do |propiedad|
       zona_num = propiedad.parent.nombre_zona_a_numero  # Para obtener la posicion de la zona
 
-      if propiedad.nombre_propiedad == 'No se distribuye' && !caso_especial  # Quitamos la zona
+      if propiedad.nombre_propiedad == 'No se distribuye' && !importada  # Quitamos la zona
         self.valor_por_zona[zona_num] = 'n'
-      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !caso_especial  # La zona se muestra en gris
+      elsif propiedad.nombre_propiedad == 'Estatus no definido' && !importada && !en_riesgo  # La zona se muestra en gris
         self.valor_por_zona[zona_num] = 's'  # Por si se arrepienten
       else
         self.valor_por_zona[zona_num] = valor_por_zona[zona_num] + propiedad.valor
@@ -247,7 +247,7 @@ class Pmc::Pez < ActiveRecord::Base
         self.valor_por_zona[i] = 'v'
       when 5..19
         self.valor_por_zona[i] = 'a'
-      when 20..100
+      when 20..200
         self.valor_por_zona[i] = 'r'
       end
     end
@@ -289,6 +289,16 @@ class Pmc::Pez < ActiveRecord::Base
     valor+= propiedades.nom.map(&:valor).inject(:+).to_i
     valor+= propiedades.iucn.map(&:valor).inject(:+).to_i
 
+    # Para la nom
+    nom = propiedades.nom.map(&:valor).inject(:+).to_i
+    valor+= nom
+    self.en_riesgo = true if nom >= 20
+
+    # Para la iucn
+    iucn = propiedades.iucn.map(&:valor).inject(:+).to_i
+    valor+= iucn
+    self.en_riesgo = true if iucn >= 20
+
     # Para la procedencia, si es un caso especial en caso de ser importado
     procedencia = propiedades.procedencias.map(&:valor).inject(:+).to_i
     valor+= procedencia
@@ -307,7 +317,7 @@ class Pmc::Pez < ActiveRecord::Base
     # Quiere decir que es importado con huella ecológica alta
     if procedencia >= 20
       self.valor_por_zona << 0
-      self.caso_especial = true
+      self.importada = true
     else
       self.valor_por_zona << 1
     end
