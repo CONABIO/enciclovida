@@ -60,7 +60,7 @@
 .menor-ev-icon:before { content: '\e83a'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e83b'; } /* '' */
 .newspaper-ev-icon:before { content: '\e83c'; } /* '' */
-.cobi-ev-icon:before { content: '\e83d'; } /* '' */
+.cobi-1-ev-icon:before { content: '\e83d'; } /* '' */
 .doc-text-ev-icon:before { content: '\e83e'; } /* '' */
 .busqueda-avanzada-ev-icon:before { content: '\e83f'; } /* '' */
 .file-pdf-ev-icon:before { content: '\e840'; } /* '' */
@@ -113,5 +113,7 @@
 .cornell_lab_yellow-ev-icon:before { content: '\e86f'; } /* '' */
 .macaulay_library-ev-icon:before { content: '\e870'; } /* '' */
 .bdi-ev-icon:before { content: '\e871'; } /* '' */
+.cobi-ev-icon:before { content: '\e872'; } /* '' */
+.importado-ev-icon:before { content: '\e873'; } /* '' */
 .circle-ev-icon:before { content: '\f111'; } /* '' */
 .copyright-ev-icon:before { content: '\f1f9'; } /* '' */
