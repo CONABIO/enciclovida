@@ -1,15 +1,43 @@
 es:
-  secciones_general:
-    informacion_adicional: Información adicional
-
-  secciones:
-    clasificacion_descripcion: Clasificación y descripción
-    distribucion: Distribución
+  general:
+    informacion_de_ficha: Información de la ficha
+    titulos_secciones:
+      clasificacion_y_descripcion: I. Clasificación y descripción de la especie
+      distribucion: II. Distribución de la especie
+      ambiente: III. Tipo de ambiente en donde se desarrolla la especie
+      biologia: IV. Biología de la especie
+      ecologia: V. Ecología y demografía de la especie
+      genetica: VI. Genética de la especie
+      importancia: VII. Importancia de la especie
+      estado_de_conservacion: VIII. Estado de conservación de la especie
+      prioritarias_conservacion: IX. Especies prioritarias para la conservación
+      necesidades: X. Necesidades de información
+      metadatos: XI. Metadatos
 
   simple_form:
     placeholders:
+      medidas:
+        centimetros: En centímetros
+        metros: En metros
+      pesos:
+        gramos: En gramos
+      tiempo:
+        anios: Años
+        meses: Meses
+        dias: Días
+        horas: Horas
 
     hints:
+      medidas:
+        centimetros: En centímetros
+        metros: En metros
+      pesos:
+        gramos: En gramos
+      tiempo:
+        anios: Años
+        meses: Meses
+        dias: Días
+        horas: Horas
 
     options:
       defaults:
@@ -29,39 +57,41 @@ es:
         yes: si
         no: no
 
-      #clasificacion_y_descripcion:
+      fichas_taxon:
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
-        especiesSmilares: Especies similares
-        origen: Origen
-        descripcionOrigen: Descrición del orígen
-        nombreComun: Nombre común
-        sinonimo: Sinonimo
-        longevidad: Longevidad (años)
-        peso: Peso (gramos)
-        largo: Largo (centímetros)
+        longevidad: Longevidad
+        peso: Peso (en gramos)
+        largo: Largo (en centímetros)
         machos: Machos
         hembras: Hembras
+        especiesSmilares: Especies similares
         categoria_riesgo:
           NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT
           _2001: 2001
           _2010: 2010
         categoria_UICN:	Categoría de riesgo según UICN
         categoria_CITES: Regulación del comercio internacional de la especie (CITES)
+        origen: Origen
+        descripcionOrigen: Descrición del orígen
 
-
-      distribucion:
+      distribuciones:
         region:
           region: Región
           distribucion_mundial: Distribución mundial
         estado_habitad_desarrollo_taxon: Estado del hábitat con respecto al desarrollo natural del taxón
-        historica_potencial: Histórica o potencial
-        amplia_restringida: Amplia o restringida
+        historicaPotencial: Histórica o potencial
+        alcanceDistribucion: Amplia o restringida
+        infoAdicionalAlcance: Información adicional
         endemismo:
           endemismo: Endemismo
           endemica_mexico: ¿Endémica en México?
 
       ambiente:
+        tipos:
+            terrestre: A. Ambiente terrestre
+            acuatico: B. Ambiente acuático (dulceacuícola, salobre o marino)
+            terrestre_acuatico: C. Ambiente terrestre-acuático
         ambiente: Ambiente
         ecorregion: Ecorregion
         ecosistema: Ecosistema
@@ -71,7 +101,7 @@ es:
         rango_de_humedad_relativa: Rango de humedad relativa
         geoforma: Geoforma
         tipos_de_vegetacion: Tipos de vegetación
-        vegetacion__en_la_que_se_desarrolla_la_especie: Vegetación  en la que se desarrolla la especie
+        vegetacion_en_la_que_se_desarrolla_la_especie: Vegetación  en la que se desarrolla la especie
         habitats_antropicos: Hábitats antrópicos
         tipo_de_vegetacion_secundaria: Tipo de vegetación secundaria
         mencionar_las_especies_asociadas_: Mencionar las especies asociadas
@@ -191,5 +221,6 @@ es:
         nivelPrioridad: Prioridad resultante del proceso
         justificacionPrioritaria: Justificación del estatus de especie prioritaria
 
-      necesidades:
+      fichas_taxon:
+        # Sección: necesidades
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie

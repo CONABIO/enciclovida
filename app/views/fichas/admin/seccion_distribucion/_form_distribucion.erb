@@ -1,7 +1,25 @@
-<% content_for :extracss do %>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
-<% end %>
+<div class='nested-fields'>
+
+  <h4 class="titulo_subseccion"><%= t('simple_form.labels.distribuciones.region.distribucion_mundial') %></h4>
+  (Distribución mundial:)
+
+  <%= f.input :historicaPotencial %>
+
+
+  <%= f.input :infoAdicionalMun %>
+  <hr class="espacio_ficha">
+
+  <%= f.input :alcanceDistribucion %>
+  <%= f.input :infoAdicionalAlcance %>
+
+
+</div>
+
+
+
+
+<%
+=begin
 
 <%
   paises = Fichas::Pais.all
@@ -62,7 +80,7 @@
   else
     distribucion = f.object.distribuciones.first
 %>
-  tampoco
+
 <% end %>
 
 
@@ -91,5 +109,7 @@ region:
           endemismo: Endemismo
           endemica_mexico: ¿Endémica en México?
           endemica_sin: Sin
+
+
 =end
 %>

@@ -3,7 +3,7 @@
   <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
 <% end %>
 
-<%= f.input :prioritaria %>
+<%= f.input :prioritaria, as: :radio_buttons, collection: [['0', 'YES'], ['1', 'NO']], label_method: :second, value_method: :first  %>
 <%= f.input :publicadaEn %>
 <%= f.input :nivelPrioridad %>
 <%= f.input :justificacionPrioritaria %>

@@ -1,4 +1,4 @@
-<!-- Opción 1 -->
+<!-- Opción 1 -- >
 <script type="text/javascript" src="http://js.nicedit.com/nicEdit.js"></script> <script type="text/javascript">
     //<![CDATA[
     bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
@@ -83,55 +83,144 @@
     <div class="tab-content">
 
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
-        <%= render partial: 'form_clasificacion_y_descripcion', locals: { f: f } %>
+        <hr />
+        <% # OCUPA: taxon, legislacion  %>
+        <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion', locals: { f: f } %>
+
+        <hr class="espacio_ficha">
+
+        <%= f.simple_fields_for :legislaciones do |info| %>
+          <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
+        <% end %>
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
-        <%= render partial: 'form_distribucion', locals: { f: f } %>
+        <hr />
+        <% # OCUPA: habitat, distribucion, endemica  %>
+        <%= f.simple_fields_for :habitats  do |info| %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :distribuciones do |info| %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion', locals: { f: info} %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :endemicas do |info| %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
+        <% end %>
       </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
-        <%= render partial: 'form_ambiente', locals: { f: f } %>
+        <hr />
+        <% # OCUPA: ecorregion, cat_eacorregionwwf, ecosistema, habitat, suelo, geoforma %>
+        <%= f.simple_fields_for :habitats do |info| %>
+          <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='biologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <% # OCUPA: habitad, historianatural, demografiaamenazas, * * reproduccionanimal, * * reproduccionvegetal %>
+        <%= f.simple_fields_for :habitats do |info| %>
+          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia', locals: { f: info } %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
+          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='ecologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <% # OCUPA: demografiaamenazas, * * interaccion  %>
+        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
+          <%= render partial: 'fichas/admin/seccion_ecologia/form_ecologia', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='genetica' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <% # OCUPA: historianatural %>
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'fichas/admin/seccion_genetica/form_genetica', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='importancia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <% # OCUPA: historianatural %>
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'fichas/admin/seccion_importancia/form_importancia', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        Hola
+        <% # OCUPA: * * amenazadirecta, demografiaamenazas, conservacion %>
+        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
+          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :conservacion do |info| %>
+          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion', locals: { f: info } %>
+        <% end %>
       </div>
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <%= render partial: 'form_prioritaria_conservacion', locals: { f: f } %>
+        <% # OCUPA:  taxon %>
+        <%= render partial: 'fichas/admin/seccion_prioritaria/form_prioritaria_conservacion', locals: { f: f } %>
       </div>
 
       <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <%= render partial: 'form_necesiades_informacion', locals: { f: f } %>
+        <% # OCUPA: taxon  %>
+        <%= render partial: 'fichas/admin/seccion_necesidad_informacion/form_necesiades_informacion', locals: { f: f } %>
       </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        Hola
+        <%= f.simple_fields_for :meta do |info| %>
+          <%= info.input :gender, as: :radio_buttons, collection: [['0', ' Female'], ['1', ' Male']], label_method: :second, value_method: :first, input_html: {class: 'form-control'} %>
+          <%= info.input :username, label: 'Your username please', error: 'Username is mandatory, please specify one' %>
+          <%= info.input :password, hint: 'No special characters.' %>
+          <%= info.input :email, placeholder: 'user@domain.com' %>
+          <%= info.input :remember_me, inline_label: 'Yes, remember me' %>
+          <%= info.input :username, label_html: { class: 'my_class' } %>
+          <%= info.input :password, hint: false, error_html: { id: 'password_error'} %>
+          <%= info.input_field :remember_me, as: :boolean, boolean_style: :inline , input_html: {class: 'form-control'} %>
+          <%= info.input_field :remember_me2, as: :boolean, boolean_style: :inline %>
+          <%= info.select :role, Fichas::Pais.all.map { |r| [r.nombrepais, r.id, { }] }, include_blank: true, multiple: true %>
+
+          <%= info.input :age, collection: 18..60 %>
+          <%= info.input :shipping_country, priority: [ "Brazil" ], collection: [ "Australia", "Brazil", "New Zealand"], :include_blank => false, :input_html => { class: 'multiselectuser', multiple: true } %>
+
+          <%= info.input :role_id, label: "visible to", as: :select, label: "Role", collection: [ "Australia", "Brazil", "New Zealand"], required: true, multiple: true %>
+
+          <%= select_tag 'particular_users',
+                         options_from_collection_for_select(Fichas::Pais.all, :id, :nombrepais),
+                         multiple: true, class: 'multiselectuser' %>
+
+          <%= f.association :sinonimos, input_html: { } %>
+          <%= info.input :ethnicity, :label => "Ethnicity", :collection => ["Asian","Black", "Hispanic/Latino", "Indian", "Middle Eastern", "Native American", "Pacific Islander", "White", "Other"], :include_blank => "Anything", wrapper_html: { class: 'form-group' }, :as => :check_boxes, include_hidden: false, :input_html => {:name => "search[ethnicity][]", :multiple => true} %>
+        <% end %>
       </div>
 
       <div id='referencias' role="tabpanel" class="tab-pane fade panel-body">
@@ -147,7 +236,19 @@
 <% end %>
 
 <style>
+
   textarea.form-control {
     min-height: 200px;
   }
+
+ .espacio_ficha {
+   border: lightgrey;
+   border-style: dashed;
+   border-width: 2px;
+ }
+
+  .titulo_subseccion {
+
+  }
+
 </style>
