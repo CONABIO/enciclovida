@@ -30,7 +30,7 @@ class Especie < ActiveRecord::Base
                 :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
                 :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
-                :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales,
+                :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
                 :x_familia, :x_subfamilia, :x_epifamilia, :x_tribu, :x_subtribu, :x_genero, :x_subgenero, :x_seccion, :x_subseccion,
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
