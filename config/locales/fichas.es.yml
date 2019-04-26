@@ -58,23 +58,22 @@ es:
         no: no
 
       fichas_taxon:
-        seccion_clasificacion:
-          resumenEspecie: Resumen de la especie
-          descEspecie: Descripción de la especie
-          longevidad: Longevidad
-          peso: Peso (en gramos)
-          largo: Largo (en centímetros)
-          machos: Machos
-          hembras: Hembras
-          especiesSmilares: Especies similares
-          categoria_riesgo:
-            NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT
-            _2001: 2001
-            _2010: 2010
-          categoria_UICN:	Categoría de riesgo según UICN
-          categoria_CITES: Regulación del comercio internacional de la especie (CITES)
-          origen: Origen
-          descripcionOrigen: Descrición del orígen
+        resumenEspecie: Resumen de la especie
+        descEspecie: Descripción de la especie
+        longevidad: Longevidad
+        peso: Peso (en gramos)
+        largo: Largo (en centímetros)
+        machos: Machos
+        hembras: Hembras
+        especiesSmilares: Especies similares
+        categoria_riesgo:
+          NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT
+          _2001: 2001
+          _2010: 2010
+        categoria_UICN:	Categoría de riesgo según UICN
+        categoria_CITES: Regulación del comercio internacional de la especie (CITES)
+        origen: Origen
+        descripcionOrigen: Descrición del orígen
 
       distribuciones:
         region:

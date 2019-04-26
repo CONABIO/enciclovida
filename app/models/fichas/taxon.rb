@@ -25,11 +25,10 @@ class Fichas::Taxon < Ficha
   accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
   accepts_nested_attributes_for :conservacion, allow_destroy: true
-
   accepts_nested_attributes_for :legislaciones, allow_destroy: true
   accepts_nested_attributes_for :endemicas, allow_destroy: true
 
-  attr_accessor :necesidades
+  attr_accessor :fichas_taxon
 
   # Devuelve las secciones que tienen información
 	def dame_edad_peso_largo
