@@ -84,66 +84,84 @@
 
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
-        <%= render partial: 'form_clasificacion_y_descripcion', locals: { f: f } %>
+        <% # OCUPA: taxon, legislacion  %>
+        <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion', locals: { f: f } %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :legislaciones, :habitats  do |info| %>
+          <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
+        <% end %>
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: habitat, distribucion, endemica  %>
         <%= f.simple_fields_for :distribuciones, :habitats  do |info| %>
-          <%= render partial: 'form_distribucion', locals: { f: info, g: 1} %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion', locals: { f: info} %>
+        <% end %>
+        <hr class="espacio_ficha">
+        <%= f.simple_fields_for :endemicas, :habitats  do |info| %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
         <% end %>
       </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: ecorregion, cat_eacorregionwwf, ecosistema, habitat, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'form_ambiente', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='biologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: historianatural, demografiaamenazas, reproduccionanimal, reproduccionvegetal %>
         <%= f.simple_fields_for :historianatural do |info| %>
-          <%= render partial: 'form_biologia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='ecologia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: demografiaamenazas, interaccion  %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'form_ecologia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_ecologia/form_ecologia', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='genetica' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'form_genetica', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_genetica/form_genetica', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='importancia' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'form_importancia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_importancia/form_importancia', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
+        <% # OCUPA: amenazadirecta, demografiaamenazas, conservacion %>
         <%= f.simple_fields_for :conservacion do |info| %>
-          <%= render partial: 'form_conservacion', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion', locals: { f: info } %>
         <% end %>
       </div>
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <%= render partial: 'form_prioritaria_conservacion', locals: { f: f } %>
+        <% # OCUPA:  taxon %>
+        <%= render partial: 'fichas/admin/seccion_prioritaria/form_prioritaria_conservacion', locals: { f: f } %>
       </div>
 
       <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <%= render partial: 'form_necesiades_informacion', locals: { f: f } %>
+        <% # OCUPA: taxon  %>
+        <%= render partial: 'fichas/admin/seccion_necesidad_informacion/form_necesiades_informacion', locals: { f: f } %>
       </div>
 
 
@@ -177,10 +195,7 @@
           <%= info.input :shipping_country, priority: [ "Brazil" ], collection: [ "Australia", "Brazil", "New Zealand"], :include_blank => false%>
 
           <%= info.input :role_id, label: "visible to", as: :select, label: "Role", collection: [ "Australia", "Brazil", "New Zealand"], required: true, multiple: true %>
-
-
-      <% end %>
-
+        <% end %>
       </div>
 
       <div id='referencias' role="tabpanel" class="tab-pane fade panel-body">
@@ -196,7 +211,19 @@
 <% end %>
 
 <style>
+
   textarea.form-control {
     min-height: 200px;
   }
+
+ .espacio_ficha {
+   border: lightgrey;
+   border-style: dashed;
+   border-width: 2px;
+ }
+
+  .titulo_subseccion {
+
+  }
+
 </style>

@@ -36,32 +36,6 @@
   </div>
 
   <%= f.input :especiesSmilares %>
-
-  <hr class="espacio_ficha">
-  Legislación
-
-  <%=
-    @employee_list = Fichas::Pais.all
-
-    f.association :origen, :collection => @employee_list, :label_method => :full_name, :value_method => :id, as: :check_boxes %>
-
-
-
-
-  <hr class="espacio_ficha">
-
   <%= f.input :origen %>
   <%= f.input :descripcionOrigen %>
 </div>
-
-<style>
-  .espacio_ficha {
-    border: lightgrey;
-    border-style: dashed;
-    border-width: 2px;
-  }
-
-    .titulo_subseccion {
-
-    }
-</style>
