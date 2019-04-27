@@ -254,6 +254,18 @@ div.result-img-container{
   background-color: rgb(236, 236, 236);
   z-index: 1;
 }
+.importado-ev-icon{
+  color: #cc0000;
+  text-shadow: 1px 1px 1px #fffebf;
+}
+.resultados-peces .importado-ev-icon{
+  margin: -15px 0 0 -35px;
+  position: relative;
+  font-size: 1.35em;
+  border-radius: 50%;
+  background-color: rgb(236, 236, 236);
+  z-index: 1;
+}
 .result-nombre-container ul, .popover-content ul {
   list-style: none;
   padding: 0px;
