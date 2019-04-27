@@ -421,6 +421,7 @@ module CacheServices
   def itera_especies
     especies_todas = Especie.all
     especies_todas.each do |especie_x|
+
 =begin
    estatus = x_especie.proveedor.fotos_naturalista[:estatus]
    if estatus
@@ -437,70 +438,174 @@ module CacheServices
     end
   end
 
-  def datos_estadisticas(especie)
+  # Datos estadísticos
+  def estadisticas_naturalista(especie)
+    # Respuesta de la función
+    response = {}
+
+    # Acceder a tabla proveedor
+    proveedor_naturalista = especie.proveedor
+
+    # Obtener el id de naturalista
+    id = proveedor_naturalista.naturalista_id
+
+    # ID: 4 Obtener el total de los nombres comunes
+    response[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count
+
+    # ID: 6 Obtener el total de fotos en NaturaLista
+    response[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+
+    # ID: 19. Observaciones en NaturaLista (grado de investigación)
+    response[:total_observaciones_investigacion] = 0
+
+    # quality_grade
+    # research
+
+    # ID: 20. Observaciones en NaturaLista (grado casual)
+    response[:total_observaciones_casual] = 0
+
+    response
+  end
+
+  def estadisticas_conabio(especie)
+    # Respuesta de la función
+    response = {}
+
+    # ID: 5 Nombres comunes de CONABIO
+    response[:total_nombres_comunes] = especie.nombres_comunes.count
+
+    # ID: 7 Fotos en el Banco de Imágenes de CONABIO
+    response[:total_fotos] = especie.fotos_bdi[:fotos].count
+
+    # ID: 11 Fichas revisadas de CONABIO -> Sólo aparecerá si tiene ficha asociada (0 o 1)
+    if cat = especie.scat
+      response[:total_fichas] = Fichas::Taxon.where(IdCat: cat.catalogo_id).count
+    else
+      # No se encuentra en el catálogo, por tanto no tiene ninguna ficha asociada
+      response[:total_fichas] = 0
+    end
+
+    # ID: 12 Fichas en revisión de CONABIO
+
+    response
+  end
+
+  def estadisticas_eol(especie)
+    # Respuesta de la función
+    response = {}
+
+    # ID: 8 Fotos en EOL
+
+    # ID: 13 Fichas de EOL-español
+
+    # ID: 14 Fichas de EOL-ingles
+  end
+
+  def estadisticas_flickr(especie)
+    # Respuesta de la función
+    response = {}
+
+    # ID: 10 Fotos en flickr
+    #   - flickr/photo_fields ?
+
+
+
+
+  end
+
+  def estadisticas_wikipedia(especie)
+    # Respuesta de la función
+    response = {}
+    # ID: 9 Fotos en Wikimedia
+
+    # ID: 15 Fichas de Wikipedia-español
+    TaxonDescribers::WikipediaEs.describe(especie).blank? ? response[:ficha_español] = 1 : response[:ficha_español] = 1
+
+    # ID: 16 Fichas de Wikipedia-ingles
+    TaxonDescribers::Wikipedia.describe(especie).blank? ? response[:ficha_ingles] = 0 : response[:ficha_ingles] = 1
+
+    response
+  end
+
+  # SNIB: Sistema Nacional de Información sobre Biodiversidad de México
+  def estadisticas_SNIB(especie)
+
+    # Respuesta de la función
+    response = {}
+
+    # ID: 17 Ejemplares en el SNIB
+    ejemplares_snib = especie.proveedor.ejemplares_snib
+    response[:ejemplares_snib] = 0
+
+    # ID: 18 Ejemplares en el SNIB (aVerAves)
+    response[:ejemplares_snib_aves] = 0
+
+
+    geodatos = proveedor.geodatos
+
+
+#####
+
+=begin
+    if geodatos[:cuales].any?
+      @datos[:geodatos] = geodatos
+      @datos[:solo_coordenadas] = true
+
+      # Para poner las variable con las que consulto el SNIB
+      if geodatos[:cuales].include?('snib')
+        if geodatos[:snib_mapa_json].present?
+          @datos[:snib_url] = geodatos[:snib_mapa_json]
+        else
+          reino = @especie.root.nombre_cientifico.estandariza
+          catalogo_id = @especie.scat.catalogo_id
+          @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
+        end
+
+
+especies_todas.each do |especie_x|
+
+  if especie_x.proveedor
+    especie_x.proveedor.ejemplares_snib
+else
+puts "no tiene"
+  end
+end
+
+=end
+#####
+
+
+
+
+
+
+
+
+
+  end
+
+  def estadisticas_mapas_distribucion(especie)
+    # Respuesta de la función
+    response = {}
+    # ID: 21 Mapas de distribución
+  end
+
+  def estadisticas_visitas(especie)
+    # ID: 1 Visitas a la especie o grupo
+    especie.especie_estadisticas.where(:estadistica_id => 1).first.conteo
+  end
+
+  def estadisticas_especies(especie)
+    # ID: 2 Número de especies
+    # ID: 3 Número de especies e inferiores
+  end
+
+
+
+  def genera_estadisticas(especie)
 
     puts "\n\n * * * * * * * *"
     # Guardar estadísticas:
-    # 1. Visitas a la especie o grupo
-
-    # 2. Número de especies
-
-    # 3. Número de especies e inferiores
-
-    # 4. Nombres comunes de NaturaLista
-    nombres_comunes_naturalista = especie.proveedor.nombres_comunes_naturalista[:nombres_comunes].count
-    puts "Nombres comunes de naturalista: #{nombres_comunes_naturalista}"
-
-    # 5. Nombres comunes de CONABIO
-    nombres_comunes_conabio = especie.nombres_comunes.count
-    puts "Nombres comunes de conabio: #{nombres_comunes_conabio}"
-
-    # 6. Fotos en NaturaLista
-    fotos_naturalista = especie.proveedor.fotos_naturalista[:fotos].count
-    puts "Fotos naturalista: #{fotos_naturalista}"
-
-    # 7. Fotos en el Banco de Imágenes de CONABIO
-    fotos_bdi = especie.fotos_bdi[:fotos].count
-    puts "Fotos BDI: #{fotos_bdi}"
-
-
-    # 8. Fotos en EOL
-    #   - EolController
-
-    # 9. Fotos en Wikimedia
-    #   - WikimediaCommonsController
-
-    # 10. Fotos en flickr
-    #   - flickr/photo_fields ?
-
-    # 11. Fichas revisadas de CONABIO
-    #   - Extraer de FESPECIES
-
-    # 12. Fichas en revisión de CONABIO
-
-    # 13. Fichas de EOL-español
-
-    # 14. Fichas de EOL-ingles
-
-    # 15. Fichas de Wikipedia-español
-
-    # 16. Fichas de Wikipedia-ingles
-
-    # 17. Ejemplares en el SNIB
-    ejemplares_snib = especie.proveedor.ejemplares_snib
-    puts "Ejemplares en el SNIB: #{ejemplares_snib}"
-
-
-
-    # 18. Ejemplares en el SNIB (aVerAves)
-
-    # 19. Observaciones en NaturaLista (grado de investigación)
-
-    # 20. Observaciones en NaturaLista (grado casual)
-
-    # 21. Mapas de distribución
-
-    true
   end
 
 
