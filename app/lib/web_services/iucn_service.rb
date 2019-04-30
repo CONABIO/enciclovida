@@ -1,7 +1,5 @@
 class IUCNService
 
-  attr_accessor :csv_path
-
   # Consulta la categoria de riesgo de un taxon dado
   def consultaRiesgo(opts)
     @iucn = CONFIG.iucn.api
@@ -32,21 +30,41 @@ class IUCNService
 
   # Accede al archivo que contiene los assessments y la taxonomia dentro de la carpeta versiones_IUCN
   # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asswessments con el de taxonomy
-  def lee_csv(archivo)
-    self.csv_path = Rails.root.join('public', 'IUCN', archivo)
-    Rails.logger.debug "[DEBUG] - Corriendo con archivo: #{csv_path}"
+  def actualiza_IUCN(archivo)
+    csv_path = Rails.root.join('public', 'IUCN', archivo)
+    bitacora.puts 'nombre científico en IUCN,IUCN,nombre científico en CAT,encontró en CAT?,estatus nombre,observaciones'
     return unless File.exists? csv_path
 
     CSV.foreach(csv_path, :headers => true) do |row|
-      puts row.inspect + '-----------'
+      datos = []
+      datos[0] = row['scientificName']
+      datos[1] = row['redlistCategory']
+
+      t = Especie.where(nombre_cientifico: row['scientificName'])
+
+      if t.length == 1  # Caso más sencillo
+        datos[2] = t.first.nombre_cientifico
+        datos[3] = 1
+        datos[4] = t.first.estatus
+
+        if t.first.estatus != 2  # Quiere decir que no es valido
+          
+        end
+
+        bitacora.close
+
+      elsif  t.length == 0 # Sin resultados
+      else  # Más de un resultado, hay un homonimo
+
+      end
       return
     end
   end
 
   # Bitacora especial para catalogos, antes de correr en real, pasarsela
   def bitacora
-    log_path = Rails.root.join('log', Time.now.strftime('%Y-%m-%d_%H%m') + '_IUCN.log')
-    @@bitacora ||= Logger.new(log_path)
+    log_path = Rails.root.join('log', Time.now.strftime('%Y-%m-%d_%H%m') + '_IUCN.csv')
+    @@bitacora ||= File.new(log_path, 'a+')
   end
 
 end
