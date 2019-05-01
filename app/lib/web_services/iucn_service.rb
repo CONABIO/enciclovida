@@ -32,7 +32,7 @@ class IUCNService
   # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asswessments con el de taxonomy
   def actualiza_IUCN(archivo)
     csv_path = Rails.root.join('public', 'IUCN', archivo)
-    bitacora.puts 'nombre científico en IUCN,IUCN,nombre científico en CAT,encontró en CAT?,estatus nombre,observaciones'
+    bitacora.puts 'Nombre científico en IUCN,IUCN,Nombre científico en CAT,IdCAT,Estatus nombre,IdCAT valido,observaciones'
     return unless File.exists? csv_path
 
     CSV.foreach(csv_path, :headers => true) do |row|
@@ -43,22 +43,30 @@ class IUCNService
       t = Especie.where(nombre_cientifico: row['scientificName'])
 
       if t.length == 1  # Caso más sencillo
+        estatus = t.first.estatus
         datos[2] = t.first.nombre_cientifico
-        datos[3] = 1
-        datos[4] = t.first.estatus
+        datos[3] = t.first.scat.catalogo_id
+        datos[4] = estatus
 
-        if t.first.estatus != 2  # Quiere decir que no es valido
-          
+        if estatus == 2  # Quiere decir que es valido
+          datos[5] = t.first.scat.catalogo_id
+          datos[6] = 'Coincidencia exacta'
+        elsif estatus == 1
+          datos[6] = 'Es un sinónimo'
         end
 
-        bitacora.close
-
       elsif  t.length == 0 # Sin resultados
+        # Intento buscar por medio de exp regulares
+        Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} regexp ?","[]")
+        datos[6] = 'Sin coincidencias'
       else  # Más de un resultado, hay un homonimo
-
+        datos[6] = 'Más de un resultado (homonímia)'
       end
-      return
+
+      bitacora.puts datos.join(',')
     end
+
+    bitacora.close
   end
 
   # Bitacora especial para catalogos, antes de correr en real, pasarsela
