@@ -317,6 +317,35 @@ class Proveedor < ActiveRecord::Base
     puts "\n\nGuardo ejemplares del snib #{especie_id}"
   end
 
+  # Recupera sólo la cantidad de observaciones de Naturalista sobre una especie
+  def numero_observaciones_naturalista
+
+    numero_observs = {
+        :casual => 0,
+        :investigacion => 0
+    }
+
+    tipo_resultados = ['needs_id', 'research', 'casual']
+
+    tipo_resultados.each do |tipo|
+
+      # Invocar la API para consultar observaciones
+      respuesta = api_naturalista_total_observaciones(params = { :tipo => "#{tipo}" })
+
+      if respuesta[:estatus]
+
+        resultado = respuesta[:msg]['results'][0]
+
+        # Si no es de tipo research (científica), asignarlo a casual
+        if tipo == 'research'
+          numero_observs[:investigacion] = resultado['count']
+        else
+          numero_observs[:casual] = numero_observs[:casual] + resultado['count']
+        end
+      end
+    end
+    numero_observs
+  end
 
   private
 
@@ -363,6 +392,44 @@ class Proveedor < ActiveRecord::Base
 
     # Pone solo las coordenadas y el ID para el json del mapa, se necesita que sea mas ligero.
     self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 2]
+  end
+
+  def api_naturalista_total_observaciones(params = { :tipo => "casual" })
+    begin # LLamada al servicio
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}", timeout: 20)
+      # puts "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}"
+      res = JSON.parse(rest_client)
+    rescue => e
+      return {estatus: false, msg: e}
+    end
+
+    total = res['total_results']
+
+    unless res['results'].any?
+      return {estatus: false, msg: 'No hay resultados que mostrar'}
+    end
+
+    if total.blank? || (total.present? && total <= 0)
+      return {estatus: false, msg: 'No hay resultados que mostrar'}
+    end
+
+    return {estatus: true, msg: res}
+  end
+
+  # Pendiente de borrar...
+  def itera_tipo_observaciones(observaciones, numero_observs)
+    # Itera las observaciones y regresa la cantidad de cada tipo
+    observaciones.each do |observacion|
+      # Extrae el grado de investigacion
+      tipo_observacion =  I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion['quality_grade'])
+      if tipo_observacion == "casual"
+        numero_observs[:casual] = numero_observs[:casual] += 1
+      else
+        numero_observs[:investigacion] = numero_observs[:investigacion] += 1
+      end
+    end
+    puts " Ahora hay -> ", numero_observs
+    numero_observs
   end
 
   # REVISADO: Valida que Naturalista tenga observaciones

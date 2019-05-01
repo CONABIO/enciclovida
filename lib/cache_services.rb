@@ -421,19 +421,11 @@ module CacheServices
   def itera_especies
     especies_todas = Especie.all
     especies_todas.each do |especie_x|
-
-=begin
-   estatus = x_especie.proveedor.fotos_naturalista[:estatus]
-   if estatus
-     puts x_especie.proveedor.fotos_naturalista[:fotos].count
-   else
-     puts "No hay fotos"
-   end
-=end
-      if especie_x.proveedor != nil
-        datos_estadisticas(especie_x)
+      if especie_x.especie_o_inferior?
+        puts "Si es especie o inferior"
+        estadisticas_naturalista(especie_x)
       else
-        puts "sin proveedor"
+        puts "No es especie o inferior"
       end
     end
   end
@@ -444,25 +436,25 @@ module CacheServices
     response = {}
 
     # Acceder a tabla proveedor
-    proveedor_naturalista = especie.proveedor
 
-    # Obtener el id de naturalista
-    id = proveedor_naturalista.naturalista_id
+    if proveedor_naturalista = especie.proveedor
+      # ID: 4 Obtener el total de los nombres comunes
+      response[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count unless proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].nil?
 
-    # ID: 4 Obtener el total de los nombres comunes
-    response[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count
+      # ID: 6 Obtener el total de fotos en NaturaLista
+      response[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count unless proveedor_naturalista.fotos_naturalista[:fotos].nil?
 
-    # ID: 6 Obtener el total de fotos en NaturaLista
-    response[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+      # Obtener el total de observaciones:
+      tipo_observaciones = proveedor_naturalista.numero_observaciones_naturalista
 
-    # ID: 19. Observaciones en NaturaLista (grado de investigación)
-    response[:total_observaciones_investigacion] = 0
+      # ID: 19. Grado de investigación
+      response[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
 
-    # quality_grade
-    # research
-
-    # ID: 20. Observaciones en NaturaLista (grado casual)
-    response[:total_observaciones_casual] = 0
+      # ID: 20. Grado casual
+      response[:total_observaciones_casual] = tipo_observaciones[:casual]
+    else
+      puts "sin proveedor asociado"
+    end
 
     response
   end
@@ -485,7 +477,7 @@ module CacheServices
       response[:total_fichas] = 0
     end
 
-    # ID: 12 Fichas en revisión de CONABIO
+    # ID: 12 Fichas en revisión de CONABIO ( no existe campo)
 
     response
   end
@@ -508,9 +500,6 @@ module CacheServices
     # ID: 10 Fotos en flickr
     #   - flickr/photo_fields ?
 
-
-
-
   end
 
   def estadisticas_wikipedia(especie)
@@ -519,7 +508,7 @@ module CacheServices
     # ID: 9 Fotos en Wikimedia
 
     # ID: 15 Fichas de Wikipedia-español
-    TaxonDescribers::WikipediaEs.describe(especie).blank? ? response[:ficha_español] = 1 : response[:ficha_español] = 1
+    TaxonDescribers::WikipediaEs.describe(especie).blank? ? response[:ficha_español] = 0 : response[:ficha_español] = 1
 
     # ID: 16 Fichas de Wikipedia-ingles
     TaxonDescribers::Wikipedia.describe(especie).blank? ? response[:ficha_ingles] = 0 : response[:ficha_ingles] = 1
@@ -540,9 +529,7 @@ module CacheServices
     # ID: 18 Ejemplares en el SNIB (aVerAves)
     response[:ejemplares_snib_aves] = 0
 
-
     geodatos = proveedor.geodatos
-
 
 #####
 
