@@ -171,6 +171,17 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  # Regresa el taxon valido o el mismo en caso de serlo
+  def dame_taxon_valido
+    return self if estatus == 2  # el valido era el mismo
+    est = especies_estatus
+
+    if est.length == 1  # Encontro el valido
+      Especie.find(est.first.especie_id2)
+    else  # Puede que no haya encontrado su valido o exista mas de uno
+      nil
+    end
+  end
 
   def arbol_nodo_hash(opts={})
     children_hash = {}
