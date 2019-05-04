@@ -176,8 +176,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     return self if estatus == 2  # el valido era el mismo
     est = especies_estatus
 
-    if est.length == 1  # Encontro el valido
-      Especie.find(est.first.especie_id2)
+    if est.first  # Encontro el valido
+      begin
+        Especie.find(est.first.especie_id2)
+      rescue
+        nil
+      end
     else  # Puede que no haya encontrado su valido o exista mas de uno
       nil
     end
