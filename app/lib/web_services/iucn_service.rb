@@ -71,8 +71,24 @@ class IUCNService
         # Intento buscar por medio de exp regulares
         Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} regexp ?","[]")
         datos[6] = 'Sin coincidencias'
-      else  # Más de un resultado, hay un homonimo
-        datos[6] = 'Más de un resultado (homonímia)'
+      else  # Más de un resultado, puede haber homonimias o simplemente un sinonimo se llama igual
+        validos = 0
+
+        t.each do |taxon|
+          next if taxon.estatus != 2
+          validos+= 1
+
+          reino = taxon.root.nombre_cientifico.estandariza
+          if row['kingdomName'].estandariza == reino
+            datos[5] = taxon.scat.catalogo_id
+            datos[6] = 'Coincidencia exacta'
+          else
+            datos[6] = 'Los reinos no coincidieron'
+          end
+        end
+
+        # Por si deberás hay una homonimia
+        datos[6] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
       end
 
       bitacora.puts datos.join(',')
