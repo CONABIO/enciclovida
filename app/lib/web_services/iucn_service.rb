@@ -48,11 +48,23 @@ class IUCNService
         datos[3] = t.first.scat.catalogo_id
         datos[4] = estatus
 
+        # Para ver que se encuentre en el mismo reino y evitar homonimos
+        reino = t.first.root.nombre_cientifico.estandariza
+        unless row['kingdomName'].estandariza == reino
+          datos[6] = 'Los reinos no coincidieron'
+          next
+        end
+
         if estatus == 2  # Quiere decir que es valido
           datos[5] = t.first.scat.catalogo_id
           datos[6] = 'Coincidencia exacta'
         elsif estatus == 1
-          datos[6] = 'Es un sinónimo'
+          if taxon_valido = t.first.dame_taxon_valido
+            datos[5] = taxon_valido.scat.catalogo_id
+            datos[6] = 'Es un sinónimo y encontró el válido'
+          else
+            datos[6] = 'Es un sinónimo y hubo problemas al encontrar el válido'
+          end
         end
 
       elsif  t.length == 0 # Sin resultados
