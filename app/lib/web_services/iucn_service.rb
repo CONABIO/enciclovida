@@ -79,10 +79,10 @@ class IUCNService
           validos+= 1
 
           reino = taxon.root.nombre_cientifico.estandariza
-          if row['kingdomName'].estandariza == reino
+          if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
             datos[5] = taxon.scat.catalogo_id
             datos[6] = 'Coincidencia exacta'
-          else
+          else  # Los reinos no coincidieron
             datos[6] = 'Los reinos no coincidieron'
           end
         end
