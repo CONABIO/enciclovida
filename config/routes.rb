@@ -12,6 +12,7 @@ Buscador::Application.routes.draw do
     get 'grafica2' => 'metamares#grafica2'
     get 'dame-institucion' => 'metamares#dame_institucion'
     get 'dame-keyword' => 'metamares#dame_keyword'
+    get '' => 'proyectos#index'
   end
 
   namespace :pmc do
