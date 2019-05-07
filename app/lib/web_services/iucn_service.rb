@@ -34,7 +34,7 @@ class IUCNService
   # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asswessments con el de taxonomy
   def actualiza_IUCN(archivo)
     csv_path = Rails.root.join('public', 'IUCN', archivo)
-    bitacora.puts 'Nombre científico en IUCN,IUCN,Nombre científico en CAT,IdCAT,Estatus nombre,IdCAT valido,observaciones'
+    bitacora.puts 'Nombre científico en IUCN,Categoría en IUCN,Nombre en CAT,IdCAT,Estatus nombre,IdCAT válido,Nombre válidoobservaciones'
     return unless File.exists? csv_path
 
     CSV.foreach(csv_path, :headers => true) do |r|
@@ -56,16 +56,16 @@ class IUCNService
         elsif estatus == 1
           if taxon_valido = t.first.dame_taxon_valido
             mismo_reino?(taxon_valido)
-            self.datos[6] = 'Es un sinónimo y encontró el válido' if datos[5].present?
+            self.datos[7] = 'Es un sinónimo y encontró el válido' if datos[5].present?
           else
-            self.datos[6] = 'Es un sinónimo y hubo problemas al encontrar el válido'
+            self.datos[7] = 'Es un sinónimo y hubo problemas al encontrar el válido'
           end
         end
 
       elsif t.length == 0 # Sin resultados
         # Intento buscar por medio de exp regulares
         Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} regexp ?","[]")
-        self.datos[6] = 'Sin coincidencias'
+        self.datos[7] = 'Sin coincidencias'
       else  # Más de un resultado, puede haber homonimias o simplemente un sinonimo se llama igual
         validos = 0
 
@@ -76,7 +76,7 @@ class IUCNService
         end
 
         # Por si deberás hay una homonimia
-        self.datos[6] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
+        self.datos[7] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
       end
 
       bitacora.puts datos.join(',')
@@ -99,9 +99,25 @@ class IUCNService
 
     if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
       self.datos[5] = taxon.scat.catalogo_id
-      self.datos[6] = 'Coincidencia exacta'
+      self.datos[7] = 'Coincidencia exacta'
     else  # Los reinos no coincidieron
-      self.datos[6] = 'Los reinos no coincidieron'
+      self.datos[7] = 'Los reinos no coincidieron'
+    end
+  end
+
+  def misma_categoria?(taxon)
+    categorias = { 'subspecies': 'subespecie', 'subspecies-plantae': 'subespecie', 'variety': 'variedad' }
+
+    categoria = if row['infraType'].blank?
+                  'especie'
+                else
+                  categorias[row['infraType']]
+                end
+
+    cat_taxon = taxon.categoria_taxonomica.nombre_categoria_taxonomica.estandariza
+
+    unless cat_taxon == categoria
+      self.datos[7] = 'La categoria taxonómica no coincidio'
     end
   end
 
