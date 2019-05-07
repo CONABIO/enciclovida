@@ -1,5 +1,7 @@
 class IUCNService
 
+  attr_accessor :datos, :row
+
   # Consulta la categoria de riesgo de un taxon dado
   def consultaRiesgo(opts)
     @iucn = CONFIG.iucn.api
@@ -35,60 +37,46 @@ class IUCNService
     bitacora.puts 'Nombre científico en IUCN,IUCN,Nombre científico en CAT,IdCAT,Estatus nombre,IdCAT valido,observaciones'
     return unless File.exists? csv_path
 
-    CSV.foreach(csv_path, :headers => true) do |row|
-      datos = []
-      datos[0] = row['scientificName']
-      datos[1] = row['redlistCategory']
+    CSV.foreach(csv_path, :headers => true) do |r|
+      self.row = r
+      self.datos = []
+      self.datos[0] = row['scientificName']
+      self.datos[1] = row['redlistCategory']
 
       t = Especie.where(nombre_cientifico: row['scientificName'])
 
       if t.length == 1  # Caso más sencillo
         estatus = t.first.estatus
-        datos[2] = t.first.nombre_cientifico
-        datos[3] = t.first.scat.catalogo_id
-        datos[4] = estatus
-
-        # Para ver que se encuentre en el mismo reino y evitar homonimos
-        reino = t.first.root.nombre_cientifico.estandariza
-        unless row['kingdomName'].estandariza == reino
-          datos[6] = 'Los reinos no coincidieron'
-          next
-        end
+        self.datos[2] = t.first.nombre_cientifico
+        self.datos[3] = t.first.scat.catalogo_id
+        self.datos[4] = estatus
 
         if estatus == 2  # Quiere decir que es valido
-          datos[5] = t.first.scat.catalogo_id
-          datos[6] = 'Coincidencia exacta'
+          mismo_reino?(t.first)
         elsif estatus == 1
           if taxon_valido = t.first.dame_taxon_valido
-            datos[5] = taxon_valido.scat.catalogo_id
-            datos[6] = 'Es un sinónimo y encontró el válido'
+            mismo_reino?(taxon_valido)
+            self.datos[6] = 'Es un sinónimo y encontró el válido' if datos[5].present?
           else
-            datos[6] = 'Es un sinónimo y hubo problemas al encontrar el válido'
+            self.datos[6] = 'Es un sinónimo y hubo problemas al encontrar el válido'
           end
         end
 
-      elsif  t.length == 0 # Sin resultados
+      elsif t.length == 0 # Sin resultados
         # Intento buscar por medio de exp regulares
         Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} regexp ?","[]")
-        datos[6] = 'Sin coincidencias'
+        self.datos[6] = 'Sin coincidencias'
       else  # Más de un resultado, puede haber homonimias o simplemente un sinonimo se llama igual
         validos = 0
 
         t.each do |taxon|
           next if taxon.estatus != 2
           validos+= 1
-
-          reino = taxon.root.nombre_cientifico.estandariza
-          if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
-            datos[5] = taxon.scat.catalogo_id
-            datos[6] = 'Coincidencia exacta'
-          else  # Los reinos no coincidieron
-            datos[6] = 'Los reinos no coincidieron'
-          end
+          mismo_reino?(taxon)
         end
 
         # Por si deberás hay una homonimia
-        datos[6] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
+        self.datos[6] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
       end
 
       bitacora.puts datos.join(',')
@@ -97,10 +85,24 @@ class IUCNService
     bitacora.close
   end
 
+
+  private
+
   # Bitacora especial para catalogos, antes de correr en real, pasarsela
   def bitacora
     log_path = Rails.root.join('log', Time.now.strftime('%Y-%m-%d_%H%m') + '_IUCN.csv')
     @@bitacora ||= File.new(log_path, 'a+')
+  end
+
+  def mismo_reino?(taxon)
+    reino = taxon.root.nombre_cientifico.estandariza
+
+    if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
+      self.datos[5] = taxon.scat.catalogo_id
+      self.datos[6] = 'Coincidencia exacta'
+    else  # Los reinos no coincidieron
+      self.datos[6] = 'Los reinos no coincidieron'
+    end
   end
 
 end
