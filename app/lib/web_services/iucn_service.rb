@@ -1,6 +1,6 @@
 class IUCNService
 
-  attr_accessor :datos, :row
+  attr_accessor :datos, :row, :validacion
 
   # Consulta la categoria de riesgo de un taxon dado
   def consultaRiesgo(opts)
@@ -43,6 +43,23 @@ class IUCNService
       self.datos[0] = row['scientificName']
       self.datos[1] = row['redlistCategory']
 
+      v = Validacion.new
+      v.nombre_cientifico = datos[0]
+      v.encuentra_por_nombre
+      self.validacion = v.validacion
+      self.datos[7] = validacion[:msg]
+
+      if validacion[:estatus]  # Hubo al menos una coincidencia
+        if validacion[:taxon].present?  # Solo un resultado
+          valida_extras
+        elsif v[:taxones].present?  # Mas de un resultado
+          #self.datos[7] = validacion[:msg]
+        end
+      end
+
+
+
+=begin
       t = Especie.where(nombre_cientifico: row['scientificName'])
 
       if t.length == 1  # Caso más sencillo
@@ -64,9 +81,19 @@ class IUCNService
         end
 
       elsif t.length == 0 # Sin resultados
-        # Intento buscar por medio de exp regulares
-        Especie.where("#{Especie.attribute_alias(:nombre_cientifico)} regexp ?","[]")
-        self.datos[7] = 'Sin coincidencias'
+        # Intento el nombre separandolo
+        if row['infraType'].blank?
+          self.datos[7] = 'Sin coincidencias (especie)'
+        else  # Limpio el nombre cientifico y trato de encontrar por separado el trinomio
+          nombres = datos[0].limpiar.split(' ')
+          taxon = Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
+
+          if taxon.length == 1
+          else
+
+          end
+        end
+
       else  # Más de un resultado, puede haber homonimias o simplemente un sinonimo se llama igual
         validos = 0
 
@@ -80,7 +107,7 @@ class IUCNService
         # Por si deberás hay una homonimia
         self.datos[7] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
       end
-
+=end
       bitacora.puts datos.join(',')
     end
 
@@ -96,19 +123,20 @@ class IUCNService
     @@bitacora ||= File.new(log_path, 'a+')
   end
 
-  def mismo_reino?(taxon)
-    reino = taxon.root.nombre_cientifico.estandariza
+  # Valida que los reinos coincidan para evitar homonimos
+  def mismo_reino?
+    reino = validacion[:taxon].root.nombre_cientifico.estandariza
 
     if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
-      self.datos[5] = taxon.scat.catalogo_id
-      self.datos[6] = taxon.nombre_cientifico
-      self.datos[7] = 'Coincidencia exacta'
+      return true
     else  # Los reinos no coincidieron
       self.datos[7] = 'Los reinos no coincidieron'
+      return false
     end
   end
 
-  def misma_categoria?(taxon)
+  # Valida que la categoria taxonomica sea la misma
+  def misma_categoria?
     categorias = { 'subspecies' => 'subespecie', 'subspecies-plantae' => 'subespecie', 'variety' => 'variedad' }
 
     categoria = if row['infraType'].blank?
@@ -117,11 +145,45 @@ class IUCNService
                   categorias[row['infraType'].estandariza]
                 end
 
-    cat_taxon = taxon.categoria_taxonomica.nombre_categoria_taxonomica.estandariza
+    cat_taxon = validacion[:taxon].categoria_taxonomica.nombre_categoria_taxonomica.estandariza
 
     unless cat_taxon == categoria
       self.datos[7] = 'La categoria taxonómica no coincidio'
     end
+  end
+
+  # Asigna el nombre valido en caso de ser un sinonimo
+  def dame_el_valido
+    if validacion[:taxon].estatus == 1
+      if taxon_valido = validacion[:taxon].dame_taxon_valido
+        validacion[:taxon] = taxon_valido
+        self.datos[5] = validacion[:taxon].scat.catalogo_id
+        self.datos[6] = validacion[:taxon].nombre_cientifico
+        self.datos[7] = 'Es un sinónimo y encontró el válido'
+        return true
+      else
+        self.datos[7] = 'Es un sinónimo y hubo problemas al encontrar el válido'
+        return false
+      end
+
+    elsif validacion[:taxon].estatus == 2
+      self.datos[5] = validacion[:taxon].scat.catalogo_id
+      self.datos[6] = validacion[:taxon].nombre_cientifico
+      return true
+    end
+  end
+
+  # Valida el nombre y categoría taxonomica
+  def valida_extras
+    self.datos[2] = validacion[:taxon].nombre_cientifico
+    self.datos[3] = validacion[:taxon].scat.catalogo_id
+    self.datos[4] = validacion[:taxon].estatus
+    self.datos[7] = validacion[:msg]
+
+    return unless mismo_reino?
+    return unless dame_el_valido
+
+    misma_categoria?
   end
 
 end
