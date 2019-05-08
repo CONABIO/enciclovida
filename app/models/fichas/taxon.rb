@@ -28,7 +28,7 @@ class Fichas::Taxon < Ficha
   accepts_nested_attributes_for :legislaciones, allow_destroy: true
   accepts_nested_attributes_for :endemicas, allow_destroy: true
 
-  attr_accessor :fichas_taxon
+
 
   # Devuelve las secciones que tienen información
 	def dame_edad_peso_largo
@@ -51,6 +51,17 @@ class Fichas::Taxon < Ficha
 		end
 
 		datos
+	end
+
+end
+
+class Counter
+
+	include Singleton
+	attr_accessor :question
+
+	def initialize
+		self.question = 1
 	end
 
 end

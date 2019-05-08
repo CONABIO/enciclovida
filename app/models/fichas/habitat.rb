@@ -21,4 +21,5 @@ class Fichas::Habitat < Ficha
 	accepts_nested_attributes_for :suelo, allow_destroy: true
 	accepts_nested_attributes_for :geoforma, allow_destroy: true
 
+	#attr_accessor :ecorregion
 end

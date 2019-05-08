@@ -13,6 +13,7 @@ class Fichas::Historianatural < Ficha
 
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
 
+	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
 
