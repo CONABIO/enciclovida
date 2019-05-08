@@ -52,62 +52,42 @@ class IUCNService
       if validacion[:estatus]  # Hubo al menos una coincidencia
         if validacion[:taxon].present?  # Solo un resultado
           valida_extras
-        elsif v[:taxones].present?  # Mas de un resultado
-          #self.datos[7] = validacion[:msg]
+        end
+      else
+        if validacion[:taxones].present?  # Mas de un resultado
+          cuantos_encontro = []
+
+          validacion[:taxones].each do |taxon|
+            validacion[:taxon] = taxon
+            next unless misma_categoria?
+            next unless mismo_reino?
+
+            self.datos[2] = validacion[:taxon].nombre_cientifico
+            self.datos[3] = validacion[:taxon].scat.catalogo_id
+            self.datos[4] = validacion[:taxon].estatus
+
+            next unless dame_el_valido
+            cuantos_encontro << validacion[:taxon].id
+          end
+
+          cuantos_encontro.uniq!
+
+          if cuantos_encontro.length == 1  # Caso mas sencillo de solo encontrar uno
+            self.datos[7] = 'Búsqueda exacta'
+          elsif cuantos_encontro.length > 1
+            self.datos[2] = nil
+            self.datos[3] = nil
+            self.datos[4] = nil
+            self.datos[5] = nil
+            self.datos[6] = nil
+            self.datos[7] = "[REVISAR] - Existe más de una coincidencia: #{validacion[:taxones].map{ |t| t.scat.catalogo_id }.join('|')}"
+          else
+            self.datos[7] = 'Sin coincidencias'
+          end
+
         end
       end
 
-
-
-=begin
-      t = Especie.where(nombre_cientifico: row['scientificName'])
-
-      if t.length == 1  # Caso más sencillo
-        estatus = t.first.estatus
-        self.datos[2] = t.first.nombre_cientifico
-        self.datos[3] = t.first.scat.catalogo_id
-        self.datos[4] = estatus
-
-        if estatus == 2  # Quiere decir que es valido
-          mismo_reino?(t.first)
-          misma_categoria?(t.first) if datos[5].present?
-        elsif estatus == 1
-          if taxon_valido = t.first.dame_taxon_valido
-            mismo_reino?(taxon_valido)
-            self.datos[7] = 'Es un sinónimo y encontró el válido' if datos[5].present?
-          else
-            self.datos[7] = 'Es un sinónimo y hubo problemas al encontrar el válido'
-          end
-        end
-
-      elsif t.length == 0 # Sin resultados
-        # Intento el nombre separandolo
-        if row['infraType'].blank?
-          self.datos[7] = 'Sin coincidencias (especie)'
-        else  # Limpio el nombre cientifico y trato de encontrar por separado el trinomio
-          nombres = datos[0].limpiar.split(' ')
-          taxon = Especie.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) LIKE '#{nombres[0]}%#{nombres[1]}%#{nombres[2]}'")
-
-          if taxon.length == 1
-          else
-
-          end
-        end
-
-      else  # Más de un resultado, puede haber homonimias o simplemente un sinonimo se llama igual
-        validos = 0
-
-        t.each do |taxon|
-          next if taxon.estatus != 2
-          validos+= 1
-          mismo_reino?(taxon)
-          misma_categoria?(taxon) if datos[5].present?
-        end
-
-        # Por si deberás hay una homonimia
-        self.datos[7] = 'Más de un resultado (homonímia)' + t.map(&:id).join('|') if validos >= 2 || validos == 0
-      end
-=end
       bitacora.puts datos.join(',')
     end
 
@@ -130,7 +110,7 @@ class IUCNService
     if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
       return true
     else  # Los reinos no coincidieron
-      self.datos[7] = 'Los reinos no coincidieron'
+      self.datos[7] = '[REVISAR] - Los reinos no coincidieron'
       return false
     end
   end
@@ -148,8 +128,11 @@ class IUCNService
     cat_taxon = validacion[:taxon].categoria_taxonomica.nombre_categoria_taxonomica.estandariza
 
     unless cat_taxon == categoria
-      self.datos[7] = 'La categoria taxonómica no coincidio'
+      self.datos[7] = '[REVISAR] - La categoria taxonómica no coincidio'
+      return false
     end
+
+    return true
   end
 
   # Asigna el nombre valido en caso de ser un sinonimo
@@ -162,7 +145,9 @@ class IUCNService
         self.datos[7] = 'Es un sinónimo y encontró el válido'
         return true
       else
-        self.datos[7] = 'Es un sinónimo y hubo problemas al encontrar el válido'
+        self.datos[5] = nil
+        self.datos[6] = nil
+        self.datos[7] = '[REVISAR] - Es un sinónimo y hubo problemas al encontrar el válido'
         return false
       end
 
