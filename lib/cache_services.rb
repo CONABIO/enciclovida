@@ -197,6 +197,72 @@ module CacheServices
     end
   end
 
+  def genera_estadisticas(especie)
+
+    # Acceder a las estadisticas
+    estd = especie.especie_estadisticas
+
+    # Invocar las estadisticas de naturalista
+    puts estadisticas_naturalista(especie, estd)
+    puts estadisticas_conabio(especie, estd)
+    puts estadisticas_wikipedia(especie, estd)
+    puts estadisticas_eol(especie, estd)
+    puts estadisticas_tropicos_service(especie, estd)
+    puts estadisticas_maccaulay(especie, estd)
+    puts estadisticas_SNIB(especie, estd)
+    puts estadisticas_mapas_distribucion(especie, estd)
+  end
+
+  def estadisticas_maccaulay(especie, estd = nil)
+    # Respuesta de la función
+    res = {}
+    taxonNC = especie.nombre_cientifico
+
+    res[:total_fotos] = itera_servicio_maccaulay(taxonNC, "photo")
+    res[:total_videos] = itera_servicio_maccaulay(taxonNC, "video")
+    res[:total_audios] = itera_servicio_maccaulay(taxonNC, "audio")
+
+    unless estd.nil?
+      escribe_estadistica(estd, 25, res[:total_fotos])
+      escribe_estadistica(estd, 26, res[:total_videos])
+      escribe_estadistica(estd, 27, res[:total_audios])
+    end
+
+    res
+  end
+
+  def itera_servicio_maccaulay(nombre_especie, tipo)
+    servicio = MacaulayService.new
+    total = 0
+
+    (1..100).each do | i |
+
+      archivo = servicio.dameMedia_nc(nombre_especie, tipo, i, 1000)
+      puts "Llamo al servicio #{i}"
+
+      if archivo == nil && i == 1
+        total = 0
+        break
+      else
+        # Si se regresó un mensaje, es porque por alguna razón no existieron fotos
+        if archivo[0][:msg].present?
+          # puts "XP #{archivo[0][:msg].present?}"
+          break
+        else
+          if archivo.count == 0
+            break
+          else
+            total = total + archivo.count
+          end
+        end
+      end
+      puts "hasta ahora hay: #{total}"
+    end
+
+    total
+
+  end
+
 
   private
 
@@ -418,182 +484,298 @@ module CacheServices
     guarda_observaciones_naturalista
   end
 
-  def itera_especies
-    especies_todas = Especie.all
-    especies_todas.each do |especie_x|
-      if especie_x.especie_o_inferior?
-        puts "Si es especie o inferior"
-        estadisticas_naturalista(especie_x)
-      else
-        puts "No es especie o inferior"
-      end
-    end
-  end
-
   # Datos estadísticos
-  def estadisticas_naturalista(especie)
+  def estadisticas_naturalista(especie, estd = nil)
     # Respuesta de la función
-    response = {}
+    res = {}
 
     # Acceder a tabla proveedor
-
     if proveedor_naturalista = especie.proveedor
       # ID: 4 Obtener el total de los nombres comunes
-      response[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count unless proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].nil?
+      unless proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].nil?
+        res[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count
+        escribe_estadistica(estd, 4, res[:total_nombres_comunes])
+      end
 
       # ID: 6 Obtener el total de fotos en NaturaLista
-      response[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count unless proveedor_naturalista.fotos_naturalista[:fotos].nil?
+      unless proveedor_naturalista.fotos_naturalista[:fotos].nil?
+        res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+        escribe_estadistica(estd, 6, res[:total_fotos])
+      end
 
       # Obtener el total de observaciones:
       tipo_observaciones = proveedor_naturalista.numero_observaciones_naturalista
 
       # ID: 19. Grado de investigación
-      response[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
+      res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
 
       # ID: 20. Grado casual
-      response[:total_observaciones_casual] = tipo_observaciones[:casual]
+      res[:total_observaciones_casual] = tipo_observaciones[:casual]
+
+      unless estd.nil?
+        escribe_estadistica(estd, 19, res[:total_observaciones_investigacion])
+        escribe_estadistica(estd, 20, res[:total_observaciones_casual])
+      end
+
     else
       puts "sin proveedor asociado"
     end
 
-    response
+    res
   end
 
-  def estadisticas_conabio(especie)
+  def estadisticas_conabio(especie, estd = nil)
     # Respuesta de la función
-    response = {}
+    res = {}
 
     # ID: 5 Nombres comunes de CONABIO
-    response[:total_nombres_comunes] = especie.nombres_comunes.count
+    res[:total_nombres_comunes] = especie.nombres_comunes.count
 
     # ID: 7 Fotos en el Banco de Imágenes de CONABIO
-    response[:total_fotos] = especie.fotos_bdi[:fotos].count
+    res[:total_fotos] = especie.fotos_bdi[:fotos].count
 
     # ID: 11 Fichas revisadas de CONABIO -> Sólo aparecerá si tiene ficha asociada (0 o 1)
     if cat = especie.scat
-      response[:total_fichas] = Fichas::Taxon.where(IdCat: cat.catalogo_id).count
+      res[:total_fichas] = Fichas::Taxon.where(IdCat: cat.catalogo_id).count
     else
       # No se encuentra en el catálogo, por tanto no tiene ninguna ficha asociada
-      response[:total_fichas] = 0
+      res[:total_fichas] = 0
     end
+
 
     # ID: 12 Fichas en revisión de CONABIO ( no existe campo)
 
-    response
+    unless estd.nil?
+      escribe_estadistica(estd, 5, res[:total_nombres_comunes])
+      escribe_estadistica(estd, 7, res[:total_fotos])
+      escribe_estadistica(estd, 11, res[:total_fichas])
+    end
+
+    res
   end
 
-  def estadisticas_eol(especie)
+  def estadisticas_wikipedia(especie, estd = nil)
     # Respuesta de la función
-    response = {}
-
-    # ID: 8 Fotos en EOL
-
-    # ID: 13 Fichas de EOL-español
-
-    # ID: 14 Fichas de EOL-ingles
-  end
-
-  def estadisticas_flickr(especie)
-    # Respuesta de la función
-    response = {}
-
-    # ID: 10 Fotos en flickr
-    #   - flickr/photo_fields ?
-
-  end
-
-  def estadisticas_wikipedia(especie)
-    # Respuesta de la función
-    response = {}
-    # ID: 9 Fotos en Wikimedia
+    res = {}
+    # ID: 9 Fotos en Wikimedia (Ya no)
 
     # ID: 15 Fichas de Wikipedia-español
-    TaxonDescribers::WikipediaEs.describe(especie).blank? ? response[:ficha_español] = 0 : response[:ficha_español] = 1
+    TaxonDescribers::WikipediaEs.describe(especie).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
 
     # ID: 16 Fichas de Wikipedia-ingles
-    TaxonDescribers::Wikipedia.describe(especie).blank? ? response[:ficha_ingles] = 0 : response[:ficha_ingles] = 1
+    TaxonDescribers::Wikipedia.describe(especie).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
 
-    response
+    unless estd.nil?
+      escribe_estadistica(estd, 15, res[:ficha_espaniol])
+      escribe_estadistica(estd, 16, res[:ficha_ingles])
+    end
+
+    res
+  end
+
+  def estadisticas_eol(especie, estd = nil)
+    # Respuesta de la función
+    res = {}
+
+    # ID: 8 Fotos en EOL (Ya no)
+
+    # ID: 13 Fichas de EOL-español
+    TaxonDescribers::EolEs.describe(especie).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
+
+    # ID: 14 Fichas de EOL-ingles
+    TaxonDescribers::Eol.describe(especie).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+
+    unless estd.nil?
+      escribe_estadistica(estd, 13, res[:ficha_espaniol])
+      escribe_estadistica(estd, 14, res[:ficha_ingles])
+    end
+
+    res
+  end
+
+  def estadisticas_tropicos_service(especie, estd = nil)
+    # Respuesta de la función
+    res = {}
+
+    # Crear instancia de servicio trópicos:
+    ts_req = Tropicos_Service.new
+
+    # Para saber si tiene proveedor asociado
+    if prov = especie.proveedor
+      # Verificar si tiene ya el tropico_id (si se consultó anteriormente)
+      if tropico_id = prov.tropico_id
+        # Si existe el tropico_id, recuperar las imágenes
+        res[:total_fotos] =  ts_req.get_media(tropico_id).count
+        #escribe_estadistica(estd, 14, res[:total_fotos])
+      else
+        # No existe aún el tropico_id, buscarlo invocando el servicio:
+        # Sólo si tiene nombre científico
+        name_id = ts_req.get_id_name(especie.nombre_cientifico)
+        if name_id[0][:msg].present?
+          res[:total_fotos] =  0
+        else
+          prov.update(tropico_id: name_id[0]['NameId'])
+          res[:total_fotos] = ts_req.get_media(name_id[0]['NameId']).count
+        end
+      end
+
+    else
+      # No existe aún la especie en proveedores ni el tropico_id, buscarlo invocando el servicio:
+      name_id = ts_req.get_id_name(especie.nombre_cientifico)
+      if name_id[0][:msg].present?
+        res[:total_fotos] = 0
+      else
+        Proveedor.create(especie_id: especie.id, tropico_id: name_id[0]['NameId'])
+        res[:total_fotos] = ts_req.get_media(name_id[0]['NameId']).count
+      end
+
+    end
+
+    escribe_estadistica(estd, 24, res[:total_fotos]) unless estd.nil?
+
+    res
+  end
+
+
+
+  def recupera_ejemplares_snib(especie_id, estd = nil)
+    api_location = 'http://enciclovida.mx'
+    resultados = {}
+    begin
+      # LLamada al servicio de enciclovida para obtener el JSON
+      rest_client = RestClient::Request.execute(method: :get, url: "#{api_location}/especies/#{especie_id}/ejemplares-snib.json", timeout: 20)
+      resultados = JSON.parse(rest_client)
+    rescue
+      resultados['estatus'] = false
+    end
+    resultados
   end
 
   # SNIB: Sistema Nacional de Información sobre Biodiversidad de México
-  def estadisticas_SNIB(especie)
+  def estadisticas_SNIB(especie, estd = nil)
 
     # Respuesta de la función
-    response = {}
+    res = {}
+    # LLamada al servicio para obtener los resultados
+    resultados_snib = recupera_ejemplares_snib(especie.id)
 
-    # ID: 17 Ejemplares en el SNIB
-    ejemplares_snib = especie.proveedor.ejemplares_snib
-    response[:ejemplares_snib] = 0
+    # Verificar el estatus de la llamada al servicio
+    if resultados_snib['estatus']
+      # En teorìa, se puede acceder al arreglo de 'resultados'
+      res[:ejemplares_snib] = resultados_snib['resultados'].count
 
-    # ID: 18 Ejemplares en el SNIB (aVerAves)
-    response[:ejemplares_snib_aves] = 0
+      # Ahora, buscar los de eBird
+      buscar = ['eBird eBird', 'aVerAves aVerAves']
+      res[:ejemplares_snib_averaves] = 0
+      # Itera todos los ejemplares y busca los de aVerAves
+      resultados_snib['resultados'].each do |ejemplar|
+        if buscar.include? (ejemplar['coleccion'])
+          res[:ejemplares_snib_averaves] += 1
+        end
+      end
 
-    geodatos = proveedor.geodatos
+      unless estd.nil?
+        escribe_estadistica(estd, 17, res[:ejemplares_snib])
+        escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
+      end
 
-#####
+    else
+      # puts "No hay ejemplares o hubo un error al solicita∫r el servicio"
+      res[:estatus] = false
+      res[:msg] = "No hay ejemplares o hubo un error al solicitar el servicio"
+    end
+    res
+  end
+
+  def estadisticas_mapas_distribucion(especie, estd = nil)
+    # Respuesta de la función
+    res = {}
+    # ID: 21 Mapas de distribución
+    if proveedor = especie.proveedor
+      pg = proveedor.geodatos
+      pg[:cuales].include?('geoserver') ? res[:mapas_distribucion] = 1 : res[:mapas_distribucion] = 0
+      escribe_estadistica(estd, 21, res[:mapas_distribucion]) unless estd.nil?
+    end
+    res
+  end
+
+  def itera_especies
+    # Obtener todas las especies a iterar
+    especies_todas = Especie.all
+    i = 0
+    especies_todas.each do |especie_x|
+
+      if i >= 1000
+        # Verificar si esta es una especie o inferior
+        if especie_x.especie_o_inferior?
+          start = Time.now
+          puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
+          genera_estadisticas(especie_x)
+          puts "\n\n\n* * * * * * Duracion: #{Time.now - start} segundos"
+        else
+          puts "No es especie o inferior"
+        end
+      end
+      i += 1
+    end
+  end
+
+  def escribe_estadistica(estd, estd_id, dato)
+
+    if estadistica = estd.where(estadistica_id: estd_id).first
+      # Si ya existe, actualizar si cambiò
+      estadistica.conteo = dato
+      estadistica.save if estadistica.changed?
+    else
+      # Si no, crearla
+      estadistica = estd.new
+      estadistica.conteo = dato
+      estadistica.estadistica_id = estd_id
+      estadistica.save
+    end
+
+  end
+
+
+
+end
+
 
 =begin
-    if geodatos[:cuales].any?
-      @datos[:geodatos] = geodatos
-      @datos[:solo_coordenadas] = true
-
-      # Para poner las variable con las que consulto el SNIB
-      if geodatos[:cuales].include?('snib')
-        if geodatos[:snib_mapa_json].present?
-          @datos[:snib_url] = geodatos[:snib_mapa_json]
-        else
-          reino = @especie.root.nombre_cientifico.estandariza
-          catalogo_id = @especie.scat.catalogo_id
-          @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
-        end
 
 
-especies_todas.each do |especie_x|
+    unless est_naturalista[:total_nombres_comunes].nil?
+      escribe_estadistica(estd, 4, est_naturalista[:total_nombres_comunes])
+    end
 
-  if especie_x.proveedor
-    especie_x.proveedor.ejemplares_snib
-else
-puts "no tiene"
-  end
-end
+    unless est_naturalista[:total_fotos].nil?
+
+    end
+
+    unless est_naturalista[:total_observaciones_investigacion].nil?
+
+    end
+
+    unless est_naturalista[:total_observaciones_casual].nil?
+
+    end
+
+    # Invocar las estadisticas de conabio
+    est_conabio = estadisticas_conabio(especie)
+
+    unless est_conabio[:total_nombres_comunes].nil?
+
+    end
+
+    unless est_conabio[:total_fotos].nil?
+
+    end
+
+    unless est_conabio[:total_fichas].nil?
+
+    end
+
+
+
 
 =end
-#####
-
-
-
-
-
-
-
-
-
-  end
-
-  def estadisticas_mapas_distribucion(especie)
-    # Respuesta de la función
-    response = {}
-    # ID: 21 Mapas de distribución
-  end
-
-  def estadisticas_visitas(especie)
-    # ID: 1 Visitas a la especie o grupo
-    especie.especie_estadisticas.where(:estadistica_id => 1).first.conteo
-  end
-
-  def estadisticas_especies(especie)
-    # ID: 2 Número de especies
-    # ID: 3 Número de especies e inferiores
-  end
-
-
-
-  def genera_estadisticas(especie)
-
-    puts "\n\n * * * * * * * *"
-    # Guardar estadísticas:
-  end
-
-
-end

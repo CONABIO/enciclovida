@@ -326,7 +326,6 @@ class Proveedor < ActiveRecord::Base
     }
 
     tipo_resultados = ['needs_id', 'research', 'casual']
-
     tipo_resultados.each do |tipo|
 
       # Invocar la API para consultar observaciones
@@ -396,7 +395,7 @@ class Proveedor < ActiveRecord::Base
 
   def api_naturalista_total_observaciones(params = { :tipo => "casual" })
     begin # LLamada al servicio
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}", timeout: 20)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}&place_id=1", timeout: 20)
       # puts "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}"
       res = JSON.parse(rest_client)
     rescue => e
@@ -414,22 +413,6 @@ class Proveedor < ActiveRecord::Base
     end
 
     return {estatus: true, msg: res}
-  end
-
-  # Pendiente de borrar...
-  def itera_tipo_observaciones(observaciones, numero_observs)
-    # Itera las observaciones y regresa la cantidad de cada tipo
-    observaciones.each do |observacion|
-      # Extrae el grado de investigacion
-      tipo_observacion =  I18n.t("quality_grade.#{observacion['quality_grade']}", default: observacion['quality_grade'])
-      if tipo_observacion == "casual"
-        numero_observs[:casual] = numero_observs[:casual] += 1
-      else
-        numero_observs[:investigacion] = numero_observs[:investigacion] += 1
-      end
-    end
-    puts " Ahora hay -> ", numero_observs
-    numero_observs
   end
 
   # REVISADO: Valida que Naturalista tenga observaciones
