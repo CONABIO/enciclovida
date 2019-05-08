@@ -34,7 +34,7 @@ class IUCNService
   # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asswessments con el de taxonomy
   def actualiza_IUCN(archivo)
     csv_path = Rails.root.join('public', 'IUCN', archivo)
-    bitacora.puts 'Nombre científico en IUCN,Categoría en IUCN,Nombre en CAT,IdCAT,Estatus nombre,IdCAT válido,Nombre válidoobservaciones'
+    bitacora.puts 'Nombre científico en IUCN,Categoría en IUCN,Nombre en CAT,IdCAT,Estatus nombre,IdCAT válido,Nombre válido CAT,observaciones'
     return unless File.exists? csv_path
 
     CSV.foreach(csv_path, :headers => true) do |r|
@@ -53,6 +53,7 @@ class IUCNService
 
         if estatus == 2  # Quiere decir que es valido
           mismo_reino?(t.first)
+          misma_categoria?(t.first) if datos[5].present?
         elsif estatus == 1
           if taxon_valido = t.first.dame_taxon_valido
             mismo_reino?(taxon_valido)
@@ -73,6 +74,7 @@ class IUCNService
           next if taxon.estatus != 2
           validos+= 1
           mismo_reino?(taxon)
+          misma_categoria?(taxon) if datos[5].present?
         end
 
         # Por si deberás hay una homonimia
@@ -99,6 +101,7 @@ class IUCNService
 
     if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
       self.datos[5] = taxon.scat.catalogo_id
+      self.datos[6] = taxon.nombre_cientifico
       self.datos[7] = 'Coincidencia exacta'
     else  # Los reinos no coincidieron
       self.datos[7] = 'Los reinos no coincidieron'
@@ -106,12 +109,12 @@ class IUCNService
   end
 
   def misma_categoria?(taxon)
-    categorias = { 'subspecies': 'subespecie', 'subspecies-plantae': 'subespecie', 'variety': 'variedad' }
+    categorias = { 'subspecies' => 'subespecie', 'subspecies-plantae' => 'subespecie', 'variety' => 'variedad' }
 
     categoria = if row['infraType'].blank?
                   'especie'
                 else
-                  categorias[row['infraType']]
+                  categorias[row['infraType'].estandariza]
                 end
 
     cat_taxon = taxon.categoria_taxonomica.nombre_categoria_taxonomica.estandariza
