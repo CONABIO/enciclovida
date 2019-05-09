@@ -115,6 +115,16 @@ class IUCNService
     end
   end
 
+  # Comparo si la familia es la misma para busquedas similares
+  def misma_familia?
+    validacion[:taxon].asigna_categorias
+
+    return true if validacion[:taxon].x_familia.estandariza == row['familyName'].estandariza
+
+    self.datos[7] == 'Sin coincidencias'
+    return false
+  end
+
   # Valida que la categoria taxonomica sea la misma
   def misma_categoria?
     categorias = { 'subspecies' => 'subespecie', 'subspecies-plantae' => 'subespecie', 'variety' => 'variedad' }
@@ -160,10 +170,16 @@ class IUCNService
 
   # Valida el nombre y categoría taxonomica
   def valida_extras
+    self.datos[7] = validacion[:msg]
+
+    if datos[7] = 'Búsqueda similar'
+      self.datos[7] = '[REVISAR] - Búsqueda similar'
+      return unless misma_familia?
+    end
+
     self.datos[2] = validacion[:taxon].nombre_cientifico
     self.datos[3] = validacion[:taxon].scat.catalogo_id
     self.datos[4] = validacion[:taxon].estatus
-    self.datos[7] = validacion[:msg]
 
     return unless mismo_reino?
     return unless dame_el_valido
