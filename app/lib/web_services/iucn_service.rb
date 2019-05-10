@@ -44,7 +44,13 @@ class IUCNService
       self.datos[1] = row['redlistCategory']
 
       v = Validacion.new
-      v.nombre_cientifico = datos[0]
+
+      if row['subpopulationName'].present?  # Quita la zona del nombre cientifico ... bien IUCN
+        v.nombre_cientifico = row['scientificName'].gsub(row['subpopulationName'], '')
+      else
+        v.nombre_cientifico = row['scientificName']
+      end
+
       v.encuentra_por_nombre
       self.validacion = v.validacion
       self.datos[7] = validacion[:msg]
