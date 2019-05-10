@@ -6,10 +6,14 @@
   <% end %>
 
   <hr class="espacio_ficha">
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/admin/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente_ecosistema', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente_ecosistema' %>
+  <hr />
+  <div id="ambiente_ecosistema">
+    <%= f.simple_fields_for :ecosistema do |info| %>
+      <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
+    <% end %>
+  </div>
 
-  <%= f.simple_fields_for :ecosistema do |info| %>
-    <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
-  <% end %>
 
   <%= f.input :tipoVegetacion %>
   <%= f.input :habitatAgropecuario %>

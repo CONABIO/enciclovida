@@ -40,10 +40,10 @@
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
       <li role="presentation" class="active">
-        <a href="#clasificacion-descripcion" class="btn btn-sm" aria-controls="clasificacion-descripcion" role="tab" data-toggle="tab">Clasificación y descripción</a>
+        <%= link_to 'Clasificación y descripción', '#clasificacion-descripcion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion' %>
       </li>
       <li role="presentation">
-        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :distribuciones %>
       </li>
       <li role="presentation" >
         <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
@@ -86,9 +86,10 @@
         <hr />
         <% # OCUPA: taxon, legislacion  %>
         <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
-
         <hr class="espacio_ficha">
-
+        <h4 class="titulo-modelo">LEGISLACIONES:</h4>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+        <hr />
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>

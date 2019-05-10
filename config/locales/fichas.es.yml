@@ -74,6 +74,11 @@ es:
       defaults:
         yes: Si
         no: No
+      taxon:
+        prioridad:
+          alta: Alta
+          media: Media
+          baja: Baja
 
       fichas_legislacion:
         SEMARNAT_2001:

@@ -25,10 +25,13 @@ class Fichas::Taxon < Ficha
   accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
   accepts_nested_attributes_for :conservacion, allow_destroy: true
-  accepts_nested_attributes_for :legislaciones, allow_destroy: true
+  accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :endemicas, allow_destroy: true
 
-
+	# Para sección de especies prioritarias
+	ESPECIE_ENLISTADA = [:yes, :no]
+	LISTADOS = [:DOF, :CONABIO]
+	PRIORIDADS = [:alta, :media, :baja]
 
   # Devuelve las secciones que tienen información
 	def dame_edad_peso_largo
@@ -55,13 +58,23 @@ class Fichas::Taxon < Ficha
 
 end
 
-class Counter
+class Numerador
 
 	include Singleton
-	attr_accessor :question
 
 	def initialize
-		self.question = 1
+    @pregunta = 0
+    @nivel = 1
+    @tipo_r = "A"
 	end
+
+  def x_pregunta (nivel = 1, tipo_r = "A")
+
+		if nivel == 1
+			@pregunta += 1
+		end
+
+    "#{@pregunta}. "
+  end
 
 end
