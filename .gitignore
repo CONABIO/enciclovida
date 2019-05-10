@@ -66,4 +66,5 @@ db/metamares/migracion_base/metamares*csv
 db/metamares/migracion_base/metamares*sql
 db/metamares/migracion_base/*sql
 public/javascripts
+public/IUCN
 
