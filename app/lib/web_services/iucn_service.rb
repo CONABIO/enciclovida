@@ -117,7 +117,7 @@ class IUCNService
       return true if validacion[:taxon].x_division.estandariza == row['phylumName'].estandariza
     end
 
-    self.datos[7] == 'No coincidio phylum/division'
+    self.datos[7] = 'Sin coincidencias'
     return false
   end
 
