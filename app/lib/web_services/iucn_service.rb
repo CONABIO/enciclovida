@@ -31,7 +31,7 @@ class IUCNService
   end
 
   # Accede al archivo que contiene los assessments y la taxonomia dentro de la carpeta versiones_IUCN
-  # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asswessments con el de taxonomy
+  # NOTAS: Este archivo se baja de la pagina de IUCN y hay que unir el archivo de asessments con el de taxonomy y guardarlo bajo public/IUCN
   def actualiza_IUCN(archivo)
     csv_path = Rails.root.join('public', 'IUCN', archivo)
     bitacora.puts 'Nombre científico en IUCN,Categoría en IUCN,Nombre en CAT,IdCAT,Estatus nombre,IdCAT válido,Nombre válido CAT,observaciones'
@@ -59,14 +59,7 @@ class IUCNService
 
           validacion[:taxones].each do |taxon|
             validacion[:taxon] = taxon
-            next unless misma_categoria?
-            next unless mismo_reino?
-
-            self.datos[2] = validacion[:taxon].nombre_cientifico
-            self.datos[3] = validacion[:taxon].scat.catalogo_id
-            self.datos[4] = validacion[:taxon].estatus
-
-            next unless dame_el_valido
+            next unless valida_extras
             cuantos_encontro << validacion[:taxon].id
           end
 
@@ -82,6 +75,11 @@ class IUCNService
             self.datos[6] = nil
             self.datos[7] = "[REVISAR] - Existe más de una coincidencia: #{validacion[:taxones].map{ |t| t.scat.catalogo_id }.join('|')}"
           else
+            self.datos[2] = nil
+            self.datos[3] = nil
+            self.datos[4] = nil
+            self.datos[5] = nil
+            self.datos[6] = nil
             self.datos[7] = 'Sin coincidencias'
           end
 
@@ -103,25 +101,17 @@ class IUCNService
     @@bitacora ||= File.new(log_path, 'a+')
   end
 
-  # Valida que los reinos coincidan para evitar homonimos
-  def mismo_reino?
-    reino = validacion[:taxon].root.nombre_cientifico.estandariza
-
-    if row['kingdomName'].estandariza == reino  # Si coincidio el reino y es un valido
-      return true
-    else  # Los reinos no coincidieron
-      self.datos[7] = '[REVISAR] - Los reinos no coincidieron'
-      return false
-    end
-  end
-
-  # Comparo si la familia es la misma para busquedas similares
-  def misma_familia?
+  # Comparo si el phylum/division es la misma para busquedas similares
+  def mismo_phylum?
     validacion[:taxon].asigna_categorias
 
-    return true if validacion[:taxon].x_familia.estandariza == row['familyName'].estandariza
+    if validacion[:taxon].x_reino.estandariza == 'animalia'  # Es phylum
+      return true if validacion[:taxon].x_phylum.estandariza == row['phylumName'].estandariza
+    else  # De lo contrario es plantae, fungi, etc
+      return true if validacion[:taxon].x_division.estandariza == row['phylumName'].estandariza
+    end
 
-    self.datos[7] == 'Sin coincidencias'
+    self.datos[7] == 'No coincidio phylum/division'
     return false
   end
 
@@ -138,7 +128,7 @@ class IUCNService
     cat_taxon = validacion[:taxon].categoria_taxonomica.nombre_categoria_taxonomica.estandariza
 
     unless cat_taxon == categoria
-      self.datos[7] = '[REVISAR] - La categoria taxonómica no coincidio'
+      self.datos[7] = 'Sin coincidencias'
       return false
     end
 
@@ -170,21 +160,19 @@ class IUCNService
 
   # Valida el nombre y categoría taxonomica
   def valida_extras
-    self.datos[7] = validacion[:msg]
-
-    if datos[7] = 'Búsqueda similar'
+    if datos[7] == 'Búsqueda similar'
       self.datos[7] = '[REVISAR] - Búsqueda similar'
-      return unless misma_familia?
     end
+
+    return unless misma_categoria?
+    return unless mismo_phylum?
 
     self.datos[2] = validacion[:taxon].nombre_cientifico
     self.datos[3] = validacion[:taxon].scat.catalogo_id
     self.datos[4] = validacion[:taxon].estatus
 
-    return unless mismo_reino?
     return unless dame_el_valido
-
-    misma_categoria?
+    true
   end
 
 end
