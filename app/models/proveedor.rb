@@ -393,10 +393,15 @@ class Proveedor < ActiveRecord::Base
     self.observaciones_mapa << [observacion[:longitude], observacion[:latitude], observacion[:id], observacion[:quality_grade] == 'investigación' ? 1 : 2]
   end
 
-  def api_naturalista_total_observaciones(params = { :tipo => "casual" })
+  def api_naturalista_total_observaciones(params = { :tipo => "casual", :c_name => nil })
+
     begin # LLamada al servicio
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}&place_id=1", timeout: 20)
-      # puts "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}"
+      if params[:c_name].nil?
+        rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_id=#{naturalista_id}&quality_grade=#{params[:tipo]}&place_id=1", timeout: 20)
+      else
+        rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.inaturalist_api}/observations/species_counts?taxon_name=#{params[:c_name]}&quality_grade=#{params[:tipo]}&place_id=1", timeout: 20)
+      end
+
       res = JSON.parse(rest_client)
     rescue => e
       return {estatus: false, msg: e}

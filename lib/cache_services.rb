@@ -8,6 +8,14 @@ module CacheServices
       guarda_ejemplares_snib_servicio
       guarda_redis_servicio
       guarda_pez_servicios
+      estadisticas_naturalista_servicio
+      estadisticas_conabio_servicio
+      estadisticas_wikipedia_servicio
+      estadisticas_eol_servicio
+      estadisticas_tropicos_service_servicio
+      estadisticas_maccaulay_servicio
+      estadisticas_SNIB_servicio
+      estadisticas_mapas_distribucion_servicio
     end
   end
 
@@ -198,8 +206,45 @@ module CacheServices
     end
   end
 
+=begin
+  RESPUESTAS DE LOS METODOS
 
-  def guarda_estadisticas_naturalista_servicio
+  estadisticas_naturalista
+    nombres_comunes
+    fotos
+    total_observaciones_investigacion
+    observaciones_casual
+
+  estadisticas_conabio
+    total_nombres_comune
+    total_fotos
+    total_fichas
+
+  estadisticas_wikipedia
+    ficha_espaniol
+    ficha_ingles
+
+  estadisticas_eol
+    ficha_espaniol
+    ficha_ingles
+
+  estadisticas_tropicos_service
+    total_fotos
+
+  estadisticas_maccaulay
+    total_fotos
+    total_videos
+    total_audios
+
+  estadisticas_SNIB
+    ejemplares_snib
+    ejemplares_snib_averaves
+
+  estadisticas_mapas_distribucion
+    mapas_distribucion
+=end
+
+  def estadisticas_naturalista_servicio
     if Rails.env.production?
       delay(queue: 'estadisticas_naturalista').estadisticas_naturalista
     else
@@ -207,8 +252,70 @@ module CacheServices
     end
   end
 
+  def estadisticas_conabio_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_conabio').estadisticas_conabio
+    else
+      estadisticas_conabio
+    end
+  end
+
+  def estadisticas_wikipedia_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia
+    else
+      estadisticas_wikipedia
+    end
+  end
+
+  def estadisticas_eol_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_eol').estadisticas_eol
+    else
+      estadisticas_eol
+    end
+  end
+
+  def estadisticas_tropicos_service_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service
+    else
+      estadisticas_tropicos_service
+    end
+  end
+
+  def estadisticas_maccaulay_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay
+    else
+      estadisticas_maccaulay
+    end
+  end
+
+  def estadisticas_SNIB_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_SNIB').estadisticas_SNIB
+    else
+      estadisticas_SNIB
+    end
+  end
+
+  def estadisticas_mapas_distribucion_servicio
+    if Rails.env.production?
+      delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion
+    else
+      estadisticas_mapas_distribucion
+    end
+  end
+
   # Datos estadísticos
   def estadisticas_naturalista(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_naturalista')
+
+    escribe_cache('estadisticas_naturalista', CONFIG.cache.estadisticas.estadisticas_naturalista) if Rails.env.production?
+
     # Respuesta de la función
     res = {
         :total_nombres_comunes => 0,
@@ -230,26 +337,31 @@ module CacheServices
       end
 
       # Obtener el total de observaciones:
-      tipo_observaciones = proveedor_naturalista.numero_observaciones_naturalista
+      tipo_observaciones = proveedor_naturalista.numero_observaciones_naturalista if especie_o_inferior?
 
       # ID: 19. Grado de investigación
-      res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
+      res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]  if especie_o_inferior?
 
       # ID: 20. Grado casual
-      res[:total_observaciones_casual] = tipo_observaciones[:casual]
-
-      unless estd.nil?
-        escribe_estadistica(estd, 4, res[:total_nombres_comunes])
-        escribe_estadistica(estd, 6, res[:total_fotos])
-        escribe_estadistica(estd, 19, res[:total_observaciones_investigacion])
-        escribe_estadistica(estd, 20, res[:total_observaciones_casual])
-      end
+      res[:total_observaciones_casual] = tipo_observaciones[:casual]  if especie_o_inferior?
     end
 
+    unless estd.nil?
+      escribe_estadistica(estd, 4, res[:total_nombres_comunes])
+      escribe_estadistica(estd, 6, res[:total_fotos])
+      escribe_estadistica(estd, 19, res[:total_observaciones_investigacion]) if especie_o_inferior?
+      escribe_estadistica(estd, 20, res[:total_observaciones_casual]) if especie_o_inferior?
+    end
     res
   end
 
   def estadisticas_conabio(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_conabio')
+
+    escribe_cache('estadisticas_conabio', CONFIG.cache.estadisticas.estadisticas_conabio) if Rails.env.production?
+
     # Respuesta de la función
     res = {
         :total_nombres_comunes => 0,
@@ -277,11 +389,16 @@ module CacheServices
       escribe_estadistica(estd, 7, res[:total_fotos])
       escribe_estadistica(estd, 11, res[:total_fichas])
     end
-
     res
   end
 
   def estadisticas_wikipedia(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_wikipedia')
+
+    escribe_cache('estadisticas_wikipedia', CONFIG.cache.estadisticas.estadisticas_wikipedia) if Rails.env.production?
+
     # Respuesta de la función
     res = {
         :ficha_espaniol => 0,
@@ -303,6 +420,12 @@ module CacheServices
   end
 
   def estadisticas_eol(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_eol')
+
+    escribe_cache('estadisticas_eol', CONFIG.cache.estadisticas.estadisticas_eol) if Rails.env.production?
+
     # Respuesta de la función
     res = {}
 
@@ -320,6 +443,12 @@ module CacheServices
   end
 
   def estadisticas_tropicos_service(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_tropicos_service')
+
+    escribe_cache('estadisticas_tropicos_service', CONFIG.cache.estadisticas.estadisticas_tropicos_service) if Rails.env.production?
+
     # Respuesta de la función
     res = {}
 
@@ -361,6 +490,12 @@ module CacheServices
   end
 
   def estadisticas_maccaulay(estd = nil)
+
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_tropicos_service')
+
+    escribe_cache('estadisticas_tropicos_service', CONFIG.cache.estadisticas.estadisticas_tropicos_service) if Rails.env.production?
+
     # Respuesta de la función
     res = {}
     taxonNC = nombre_cientifico
@@ -384,6 +519,12 @@ module CacheServices
   # SNIB: Sistema Nacional de Información sobre Biodiversidad de México
   def estadisticas_SNIB(estd = nil)
 
+    return unless especie_o_inferior?
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_SNIB')
+
+    escribe_cache('estadisticas_SNIB', CONFIG.cache.estadisticas.estadisticas_SNIB) if Rails.env.production?
+
     # Respuesta de la función
     res = {
         :ejemplares_snib => 0,
@@ -406,29 +547,30 @@ module CacheServices
           res[:ejemplares_snib_averaves] += 1
         end
       end
+    end
 
-      unless estd.nil?
-        escribe_estadistica(estd, 17, res[:ejemplares_snib])
-        escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
-      end
-
-    else
-      # puts "No hay ejemplares o hubo un error al solicita∫r el servicio"
-      res[:estatus] = false
-      res[:msg] = "No hay ejemplares o hubo un error al solicitar el servicio"
+    unless estd.nil?
+      escribe_estadistica(estd, 17, res[:ejemplares_snib])
+      escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
     end
     res
   end
 
   def estadisticas_mapas_distribucion(estd = nil)
+    return unless especie_o_inferior?
+    # Para no guardar nada si el cache aun esta vigente
+    return if existe_cache?('estadisticas_mapas_distribucion')
+
+    escribe_cache('estadisticas_mapas_distribucion', CONFIG.cache.estadisticas.estadisticas_mapas_distribucion) if Rails.env.production?
+
     # Respuesta de la función
-    res = {}
+    res = {:mapas_distribucion => 0}
     # ID: 21 Mapas de distribución
     if proveedor = proveedor
       pg = proveedor.geodatos
       pg[:cuales].include?('geoserver') ? res[:mapas_distribucion] = 1 : res[:mapas_distribucion] = 0
-      escribe_estadistica(estd, 21, res[:mapas_distribucion]) unless estd.nil?
     end
+    escribe_estadistica(estd, 21, res[:mapas_distribucion]) unless estd.nil?
     res
   end
 
@@ -436,9 +578,9 @@ module CacheServices
     # Obtener todas las especies a iterar
     especies_todas = Especie.all
     i = 0
-    especies_todas.each do |especie_x|
 
-      if i >= 1000
+    especies_todas.each do |especie_x|
+      if i >= 2290 && i < 2300
         # Verificar si esta es una especie o inferior
         if especie_x.especie_o_inferior?
           start = Time.now
@@ -453,7 +595,7 @@ module CacheServices
     end
   end
 
-  def genera_estadisticas()
+  def genera_estadisticas
     # Acceder a las estadisticas
     estd = especie_estadisticas
 
@@ -477,7 +619,7 @@ module CacheServices
     total = 0
     total_por_pagina = 1000
     (1..100).each do | i |
-      if i > 1 && total < total_por_pagina
+      if i > 1 && tipo == "photo" && total < (total_por_pagina * (i - 1))
         break # No tiene caso buscar cuando ya no hay mas resultadose  en las demàs pàginas
       end
       puts "Llamo al servicio #{i}"
@@ -516,6 +658,7 @@ module CacheServices
     end
     resultados
   end
+
   # Recibe el apuntador a la tabla y escribe el dato en ella segùn el id de la estadìstica
   def escribe_estadistica(estd, estd_id, dato)
     if estadistica = estd.where(estadistica_id: estd_id).first
