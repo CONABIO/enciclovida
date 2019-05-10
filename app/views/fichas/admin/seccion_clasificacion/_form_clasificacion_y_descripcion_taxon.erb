@@ -1,7 +1,13 @@
+<% content_for :extracss do %>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+<% end %>
+
 <div class='nested-fields'>
   <%= f.input :id, required: true, :as => :hidden, :disabled => true %>
   <%= f.input :resumenEspecie %>
   <%= f.input :descEspecie %>
+
   <!-- Tabla con información de medidas de la especie -->
   <div class="row">
     <div class="col-sm-3"></div>

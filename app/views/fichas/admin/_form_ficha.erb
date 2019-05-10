@@ -40,10 +40,10 @@
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
       <li role="presentation" class="active">
-        <a href="#clasificacion-descripcion" class="btn btn-sm" aria-controls="clasificacion-descripcion" role="tab" data-toggle="tab">Clasificación y descripción</a>
+        <%= link_to 'Clasificación y descripción', '#clasificacion-descripcion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion' %>
       </li>
       <li role="presentation">
-        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :distribuciones %>
       </li>
       <li role="presentation" >
         <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
@@ -85,10 +85,11 @@
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <% # OCUPA: taxon, legislacion  %>
-        <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion', locals: { f: f } %>
-
+        <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
         <hr class="espacio_ficha">
-
+        <h4 class="titulo-modelo">LEGISLACIONES:</h4>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+        <hr />
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
@@ -102,7 +103,7 @@
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :distribuciones do |info| %>
-          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion', locals: { f: info} %>
+          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :endemicas do |info| %>
@@ -112,9 +113,9 @@
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <% # OCUPA: ecorregion, cat_eacorregionwwf, ecosistema, habitat, suelo, geoforma %>
+        <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente_habitat', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -126,7 +127,7 @@
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
@@ -138,7 +139,7 @@
         <hr />
         <% # OCUPA: demografiaamenazas, * * interaccion  %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/admin/seccion_ecologia/form_ecologia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -146,7 +147,7 @@
         <hr />
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_genetica/form_genetica', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -154,32 +155,33 @@
         <hr />
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_importancia/form_importancia', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
         <% end %>
       </div>
 
       <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <% # OCUPA: * * amenazadirecta, demografiaamenazas, conservacion %>
+        <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
           <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
         <% end %>
+
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :conservacion do |info| %>
-          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion', locals: { f: info } %>
+          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
         <% end %>
       </div>
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <% # OCUPA:  taxon %>
-        <%= render partial: 'fichas/admin/seccion_prioritaria/form_prioritaria_conservacion', locals: { f: f } %>
+        <%= render partial: 'fichas/admin/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
       </div>
 
       <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <% # OCUPA: taxon  %>
-        <%= render partial: 'fichas/admin/seccion_necesidad_informacion/form_necesiades_informacion', locals: { f: f } %>
+        <%= render partial: 'fichas/admin/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
       </div>
 
 

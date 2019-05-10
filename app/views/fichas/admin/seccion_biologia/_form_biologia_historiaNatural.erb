@@ -30,4 +30,15 @@
   <%= f.input :estructuraDispersora %>
   <%= f.input :descEstDispersora %>
   <%= f.input :distanciadispercioninicial %>
+
+  <hr class="espacio_ficha">
+  <%= f.simple_fields_for :reproduccionAnimal do |info| %>
+    <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
+  <% end %>
+
+  <hr class="espacio_ficha">
+  <%= f.simple_fields_for :reproduccionVegetal do |info| %>
+    <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
+  <% end %>
+
 </div>

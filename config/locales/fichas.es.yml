@@ -1,4 +1,5 @@
 es:
+
   general:
     informacion_de_ficha: Información de la ficha
     titulos_secciones:
@@ -14,14 +15,46 @@ es:
       necesidades: X. Necesidades de información
       metadatos: XI. Metadatos
 
+  secciones:
+    #  * *  S E C C I Ó N   A M B I E N T E * *  #
+    s_ambiente:
+      descripcion: Ambiente
+      tipos:
+          terrestre: A. Ambiente terrestre
+          acuatico: B. Ambiente acuático (dulceacuícola, salobre o marino)
+          terrestre_acuatico: C. Ambiente terrestre-acuático
+    # *  - - - - - - - - - - - - - - - - - - - - * #
+
+    #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+    s_ecologia:
+      tamaño_poblacional: 43. Tamaño poblacional
+      parametros_poblacionales: 44. Parámetros poblacionales
+      interacciones: 45. Interacciones
+    # *  - - - - - - - - - - - - - - - - - - - - * #
+
+    #  * *  S E C C I Ó N   G E N É T I C A  * *  #
+    s_genetica:
+      descripcion_de_la_variabilidad_genetica: a) Descripción de la variabilidad genética
+    # *  - - - - - - - - - - - - - - - - - - - - * #
+
+    #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+    s_importancia:
+      País de importación: País de importación
+      afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
+    # *  - - - - - - - - - - - - - - - - - - - - * #
+
+    #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+    s_conservacion:
+      esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+      marco_legal_nacional_e_internacional: 57. Marco legal nacional e internacional
+    # *  - - - - - - - - - - - - - - - - - - - - * #
+
   simple_form:
     placeholders:
       medidas:
         centimetros: En centímetros
         metros: En metros
-      pesos:
         gramos: En gramos
-      tiempo:
         anios: Años
         meses: Meses
         dias: Días
@@ -31,9 +64,7 @@ es:
       medidas:
         centimetros: En centímetros
         metros: En metros
-      pesos:
         gramos: En gramos
-      tiempo:
         anios: Años
         meses: Meses
         dias: Días
@@ -43,6 +74,11 @@ es:
       defaults:
         yes: Si
         no: No
+      taxon:
+        prioridad:
+          alta: Alta
+          media: Media
+          baja: Baja
 
       fichas_legislacion:
         SEMARNAT_2001:
@@ -54,173 +90,264 @@ es:
       defaults:
         informacion_adicional: Información adicional
         mas_informacion: Más información
-        yes: si
-        no: no
+        yes: Si
+        no: No
 
       fichas_taxon:
+        #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
-        longevidad: Longevidad
-        peso: Peso (en gramos)
-        largo: Largo (en centímetros)
-        machos: Machos
-        hembras: Hembras
+        tabla_descripcion:
+          descEspecie: Descripción de la especie
+          largototalhembras: Largo total en centímetros para hembras
+          largoinicialhembras: Largo inicial en centímetros para hembras
+          largofinalhembras: Largo final en centímetros para hembras
+          largoinicialmachos: Largo total en centímetros para machos
+          largoinicialmachos: Largo inicial en centímetros para machos
+          largofinalmachos: Largo final en centímetros para machos
+          longevidadhembras: Longevidad en hembras
+          edadinicialhembras: ---
+          edadfinalhembras: ---
+          tiempoedadhembra: ---
+          longevidadhembras: Longevidad en machos
+          edadinicialmachos: ---
+          edadfinalmachos: ---
+          pesohembras: Peso en gramos para hembras
+          pesoinicialhembras: ---
+          pesofinalhembras: ---
+          pesomachos: Peso en gramos para machos
+          pesoinicialmachos: ---
+          pesofinalmachos: ---
         especiesSmilares: Especies similares
-        categoria_riesgo:
-          NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT
-          _2001: 2001
-          _2010: 2010
-        categoria_UICN:	Categoría de riesgo según UICN
-        categoria_CITES: Regulación del comercio internacional de la especie (CITES)
+        infoAdicional: Categoría de riesgo según la NOM-059-SEMARNAT I nformación adicional
         origen: Origen
         descripcionOrigen: Descrición del orígen
 
-      distribuciones:
-        region:
-          region: Región
-          distribucion_mundial: Distribución mundial
-        estado_habitad_desarrollo_taxon: Estado del hábitat con respecto al desarrollo natural del taxón
-        historicaPotencial: Histórica o potencial
-        alcanceDistribucion: Amplia o restringida
-        infoAdicionalAlcance: Información adicional
-        endemismo:
-          endemismo: Endemismo
-          endemica_mexico: ¿Endémica en México?
-
-      ambiente:
-        tipos:
-            terrestre: A. Ambiente terrestre
-            acuatico: B. Ambiente acuático (dulceacuícola, salobre o marino)
-            terrestre_acuatico: C. Ambiente terrestre-acuático
-        ambiente: Ambiente
-        ecorregion: Ecorregion
-        ecosistema: Ecosistema
-        clima: Clima
-        temperatura: Temperatura
-        precipitacion: Precipitación
-        rango_de_humedad_relativa: Rango de humedad relativa
-        geoforma: Geoforma
-        tipos_de_vegetacion: Tipos de vegetación
-        vegetacion_en_la_que_se_desarrolla_la_especie: Vegetación  en la que se desarrolla la especie
-        habitats_antropicos: Hábitats antrópicos
-        tipo_de_vegetacion_secundaria: Tipo de vegetación secundaria
-        mencionar_las_especies_asociadas_: Mencionar las especies asociadas
-        tipo_de_suelo_en_el_que_se_desarrolla_la_especie: Tipo de suelo en el que se desarrolla la especie
-
-      biologia:
-        tipo_de_reproduccion: Tipo de reproducción
-        vegetal: Vegetal
-        animal: Animal
-        vegetal: vegetal
-        generalidades: Generalidades
-        tipos_de_expresion_sexual: Tipos de expresión sexual
-        flores: Flores
-        individuos: Individuos
-        poblaciones: Poblaciones
-        aislamiento_temporal_o_espacial_de_los_organos_reproductores: Aislamiento temporal o espacial de los órganos reproductores
-        sistemas_reproductivos_asexuales: Sistemas reproductivos asexuales
-        tipo_de_fecundacion: Tipo de fecundación
-        numero_de_eventos_reproductivos: Número de eventos reproductivos
-        tipo_de_polinizacion: Tipo de polinización
-        floracion: Floración
-        horario_de_apertura_de_la_flor: Horario de apertura de la flor
-        longevidad_de_la_flor: Longevidad de la flor
-        epoca_de_floracion_(inicio_y_termino): Época de floración (inicio y término)
-        cantidad_de_nectar: Cantidad de néctar
-        cantidad_de_polen: Cantidad de polen
-        frutificacion: frutificación
-        epoca_de_fructificacion: Época de fructificación (mes de inicio y término)
-        numero_de_frutos: Número de frutos
-        caracteristicas_del_fruto: Características del fruto
-        semillas: semillas
-        numero_de_semillas_por_fruto: Número de semillas por fruto
-        tamaño_promedio_de_las_semillas: tamaño promedio de las semillas
-        caracteristicas_toxicas: Características tóxicas
-        porcentaje_de_germinacion: Porcentaje de germinación
-        porcentaje_de_supervivencia_de_plantulas: Porcentaje de supervivencia de plántulas
-        mas_informacion_biologia: mas_informacion_biologia
-        uso_del_habitat: Uso del hábitat
-        habito_en_caso_de_plantas: Hábito en caso de plantas
-        alimentacion: Alimentación
-        estrategia_trofica: Estrategia trófica
-        tecnica_de_forrajeo: Técnica de forrajeo
-        dispersion: Dispersión
-        tipo_de_dispersion: Tipo de dispersión
-        estructura_o_individuo_dispersado: Estructura o individuo dispersado
-        distancia_de_dispersion: Distancia de dispersión
-        conducta: Conducta
-        caracteristicas_conductuales: Características conductuales
-        estatus_migratorio: Estatus migratorio
-        tipo_de_migracion_que_realiza_la_especie: Tipo de migración que realiza la especie
-        habito: Hábito
-        periodo_de_actividad: Periodo de actividad
-        hibernacion: Hibernación
-        territorialidad: Territorialidad
-        ambito_hogareño_(animales): Ámbito hogareño (animales)
-        mecanismos_de_defensa: Mecanismos de defensa
-        organizacion_social: Organización social
-
-      ecologia:
-        tamaño_poblacional: Tamaño poblacional
-        descripcion_del_tamaño_poblacional_reportado_en_distintos_lugares: a) Descripción del tamaño poblacional reportado en distintos lugares
-        abundancia_de_individuos_por_region: b) Abundancia de individuos por región
-        densidad_(numero_de_individuos_por_area): c) Densidad (número de individuos por área)
-        descripcion_del_patron_de_ocupacion: d) Descripción del patrón de ocupación
-        informacion_adicional: d) i Información adicional
-        parametros_poblacionales: Parámetros poblacionales
-        parametros_poblacionales: a) Parámetros poblacionales
-        poblacion_minima_viable: b) Población mínima viable
-        interacciones: Interacciones
-        interacciones: i Interacciones
-        informacion_adicional: ii Información adicional
-
-      genetica:
-        variabilidad_genetica: Variabilidad genética
-        descripcion_de_la_variabilidad_genetica: a) Descripción de la variabilidad genética
-        marcadores_utilizados_para_describir_la_variabilidad: b) Marcadores utilizados para describir la variabilidad
-        secuencias_publicadas_para_la_especie: Secuencias publicadas para la especie
-        mexbol/codigo_de_barras: MEXBOL/Código de barras
-
-      importancia:
-        importancia_biologica: a) Importancia biológica
-        funcion_ecologica: b) Función ecológica
-        importancia_economica: Importancia económica
-        comercio_nacional: a) Comercio nacional
-        origen_de_los_especimenes: Origen de los especímenes
-        proposito_del_comercio: Propósito del comercio
-        comercio_internacional: b) Comercio internacional
-        origen_de_los_especimenes: Origen de los especímenes
-        proposito_del_comercio: Propósito del comercio
-        pais_de_importacion: País de importación
-        afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
-        ¿la_especie_se_ve_afectada_por_el_comercio_ilicito_nacional?: i. ¿La especie se ve afectada por el comercio ilícito nacional?
-        ¿la_especie_se_ve_afectada_por_el_comercio_ilicito_internacional?: ii. ¿La especie se ve afectada por el comercio ilícito internacional?
-        efectos_reales_o_potenciales_del_comercio_en_el_manejo_y_conservacion_de_la_especie: iii. Efectos reales o potenciales del comercio en el manejo y conservación de la especie
-        importancia_cultural_y_usos: Importancia cultural y usos
-        informacion_adicional: Información adicional
-        estado_de_conservacion_de_la_especie: Estado de conservación de la especie
-
-      estado_de_conservacion:
-        presiones_o_amenazas_sobre_la_especie: Presiones o amenazas sobre la especie
-        presiones_o_amenazas_sobre_la_especie_+_info: Presiones o amenazas sobre la especie + Info
-        tendencia_poblacional: Tendencia poblacional
-        tendencia_poblacional_+_info: Tendencia poblacional + info
-        estado_de_conservacion: Estado de conservación
-        manejo_aprovechamiento_y_acciones_de_conservacion: Manejo, aprovechamiento y acciones de conservación
-        describir_acciones_de_manejo_y_conservacion_de_la_especie: a) Describir acciones de manejo y conservación de la especie
-        esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-        indicar_el_tipo_de_aprovechamiento_de_la_especie: c) Indicar el tipo de aprovechamiento de la especie
-        marco_legal_nacional_e_internacional: Marco legal nacional e internacional
-        regulaciones_aplicables_a_la_especie: a) Regulaciones aplicables a la especie
-        tipo_de_veda: b) Tipo de veda
-        informacion_adicional: Información adicional
-
-      prioritarias_conservacion:
+        #  * *  S E C C I Ó N   P R I O R I T A R I A S  * *  #
         prioritaria: ¿Se encuentra enlistada como especie prioritaria?
         publicadaEn: ¿En qué listado se encuentra?
         nivelPrioridad: Prioridad resultante del proceso
         justificacionPrioritaria: Justificación del estatus de especie prioritaria
-
-      fichas_taxon:
-        # Sección: necesidades
+        #  * *  S E C C I Ó N   N E C E S I D A D E S   I N F O  * *  #
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie
+      legislaciones:
+        #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
+        estatusLegalProteccion: Categoría de riesgo según la NOM-059-SEMARNAT 2001
+        estatusLegalProteccion: Categoría de riesgo según la NOM-059-SEMARNAT 2010
+        c1: Categoría de riesgo según la UICN
+        c2: Regulación del comercio internacional de la especie (CITES)
+        c3: Regulación del comercio internacional de la especie (CITES) Información adicional
+        origen: Origen en relación con México
+        descripcionOrigen: Origen en relación con México
+        infoadicionalnombre: Origen en relación con México Información adicional
+
+      distribuciones:
+        #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
+        region: Región
+        exoticaMundial: Región - Distribución mundial
+        historicaPotencial: Distribución histórica o potencial
+        infoAdicionalMun: Información adicional
+        alcanceDistribucion: Distribución amplia o restringida
+        infoAdicionalAlcance: Información adicional
+      habitats:
+        #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
+        estadoHabitat: Estado del hábitat con respecto al desarrollo natural del taxón
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        tipoVegetacion: 22 A) Tipos de vegetación  en los que se desarrolla la especie
+        habitatAgropecuario: 22 B) Hábitats antrópicos i. Indicar si se encuentra en hábitat agropecuario
+        zonaUrbana: 22 B) Hábitats antrópicos ii. Indicar si se encuentra en zonas urbanas
+        VegetacionSecundaria: 22 B) iii. Indicar si se encuentra en vegetación secundaria
+        tipoVegetacionSecundaria: 22 C) Tipo de vegetación secundaria
+        cambiar: 22 D) Mencionar las especies asociadas
+        intervaloaltitudinalinicial: 23. Intervalo altitudinal
+        infoAddintervaloaltitudinal: 23 Información adicional
+        tipoClimaId: 24. Clima  Tipo de clima
+        climaAdicional: 24. Información adicional
+        temperaturainicial: 25. Rango de temperatura
+        infoaddtemperatura: 25 Información adicional
+        precipitacioninicial: 26. Rango de precipitación
+        infoaddprecipitacion: 26 Información adicional
+        humedadinicial: 27. Rango de humedad relativa
+        infoaddhumedad: 27 Información adicional
+        descripcionSuelo: 28 Tipo de suelo Indicar el tipo de suelo en el que se desarrolla la especie
+        descripcionGeoforma: 29 Información adicional
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        uso: 35. Uso del hábitat
+      demografiaAmenazas:
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        organizacionSocial: 40 i) Organización social
+        infoaddorgsocial: 40 i) i Información adicional
+        #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+        tamanioPoblacional: 43 a) Descripción del tamaño poblacional reportado en distintos lugares
+        abundancia: 43 b) Abundancia de individuos por región
+        densidad: 43 c) Densidad (número de individuos por área)
+        patronOcupacion: 43 d) Descripción del patrón de ocupación
+        descripcionPatron: 43 d) i Información adicional
+        parametrosPoblacionales: 44 a) Parámetros poblacionales
+        poblacionminviableinicial: 44 b) Población mínima viable
+        infoAdicionalInteraccion: 45 ii Información adicional
+        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+        descPresionesAmenazas: 53. Presiones o amenazas sobre la especie + Info
+        tendenciaPoblacional: 54. Tendencia poblacional
+        descTendenciaPoblacional: 54. Tendencia poblacional + info
+      historiaNatural:
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        habitoPlantas: 36. Hábito en caso de plantas
+        alimentacion: 37. Alimentación
+        descripcionAlimentacion: 37 Información adicional
+        estrategiaTrofica: 38. Estrategia trófica
+        descripcionEstrofica: 38. Información adicional
+        forrajeo: 39. Técnica de forrajeo
+        cambiar: 39. Información adicional
+        conducta: 40. Conducta
+        cambiar: 40 a) Características conductuales
+        migracion: 40 b) Estatus migratorio
+        tipoMigracion: 40 b) i Tipo de migración que realiza la especie
+        Habito: 40 c) Hábito
+        cambiar: 40 c) i Información adicional
+        tipopHabito: 40 d) Periodo de actividad
+        cambiar: 40 d) i Información adicional
+        hibernacion: 40 e) Hibernación
+        Infoaddhibernacion: 40 e) i Información adicional
+        territorialidad: 40 f) Territorialidad
+        Infoaddterritorialidad: 40 f) i Información adicional
+        ambitoHogareno: 40 g) Ámbito hogareño (animales)
+        mecanismosDefensa: 40 h) Mecanismos de defensa
+        infoaddmecdefensa: 40 h) i Información adicional
+        tipoReproduccion: 41. Reproducción  a) animal o b) vegental
+        cambiar: 42. Dispersión
+        tipoDispersion: 42 a) Tipo de dispersión
+        descTipoDispersion: 42 a) i Información adicional
+        estructuraDispersora: 42 b) Estructura o individuo dispersado
+        descEstDispersora: 42 b) Información adicional
+        distanciadispercioninicial: sas
+        distanciadispercionfinal: 42 c) Distancia de dispersión
+        #  * *  S E C C I Ó N   G E N É T I C A  * *  #
+        variabilidadGenetica: 46. Variabilidad genética
+        marcadorGenetico: b) Marcadores utilizados para describir la variabilidad
+        secuencias: 47. Secuencias publicadas para la especie
+        mexbol: 48. MEXBOL/Código de barras
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        ImportanciaBiologica: 49. a) Importancia biológica
+        funcionEcologica: 49. b) Función ecológica
+        importanciaEconomica: 50. Importancia económica
+        comercioNal: 51. Comercio a) Comercio nacional
+        origenComNal: Origen de los especímenes
+        propositoComNal: Propósito del comercio
+        comInternacional: b) Comercio internacional
+        origenInternacional: Origen de los especímenes
+        propositoInternacional: Propósito del comercio
+        comercioIlicitoNa: i. ¿La especie se ve afectada por el comercio ilícito nacional?
+        comercioIlicitoInter: ii. ¿La especie se ve afectada por el comercio ilícito internacional?
+        descComIlicito: iii. Efectos reales o potenciales del comercio en el manejo y conservación de la especie
+        descUsos: Información adicional
+      conservacion:
+        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+        estadoConser: 55. Estado de conservación
+        manejoAprov: 56. Manejo, aprovechamiento y acciones de conservación
+        descManejoAprov: a) Describir acciones de manejo y conservación de la especie
+        tipoAprovEsp: c) Indicar el tipo de aprovechamiento de la especie
+        Marcolegal: a) Regulaciones aplicables a la especie
+        tipoVeda: b) Tipo de veda
+      endemicas:
+        #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
+        endemismo: Endemismo
+        endemicaMexico: Endemismo a) ¿Endémica en México?
+        endemicaA: Endemismo b) Endémica a
+        infoAdicionalEndemica:  Información adicional
+      ecorregion:
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        descripcion: Descripción
+      cat_eacorregionwwf:
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        TipoEcorregion: 21. Tipo de ecorregión y ecosistema Ecorregiones
+      ecosistema:
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        tipoecosistema: 21. Tipo de ecorregión y ecosistema Ecosistemas
+      suelo:
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        Descripcion: 28 Tipo de suelo Información adicional
+      geoforma:
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        descrpcion: 29. Geoforma
+      reproduccionVegetal:
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        descripcion: a) Generalidades
+        arregloEspacial: b) Tipos de expresión sexual
+        cambiar1: i. Flores
+        cambiar2: ii. Individuos
+        cambiar3: iii. Poblaciones
+        descripcionArregloespacial:  Información adicional
+        aislamientoOrganos: c) Aislamiento temporal o espacial de los órganos reproductores
+        descAislaOrganos:  Información adicional
+        sistReproAsexuales: d) Sistemas reproductivos asexuales
+        DescsistReproAsexuales:  Información adicional
+        fecuandacion: e) Tipo de fecundación
+        descFecundacion:  Información adicional
+        agentesPolinizacion: f) Tipo de polinización
+        descAgentesPo:  Información adicional
+        cambiar4: g) Floración
+        aperturaFlor:  i. Horario de apertura de la flor
+        descApertura:  Información adicional
+        tiempoFloracion:  ii. Longevidad de la flor
+        addinfolongevidadflor:  Información adicional
+        mesInicio:  iii. Época de floración Mes de inicio
+        mesFinal: iii. Época de floración Mes de término
+        addinfotiempoflora:  Información adicional
+        cantidadnectarinicial: iv. Cantidad de néctar
+        cantidadnectarfinal:   iv. Cantidad de néctar
+        addinfocantidadnectar: Información adicional
+        cantidadpolen: v. Cantidad de polen
+        cambiar: h) Frutificación
+        mesInicialFructi:   i. Época de fructificación Mes de inicio
+        mesFinalFructi:   i. Época de fructificación Mes de término
+        addinfotiempofructi:  Información adicional
+        nofrutosinicial: dffs
+        nofrutosfinal:   ii. Número de frutos
+        caracFruto: iii. Características del fruto
+        descCaracFruto: Información adicional
+        noEventos: i) Número de eventos reproductivos
+        descNoEventos:  Información adicional
+        cambiar: j) Semillas
+        nosemillasinicial: 2edsdsffsfs
+        nosemillasfinal:   i. Número de semillas por fruto
+        tamanioSemilla:   ii. Tamaño promedio de las semillas
+        caracToxica:  iii. Características tóxicas
+        germinacioninicial: dsd
+        germinacionfinal: iv. Porcentaje de germinación
+        infoaddgerminacion: Información adicional
+        plantulasinicial: dds
+        plantulasfinal: v. Porcentaje de supervivencia de plántulas
+        infoaddplantulas:  Información adicional
+      reproduccionanimal:
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        descripcion: 41 a) Generalidades
+        dimorfismoSexual: 41 b) Dimorfismo sexual  S/N
+        additionalInfoDimorfiasmo: 41 b) Información adicional
+        coloracion: Dimorfismo sexual en coloración
+        ornamentacion: Dimorfismo sexual en ornamentación
+        sistemaApareamiento: c) Sistemas de apareamiento
+        descripcionSistema: c) i Información adicional
+        noEventos: d) Número de eventos reproductivos
+        descripcionNoEventos: Información adicional
+        cambiar: e) Tiempo entre eventos reproductivos (meses)
+        tipoFecundacion: f) Tipo de fecundación
+        descripcionTipoFec: Información adicional
+        edadPrimeraRepro: g) Edad o talla a la primera reproducción
+        duracionVidaRepro: h) Duración de vida reproductiva
+        frecuenciaApareamineto: i) Epoca del año y frecuencia de apareamiento
+        sitioAnidacion: j) Sitios de anidación o de crianza
+        descripcionSitioAnidacion: Información adicional
+        noHuevosCrias: k) Número de huevos o crias
+        cuidadoParental: l) Cuidado parental
+        desCuidadoParental: Información adicional
+        tiempoCuidadoParental: m) Tiempo del cuidado parental
+      interaccion:
+        #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+        interacciones: 45 i Interacciones
+      amenazaDirecta:
+        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+        presionesAmenazas: 53. Presiones o amenazas sobre la especie
+      culturausos:
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        descripcion: 52. Importancia cultural y usos
