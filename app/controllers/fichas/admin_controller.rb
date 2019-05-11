@@ -1,7 +1,7 @@
 class Fichas::AdminController < Fichas::FichasController
 
   before_action :set_ficha, only: [:edit, :update, :show, :destroy]
-  #layout false
+  layout false
 
   def edit
     @form_params = { url: '/fichas/admin', method: 'post' }
