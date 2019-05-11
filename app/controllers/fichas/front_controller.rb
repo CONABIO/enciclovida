@@ -1,7 +1,7 @@
 class Fichas::FrontController < Fichas::FichasController
 
   before_action :set_taxon
-  #layout false
+  layout false
 
   #  - - - - - - - - * * Rutas de información de especie (Según su id) * *  - - - - - - - -
   # Clasificación y descripción de la especie
@@ -27,8 +27,7 @@ class Fichas::FrontController < Fichas::FichasController
     render json: {
         taxon: @taxon,
         distribucion: @distribucion,
-        endemica: @endemica,
-        habitat: @habitat
+        endemica: @endemica,        habitat: @habitat
     }
   end
 
