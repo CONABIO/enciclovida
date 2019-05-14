@@ -8,7 +8,7 @@ var server = new Hapi.Server({
         routes: {
             //payload: {timeout: 1000*60*3},
             timeout: {
-                server: 1000*60*3,
+                server: 1000*60*10,
                 socket: false
             }
         }
