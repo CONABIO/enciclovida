@@ -245,66 +245,82 @@ module CacheServices
 =end
 
   def estadisticas_naturalista_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_naturalista').estadisticas_naturalista
+      delay(queue: 'estadisticas_naturalista').estadisticas_naturalista(estd)
     else
-      estadisticas_naturalista
+      estadisticas_naturalista(estd)
     end
   end
 
   def estadisticas_conabio_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_conabio').estadisticas_conabio
+      delay(queue: 'estadisticas_conabio').estadisticas_conabio(estd)
     else
-      estadisticas_conabio
+      estadisticas_conabio(estd)
     end
   end
 
   def estadisticas_wikipedia_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia
+      delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia(estd)
     else
-      estadisticas_wikipedia
+      estadisticas_wikipedia(estd)
     end
   end
 
   def estadisticas_eol_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_eol').estadisticas_eol
+      delay(queue: 'estadisticas_eol').estadisticas_eol(estd)
     else
-      estadisticas_eol
+      estadisticas_eol(estd)
     end
   end
 
   def estadisticas_tropicos_service_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service
+      delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service(estd)
     else
-      estadisticas_tropicos_service
+      estadisticas_tropicos_service(estd)
     end
   end
 
   def estadisticas_maccaulay_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay
+      delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay(estd)
     else
-      estadisticas_maccaulay
+      estadisticas_maccaulay(estd)
     end
   end
 
   def estadisticas_SNIB_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_SNIB').estadisticas_SNIB
+      delay(queue: 'estadisticas_SNIB').estadisticas_SNIB(estd)
     else
-      estadisticas_SNIB
+      estadisticas_SNIB(estd)
     end
   end
 
   def estadisticas_mapas_distribucion_servicio
+    # Acceder a las estadisticas
+    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion
+      delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion(estd)
     else
-      estadisticas_mapas_distribucion
+      estadisticas_mapas_distribucion(estd)
     end
   end
 
@@ -431,13 +447,19 @@ module CacheServices
     escribe_cache('estadisticas_eol', CONFIG.cache.estadisticas.estadisticas_eol) if Rails.env.production?
 
     # Respuesta de la función
-    res = {}
+    res = {
+        :ficha_espaniol => 0,
+        :ficha_ingles => 0
+    }
 
-    # ID: 13 Fichas de EOL-español
-    TaxonDescribers::EolEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
-
-    # ID: 14 Fichas de EOL-ingles
-    TaxonDescribers::Eol.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+    begin
+      # ID: 13 Fichas de EOL-español
+      TaxonDescribers::EolEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
+      # ID: 14 Fichas de EOL-ingles
+      TaxonDescribers::Eol.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+    rescue StandardError => msg
+        puts msg
+    end
 
     unless estd.nil?
       escribe_estadistica(estd, 13, res[:ficha_espaniol])
