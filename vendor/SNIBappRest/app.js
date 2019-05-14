@@ -3,14 +3,22 @@ const Joi = require('joi');
 const query = require('./controller/query.js');
 const querySnib = require('./controller/querySnib.js');
 
-var server = new Hapi.Server();
+var server = new Hapi.Server({
+    connections: {
+        routes: {
+            //payload: {timeout: 1000*60*3},
+            timeout: {
+                server: 1000*60*3,
+                socket: false
+            }
+        }
+    }
+});
 
 server.connection({
     port: 8001,
     labels: ['api']
 });
-
-server.timeout = 1000*60*5;
 
 server.register([
     require('inert'),
