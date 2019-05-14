@@ -245,87 +245,71 @@ module CacheServices
 =end
 
   def estadisticas_naturalista_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_naturalista').estadisticas_naturalista(estd)
+      delay(queue: 'estadisticas_naturalista').estadisticas_naturalista
     else
-      estadisticas_naturalista(estd)
+      estadisticas_naturalista
     end
   end
 
   def estadisticas_conabio_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_conabio').estadisticas_conabio(estd)
+      delay(queue: 'estadisticas_conabio').estadisticas_conabio
     else
-      estadisticas_conabio(estd)
+      estadisticas_conabio
     end
   end
 
   def estadisticas_wikipedia_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia(estd)
+      delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia
     else
-      estadisticas_wikipedia(estd)
+      estadisticas_wikipedia
     end
   end
 
   def estadisticas_eol_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_eol').estadisticas_eol(estd)
+      delay(queue: 'estadisticas_eol').estadisticas_eol
     else
-      estadisticas_eol(estd)
+      estadisticas_eol
     end
   end
 
   def estadisticas_tropicos_service_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service(estd)
+      delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service
     else
-      estadisticas_tropicos_service(estd)
+      estadisticas_tropicos_service
     end
   end
 
   def estadisticas_maccaulay_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay(estd)
+      delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay
     else
-      estadisticas_maccaulay(estd)
+      estadisticas_maccaulay
     end
   end
 
   def estadisticas_SNIB_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_SNIB').estadisticas_SNIB(estd)
+      delay(queue: 'estadisticas_SNIB').estadisticas_SNIB
     else
-      estadisticas_SNIB(estd)
+      estadisticas_SNIB
     end
   end
 
   def estadisticas_mapas_distribucion_servicio
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
     if Rails.env.production?
-      delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion(estd)
+      delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion
     else
-      estadisticas_mapas_distribucion(estd)
+      estadisticas_mapas_distribucion
     end
   end
 
   # Datos estadísticos
-  def estadisticas_naturalista(estd = nil)
+  def estadisticas_naturalista(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_naturalista')
@@ -366,7 +350,8 @@ module CacheServices
       res[:total_observaciones_casual] = tipo_observaciones[:casual]  if especie_o_inferior?
     end
 
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 4, res[:total_nombres_comunes])
       escribe_estadistica(estd, 6, res[:total_fotos])
       escribe_estadistica(estd, 19, res[:total_observaciones_investigacion]) if especie_o_inferior?
@@ -375,7 +360,7 @@ module CacheServices
     res
   end
 
-  def estadisticas_conabio(estd = nil)
+  def estadisticas_conabio(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_conabio')
@@ -404,7 +389,8 @@ module CacheServices
     end
 
     # ID: 12 Fichas en revisión de CONABIO ( no existe campo)
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 5, res[:total_nombres_comunes])
       escribe_estadistica(estd, 7, res[:total_fotos])
       escribe_estadistica(estd, 11, res[:total_fichas])
@@ -412,7 +398,7 @@ module CacheServices
     res
   end
 
-  def estadisticas_wikipedia(estd = nil)
+  def estadisticas_wikipedia(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_wikipedia')
@@ -432,14 +418,15 @@ module CacheServices
     # ID: 16 Fichas de Wikipedia-ingles
     TaxonDescribers::Wikipedia.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
 
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 15, res[:ficha_espaniol])
       escribe_estadistica(estd, 16, res[:ficha_ingles])
     end
     res
   end
 
-  def estadisticas_eol(estd = nil)
+  def estadisticas_eol(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_eol')
@@ -461,14 +448,15 @@ module CacheServices
         puts msg
     end
 
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 13, res[:ficha_espaniol])
       escribe_estadistica(estd, 14, res[:ficha_ingles])
     end
     res
   end
 
-  def estadisticas_tropicos_service(estd = nil)
+  def estadisticas_tropicos_service(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_tropicos_service')
@@ -511,11 +499,12 @@ module CacheServices
       end
 
     end
-    escribe_estadistica(estd, 24, res[:total_fotos]) unless estd.nil?
+    estd = especie_estadisticas
+    escribe_estadistica(estd, 24, res[:total_fotos]) if guardar
     res
   end
 
-  def estadisticas_maccaulay(estd = nil)
+  def estadisticas_maccaulay(guardar = true)
 
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_tropicos_service')
@@ -533,7 +522,8 @@ module CacheServices
     puts "Buscando audios..."
     res[:total_audios] = itera_servicio_maccaulay(taxonNC, "audio")
 
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 25, res[:total_fotos])
       escribe_estadistica(estd, 26, res[:total_videos])
       escribe_estadistica(estd, 27, res[:total_audios])
@@ -543,7 +533,7 @@ module CacheServices
   end
 
   # SNIB: Sistema Nacional de Información sobre Biodiversidad de México
-  def estadisticas_SNIB(estd = nil)
+  def estadisticas_SNIB(guardar = true)
 
     return unless especie_o_inferior?
     # Para no guardar nada si el cache aun esta vigente
@@ -575,14 +565,15 @@ module CacheServices
       end
     end
 
-    unless estd.nil?
+    if guardar
+      estd = especie_estadisticas
       escribe_estadistica(estd, 17, res[:ejemplares_snib])
       escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
     end
     res
   end
 
-  def estadisticas_mapas_distribucion(estd = nil)
+  def estadisticas_mapas_distribucion(guardar = true)
     return unless especie_o_inferior?
     # Para no guardar nada si el cache aun esta vigente
     return if existe_cache?('estadisticas_mapas_distribucion')
@@ -596,7 +587,8 @@ module CacheServices
       pg = proveedor.geodatos
       pg[:cuales].include?('geoserver') ? res[:mapas_distribucion] = 1 : res[:mapas_distribucion] = 0
     end
-    escribe_estadistica(estd, 21, res[:mapas_distribucion]) unless estd.nil?
+    estd = especie_estadisticas
+    escribe_estadistica(estd, 21, res[:mapas_distribucion]) if guardar
     res
   end
 
@@ -622,18 +614,15 @@ module CacheServices
   end
 
   def genera_estadisticas
-    # Acceder a las estadisticas
-    estd = especie_estadisticas
-
     # Invocar las estadisticas de naturalista
-    puts estadisticas_naturalista(estd)
-    puts estadisticas_conabio(estd)
-    puts estadisticas_wikipedia(estd)
-    puts estadisticas_eol(estd)
-    puts estadisticas_tropicos_service(estd)
-    puts estadisticas_maccaulay(estd)
-    puts estadisticas_SNIB(estd)
-    puts estadisticas_mapas_distribucion(estd)
+    puts estadisticas_naturalista(true)
+    puts estadisticas_conabio(true)
+    puts estadisticas_wikipedia(true)
+    puts estadisticas_eol(true)
+    puts estadisticas_tropicos_service(true)
+    puts estadisticas_maccaulay(true)
+    puts estadisticas_SNIB(true)
+    puts estadisticas_mapas_distribucion(true)
   end
 
 
