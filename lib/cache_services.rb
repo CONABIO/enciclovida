@@ -327,13 +327,17 @@ module CacheServices
     # Acceder a tabla proveedor
     if proveedor_naturalista = proveedor
       # ID: 4 Obtener el total de los nombres comunes
-      unless proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].nil?
-        res[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count
+      if proveedor_naturalista.nombres_comunes_naturalista[:estatus]
+        if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].present?
+          res[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].any?
+        end
       end
 
       # ID: 6 Obtener el total de fotos en NaturaLista
-      unless proveedor_naturalista.fotos_naturalista[:fotos].nil?
-        res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+      unless proveedor_naturalista.fotos_naturalista[:estatus]
+        if proveedor_naturalista.fotos_naturalista[:fotos].present?
+          res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count if proveedor_naturalista.fotos_naturalista[:fotos].any
+        end
       end
 
       # Obtener el total de observaciones:
