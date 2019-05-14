@@ -23,4 +23,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'especy', 'especies'
   inflect.irregular 'pez', 'peces'
   inflect.irregular 'propiedad', 'propiedades'
+  inflect.irregular "legislacion", 'legislaciones'
 end
