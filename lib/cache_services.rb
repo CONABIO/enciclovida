@@ -619,7 +619,7 @@ module CacheServices
     total = 0
     total_por_pagina = 1000
     (1..100).each do | i |
-      if i > 1 && tipo == "photo" && total < (total_por_pagina * (i - 1))
+      if i > 1 && %w(photo audio video).include?(tipo) && total < (total_por_pagina * (i - 1))
         break # No tiene caso buscar cuando ya no hay mas resultadose  en las demàs pàginas
       end
       puts "Llamo al servicio #{i}"
@@ -628,6 +628,7 @@ module CacheServices
         total = 0
         break
       else
+
         # Si se regresó un mensaje, es porque por alguna razón no existieron fotos
         if archivo[0][:msg].present?
           # puts "XP #{archivo[0][:msg].present?}"
