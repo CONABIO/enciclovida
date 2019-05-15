@@ -245,7 +245,11 @@ module CacheServices
 =end
 
   def estadisticas_naturalista_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_naturalista')
+
     if Rails.env.production?
+      # Para no guardar nada si el cache aun esta vigente
       escribe_cache('estadisticas_naturalista', CONFIG.cache.estadisticas.estadisticas_naturalista) if Rails.env.production?
       delay(queue: 'estadisticas_naturalista').estadisticas_naturalista
     else
@@ -254,6 +258,9 @@ module CacheServices
   end
 
   def estadisticas_conabio_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_conabio')
+
     if Rails.env.production?
       escribe_cache('estadisticas_conabio', CONFIG.cache.estadisticas.estadisticas_conabio) if Rails.env.production?
       delay(queue: 'estadisticas_conabio').estadisticas_conabio
@@ -263,6 +270,9 @@ module CacheServices
   end
 
   def estadisticas_wikipedia_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_wikipedia')
+
     if Rails.env.production?
       escribe_cache('estadisticas_wikipedia', CONFIG.cache.estadisticas.estadisticas_wikipedia) if Rails.env.production?
       delay(queue: 'estadisticas_wikipedia').estadisticas_wikipedia
@@ -272,6 +282,9 @@ module CacheServices
   end
 
   def estadisticas_eol_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_eol')
+
     if Rails.env.production?
       escribe_cache('estadisticas_eol', CONFIG.cache.estadisticas.estadisticas_eol) if Rails.env.production?
       delay(queue: 'estadisticas_eol').estadisticas_eol
@@ -281,6 +294,9 @@ module CacheServices
   end
 
   def estadisticas_tropicos_service_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_tropicos_service')
+
     if Rails.env.production?
       escribe_cache('estadisticas_tropicos_service', CONFIG.cache.estadisticas.estadisticas_tropicos_service) if Rails.env.production?
       delay(queue: 'estadisticas_tropicos_service').estadisticas_tropicos_service
@@ -290,6 +306,9 @@ module CacheServices
   end
 
   def estadisticas_maccaulay_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_maccaulay')
+
     if Rails.env.production?
       escribe_cache('estadisticas_maccaulay', CONFIG.cache.estadisticas.estadisticas_maccaulay) if Rails.env.production?
       delay(queue: 'estadisticas_maccaulay').estadisticas_maccaulay
@@ -299,6 +318,9 @@ module CacheServices
   end
 
   def estadisticas_SNIB_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_SNIB')
+
     if Rails.env.production?
       escribe_cache('estadisticas_SNIB', CONFIG.cache.estadisticas.estadisticas_SNIB) if Rails.env.production?
       delay(queue: 'estadisticas_SNIB').estadisticas_SNIB
@@ -308,6 +330,9 @@ module CacheServices
   end
 
   def estadisticas_mapas_distribucion_servicio
+    # No hacer nada si aún es vigente el caché
+    return if existe_cache?('estadisticas_mapas_distribucion')
+
     if Rails.env.production?
       escribe_cache('estadisticas_mapas_distribucion', CONFIG.cache.estadisticas.estadisticas_mapas_distribucion) if Rails.env.production?
       delay(queue: 'estadisticas_mapas_distribucion').estadisticas_mapas_distribucion
@@ -318,9 +343,6 @@ module CacheServices
 
   # Datos estadísticos
   def estadisticas_naturalista(guardar = true)
-
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_naturalista')
 
     # Respuesta de la función
     res = {
@@ -372,9 +394,6 @@ module CacheServices
 
   def estadisticas_conabio(guardar = true)
 
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_conabio')
-
     # Respuesta de la función
     res = {
         :total_nombres_comunes => 0,
@@ -408,9 +427,6 @@ module CacheServices
 
   def estadisticas_wikipedia(guardar = true)
 
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_wikipedia')
-
     # Respuesta de la función
     res = {
         :ficha_espaniol => 0,
@@ -433,9 +449,6 @@ module CacheServices
   end
 
   def estadisticas_eol(guardar = true)
-
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_eol')
 
     # Respuesta de la función
     res = {
@@ -461,9 +474,6 @@ module CacheServices
   end
 
   def estadisticas_tropicos_service(guardar = true)
-
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_tropicos_service')
 
     # Respuesta de la función
     res = {}
@@ -508,9 +518,6 @@ module CacheServices
 
   def estadisticas_maccaulay(guardar = true)
 
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_tropicos_service')
-
     # Respuesta de la función
     res = {}
     taxonNC = nombre_cientifico
@@ -536,8 +543,6 @@ module CacheServices
   def estadisticas_SNIB(guardar = true)
 
     return unless especie_o_inferior?
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_SNIB')
 
     # Respuesta de la función
     res = {
@@ -573,8 +578,6 @@ module CacheServices
 
   def estadisticas_mapas_distribucion(guardar = true)
     return unless especie_o_inferior?
-    # Para no guardar nada si el cache aun esta vigente
-    return if existe_cache?('estadisticas_mapas_distribucion')
 
     # Respuesta de la función
     res = {:mapas_distribucion => 0}
@@ -591,33 +594,36 @@ module CacheServices
   def itera_especies
     # Obtener todas las especies a iterar
     especies_todas = Especie.all
-    # Elimina el cachè
-    borra_cache('estadisticas_naturalista')
-    borra_cache('estadisticas_conabio')
-    borra_cache('estadisticas_wikipedia')
-    borra_cache('estadisticas_eol')
-    borra_cache('estadisticas_tropicos_service')
-    borra_cache('estadisticas_maccaulay')
-    borra_cache('estadisticas_SNIB')
-    borra_cache('estadisticas_mapas_distribucion')
-    
+
     especies_todas.each do |especie_x|
-      # Verificar si esta es una especie o inferior
+
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
+
+      # Eliminar el caché si tiene
+      especie_x.borra_cache('estadisticas_naturalista')
+      especie_x.borra_cache('estadisticas_conabio')
+      especie_x.borra_cache('estadisticas_wikipedia')
+      especie_x.borra_cache('estadisticas_eol')
+      especie_x.borra_cache('estadisticas_tropicos_service')
+      especie_x.borra_cache('estadisticas_maccaulay')
+      especie_x.borra_cache('estadisticas_SNIB')
+      especie_x.borra_cache('estadisticas_mapas_distribucion')
       genera_estadisticas
+      puts "\n* * * * * * * * * * * * * * * * "
+
     end
   end
 
   def genera_estadisticas
     # Invocar las estadisticas de naturalista
-    estadisticas_naturalista_servicio
-    estadisticas_conabio_servicio
-    estadisticas_wikipedia_servicio
-    estadisticas_eol_servicio
-    estadisticas_tropicos_service_servicio
-    estadisticas_maccaulay_servicio
-    estadisticas_SNIB_servicio
-    estadisticas_mapas_distribucion_servicio
+    puts estadisticas_naturalista_servicio
+    puts estadisticas_conabio_servicio
+    puts estadisticas_wikipedia_servicio
+    puts estadisticas_eol_servicio
+    puts estadisticas_tropicos_service_servicio
+    puts estadisticas_maccaulay_servicio
+    puts estadisticas_SNIB_servicio
+    puts estadisticas_mapas_distribucion_servicio
   end
 
 
