@@ -329,7 +329,11 @@ module CacheServices
       # ID: 4 Obtener el total de los nombres comunes
       if proveedor_naturalista.nombres_comunes_naturalista[:estatus]
         if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].present?
-          res[:total_nombres_comunes] = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].count if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].any?
+          resp = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes]
+          if resp.any?
+            resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
+            res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
+          end
         end
       end
 
@@ -603,7 +607,7 @@ module CacheServices
         if especie_x.especie_o_inferior?
           start = Time.now
           puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
-          especie_x.genera_estadisticas
+          genera_estadisticas
           puts "\n\n\n* * * * * * Duracion: #{Time.now - start} segundos"
         else
           puts "No es especie o inferior"
@@ -615,14 +619,14 @@ module CacheServices
 
   def genera_estadisticas
     # Invocar las estadisticas de naturalista
-    puts estadisticas_naturalista(true)
-    puts estadisticas_conabio(true)
-    puts estadisticas_wikipedia(true)
-    puts estadisticas_eol(true)
-    puts estadisticas_tropicos_service(true)
-    puts estadisticas_maccaulay(true)
-    puts estadisticas_SNIB(true)
-    puts estadisticas_mapas_distribucion(true)
+    puts estadisticas_naturalista()
+    puts estadisticas_conabio()
+    puts estadisticas_wikipedia()
+    puts estadisticas_eol()
+    puts estadisticas_tropicos_service()
+    puts estadisticas_maccaulay()
+    puts estadisticas_SNIB()
+    puts estadisticas_mapas_distribucion()
   end
 
 
