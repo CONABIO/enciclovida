@@ -449,7 +449,7 @@ module CacheServices
       # ID: 14 Fichas de EOL-ingles
       TaxonDescribers::Eol.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
     rescue StandardError => msg
-        puts msg
+      puts msg
     end
 
     if guardar
@@ -605,14 +605,8 @@ module CacheServices
     especies_todas.each do |especie_x|
       if i >= 2290 && i < 2300
         # Verificar si esta es una especie o inferior
-        if especie_x.especie_o_inferior?
-          start = Time.now
-          puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
-          genera_estadisticas
-          puts "\n\n\n* * * * * * Duracion: #{Time.now - start} segundos"
-        else
-          puts "No es especie o inferior"
-        end
+        puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
+        genera_estadisticas
       end
       i += 1
     end
