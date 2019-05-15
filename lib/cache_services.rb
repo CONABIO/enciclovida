@@ -600,15 +600,11 @@ module CacheServices
     borra_cache('estadisticas_maccaulay')
     borra_cache('estadisticas_SNIB')
     borra_cache('estadisticas_mapas_distribucion')
-
-    i = 0
+    
     especies_todas.each do |especie_x|
-      if i >= 2290 && i < 2300
-        # Verificar si esta es una especie o inferior
-        puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
-        genera_estadisticas
-      end
-      i += 1
+      # Verificar si esta es una especie o inferior
+      puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
+      genera_estadisticas
     end
   end
 
