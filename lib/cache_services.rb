@@ -358,9 +358,11 @@ module CacheServices
       if proveedor_naturalista.nombres_comunes_naturalista[:estatus]
         if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].present?
           resp = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes]
-          if resp.any?
-            resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
-            res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
+          if res.kind_of?(Array)
+            if resp.any?
+              resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
+              res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
+            end
           end
         end
       end
@@ -368,7 +370,9 @@ module CacheServices
       # ID: 6 Obtener el total de fotos en NaturaLista
       unless proveedor_naturalista.fotos_naturalista[:estatus]
         if proveedor_naturalista.fotos_naturalista[:fotos].present?
-          res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count if proveedor_naturalista.fotos_naturalista[:fotos].any
+          if proveedor_naturalista.fotos_naturalista[:fotos].kind_of?(Array)
+            res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+          end
         end
       end
 
@@ -433,12 +437,14 @@ module CacheServices
         :ficha_ingles => 0
     }
     # ID: 9 Fotos en Wikimedia (Ya no)
-
-    # ID: 15 Fichas de Wikipedia-español
-    TaxonDescribers::WikipediaEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
-
-    # ID: 16 Fichas de Wikipedia-ingles
-    TaxonDescribers::Wikipedia.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+    begin
+      # ID: 15 Fichas de Wikipedia-español
+      TaxonDescribers::WikipediaEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
+      # ID: 16 Fichas de Wikipedia-ingles
+      TaxonDescribers::Wikipedia.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+    rescue StandardError => msg
+      puts msg
+    end
 
     if guardar
       estd = especie_estadisticas
