@@ -109,7 +109,7 @@ class BusquedaRegion < Busqueda
   # Pregunta al Servicio por el listado completo de las especies, previamente en cache
   def dame_especies(url)
     begin
-      rest = RestClient.get(url, read_timeout: 1000000000, timeout: 1000000000, open_timeout: 10000000000)
+      rest = RestClient.get(url)
       res = JSON.parse(rest)
       totales = res.length
 

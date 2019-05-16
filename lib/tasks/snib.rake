@@ -14,12 +14,22 @@ namespace :snib do
   desc "Genera/actualiza las especies por municipio de la base del SNIB y lo guarda en cache"
   task municipios: :environment do
     Geoportal::Municipio.all.each do |municipio|
+      Rails.logger.debug "[DEBUG] - Generando cache de especies con municipio: #{estado.munid}"
+      br = BusquedaRegion.new
+      br.params = { region_id: municipio.munid, tipo_region: 'municipio' }
+      br.borra_cache_especies
+      br.guarda_cache_especies
     end
   end
 
   desc "Genera/actualiza las especies por ANP de la base del SNIB y lo guarda en cache"
   task anps: :environment do
     Geoportal::Anp.all.each do |anp|
+      Rails.logger.debug "[DEBUG] - Generando cache de especies con ANP: #{anp.anpestid}"
+      br = BusquedaRegion.new
+      br.params = { region_id: anp.anpestid, tipo_region: 'anp' }
+      br.borra_cache_especies
+      br.guarda_cache_especies
     end
   end
 
@@ -29,6 +39,7 @@ namespace :snib do
     
     regiones.each do |region|
       "Geoportal::#{region.camelize}".constantize.all.each do |reg|
+
       end
     end
   end
