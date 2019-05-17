@@ -600,7 +600,7 @@ module CacheServices
     res
   end
 
-  def itera_especies
+  def self.itera_especies
     # Obtener todas las especies a iterar
     especies_todas = Especie.all
 
@@ -617,7 +617,7 @@ module CacheServices
       especie_x.borra_cache('estadisticas_maccaulay')
       especie_x.borra_cache('estadisticas_SNIB')
       especie_x.borra_cache('estadisticas_mapas_distribucion')
-      genera_estadisticas
+      especie_x.genera_estadisticas
       puts "\n* * * * * * * * * * * * * * * * "
 
     end
