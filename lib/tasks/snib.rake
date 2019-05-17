@@ -39,7 +39,11 @@ namespace :snib do
     
     regiones.each do |region|
       "Geoportal::#{region.camelize}".constantize.all.each do |reg|
-
+        Rails.logger.debug "[DEBUG] - Generando cache de especies con #{region.camelize}: #{reg.region_id}"
+        br = BusquedaRegion.new
+        br.params = { region_id: reg.region_id, tipo_region: region }
+        br.borra_cache_especies
+        br.guarda_cache_especies
       end
     end
   end

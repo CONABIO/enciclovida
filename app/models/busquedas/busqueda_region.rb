@@ -109,9 +109,10 @@ class BusquedaRegion < Busqueda
   # Pregunta al Servicio por el listado completo de las especies, previamente en cache
   def dame_especies(url)
     begin
-      rest = RestClient.get(url)
+      rest = RestClient.get(url, timeout: 1000*60*10)
       res = JSON.parse(rest)
       totales = res.length
+      Rails.logger.debug "[DEBUG] - Hubo respuesta con: #{params.inspect}"
 
       if totales > 0
         {estatus: true, resultados: res, totales: totales}
@@ -120,6 +121,7 @@ class BusquedaRegion < Busqueda
       end
 
     rescue => e
+      Rails.logger.debug "[DEBUG] - Hubo un error en el servidor con: #{params.inspect} - #{e.message}"
       {estatus: false, msg: e.message}
     end
   end
