@@ -2,7 +2,9 @@ class Geoportal::Municipio < GeoportalAbs
 
   self.primary_key = 'munid'
 
-  scope :campos_min, -> { select('munid AS region_id, municipio, estado').order(municipio: :asc) }
+  alias_attribute :region_id, :munid
+
+  scope :campos_min, -> { select('munid, municipio, estado').order(municipio: :asc) }
   scope :centroide, -> { select('st_x(st_centroid(the_geom)) AS long, st_y(st_centroid(the_geom)) AS lat') }
   scope :geojson_select, -> { select('ST_AsGeoJSON(the_geom) AS geojson') }
   scope :campos_geom, -> { centroide.geojson_select }

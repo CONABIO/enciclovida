@@ -3,7 +3,9 @@ class Geoportal::Anp < GeoportalAbs
   self.table_name = 'anpestat'
   self.primary_key = 'anpestid'
 
-  scope :campos_min, -> { select('anpestid AS region_id, nombre, cat_manejo').order(nombre: :asc) }
+  alias_attribute :region_id, :anpestid
+
+  scope :campos_min, -> { select('anpestid, nombre, cat_manejo').order(nombre: :asc) }
   scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
   scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
   scope :campos_geom, -> { centroide.geojson_select }
