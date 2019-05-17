@@ -353,31 +353,27 @@ module CacheServices
     }
 
     # Acceder a tabla proveedor
-    if proveedor_naturalista = proveedor
+    if proveedor_n = proveedor
       # ID: 4 Obtener el total de los nombres comunes
-      if proveedor_naturalista.nombres_comunes_naturalista[:estatus]
-        if proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes].present?
-          resp = proveedor_naturalista.nombres_comunes_naturalista[:nombres_comunes]
-          if res.kind_of?(Array)
-            if resp.any?
-              resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
-              res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
-            end
-          end
+      if proveedor_n.nombres_comunes_naturalista[:estatus] && proveedor_n.nombres_comunes_naturalista[:nombres_comunes].present?
+        resp = proveedor_n.nombres_comunes_naturalista[:nombres_comunes]
+        if resp.kind_of?(Array) && resp.any?
+            resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
+            res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
         end
       end
 
       # ID: 6 Obtener el total de fotos en NaturaLista
-      unless proveedor_naturalista.fotos_naturalista[:estatus]
-        if proveedor_naturalista.fotos_naturalista[:fotos].present?
-          if proveedor_naturalista.fotos_naturalista[:fotos].kind_of?(Array)
-            res[:total_fotos] = proveedor_naturalista.fotos_naturalista[:fotos].count
+      if proveedor_n.fotos_naturalista[:estatus]
+        if proveedor_n.fotos_naturalista[:fotos].present?
+          if proveedor_n.fotos_naturalista[:fotos].kind_of?(Array)
+            res[:total_fotos] = proveedor_n.fotos_naturalista[:fotos].count
           end
         end
       end
 
       # Obtener el total de observaciones:
-      tipo_observaciones = proveedor_naturalista.numero_observaciones_naturalista if especie_o_inferior?
+      tipo_observaciones = proveedor_n.numero_observaciones_naturalista if especie_o_inferior?
 
       # ID: 19. Grado de investigación
       res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]  if especie_o_inferior?
