@@ -50,6 +50,7 @@ es:
     # *  - - - - - - - - - - - - - - - - - - - - * #
 
   simple_form:
+
     placeholders:
       medidas:
         centimetros: En centímetros
@@ -71,16 +72,25 @@ es:
         horas: Horas
 
     options:
+
       defaults:
         yes: Si
         no: No
-      taxon:
+
+      fichas_taxon:
+
         prioridad:
           alta: Alta
           media: Media
           baja: Baja
 
-      fichas_legislacion:
+      legislaciones:
+        legislacion:
+          NOM_059_SEMARNAT_2001: Categoría de riesgo según la NOM-059-SEMARNAT 2001
+          NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT 2010
+          UICN: Categoría de riesgo según la UICN
+          CITES: Regulación del comercio internacional de la especie (CITES)
+
         SEMARNAT_2001:
           Amenazadas: Amenazadas (A)
           SujetasProteccionEspecial: Sujetas a protección especial (Pr)
@@ -120,8 +130,9 @@ es:
           pesofinalmachos: ---
         especiesSmilares: Especies similares
         infoAdicional: Categoría de riesgo según la NOM-059-SEMARNAT I nformación adicional
-        origen: Origen
         descripcionOrigen: Descrición del orígen
+        origen: Origen en relación con México
+        infoadicionalnombre: Origen en relación con México Información adicional
 
         #  * *  S E C C I Ó N   P R I O R I T A R I A S  * *  #
         prioritaria: ¿Se encuentra enlistada como especie prioritaria?
@@ -132,14 +143,8 @@ es:
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie
       legislaciones:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
-        estatusLegalProteccion: Categoría de riesgo según la NOM-059-SEMARNAT 2001
-        estatusLegalProteccion: Categoría de riesgo según la NOM-059-SEMARNAT 2010
-        c1: Categoría de riesgo según la UICN
-        c2: Regulación del comercio internacional de la especie (CITES)
-        c3: Regulación del comercio internacional de la especie (CITES) Información adicional
-        origen: Origen en relación con México
-        descripcionOrigen: Origen en relación con México
-        infoadicionalnombre: Origen en relación con México Información adicional
+        nombreLegislacion: Nombre de legislación
+        infoAdicional: Información Adicional
 
       distribuciones:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
@@ -252,7 +257,7 @@ es:
       endemicas:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         endemismo: Endemismo
-        endemicaMexico: Endemismo a) ¿Endémica en México?
+        endemicaMexico: ¿Endémica en México?
         endemicaA: Endemismo b) Endémica a
         infoAdicionalEndemica:  Información adicional
       ecorregion:
