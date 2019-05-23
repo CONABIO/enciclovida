@@ -309,6 +309,11 @@ function taxonMunTotal(req) {
 })
 }
 
+function prueba_calonso(req) {
+    console.log(reg);
+    return true;
+}
+
 module.exports = {
     getedo,
     getmun,
@@ -320,5 +325,6 @@ module.exports = {
     taxonMuni,
     taxonEdo,
     taxonEdoTotal,
-    taxonMunTotal
+    taxonMunTotal,
+    prueba_calonso
 };

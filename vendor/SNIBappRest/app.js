@@ -124,7 +124,7 @@ server.register([
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por el estado y/o opciones seleccionadas',
+            description: 'Regresa un Array de especies con más ejemplares por el estado y/o opciones seleccionadas',
             notes: 'Para mayor información acerca de "entid" consultar el servicio de regiones por estado',
             validate: {
                 params: {
@@ -146,7 +146,7 @@ server.register([
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por el municipio y/o opciones seleccionadas',
+            description: 'Regresa un Array de especies con más ejemplares por el municipio y/o opciones seleccionadas',
             notes: 'Para mayor información acerca de "munid" consultar el servicio de regiones por municipio',
             validate: {
                 params: {
@@ -168,7 +168,7 @@ server.register([
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Regresa un Array con el top 10 de las especies con más ejemplares por la ANP y/o opciones seleccionadas',
+            description: 'Regresa un Array de especies con más ejemplares por la ANP y/o opciones seleccionadas',
             notes: 'Para mayor información acerca de "anpestid" consultar el servicio de regiones por ANP',
             validate: {
                 params: {
@@ -178,6 +178,31 @@ server.register([
             handler: function (request, reply) {
                 query
                     .EspeciesANP(request)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especies/filtros',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa todas las especies que coinciden con los filtros seleccionados',
+            notes: 'Posibes filtros son: NOM-059, IUCN, CITES y distribución de la especie',
+            /*params: {name: 'anpestid', in: 'query', description: 'algo', required: false, type: 'string'},*/
+            validate: {
+                query: {
+                    anpestid: Joi.string().required().default('1').valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
+                    apiKey: Joi.string()
+                }
+            },
+            handler: function (request, reply) {
+                //console.log('entro');
+                query
+                    .prueba_calonso(request)
                     .then(dato => {
                     reply(dato)
                 })
