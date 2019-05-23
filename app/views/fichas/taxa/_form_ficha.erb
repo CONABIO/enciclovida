@@ -82,7 +82,6 @@
 
     <div class="tab-content">
 
-
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
@@ -93,11 +92,10 @@
         <hr class="espacio_ficha">
 
         <h4 class="titulo-modelo">LEGISLACIONES:</h4>
-
         <hr />
-
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion'
+        %>
         <%= f.simple_fields_for :legislaciones do |info| %>
-
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
 
@@ -110,6 +108,12 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.distribucion')%></h3>
 
         <% # OCUPA: habitat, distribucion, endemica  %>
+        <h4 class="titulo-modelo">DISTRIBUCION:</h4>
+        <%= f.simple_fields_for :distribuciones do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
+        <% end %>
+
+        <hr class="espacio_ficha">
 
         <h4 class="titulo-modelo">HABITAD:</h4>
         <%= f.simple_fields_for :habitats  do |info| %>
@@ -117,12 +121,7 @@
         <% end %>
 
         <hr class="espacio_ficha">
-        <h4 class="titulo-modelo">DISTRIBUCION:</h4>
-        <%= f.simple_fields_for :distribuciones do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
-        <% end %>
 
-        <hr class="espacio_ficha">
         <h4 class="titulo-modelo">ENDEMICAS:</h4>
         <%= f.simple_fields_for :endemicas do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>

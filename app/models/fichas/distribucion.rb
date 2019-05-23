@@ -8,5 +8,6 @@ class Fichas::Distribucion < Ficha
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais'
 
+	DISTRIBUCINES = [:muy_restrin, :restrin, :media_restrin, :amplia_restrin]
 
 end

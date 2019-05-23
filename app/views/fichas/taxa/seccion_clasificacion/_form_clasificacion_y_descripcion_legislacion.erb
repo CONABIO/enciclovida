@@ -1,5 +1,50 @@
 <div class='nested-fields'>
 
-  <%= f.input :nombreLegislacion %>
-  <%= link_to_remove_association 'Borrar legislación', f, :class => 'btn btn-danger btn-sm' %>
+  <%= f.input :nombreLegislacion, :as => :select, collection: Fichas::Legislacion::LEGISLACIONES, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
+
+
+
+  <%=   f.input :estatusLegalProteccion
+  %>
+  <br>
+  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_SEMARNAT, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
+  <%= #f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_CITES, prompt: :seleccionar,  input_html: {class: 'form-control'}
+
+  %>
+  <%= #f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_UICN, prompt: :seleccionar,  input_html: {class: 'form-control'}
+
+  %>
+
+
+
+  <%=  f.input :infoAdicional %>
+  <%=
+    #f.input :nombreLegislacion,
+    #        :as => :grouped_select,
+    #        include_blank: false,
+    #        collection: [
+    #            ["Transportation", ["bus", "taxi", "train" ]],
+    #            ["Transportation", ["bici", "burro"]],
+    #            ["Transportation", ["a pata" ]],
+    #            ["Eat/Drink", ["meal", "tea/cafe"]]],
+    #        :group_method => :last
+
+  %>
+
+  <%= link_to_remove_association 'Borrar legislación', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>
+
+
+<%
+=begin
+f.input :nombreLegislacion,
+              :as => :grouped_select,
+              include_blank: false,
+              collection: [
+                  ["Transportation", ["bus", "taxi", "train" ]],
+                  ["Eat/Drink", ["meal", "tea/cafe"]]],
+              :group_method => :last
+
+
+=end
+%>

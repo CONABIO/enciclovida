@@ -1,8 +1,20 @@
 <div class='nested-fields'>
 
+
   <h4 class="titulo_subseccion"><%= t('simple_form.labels.distribuciones.endemismo.endemismo') %></h4>
 
-  <%=  f.input :endemicaMexico, as: :radio_buttons, collection: [['0', 'YES'], ['1', 'NO']], label_method: :second, value_method: :first  %>
-  <%=  f.input :endemicaA %>
-  <%=  f.input :infoAdicionalEndemica %>
+  <%= f.input :endemicaMexico, :as => :select, collection: [:yes, :no], prompt: :seleccionar,  input_html: {class: 'form-control'} %>
+
+  <%= f.input :endemicaMexico, as: :radio_buttons, collection: [[true, :yes], [false, :no]], label_method: :second, value_method: :first, input_html: { onclick: 'hideContent("endemicaSI", $(this))', autocomplete: :off } %>
+
+  <%= f.input :endemicaMexico, include_blank: false, collection: [[true, :yes], [false, :no]], input_html: {class: 'form-control chosen-select', onSelect: 'hideContent("endemicaSI", $(this))', autocomplete: :off } %>
+
+  <%= f.input :endemicaMexico, as: :select, include_blank: false, collection: [[true, :yes], [false, :no]] %>
+
+  <div id="endemicaSI">
+    <%=  f.input :endemicaA %>
+    <%=  f.input :infoAdicionalEndemica %>
+  </div>
+
+
 </div>

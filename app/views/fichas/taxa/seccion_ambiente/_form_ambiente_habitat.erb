@@ -1,24 +1,18 @@
 <div class='nested-fields'>
 
+
+
+
   <% # OCUPA: ecorregion de  * habitat %>
   <%= f.simple_fields_for :ecorregion do |info| %>
     <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
   <% end %>
 
-  <hr class="espacio_ficha">
-  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe,
-                              f,
-                              :ecosistema,
-                              partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema',
-                              :class => 'btn btn-info btn-sm',
-                              role: 'tab',
-                              "data-toggle" => 'tab',
-                              "aria-controls" => 'ambiente',
-                              'data-association-insertion-node' => '#ambiente_ecosistema',
-                              'data-association-insertion-method' => 'append',
-                              href: '#ambiente'
-  %>
 
+
+
+  <hr class="espacio_ficha">
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
   <hr />
   ECOSISTEMAS:
   <div id="ambiente_ecosistema">

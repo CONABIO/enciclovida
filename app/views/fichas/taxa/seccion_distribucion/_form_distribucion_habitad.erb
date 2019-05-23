@@ -1,7 +1,4 @@
 <div class='nested-fields'>
-
-  <h4 class="titulo_subseccion"><%= t('simple_form.labels.distribuciones.estado_habitad_desarrollo_taxon') %></h4><br>
-
-  <%= f.input :estadoHabitat %>
-
+  <h4 class="titulo_subseccion"></h4><br>
+  <%= f.input :estadoHabitat, :as => :select, collection: Fichas::Habitat::ESTADOS_HABITAT, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
 </div>

@@ -1,7 +1,8 @@
 es:
-
   general:
     informacion_de_ficha: Información de la ficha
+    informacion_adicional: Información adicional
+    mas_informacion: Más información
     titulos_secciones:
       clasificacion_y_descripcion: I. Clasificación y descripción de la especie
       distribucion: II. Distribución de la especie
@@ -14,7 +15,6 @@ es:
       prioritarias_conservacion: IX. Especies prioritarias para la conservación
       necesidades: X. Necesidades de información
       metadatos: XI. Metadatos
-
   secciones:
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
@@ -23,86 +23,85 @@ es:
           terrestre: A. Ambiente terrestre
           acuatico: B. Ambiente acuático (dulceacuícola, salobre o marino)
           terrestre_acuatico: C. Ambiente terrestre-acuático
-    # *  - - - - - - - - - - - - - - - - - - - - * #
-
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     s_ecologia:
       tamaño_poblacional: 43. Tamaño poblacional
       parametros_poblacionales: 44. Parámetros poblacionales
       interacciones: 45. Interacciones
-    # *  - - - - - - - - - - - - - - - - - - - - * #
-
     #  * *  S E C C I Ó N   G E N É T I C A  * *  #
     s_genetica:
       descripcion_de_la_variabilidad_genetica: a) Descripción de la variabilidad genética
-    # *  - - - - - - - - - - - - - - - - - - - - * #
-
     #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
     s_importancia:
       País de importación: País de importación
       afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
-    # *  - - - - - - - - - - - - - - - - - - - - * #
-
     #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
     s_conservacion:
       esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
       marco_legal_nacional_e_internacional: 57. Marco legal nacional e internacional
     # *  - - - - - - - - - - - - - - - - - - - - * #
-
   simple_form:
-
+    prompts:
+      habitats:
+        seleccionar: Seleccionar >>
     placeholders:
-      medidas:
-        centimetros: En centímetros
-        metros: En metros
-        gramos: En gramos
-        anios: Años
-        meses: Meses
-        dias: Días
-        horas: Horas
-
+      habitats:
+        estadoHabitat: habitat
     hints:
       medidas:
         centimetros: En centímetros
-        metros: En metros
-        gramos: En gramos
-        anios: Años
-        meses: Meses
-        dias: Días
-        horas: Horas
-
     options:
-
-      defaults:
-        yes: Si
-        no: No
-
-      fichas_taxon:
-
-        prioridad:
-          alta: Alta
-          media: Media
-          baja: Baja
-
       legislaciones:
-        legislacion:
-          NOM_059_SEMARNAT_2001: Categoría de riesgo según la NOM-059-SEMARNAT 2001
-          NOM_059_SEMARNAT: Categoría de riesgo según la NOM-059-SEMARNAT 2010
-          UICN: Categoría de riesgo según la UICN
-          CITES: Regulación del comercio internacional de la especie (CITES)
-
-        SEMARNAT_2001:
-          Amenazadas: Amenazadas (A)
-          SujetasProteccionEspecial: Sujetas a protección especial (Pr)
-          PreocupacionMenor: Preocupación menor (LC least concern)
-
+        nombreLegislacion:
+          L_SEMARNAT: NOM-059-SEMARNAT-2001
+          L_SEMARNATDES: Categoría de riesgo según la NOM-059-SEMARNAT 2001
+          L_SEMARNAT2: NOM-059-SEMARNAT
+          L_SEMARNAT2DES: Categoría de riesgo según la NOM-059-SEMARNAT 2010
+          L_UICN: UICN
+          L_UICNDES: Categoría de riesgo según la UICN
+          L_CITES: CITES
+          L_CITESDES: Regulación del comercio internacional de la especie (CITES)
+        estatusLegalProteccion:
+          #semarnat:
+            sem1: Probablemente extinta en medio silvestre (E)
+            sem2: En peligro de extinción (P)
+            sem3: Amenazadas (A)
+            sem4: Sujetas a protección especial (Pr)
+            sem5: No evaluada (NE)
+          #uicn:
+            uicn1: Extinto (EX extinct)
+            uicn2: Extinto en estado silvestre (EW extinct in the wild)
+            uicn3: En peligro crítico (CR critically endangered)
+            uicn4: En peligro (EN endangered)
+            uicn5: Vulnerable (VU vulnerable)
+            uicn6: Casi amenazado (NT near threatened)
+            uicn7: Preocupación menor (LC least concern)
+            uicn8: Datos insuficientes (DD data deficient)
+            uicn9: No evaluado (NE not evaluated)
+          #cites:
+            cites1: Apéndice I
+            cites2: Apéndice II
+            cites3: Apéndice III
+            cites4: No listada
+      habitats:
+        estadoHabitat:
+          hostil: Hostil o muy limitante
+          intermedio: Intermedio o limitante
+          propicio: Propicio o poco limitante
+      distribuciones:
+        alcanceDistribucion:
+          muy_restrin: Muy restringida
+          restrin: Restringida
+          media_restrin: Medianamente restringida o amplia
+          amplia_restrin: Ampliamente distribuidas o muy amplias
+      endemicas:
+        endemicaMexico:
+          yes: Si
+          no: No
     labels:
       defaults:
-        informacion_adicional: Información adicional
-        mas_informacion: Más información
         yes: Si
         no: No
-
       fichas_taxon:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         resumenEspecie: Resumen de la especie
@@ -133,7 +132,6 @@ es:
         descripcionOrigen: Descrición del orígen
         origen: Origen en relación con México
         infoadicionalnombre: Origen en relación con México Información adicional
-
         #  * *  S E C C I Ó N   P R I O R I T A R I A S  * *  #
         prioritaria: ¿Se encuentra enlistada como especie prioritaria?
         publicadaEn: ¿En qué listado se encuentra?
@@ -145,7 +143,6 @@ es:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         nombreLegislacion: Nombre de legislación
         infoAdicional: Información Adicional
-
       distribuciones:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         region: Región

@@ -1,15 +1,18 @@
 <div class='nested-fields'>
 
-  <h4 class="titulo_subseccion"><%= t('simple_form.labels.distribuciones.region.distribucion_mundial') %></h4>
-  (Distribución mundial:)
+  <h4 class="titulo_subseccion"></h4>
+
+
 
   <%= f.input :historicaPotencial %>
 
 
   <%= f.input :infoAdicionalMun %>
+
+
   <hr class="espacio_ficha">
 
-  <%= f.input :alcanceDistribucion %>
+  <%= f.input :alcanceDistribucion, :as => :select, collection: Fichas::Distribucion::DISTRIBUCINES, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
   <%= f.input :infoAdicionalAlcance %>
 
 

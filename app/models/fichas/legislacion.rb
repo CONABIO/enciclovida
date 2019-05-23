@@ -5,11 +5,15 @@ class Fichas::Legislacion < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	ESTATUS_LEGAL_PROTECCION = [:Amenazadas, :SujetasProteccionEspecial, :PreocupacionMenor]
 	# Legislaciones existentes
-	TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
+  TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
 
-	attr_accessor :SEMARNAT_2001
+  # Legislaciones
+	LEGISLACIONES = [[:L_SEMARNATDES, :L_SEMARNAT], [:L_SEMARNAT2DES, :L_SEMARNAT2], [:L_UICNDES, :L_UICN], [:L_CITESDES, :L_CITES]]
+
+  L_SEMARNAT = [:sem1, :sem2, :sem3, :sem4, :sem5]
+  L_UICN = [:uicn1, :uicn2, :uicn3, :uicn4, :uicn5, :uicn6, :uicn7, :uicn8, :uicn9]
+  L_CITES = [:cites1, :cites2, :cites3, :cites4]
 
 	def existe_legislacion(lista, num)
 		lista.each do |a|

@@ -33,6 +33,20 @@ class Fichas::Taxon < Ficha
 	LISTADOS = [:DOF, :CONABIO]
 	PRIORIDADS = [:alta, :media, :baja]
 
+
+	# Legislaciones existentes
+	TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
+
+	LEGISLACIONS = [:NOM_059_SEMARNAT_2001, :NOM_059_SEMARNAT, :UICN, :CITES]
+
+	ESTATUS_PROTECCION_SEMARNAT = [:Amenazadas]
+	ESTATUS_PROTECCION_SEMARNAT_2001 = [:Amenazadas]
+	ESTATUS_PROTECCION_UICN = [:Amenazadas]
+	ESTATUS_PROTECCION_CITES = [:Amenazadas]
+
+
+
+
   # Devuelve las secciones que tienen información
 	def dame_edad_peso_largo
 		datos = {}
