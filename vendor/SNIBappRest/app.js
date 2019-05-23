@@ -6,7 +6,6 @@ const querySnib = require('./controller/querySnib.js');
 var server = new Hapi.Server({
     connections: {
         routes: {
-            //payload: {timeout: 1000*60*3},
             timeout: {
                 server: 1000*60*10,
                 socket: false
@@ -39,15 +38,9 @@ server.register([
     {
         register: require('hapi-swaggered-ui'),
         options: {
-            title: 'Example API',
+            title: 'Busquedas API',
             path: '/docs',
-            authorization: {
-                field: 'apiKey',
-                scope: 'query', // header works as well 
-                // valuePrefix: 'bearer '// prefix incase 
-                defaultValue: 'enciclovida',
-                placeholder: 'Enter your apiKey here'
-            },
+
             swaggerOptions: {
                 validatorUrl: null
             }
