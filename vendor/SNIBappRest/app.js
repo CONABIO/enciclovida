@@ -184,16 +184,13 @@ server.register([
         config: {
             tags: ['api'],
             description: 'Regresa todas las especies que coinciden con los filtros seleccionados',
-            notes: 'Posibes filtros son: NOM-059, IUCN, CITES y distribución de la especie',
-            /*params: {name: 'anpestid', in: 'query', description: 'algo', required: false, type: 'string'},*/
+            notes: 'Posibles filtros son: NOM-059, IUCN, CITES y distribución de la especie',
             validate: {
                 query: {
-                    anpestid: Joi.string().required().default('1').valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
-                    apiKey: Joi.string()
+                    nom: Joi.number().valid(['14','15','16','17']).description('Norma Oficial Mexicana 0-59'),
                 }
             },
             handler: function (request, reply) {
-                //console.log('entro');
                 query
                     .prueba_calonso(request)
                     .then(dato => {
