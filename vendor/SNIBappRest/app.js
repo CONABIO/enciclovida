@@ -187,7 +187,10 @@ server.register([
             notes: 'Posibles filtros son: NOM-059, IUCN, CITES y distribución de la especie',
             validate: {
                 query: {
-                    nom: Joi.number().valid(['14','15','16','17']).description('Norma Oficial Mexicana 0-59'),
+                    nom: Joi.array().valid(['14','15','16','17']).description('Norma Oficial Mexicana 059'),
+                    iucn: Joi.array().valid(['25','26','27','28','29','31','32','1022','1023']).description('Unión Internacional para la Conservación de la Naturleza'),
+                    cites: Joi.array().valid(['22','23','24']).description('Comercio Internacional'),
+                    dist: Joi.array().valid(['3','6','7','10']).description('Tipo de distribución')
                 }
             },
             handler: function (request, reply) {
