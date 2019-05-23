@@ -71,7 +71,6 @@ server.register([
                 query
                     .getedo()
                     .then(dato => {
-                    console.log('aca');
                     reply(dato)
                 })
             }
@@ -187,15 +186,16 @@ server.register([
             notes: 'Posibles filtros son: NOM-059, IUCN, CITES y distribución de la especie',
             validate: {
                 query: {
-                    nom: Joi.array().valid(['14','15','16','17']).description('Norma Oficial Mexicana 059'),
-                    iucn: Joi.array().valid(['25','26','27','28','29','31','32','1022','1023']).description('Unión Internacional para la Conservación de la Naturleza'),
-                    cites: Joi.array().valid(['22','23','24']).description('Comercio Internacional'),
-                    dist: Joi.array().valid(['3','6','7','10']).description('Tipo de distribución')
+                    nom: Joi.array().description('Norma Oficial Mexicana 059, valores permitidos: 14,15,16,17'),
+                    iucn: Joi.array().description('Unión Internacional para la Conservación de la Naturleza, valores permitidos: 25,26,27,28,29,31,21'),
+                    cites: Joi.array().description('Comercio Internacional, valores permitidos: 22,23,24'),
+                    dist: Joi.array().description('Tipo de distribución, valores permitidos: 3,6,7,10')
                 }
             },
             handler: function (request, reply) {
+                console.log(request.query);
                 query
-                    .prueba_calonso(request)
+                    .EspeciesFiltros(request)
                     .then(dato => {
                     reply(dato)
                 })
