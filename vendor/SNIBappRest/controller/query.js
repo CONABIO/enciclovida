@@ -18,7 +18,7 @@ var tablas = {
 function getedo() {
     return new Promise((resolve, reject) => {
         knex
-        .select(knex.raw('entid, entidad'))
+        .select(knex.raw('entid, nom_ent'))
             .from('estados')
             .orderBy('entid')
             .then(dato => {
@@ -30,7 +30,7 @@ function getedo() {
 function getmun() {
     return new Promise((resolve, reject) => {
         knex
-        .select(knex.raw('munid, municipio, estado'))
+        .select(knex.raw('munid, nom_mun, nom_ent'))
             .from('municipios')
             .orderBy('munid')
             .then(dato => {
