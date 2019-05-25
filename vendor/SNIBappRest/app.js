@@ -156,7 +156,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/anp/{anpestid}',
+        path: '/especies/anp/{anpid}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -164,7 +164,7 @@ server.register([
             notes: 'Para mayor información acerca de "anpestid" consultar el servicio de regiones por ANP',
             validate: {
                 params: {
-                    anpestid: Joi.string().required().default('1').description('Identificador del municipio'),
+                    anpid: Joi.string().required().default('1').description('Identificador del municipio'),
                 }
             },
             handler: function (request, reply) {

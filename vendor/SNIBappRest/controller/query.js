@@ -42,9 +42,9 @@ function getmun() {
 function getanp() {
     return new Promise((resolve, reject) => {
         knex
-        .select(knex.raw('anpestid, nombre, cat_manejo, estados, municipios'))
-            .from('anpestat')
-            .orderBy('anpestid')
+        .select(knex.raw('anpid, nombre, cat_manejo, estados, municipios'))
+            .from('anp')
+            .orderBy('anpid')
             .then(dato => {
             resolve(dato)
         })
@@ -127,20 +127,20 @@ function EspeciesMunicipio(req) {
 }
 
 function EspeciesANP(req) {
-    let anpestid = req.params['anpestid'];
+    let anpid = req.params['anpid'];
 
     return new Promise((resolve, reject) => {
         knex
-        .with('anfibios', knex.raw(`SELECT spid, idnombrecatvalido, COUNT(*) AS COUNT FROM snibanfigw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibanfigw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('aves', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibavesgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibavesgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('bacterias', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibbactgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibbactgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('hongos', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibhonggw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibhonggw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('invertebrados', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibinvegw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibinvegw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('mamiferos', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibmamigw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibmamigw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('peces', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibpecegw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibpecegw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('plantas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibplangw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibplangw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('protoctistas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibprotgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
-            .with('reptiles', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM anpestat WHERE anpestid = '${anpestid}' AND anpestid = snibreptgw.anpestid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+        .with('anfibios', knex.raw(`SELECT spid, idnombrecatvalido, COUNT(*) AS COUNT FROM snibanfigw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibanfigw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('aves', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibavesgw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibavesgw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('bacterias', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibbactgw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibbactgw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('hongos', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibhonggw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibhonggw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('invertebrados', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibinvegw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibinvegw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('mamiferos', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibmamigw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibmamigw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('peces', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibpecegw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibpecegw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('plantas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibplangw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibplangw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('protoctistas', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibprotgw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
+            .with('reptiles', knex.raw(`SELECT spid, idnombrecatvalido, COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM anp WHERE anpid = '${anpid}' AND anpid = snibreptgw.anpid ) AND idnombrecatvalido <> '' GROUP BY spid, idnombrecatvalido`))
             .with('total', knex.raw(
                     `
         SELECT anfibios.idnombrecatvalido, anfibios.count AS nregistros FROM sp_snibanfigw INNER JOIN anfibios ON sp_snibanfigw.spid=anfibios.spid
