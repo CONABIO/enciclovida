@@ -367,7 +367,7 @@ module CacheServices
       # ID: 6 Obtener el total de fotos en NaturaLista
       if proveedor_n.fotos_naturalista[:estatus]
         if proveedor_n.fotos_naturalista[:fotos].present?
-          if proveedor_n.fotos_naturalista[:fotos].kind_of?(Array)
+          if proveedor_n.fotos_naturalista[:fotos].kind_of?(Array)  && proveedor_n.fotos_naturalista[:fotos].any?
             res[:total_fotos] = proveedor_n.fotos_naturalista[:fotos].count
           end
         end
