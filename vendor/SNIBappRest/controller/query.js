@@ -15,7 +15,7 @@ var tablas = {
     'reptiles': 'snibreptgw'
 };
 
-function getedo() {
+function dameEstados() {
     return new Promise((resolve, reject) => {
         knex
         .select(knex.raw('entid, nom_ent'))
@@ -27,7 +27,7 @@ function getedo() {
 })
 }
 
-function getmun() {
+function dameMunicipios() {
     return new Promise((resolve, reject) => {
         knex
         .select(knex.raw('munid, nom_mun, nom_ent'))
@@ -39,7 +39,7 @@ function getmun() {
 })
 }
 
-function getanp() {
+function dameANP() {
     return new Promise((resolve, reject) => {
         knex
         .select(knex.raw('anpid, nombre, cat_manejo, estados, municipios'))
@@ -51,7 +51,7 @@ function getanp() {
 })
 }
 
-function EspeciesEstado(req) {
+function dameEspeciesPorEstado(req) {
     let entid = req.params['entid'];
 
     return new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ function EspeciesEstado(req) {
 })
 }
 
-function EspeciesMunicipio(req) {
+function dameEspeciesPorMunicipio(req) {
     let munid = req.params['munid'];
 
     return new Promise((resolve, reject) => {
@@ -126,7 +126,7 @@ function EspeciesMunicipio(req) {
 })
 }
 
-function EspeciesANP(req) {
+function dameEspeciesPorANP(req) {
     let anpid = req.params['anpid'];
 
     return new Promise((resolve, reject) => {
@@ -270,7 +270,7 @@ function taxonMunTotal(req) {
 })
 }
 
-function EspeciesFiltros(req) {
+function dameEspeciesConFiltros(req) {
     let nom = req.query;
     let iucn = req.query['iucn'];
     let cites = req.query['cites'];
@@ -281,13 +281,13 @@ function EspeciesFiltros(req) {
 }
 
 module.exports = {
-    getedo,
-    getmun,
-    getanp,
-    EspeciesEstado,
-    EspeciesMunicipio,
-    EspeciesANP,
-    EspeciesFiltros,
+    dameEstados,
+    dameMunicipios,
+    dameANP,
+    dameEspeciesPorEstado,
+    dameEspeciesPorMunicipio,
+    dameEspeciesPorANP,
+    dameEspeciesConFiltros,
     conteo,
     taxonMuni,
     taxonEdo,

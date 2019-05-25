@@ -69,7 +69,7 @@ server.register([
             notes: '----',
             handler: function (request, reply) {
                 query
-                    .getedo()
+                    .dameEstados(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -86,7 +86,7 @@ server.register([
             notes: '----',
             handler: function (request, reply) {
                 query
-                    .getmun(request)
+                    .dameMunicipios(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -103,7 +103,7 @@ server.register([
             notes: '----',
             handler: function (request, reply) {
                 query
-                    .getanp(request)
+                    .dameANP(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -125,7 +125,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .EspeciesEstado(request)
+                    .dameEspeciesPorEstado(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -147,7 +147,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .EspeciesMunicipio(request)
+                    .dameEspeciesPorMunicipio(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -169,7 +169,7 @@ server.register([
             },
             handler: function (request, reply) {
                 query
-                    .EspeciesANP(request)
+                    .dameEspeciesPorANP(request)
                     .then(dato => {
                     reply(dato)
                 })
@@ -195,7 +195,7 @@ server.register([
             handler: function (request, reply) {
                 console.log(request.query);
                 query
-                    .EspeciesFiltros(request)
+                    .dameEspeciesConFiltros(request)
                     .then(dato => {
                     reply(dato)
                 })
