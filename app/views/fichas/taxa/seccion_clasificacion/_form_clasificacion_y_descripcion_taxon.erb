@@ -7,42 +7,41 @@
   <%= f.input :id, required: true, :as => :hidden, :disabled => true %>
   <%= f.input :resumenEspecie %>
   <%= f.input :descEspecie %>
+  <%= f.input :especiesSmilares %>
+  <%= f.input :origen, :as => :select, :collection => Fichas::Taxon::ORIGEN_MEXICO, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
+  <%= f.input :descripcionOrigen %>
 
   <!-- Tabla con información de medidas de la especie -->
   <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-9">
+    <div class="col-sm-12">
       <table class="table table-striped table-bordered">
         <thead>
         <tr>
           <th></th>
-          <th><%= t('simple_form.labels.fichas_taxon.hembras') %></th>
-          <th><%= t('simple_form.labels.fichas_taxon.machos') %></th>
+          <th><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.hembra') %></th>
+          <th><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.macho') %></th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <th><%= t('simple_form.labels.fichas_taxon.largo') %></th>
-          <td><%= f.input_field :largoinicialhembras %> - <%= f.input_field :largofinalhembras %></td>
-          <td><%= f.input_field :largoinicialmachos %> - <%= f.input_field :largofinalmachos %> </td>
+          <th><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.largototal') %></th>
+          <td>de: <%= f.input_field :largoinicialhembras %> a: <%= f.input_field :largofinalhembras %></td>
+          <td>de: <%= f.input_field :largoinicialmachos %> a: <%= f.input_field :largofinalmachos %> </td>
         </tr>
         <tr>
-          <th><%= t('simple_form.labels.fichas_taxon.longevidad') %></th>
-          <td><%= f.input_field :edadinicialhembras %> - <%= f.input_field :edadfinalhembras %></td>
-          <td><%= f.input_field :edadinicialmachos %> - <%= f.input_field :edadfinalmachos %> </td>
+          <th><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.longevidadhtotal') %></th>
+          <td>de: <%= f.input_field :edadinicialhembras %> a: <%= f.input_field :edadfinalhembras %><%= f.input_field :tiempoedadhembra, :as => :select, :collection => Fichas::Taxon::MEDIDA_LONGEVIDAD, prompt: :seleccionar,  input_html: {class: 'form-control'} %></td>
+          <td>de: <%= f.input_field :edadinicialmachos %> a: <%= f.input_field :edadfinalmachos %><%= f.input_field :tiempoedadmacho, :as => :select, :collection => Fichas::Taxon::MEDIDA_LONGEVIDAD, prompt: :seleccionar,  input_html: {class: 'form-control'} %></td>
         </tr>
         <tr>
-          <th><%= t('simple_form.labels.fichas_taxon.peso') %></th>
-          <td><%= f.input_field :pesoinicialhembras %> - <%= f.input_field :pesofinalhembras %></td>
-          <td><%= f.input_field :pesoinicialmachos %> - <%= f.input_field :pesofinalmachos %> </td>
+          <th><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.pesototal') %></th>
+          <td>de: <%= f.input_field :pesoinicialhembras %> a: <%= f.input_field :pesofinalhembras %></td>
+          <td>de: <%= f.input_field :pesoinicialmachos %> a: <%= f.input_field :pesofinalmachos %> </td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <%= f.input :especiesSmilares %>
-  <%= f.input :origen %>
-  <%= f.input :descripcionOrigen %>
 </div>
 

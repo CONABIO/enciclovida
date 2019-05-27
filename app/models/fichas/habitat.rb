@@ -21,7 +21,11 @@ class Fichas::Habitat < Ficha
 	accepts_nested_attributes_for :suelo, allow_destroy: true
 	accepts_nested_attributes_for :geoforma, allow_destroy: true
 
-	ESTADOS_HABITAT = [:hostil, :intermedio, :propicio]
+	ESTADOS_HABITAT = [
+      'Hostil o muy limitante'.to_sym,
+      'Intermedio o limitante'.to_sym,
+      'Propicio o poco limitante'.to_sym
+  ]
 
 	#attr_accessor :ecorregion
 end

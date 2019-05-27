@@ -42,62 +42,81 @@ es:
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
     prompts:
+      fichas_taxon:
       habitats:
         seleccionar: Seleccionar >>
     placeholders:
+      fichas_taxon:
+        largoinicialhembras: Largo inicial
+        largofinalhembras: Largo final
+        largoinicialmachos: Largo inicial
+        largofinalmachos: Largo final
+        pesoinicialhembras: Peso inicial
+        pesofinalhembras: Peso final
+        pesoinicialmachos: Peso inicial
+        pesofinalmachos: Peso final
+        edadinicialhembras: ---
+        edadfinalhembras: ---
+        edadinicialmachos: ---
+        edadfinalmachos: ---
+        tiempoedadhembra:
+        tiempoedadmacho:
       habitats:
         estadoHabitat: habitat
     hints:
+      fichas_taxon:
       medidas:
         centimetros: En centímetros
     options:
+      fichas_taxon:
+        origen:
+          Exótica/No nativa: Exótica/No nativa
+          Nativa: Nativa
+          Criptogénica: Criptogénica
       legislaciones:
-        nombreLegislacion:
-          L_SEMARNAT: NOM-059-SEMARNAT-2001
-          L_SEMARNATDES: Categoría de riesgo según la NOM-059-SEMARNAT 2001
-          L_SEMARNAT2: NOM-059-SEMARNAT
-          L_SEMARNAT2DES: Categoría de riesgo según la NOM-059-SEMARNAT 2010
-          L_UICN: UICN
-          L_UICNDES: Categoría de riesgo según la UICN
-          L_CITES: CITES
-          L_CITESDES: Regulación del comercio internacional de la especie (CITES)
         estatusLegalProteccion:
+          NOM-059-SEMARNAT: NOM-059-SEMARNAT
+          Categoría de riesgo según la NOM-059-SEMARNAT 2010: Categoría de riesgo según la NOM-059-SEMARNAT 2010
+          UICN: UICN
+          Categoría de riesgo según la UICN: Categoría de riesgo según la UICN
+          CITES: CITES
+          Regulación del comercio internacional de la especie (CITES): Regulación del comercio internacional de la especie (CITES)
           #semarnat:
-            sem1: Probablemente extinta en medio silvestre (E)
-            sem2: En peligro de extinción (P)
-            sem3: Amenazadas (A)
-            sem4: Sujetas a protección especial (Pr)
-            sem5: No evaluada (NE)
+          Probablemente extinta en medio silvestre (E): Probablemente extinta en medio silvestre (E)
+          En peligro de extinción (P): En peligro de extinción (P)
+          Amenazadas (A): Amenazadas (A)
+          Sujetas a protección especial (Pr): Sujetas a protección especial (Pr)
+          No evaluada (NE): No evaluada (NE)
           #uicn:
-            uicn1: Extinto (EX extinct)
-            uicn2: Extinto en estado silvestre (EW extinct in the wild)
-            uicn3: En peligro crítico (CR critically endangered)
-            uicn4: En peligro (EN endangered)
-            uicn5: Vulnerable (VU vulnerable)
-            uicn6: Casi amenazado (NT near threatened)
-            uicn7: Preocupación menor (LC least concern)
-            uicn8: Datos insuficientes (DD data deficient)
-            uicn9: No evaluado (NE not evaluated)
+          Extinto (EX extinct): Extinto (EX extinct)
+          Extinto en estado silvestre (EW extinct in the wild): Extinto en estado silvestre (EW extinct in the wild)
+          En peligro crítico (CR critically endangered): En peligro crítico (CR critically endangered)
+          En peligro (EN endangered): En peligro (EN endangered)
+          Vulnerable (VU vulnerable): Vulnerable (VU vulnerable)
+          Casi amenazado (NT near threatened): Casi amenazado (NT near threatened)
+          Preocupación menor (LC least concern): Preocupación menor (LC least concern)
+          Datos insuficientes (DD data deficient): Datos insuficientes (DD data deficient)
+          No evaluado (NE not evaluated): No evaluado (NE not evaluated)
           #cites:
-            cites1: Apéndice I
-            cites2: Apéndice II
-            cites3: Apéndice III
-            cites4: No listada
+          Apéndice I: Apéndice I
+          Apéndice II: Apéndice II
+          Apéndice III: Apéndice III
+          No listada: No listada
       habitats:
         estadoHabitat:
-          hostil: Hostil o muy limitante
-          intermedio: Intermedio o limitante
-          propicio: Propicio o poco limitante
+          Hostil o muy limitante: Hostil o muy limitante
+          Intermedio o limitante: Intermedio o limitante
+          Propicio o poco limitante: Propicio o poco limitante
       distribuciones:
         alcanceDistribucion:
-          muy_restrin: Muy restringida
-          restrin: Restringida
-          media_restrin: Medianamente restringida o amplia
-          amplia_restrin: Ampliamente distribuidas o muy amplias
+          Muy restringida: Muy restringida
+          Restringida: Restringida
+          Medianamente restringida o amplia: Medianamente restringida o amplia
+          Ampliamente distribuidas o muy amplias: Ampliamente distribuidas o muy amplias
       endemicas:
         endemicaMexico:
-          yes: Si
-          no: No
+          endem_si: Sí
+          endem_no: No
     labels:
       defaults:
         yes: Si
@@ -108,25 +127,12 @@ es:
         descEspecie: Descripción de la especie
         tabla_descripcion:
           descEspecie: Descripción de la especie
-          largototalhembras: Largo total en centímetros para hembras
-          largoinicialhembras: Largo inicial en centímetros para hembras
-          largofinalhembras: Largo final en centímetros para hembras
-          largoinicialmachos: Largo total en centímetros para machos
-          largoinicialmachos: Largo inicial en centímetros para machos
-          largofinalmachos: Largo final en centímetros para machos
-          longevidadhembras: Longevidad en hembras
-          edadinicialhembras: ---
-          edadfinalhembras: ---
-          tiempoedadhembra: ---
-          longevidadhembras: Longevidad en machos
-          edadinicialmachos: ---
-          edadfinalmachos: ---
-          pesohembras: Peso en gramos para hembras
-          pesoinicialhembras: ---
-          pesofinalhembras: ---
-          pesomachos: Peso en gramos para machos
-          pesoinicialmachos: ---
-          pesofinalmachos: ---
+          macho: Machos
+          hembra: Hembras
+          largototal: Largo en centímetros
+          pesototal: Peso en gramos
+          longevidadhtotal: Longevidad
+
         especiesSmilares: Especies similares
         infoAdicional: Categoría de riesgo según la NOM-059-SEMARNAT I nformación adicional
         descripcionOrigen: Descrición del orígen

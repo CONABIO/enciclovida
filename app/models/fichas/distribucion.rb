@@ -8,6 +8,11 @@ class Fichas::Distribucion < Ficha
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais'
 
-	DISTRIBUCINES = [:muy_restrin, :restrin, :media_restrin, :amplia_restrin]
+	DISTRIBUCINES = [
+			'Muy restringida'.to_sym,
+			'Restringida'.to_sym,
+			'Medianamente restringida o amplia'.to_sym,
+			'Ampliamente distribuidas o muy amplias'.to_sym
+	]
 
 end

@@ -28,21 +28,24 @@ class Fichas::Taxon < Ficha
   accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :endemicas, allow_destroy: true
 
+	# Sección I: Clasificacion
+	ORIGEN_MEXICO = [
+			'Exótica/No nativa'.to_sym,
+			'Nativa'.to_sym,
+			'Criptogénica'.to_sym
+	]
+
+	MEDIDA_LONGEVIDAD = [
+			"Años".to_sym,
+			"Meses".to_sym,
+			"Dias".to_sym
+	]
+
 	# Para sección de especies prioritarias
 	ESPECIE_ENLISTADA = [:yes, :no]
 	LISTADOS = [:DOF, :CONABIO]
 	PRIORIDADS = [:alta, :media, :baja]
 
-
-	# Legislaciones existentes
-	TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
-
-	LEGISLACIONS = [:NOM_059_SEMARNAT_2001, :NOM_059_SEMARNAT, :UICN, :CITES]
-
-	ESTATUS_PROTECCION_SEMARNAT = [:Amenazadas]
-	ESTATUS_PROTECCION_SEMARNAT_2001 = [:Amenazadas]
-	ESTATUS_PROTECCION_UICN = [:Amenazadas]
-	ESTATUS_PROTECCION_CITES = [:Amenazadas]
 
 
 
