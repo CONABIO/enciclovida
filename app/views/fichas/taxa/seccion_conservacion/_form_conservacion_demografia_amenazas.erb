@@ -1,8 +1,17 @@
 <div class='nested-fields'>
-  <%= f.simple_fields_for :amenazaDirecta do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_amenaza_directa', locals: {f: info }  %>
-  <% end %>
   <hr class="espacio_ficha">
+  demografiaAmenazas > amenazaDirecta
+  <br>
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una amenaza directa'.html_safe, f, :amenazaDirecta, partial: 'fichas/taxa/seccion_conservacion/form_conservacion_amenaza_directa', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion', 'data-association-insertion-node' => '#conservacion_amenazaDirecta', 'data-association-insertion-method' => 'append', href: '#conservacion' %>
+  <hr />
+  <div id="conservacion_amenazaDirecta">
+    <%= f.simple_fields_for :amenazaDirecta do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_amenaza_directa', locals: {f: info }  %>
+    <% end %>
+  </div>
+
+  <hr class="espacio_ficha">
+
   <%= f.input :descPresionesAmenazas %>
   <%= f.input :tendenciaPoblacional %>
   <%= f.input :descTendenciaPoblacional %>

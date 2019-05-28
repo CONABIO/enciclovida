@@ -1,5 +1,4 @@
 <div class='nested-fields'>
-
   <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
   <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_SEMARNAT, prompt: :seleccionar,  input_html: {class: 'form-control select-legi select-legi-semarnat'} %>
   <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_CITES, prompt: :seleccionar,  input_html: {class: 'form-control select-legi select-legi-cites'} %>
