@@ -1,12 +1,17 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
 
 <h3>
   <%=
-    @estadisticas.inspect
+    # @estadisticas.inspect
   %>
 </h3>
 
-<div id="grafica_estadisticas"></div>
+<div id="grafica_estadisticas" style="background-color: white"></div>
+
+<button class="randomize">Buscar</button>
+
+
 
 <style>
   svg {
@@ -30,164 +35,203 @@
   }
 </style>
 
-<button class="randomize">randomize</button>
 
 <script>
-    var svg = d3.select("#grafica_estadisticas").append("svg").append("g")
+/* - - - - - - - - - Mover a assets: - - - - - - - - - */
 
-    svg.append("g").attr("class", "slices");
-    svg.append("g").attr("class", "labels");
-    svg.append("g").attr("class", "lines");
+var svg = d3.select("#grafica_estadisticas").append("svg").append("g")
 
-    var width = 960,
-        height = 850,
-        radius = Math.min(width, height) / 2;
+svg.append("g").attr("class", "slices");
+svg.append("g").attr("class", "labels");
+svg.append("g").attr("class", "lines");
 
-    var pie = d3.layout.pie()
-        .sort(null)
-        .value(function(d) {
-            return d.value;
+var width = 1360,
+    height = 850,
+    radius = Math.min(width, height) / 2;
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) {
+        return d.value;
+    });
+
+var arc = d3.svg.arc()
+    .outerRadius(radius * 0.8)
+    .innerRadius(radius * 0.4);
+
+var outerArc = d3.svg.arc()
+    .innerRadius(radius * 0.9)
+    .outerRadius(radius * 0.9);
+
+svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var key = function(d){ return d.data.label; };
+
+var estds = [
+    "audios_maccaulay",
+    "videos_maccaulay",
+    "fotos_maccaulay",
+    "fotos_tropicos"
+]
+
+var colors = [
+    "#98abc5",
+    "#d0743c",
+    "#ff8c00",
+    "#9a89a6",
+    "#8a89a6",
+    "#8a89a6",
+    "#6a89a6",
+    "#5a89a6",
+    "#4a89a6",
+    "#3a89a6",
+    "#2a89a6",
+    "#1a89a6",
+    "#0a8bc0",
+    "#8a89a6",
+    "#8a79a6",
+    "#8a49a6",
+    "#8a89a6",
+    "#7b6888",
+    "#6b486b",
+    "#a05d56"
+]
+
+var color = d3.scale.ordinal().domain(estds).range(colors);
+
+function randomData (){
+    var labels = color.domain();
+    return labels.map(function(label){
+        console.log("mostrar el valor: " + label);
+        return { label: label, value: Math.random() }
+    });
+}
+
+change(randomData());
+
+function change(data) {
+    /* ------- PIE SLICES -------*/
+    var slice = svg.select(".slices").selectAll("path.slice").data(pie(data), key);
+
+    slice.enter()
+        .insert("path")
+        .style("fill", function(d) { return color(d.data.label); })
+        .attr("class", "slice");
+
+    slice
+        .transition().duration(1000)
+        .attrTween("d", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                return arc(interpolate(t));
+            };
+        })
+
+    slice.exit().remove();
+
+    /* ------- TEXT LABELS -------*/
+    var text = svg.select(".labels").selectAll("text")
+        .data(pie(data), key);
+
+    text.enter()
+        .append("text")
+        .attr("dy", ".35em")
+        .text(function(d) {
+            return d.data.label;
         });
 
-    var arc = d3.svg.arc()
-        .outerRadius(radius * 0.8)
-        .innerRadius(radius * 0.4);
-
-    var outerArc = d3.svg.arc()
-        .innerRadius(radius * 0.9)
-        .outerRadius(radius * 0.9);
-
-    svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    var key = function(d){ return d.data.label; };
-
-    var color = d3.scale.ordinal().domain(
-        [
-            "audios_maccaulay",
-            "videos_maccaulay",
-            "fotos_maccaulay", "fotos_tropicos"
-        ]).range(
-            [
-                "#98abc5", "#d0743c", "#ff8c00", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"]);
-
-    function randomData (){
-        var labels = color.domain();
-        return labels.map(function(label){
-            return { label: label, value: Math.random() }
-        });
+    function midAngle(d){
+        return d.startAngle + (d.endAngle - d.startAngle)/2;
     }
 
-    change(randomData());
-
-    d3.select(".randomize")
-        .on("click", function(){
-            change(randomData());
-
-            jQuery.ajax({
-                success: function(html){
-                    obj = JSON.parse(html)
-                    console.log(obj)
-                },
-                fail: function(){
-                   console.log("No funcionò")
-                },
-                method: 'get',
-                url: '/filtros_estadisticas'
-            });
+    text.transition().duration(1000)
+        .attrTween("transform", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                return "translate("+ pos +")";
+            };
+        })
+        .styleTween("text-anchor", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                return midAngle(d2) < Math.PI ? "start":"end";
+            };
         });
 
+    text.exit()
+        .remove();
 
-    function change(data) {
+    /* ------- SLICE TO TEXT POLYLINES -------*/
+    var polyline = svg.select(".lines").selectAll("polyline")
+        .data(pie(data), key);
 
-        /* ------- PIE SLICES -------*/
-        var slice = svg.select(".slices").selectAll("path.slice")
-            .data(pie(data), key);
+    polyline.enter()
+        .append("polyline");
 
-        slice.enter()
-            .insert("path")
-            .style("fill", function(d) { return color(d.data.label); })
-            .attr("class", "slice");
+    polyline.transition().duration(1000)
+        .attrTween("points", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                return [arc.centroid(d2), outerArc.centroid(d2), pos];
+            };
+        });
 
-        slice
-            .transition().duration(1000)
-            .attrTween("d", function(d) {
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    return arc(interpolate(t));
-                };
-            })
-
-        slice.exit()
-            .remove();
-
-        /* ------- TEXT LABELS -------*/
-
-        var text = svg.select(".labels").selectAll("text")
-            .data(pie(data), key);
-
-        text.enter()
-            .append("text")
-            .attr("dy", ".35em")
-            .text(function(d) {
-                return d.data.label;
-            });
-
-        function midAngle(d){
-            return d.startAngle + (d.endAngle - d.startAngle)/2;
-        }
-
-        text.transition().duration(1000)
-            .attrTween("transform", function(d) {
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    var d2 = interpolate(t);
-                    var pos = outerArc.centroid(d2);
-                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                    return "translate("+ pos +")";
-                };
-            })
-            .styleTween("text-anchor", function(d){
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    var d2 = interpolate(t);
-                    return midAngle(d2) < Math.PI ? "start":"end";
-                };
-            });
-
-        text.exit()
-            .remove();
-
-        /* ------- SLICE TO TEXT POLYLINES -------*/
-
-        var polyline = svg.select(".lines").selectAll("polyline")
-            .data(pie(data), key);
-
-        polyline.enter()
-            .append("polyline");
-
-        polyline.transition().duration(1000)
-            .attrTween("points", function(d){
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    var d2 = interpolate(t);
-                    var pos = outerArc.centroid(d2);
-                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
-                };
-            });
-
-        polyline.exit()
-            .remove();
-    };
+    polyline.exit()
+        .remove();
+};
+</script>
 
 
 
+<script>
+  // LLAMARA A AJAX
+  d3.select(".randomize").on("click", function(){
+      change(randomData());
+      jQuery.ajax({
+          success: function(html){
+              obj = html
+
+              // Arreglo que almacenarà el nombre de la estadistica y el valor:
+              var respuestaEstadisticas = [];
+
+
+
+              var values = [];
+              var i = 0;
+              for (var clave in obj){
+                  // Controlando que json realmente tenga esa propiedad
+                  if (obj.hasOwnProperty(clave)) {
+                      /// / Mostrando en pantalla la clave junto a su valor
+                      estds[i] = clave;
+                      i++ ;
+                      console.log("La clave es " + clave + " y el valor es " + obj[clave]);
+                  }
+              }
+
+              color = d3.scale.ordinal().domain(estds).range(colors)
+
+              console.log(obj["visitas"])
+          },
+          fail: function(){
+              console.log("No funcionò")
+          },
+          method: 'get',
+          url: '/filtros_estadisticas'
+      });
+  });
 </script>
