@@ -8,17 +8,12 @@ class Geoportal::SpSnib < GeoportalAbs
   attr_accessor :resp
 
   def ejemplares_cat
-    ejemplares.where("comentarioscatvalido LIKE '%Validado completamente con CAT.' AND idnombrecatvalido != '' AND idnombrecatvalido IS NOT NULL")
+    ejemplares.where("comentarioscatvalido LIKE '%Validado completamente con CAT.%' AND idnombrecatvalido != '' AND idnombrecatvalido IS NOT NULL AND especievalidabusqueda != '' AND especievalidabusqueda IS NOT NULL")
   end
 
   # Regresa el idnombrecatvalido de la la tabla snib y el número de registros
   def dame_id_cat_valido
     self.resp = { estatus: false, spid: spid }
-
-    unless especievalidabusqueda.present?
-      self.resp[:msg] = 'especievalidabusqueda esta vacio'
-      return
-    end
 
     registros = ejemplares_cat.map(&:idnombrecatvalido)
     nregistros = registros.length
@@ -55,6 +50,7 @@ class Geoportal::SpSnib < GeoportalAbs
   # Asigna el idnombrecatvalido de la la tabla snib y el número de registros
   def self.guarda_id_a_todos
     Geoportal::SpSnib.all.each do |taxon|
+      #next if taxon.idnombrecatvalido.present?
       taxon.guarda_id_cat_valido
       Rails.logger.debug "[DEBUG] - #{taxon.resp.inspect}"
     end
