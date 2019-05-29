@@ -14,7 +14,7 @@ class Pmc::PecesController < Pmc::PmcController
   def index
     if params[:commit].present?
       @filtros =  Pmc::Criterio.dame_filtros
-      @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`catalogocentralizado`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
+      @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`#{CONFIG.bases.cat}`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 
       if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
