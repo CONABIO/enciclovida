@@ -24,6 +24,13 @@
 </script>
 <!-- -->
 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+
+
+
 <%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
@@ -86,6 +93,10 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
 
+        <div class="fichas-apartado">
+          ESTE ES UN APARTADO
+        </div>
+
         <% # OCUPA: taxon, legislacion  %>
         <h4 class="titulo-modelo">TAXON:</h4>
         <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
@@ -98,9 +109,6 @@
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
-
-
-
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
@@ -131,7 +139,6 @@
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ambiente')%></h3>
-
         <h4 class="titulo-modelo">HABITAD:</h4>
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
@@ -241,10 +248,10 @@
         <%= f.simple_fields_for :meta do |info| %>
           <%= info.input :gender, as: :radio_buttons, collection: [['0', ' Female'], ['1', ' Male']], label_method: :second, value_method: :first, input_html: {class: 'form-control'} %>
           <%= info.input :username, label: 'Your username please', error: 'Username is mandatory, please specify one' %>
-          <%= info.input :password, hint: 'No special characters.' %>
+          <%= info.input :passwords, hint: 'No special characters.' %>
           <%= info.input :email, placeholder: 'user@domain.com' %>
-          <%= info.input :remember_me, inline_label: 'Yes, remember me' %>
-          <%= info.input :username, label_html: { class: 'my_class' } %>
+          <%= info.input :remember_mes, inline_label: 'Yes, remember me' %>
+          <%= info.input :usernames, label_html: { class: 'my_class' } %>
           <%= info.input :password, hint: false, error_html: { id: 'password_error'} %>
           <%= info.input_field :remember_me, as: :boolean, boolean_style: :inline , input_html: {class: 'form-control'} %>
           <%= info.input_field :remember_me2, as: :boolean, boolean_style: :inline %>
@@ -279,6 +286,12 @@
 <% end %>
 
 <style>
+  .fichas-apartado {
+    padding: 10px;
+    background-color: #6aa6ed;
+    box-shadow: lightgrey;
+    border-radius: 25px;
+  }
 
   .titulo-seccion {
     padding-bottom: 20px;

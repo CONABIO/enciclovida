@@ -1,8 +1,6 @@
 <div class='nested-fields'>
-  <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, prompt: :seleccionar,  input_html: {class: 'form-control'} %>
-  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_SEMARNAT, prompt: :seleccionar,  input_html: {class: 'form-control select-legi select-legi-semarnat'} %>
-  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_CITES, prompt: :seleccionar,  input_html: {class: 'form-control select-legi select-legi-cites'} %>
-  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_UICN, prompt: :seleccionar,  input_html: {class: 'form-control select-legi select-legi-uicn'} %>
+  <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, prompt: :seleccionar,  input_html: {class: 'form-control tipo-legislacion'} %>
+  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_SEMARNAT, prompt: :seleccionar,  input_html: {class: 'form-control select-legi-NOM-059-SEMARNAT-2001'} %>
   <%=  f.input :infoAdicional %>
   <%= link_to_remove_association 'Borrar legislación', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>
@@ -30,6 +28,10 @@ f.input :nombreLegislacion,
                   ["Transportation", ["bus", "taxi", "train" ]],
                   ["Eat/Drink", ["meal", "tea/cafe"]]],
               :group_method => :last
+
+  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_SEMARNAT, prompt: :seleccionar,  input_html: {class: 'form-control select-legi-NOM-059-SEMARNAT'} % >
+  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_CITES, prompt: :seleccionar,  input_html: {class: 'form-control select-legi-CITES'} % >
+  <%= f.input :estatusLegalProteccion, :as => :select, collection: Fichas::Legislacion::L_UICN, prompt: :seleccionar,  input_html: {class: 'form-control select-legi-UICN'} % >
 
 
 =end

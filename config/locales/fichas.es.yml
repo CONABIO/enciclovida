@@ -39,6 +39,8 @@ es:
     s_conservacion:
       esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
       marco_legal_nacional_e_internacional: 57. Marco legal nacional e internacional
+    s_distribucion:
+      endemismo: Endemismo
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
     prompts:
@@ -102,6 +104,10 @@ es:
           Apéndice II: Apéndice II
           Apéndice III: Apéndice III
           No listada: No listada
+      endemicas:
+        endemicaMexico:
+          Sí: Sí
+          no: No
       habitats:
         estadoHabitat:
           Hostil o muy limitante: Hostil o muy limitante
@@ -113,10 +119,17 @@ es:
           Restringida: Restringida
           Medianamente restringida o amplia: Medianamente restringida o amplia
           Ampliamente distribuidas o muy amplias: Ampliamente distribuidas o muy amplias
-      endemicas:
-        endemicaMexico:
-          endem_si: Sí
-          endem_no: No
+      historiaNatural:
+        funcionEcologica:
+          Productores: Productores
+          Depredador: Depredador
+          Depredador tope: Depredador tope
+          Descomponedor: Descomponedor
+          Dispersor: Dispersor
+          Polinizador: Polinizador
+          Fijadores de carbono: Fijadores de carbono
+          Fijadores de nitrógeno: Fijadores de nitrógeno
+          Otro: Otro
     labels:
       defaults:
         yes: Si
@@ -261,7 +274,7 @@ es:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         endemismo: Endemismo
         endemicaMexico: ¿Endémica en México?
-        endemicaA: Endemismo b) Endémica a
+        endemicaA: Endémica a
         infoAdicionalEndemica:  Información adicional
       ecorregion:
         #  * *  S E C C I Ó N   A M B I E N T E * *  #

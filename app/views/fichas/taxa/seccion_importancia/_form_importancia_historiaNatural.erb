@@ -1,6 +1,6 @@
 <div class='nested-fields'>
   <%= f.input :ImportanciaBiologica %>
-  <%= f.input :funcionEcologica %>
+  <%= f.input :funcionEcologica,  :as => :select, :collection => Fichas::Historianatural::FUNCIONES_ECOLOGICAS, prompt: :seleccionar,  input_html: {class: 'form-control tipo-legislacion'} %>
   <%= f.input :importanciaEconomica %>
   <%= f.input :comercioNal %>
   <%= f.input :origenComNal %>

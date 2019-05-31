@@ -17,6 +17,18 @@ class Fichas::Historianatural < Ficha
 	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
 
+	FUNCIONES_ECOLOGICAS = [
+			'Productores'.to_sym,
+			'Depredador'.to_sym,
+			'Depredador tope'.to_sym,
+			'Descomponedor'.to_sym,
+			'Dispersor'.to_sym,
+			'Polinizador'.to_sym,
+			'Fijadores de carbono'.to_sym,
+			'Fijadores de nitrógeno'.to_sym,
+			'Otros'.to_sym
+	]
+
 	def get_info_reproduccion
 		if self.tipoReproduccion == 'animal'
 			return self.reproduccionAnimal
