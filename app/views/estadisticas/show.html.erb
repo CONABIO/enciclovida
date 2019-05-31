@@ -1,6 +1,50 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
 
+
+
+<div class="col-xs-12 <%= 'col-sm-7 col-md-5 col-lg-4' if(params[:action] != 'resultados') %>">
+  <fieldset>
+    <legend>
+      <h5 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h5>
+      <h5 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h5>
+    </legend>
+    <div class="form-group radio" id="por_gi">
+      <%= radioGruposIconicos.html_safe %>
+    </div>
+
+    <div class="form-group" id="por_nombre" style="display: none;">
+      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+    </div>
+    <%= hidden_field_tag :busqueda, :avanzada %>
+    <%= hidden_field_tag :id, nil %>
+  </fieldset>
+
+  <div id="panelCategoriaTaxonomicaPt" style="display: none;">
+    <fieldset>
+      <legend><h5 class="text-primary"><strong>Categoria taxonómica</strong></h5></legend>
+    </fieldset>
+    <div id="datos_cat"></div>
+  </div>
+
+  <div class="form-group">
+    <fieldset>
+      <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
+      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+    </fieldset>
+  </div>
+</div>
+
+<div class="col-xs-12 <%= 'col-sm-5 col-md-4 col-lg-5' if(params[:action] !='resultados') %>">
+  <fieldset>
+    <legend><h5 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
+    <div class="checkbox">
+      <%= checkboxEstadoConservacion.html_safe %>
+    </div>
+  </fieldset>
+</div>
+
+
 <h3>
   <%=
     # @estadisticas.inspect
@@ -235,3 +279,42 @@ function change(data) {
       });
   });
 </script>
+
+
+account-account,22781 \n\
+account-end,3311 \n\
+account-home,906 \n\
+account-other,1156 \n\
+account-product,5969 \n\
+account-search,692 \n\
+end,7059 \n\
+home-account,396 \n\
+home-end,316 \n\
+home-home,226 \n\
+home-other,87 \n\
+home-product,613 \n\
+home-search,245 \n\
+other-account,446 \n\
+other-end,229 \n\
+other-home,91 \n\
+other-other,804 \n\
+other-product,776 \n\
+other-search,48 \n\
+product-account,3892 \n\
+product-end,3250 \n\
+product-home,531 \n\
+product-other,252 \n\
+product-product,4876 \n\
+product-search,476 \n\
+search-account,521 \n\
+search-end,39 \n\
+search-home,7 \n\
+search-other,8 \n\
+search-product,536 \n\
+search-search,219 \n\
+end,14262 \n\
+home-account-account,434 \n\
+home-account-end,83 \n\
+home-account-home,71 \n\
+home-account-other,39 \n\
+home-account-product,159 \n\
