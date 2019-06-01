@@ -3,8 +3,7 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  constraints subdomain: 'infoceanos' do
-    root 'metamares/proyectos#index'
+  if Rails.env.development?
     namespace :metamares do
       root 'proyectos#index'
       resources :admin
@@ -16,9 +15,22 @@ Buscador::Application.routes.draw do
       get 'dame-institucion' => 'metamares#dame_institucion'
       get 'dame-keyword' => 'metamares#dame_keyword'
     end
+  else
+    constraints host: 'infoceanos.conabio.gob.mx' do
+      root 'metamares/proyectos#index'
+      namespace :metamares do
+        root 'proyectos#index'
+        resources :admin
+        resources :proyectos
+        resources :directorio
+        get 'graficas' => 'metamares#graficas'
+        get 'grafica1' => 'metamares#grafica1'
+        get 'grafica2' => 'metamares#grafica2'
+        get 'dame-institucion' => 'metamares#dame_institucion'
+        get 'dame-keyword' => 'metamares#dame_keyword'
+      end
+    end
   end
-
-
 
   namespace :pmc do
     resources :peces, :as => :pez do
