@@ -1,10 +1,9 @@
 class Metamares::MetamaresController < ApplicationController
-
   layout 'metamares'
-  #layout false, :only => [:index]
 
   #la pagina de flopez
   def index
+    render layout: false
   end
 
   # La visualizacion por medio de D3
