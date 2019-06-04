@@ -113,10 +113,10 @@ ActiveRecord::Schema.define(version: 20190424232856) do
     t.index ["estadistica_id"], name: "idx_especies_estadistica_estadistica_id"
   end
 
-  create_table "estadisticas", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "estadisticas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "descripcion_estadistica"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "listas", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
