@@ -5,7 +5,7 @@ Buscador::Application.routes.draw do
 
   if Rails.env.development?
     namespace :metamares do
-      root 'proyectos#index'
+      root 'metamares#index'
       resources :admin
       resources :proyectos
       resources :directorio
@@ -17,9 +17,9 @@ Buscador::Application.routes.draw do
     end
   else
     constraints host: 'infoceanos.conabio.gob.mx' do
-      root 'metamares/proyectos#index'
+      root 'metamares/metamares#index'
       namespace :metamares do
-        root 'proyectos#index'
+        root 'metamares#index'
         resources :admin
         resources :proyectos
         resources :directorio
