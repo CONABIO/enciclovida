@@ -83,8 +83,8 @@ function dameEspeciesPorEstado(req) {
             .from('total')
             .orderByRaw('nregistros DESC')
             .then(dato => {
-                console.log('aqui');
-            resolve(dato);
+            console.log('aqui');
+    resolve(dato);
 })
 })
 }
@@ -271,13 +271,28 @@ function taxonMunTotal(req) {
 }
 
 function dameEspeciesConFiltros(req) {
-    let nom = req.query;
-    let iucn = req.query['iucn'];
-    let cites = req.query['cites'];
-    let dist = req.query['dist'];
-    //console.log(nom);
-    console.log('en filtros ...');
-    return true;
+    return new Promise((resolve, reject) => {
+        var query = knex
+            .select(knex.raw('idnombrecatvalido,nregistros,nom,iucn,cites'))
+            .from('filtros')
+            .orderByRaw('nregistros DESC')
+            .limit(10);
+
+    if (req.nom !== undefined)
+        query.whereIn('nom', req.nom);
+    if (req.iucn !== undefined)
+        query.whereIn('iucn', req.iucn);
+    if (req.cites !== undefined)
+        query.whereIn('cites', req.cites);
+    /*if (req.nom !== undefined)
+        query.whereIn('nom', req.nom);
+    if (req.nom !== undefined)
+        query.whereIn('nom', req.nom);*/
+
+    query.then(dato => {
+        resolve(dato);
+})
+})
 }
 
 module.exports = {

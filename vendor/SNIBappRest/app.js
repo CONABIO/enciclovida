@@ -194,9 +194,8 @@ server.register([
                 }
             },
             handler: function (request, reply) {
-                console.log(request.query);
                 query
-                    .dameEspeciesConFiltros(request)
+                    .dameEspeciesConFiltros(request.query)
                     .then(dato => {
                     reply(dato)
                 })
