@@ -117,8 +117,22 @@ class BusquedasController < ApplicationController
   # REVISADO: Los filtros de la busqueda avanzada y de los resultados
   def filtros_iniciales
     @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
-    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+
+    animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    @animales = []
+    animales.each do |animal|
+      if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
+        @animales[index] = animal
+      end
+    end
+
+    plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+    @plantas = []
+    plantas.each do |planta|
+      if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
+        @plantas[index] = planta
+      end
+    end
 
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
 
