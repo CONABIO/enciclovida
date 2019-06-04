@@ -183,14 +183,14 @@ server.register([
         config: {
             tags: ['api'],
             description: 'Regresa todas las especies que coinciden con los filtros seleccionados en todas las regiones',
-            notes: 'Posibles filtros son: NOM-059, IUCN, CITES y distribución de la especie',
+            notes: 'Posibles filtros son: NOM-059, IUCN, CITES, tipo de distribución y grupo taxonómico de la especie',
             validate: {
                 query: {
                     nom: Joi.array().description('Norma Oficial Mexicana 059, valores permitidos: 14,15,16,17'),
                     iucn: Joi.array().description('Unión Internacional para la Conservación de la Naturleza, valores permitidos: 25,26,27,28,29,31,21'),
                     cites: Joi.array().description('Comercio Internacional, valores permitidos: 22,23,24'),
                     dist: Joi.array().description('Tipo de distribución, valores permitidos: 3,6,7,10'),
-                    grupo: Joi.string().valid(['Anfibios', 'Aves', 'Bacterias', 'Hongos', 'Invertebrados', 'Mamíferos', 'Peces', 'Plantas', 'Protoctistas', 'Reptiles']).description('El grupo taxónomico en específico')
+                    grupo: Joi.array().description('El grupo taxónomico, valores permitidos: Anfibios,Aves,Bacterias,Hongos,Invertebrados,Mamíferos,Peces,Plantas,Protoctistas,Reptiles')
                 }
             },
             handler: function (request, reply) {
