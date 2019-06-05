@@ -287,6 +287,17 @@ function dameEspeciesConFiltros(req) {
     if (req.grupo !== undefined)
         query.whereIn('grupobio', req.grupo);
 
+    // Para las distribuciones
+    if (req.dist !== undefined)
+    {
+        let dist = [];
+        if (req.dist.includes(3)) dist.push('endemica=true');
+        if (req.dist.includes(7)) dist.push('nativa=true');
+        if (req.dist.includes(10)) dist.push('exotica=true');
+        if (req.dist.includes(6)) dist.push('exoticainvasora=true');
+        query.whereRaw(dist.join(' OR '));
+    }
+
     query.then(dato => {
         resolve(dato);
 })
