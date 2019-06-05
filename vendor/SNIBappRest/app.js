@@ -190,7 +190,9 @@ server.register([
                     iucn: Joi.array().description('Unión Internacional para la Conservación de la Naturleza, valores permitidos: 25,26,27,28,29,31,21'),
                     cites: Joi.array().description('Comercio Internacional, valores permitidos: 22,23,24'),
                     dist: Joi.array().description('Tipo de distribución, valores permitidos: 3,6,7,10'),
-                    grupo: Joi.array().description('El grupo taxónomico, valores permitidos: Anfibios,Aves,Bacterias,Hongos,Invertebrados,Mamíferos,Peces,Plantas,Protoctistas,Reptiles')
+                    grupo: Joi.array().description('El grupo taxónomico, valores permitidos: Anfibios,Aves,Bacterias,Hongos,Invertebrados,Mamíferos,Peces,Plantas,Protoctistas,Reptiles'),
+                    pagina: Joi.number().description('La pagina a consultar'),
+                    por_pagina: Joi.number().description('Los resultados por pagina')
                 }
             },
             handler: function (request, reply) {
