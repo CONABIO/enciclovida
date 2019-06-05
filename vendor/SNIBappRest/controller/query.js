@@ -284,10 +284,8 @@ function dameEspeciesConFiltros(req) {
         query.whereIn('iucn', req.iucn);
     if (req.cites !== undefined)
         query.whereIn('cites', req.cites);
-    /*if (req.nom !== undefined)
-        query.whereIn('nom', req.nom);
-    if (req.nom !== undefined)
-        query.whereIn('nom', req.nom);*/
+    if (req.grupo !== undefined)
+        query.whereIn('grupobio', req.grupo);
 
     query.then(dato => {
         resolve(dato);
