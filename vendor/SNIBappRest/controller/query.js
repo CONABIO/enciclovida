@@ -163,6 +163,68 @@ function dameEspeciesPorANP(req) {
 })
 }
 
+let dameEspeciesConFiltros = function(req)
+{
+    return new Promise((resolve, reject) => {
+        var query = knex
+            .select(knex.raw('idnombrecatvalido,nregistros'))
+            .from('filtros')
+            .orderByRaw('nregistros DESC');
+
+    query = armaQueryFiltros(req, query);
+
+    // paginado
+    let pagina = 1;
+    let por_pagina = 10;
+
+    if (req.pagina !== undefined) pagina = req.pagina;
+    if (req.por_pagina !== undefined) por_pagina = req.por_pagina;
+
+    query.offset((pagina-1)*por_pagina);
+    query.limit(por_pagina);
+
+    query.then(dato => {
+        resolve(dato);
+})
+})
+};
+
+let dameEspeciesConFiltrosConteo = function(req)
+{
+    return new Promise((resolve, reject) => {
+        var query = knex
+            .count('* AS nespecies')
+            .from('filtros');
+
+    query = armaQueryFiltros(req, query);
+
+    query.then(dato => {
+        resolve(dato);
+})
+})
+};
+
+let armaQueryFiltros = function(req, query)
+{
+    if (req.nom !== undefined) query.whereIn('nom', req.nom);
+    if (req.iucn !== undefined) query.whereIn('iucn', req.iucn);
+    if (req.cites !== undefined) query.whereIn('cites', req.cites);
+    if (req.grupo !== undefined) query.whereIn('grupobio', req.grupo);
+
+    // Para las distribuciones
+    if (req.dist !== undefined)
+    {
+        let dist = [];
+        if (req.dist.includes(3)) dist.push('endemica=true');
+        if (req.dist.includes(7)) dist.push('nativa=true');
+        if (req.dist.includes(10)) dist.push('exotica=true');
+        if (req.dist.includes(6)) dist.push('exoticainvasora=true');
+        query.whereRaw(dist.join(' OR '));
+    }
+
+    return query;
+};
+
 function conteo() {
     return new Promise((resolve, reject) => {
         knex
@@ -270,47 +332,6 @@ function taxonMunTotal(req) {
 })
 }
 
-function dameEspeciesConFiltros(req) {
-    console.log(req);
-
-    return new Promise((resolve, reject) => {
-        var query = knex
-            .select(knex.raw('idnombrecatvalido,nregistros'))
-            .from('filtros')
-            .orderByRaw('nregistros DESC');
-
-    if (req.nom !== undefined) query.whereIn('nom', req.nom);
-    if (req.iucn !== undefined) query.whereIn('iucn', req.iucn);
-    if (req.cites !== undefined) query.whereIn('cites', req.cites);
-    if (req.grupo !== undefined) query.whereIn('grupobio', req.grupo);
-
-    // Para las distribuciones
-    if (req.dist !== undefined)
-    {
-        let dist = [];
-        if (req.dist.includes(3)) dist.push('endemica=true');
-        if (req.dist.includes(7)) dist.push('nativa=true');
-        if (req.dist.includes(10)) dist.push('exotica=true');
-        if (req.dist.includes(6)) dist.push('exoticainvasora=true');
-        query.whereRaw(dist.join(' OR '));
-    }
-
-    // paginado
-    let pagina = 1;
-    let por_pagina = 10;
-
-    if (req.pagina !== undefined) pagina = req.pagina;
-    if (req.por_pagina !== undefined) por_pagina = req.por_pagina;
-
-    query.offset((pagina-1)*por_pagina);
-    query.limit(por_pagina)
-
-    query.then(dato => {
-        resolve(dato);
-})
-})
-}
-
 module.exports = {
     dameEstados,
     dameMunicipios,
@@ -319,6 +340,7 @@ module.exports = {
     dameEspeciesPorMunicipio,
     dameEspeciesPorANP,
     dameEspeciesConFiltros,
+    dameEspeciesConFiltrosConteo,
     conteo,
     taxonMuni,
     taxonEdo,
