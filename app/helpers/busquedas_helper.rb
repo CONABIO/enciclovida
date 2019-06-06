@@ -25,6 +25,25 @@ module BusquedasHelper
     "<div>#{radios}</div>"
   end
 
+  # REVISADO: Filtros para los grupos icónicos en la busqueda por region
+  def checkboxGruposIconicosSnib
+    def arma_checkbox(nom_cien, grupo)
+      checkBoxes = "<label>"
+      checkBoxes << check_box_tag('id_gi[]', grupo, false, id: "id_gi_#{grupo}")
+      checkBoxes << "<span title='#{grupo}' class='#{nom_cien.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span>"
+      checkBoxes << "</label>"
+    end
+
+    checkBoxes = ''
+    grupos = { 'Mammalia' => 'Mamíferos', 'Aves' => 'Aves', 'Reptilia' => 'Reptiles', 'Amphibia' => 'Anfibios', 'Actinopterygii' => 'Peces', 'Invertebrados' => 'Invertebrados', 'Plantae' => 'Plantas', 'Fungi' => 'Hongos', 'Prokaryotae' => 'Bacterias', 'Protoctista' => 'Protoctistas' }
+
+    grupos.each do |nom_cien, grupo|  # Para tener los grupos ordenados
+      checkBoxes << arma_checkbox(nom_cien,grupo)
+    end
+
+    "<div>#{checkBoxes}</div>"
+  end
+
   # REVISADO: Filtros para Categorías de riesgo y comercio internacional en la busqueda avanzada
   def checkboxEstadoConservacion(explora_por=false)
     checkBoxes=''
