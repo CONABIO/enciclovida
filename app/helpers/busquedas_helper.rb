@@ -29,8 +29,8 @@ module BusquedasHelper
   def checkboxGruposIconicosSnib
     def arma_checkbox(nom_cien, grupo)
       checkBoxes = "<label>"
-      checkBoxes << check_box_tag('id_gi[]', grupo, false, id: "id_gi_#{grupo}")
-      checkBoxes << "<span title='#{grupo}' class='#{nom_cien.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span>"
+      checkBoxes << check_box_tag('grupo[]', grupo, false, id: "grupo_#{nom_cien.estandariza}")
+      checkBoxes << "<span title='#{grupo}' class='#{nom_cien.estandariza}-ev-icon btn btn-xs btn-basica btn-title'></span>"
       checkBoxes << "</label>"
     end
 

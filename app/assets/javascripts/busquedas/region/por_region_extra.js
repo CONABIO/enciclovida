@@ -1,33 +1,4 @@
 /**
- * Carga los grupos iconicos y su respectivo conteo
- * @param properties
- */
-var cargaGrupos = function()
-{
-    $.ajax({
-        url: '/explora-por-region/conteo-por-grupo',
-        data: parametros()
-    }).done(function(resp) {
-        if (resp.estatus)
-        {
-            $('#contenedor_grupos').empty();
-            $('#contenedor_especies').empty();
-            var grupos_orden = [resp.resultados[5],resp.resultados[1],resp.resultados[9],resp.resultados[0],
-                resp.resultados[6],resp.resultados[4], resp.resultados[7],resp.resultados[3],resp.resultados[2],resp.resultados[8]];
-            $.each(grupos_orden, function(index, prop){
-                $('#contenedor_grupos').append('<label><input type="radio" name="id"><small grupo_id_badge="'+ prop.grupo + '"> ' + prop.total +  '</small>' +
-                    '<span tooltip-title="' + prop.grupo + '" class="'+  prop.icono+' grupo_id btn btn-basica btn-title" grupo="'+prop.grupo+
-                    '" reino="' + prop.reino + '"></span></label>');
-            });
-        } else
-            console.log('Falló el servicio de conteo del SNIB');
-
-    }).fail(function() {
-        console.log('Falló el servicio de conteo del SNIB');
-    });
-};
-
-/**
  * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado
  * @param prop, parametros adicionales
  * @returns {string}
@@ -173,7 +144,7 @@ var dameUrlServicioSnibPorRegion = function(prop)
 };
 
 /**
- * Para cuanod eliga alguna opcion el automáticamente culte la barra y pueda ver el resultado
+ * Para cuando eliga alguna opcion se oculte automáticamente la barra y pueda ver el resultado
  */
 var colapsaBarra  =function()
 {
@@ -222,8 +193,9 @@ $(document).ready(function(){
     /**
      * Para los filtros default: distribucion y riesgo
      */
-    $('#b_avanzada').on('change', ".checkbox input", function()
+    $('#busqueda_region').on('change', "input", function()
     {
+        console.log('cambio filtro');
         opciones.pagina_especies = 1;
         cargaEspecies();
     });
