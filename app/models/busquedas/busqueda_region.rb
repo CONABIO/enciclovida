@@ -9,8 +9,8 @@ class BusquedaRegion < Busqueda
 
   # Regresa un listado de especies por pagina, de acuerdo a la region
   def especies
-    guarda_cache_especies
-    dame_especies_filtros_adicionales
+    #guarda_cache_especies
+    puts dame_especies_filtros_adicionales.inspect
     dame_especies_por_pagina
     self.resp[:resultados] = nil
   end
@@ -129,6 +129,35 @@ class BusquedaRegion < Busqueda
 
   # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
   def dame_especies_filtros_adicionales
+    return { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
+
+    query = []
+
+    # Para la nom, iucn o cites
+    if params[:edo_cons].present? && params[:edo_cons].any?
+      params[:edo_cons] = params[:edo_cons].map(&:to_i)
+
+      # Para la NOM
+      nom_ids = Catalogo.nom.map(&:id) & params[:edo_cons]
+      query << "nom=#{nom_ids.to_s}" if nom_ids.any?
+
+      # Para IUCN
+      iucn_ids = Catalogo.iucn.map(&:id) & params[:edo_cons]
+      query << "iucn=#{iucn_ids.to_s}" if iucn_ids.any?
+
+      # Para CITES
+      cites_ids = Catalogo.cites.map(&:id) & params[:edo_cons]
+      query << "cites=#{cites_ids.to_s}" if cites_ids.any?
+    end
+
+    # Para los grupos iconicos
+    query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
+
+    if query.any?
+      { estatus: true, query: "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}" }
+    else
+      { estatus: false }
+    end
   end
 
   def dame_especies_por_pagina
