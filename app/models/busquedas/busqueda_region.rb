@@ -153,6 +153,9 @@ class BusquedaRegion < Busqueda
     # Para los grupos iconicos
     query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
 
+    # Para el tipo de distribucion
+
+
     if query.any?
       { estatus: true, query: "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}" }
     else
