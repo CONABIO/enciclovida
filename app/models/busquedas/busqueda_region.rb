@@ -160,6 +160,10 @@ class BusquedaRegion < Busqueda
       query << "dist=#{distribucion_ids.to_s}" if distribucion_ids.any?
     end
 
+    # El paginado
+    query << "pagina=#{params[:pagina]}" if params[:pagina].present?
+    query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
+
     if query.any?
       { estatus: true, query: "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}" }
     else
