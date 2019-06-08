@@ -154,7 +154,11 @@ class BusquedaRegion < Busqueda
     query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
 
     # Para el tipo de distribucion
-
+    if params[:dist].present? && params[:dist].any?
+      params[:dist] = params[:dist].map(&:to_i)
+      distribucion_ids = params[:dist] & TipoDistribucion.distribuciones_vista_general.map(&:id)
+      query << "dist=#{distribucion_ids.to_s}" if distribucion_ids.any?
+    end
 
     if query.any?
       { estatus: true, query: "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}" }
