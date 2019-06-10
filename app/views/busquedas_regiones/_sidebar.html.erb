@@ -24,6 +24,7 @@
         <h4>Busca por nombre científico o común</h4>
         <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
         <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
+        <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
         <%= text_field_tag :nombre, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
 
         <hr />

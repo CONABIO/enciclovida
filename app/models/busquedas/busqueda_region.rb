@@ -10,9 +10,26 @@ class BusquedaRegion < Busqueda
   # Regresa un listado de especies por pagina, de acuerdo a la region
   def especies
     #guarda_cache_especies
-    puts dame_especies_filtros_adicionales.inspect
-    dame_especies_por_pagina
-    self.resp[:resultados] = nil
+    dame_especies_filtros_adicionales
+
+    if resp[:estatus]
+      if params[:region_id].present?
+
+      else
+        asocia_informacion_taxon(resp[:resultados])
+        resp[:taxones] = taxones
+      end
+
+    else
+      if params[:region_id].present?
+
+      else
+
+      end
+    end
+
+    #dame_especies_por_pagina
+    #self.resp[:resultados] = nil
   end
 
   def guarda_cache_especies
@@ -129,7 +146,7 @@ class BusquedaRegion < Busqueda
 
   # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
   def dame_especies_filtros_adicionales
-    return { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
+    return self.resp = { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
 
     query = []
 
@@ -165,10 +182,25 @@ class BusquedaRegion < Busqueda
     query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
 
     if query.any?
-      { estatus: true, query: "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}" }
+      self.url_especies = query
+      respuesta_especies_filtros_adicionales
     else
-      { estatus: false }
+      self.resp = { estatus: false }
     end
+  end
+
+  def respuesta_especies_filtros_adicionales(conteo = nil)
+    conteo = conteo ? '/conteo' : ''
+    url = "#{CONFIG.busquedas_region_api}/especies/filtros#{conteo}?#{url_especies.join('&')}"
+
+    begin
+      rest = RestClient.get(url)
+    rescue => e
+      return self.resp = {estatus: false, msg: e.message}
+    end
+
+    resultados = JSON.parse(rest)
+    self.resp = { estatus: true, resultados: resultados }
   end
 
   def dame_especies_por_pagina
