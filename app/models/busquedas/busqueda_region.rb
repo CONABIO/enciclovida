@@ -90,7 +90,7 @@ class BusquedaRegion < Busqueda
     end
 
     # Para los grupos iconicos
-    self.query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
+    self.query << "grupo=#{URI::encode(params[:grupo].to_s)}" if params[:grupo].present? && params[:grupo].any?
 
     # Para el tipo de distribucion
     if params[:dist].present? && params[:dist].any?
