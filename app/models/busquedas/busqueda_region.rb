@@ -1,13 +1,13 @@
 class BusquedaRegion < Busqueda
 
-  attr_accessor :resp, :key_especies, :key_especies_con_filtro, :url_especies
+  attr_accessor :resp, :query
 
   def initialize
     self.taxones = []
     self.totales = 0
   end
 
-  # Regresa un listado de especies por pagina, de acuerdo a la region
+  # Regresa un listado de especies por pagina, de acuerdo a la region y los filtros seleccionados
   def especies
     #guarda_cache_especies
     dame_especies_filtros_adicionales
@@ -16,7 +16,8 @@ class BusquedaRegion < Busqueda
       if params[:region_id].present?
 
       else
-        asocia_informacion_taxon(resp[:resultados])
+        puts 'aquiiii3'
+        asocia_informacion_taxon
         resp[:taxones] = taxones
       end
 
@@ -32,6 +33,7 @@ class BusquedaRegion < Busqueda
     #self.resp[:resultados] = nil
   end
 
+  # Consulta los querys guardados en cache o los consulta al vuelo
   def guarda_cache_especies
     self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region.especies)) do
       url = "#{CONFIG.busquedas_region_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
@@ -39,91 +41,15 @@ class BusquedaRegion < Busqueda
     end
   end
 
+  # Borra el cache de las especies por region
   def borra_cache_especies
     Rails.cache.delete("especies_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("especies_#{params[:tipo_region]}_#{params[:region_id]}")
-  end
-
-  # REVISADO: Cache para obtener el conteo de especies por grupo
-  def cache_conteo_por_grupo
-    if params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
-
-      if params[:estado_id].present? && params[:municipio_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}?apiKey=enciclovida"
-      elsif params[:estado_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
-      else
-        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
-      end
-
-      self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-        respuesta_conteo_por_grupo(url)
-      end
-
-    else
-      self.resp = { estatus: false, msg: "El parámetro 'tipo_region' esta vacío." }
-    end
-  end
-
-  # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
-  def especies_por_grupo
-    existe_cache_especies_por_grupo_con_filtros?
-
-    if resp[:estatus]  # Para ver si los parametros son correctos
-      if resp[:key]  # Para ver si la llave existe
-        cache_especies_por_grupo_con_filtros
-      else
-        cache_especies_por_grupo
-        cache_especies_por_grupo_con_filtros
-      end  # End key
-
-      # Esta consulta no va en el cache para poder manejarla de mi aldo y sea mas rapida la respuesta
-      filtro_con_nombre
-    end  # End resp[:estatus]
-  end
-
-  def cache_especies_por_grupo
-    self.resp = Rails.cache.fetch(key_especies, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-      respuesta_especies_por_grupo(url_especies)
-    end
-  end
-
-  # Es la busqueda con los filtros, regio y grupo de la busqueda por region
-  def cache_especies_por_grupo_con_filtros
-    self.resp = Rails.cache.fetch(key_especies_con_filtro, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-      # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
-      if resp[:estatus]
-        especies_hash = {}
-
-        resp[:resultados].each do |r|
-          especies_hash[r['idnombrecatvalido']] = r['nregistros'].to_i
-        end
-        especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
-
-        filtros_default(especies_hash.keys)  # Hace el query con los filtros default
-        resultados = taxones.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
-
-        resultados.each do |taxon|
-          especies_hash[taxon[:catalogo_id]] = taxon.merge({nregistros: especies_hash[taxon[:catalogo_id]]})
-        end
-
-        # Para dejar solo lo que coincidio con la consulta
-        especies_hash = especies_hash.map{|k, v| v if v.class == Hash}
-
-        {estatus: true, resultados: especies_hash.compact}
-      else
-        resp
-      end
-    end
   end
 
 
   private
 
-  # Pregunta al Servicio por el listado completo de las especies, previamente en cache
+  # Pregunta al servicio por el listado completo de las especies directo al servicio, solo consultar si no existe el cache
   def dame_especies(url)
     begin
       rest = RestClient.get(url, open_timeout: 60*10, read_timeout: 60*10, timeout: 60*10)
@@ -177,51 +103,55 @@ class BusquedaRegion < Busqueda
       query << "dist=#{distribucion_ids.to_s}" if distribucion_ids.any?
     end
 
-    # El paginado
-    query << "pagina=#{params[:pagina]}" if params[:pagina].present?
-    query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
+    # Por si es la primera pagina con o sin filtros
+    self.query = query
+    respuesta_especies_filtros_adicionales_conteo if params[:pagina] == 1
 
-    if query.any?
-      self.url_especies = query
+    puts resp.inspect
+
+    if resp[:estatus]
       respuesta_especies_filtros_adicionales
     else
       self.resp = { estatus: false }
     end
   end
 
-  def respuesta_especies_filtros_adicionales(conteo = nil)
-    conteo = conteo ? '/conteo' : ''
-    url = "#{CONFIG.busquedas_region_api}/especies/filtros#{conteo}?#{url_especies.join('&')}"
+  # Regresa las especies del servicio de /especies/filtros
+  def respuesta_especies_filtros_adicionales
+    # El paginado, solo si es pagina diferente a 1
+    query << "pagina=#{params[:pagina]}" if params[:pagina].present?
+    query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
+
+    url_especies = "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}"
 
     begin
-      rest = RestClient.get(url)
+      rest = RestClient.get(url_especies)
+      resultados = JSON.parse(rest)
     rescue => e
-      return self.resp = {estatus: false, msg: e.message}
+      return self.resp = { estatus: false, msg: e.message }
     end
 
-    resultados = JSON.parse(rest)
     self.resp = { estatus: true, resultados: resultados }
   end
 
-  def dame_especies_por_pagina
-    self.por_pagina = 6
-    self.pagina = params[:pagina] || 1
-    self.totales = resp[:totales]
+  # Regresa el conteo de especies del servicio de /especies/filtros
+  def respuesta_especies_filtros_adicionales_conteo
+    url_conteo = "#{CONFIG.busquedas_region_api}/especies/filtros/conteo?#{query.join('&')}"
 
-    if resp[:estatus] && resp[:totales] > 0
-      if especies = resp[:resultados][(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
-        asocia_informacion_taxon(especies)
-        resp[:taxones] = taxones
-      else
-        resp[:taxones] = taxones
-        resp[:msg] = 'No hay más especies'
-      end
+    begin
+      rest = RestClient.get(url_conteo)
+      resultados = JSON.parse(rest).first
+    rescue => e
+      return self.resp = { estatus: false, msg: e.message }
     end
+
+    self.resp[:estatus] = true
+    self.resp[:totales] = resultados[:nregistros].to_i
   end
 
-  # Asocia la información a desplegar en la vista
-  def asocia_informacion_taxon(especies)
-    especies.each do |e|
+  # Asocia la información a desplegar en la vista, iterando los resultados
+  def asocia_informacion_taxon
+    resp[:resultados].each do |e|
       if scat = Scat.where(catalogo_id: e['idnombrecatvalido']).first
         next unless especie = scat.especie
 
@@ -236,75 +166,21 @@ class BusquedaRegion < Busqueda
     end
   end
 
-  # REVISADO: Consulta el conteo por especie en el servicio de Abraham
-  def respuesta_conteo_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      conteo = JSON.parse(rest)
+  # Las especies por pagina cuando escogio una region
+  def dame_especies_por_pagina
+    self.por_pagina = 6
+    self.pagina = params[:pagina] || 1
+    self.totales = resp[:totales]
 
-      if conteo.kind_of?(Hash) && conteo['error'].present?
-        {estatus: false, msg: conteo['error']}
+    if resp[:estatus] && resp[:totales] > 0
+      if especies = resp[:resultados][(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
+        asocia_informacion_taxon
+        resp[:taxones] = taxones
       else
-        conteo = icono_grupo(conteo)
-        {estatus: true, resultados: conteo}
-      end
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
-  def respuesta_especies_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      especies = JSON.parse(rest)
-
-      {estatus: true, resultados: especies}
-
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
-  # Para saber si la peticion con la region y los filtros ya existe y consultar directo cache especies_por_grupo
-  def existe_cache_especies_por_grupo_con_filtros?
-    if params[:grupo].present? && params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
-
-      if params[:estado_id].present? && params[:municipio_id].present?
-        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
-      elsif params[:estado_id].present?
-        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
-      else
-        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
-      end
-
-      # La llave con los diferentes filtros
-      edo_cons = params[:edo_cons].present? ? params[:edo_cons].join('-') : ''
-      dist = params[:dist].present? ? params[:dist].join('-') : ''
-      prior = params[:prior].present? ? params[:prior].join('-') : ''
-      self.key_especies_con_filtro = "#{key_especies}_#{edo_cons}_#{dist}_#{prior}".estandariza
-      self.resp = {estatus: true, key: Rails.cache.exist?(self.key_especies_con_filtro)}
-    else
-      self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo' y 'tipo_region' son obligatorios"}
-    end
-  end
-
-  def filtro_con_nombre
-    if params[:nombre].present?
-      if resp[:estatus]
-        puts resp[:resultados].inspect
-        self.resp[:resultados] = resp[:resultados].map{|t| t if (/#{params[:nombre].sin_acentos}/.match(t[:nombre_cientifico].sin_acentos) || /#{params[:nombre].sin_acentos}/.match(t[:nombre_comun].try(:sin_acentos)))}.compact
+        resp[:taxones] = taxones
+        resp[:msg] = 'No hay más especies'
       end
     end
-  end
-
-  def filtros_default(ids)
-    self.taxones = taxones.select(:id, :nombre_cientifico).select("nombre_comun_principal, foto_principal, #{Scat.attribute_alias(:catalogo_id)} AS catalogo_id").where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", ids)
-    tipo_distribucion
-    estado_conservacion
   end
 
   # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
@@ -338,15 +214,4 @@ class BusquedaRegion < Busqueda
     grupos
   end
 
-  # La correspondencia del estado en el servicio de Abraham, debio haber sido la llave priamria ...
-  def correspondencia_estado
-    valor = CORRESPONDENCIA[params[:estado_id].to_i]
-
-    if valor
-      self.params[:estado_id] = valor
-      self.resp = { estatus: true }
-    else
-      self.resp = { estatus: false, msg: "El parámetro 'estado_id' no es es correcto." }
-    end
-  end
 end

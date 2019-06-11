@@ -15,16 +15,6 @@ class BusquedasRegionesController < ApplicationController
     @prioritarias = Catalogo.prioritarias
   end
 
-  # Regresa el conteo por grupo del servicio de Abraham, no lo hago directo porque lo guardo en cache ya que
-  # algunas peticiones tardan 20 segundos
-  def conteo_por_grupo
-    br = BusquedaRegion.new
-    br.params = params
-    br.cache_conteo_por_grupo
-
-    render json: br.resp
-  end
-
   # Servicio para consultar las especies pr region, contempla filtros y cache
   def especies
     br = BusquedaRegion.new
@@ -67,7 +57,7 @@ class BusquedasRegionesController < ApplicationController
 
       br = BusquedaRegion.new
       br.params = params
-      br.especies_por_grupo
+      #br.especies_por_grupo
 
       # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
       if br.resp[:estatus]
