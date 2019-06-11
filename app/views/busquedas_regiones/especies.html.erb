@@ -1,4 +1,10 @@
-<% if @resp[:estatus] && @resp[:totales] > 0 %>
+<% if @resp[:estatus] %>
+
+  <% if @resp[:totales].present? %>
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <h3><strong><%= @resp[:totales] %></strong> especies</h3>
+  </div>
+    <% end %>
 
   <% @resp[:taxones].each do |t| %>
     <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">

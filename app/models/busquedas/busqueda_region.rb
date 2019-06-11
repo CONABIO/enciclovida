@@ -111,7 +111,7 @@ class BusquedaRegion < Busqueda
 
   # Regresa las especies del servicio de /especies/filtros
   def respuesta_especies_filtros_adicionales
-    # El paginado, solo si es pagina diferente a 1
+    # El paginado
     self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
     self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
 
@@ -138,7 +138,11 @@ class BusquedaRegion < Busqueda
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    self.resp = { estatus: true, totales: resultados['nespecies'].to_i }
+    if resultados['nespecies'].to_i > 0
+      self.resp = { estatus: true, totales: resultados['nespecies'].to_i }
+    else
+      self.resp = { estatus: false, msg: 'No existe ningun resultado con esos filtros. Intenta cambiando los filtros.' }
+    end
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
