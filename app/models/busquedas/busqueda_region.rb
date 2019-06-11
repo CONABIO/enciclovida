@@ -16,7 +16,6 @@ class BusquedaRegion < Busqueda
       if params[:region_id].present?
 
       else
-        puts 'aquiiii3'
         asocia_informacion_taxon
         resp[:taxones] = taxones
       end
@@ -72,7 +71,7 @@ class BusquedaRegion < Busqueda
 
   # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
   def dame_especies_filtros_adicionales
-    return self.resp = { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
+    #return self.resp = { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
 
     query = []
 
@@ -105,9 +104,7 @@ class BusquedaRegion < Busqueda
 
     # Por si es la primera pagina con o sin filtros
     self.query = query
-    respuesta_especies_filtros_adicionales_conteo if params[:pagina] == 1
-
-    puts resp.inspect
+    respuesta_especies_filtros_adicionales_conteo if params[:pagina].to_i == 1
 
     if resp[:estatus]
       respuesta_especies_filtros_adicionales
@@ -119,8 +116,8 @@ class BusquedaRegion < Busqueda
   # Regresa las especies del servicio de /especies/filtros
   def respuesta_especies_filtros_adicionales
     # El paginado, solo si es pagina diferente a 1
-    query << "pagina=#{params[:pagina]}" if params[:pagina].present?
-    query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
+    self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
+    self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
 
     url_especies = "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}"
 
@@ -131,7 +128,7 @@ class BusquedaRegion < Busqueda
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    self.resp = { estatus: true, resultados: resultados }
+    self.resp = { estatus: true, resultados: resultados, totales: resp[:totales] }
   end
 
   # Regresa el conteo de especies del servicio de /especies/filtros
@@ -145,8 +142,7 @@ class BusquedaRegion < Busqueda
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    self.resp[:estatus] = true
-    self.resp[:totales] = resultados[:nregistros].to_i
+    self.resp = { estatus: true, totales: resultados[:nregistros].to_i }
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
