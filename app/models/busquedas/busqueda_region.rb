@@ -4,6 +4,7 @@ class BusquedaRegion < Busqueda
 
   def initialize
     self.taxones = []
+    self.query = []
     self.totales = 0
   end
 
@@ -12,7 +13,7 @@ class BusquedaRegion < Busqueda
     #guarda_cache_especies
     dame_especies_filtros_adicionales
 
-    if resp[:estatus]
+    if resp[:estatus]  # Tiene filtros adicionales
       if params[:region_id].present?
 
       else
@@ -20,7 +21,7 @@ class BusquedaRegion < Busqueda
         resp[:taxones] = taxones
       end
 
-    else
+    else  # Sin filtros adicionales
       if params[:region_id].present?
 
       else
@@ -71,39 +72,34 @@ class BusquedaRegion < Busqueda
 
   # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
   def dame_especies_filtros_adicionales
-    #return self.resp = { estatus: false } unless params[:grupo].present? || params[:dist].present? || params[:edo_cons].present?
-
-    query = []
-
     # Para la nom, iucn o cites
     if params[:edo_cons].present? && params[:edo_cons].any?
       params[:edo_cons] = params[:edo_cons].map(&:to_i)
 
       # Para la NOM
       nom_ids = Catalogo.nom.map(&:id) & params[:edo_cons]
-      query << "nom=#{nom_ids.to_s}" if nom_ids.any?
+      self.query << "nom=#{nom_ids.to_s}" if nom_ids.any?
 
       # Para IUCN
       iucn_ids = Catalogo.iucn.map(&:id) & params[:edo_cons]
-      query << "iucn=#{iucn_ids.to_s}" if iucn_ids.any?
+      self.query << "iucn=#{iucn_ids.to_s}" if iucn_ids.any?
 
       # Para CITES
       cites_ids = Catalogo.cites.map(&:id) & params[:edo_cons]
-      query << "cites=#{cites_ids.to_s}" if cites_ids.any?
+      self.query << "cites=#{cites_ids.to_s}" if cites_ids.any?
     end
 
     # Para los grupos iconicos
-    query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
+    self.query << "grupo=#{params[:grupo].to_s}" if params[:grupo].present? && params[:grupo].any?
 
     # Para el tipo de distribucion
     if params[:dist].present? && params[:dist].any?
       params[:dist] = params[:dist].map(&:to_i)
       distribucion_ids = params[:dist] & TipoDistribucion.distribuciones_vista_general.map(&:id)
-      query << "dist=#{distribucion_ids.to_s}" if distribucion_ids.any?
+      self.query << "dist=#{distribucion_ids.to_s}" if distribucion_ids.any?
     end
 
     # Por si es la primera pagina con o sin filtros
-    self.query = query
     respuesta_especies_filtros_adicionales_conteo if params[:pagina].to_i == 1
 
     if resp[:estatus]
@@ -142,7 +138,7 @@ class BusquedaRegion < Busqueda
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    self.resp = { estatus: true, totales: resultados[:nregistros].to_i }
+    self.resp = { estatus: true, totales: resultados['nespecies'].to_i }
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
@@ -157,7 +153,8 @@ class BusquedaRegion < Busqueda
         end
 
         self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
-                          nombre_comun: especie.x_nombre_comun_principal, nregistros: e['nregistros'], foto_principal: especie.x_foto_principal }
+                          nombre_comun: especie.x_nombre_comun_principal, nregistros: e['nregistros'],
+                          foto_principal: especie.x_foto_principal, catalogo_id: e['idnombrecatvalido'], nregistros: e['nregistros'] }
       end
     end
   end

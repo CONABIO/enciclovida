@@ -41,7 +41,7 @@ class BusquedasRegionesController < ApplicationController
 
     render json: resp
   end
-  
+
   # Descarga el listado de especies por region
   def descarga_taxa
     lista = Lista.new
