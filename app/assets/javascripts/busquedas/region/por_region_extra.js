@@ -14,53 +14,6 @@ var parametros = function(prop)
 };
 
 /**
- * Pregunta por los datos correspondientes a estas especies en nuestra base, todos deberian coincidir en teoria
- * ya que son ids de catalogos, a excepcion de los nuevos, ya que aún no se actualiza a la base centralizada
-
- var cargaEspecies = function()
- {
-    $.ajax({
-        url: '/explora-por-region/especies-por-grupo',
-        method: 'GET',
-        data: parametros()
-    }).done(function(resp) {
-        if (resp.estatus)  // Para asignar los resultados con o sin filtros
-        {
-            if (opciones.pagina_especies == 1) $('#contenedor_especies').empty();
-            $('#grupos').find("[grupo_id_badge='" + opciones.grupo_seleccionado + "']").text(resp.totales);
-
-            $.each(resp.resultados, function(index, taxon){
-                var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
-                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
-                if (url == undefined) return;
-
-                // Las que no tiene imagen se le pega la fuente
-                if (taxon.foto == null)
-                    var recurso = '<i class="ev1-ev-icon"></i>';
-                else
-                    var recurso = '<img src="' + taxon.foto + '"/>';
-
-                // Las que no tienen nombre común se le pondra vacío
-                if (taxon.nombre_comun == null) taxon.nombre_comun = '';
-
-                $('#contenedor_especies').append('<div class="result-img-container">' +
-                    '<a class="especie_id" snib_url="' + url + '" especie_id="' + taxon.id + '">' + recurso + '<sub>' + taxon.nregistros + '</sub></a>' +
-                    '<div class="result-nombre-container">' +
-                    '<span>' + taxon.nombre_comun + '</span><br />' +
-                    '<a href="/especies/'+taxon.id+'" target="_blank"><i>' + taxon.nombre_cientifico + '</i></a>' +
-                    '</div>' +
-                    '</div>');
-            });
-        } else
-            console.log(resp.msg);
-
-    }).fail(function() {
-        console.log('Falló la carga de especies de enciclovida');
-    });
-};
- */
-
-/**
  * Consulta el servicio nodejs para sacar el listado de especies por region
  */
 var cargaEspecies = function()
@@ -123,27 +76,6 @@ var nombreRegion = function(prop)
 };
 
 /**
- * Devuelve la URL de las especies por region
- * @param prop
- * @returns {string}
- */
-var dameUrlServicioSnibPorRegion = function(prop)
-{
-    prop.estado_id = opciones.correspondencia[prop.estado_id];
-
-    var snib_url = prop.snib_url + '/' + prop.reino + '/' + prop.catalogo_id + '/' + prop.estado_id;
-
-    if (prop.municipio_id != null && prop.municipio_id != '')
-    {
-        prop.municipio_id = ('00'+prop.municipio_id).slice(-3);
-        snib_url+= '/' + prop.municipio_id;
-    }
-
-    snib_url+= '?apiKey=enciclovida';
-    return snib_url;
-};
-
-/**
  * Para cuando eliga alguna opcion se oculte automáticamente la barra y pueda ver el resultado
  */
 var colapsaBarra  =function()
@@ -161,17 +93,6 @@ var asignaDatosTaxon = function(datos)
 };
 
 $(document).ready(function(){
-
-    /**
-     * Cuando selecciona un grupo de los grupos icónicos
-     */
-    $('#contenedor_grupos').on('click', '.grupo_id', function(){
-        opciones.grupo_seleccionado = $(this).attr('grupo');
-        opciones.pagina_especies = 1;
-        opciones.reino_seleccionado = $(this).attr('reino');
-        cargaEspecies();
-    });
-
     /**
      * Cuando selecciona una especie
      */
@@ -256,22 +177,6 @@ $(document).ready(function(){
         opciones.pagina_especies++;
         cargaEspecies();
         return false;
-    });
-
-    /**
-     * Cuando autocompleta por nombre cientifico o comun
-     */
-    $('#especies').on('keyup', '#nombre', function(){
-        opciones.pagina_especies = 1;
-        cargaEspecies();
-    });
-
-    /**
-     * Para que aparezca la barra del scroll en las especies
-     */
-    $(window).load(function()
-    {
-        $("html,body").animate({scrollTop: 122}, 1000);
     });
 
     L.control.sidebar('sidebar').addTo(map);
