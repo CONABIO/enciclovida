@@ -24,7 +24,6 @@ var cargaEspecies = function()
         data: $('#busqueda_region').serialize()
     }).done(function(html) {
         console.log('en carga especies');
-        console.log(html);
         $('#contenedor_especies').empty().html(html);
     }).fail(function() {
         console.log('Hubo un fallo al cargar la lista de especies');
@@ -191,4 +190,8 @@ $(document).ready(function(){
         if (tipo_busqueda == 'nombre') soulmateAsigna('busqueda_region', this.id);
         else soulmateRegionAsigna(this.id);
     });
+
+    // Inicializa la carga inicial de las especies
+    opciones.pagina_especies = 1;
+    cargaEspecies();
 });

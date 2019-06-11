@@ -2,6 +2,8 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :query
 
+  ESPECIES_POR_PAGINA = 10
+
   def initialize
     self.taxones = []
     self.query = []
@@ -10,39 +12,37 @@ class BusquedaRegion < Busqueda
 
   # Regresa un listado de especies por pagina, de acuerdo a la region y los filtros seleccionados
   def especies
-    #guarda_cache_especies
-    dame_especies_filtros_adicionales
+    if params[:region_id].present?
+      dame_especies_regiones
 
-    if resp[:estatus]  # Tiene filtros adicionales
-      if params[:region_id].present?
-
+      if tiene_filtros_adicionales?
+        #
       else
+        dame_especies_por_pagina
+        self.resp[:resultados] = nil
+      end
+
+    else
+      dame_especies_filtros_adicionales
+
+      if resp[:estatus]
         asocia_informacion_taxon
         resp[:taxones] = taxones
-      end
-
-    else  # Sin filtros adicionales
-      if params[:region_id].present?
-
-      else
-
+        self.resp[:resultados] = nil
       end
     end
-
-    #dame_especies_por_pagina
-    #self.resp[:resultados] = nil
   end
 
   # Consulta los querys guardados en cache o los consulta al vuelo
-  def guarda_cache_especies
+  def dame_especies_regiones
     self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region.especies)) do
       url = "#{CONFIG.busquedas_region_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
-      dame_especies(url)
+      respuesta_especies_regiones(url)
     end
   end
 
   # Borra el cache de las especies por region
-  def borra_cache_especies
+  def borra_cache_especies_regiones
     Rails.cache.delete("especies_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("especies_#{params[:tipo_region]}_#{params[:region_id]}")
   end
 
@@ -50,7 +50,7 @@ class BusquedaRegion < Busqueda
   private
 
   # Pregunta al servicio por el listado completo de las especies directo al servicio, solo consultar si no existe el cache
-  def dame_especies(url)
+  def respuesta_especies_regiones(url)
     begin
       rest = RestClient.get(url, open_timeout: 60*10, read_timeout: 60*10, timeout: 60*10)
       res = JSON.parse(rest)
@@ -163,20 +163,26 @@ class BusquedaRegion < Busqueda
     end
   end
 
+  # Regresa true or false
+  def tiene_filtros_adicionales?
+    (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].present?)
+  end
+
   # Las especies por pagina cuando escogio una region
   def dame_especies_por_pagina
-    self.por_pagina = 6
-    self.pagina = params[:pagina] || 1
+    self.por_pagina = ESPECIES_POR_PAGINA
+    self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     self.totales = resp[:totales]
 
     if resp[:estatus] && resp[:totales] > 0
       if especies = resp[:resultados][(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
+        self.resp[:resultados] = especies
         asocia_informacion_taxon
-        resp[:taxones] = taxones
       else
-        resp[:taxones] = taxones
         resp[:msg] = 'No hay más especies'
       end
+
+      resp[:taxones] = taxones
     end
   end
 
