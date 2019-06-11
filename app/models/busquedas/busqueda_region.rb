@@ -154,7 +154,7 @@ class BusquedaRegion < Busqueda
 
         self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
                           nombre_comun: especie.x_nombre_comun_principal, nregistros: e['nregistros'],
-                          foto_principal: especie.x_foto_principal, catalogo_id: e['idnombrecatvalido'], nregistros: e['nregistros'] }
+                          foto_principal: especie.x_foto_principal, catalogo_id: e['idnombrecatvalido'] }
       end
     end
   end
