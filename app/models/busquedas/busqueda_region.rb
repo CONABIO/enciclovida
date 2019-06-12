@@ -2,7 +2,7 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :query
 
-  ESPECIES_POR_PAGINA = 10
+  ESPECIES_POR_PAGINA = 10.freeze
 
   def initialize
     self.taxones = []
@@ -14,16 +14,28 @@ class BusquedaRegion < Busqueda
   def especies
     if params[:region_id].present?
       dame_especies_regiones
+      return unless resp[:estatus]
+      resultados_region = resp[:resultados]  # Los resultados de los caules saldra la respuesta (cache)
 
-      if tiene_filtros_adicionales?
-        #
+      if tiene_filtros?
+        self.params[:por_pagina] = 100000
+        dame_especies_filtros
+
+        if resp[:estatus]
+          resultados_filtros = resp[:resultados].map { |k,v| k['idnombrecatvalido'] }
+          self.resp[:resultados] = resultados_region.map { |k,v| { 'idnombrecatvalido' => k['idnombrecatvalido'], 'nregistros' => k['nregistros'] } if resultados_filtros.include?(k['idnombrecatvalido']) }.compact
+          self.resp[:totales] = resp[:resultados].length
+
+          dame_especies_por_pagina
+          self.resp[:resultados] = nil
+        end
       else
         dame_especies_por_pagina
         self.resp[:resultados] = nil
       end
 
     else
-      dame_especies_filtros_adicionales
+      dame_especies_filtros
 
       if resp[:estatus]
         asocia_informacion_taxon
@@ -70,8 +82,8 @@ class BusquedaRegion < Busqueda
     end
   end
 
-  # Una vez leyendo la lista del cache, le aplico los filtros adicionales que el usuario haya escogido
-  def dame_especies_filtros_adicionales
+  # Una vez leyendo la lista del cache, le aplico los filtros que el usuario haya escogido
+  def dame_especies_filtros
     # Para la nom, iucn o cites
     if params[:edo_cons].present? && params[:edo_cons].any?
       params[:edo_cons] = params[:edo_cons].map(&:to_i)
@@ -100,17 +112,17 @@ class BusquedaRegion < Busqueda
     end
 
     # Por si es la primera pagina con o sin filtros
-    respuesta_especies_filtros_adicionales_conteo if params[:pagina].to_i == 1
+    respuesta_especies_filtros_conteo if params[:pagina].to_i == 1
 
     if resp[:estatus]
-      respuesta_especies_filtros_adicionales
+      respuesta_especies_filtros
     else
       self.resp = { estatus: false }
     end
   end
 
   # Regresa las especies del servicio de /especies/filtros
-  def respuesta_especies_filtros_adicionales
+  def respuesta_especies_filtros
     # El paginado
     self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
     self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
@@ -128,7 +140,7 @@ class BusquedaRegion < Busqueda
   end
 
   # Regresa el conteo de especies del servicio de /especies/filtros
-  def respuesta_especies_filtros_adicionales_conteo
+  def respuesta_especies_filtros_conteo
     url_conteo = "#{CONFIG.busquedas_region_api}/especies/filtros/conteo?#{query.join('&')}"
 
     begin
@@ -164,7 +176,7 @@ class BusquedaRegion < Busqueda
   end
 
   # Regresa true or false
-  def tiene_filtros_adicionales?
+  def tiene_filtros?
     (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].present?)
   end
 

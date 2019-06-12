@@ -23,7 +23,6 @@ var cargaEspecies = function()
         method: 'GET',
         data: $('#busqueda_region').serialize()
     }).done(function(html) {
-        console.log('en carga especies');
         $('#contenedor_especies').empty().html(html);
     }).fail(function() {
         console.log('Hubo un fallo al cargar la lista de especies');
