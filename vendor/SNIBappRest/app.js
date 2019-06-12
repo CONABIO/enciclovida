@@ -1,7 +1,6 @@
 var Hapi = require('hapi');
 const Joi = require('joi');
 const query = require('./controller/query.js');
-const querySnib = require('./controller/querySnib.js');
 
 var server = new Hapi.Server({
     connections: {
@@ -29,8 +28,8 @@ server.register([
                 'foobar/test': 'Example foobar description'
             },
             info: {
-                title: 'Servicios busqueda por region y especies',
-                description: 'especies, regiones y especie',
+                title: 'Busca por region, especie o ejemplares',
+                description: '',
                 version: '1.0'
             }
         }
@@ -142,7 +141,7 @@ server.register([
             notes: 'Para mayor información acerca de "munid" consultar el servicio de regiones por municipio',
             validate: {
                 params: {
-                    munid: Joi.string().required().default('1').description('Identificador del municipio'),
+                    munid: Joi.string().required().default('1').description('Identificador del municipio')
                 }
             },
             handler: function (request, reply) {
@@ -164,7 +163,7 @@ server.register([
             notes: 'Para mayor información acerca de "anpestid" consultar el servicio de regiones por ANP',
             validate: {
                 params: {
-                    anpid: Joi.string().required().default('1').description('Identificador del municipio'),
+                    anpid: Joi.string().required().default('1').description('Identificador del municipio')
                 }
             },
             handler: function (request, reply) {
@@ -224,6 +223,54 @@ server.register([
             handler: function (request, reply) {
                 query
                     .dameEspeciesConFiltrosConteo(request.query)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especie/ejemplares',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa un array con todos los ejemplares de la especie',
+            notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
+            validate: {
+                query: {
+                    idnombrecatvalido: Joi.string().description('Identificador del catalogo centralizado'),
+                    region_id: Joi.number().description('Para más información, consultar la sección regiones'),
+                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones')
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .dameEspeciesPorANP(request)
+                    .then(dato => {
+                    reply(dato)
+                })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especie/ejemplares/conteo',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Regresa el conteo de ejemplares de la especie',
+            notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
+            validate: {
+                query: {
+                    idnombrecatvalido: Joi.string().description('Identificador del catalogo centralizado'),
+                    region_id: Joi.number().description('Para más información, consultar la sección regiones'),
+                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones')
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .dameEspeciesPorANP(request)
                     .then(dato => {
                     reply(dato)
                 })
