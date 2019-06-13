@@ -230,7 +230,7 @@ let dameEspeciesConFiltrosConteo = function(req)
 
 let dameEspecieEjemplares = function(req)
 {
-    let camposEnciclovida = "idejemplar,longitud,latitud,especievalidabusqueda,ejemplarfosil,region,localidad,paismapa,estadomapa,municipiomapa,coleccion,institucion,paiscoleccion,determinador,colector,fechacolecta,proyecto,urlproyecto,urlejemplar,probablelocnodecampo";
+    let camposEnciclovida = ["idejemplar","longitud","latitud","especievalidabusqueda","ejemplarfosil","region","localidad","paismapa","estadomapa","municipiomapa","coleccion","institucion","paiscoleccion","determinador","colector","fechacolecta","proyecto","urlproyecto","urlejemplar","probablelocnodecampo"];
 
     return new Promise((resolve, reject) => {
         var query = knex
@@ -248,7 +248,7 @@ let dameEspecieEjemplaresConteo = function(req)
 {
     return new Promise((resolve, reject) => {
         var query = knex
-            .count('* AS nejemplares');
+            .count('idnombrecatvalido AS nregistros');
 
     query = armaQueryEjemplares(req, query);
 
