@@ -2,17 +2,16 @@ $( document ).ready(function() {
 
     /* PARA LA PARTE DE LEGISLACIONES */
 
+
+
+
+
     // Ocultar todas las opciones de las legislaciones (Se ocultará el div padre que contiene el select de la legislación)
-    $(".fichas_taxon_legislaciones_estatusLegalProteccion").hide();
+    // $(".fichas_taxon_legislaciones_estatusLegalProteccion").hide();
 
     // Iterar las legislaciones existentes
     $(".tipo-legislacion").each(function(){
-
         var legislacion = $(this);
-
-
-
-
         console.log($(legislacion))
     });
 

@@ -7,10 +7,10 @@ class Fichas::Legislacion < Ficha
 
 	# Legislaciones existentes
   TIPOS_LEGISLACIONES = [
-      "NOM-059-SEMARNAT-2001",
-      "NOM-059-SEMARNAT",
-      "UICN",
-      "CITES"
+      "NOM-059-SEMARNAT-2001".to_sym,
+      "NOM-059-SEMARNAT".to_sym,
+      "UICN".to_sym,
+      "CITES".to_sym,
   ]
 
   L_SEMARNAT = [

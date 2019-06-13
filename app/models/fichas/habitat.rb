@@ -27,5 +27,17 @@ class Fichas::Habitat < Ficha
       'Propicio o poco limitante'.to_sym
   ]
 
+	TIPOS_HABITAT = [
+			'terrestre'.to_sym,
+			'acuático'.to_sym,
+			'terrestre-acuático'.to_sym
+	]
+
+	VEGETACION_SEC = [
+			'Arbórea'.to_sym,
+			'Arbustiva'.to_sym,
+			'Herbácea'.to_sym
+	]
+
 	#attr_accessor :ecorregion
 end
