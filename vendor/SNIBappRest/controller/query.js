@@ -228,6 +228,36 @@ let dameEspeciesConFiltrosConteo = function(req)
 })
 };
 
+let dameEspecieEjemplares = function(req)
+{
+    let camposEnciclovida = "idejemplar,longitud,latitud,especievalidabusqueda,ejemplarfosil,region,localidad,paismapa,estadomapa,municipiomapa,coleccion,institucion,paiscoleccion,determinador,colector,fechacolecta,proyecto,urlproyecto,urlejemplar,probablelocnodecampo";
+
+    return new Promise((resolve, reject) => {
+        var query = knex
+            .select(camposEnciclovida);
+
+    query = armaQueryEjemplares(req, query);
+
+    query.then(dato => {
+        resolve(dato);
+})
+})
+};
+
+let dameEspecieEjemplaresConteo = function(req)
+{
+    return new Promise((resolve, reject) => {
+        var query = knex
+            .count('* AS nejemplares');
+
+    query = armaQueryEjemplares(req, query);
+
+    query.then(dato => {
+        resolve(dato);
+})
+})
+};
+
 /**
  * Regresa el query armado con filtros
  * @param req
@@ -255,6 +285,41 @@ let armaQueryFiltros = function(req, query)
     return query;
 };
 
+/**
+ * Regresa el query armado de los ejempalres por especie
+ * @param req
+ * @param query
+ * @returns {*}
+ */
+let armaQueryEjemplares = function(req, query)
+{
+    let tablasSnib = ['snibanfigw','snibavesgw','snibbactgw','snibhonggw','snibinvegw','snibmamigw','snibpecegw','snibplangw','snibprotgw','snibreptgw'];
+
+    if (req.tabla !== undefined && tablasSnib.indexOf(req.tabla) > -1)  // Consulta la tabla especifica
+        query.from(req.tabla);
+    else
+        query.from('snib');
+
+    if (req.idnombrecatvalido !== undefined) query.where({idnombrecatvalido: req.idnombrecatvalido});
+
+    if (req.region_id !== undefined && req.tipo_region !== undefined)
+    {
+        switch (req.tipo_region) {
+            case "anp":
+                query.where({anpid: req.region_id});
+                break;
+            case "estado":
+                query.where({entid: req.region_id});
+                break;
+            case "municipio":
+                query.where({munid: req.region_id});
+                break;
+        }
+    }
+
+    return query;
+};
+
 module.exports = {
     dameEstados,
     dameMunicipios,
@@ -264,4 +329,6 @@ module.exports = {
     dameEspeciesPorANP,
     dameEspeciesConFiltros,
     dameEspeciesConFiltrosConteo,
+    dameEspecieEjemplares,
+    dameEspecieEjemplaresConteo
 };

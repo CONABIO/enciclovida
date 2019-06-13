@@ -239,14 +239,15 @@ server.register([
             notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
             validate: {
                 query: {
-                    idnombrecatvalido: Joi.string().description('Identificador del catalogo centralizado'),
+                    idnombrecatvalido: Joi.string().required().description('Identificador del catalogo centralizado'),
                     region_id: Joi.number().description('Para más información, consultar la sección regiones'),
-                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones')
+                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones'),
+                    tabla: Joi.string().valid(['snibanfigw','snibavesgw','snibbactgw','snibhonggw','snibinvegw','snibmamigw','snibpecegw','snibplangw','snibprotgw','snibreptgw']).description('Si se escoge la tabla la consulta es más rápida')
                 }
             },
             handler: function (request, reply) {
                 query
-                    .dameEspeciesPorANP(request)
+                    .dameEspecieEjemplares(request.query)
                     .then(dato => {
                     reply(dato)
                 })
@@ -263,14 +264,15 @@ server.register([
             notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
             validate: {
                 query: {
-                    idnombrecatvalido: Joi.string().description('Identificador del catalogo centralizado'),
+                    idnombrecatvalido: Joi.string().required().description('Identificador del catalogo centralizado'),
                     region_id: Joi.number().description('Para más información, consultar la sección regiones'),
-                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones')
+                    tipo_region: Joi.string().valid(['estado','municipio','anp']).description('De acuerdo al tipo de region se asocia el campo del region_id'),
+                    tabla: Joi.string().valid(['snibanfigw','snibavesgw','snibbactgw','snibhonggw','snibinvegw','snibmamigw','snibpecegw','snibplangw','snibprotgw','snibreptgw']).description('Si se escoge la tabla la consulta es más rápida')
                 }
             },
             handler: function (request, reply) {
                 query
-                    .dameEspeciesPorANP(request)
+                    .dameEspecieEjemplaresConteo(request.query)
                     .then(dato => {
                     reply(dato)
                 })
