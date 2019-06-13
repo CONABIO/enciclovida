@@ -93,10 +93,6 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
 
-        <div class="fichas-apartado">
-          ESTE ES UN APARTADO
-        </div>
-
         <% # OCUPA: taxon, legislacion  %>
         <h4 class="titulo-modelo">TAXON:</h4>
         <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
@@ -104,8 +100,7 @@
 
         <h4 class="titulo-modelo">LEGISLACIONES:</h4>
         <hr />
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion'
-        %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
@@ -255,7 +250,7 @@
           <%= info.input :password, hint: false, error_html: { id: 'password_error'} %>
           <%= info.input_field :remember_me, as: :boolean, boolean_style: :inline , input_html: {class: 'form-control'} %>
           <%= info.input_field :remember_me2, as: :boolean, boolean_style: :inline %>
-          <%= info.select :role, Fichas::Pais.all.map { |r| [r.nombrepais, r.id, { }] }, include_blank: true, multiple: true %>
+          <%= info.select :role, Fichas::Pais.all.map { |r| [r.nombrepais, r.id, { }] }, include_blank: true, multiple: true, class: 'multiselectuser selectpicker' %>
 
           <%= info.input :age, collection: 18..60 %>
           <%= info.input :shipping_country, priority: [ "Brazil" ], collection: [ "Australia", "Brazil", "New Zealand"], :include_blank => false, :input_html => { class: 'multiselectuser', multiple: true } %>
@@ -266,7 +261,7 @@
 
           <%= select_tag 'particular_users',
                          options_from_collection_for_select(Fichas::Pais.all, :id, :nombrepais),
-                         multiple: true, class: 'multiselectuser' %>
+                         multiple: true, class: 'multiselectuser selectpicker' %>
 
           <%= f.association :sinonimos, input_html: { } %>
           <%= info.input :ethnicity, :label => "Ethnicity", :collection => ["Asian","Black", "Hispanic/Latino", "Indian", "Middle Eastern", "Native American", "Pacific Islander", "White", "Other"], :include_blank => "Anything", wrapper_html: { class: 'form-group' }, :as => :check_boxes, include_hidden: false, :input_html => {:name => "search[ethnicity][]", :multiple => true} %>
@@ -286,6 +281,18 @@
 <% end %>
 
 <style>
+
+
+    .dropdown-menu {
+        width: 500px;
+    }
+    .dropdown-menu li a span.text {
+      word-wrap: break-word;
+      white-space: normal;
+    }
+
+
+
   .fichas-apartado {
     padding: 10px;
     background-color: #6aa6ed;
@@ -298,7 +305,8 @@
   }
 
   .titulo_subseccion {
-
+    font-weight: 100;
+    padding: 20px 0 20px 0;
   }
 
   textarea.form-control {
@@ -310,5 +318,28 @@
    border-style: dashed;
    border-width: 2px;
  }
+
+</style>
+<style>
+
+
+  .apartados {
+    border: 3px solid rgb(169, 207, 171);
+    width: 90%;
+    padding: 10px;
+    margin:  10px auto;
+
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+  }
+
+  .apartados legend {
+    width: auto;
+    padding: 0 10px 0 10px;
+    font-size: large;
+    text-decoration: none;
+    border: none;
+  }
 
 </style>
