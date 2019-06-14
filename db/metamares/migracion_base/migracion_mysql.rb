@@ -35,6 +35,8 @@ def itera_metadata
     proyecto.campo_investigacion = meta.research_field
     proyecto.campo_ciencia = meta.science
     proyecto.usuario_id = 1
+    proyecto.created_at = '2019-02-25 23:11:56'
+    proyecto.updated_at = '2019-02-25 23:11:56'
 
     # Institucion
     if institucion = Metamares::Institucion.where(slug: meta.institution.estandariza).first
