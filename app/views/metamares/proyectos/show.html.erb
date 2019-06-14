@@ -26,13 +26,16 @@
     <li role="presentation" >
       <%= link_to 'Palabras claves', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
     </li>
-    <li role="presentation" >
-      <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'pull-right btn btn-sm btn-warning' %>
-    </li>
-    <li role="presentation" >
-      <%= link_to '<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
-                  class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
-    </li>
+
+    <% if tiene_permiso_metamares?('AdminInfoceanosManager') || es_propietario_metamares?(@proyecto) %>
+      <li role="presentation" >
+        <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'pull-right btn btn-sm btn-warning' %>
+      </li>
+      <li role="presentation" >
+        <%= link_to '<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
+      </li>
+    <% end %>
   </ul>
 
   <div class="tab-content">
