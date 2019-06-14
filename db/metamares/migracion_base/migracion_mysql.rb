@@ -63,9 +63,10 @@ def itera_metadata
 
     # Region
     region = Metamares::RegionM.new
-    region.nombre_region = meta.fishing_region
+    region.nombre_region = meta.region
     region.nombre_zona = meta.area
     region.nombre_ubicacion = meta.location
+    region.region_pesca = meta.fishing_region
     region.latitud = meta.lat unless meta.lat.nil?
     region.longitud = meta.lon unless meta.lon.nil?
 
