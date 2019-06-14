@@ -57,6 +57,7 @@ es:
           nombre_ubicacion: Nombre de la ubicación
           nombre_zona: Nombre de la zona
           nombre_region: Nombre de la región
+          region_pesca: Región de pesca
           latitud: Latitud
           longitug: Longitud
           Entidad: Entidad
@@ -122,6 +123,7 @@ es:
           nombre_ubicacion: Una categoría abierta para especificar una área
           nombre_zona: Una categoría más acotada donde los datos fueron generados
           nombre_region: Una categoría de ubicación más específica
+          region_pesca: Una categoría de región donde se pesca
           anp: Área Natural Protegida
         dato:
           titulo_conjunto_datos: Título original de la colección de los datos

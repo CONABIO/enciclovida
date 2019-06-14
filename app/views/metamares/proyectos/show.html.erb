@@ -116,6 +116,7 @@
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_ubicacion') %></b>: <%= region.nombre_ubicacion %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_zona') %></b>: <%= t("simple_form.options.metamares_proyecto.region.nombre_zona.#{region.nombre_zona}", default: region.nombre_zona) if region.nombre_zona.present? %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_region') %></b>: <%= t("simple_form.options.metamares_proyecto.region.nombre_region.#{region.nombre_region}", default: region.nombre_region) if region.nombre_region.present? %></li>
+          <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.region_pesca') %></b>: <%= region.region_pesca %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.latitud') %></b>: <%= region.latitud %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.longitud') %></b>: <%= region.longitud %></li>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.entidad') %></b>: <%= region.entidad %></li>
