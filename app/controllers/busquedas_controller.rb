@@ -284,7 +284,7 @@ class BusquedasController < ApplicationController
         lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
         if Rails.env.production?
-          lista.delay(queue: 'descargar_taxa').to_excel({ busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo], request: request.original_url.gsub('.xlsx?','?') }) if lista.save
+          lista.delay(queue: 'descargar_taxa').to_excel({ busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo], original_request: request.original_url.gsub('.xlsx?','?') }) if lista.save
         else  # Para develpment o test
           lista.to_excel({ busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo], original_url: request.original_url.gsub('.xlsx?','?') }) if lista.save
         end
