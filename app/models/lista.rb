@@ -142,7 +142,7 @@ class Lista < ActiveRecord::Base
       excel_url = "#{CONFIG.site_url}descargas_resultados/#{fecha}/#{nombre_archivo}"
 
       if opts[:correo].present?
-        EnviaCorreo.descargar_taxa(excel_url, opts[:correo]).deliver
+        EnviaCorreo.descargar_taxa(excel_url, opts[:correo], opts[:original_url]).deliver
       end
 
       {estatus: true, excel_url: excel_url}
