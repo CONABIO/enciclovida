@@ -87,11 +87,14 @@ var colapsaBarra  =function()
 /**
  * Asigna los datos del taxon para posteriormente ocuparlos en los ejemplares
  */
-var asignaDatosTaxon = function(datos)
+var dameEjemplaresSnib = function(datos)
 {
     opciones.especie_id = datos.id;
     opciones.nombre_comun = datos.nombre_comun;
     opciones.nombre_cientifico = datos.nombre_cientifico;
+    $('#especie_id').attr('value', datos.id);
+    cargaEjemplaresSnib('/especies/' + datos.id + '/ejemplares-snib.json?mapa=1');
+    colapsaBarra();
 };
 
 $(document).ready(function(){
