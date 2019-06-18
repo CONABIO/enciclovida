@@ -284,18 +284,18 @@ class BusquedasController < ApplicationController
         lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
         if Rails.env.production?
-          lista.delay(queue: 'descargar_taxa').to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
+          lista.delay(queue: 'descargar_taxa').to_excel({ busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo], original_url: request.original_url.gsub('.xlsx?','?') }) if lista.save
         else  # Para develpment o test
-          lista.to_excel({busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo]}) if lista.save
+          lista.to_excel({ busqueda: @taxones.to_sql, es_busqueda: true, correo: params[:correo], original_url: request.original_url.gsub('.xlsx?','?') }) if lista.save
         end
 
-        render json: {estatus: 1}
+        render json: { estatus: 1 }
       else  # Por si no puso un correo valido
-        render json: {estatus: 0}
+        render json: { estatus: 0 }
       end
 
     else  # No entro a ningun condicional, es un error
-      render json: {estatus: 0}
+      render json: { estatus: 0 }
     end  # end totoales
   end  # end metodo
 

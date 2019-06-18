@@ -28,7 +28,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
   COLUMNAS_FOTOS = %w(x_foto_principal x_naturalista_fotos x_bdi_fotos)
-  COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombres_comunes x_categoria_taxonomica
+  COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
@@ -142,7 +142,7 @@ class Lista < ActiveRecord::Base
       excel_url = "#{CONFIG.site_url}descargas_resultados/#{fecha}/#{nombre_archivo}"
 
       if opts[:correo].present?
-        EnviaCorreo.descargar_taxa(excel_url, opts[:correo]).deliver
+        EnviaCorreo.descargar_taxa(excel_url, opts[:correo], opts[:original_url]).deliver
       end
 
       {estatus: true, excel_url: excel_url}

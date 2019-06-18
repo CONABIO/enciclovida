@@ -205,4 +205,10 @@ module ApplicationHelper
     return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
   end
 
+  def es_propietario_metamares?(obj)
+    return false unless metausuario_signed_in?
+    usuario_id = obj.usuario_id
+    current_metausuario.id == usuario_id
+  end
+
 end
