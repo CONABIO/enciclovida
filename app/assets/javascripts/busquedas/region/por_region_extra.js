@@ -99,16 +99,9 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
         cargaEjemplaresSnib($(this).attr('snib_registros'));
         opciones.especie_id = $(this).attr('especie_id');
+        opciones.nombre_comun = $(this).attr('nombre_comun');
+        opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
         return false;
-        /*$.ajax({
-            url: '/especies/' + opciones.especie_id + '/dame-nombre-con-formato',
-            type: 'GET',
-        }).done(function(nombre) {
-            opciones.nombre = nombre;
-
-        }).fail(function(){
-            opciones.nombre = '';
-        });*/
     });
 
     /**

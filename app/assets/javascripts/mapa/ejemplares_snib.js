@@ -79,7 +79,7 @@ var aniadePuntosSnib = function()
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
-                && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
+                    && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
@@ -235,14 +235,9 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
-    var datos = opciones.datos.taxones[opciones.especie_id];
-
-    if (datos !== undefined)
-    {
-        var nombre_comun = '';
-        if (datos.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + datos.nombre_comun + '</h4>';
-        var nombre = nombre_comun + '</h4><h4 class="text-center"><a href="/especies/' + datos.id + '"><i>' + datos.nombre_cientifico + '</i></a></h4>';
-    }
+    var nombre_comun = '';
+    if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
+    var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
 
     var contenido = "";
     contenido += "" + nombre + "";
