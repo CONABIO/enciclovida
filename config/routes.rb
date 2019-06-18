@@ -1,6 +1,36 @@
+# coding: utf-8
 Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
+
+  if Rails.env.development?
+    namespace :metamares do
+      root 'metamares#index'
+      resources :admin
+      resources :proyectos
+      resources :directorio
+      get 'graficas' => 'metamares#graficas'
+      get 'grafica1' => 'metamares#grafica1'
+      get 'grafica2' => 'metamares#grafica2'
+      get 'dame-institucion' => 'metamares#dame_institucion'
+      get 'dame-keyword' => 'metamares#dame_keyword'
+    end
+  else
+    constraints host: 'infoceanos.conabio.gob.mx' do
+      root 'metamares/metamares#index'
+      namespace :metamares do
+        root 'metamares#index'
+        resources :admin
+        resources :proyectos
+        resources :directorio
+        get 'graficas' => 'metamares#graficas'
+        get 'grafica1' => 'metamares#grafica1'
+        get 'grafica2' => 'metamares#grafica2'
+        get 'dame-institucion' => 'metamares#dame_institucion'
+        get 'dame-keyword' => 'metamares#dame_keyword'
+      end
+    end
+  end
 
   namespace :pmc do
     resources :peces, :as => :pez do
@@ -9,7 +39,6 @@ Buscador::Application.routes.draw do
       end
     end
 
-    resources :criterios
     resources :propiedades do
       collection do
         get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
@@ -18,6 +47,7 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
+    #resources :admin
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie
@@ -112,6 +142,8 @@ Buscador::Application.routes.draw do
   resources :metadatos
 
   devise_for :usuarios
+  devise_for :metausuarios, :controllers => {:confirmations => "metamares/metausuarios/confirmations", :passwords => "metamares/metausuarios/passwords", :registrations => "metamares/metausuarios/registrations", :unlocks => "metamares/metausuarios/unlocks", :sessions => "metamares/metausuarios/sessions"}
+
   resources :bitacoras
 
   resources :listas do

@@ -14,9 +14,9 @@ class Busqueda
   ]
 
   GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
-  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes Cnidaria
-Arachnida Myriapoda Annelida Insecta Porifera Echinodermata Mollusca Crustacea)
-  GRUPOS_PLANTAS = %w(Bryophyta Pteridophyta Cycadophyta Gnetophyta Liliopsida Coniferophyta Magnoliopsida)
+  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes
+Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria Porifera)
+  GRUPOS_PLANTAS = %w(Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
 
   # REVISADO: Inicializa los objetos busqueda
   def initialize

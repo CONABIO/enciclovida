@@ -8,4 +8,5 @@ class Fichas::Distribucion < Ficha
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais'
 
+
 end
