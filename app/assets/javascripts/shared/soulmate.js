@@ -68,10 +68,9 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'busqueda_region':
                 $('#especie_id').attr('value', data.id);
-                opciones.especie_id = data.id;
+                asignaDatosTaxon(data);
                 cargaEjemplaresSnib('/especies/' + data.id + '/ejemplares-snib.json?mapa=1');
                 colapsaBarra();
-                asignaDatosTaxon(data);
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff

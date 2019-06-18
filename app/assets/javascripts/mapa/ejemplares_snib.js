@@ -269,7 +269,6 @@ var ejemplarSnib = function(prop)
  */
 var geojsonSnib = function(url)
 {
-    console.log(url);
     $.ajax({
         url: url,
         dataType : "json",

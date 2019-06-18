@@ -89,7 +89,9 @@ var colapsaBarra  =function()
  */
 var asignaDatosTaxon = function(datos)
 {
-    opciones.datos.taxones[datos.id] = datos;
+    opciones.especie_id = datos.id;
+    opciones.nombre_comun = datos.nombre_comun;
+    opciones.nombre_cientifico = datos.nombre_cientifico;
 };
 
 $(document).ready(function(){
