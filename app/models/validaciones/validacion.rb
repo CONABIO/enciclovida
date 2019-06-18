@@ -17,7 +17,7 @@ class Validacion
   def encuentra_por_nombre
     puts "\n Encuentra record por nombre cientifico: #{nombre_cientifico}"
     # Evita que el nombre cientifico este vacio
-    if nombre_cientifico.blank?
+      if nombre_cientifico.blank?
       self.validacion = {estatus: false, msg: 'El nombre cientifico está vacío'}
       return
     end

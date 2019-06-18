@@ -134,6 +134,9 @@ GEM
       railties (>= 4.1.0, < 5.2)
       responders
       warden (~> 1.2.3)
+    docx (0.3.0)
+      nokogiri (~> 1.8, >= 1.8.1)
+      rubyzip (~> 1.2, >= 1.2.1)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.8.0)
@@ -392,6 +395,7 @@ DEPENDENCIES
   delayed_job
   delayed_job_mongoid
   devise
+  docx
   exifr
   fontello_rails_converter
   formtastic

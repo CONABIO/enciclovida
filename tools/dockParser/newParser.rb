@@ -1,6 +1,8 @@
 require 'docx'
-require 'colorize'
 require 'set'
+require 'rubygems'
+require 'trollop'
+
 
 #Variables a utilizar en el codigo
 parrafos = Array.new
@@ -13,7 +15,7 @@ respuestas = Array.new
 #Se inicializa  el objeto doc el cual contiene el archivo .dcox
 #en la función open se  proporciona la dirección del archivo
 #doc = Docx::Document.open('Documents/Fichas/Plantas/Pueraria montana lobata.docx')
-doc = Docx::Document.open('test.docx')
+doc = Docx::Document.open('/home/sergiocg/test.docx')
 
 #Se insertan los parrafos del archivo docx en un Array llamado parrafos
 doc.paragraphs.each do |p|
@@ -81,3 +83,39 @@ parrafosSinEspacio[3] #primera descripcion va a fespecies.taxon.resumenEspecie
 buscar #primeras busquedas
 respuestas #seccion respuestas
 parrafosSinEspacio.last.split("\n") #referencias refernciabibliografica
+
+OPTS = Trollop::options do
+  banner <<-EOS
+Hola aqui esta pasando algo
+
+
+Usage:
+  rails r tools/dockParser/newParser.rb
+
+where [options] are:
+  EOS
+  opt :debug, 'Print debug statements', :type => :boolean, :short => '-d'
+
+end
+
+
+v = Validacion.new
+v.nombre_cientifico = parrafos[2]
+v.encuentra_por_nombre
+
+if v.validacion[:estatus]
+  #v.validacion[:taxon][:IdNombre]
+  e = Especie.find(v.validacion[:taxon][:IdNombre])
+  puts e.scat[:IDCAT]
+  f = Fichas::Taxon.where( "IdCAT = ?" , e.scat[:IDCAT]).first
+  #f = Fichas::Taxon.where( "IdCAT = ?" , "1370REPTI")
+  puts "Valor de F #{f.inspect}"
+  #Si encontro nada en fespecies.taxon
+  if f
+  else
+    f = Fichas::Taxon.new
+    f.IdCAT =  e.scat[:IDCAT]
+    f.distribuciones
+    end
+end
+
