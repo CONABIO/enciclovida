@@ -171,8 +171,16 @@ class BusquedaRegion < Busqueda
         self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
                           nombre_comun: especie.x_nombre_comun_principal, nregistros: e['nregistros'],
                           foto_principal: especie.x_foto_principal, catalogo_id: e['idnombrecatvalido'] }
-      end
-    end
+
+        if !tiene_filtros? && p = especie.proveedor
+          geodatos = p.geodatos
+          if geodatos[:cuales].present? && geodatos[:cuales].include?('snib')
+            self.taxones.last.merge!({ snib_registros: geodatos[:snib_mapa_json] })
+          end
+        end
+
+      end  # Si esta en Scat
+    end  # End each resultados
   end
 
   # Regresa true or false

@@ -13,7 +13,7 @@
         <div class="caption">
           <h4><strong><%= t[:nombre_comun] %></strong></h4>
           <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}", target: :_blank %></h5>
-          <p><a href="#" class="btn btn-primary" role="button">Ver <%= t[:nregistros] %> registro(s)</a></p>
+          <p><a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t[:especie_id] %>" role="button" snib_registros="<%= t[:snib_registros] %>">Ver <%= t[:nregistros] %> registro(s)</a></p>
         </div>
       </div>
     </div>

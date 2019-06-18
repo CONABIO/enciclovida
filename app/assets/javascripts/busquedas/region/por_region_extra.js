@@ -96,11 +96,11 @@ $(document).ready(function(){
     /**
      * Cuando selecciona una especie
      */
-    $('#contenedor_especies').on('click', '.especie_id', function(){
-        cargaEjemplaresSnib($(this).attr('snib_url'));
+    $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
+        cargaEjemplaresSnib($(this).attr('snib_registros'));
         opciones.especie_id = $(this).attr('especie_id');
-
-        $.ajax({
+        return false;
+        /*$.ajax({
             url: '/especies/' + opciones.especie_id + '/dame-nombre-con-formato',
             type: 'GET',
         }).done(function(nombre) {
@@ -108,7 +108,7 @@ $(document).ready(function(){
 
         }).fail(function(){
             opciones.nombre = '';
-        });
+        });*/
     });
 
     /**
@@ -178,6 +178,7 @@ $(document).ready(function(){
         return false;
     });
 
+    // Para inicializar la barra lateral del mapa
     L.control.sidebar('sidebar').addTo(map);
 
     // Para asignar el redis adecuado de acuerdo a la caja de texto

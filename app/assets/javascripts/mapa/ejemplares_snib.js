@@ -235,7 +235,6 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
-    console.log(opciones);
     var datos = opciones.datos.taxones[opciones.especie_id];
 
     if (datos !== undefined)
@@ -275,6 +274,7 @@ var ejemplarSnib = function(prop)
  */
 var geojsonSnib = function(url)
 {
+    console.log(url);
     $.ajax({
         url: url,
         dataType : "json",
