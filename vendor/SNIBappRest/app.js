@@ -240,9 +240,9 @@ server.register([
             validate: {
                 query: {
                     idnombrecatvalido: Joi.string().required().description('Identificador del catalogo centralizado'),
+                    mapa: Joi.boolean().required().default(false).description('Si es verdadero regresa los datos compactos para consumir con geojson, de lo contrario regresa toda la respuesta de datos'),
                     region_id: Joi.number().description('Para más información, consultar la sección regiones'),
-                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones'),
-                    tabla: Joi.string().valid(['snibanfigw','snibavesgw','snibbactgw','snibhonggw','snibinvegw','snibmamigw','snibpecegw','snibplangw','snibprotgw','snibreptgw']).description('Si se escoge la tabla la consulta es más rápida')
+                    tipo_region: Joi.string().description('Puede ser estado, municipio o anp. Para más información, consultar la sección regiones')
                 }
             },
             handler: function (request, reply) {

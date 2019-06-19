@@ -293,12 +293,7 @@ let armaQueryFiltros = function(req, query)
  */
 let armaQueryEjemplares = function(req, query)
 {
-    let tablasSnib = ['snibanfigw','snibavesgw','snibbactgw','snibhonggw','snibinvegw','snibmamigw','snibpecegw','snibplangw','snibprotgw','snibreptgw'];
-
-    if (req.tabla !== undefined && tablasSnib.indexOf(req.tabla) > -1)  // Consulta la tabla especifica
-        query.from(req.tabla);
-    else
-        query.from('snib');
+    query.from('snib');
 
     if (req.idnombrecatvalido !== undefined) query.where({idnombrecatvalido: req.idnombrecatvalido});
 
