@@ -437,9 +437,9 @@ module CacheServices
     # ID: 9 Fotos en Wikimedia (Ya no)
     begin
       # ID: 15 Fichas de Wikipedia-español
-      TaxonDescribers::WikipediaEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
+      res[:ficha_espaniol] = TaxonDescribers::WikipediaEs.describe(self).blank? ?  0 : 1
       # ID: 16 Fichas de Wikipedia-ingles
-      TaxonDescribers::Wikipedia.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+      res[:ficha_ingles] = TaxonDescribers::Wikipedia.describe(self).blank? ? 0 : 1
 
       if guardar
         estd = especie_estadisticas
@@ -465,9 +465,9 @@ module CacheServices
 
     begin
       # ID: 13 Fichas de EOL-español
-      TaxonDescribers::EolEs.describe(self).blank? ? res[:ficha_espaniol] = 0 : res[:ficha_espaniol] = 1
+      res[:ficha_espaniol] = TaxonDescribers::EolEs.describe(self).blank? ?  0 :  1
       # ID: 14 Fichas de EOL-ingles
-      TaxonDescribers::Eol.describe(self).blank? ? res[:ficha_ingles] = 0 : res[:ficha_ingles] = 1
+      res[:ficha_ingles] = TaxonDescribers::Eol.describe(self).blank? ?  0 :  1
 
       if guardar
         estd = especie_estadisticas
@@ -551,35 +551,32 @@ module CacheServices
 
     # Respuesta de la función
     res = {
-        :ejemplares_snib => 0,
-        :ejemplares_snib_averaves => 0
+        :ejemplares_snib => 0
+        #:ejemplares_snib_averaves => 0
     }
 
-    # LLamada al servicio para obtener los resultados
-    resultados_snib = recupera_ejemplares_snib(id)
-
+    # LLamada al servicio para obtener los resultados SNIB
+    resultados_snib = recupera_ejemplares_snib(self.scat.catalogo_id)
     # Verificar el estatus de la llamada al servicio
-    if resultados_snib['estatus'] == true
-      # En teorìa, se puede acceder al arreglo de 'resultados'
-      res[:ejemplares_snib] = resultados_snib['resultados'].count
-
-      # Ahora, buscar los de eBird
-      buscar = ['eBird eBird', 'aVerAves aVerAves']
-      res[:ejemplares_snib_averaves] = 0
-      # Itera todos los ejemplares y busca los de aVerAves
-      resultados_snib['resultados'].each do |ejemplar|
-        if buscar.include? (ejemplar['coleccion'])
-          res[:ejemplares_snib_averaves] += 1
-        end
-      end
+    # En teorìa, se puede acceder al arreglo de 'resultados'
+    if resultados_snib.first.include?('nregistros')
+      res[:ejemplares_snib] = resultados_snib.first['nregistros']
     end
 
-    borra_cache('estadisticas_SNIB') if resultados_snib['estatus'] == "error"
+      # Ahora, buscar los de eBird
+      # buscar = ['eBird eBird', 'aVerAves aVerAves']
+      # res[:ejemplares_snib_averaves] = 0
+      # Itera todos los ejemplares y busca los de aVerAves
+      # resultados_snib['resultados'].each do |ejemplar|
+      #   if buscar.include? (ejemplar['coleccion'])
+      #     res[:ejemplares_snib_averaves] += 1
+      #   end
+      # end
 
     if guardar
       estd = especie_estadisticas
       escribe_estadistica(estd, 17, res[:ejemplares_snib])
-      escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
+      # escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
     end
 
     res
@@ -591,9 +588,9 @@ module CacheServices
     # Respuesta de la función
     res = {:mapas_distribucion => 0}
     # ID: 21 Mapas de distribución
-    if proveedor = proveedor
-      pg = proveedor.geodatos
-      pg[:cuales].include?('geoserver') ? res[:mapas_distribucion] = 1 : res[:mapas_distribucion] = 0
+    if p = proveedor
+      pg = p.geodatos
+      res[:mapas_distribucion] = pg[:cuales].include?('geoserver') ?  1 : 0
     end
     estd = especie_estadisticas
     escribe_estadistica(estd, 21, res[:mapas_distribucion]) if guardar
@@ -668,11 +665,10 @@ module CacheServices
 
   # LLama a enciclovida.mx para accder a los ejemplares SNIB de cada especie
   def recupera_ejemplares_snib(especie_id)
-    api_location = 'http://enciclovida.mx'
     resultados = {}
     begin
       # LLamada al servicio de enciclovida para obtener el JSON
-      rest_client = RestClient::Request.execute(method: :get, url: "#{api_location}/especies/#{especie_id}/ejemplares-snib.json", timeout: 20)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.enciclovida_api}/especie/ejemplares/conteo?idnombrecatvalido=#{especie_id}", timeout: 20)
       resultados = JSON.parse(rest_client)
     rescue
       resultados['estatus'] = "error"
