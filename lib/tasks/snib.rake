@@ -5,9 +5,9 @@ namespace :snib do
     Geoportal::Estado.all.each do |estado|
       Rails.logger.debug "[DEBUG] - Generando cache de especies con estado: #{estado.entidad}"
       br = BusquedaRegion.new
-      br.params = { region_id: estado.entid, tipo_region: 'estado' }
-      br.borra_cache_especies
-      br.guarda_cache_especies
+      br.params = { region_id: estado.region_id, tipo_region: 'estado' }
+      br.borra_cache_especies_regiones
+      br.dame_especies_regiones
     end
   end
 
@@ -16,7 +16,7 @@ namespace :snib do
     Geoportal::Municipio.all.each do |municipio|
       Rails.logger.debug "[DEBUG] - Generando cache de especies con municipio: #{estado.munid}"
       br = BusquedaRegion.new
-      br.params = { region_id: municipio.munid, tipo_region: 'municipio' }
+      br.params = { region_id: municipio.region_id, tipo_region: 'municipio' }
       br.borra_cache_especies
       br.guarda_cache_especies
     end
@@ -27,7 +27,7 @@ namespace :snib do
     Geoportal::Anp.all.each do |anp|
       Rails.logger.debug "[DEBUG] - Generando cache de especies con ANP: #{anp.anpestid}"
       br = BusquedaRegion.new
-      br.params = { region_id: anp.anpestid, tipo_region: 'anp' }
+      br.params = { region_id: anp.region_id, tipo_region: 'anp' }
       br.borra_cache_especies
       br.guarda_cache_especies
     end

@@ -47,8 +47,8 @@ class BusquedaRegion < Busqueda
 
   # Consulta los querys guardados en cache o los consulta al vuelo
   def dame_especies_regiones
-    self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region.especies)) do
-      url = "#{CONFIG.busquedas_region_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
+    self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
+      url = "#{CONFIG.enciclovida_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
       respuesta_especies_regiones(url)
     end
   end
@@ -127,7 +127,7 @@ class BusquedaRegion < Busqueda
     self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
     self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
 
-    url_especies = "#{CONFIG.busquedas_region_api}/especies/filtros?#{query.join('&')}"
+    url_especies = "#{CONFIG.enciclovida_api}/especies/filtros?#{query.join('&')}"
 
     begin
       rest = RestClient.get(url_especies)
@@ -141,7 +141,7 @@ class BusquedaRegion < Busqueda
 
   # Regresa el conteo de especies del servicio de /especies/filtros
   def respuesta_especies_filtros_conteo
-    url_conteo = "#{CONFIG.busquedas_region_api}/especies/filtros/conteo?#{query.join('&')}"
+    url_conteo = "#{CONFIG.enciclovida_api}/especies/filtros/conteo?#{query.join('&')}"
 
     begin
       rest = RestClient.get(url_conteo)

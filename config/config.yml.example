@@ -59,6 +59,9 @@ base: &base
   # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
   enciclovida_url: http://enciclovida.mx
 
+  # Servicio de busquedas por region y por especie
+  enciclovida_api: http://enciclovida.mx:8000
+
   # Cache de los servicios que guarda en disco
   cache:
     observaciones_naturalista: 1.day
@@ -66,9 +69,7 @@ base: &base
     ejemplares_snib: 1.day
     fichas: 1.week
     iucn: 1.second
-    busquedas_region:
-      conteo_grupo: 1.week
-      especies_grupo: 1.week
+    busquedas_region: 1.year
     estadisticas:
       cuantas_especies_inferiores: 1.week
       estadisticas_naturalista: 1.second
