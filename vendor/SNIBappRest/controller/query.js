@@ -87,7 +87,6 @@ function dameEspeciesPorEstado(req) {
             .from('total')
             .orderByRaw('nregistros DESC')
             .then(dato => {
-            console.log('aqui');
     resolve(dato);
 })
 })
