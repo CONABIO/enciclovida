@@ -8,12 +8,8 @@ class Metamares::ProyectosController < Metamares::MetamaresController
 
   def index
     busqueda = Metamares::BusquedaProyecto.new
-
-    if params[:proy_b].present?
-      busqueda.params = proyecto_busqueda_params
-      busqueda.params[:pagina] = params[:pagina]
-    end
-
+    busqueda.params = proyecto_busqueda_params if params[:proy_b].present?
+    busqueda.params[:pagina] = params[:pagina]
     busqueda.sin_limit = params[:commit] == 'Descargar' || params[:commit] == 'JSON'
     busqueda.consulta
 
