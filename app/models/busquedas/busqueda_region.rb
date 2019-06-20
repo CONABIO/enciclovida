@@ -64,21 +64,20 @@ class BusquedaRegion < Busqueda
   # Pregunta al servicio por el listado completo de las especies directo al servicio, solo consultar si no existe el cache
   def respuesta_especies_regiones(url)
     begin
-      rest = RestClient.get(url, open_timeout: 60*10, read_timeout: 60*10, timeout: 60*10)
+      rest = RestClient::Request.execute(method: :get, url: url, timeout: 60*10)
       res = JSON.parse(rest)
       totales = res.length
       Rails.logger.debug "[DEBUG] - Hubo respuesta con: #{params.inspect}"
 
       if totales > 0
-        {estatus: true, resultados: res, totales: totales}
+        return { estatus: true, resultados: res, totales: totales }
       else
-        {estatus: false, totales: totales, msg: 'No hay especies con esa busqueda'}
+        return { estatus: false, totales: totales, msg: 'No hay especies con esa busqueda' }
       end
 
     rescue => e
-      retry
       Rails.logger.debug "[DEBUG] - Hubo un error en el servidor con: #{params.inspect} - #{e.message}"
-      {estatus: false, msg: e.message}
+      { estatus: false, msg: e.message }
     end
   end
 
