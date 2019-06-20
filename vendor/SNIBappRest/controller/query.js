@@ -227,9 +227,23 @@ let dameEspeciesConFiltrosConteo = function(req)
 })
 };
 
+let formatoEjemplaresMapa = function (dato)
+{
+    var res = [];
+
+    _.forEach(dato, function(row) {
+        res.push(_.toArray(row));
+    });
+
+    return res;
+};
+
 let dameEspecieEjemplares = function(req)
 {
-    let camposEnciclovida = ["idejemplar","longitud","latitud","especievalidabusqueda","ejemplarfosil","region","localidad","paismapa","estadomapa","municipiomapa","coleccion","institucion","paiscoleccion","determinador","colector","fechacolecta","proyecto","urlproyecto","urlejemplar","probablelocnodecampo"];
+    if (req.mapa)
+        var camposEnciclovida = ["longitud","latitud","idejemplar","coleccion"];
+    else
+        var camposEnciclovida = ["idejemplar","longitud","latitud","especievalidabusqueda","ejemplarfosil","region","localidad","paismapa","estadomapa","municipiomapa","coleccion","institucion","paiscoleccion","determinador","colector","fechacolecta","proyecto","urlproyecto","urlejemplar","probablelocnodecampo"];
 
     return new Promise((resolve, reject) => {
         var query = knex
@@ -238,7 +252,7 @@ let dameEspecieEjemplares = function(req)
     query = armaQueryEjemplares(req, query);
 
     query.then(dato => {
-        resolve(dato);
+        resolve(formatoEjemplaresMapa(dato));
 })
 })
 };

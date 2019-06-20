@@ -1,5 +1,6 @@
 var Hapi = require('hapi');
 const Joi = require('joi');
+_ = require('lodash');
 const query = require('./controller/query.js');
 
 var server = new Hapi.Server({
