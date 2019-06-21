@@ -355,33 +355,52 @@ module CacheServices
     # Acceder a tabla proveedor
     if proveedor_n = proveedor
 
-      # ID: 4 Obtener el total de los nombres comunes
-      if proveedor_n.nombres_comunes_naturalista[:estatus] && proveedor_n.nombres_comunes_naturalista[:nombres_comunes].present?
-        resp = proveedor_n.nombres_comunes_naturalista[:nombres_comunes]
-        if resp.kind_of?(Array) && resp.any?
+      # Esperar segundo(s) antes de llamar al servicio
+      sleep(1.second)
+
+      # Obtener los nombres comunes y fotos de naturalista
+      if proveedor_n.nombres_comunes_Y_fotos_naturalista[:estatus]
+        respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista[:msg]
+        # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
+        if respuesta_naturalista[:nc].present?
+          resp = respuesta_naturalista[:nc]
+          if resp.kind_of?(Array) && resp.any?
             resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
             res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
+          end
         end
-      end
 
-      # ID: 6 Obtener el total de fotos en NaturaLista
-      if proveedor_n.fotos_naturalista[:estatus]
-        if proveedor_n.fotos_naturalista[:fotos].present?
-          if proveedor_n.fotos_naturalista[:fotos].kind_of?(Array)  && proveedor_n.fotos_naturalista[:fotos].any?
-            res[:total_fotos] = proveedor_n.fotos_naturalista[:fotos].count
+        # Verificar que existan fotos y # ID: 6 Obtener el total de fotos en NaturaLista
+        if respuesta_naturalista [:ft].present?
+          if respuesta_naturalista[:ft].kind_of?(Array)  && respuesta_naturalista[:ft].any?
+            res[:total_fotos] = respuesta_naturalista[:ft].count
           end
         end
       end
 
       if especie_o_inferior?
         # Obtener el total de observaciones:
-        tipo_observaciones = proveedor_n.numero_observaciones_naturalista
-        # ID: 19. Grado de investigación
-        res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
-        # ID: 20. Grado casual
-        res[:total_observaciones_casual] = tipo_observaciones[:casual]
-      end
 
+        # Opción 1: consultando directamente el servicio de naturalista (No sirve por ahora...)
+        # tipo_observaciones = proveedor_n.numero_observaciones_naturalista
+        # ID: 19. Grado de investigación
+        # res[:total_observaciones_investigacion] = tipo_observaciones[:investigacion]
+        # ID: 20. Grado casual
+        # res[:total_observaciones_casual] = tipo_observaciones[:casual]
+
+        # Opción 2: consultando a través de geodatos[:naturalista_mapa_json]
+        if los_geodatos = proveedor_n.geodatos # verificar que contenga geodatos
+          if los_geodatos.key?(:naturalista_mapa_json) && !los_geodatos[:naturalista_mapa_json].blank? # verificar que contenga la llave naturalista_mapa_json
+            url_geodatos = los_geodatos[:naturalista_mapa_json]
+            consulta = invoca_url_geodatos(url_geodatos)
+            if consulta['estatus'] # buscar el total y tipos de observaciones existentes en un archivo JSON
+              json = consulta['msg']
+              observaciones = json.map { |x| x[3]}
+              observaciones.each { |obs| obs == 1 ? res[:total_observaciones_investigacion] += 1 : res[:total_observaciones_casual] += 1 }
+            end
+          end
+        end
+      end
     end
 
     if guardar
@@ -578,7 +597,6 @@ module CacheServices
       escribe_estadistica(estd, 17, res[:ejemplares_snib])
       # escribe_estadistica(estd, 18, res[:ejemplares_snib_averaves])
     end
-
     res
   end
 
@@ -595,6 +613,21 @@ module CacheServices
     estd = especie_estadisticas
     escribe_estadistica(estd, 21, res[:mapas_distribucion]) if guardar
     res
+  end
+
+  def itera_estadisticas_restantes
+    especies_todas = Especie.all
+
+    limite = 50
+    inicio = 0
+
+    especies_todas.each do |especie_x|
+      break if inicio >= limite
+      puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
+      especie_x.genera_estadisticas_directo
+      inicio += 1
+      puts "\n* * * * * * * * * * * * * * * * "
+    end
   end
 
   def self.itera_especies
@@ -620,6 +653,13 @@ module CacheServices
     end
   end
 
+  def genera_estadisticas_directo
+    # Invocar las estadisticas de naturalista
+    puts "\nestadisticas_naturalista: #{estadisticas_naturalista}"
+    puts "\nestadisticas_SNIB: #{estadisticas_SNIB}"
+    puts "\nestadisticas_mapas_distribucion: #{estadisticas_mapas_distribucion}"
+  end
+
   def genera_estadisticas
     # Invocar las estadisticas de naturalista
     puts estadisticas_naturalista_servicio
@@ -633,6 +673,21 @@ module CacheServices
   end
 
   private
+
+  # Función para invocar la url geodatos/ y extraer el json con las observaciones
+  def invoca_url_geodatos(geodatos_especie)
+    resultados = {}
+    begin
+      # LLamada al servicio de enciclovida para obtener el JSON
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.enciclovida_url}#{geodatos_especie}", timeout: 20)
+      resultados['estatus'] = true
+      resultados['msg'] = JSON.parse(rest_client)
+    rescue
+      resultados['estatus'] = false
+      resultados['msg'] = "Hubo un error al invocar la URL: #{geodatos_especie} "
+    end
+    resultados
+  end
 
   def get_tropico_id()
 
