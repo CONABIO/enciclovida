@@ -111,3 +111,10 @@ function topFunction() {
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 };
 
+
+/*********************************************************************************************************************************/
+/* Fuente typekit (Adobe) */
+try{
+    Typekit.load({async: true});
+}catch(e) {
+}

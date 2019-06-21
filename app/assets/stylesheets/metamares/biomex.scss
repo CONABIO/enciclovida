@@ -110,7 +110,7 @@ p{
 /* 02 - HEADER, INTRO & NAVIGATION */
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 .masthead{
-  min-height: 80px;
+  min-height: 110px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -137,11 +137,11 @@ p{
 }
 .main-nav{
   list-style: none;
-  padding: 0;
-  padding-top: 30px;
+  padding: 5px 0px;
 }
 .main-nav li{
   display: inline-block;
+  margin-top: 10px;
 }
 .main-nav li a{
   color: #e8e3e3;
@@ -163,9 +163,9 @@ p{
 }
 
 .main-logo{
-  margin-top: 12px;
-  float:left;
-
+  margin-top: 20px;
+  height: 60px;
+/*  float:left;*/
 }
 
 .win-badge {
@@ -176,14 +176,14 @@ p{
 /* estilos de HEADER estático */
 #sectionmenu {position: fixed; z-index: 3 !important; width: 100%; margin-top: 75px;}
 #pagetitle {position: fixed; z-index: 2 !important; width: 100%;}
-#pageinfo {margin-top: 130px;}
+#pageinfo {margin-top: 110px;}
 #solo-breadcrumb {top: 126px; position: relative;}
 #pageima {
   position: relative;
   z-index: 1 !important;
   width: 100%;
-  height: 450px;
-  margin-top: 125px;
+  /*height: 450px;*/
+  margin-top: 130px;
   float: left;
   overflow: hidden;}
 #imaprincipal {height: 300px; overflow: hidden;}
@@ -1112,142 +1112,6 @@ div#timeline div.item:hover  {
   padding-bottom: 50px;
 }
 
-input {
-  background: #444 !important;
-  border: none !important;
-  border-radius: 0 0 0 0 !important;
-  box-shadow: none !important;
-  color: #ccc !important;
-  font-weight: 300 !important;
-  font-family:"freight-sans-pro" !important;
-  font-size: 14px !important;
-  height: 30px !important;
-  line-height: 30px !important;
-  margin-bottom: 0px !important;
-  padding: 0px 5px !important;
-  width: 99%;
-  -webkit-transition: all .8s linear;
-  -moz-transition: all .8s linear;
-  -ms-transition: all .8s linear;
-  -o-transition: all .8s linear;
-  transition: all .8s linear;
-}
-
-.icompromisos {
-  font-size: 18px !important;
-  height: 50px !important;
-  line-height: 35px !important;
-  margin-bottom: 10px !important;
-  padding: 10px !important;
-}
-
-input:focus, textarea:focus {
-  border: none !important;
-  background: #ccc !important;
-  color: #000 !important;
-  -webkit-transition: all .8s linear;
-  -moz-transition: all .8s linear;
-  -ms-transition: all .8s linear;
-  -o-transition: all .8s linear;
-  transition: all .8s linear;
-}
-textarea {
-  background: #444 !important;
-  border: none !important;
-  border-radius: 0 0 0 0 !important;
-  box-shadow: none !important;
-  color: #ccc !important;
-  font-weight: 300 !important;
-  font-family:"freight-sans-pro" !important;
-  font-size: 18px !important;
-  line-height: 30px !important;
-  margin-top: 0;
-  padding: 10px !important;
-  resize: none;
-  width: 100%;
-  -webkit-transition: all .8s linear;
-  -moz-transition: all .8s linear;
-  -ms-transition: all .8s linear;
-  -o-transition: all .8s linear;
-  transition: all .8s linear;
-}
-input.send_message {
-  background: none repeat scroll 0 0 #EF4A4A;
-  color: #FFFFFF;
-  cursor: pointer;
-  float: left;
-  font-size: 12px;
-  font-weight: 400;
-  margin: 0;
-  width: 120px;
-}
-input.send_message:hover {
-  background: none repeat scroll 0 0 #262932;
-}
-fieldset {
-  border: 0 none;
-  float: left;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-fieldset h1 {
-  color: #000000;
-  font-size: 24px;
-}
-.contact-label-box {
-  color: #FFFFFF;
-  font-weight: 300;
-  font-family:"freight-sans-pro";
-  font-size: 24px;
-  line-height: 31px;
-  padding: 30px 20px;
-  text-align: center;
-}
-.contact-label-box > span {
-  display: block;
-  margin-right: 10px;
-}
-.contact-label-box > span > img {
-  height: 60px;
-  width: 60px;
-}
-.contact-label-box a:hover {
-  color: #CCCCCC;
-  text-decoration: none;
-}
-.contact .alert{
-  box-shadow: none;
-  border:none;
-  border-radius: 0;
-  text-shadow:none;
-  font-size: 16px;
-  line-height: 23px;
-  font-weight: 300;
-  font-family:"freight-sans-pro";
-  margin-bottom:10px;
-  padding:10px;
-  background:transparent;
-}
-.btn-wrap{
-  margin-top: 30px;
-  text-align: right;
-}
-.space-left{
-  margin-left: 1%;
-}
-
-/*Tweet Panel*/
-.tweet-panel{
-  padding: 30px 0;
-}
-.tweet-panel h3{
-  font-size: 32px;
-  line-height:39px;
-  font-weight: 500;
-  font-family:"freight-sans-pro";
-}
-
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 /*05 - FOOTER */
 /*-------------------------------------------------------------------------------------------------------------------------------*/
@@ -1447,7 +1311,7 @@ fieldset h1 {
 
 /*SINGLE PROJECT PAGE*/
 .project{
-  margin-top: 117px;
+  /*margin-top: 117px;*/
 }
 .project-masthead{
   background: rgba(51,51,51,1);
