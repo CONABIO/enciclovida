@@ -3,7 +3,27 @@ class Metamares::MetamaresController < ApplicationController
 
   #la pagina de flopez
   def index
-    render layout: false
+    #render layout: false
+    @doc = Nokogiri::HTML(open("http://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#pageinfo')
+=begin
+    url = "https://www.biodiversidad.gob.mx/pais/mares/infoceanos"
+
+    url_escape = URI.escape(url)
+    uri = URI.parse(url_escape)
+    req = Net::HTTP::Get.new(uri.to_s)
+    @doc = ''
+    begin
+      http = Net::HTTP.new(uri.host, uri.port)
+      #http.use_ssl = (uri.scheme == 'https')
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      res = http.request(req)
+      puts res.body.inspect
+      @doc = res.body
+    rescue => e
+      puts e.inspect
+      @doc = '<h1>No encontrado - 404</h1>'
+    end
+=end
   end
 
   # La visualizacion por medio de D3
