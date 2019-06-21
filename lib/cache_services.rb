@@ -359,11 +359,13 @@ module CacheServices
       sleep(3.seconds)
 
       # Obtener los nombres comunes y fotos de naturalista
-      if proveedor_n.nombres_comunes_Y_fotos_naturalista[:estatus]
-        respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista[:msg]
+      puts "\n\nAntes"
+      respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista
+      if respuesta_naturalista[:estatus]
+        puts "\n\nDespués"
         # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
-        if respuesta_naturalista[:nc].present?
-          resp = respuesta_naturalista[:nc]
+        if respuesta_naturalista[:msg][:nc].present?
+          resp = respuesta_naturalista[:msg][:nc]
           if resp.kind_of?(Array) && resp.any?
             resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
             res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
@@ -371,9 +373,9 @@ module CacheServices
         end
 
         # Verificar que existan fotos y # ID: 6 Obtener el total de fotos en NaturaLista
-        if respuesta_naturalista [:ft].present?
-          if respuesta_naturalista[:ft].kind_of?(Array)  && respuesta_naturalista[:ft].any?
-            res[:total_fotos] = respuesta_naturalista[:ft].count
+        if respuesta_naturalista[:msg][:ft].present?
+          if respuesta_naturalista[:msg][:ft].kind_of?(Array)  && respuesta_naturalista[:msg][:ft].any?
+            res[:total_fotos] = respuesta_naturalista[:msg][:ft].count
           end
         end
       end
