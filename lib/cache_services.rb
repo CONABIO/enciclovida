@@ -355,8 +355,8 @@ module CacheServices
     # Acceder a tabla proveedor
     if proveedor_n = proveedor
 
-      # Esperar segundo(s) antes de llamar al servicio
-      sleep(1.second)
+      # Esperar X segundo(s) antes de llamar al servicio
+      sleep(3.seconds)
 
       # Obtener los nombres comunes y fotos de naturalista
       if proveedor_n.nombres_comunes_Y_fotos_naturalista[:estatus]
@@ -618,7 +618,7 @@ module CacheServices
   def itera_estadisticas_restantes
     especies_todas = Especie.all
 
-    limite = 50
+    limite = 200
     inicio = 0
 
     especies_todas.each do |especie_x|
