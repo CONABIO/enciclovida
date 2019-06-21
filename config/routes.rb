@@ -3,15 +3,33 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  namespace :metamares do
-    resources :admin
-    resources :proyectos
-    resources :directorio
-    get 'graficas' => 'metamares#graficas'
-    get 'grafica1' => 'metamares#grafica1'
-    get 'grafica2' => 'metamares#grafica2'
-    get 'dame-institucion' => 'metamares#dame_institucion'
-    get 'dame-keyword' => 'metamares#dame_keyword'
+  if Rails.env.development?
+    namespace :metamares do
+      root 'metamares#index'
+      resources :admin
+      resources :proyectos
+      resources :directorio
+      get 'graficas' => 'metamares#graficas'
+      get 'grafica1' => 'metamares#grafica1'
+      get 'grafica2' => 'metamares#grafica2'
+      get 'dame-institucion' => 'metamares#dame_institucion'
+      get 'dame-keyword' => 'metamares#dame_keyword'
+    end
+  else
+    constraints host: 'infoceanos.conabio.gob.mx' do
+      root 'metamares/metamares#index'
+      namespace :metamares do
+        root 'metamares#index'
+        resources :admin
+        resources :proyectos
+        resources :directorio
+        get 'graficas' => 'metamares#graficas'
+        get 'grafica1' => 'metamares#grafica1'
+        get 'grafica2' => 'metamares#grafica2'
+        get 'dame-institucion' => 'metamares#dame_institucion'
+        get 'dame-keyword' => 'metamares#dame_keyword'
+      end
+    end
   end
 
   namespace :pmc do
@@ -21,8 +39,7 @@ Buscador::Application.routes.draw do
       end
     end
 
-    resources :criterios
-    resources :propiedades, as: :propiedad do
+    resources :propiedades do
       collection do
         get 'dame-tipo-propiedades/:q' => 'propiedades#dame_tipo_propiedades'
       end
@@ -30,6 +47,7 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
+    #resources :admin
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie

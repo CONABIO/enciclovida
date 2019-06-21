@@ -6,15 +6,13 @@
     <% fu = filtrosUsados.html_safe %>
     <% unless fu == '' %>
       <div class="col-md-3">
-        <h4 class="filtrosUsados"><b>La presente consulta utilizó los siguientes filtros: </b></h4>
-        <h3 class="filtrosUsados"><small>(especies en orden decreciente de recomendación)</small></h3>
+        <h5 class="filtrosUsados"><b>La presente consulta utilizó los siguientes filtros: </b></h5>
+        <h4 class="filtrosUsados"><small>(especies en orden decreciente de recomendación)</small></h4>
       </div>
       <div class="col-md-9">
         <h3 class="filtrosUsados"><%= fu %></h3>
       </div>
     <% end %>
-
-
   </div>
   <hr/>
 
@@ -35,7 +33,3 @@
   </div>
 
 </div>
-
-
-
-

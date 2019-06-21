@@ -189,7 +189,7 @@ module ApplicationHelper
         text.to_s
       end
     else
-      'Sin información disponible'
+      ''
     end
   end
 
@@ -203,6 +203,12 @@ module ApplicationHelper
     return true if con_hijos && roles_usuario.map(&:path_ids).flatten.include?(rol.id)
     # Si no requiero vastagos revisa si el nombre_rol pertenece al linaje (intersección del subtree_ids del usuario y del rol)
     return (rol.present? && (roles_usuario.map(&:subtree_ids).flatten & [rol.id]).any?)
+  end
+
+  def es_propietario_metamares?(obj)
+    return false unless metausuario_signed_in?
+    usuario_id = obj.usuario_id
+    current_metausuario.id == usuario_id
   end
 
 end

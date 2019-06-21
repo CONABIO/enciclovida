@@ -88,6 +88,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
-        maxResults:     5
+        maxResults:     5,
+        timeout:        3500
     });
 };

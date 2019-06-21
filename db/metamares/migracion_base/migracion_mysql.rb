@@ -35,6 +35,8 @@ def itera_metadata
     proyecto.campo_investigacion = meta.research_field
     proyecto.campo_ciencia = meta.science
     proyecto.usuario_id = 1
+    proyecto.created_at = '2019-02-25 23:11:56'
+    proyecto.updated_at = '2019-02-25 23:11:56'
 
     # Institucion
     if institucion = Metamares::Institucion.where(slug: meta.institution.estandariza).first
@@ -63,9 +65,10 @@ def itera_metadata
 
     # Region
     region = Metamares::RegionM.new
-    region.nombre_region = meta.fishing_region
+    region.nombre_region = meta.region
     region.nombre_zona = meta.area
     region.nombre_ubicacion = meta.location
+    region.region_pesca = meta.fishing_region
     region.latitud = meta.lat unless meta.lat.nil?
     region.longitud = meta.lon unless meta.lon.nil?
 

@@ -57,6 +57,7 @@ es:
           nombre_ubicacion: Nombre de la ubicación
           nombre_zona: Nombre de la zona
           nombre_region: Nombre de la región
+          region_pesca: Región de pesca
           latitud: Latitud
           longitug: Longitud
           Entidad: Entidad
@@ -122,6 +123,7 @@ es:
           nombre_ubicacion: Una categoría abierta para especificar una área
           nombre_zona: Una categoría más acotada donde los datos fueron generados
           nombre_region: Una categoría de ubicación más específica
+          region_pesca: Una categoría de región donde se pesca
           anp: Área Natural Protegida
         dato:
           titulo_conjunto_datos: Título original de la colección de los datos
@@ -179,16 +181,22 @@ es:
         region:
           nombre_region:
             B Camp Caribe: Banco de Campeche / Mar Caribe
-            Central Pacific: Pacífico Centro
-            Freshwater_Terrestrial: Dulceacuícola/Terrestre
+            Central Pacific: Océano Pacífico Centro
+            Freshwater/Terrestrial: Dulceacuícola/Terrestre
             G California: Golfo de California
-            South Pacific: Pacífico Sur
+            South Pacific: Océano Pacífico Sur
             W G Mexico: Oeste del Golfo de México
           nombre_zona:
             Atlantic: Océano Atlántico
             Freshwater/Terrestrial: Dulceacuícola/Terrestre
             National: Nacional
             Pacific: Pacífico
+          region_pesca:
+            aguas-continentales: Aguas Continentales
+            golfo-de-mexico-norte: Golfo de México Norte
+            golfo-de-mexico-sur-mar-caribe: Golfo de México Sur - Mar Caribe
+            pacifico-centro-sur: Océano Pacífico Centro - Sur
+            pacifico-norte-golfo-de-california: Océano Pacífico - Golfo de California
         dato:
           estatus_datos:
             '1': Acceso público
@@ -216,7 +224,7 @@ es:
         nombre_region:
           B Camp Caribe: Banco de Campeche / Mar Caribe
           Central Pacific: Pacífico Centro
-          Freshwater_Terrestrial: Dulceacuícola/Terrestre
+          Freshwater/Terrestrial: Dulceacuícola/Terrestre
           G California: Golfo de California
           South Pacific: Pacífico Sur
           W G Mexico: Oeste del Golfo de México
