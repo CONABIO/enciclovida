@@ -1,3 +1,12 @@
+/*botón de explorar metadatos*/
+.flotante {
+  position: fixed;
+  top: 400px;
+  right: 8px;
+  z-index: 300;
+  width: 139px;
+}
+
 /* application.css biomex*/
 #upBtn {
   display: none; /* Hidden by default */
@@ -85,10 +94,10 @@ body{
   overflow-x: hidden;
 }
 a, a:hover, a:focus{
-/*  text-decoration: none;*/
+  /*  text-decoration: none;*/
 }
 a:focus {
-/*  outline: none;*/
+  /*  outline: none;*/
 }
 .text-center > .img-responsive{
   /*display: block;*/
@@ -165,7 +174,7 @@ p{
 .main-logo{
   margin-top: 20px;
   height: 60px;
-/*  float:left;*/
+  /*  float:left;*/
 }
 
 .win-badge {
