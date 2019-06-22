@@ -46,7 +46,7 @@
         <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :distribuciones %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
+        <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente_ecosistema' %>
       </li>
       <li role="presentation" >
         <%= link_to 'Biología', '#biologia', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
@@ -82,32 +82,38 @@
 
     <div class="tab-content">
 
+
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <% # OCUPA: taxon, legislacion  %>
-        <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
+        <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
         <hr class="espacio_ficha">
         <h4 class="titulo-modelo">LEGISLACIONES:</h4>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+
         <hr />
+
         <%= f.simple_fields_for :legislaciones do |info| %>
-          <%= render partial: 'fichas/admin/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
+
+          <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
+
+
+
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <% # OCUPA: habitat, distribucion, endemica  %>
         <%= f.simple_fields_for :habitats  do |info| %>
-          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :distribuciones do |info| %>
-          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :endemicas do |info| %>
-          <%= render partial: 'fichas/admin/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
         <% end %>
       </div>
 
@@ -115,7 +121,7 @@
         <hr />
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/admin/seccion_ambiente/form_ambiente_habitat', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -123,15 +129,15 @@
         <hr />
         <% # OCUPA: habitad, historianatural, demografiaamenazas, * * reproduccionanimal, * * reproduccionvegetal %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
         <% end %>
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/admin/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
         <% end %>
       </div>
 
@@ -139,7 +145,7 @@
         <hr />
         <% # OCUPA: demografiaamenazas, * * interaccion  %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/admin/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -147,7 +153,7 @@
         <hr />
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -155,7 +161,7 @@
         <hr />
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/admin/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
         <% end %>
       </div>
 
@@ -163,25 +169,25 @@
         <hr />
         <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
         <% end %>
 
         <hr class="espacio_ficha">
         <%= f.simple_fields_for :conservacion do |info| %>
-          <%= render partial: 'fichas/admin/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
         <% end %>
       </div>
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <% # OCUPA:  taxon %>
-        <%= render partial: 'fichas/admin/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+        <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
       </div>
 
       <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <% # OCUPA: taxon  %>
-        <%= render partial: 'fichas/admin/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
+        <%= render partial: 'fichas/taxa/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
       </div>
 
 
@@ -214,7 +220,9 @@
           <%= info.input :age, collection: 18..60 %>
           <%= info.input :shipping_country, priority: [ "Brazil" ], collection: [ "Australia", "Brazil", "New Zealand"], :include_blank => false, :input_html => { class: 'multiselectuser', multiple: true } %>
 
-          <%= info.input :role_id, label: "visible to", as: :select, label: "Role", collection: [ "Australia", "Brazil", "New Zealand"], required: true, multiple: true %>
+          <%=
+            # info.input :role_id, label: "visible to", as: :select, label: "Role", collection: [ "Australia", "Brazil", "New Zealand"], required: true, multiple: true
+          %>
 
           <%= select_tag 'particular_users',
                          options_from_collection_for_select(Fichas::Pais.all, :id, :nombrepais),

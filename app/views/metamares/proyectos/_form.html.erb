@@ -50,7 +50,8 @@
       </div>
 
       <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
-        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional', style: 'display: none;') if @proyecto.new_record? %>
+        <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab',
+                                    "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :info_adicional do |info| %>
           <%= render partial: 'form_info_adicional', locals: { f: info } %>
