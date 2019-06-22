@@ -51,7 +51,7 @@
       <section class="container">
         <div class="row">
           <article class="col-md-12 text-left">
-            <h1 class="white">Mares mexicanos</h1>
+            <h1><%= link_to 'Mares mexicanos', 'https://www.biodiversidad.gob.mx/pais/mares/', class: 'white' %></h1>
           </article>
         </div>
       </section>
@@ -85,7 +85,7 @@
       <div class="row">
         <div class="col-lg-12 col-sm-12">
           <!-- imagen principal -->
-          <img src="https://www.biodiversidad.gob.mx/assets/images/pais/maresm/infoceanos/encabezado_infoceanos.jpg">
+          <%= link_to '<img class="img-responsive" src="https://www.biodiversidad.gob.mx/assets/images/pais/maresm/infoceanos/encabezado_infoceanos.jpg">'.html_safe, metamares_root_url %>
         </div>
       </div>
     </section>

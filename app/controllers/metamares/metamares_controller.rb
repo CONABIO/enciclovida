@@ -4,26 +4,29 @@ class Metamares::MetamaresController < ApplicationController
   #la pagina de flopez
   def index
     #render layout: false
-    @doc = Nokogiri::HTML(open("http://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#pageinfo')
-=begin
-    url = "https://www.biodiversidad.gob.mx/pais/mares/infoceanos"
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#project')
+    @doc.css('#pagetitle').remove
+    @doc.css('#sectionmenu').remove
+    @doc.css('#pageima').remove
+    @doc.xpath('//comment()').remove
 
-    url_escape = URI.escape(url)
-    uri = URI.parse(url_escape)
-    req = Net::HTTP::Get.new(uri.to_s)
-    @doc = ''
-    begin
-      http = Net::HTTP.new(uri.host, uri.port)
-      #http.use_ssl = (uri.scheme == 'https')
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      res = http.request(req)
-      puts res.body.inspect
-      @doc = res.body
-    rescue => e
-      puts e.inspect
-      @doc = '<h1>No encontrado - 404</h1>'
+    @doc.each do |el|
+      el.traverse do |n|
+        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
+        n.remove_attribute('id')
+        n.remove_class('contenidoGRALima')
+        n.remove_class('project')
+        if n.matches?('img')
+          puts 'entre?'
+          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+        end
+      end
     end
-=end
+
+
+
+    @doc = @doc.to_html.encode("utf-8")
+
   end
 
   # La visualizacion por medio de D3
