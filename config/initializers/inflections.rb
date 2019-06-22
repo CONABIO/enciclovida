@@ -24,4 +24,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'pez', 'peces'
   inflect.irregular 'propiedad', 'propiedades'
   inflect.irregular "legislacion", 'legislaciones'
+  inflect.irregular 'taxon', 'taxa'
 end
