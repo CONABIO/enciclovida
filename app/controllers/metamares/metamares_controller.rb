@@ -17,16 +17,12 @@ class Metamares::MetamaresController < ApplicationController
         n.remove_class('contenidoGRALima')
         n.remove_class('project')
         if n.matches?('img')
-          puts 'entre?'
           n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
         end
       end
     end
 
-
-
     @doc = @doc.to_html.encode("utf-8")
-
   end
 
   # La visualizacion por medio de D3
