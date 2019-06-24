@@ -92,13 +92,9 @@
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
-
         <% # OCUPA: taxon, legislacion  %>
-        <h4 class="titulo-modelo">TAXON:</h4>
         <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
         <hr class="espacio_ficha">
-
-        <h4 class="titulo-modelo">LEGISLACIONES:</h4>
         <hr />
         <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
@@ -111,21 +107,12 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.distribucion')%></h3>
 
         <% # OCUPA: habitat, distribucion, endemica  %>
-        <h4 class="titulo-modelo">DISTRIBUCION:</h4>
         <%= f.simple_fields_for :distribuciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
         <% end %>
-
-        <hr class="espacio_ficha">
-
-        <h4 class="titulo-modelo">HABITAD:</h4>
         <%= f.simple_fields_for :habitats  do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
         <% end %>
-
-        <hr class="espacio_ficha">
-
-        <h4 class="titulo-modelo">ENDEMICAS:</h4>
         <%= f.simple_fields_for :endemicas do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
         <% end %>
@@ -134,7 +121,6 @@
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ambiente')%></h3>
-        <h4 class="titulo-modelo">HABITAD:</h4>
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
           <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: {f: info } %>
@@ -146,20 +132,14 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.biologia')%></h3>
 
         <% # OCUPA: habitad, historianatural, demografiaamenazas, * * reproduccionanimal, * * reproduccionvegetal %>
-        <h4 class="titulo-modelo">HABITAD:</h4>
         <%= f.simple_fields_for :habitats do |info| %>
           <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
         <% end %>
 
-        <hr class="espacio_ficha">
-        <h4 class="titulo-modelo">HISTORIA NATURAL:</h4>
         <%= f.simple_fields_for :historiaNatural do |info| %>
           <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
         <% end %>
 
-
-        <hr class="espacio_ficha">
-        <h4 class="titulo-modelo">DEMOGRAFIA AMENAZA:</h4>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
           <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
         <% end %>
@@ -169,7 +149,6 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ecologia')%></h3>
         <% # OCUPA: demografiaamenazas, * * interaccion  %>
-        <h4 class="titulo-modelo">DEMOGRAFIA AMENAZA:</h4>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
           <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
         <% end %>
@@ -179,7 +158,6 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.genetica')%></h3>
         <% # OCUPA: historianatural %>
-        <h4 class="titulo-modelo">HISTORIA NATURAL:</h4>
         <%= f.simple_fields_for :historiaNatural do |info| %>
           <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
         <% end %>
@@ -189,7 +167,6 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.importancia')%></h3>
         <% # OCUPA: historianatural %>
-        <h4 class="titulo-modelo">HISTORIA NATURAL:</h4>
         <%= f.simple_fields_for :historiaNatural do |info| %>
           <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
         <% end %>
@@ -199,13 +176,9 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.estado_de_conservacion')%></h3>
         <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
-        <h4 class="titulo-modelo">DEMOGRAFIA AMENAZA:</h4>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
           <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
         <% end %>
-
-        <hr class="espacio_ficha">
-        <h4 class="titulo-modelo">CONSERVACION:</h4>
         <%= f.simple_fields_for :conservacion do |info| %>
           <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
         <% end %>
@@ -225,20 +198,6 @@
         <%= render partial: 'fichas/taxa/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
       </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
         <%= f.simple_fields_for :meta do |info| %>
           <%= info.input :gender, as: :radio_buttons, collection: [['0', ' Female'], ['1', ' Male']], label_method: :second, value_method: :first, input_html: {class: 'form-control'} %>
@@ -251,14 +210,11 @@
           <%= info.input_field :remember_me, as: :boolean, boolean_style: :inline , input_html: {class: 'form-control'} %>
           <%= info.input_field :remember_me2, as: :boolean, boolean_style: :inline %>
           <%= info.select :role, Fichas::Pais.all.map { |r| [r.nombrepais, r.id, { }] }, include_blank: true, multiple: true, class: 'multiselectuser selectpicker' %>
-
           <%= info.input :age, collection: 18..60 %>
           <%= info.input :shipping_country, priority: [ "Brazil" ], collection: [ "Australia", "Brazil", "New Zealand"], :include_blank => false, :input_html => { class: 'multiselectuser', multiple: true } %>
-
           <%=
             # info.input :role_id, label: "visible to", as: :select, label: "Role", collection: [ "Australia", "Brazil", "New Zealand"], required: true, multiple: true
           %>
-
           <%= select_tag 'particular_users',
                          options_from_collection_for_select(Fichas::Pais.all, :id, :nombrepais),
                          multiple: true, class: 'multiselectuser selectpicker' %>
@@ -282,6 +238,11 @@
 
 <style>
 
+  .radio-b-inline{
+    color: red;
+    margin-right: 20px;
+    display: inline-block;
+  }
 
     .dropdown-menu {
         width: 500px;
@@ -306,6 +267,7 @@
 
   .titulo_subseccion {
     font-weight: 100;
+    font-size: 1.5em;
     padding: 20px 0 20px 0;
   }
 
@@ -316,7 +278,7 @@
  .espacio_ficha {
    border: lightgrey;
    border-style: dashed;
-   border-width: 2px;
+   border-width: 1px;
  }
 
 </style>
@@ -324,14 +286,14 @@
 
 
   .apartados {
-    border: 3px solid rgb(169, 207, 171);
-    width: 90%;
+    /* border: 3px solid rgb(169, 207, 171); */
+    border: 1px solid lightgrey;
+    width: 95%;
     padding: 10px;
     margin:  10px auto;
-
-    -moz-border-radius:8px;
-    -webkit-border-radius:8px;
-    border-radius:8px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
   }
 
   .apartados legend {
