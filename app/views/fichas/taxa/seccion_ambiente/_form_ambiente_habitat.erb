@@ -1,123 +1,138 @@
 <div class='nested-fields'>
 
+  <%= f.input :habitatId, :as => :hidden%>
+  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline' %>
+  <hr>
 
-  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, input_html: {class: 'form-control'} %>
-
-  Si es terrestre, Mostrar PREGUNTAS 21 A 29,
-  Si es marino, Mostrar PREGUNTAS 21, Y DE 30 A 34,
-  Si es terrestre-marino, mostrar todas
 
   <div class="ambiente-solo-terrestre">
-    <fieldset class="apartados">
-      <legend class="text-primary"> Ecorregiones </legend>
-      <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-      <hr />
-      <% # OCUPA: ecorregion de  * habitat %>
-      <div id="ambiente_ecorregion">
-        <%= f.simple_fields_for :ecorregion do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
-        <% end %>
-      </div>
-    </fieldset>
+    <div class="ambiente-solo-acuatico">
+      <fieldset class="apartados">
+        <legend class="text-primary"> Ecorregiones </legend>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+        <hr />
+        <% # OCUPA: ecorregion de  * habitat %>
+        <div id="ambiente_ecorregion">
+          <%= f.simple_fields_for :ecorregion do |info| %>
+            <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
+          <% end %>
+        </div>
+      </fieldset>
 
-    <fieldset class="apartados">
-      <legend class="text-primary"> Ecosistemas </legend>
-      <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-      <hr />
-      <div id="ambiente_ecosistema">
-        <%= f.simple_fields_for :ecosistema do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
-        <% end %>
-      </div>
-    </fieldset>
-
-
-
-  </div>
-
-  <div class="ambiente-solo-acuatico">
-
-  </div>
-
-  <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
+      <fieldset class="apartados">
+        <legend class="text-primary"> Ecosistemas </legend>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+        <hr />
+        <div id="ambiente_ecosistema">
+          <%= f.simple_fields_for :ecosistema do |info| %>
+            <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
 
 
-  <%= # Falta agregar opciones multiples para seleccionar los tipos de vegetacion
-  %>
-  <%= f.input :tipoVegetacion,
-              collection: Fichas::Vegetacion.all.map { |r| [r.descripcionSubVegetacion, r.vegetacionId] },
-              :as => :select,
-              input_html: {
-                  class: 'form-control selectpicker',
-                  multiple: true,
-                  'data-live-search': 'true',
-                  'title': t('general.seleccionar_opciones'),
-                  'data-selected-text-format': 'count > 3'
-              }
-  %>
-  <%= f.input :tipoVegetacion %>
-
-  <%= f.input :tipoVegetacion,
-              collection: Fichas::Habitatantropico.all.map { |r| [r.descripcion, r.habitatAntropicoId] },
-              :as => :select,
-              input_html: {
-                  class: 'form-control selectpicker',
-                  multiple: true,
-                  'data-live-search': 'true',
-                  'title': t('general.seleccionar_opciones'),
-                  'data-selected-text-format': 'count > 3'
-              }
-  %>
-
-  <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', true], ['No', false] ], :checked => ['Yes', true] %>
-  <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', true], ['No', false] ], :checked => ['Yes', true] %>
-  <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', true], ['No', false] ], :checked => ['Yes', true] %>
-
-  <div id="si-vegetacion-secundaria">
-    <%= f.input :tipoVegetacionSecundaria %>
-    <%= f.input :tipoVegetacionSecundaria,
-                collection: Fichas::Habitat::VEGETACION_SEC,
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
+    <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
+    <%= f.input :tipoVegetacion, :as => :grouped_select,
+                collection: collections,
+                :group_method => :last,
+                group_label_method: :first,
+                :label_method => :descripcionSubVegetacion,
+                input_html: {
+                    class: 'form-control selectpicker',
+                    multiple: true,
+                    'data-live-search': 'true',
+                    'title': t('general.seleccionar_opcion')
+                }
+    %>
+    <%= f.input :tipoVegetacion %>
+    <%= f.input :tipoVegetacion,
+                collection: Fichas::Habitatantropico.all.map { |r| [r.descripcion, r.habitatAntropicoId] },
                 :as => :select,
                 input_html: {
                     class: 'form-control selectpicker',
                     multiple: true,
-                    'title': t('general.seleccionar_opciones')
+                    'data-live-search': 'true',
+                    'title': t('general.seleccionar_opciones'),
+                    'data-selected-text-format': 'count > 3'
                 }
     %>
+    <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+    <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: {id: 'vegetacion-secundaria'}  %>
+    <div id="si-vegetacion-secundaria">
+      <%= f.input :tipoVegetacionSecundaria %>
+      <%= f.input :tipoVegetacionSecundaria,
+                  collection: Fichas::Habitat::VEGETACION_SEC,
+                  :as => :select,
+                  input_html: {
+                      class: 'form-control selectpicker',
+                      multiple: true,
+                      'title': t('general.seleccionar_opciones')
+                  }
+      %>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
+    <%= f.input :intervaloaltitudinalinicial, item_wrapper_class: 'radio-inline' %>
+    <%= f.input :intervaloaltitudinalfinal, item_wrapper_class: 'radio-inline' %>
+    <%= f.input :infoAddintervaloaltitudinal %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
+    <%= f.input :tipoClimaId %>
+    <% collection_clima = Fichas::Tipoclima.all.group_by(&:clima) %>
+    <%= f.input :tipoClimaId, :as => :grouped_select,
+                collection: collection_clima,
+                :group_method => :last,
+                group_label_method: :first,
+                :label_method => :subclima,
+                input_html: {
+                    class: 'form-control selectpicker',
+                    multiple: true,
+                    'data-live-search': 'true',
+                    'title': t('general.seleccionar_opcion'),
+                    'data-selected-text-format': 'count > 5'
+                }
+    %>
+    <%= f.input :climaAdicional %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_temperatura') %></h3>
+    <%= f.input :temperaturainicial %>
+    <%= f.input :temperaturafinal %>
+    <%= f.input :infoaddtemperatura %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_precipitacion') %></h3>
+    <%= f.input :precipitacioninicial %>
+    <%= f.input :precipitacionfinal %>
+    <%= f.input :infoaddprecipitacion %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.humedad') %></h3>
+    <%= f.input :humedadinicial %>
+    <%= f.input :humedadfinal %>
+    <%= f.input :infoaddhumedad %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un suelo'.html_safe, f, :suelo, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_suelo', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+    <div id="ambiente_suelo">
+      <%= f.simple_fields_for :suelo do |info| %>
+        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', locals: { f: info }  %>
+      <% end %>
+    </div>
+    <%= f.input :descripcionSuelo %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una geoforma'.html_safe, f, :geoforma, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_geoforma', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_geoforma', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+    <div id="ambiente_geoforma">
+      <%= f.simple_fields_for :geoforma do |info| %>
+        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_geoforma', locals: { f: info }  %>
+      <% end %>
+    </div>
+    <%= f.input :descripcionGeoforma %>
   </div>
+  <%
+    # Hasta aquí llega la parte terrestre
+  %>
 
-  <%= f.input :intervaloaltitudinalinicial %>
-  <%= f.input :infoAddintervaloaltitudinal %>
-  <%= f.input :tipoClimaId %>
-  <%= f.input :climaAdicional %>
-  <%= f.input :temperaturainicial %>
-  <%= f.input :infoaddtemperatura %>
-  <%= f.input :precipitacioninicial %>
-  <%= f.input :infoaddprecipitacion %>
-  <%= f.input :humedadinicial %>
-  <%= f.input :infoaddhumedad %>
-  <%= f.input :descripcionSuelo %>
 
-  <hr class="espacio_ficha">
-  HABITAD > suelo:
-  <br>
-  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un suelo'.html_safe, f, :suelo, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_suelo', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-  <div id="ambiente_suelo">
-    <%= f.simple_fields_for :suelo do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', locals: { f: info }  %>
-    <% end %>
-  </div>
-
-  <hr class="espacio_ficha">
-  HABITAD > geoforma:
-  <br>
-  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una geoforma'.html_safe, f, :geoforma, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_geoforma', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_geoforma', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-  <div id="ambiente_geoforma">
-    <%= f.simple_fields_for :geoforma do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_geoforma', locals: { f: info }  %>
-    <% end %>
-  </div>
-
-  <hr class="espacio_ficha">
-  <%= f.input :descripcionGeoforma %>
 </div>

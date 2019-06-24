@@ -5,12 +5,11 @@
 
 <div class='nested-fields'>
   <%= f.input :id, required: true, :as => :hidden, :disabled => true %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_clasificacion.resumen') %></h3>
   <%= f.input :resumenEspecie %>
-  <%= f.input :descEspecie %>
-  <%= f.input :especiesSmilares %>
-  <%= f.input :origen, :as => :select, :collection => Fichas::Taxon::ORIGEN_MEXICO, prompt: :seleccionar,  input_html: {class: 'form-control selectpicker'} %>
-  <%= f.input :descripcionOrigen %>
 
+  <h3 class="titulo_subseccion"><%= t('secciones.s_clasificacion.descr_especie') %></h3>
+  <%= f.input :descEspecie %>
   <fieldset class="apartados">
     <legend> <%= t('simple_form.labels.fichas_taxon.tabla_descripcion.macho') %> </legend>
     <h5><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.largototal') %></h5>
@@ -63,5 +62,9 @@
       </table>
     </div>
   </div>
+
+  <%= f.input :especiesSmilares %>
+  <%= f.input :origen, :as => :select, :collection => Fichas::Taxon::ORIGEN_MEXICO, prompt: :seleccionar,  input_html: {class: 'form-control selectpicker'} %>
+  <%= f.input :descripcionOrigen %>
 </div>
 

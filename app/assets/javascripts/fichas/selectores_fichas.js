@@ -32,7 +32,13 @@ $( document ).ready(function() {
         checkEndemica($(this).val());
     });
 
-
+    /* ENDEMICA */
+    // Checar el estado de endemica
+    var vegetacionSecundariaChecker = $("#vegetacion-secundaria");
+    checkVegetacionSecundaria(vegetacionSecundariaChecker.val());
+    vegetacionSecundariaChecker.click(function() {
+        checkVegetacionSecundaria($(this).val());
+    });
 });
 
 
@@ -52,6 +58,14 @@ function checkEndemica(value){
         $('#endemicaSI').show();
 }
 
+
+function checkVegetacionSecundaria(value){
+
+    if (value === 'no')
+        $('#si-vegetacion-secundaria').hide();
+    else
+        $('#si-vegetacion-secundaria').show();
+}
 
 
 

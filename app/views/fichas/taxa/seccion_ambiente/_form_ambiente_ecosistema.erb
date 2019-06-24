@@ -1,4 +1,15 @@
 <div class='nested-fields'>
   <%= f.input :tipoecosistema %>
+  <%= f.input :tipoecosistema,
+              collection: Fichas::Ecosistema.all.map { |r| [r.tipoecosistema, r.ecosistemaid] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones'),
+                  'data-selected-text-format': 'count > 3'
+              }
+  %>
   <%= link_to_remove_association 'Borrar asociación', f, :class => 'btn btn-danger btn-sm' %>
 </div>
