@@ -12,4 +12,12 @@ class Fichas::Demografiaamenazas < Ficha
 	accepts_nested_attributes_for :interaccion, allow_destroy: true
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true
 
+	TENDENCIA_POBLACIONAL = [
+			'Estable'.to_sym,
+			'Aumenta'.to_sym,
+			'Decrece'.to_sym,
+			'ND'.to_sym,
+			'NA'.to_sym
+	]
+
 end
