@@ -9,14 +9,15 @@ var server = new Hapi.Server({
             timeout: {
                 server: 1000*60*10,
                 socket: false
-            }
+            },
+            cors: true
         }
     }
 });
 
 server.connection({
     port: 8001,
-    labels: ['api']
+    labels: ['api'],
 });
 
 server.register([

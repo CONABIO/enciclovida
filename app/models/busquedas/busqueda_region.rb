@@ -172,7 +172,7 @@ class BusquedaRegion < Busqueda
                           foto_principal: especie.x_foto_principal, catalogo_id: e['idnombrecatvalido'] }
 
         if params[:region_id].present? && params[:tipo_region].present?
-          self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/ejemplares?idnombrecatvalido=#{e['idnombrecatvalido']}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}" })
+          self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/ejemplares?idnombrecatvalido=#{e['idnombrecatvalido']}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}&mapa=true" })
         else
           next unless p = especie.proveedor
           geodatos = p.geodatos
