@@ -18,6 +18,10 @@ es:
       necesidades: X. Necesidades de información
       metadatos: XI. Metadatos
   secciones:
+    #  * *  S E C C I Ó N   C L A S I F I C A C I O N * *  #
+    s_clasificacion:
+      resumen: Resumen de la especie
+      descr_especie: Descripción de la especie
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
       descripcion: Ambiente
@@ -27,10 +31,9 @@ es:
       clima: Clima
       r_temperatura: Rango de temperatura
       r_precipitacion: Rango de precipitación
-      tipos:
-          terrestre: A. Ambiente terrestre
-          acuatico: B. Ambiente acuático (dulceacuícola, salobre o marino)
-          terrestre_acuatico: C. Ambiente terrestre-acuático
+      humedad: Humedad
+      tipo_suelo: Tipo de suelo
+      geoforma: Geoforma
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     s_ecologia:
       tamaño_poblacional: 43. Tamaño poblacional
@@ -45,8 +48,8 @@ es:
       afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
     #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
     s_conservacion:
-      esquema_de_manejo_en_el_cual_la_especie_es_aprovechada_o_gestionada: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-      marco_legal_nacional_e_internacional: 57. Marco legal nacional e internacional
+      manejo_aprov_acciones_conserv: Manejo, aprovechamiento y acciones de conservación
+      marco_legal_nacional_e_internacional: Marco legal nacional e internacional
     #  * *  S E C C I Ó N   D I S T R I B U C I Ó N  * *  #
     s_distribucion:
       endemismo: Endemismo
@@ -84,6 +87,9 @@ es:
         descripcionOrigen: Indicar si la especie es nativa, ex&oacute;tica, o si no hay informaci&oacute;n sobre su origen.
       endemicas:
         endemicaA: Si es end&eacute;mica, especificar regi&oacute;n (ej. mesoam&eacute;rica, ej. Neovolc&aacute;nico, etc.).
+      habitats:
+        intervaloaltitudinalinicial: En msnm
+        intervaloaltitudinalfinal: En msnm
     options:
       fichas_taxon:
         origen:
@@ -124,9 +130,9 @@ es:
           no: No
       habitats:
         tipoAmbiente:
-          terrestre: Ambiente terrestre
-          acuático: Ambiente acuático (dulceacuícola, salobre o marino)
-          terrestre-acuático: Ambiente terrestre-acuático
+          terrestre: Terrestre
+          acuático: Acuático (dulceacuícola, salobre o marino)
+          terrestre-acuático: Terrestre - acuático
         estadoHabitat:
           Hostil o muy limitante: Hostil o muy limitante
           Intermedio o limitante: Intermedio o limitante
@@ -204,6 +210,7 @@ es:
         intervaloaltitudinalinicial: Intervalo altitudinal
         infoAddintervaloaltitudinal: Información adicional
         tipoClimaId: Clima  Tipo de clima
+        # Indicar el tipo de clima (solo si está reportado en la bibliografía)
         climaAdicional: Información adicional
         temperaturainicial: Rango de temperatura
         infoaddtemperatura: Información adicional
@@ -229,9 +236,9 @@ es:
         poblacionminviableinicial: b) Población mínima viable
         infoAdicionalInteraccion: ii Información adicional
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
-        descPresionesAmenazas: Presiones o amenazas sobre la especie + Info
+        descPresionesAmenazas: Información adicional
         tendenciaPoblacional: Tendencia poblacional
-        descTendenciaPoblacional: Tendencia poblacional + info
+        descTendenciaPoblacional: Información adicional
       historiaNatural:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         habitoPlantas: Hábito en caso de plantas
@@ -287,10 +294,11 @@ es:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         estadoConser: Estado de conservación
         manejoAprov: Manejo, aprovechamiento y acciones de conservación
-        descManejoAprov: a) Describir acciones de manejo y conservación de la especie
-        tipoAprovEsp: c) Indicar el tipo de aprovechamiento de la especie
-        Marcolegal: a) Regulaciones aplicables a la especie
-        tipoVeda: b) Tipo de veda
+        descManejoAprov: Describir acciones de manejo y conservación de la especie
+        tipoAprovEsp: Indicar el tipo de aprovechamiento de la especie
+        # Esquema de manejo en el cual la especie es aprovechada o gestionada
+        marcolegal: Regulaciones aplicables a la especie
+        tipoVeda: Tipo de veda
       endemicas:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         endemismo: Endemismo
