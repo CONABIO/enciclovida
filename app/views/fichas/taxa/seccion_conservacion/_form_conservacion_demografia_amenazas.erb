@@ -1,7 +1,5 @@
 <div class='nested-fields'>
-  <hr class="espacio_ficha">
-  demografiaAmenazas > amenazaDirecta
-  <br>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.Presoines') %></h3>
   <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una amenaza directa'.html_safe, f, :amenazaDirecta, partial: 'fichas/taxa/seccion_conservacion/form_conservacion_amenaza_directa', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion', 'data-association-insertion-node' => '#conservacion_amenazaDirecta', 'data-association-insertion-method' => 'append', href: '#conservacion' %>
   <hr />
   <div id="conservacion_amenazaDirecta">
@@ -9,10 +7,9 @@
       <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_amenaza_directa', locals: {f: info }  %>
     <% end %>
   </div>
-
-  <hr class="espacio_ficha">
-
   <%= f.input :descPresionesAmenazas %>
-  <%= f.input :tendenciaPoblacional %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.tendenciaPoblacional') %></h3>
+  <%= f.input :tendenciaPoblacional, :as => :select, collection: Fichas::Demografiaamenazas::TENDENCIA_POBLACIONAL, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
   <%= f.input :descTendenciaPoblacional %>
 </div>
