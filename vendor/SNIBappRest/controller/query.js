@@ -241,7 +241,7 @@ let formatoEjemplaresMapa = function (dato)
 let dameEspecieEjemplares = function(req)
 {
     if (req.mapa)
-        var camposEnciclovida = ["longitud","latitud","idejemplar","coleccion"];
+        var camposEnciclovida = ["longitud","latitud","idejemplar","tipocoleccion"];
     else
         var camposEnciclovida = ["idejemplar","longitud","latitud","especievalidabusqueda","ejemplarfosil","region","localidad","paismapa","estadomapa","municipiomapa","coleccion","institucion","paiscoleccion","determinador","colector","fechacolecta","proyecto","urlproyecto","urlejemplar","probablelocnodecampo"];
 
