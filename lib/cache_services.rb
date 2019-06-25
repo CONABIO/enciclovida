@@ -618,16 +618,9 @@ module CacheServices
   end
 
   def itera_estadisticas_restantes
-    especies_todas = Especie.all
-
-    limite = 200
-    inicio = 0
-
-    especies_todas.each do |especie_x|
-      break if inicio >= limite
+    Especie.all.each do |especie_x|
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
       especie_x.genera_estadisticas_directo
-      inicio += 1
       puts "\n* * * * * * * * * * * * * * * * "
     end
   end
@@ -637,7 +630,6 @@ module CacheServices
     especies_todas = Especie.all
 
     especies_todas.each do |especie_x|
-
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
 
       # Eliminar el caché si tiene
@@ -657,6 +649,10 @@ module CacheServices
 
   def genera_estadisticas_directo
     # Invocar las estadisticas de naturalista
+    borra_cache('estadisticas_naturalista')
+    borra_cache('estadisticas_SNIB')
+    borra_cache('estadisticas_mapas_distribucion')
+
     puts "\nestadisticas_naturalista: #{estadisticas_naturalista}"
     puts "\nestadisticas_SNIB: #{estadisticas_SNIB}"
     puts "\nestadisticas_mapas_distribucion: #{estadisticas_mapas_distribucion}"
