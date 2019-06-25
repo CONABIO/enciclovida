@@ -1,6 +1,6 @@
 class EstadisticasController < ApplicationController
 
-  # layout false
+  layout 'estadisticas'
   before_action :get_statistics, :filtros_iniciales, only: [:show]
 
   def show
@@ -14,7 +14,7 @@ class EstadisticasController < ApplicationController
     @resultados = {}
     puts "Paràmetros: #{params}"
     @resultados = get_statistics
-    render json: @resultados
+    render json: build_json_to_statics(@resultados)
   end
 
   def build_json_to_statics(datos)
@@ -65,33 +65,8 @@ class EstadisticasController < ApplicationController
       end
     end
 
-      root_est = {'name': "Estadísticas CONABIO", 'children': estadisticas}
-      puts root_est.to_json
-
-  end
-
-  def agrega_hijo(padre, name)
-    # Si ya existe, solo devolverlo
-    if pdre = padre.find {|x| x[:name] == name}
-      hijo = pdre
-    else
-      # Si no existe el nuevo hijo, agregarlo
-      hijo = {'name': name, 'children': []}
-      padre.append(hijo)
-    end
-    hijo
-  end
-
-  def agrega_valor(padre, dato)
-    # Si el nombre del dato, contiene un '-', dividirlo
-    if dato[:nombre_estadistica].include?('-')
-      nombres = dato[:nombre_estadistica].split("-", 2)
-      valor = agrega_hijo(padre[:children], nombres[0])
-      valor[:children].append("name": nombres[1], "size": dato[:conteo])
-    else
-      padre[:children].append("name": dato[:nombre_estadistica], "size": dato[:conteo])
-    end
-    padre
+    root_est = {'name': "Estadísticas CONABIO", 'children': estadisticas}
+    root_est.to_json
   end
 
   # Obtiene las estadisticas en general
@@ -116,6 +91,32 @@ class EstadisticasController < ApplicationController
     @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
     @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+  end
+
+  # Método para construir un json aceptable para el generador de gráficas
+  def agrega_hijo(padre, name)
+    # Si ya existe, solo devolverlo
+    if pdre = padre.find {|x| x[:name] == name}
+      hijo = pdre
+    else
+      # Si no existe el nuevo hijo, agregarlo
+      hijo = {'name': name, 'children': []}
+      padre.append(hijo)
+    end
+    hijo
+  end
+
+  # Método para construir un json aceptable para el generador de gráficas
+  def agrega_valor(padre, dato)
+    # Si el nombre del dato, contiene un '-', dividirlo
+    if dato[:nombre_estadistica].include?('-')
+      nombres = dato[:nombre_estadistica].split("-", 2)
+      valor = agrega_hijo(padre[:children], nombres[0])
+      valor[:children].append("name": nombres[1], "size": dato[:conteo])
+    else
+      padre[:children].append("name": dato[:nombre_estadistica], "size": dato[:conteo])
+    end
+    padre
   end
 
 end
