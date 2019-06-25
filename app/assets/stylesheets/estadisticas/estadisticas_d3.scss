@@ -18,28 +18,29 @@
 }
 
 
-
 #sequence {
   width: 600px;
   height: 70px;
+  font-size: 12px;
 }
-
-
 
 #chart {
   position: relative;
+  font-size: 18px;
 }
 
 #explanation {
   position: absolute;
-  top: 260px;
-  left: 305px;
+  top: -70px;
+  right: 0px;
   width: 140px;
   text-align: center;
-  color: #666;
-  z-index: -1;
+  color: gray;
+  z-index: 5;
 }
 
 #percentage {
-  font-size: 2.5em;
+  font-size: 2em;
 }
+
+

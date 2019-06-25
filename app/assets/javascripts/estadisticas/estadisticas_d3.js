@@ -1,33 +1,65 @@
+$(document).ready(function(){
+
+    // LLAMARA A AJAX
+    d3.select("#buscar").on("click", function(){
+
+        console.log("Buscar...");
+
+        jQuery.ajax({
+            success: function(html){
+                obj = html
+                // Arreglo que almacenarà el nombre de la estadistica y el valor:
+                for (var clave in obj){
+                    // Controlando que json realmente tenga esa propiedad
+                    if (obj.hasOwnProperty(clave)) {
+                        /// / Mostrando en pantalla la clave junto a su valor
+                        console.log("La clave es " + clave + " y el valor es " + obj[clave]);
+                    }
+                }
+                config();
+                createVisualization(getRanValues());
+            },
+            fail: function(){
+                console.log("No funcionò")
+            },
+            method: 'get',
+            url: '/filtros_estadisticas'
+        });
+    });
+
+
+});
+
+
+
+function getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+
 // Medidas para mostrar la gráfica
-const width = window.innerWidth;
-const height = window.innerHeight;
-const maxRadius = (Math.min(width, height) / 2) - 5;
+var width;
+var height;
+var maxRadius;
 // b para mostrar la navegación de la gráfica > > >
-var b = { w: 75, h: 30, s: 3, t: 10 };
+var b;
 // Formato de texto a mostrar (Para las cifras)
-const formatNumber = d3.format(',d');
+var formatNumber;
 // La escala de colores a utilizar
-const color = d3.scaleOrdinal(d3.schemeCategory20);
+var color;
 //const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, json.children.length + 1));
 
-const x = d3.scaleLinear()
-    .range([0, 2 * Math.PI])
-    .clamp(true);
+var x;
 
-const y = d3.scaleSqrt()
-    .range([maxRadius * .1, maxRadius]);
+var y;
 
-const partition = d3.partition();
+var partition;
 
 /* */
-var arc = d3.arc()
-    .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
-    .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
-    .innerRadius(function (d) { return Math.max(0, y(d.y0)); })
-    .outerRadius(function (d) { return Math.max(0, y(d.y1)); });
+var arc;
 /* */
 
-/* * /
+/* */
 var arc = d3.arc()
     .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
     .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
@@ -36,71 +68,137 @@ var arc = d3.arc()
 /* */
 
 // Para mostrar el nombre de cada estadística
-const middleArcLine = d => {
-    const halfPi = Math.PI / 2;
-    const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
-    const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
-    const middleAngle = (angles[1] + angles[0]) / 2;
-    const invertDirection = middleAngle > 0 && middleAngle < Math.PI;
-    if (invertDirection) { angles.reverse(); }
-    const path = d3.path();
-    path.arc(0, 0, r, angles[0], angles[1], invertDirection);
-    return path.toString();
-};
+var middleArcLine;
 
 // Para ajustar el nombre de cada estadística
-const textFits = d => {
-    const CHAR_SPACE = 2;
-    const deltaAngle = x(d.x1) - x(d.x0);
-    const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
-    const perimeter = r * deltaAngle;
-    return d.data.name.length * CHAR_SPACE < perimeter;
-};
+var textFits;
 
 // Seleccionar el div con id = chart para mostrar la gráfica
-const svg = d3.select("#chart").append('svg')
-    .attr("width", width)
-    .attr("height", height)
-    .append("svg:g")
-    .attr("id", "container")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-//.on('click', () => focusOn()); // Reset zoom on canvas click
+var svg; // Reset zoom on canvas click
 
 
 // - - - - -  - - - - - - - - - -
 
-text = " \n\
-    Multimedia-Fotos-Tropicos,0 \n\
-    Multimedia-Fotos-Maccaulay,1163 \n\
-    Multimedia-Fotos-NaturaLista,1165 \n\
-    Multimedia-Fotos-Banco de Imágenes de CONABIO,22730 \n\
-    Multimedia-Videos-Maccaulay,1060 \n\
-    Multimedia-Audio-Maccaulay,1553  \n\
-    Fichas-CONABIO,600 \n\
-    Fichas-EOL-español,9999 \n\
-    Fichas-EOL-ingles,9999 \n\
-    Fichas-Wikipedia-español,34168 \n\
-    Fichas-Wikipedia-ingles,53478 \n\
-    Nombres comunes-NaturaLista,11296 \n\
-    Nombres comunes-CONABIO,24834 \n\
-    Observaciones-NaturaLista (grado de investigación),2427 \n\
-    Observaciones-NaturaLista (grado casual),6235 \n\
-    SNIB-Ejemplares en el SNIB,60396 \n\
-    SNIB-Ejemplares en el SNIB (aVerAves),1102 \n\
-    Mapas-Mapas de distribución,99 \n\
+function getRanValues(){
+
+    var text = " \n\
+Media-Fotos-Tropicos," +0+ " \n\
+Media-Fotos-Maccaulay," + 0 + " \n\
+Media-Fotos-NaturaLista," + getRandomArbitrary(100, 2000) + " \n\
+Media-Fotos-Banco de Imágenes de CONABIO," + getRandomArbitrary(100, 2000) + " \n\
+Media-Videos-Maccaulay," + getRandomArbitrary(100, 2000) + " \n\
+Media-Audio-Maccaulay," + getRandomArbitrary(100, 2000) + "\n\
+Fichas-CONABIO," + getRandomArbitrary(100, 2000) + " \n\
+Fichas-EOL-español," + getRandomArbitrary(100, 2000) + " \n\
+Fichas-EOL-ingles," + getRandomArbitrary(100, 2000) + " \n\
+Fichas-Wikipedia-español," + getRandomArbitrary(100, 2000) + " \n\
+Fichas-Wikipedia-ingles," + getRandomArbitrary(100, 2000) + " \n\
+Nombres comunes-NaturaLista," + getRandomArbitrary(100, 2000) + " \n\
+Nombres comunes-CONABIO," + getRandomArbitrary(100, 2000) + " \n\
+Observaciones-NaturaLista (grado de investigación)," + getRandomArbitrary(100, 2000) + " \n\
+Observaciones-NaturaLista (grado casual)," + getRandomArbitrary(100, 2000) + " \n\
+SNIB-Ejemplares en el SNIB," + getRandomArbitrary(100, 2000) + " \n\
+SNIB-Ejemplares en el SNIB (aVerAves)," + getRandomArbitrary(100, 2000) + " \n\
+Mapas-Mapas de distribución," + getRandomArbitrary(100, 2000) + " \n\
 ";
 
-// Función para comenzár a dibujar la gráfica
-function start() {
-    // Parsear el CVS
+
     var csv = d3.csvParseRows(text);
     // Pasaro a JSON
     var json = buildHierarchy(csv);
+    // LLamar a la función que general la gráfica
+    return json;
+}
+// Función para comenzár a dibujar la gráfica
+function config() {
+
+    // Medidas para mostrar la gráfica
+    width = 1000;
+    height = 800;
+    maxRadius = (Math.min(width, height) / 2) - 5;
+    // b para mostrar la navegación de la gráfica > > >
+    b = { w: 75, h: 30, s: 3, t: 10 };
+    // Formato de texto a mostrar (Para las cifras)
+    formatNumber = d3.format(',d');
+    // La escala de colores a utilizar
+    color = d3.scaleOrdinal(d3.schemeCategory20);
+    //const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, json.children.length + 1));
+
+    x = d3.scaleLinear()
+        .range([0, 2 * Math.PI])
+        .clamp(true);
+
+    y = d3.scaleSqrt()
+        .range([maxRadius * .1, maxRadius]);
+
+    partition = d3.partition();
+
+    /* */
+    arc = d3.arc()
+        .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
+        .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
+        .innerRadius(function (d) { return Math.max(0, y(d.y0)); })
+        .outerRadius(function (d) { return Math.max(0, y(d.y1)); });
+    /* */
+
+    /* * /
+    var arc = d3.arc()
+        .startAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
+        .endAngle(function (d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
+        .innerRadius(d => d.y0 * maxRadius)
+        .outerRadius(d => Math.max(d.y0 * maxRadius, d.y1 * maxRadius - 1));
+    /* */
+
+    // Para mostrar el nombre de cada estadística
+    middleArcLine = d => {
+        const halfPi = Math.PI / 2;
+        const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+        const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+        const middleAngle = (angles[1] + angles[0]) / 2;
+        const invertDirection = middleAngle > 0 && middleAngle < Math.PI;
+        if (invertDirection) { angles.reverse(); }
+        const path = d3.path();
+        path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+        return path.toString();
+    };
+
+    // Para ajustar el nombre de cada estadística
+    textFits = d => {
+        const CHAR_SPACE = 2;
+        const deltaAngle = x(d.x1) - x(d.x0);
+        const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+        const perimeter = r * deltaAngle;
+        return d.data.name.length * CHAR_SPACE < perimeter;
+    };
+
+    d3.select("#estadisticas-conabio").remove();
+
+    // Seleccionar el div con id = chart para mostrar la gráfica
+    svg = d3.select("#chart").append('svg')
+        .attr("id", "estadisticas-conabio")
+        .attr("width", width)
+        .attr("height", height)
+        .append("svg:g")
+        .attr("id", "container")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+        .on('click', () => focusOn()); // Reset zoom on canvas click
+
+}
+
+function start() {
+
+    // Pasaro a JSON
+    var json = JSON.parse(
+        '{"name":"Estadísticas CONABIO","children":[{"name":"Multimedia","children":[{"name":"Fotos","children":[{"name":"Fotos en NaturaLista","size":99},{"name":"Fotos en el Banco de Imágenes de CONABIO","size":99},{"name":"Fotos en Tropicos","size":103},{"name":"Fotos en Maccaulay","size":99}]},{"name":"Videos","children":[{"name":"Videos en Maccaulay","size":98}]},{"name":"Audios","children":[{"name":"Audio en Maccaulay","size":98}]}]},{"name":"Fichas","children":[{"name":"Fichas revisadas de CONABIO","size":99},{"name":"Fichas de EOL","children":[{"name":"español","size":99},{"name":"ingles","size":99}]},{"name":"Fichas de Wikipedia","children":[{"name":"español","size":99},{"name":"ingles","size":99}]}]},{"name":"Nombres_comunes","children":[{"name":"Nombres comunes de NaturaLista","size":99},{"name":"Nombres comunes de CONABIO","size":99}]},{"name":"Observaciones","children":[{"name":"Observaciones en NaturaLista (grado de investigación)","size":96},{"name":"Observaciones en NaturaLista (grado casual)","size":96}]},{"name":"Ejemplares","children":[{"name":"Ejemplares en el SNIB","size":48092},{"name":"Ejemplares en el SNIB (aVerAves)","size":100}]},{"name":"Mapas","children":[{"name":"Mapas de distribución","size":48095}]},{"name":"Número_especies","children":[]},{"name":"Visitas","children":[]},{"name":"Otros","children":[]}]}')
+
+    config();
+
     // LLamar a la función que general la gráfica
     createVisualization(json);
 }
 
 function createVisualization(root) {
+
     root = d3.hierarchy(root);
     root.sum(d => d.size);
 
@@ -246,7 +344,6 @@ function updateBreadcrumbs(nodeArray) {
         .attr("text-anchor", "start")
         .style("fill", 'white')
         .text(function (d) {
-            d3.select("#estadistica").text(d.data.name);
             return d.data.name;
         });
 
@@ -314,48 +411,6 @@ function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
 
 
 // - - - - - - - - - - - - - - HELPERS
-
-// Crear a partir de un CSV, el arbol JSON
-function buildHierarchy(csv) {
-    var root = { "name": "Estadísticas CONABIO", "children": [] };
-    for (var i = 0; i < csv.length; i++) {
-        var sequence = csv[i][0];
-        var size = +csv[i][1];
-        if (isNaN(size)) { // e.g. if this is a header row
-            continue;
-        }
-        var parts = sequence.split("-");
-        var currentNode = root;
-        for (var j = 0; j < parts.length; j++) {
-            var children = currentNode["children"];
-            var nodeName = parts[j];
-            var childNode;
-            if (j + 1 < parts.length) {
-                // Not yet at the end of the sequence; move down the tree.
-                var foundChild = false;
-                for (var k = 0; k < children.length; k++) {
-                    if (children[k]["name"] == nodeName) {
-                        childNode = children[k];
-                        foundChild = true;
-                        break;
-                    }
-                }
-                // If we don't already have a child node for this branch, create it.
-                if (!foundChild) {
-                    childNode = { "name": nodeName, "children": [] };
-                    children.push(childNode);
-                }
-                currentNode = childNode;
-            } else {
-                // Reached the end of the sequence; create a leaf node.
-                childNode = { "name": nodeName, "size": size };
-                children.push(childNode);
-            }
-        }
-    }
-    return root;
-};
-
 // Función para inicializar la navegación de la gráfica
 function initializeBreadcrumbTrail() {
     // Add the svg area.
@@ -373,7 +428,8 @@ function initializeBreadcrumbTrail() {
 function mouseover(d) {
 
     // Mostrar el valor que representa cada segmento por el que el puntero se encuentre dentro de la gráfica
-    d3.select("#percentage").text(d.value);
+    d3.select("#percentage").text(d.value.toLocaleString("es-MX"));
+    d3.select("#estadistica").text(d.data.name);
     d3.select("#explanation").style("visibility", "");
 
     // Obtener la secuencia para llegar al segmento seleccionado y mostrarlo en la navegación
@@ -417,3 +473,47 @@ function mouseleave(d) {
     d3.select("#explanation")
         .style("visibility", "hidden");
 }
+
+
+// BASURA:
+
+// Crear a partir de un CSV, el arbol JSON
+function buildHierarchy(csv) {
+    var root = { "name": "Estadísticas CONABIO", "children": [] };
+    for (var i = 0; i < csv.length; i++) {
+        var sequence = csv[i][0];
+        var size = +csv[i][1];
+        if (isNaN(size)) { // e.g. if this is a header row
+            continue;
+        }
+        var parts = sequence.split("-");
+        var currentNode = root;
+        for (var j = 0; j < parts.length; j++) {
+            var children = currentNode["children"];
+            var nodeName = parts[j];
+            var childNode;
+            if (j + 1 < parts.length) {
+                // Not yet at the end of the sequence; move down the tree.
+                var foundChild = false;
+                for (var k = 0; k < children.length; k++) {
+                    if (children[k]["name"] == nodeName) {
+                        childNode = children[k];
+                        foundChild = true;
+                        break;
+                    }
+                }
+                // If we don't already have a child node for this branch, create it.
+                if (!foundChild) {
+                    childNode = { "name": nodeName, "children": [] };
+                    children.push(childNode);
+                }
+                currentNode = childNode;
+            } else {
+                // Reached the end of the sequence; create a leaf node.
+                childNode = { "name": nodeName, "size": size };
+                children.push(childNode);
+            }
+        }
+    }
+    return root;
+};
