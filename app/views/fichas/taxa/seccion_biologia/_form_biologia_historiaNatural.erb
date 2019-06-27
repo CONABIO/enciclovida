@@ -1,35 +1,110 @@
 <div class='nested-fields'>
+  <%= f.input :habitoPlantas,
+              collection: Fichas::Historianatural::HABITO_PLANTAS,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
 
-  <%= f.input :habitoPlantas %>
-  <%= f.input :alimentacion %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
+  <%= f.input :alimentacion,
+              collection: Fichas::Historianatural::ALIMENTACION,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
   <%= f.input :descripcionAlimentacion %>
-  <%= f.input :estrategiaTrofica %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.estrategia_trofica') %></h3>
+  <%= f.input :estrategiaTrofica,
+              collection: Fichas::Cat_Estrategiatrofica.all.map { |r| [r.descripcion, r.IdEstrategia] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :descripcionEstrofica %>
-  <%= f.input :forrajeo %>
 
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
+  <%= f.input :forrajeo,
+              collection: Fichas::Historianatural::FORRAJEO,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
+  <% # FALTA INFO ADICIONAL PARA FORRAGEO PERO NO ESTÁ EN EL DICCIONARIO
+  %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
-
-  <%= f.input :migracion %>
-  <%= f.input :tipoMigracion %>
+  <%= f.input :migracion,
+              collection: Fichas::Historianatural::ESTATUS_MIGRATORIO,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
+  <%= f.input :tipoMigracion,
+              collection: Fichas::Historianatural::TIPO_MIGRACION,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
+  <%= f.input :habito %>
   <%= f.input :habito %>
 
-  <%= f.input :tipopHabito %>
 
-  <%= f.input :hibernacion %>
+
+
+
+
+
+  <%= f.input :tipopHabito, as: :radio_buttons, :collection => Fichas::Historianatural::PERIODO_ACTIVIDAD, item_wrapper_class: 'radio-inline' %>
+
+  <%= f.input :hibernacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
   <%= f.input :infoaddhibernacion %>
-  <%= f.input :territorialidad %>
+
+  <%= f.input :territorialidad, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
   <%= f.input :infoaddterritorialidad %>
+
   <%= f.input :ambitoHogareno %>
-  <%= f.input :mecanismosDefensa %>
+
+  <%= f.input :mecanismosDefensa,
+              collection: Fichas::Historianatural::MECANISMO_DEFENSA,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones')
+              }
+  %>
   <%= f.input :infoaddmecdefensa %>
 
-  <%= f.input :tipoReproduccion %>
 
-  <%= f.input :tipoDispersion %>
-  <%= f.input :descTipoDispersion %>
-  <%= f.input :estructuraDispersora %>
-  <%= f.input :descEstDispersora %>
-  <%= f.input :distanciadispercioninicial %>
+  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline' %>
+
 
   <hr class="espacio_ficha">
   HistoriaNatural > reproduccionAnimal
@@ -43,4 +118,10 @@
     <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
   <% end %>
 
+  <%= f.input :tipoDispersion %>
+  <%= f.input :descTipoDispersion %>
+  <%= f.input :estructuraDispersora %>
+  <%= f.input :descEstDispersora %>
+  <%= f.input :distanciadispercioninicial %>
+  <%= f.input :distanciadispercionfinal %>
 </div>

@@ -13,7 +13,7 @@
   <fieldset class="apartados">
     <legend> <%= t('simple_form.labels.fichas_taxon.tabla_descripcion.macho') %> </legend>
     <h5><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.largototal') %></h5>
-    De: <%= f.input_field :largoinicialmachos %> a: <%= f.input_field :largofinalmachos %> <br>
+    De: <%= f.input_field :largoinicialmachos, html: { class: "form-control"}  %> a: <%= f.input_field :largofinalmachos %> <br>
     <h5><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.longevidadhtotal') %></h5>
     De: <%= f.input_field :edadinicialmachos %> a: <%= f.input_field :edadfinalmachos %> <%= f.input_field :tiempoedadmacho, :as => :select, :collection => Fichas::Taxon::MEDIDA_LONGEVIDAD, prompt: :seleccionar,  input_html: {class: 'form-control'} %> <br>
     <h5><%= t('simple_form.labels.fichas_taxon.tabla_descripcion.pesototal') %></h5>
@@ -22,7 +22,28 @@
 
   <fieldset class="apartados">
     <legend> <%= t('simple_form.labels.fichas_taxon.tabla_descripcion.hembra') %> </legend>
-    <%= f.input :largoinicialhembras %>
+
+    <div class="form-group row integer optional fichas_taxon_largoinicialhembras">
+      <label class="col-sm-3 col-form-label integer optional" for="fichas_taxon_largoinicialhembras">Largoinicialhembras</label>
+      <div class="col-sm-9">
+        <input class="form-control numeric integer optional" placeholder="Largo inicial" type="number" step="1" name="fichas_taxon[largoinicialhembras]" id="fichas_taxon_largoinicialhembras">
+        <input class="form-control numeric integer optional" placeholder="Largo inicial" type="number" step="1" name="fichas_taxon[largoinicialhembras]" id="fichas_taxon_largoinicialhembras">
+      </div>
+    </div>
+
+    <style>
+      .simple_form input-inline {
+        float: left;
+        width: 100px;
+        text-align: right;
+        margin: 2px 10px;
+      }
+
+      .simple_form div.input-inline {
+        margin-bottom: 10px;
+      }
+    </style>
+    <%= f.input :largoinicialhembras, label: false, item_wrapper_class: 'input-inline' %><%= f.input :largoinicialhembras, label: false, item_wrapper_class: 'input-inline'  %>
     <%= f.input :largofinalhembras %>
     <%= f.input :edadinicialhembras %>
     <%= f.input :edadfinalhembras %>
