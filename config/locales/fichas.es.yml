@@ -33,6 +33,7 @@ es:
       r_precipitacion: Rango de precipitación
       humedad: Humedad
       tipo_suelo: Tipo de suelo
+      tipo_habitat: Tipo de hábitat
       geoforma: Geoforma
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     s_ecologia:
@@ -54,6 +55,14 @@ es:
     s_distribucion:
       endemismo: Endemismo
       region: Región
+    #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+    s_biologia:
+      uso: Hábitat
+      alimentacion: Alimentación
+      estrategia_trofica: Estrategia trófica
+      forrajeo: Forrajeo
+      conducta: Conducta
+
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
     prompts:
@@ -154,6 +163,9 @@ es:
           Fijadores de carbono: Fijadores de carbono
           Fijadores de nitrógeno: Fijadores de nitrógeno
           Otro: Otro
+        tipoReproduccion:
+          animal: Reproducción animal
+          veget: Reproducción vegetal
     labels:
       defaults:
         yes: Si
@@ -224,17 +236,17 @@ es:
         uso: Uso del hábitat
       demografiaAmenazas:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        organizacionSocial: i) Organización social
-        infoaddorgsocial: i) i Información adicional
+        organizacionSocial: Organización social
+        infoaddorgsocial: Información adicional
         #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
-        tamanioPoblacional: a) Descripción del tamaño poblacional reportado en distintos lugares
-        abundancia: b) Abundancia de individuos por región
-        densidad: c) Densidad (número de individuos por área)
-        patronOcupacion: d) Descripción del patrón de ocupación
-        descripcionPatron: d) i Información adicional
-        parametrosPoblacionales: a) Parámetros poblacionales
-        poblacionminviableinicial: b) Población mínima viable
-        infoAdicionalInteraccion: ii Información adicional
+        tamanioPoblacional: Descripción del tamaño poblacional reportado en distintos lugares
+        abundancia: Abundancia de individuos por región
+        densidad: Densidad (número de individuos por área)
+        patronOcupacion: Descripción del patrón de ocupación
+        descripcionPatron: Información adicional
+        parametrosPoblacionales: Parámetros poblacionales
+        poblacionminviableinicial: Población mínima viable
+        infoAdicionalInteraccion: Información adicional
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         descPresionesAmenazas: Información adicional
         tendenciaPoblacional: Tendencia poblacional
@@ -248,47 +260,46 @@ es:
         descripcionEstrofica: Información adicional
         forrajeo: Técnica de forrajeo
         cambiar: Información adicional
-        conducta: Conducta
-        cambiar: a) Características conductuales
-        migracion: b) Estatus migratorio
-        tipoMigracion: b) i Tipo de migración que realiza la especie
-        Habito: c) Hábito
-        cambiar: c) i Información adicional
-        tipopHabito: d) Periodo de actividad
-        cambiar: d) i Información adicional
-        hibernacion: e) Hibernación
-        Infoaddhibernacion: e) i Información adicional
+        conducta: Características conductuales
+        migracion: Estatus migratorio
+        tipoMigracion: Tipo de migración que realiza la especie
+        Habito: Hábito
+        cambiar: Información adicional
+        tipopHabito: Periodo de actividad
+        cambiar: Información adicional
+        hibernacion: Hibernación
+        infoaddhibernacion: Información adicional
         territorialidad: f) Territorialidad
-        Infoaddterritorialidad: f) i Información adicional
-        ambitoHogareno: g) Ámbito hogareño (animales)
-        mecanismosDefensa: h) Mecanismos de defensa
-        infoaddmecdefensa: h) i Información adicional
-        tipoReproduccion: Reproducción  a) animal o b) vegental
+        Infoaddterritorialidad: Información adicional
+        ambitoHogareno: Ámbito hogareño (animales)
+        mecanismosDefensa: Mecanismos de defensa
+        infoaddmecdefensa: Información adicional
+        tipoReproduccion: Tipo de reproducción
         cambiar: Dispersión
-        tipoDispersion: a) Tipo de dispersión
-        descTipoDispersion: a) i Información adicional
-        estructuraDispersora: b) Estructura o individuo dispersado
-        descEstDispersora: b) Información adicional
+        tipoDispersion: Tipo de dispersión
+        descTipoDispersion: Información adicional
+        estructuraDispersora: Estructura o individuo dispersado
+        descEstDispersora: Información adicional
         distanciadispercioninicial: sas
-        distanciadispercionfinal: c) Distancia de dispersión
+        distanciadispercionfinal: Distancia de dispersión
         #  * *  S E C C I Ó N   G E N É T I C A  * *  #
         variabilidadGenetica: Variabilidad genética
-        marcadorGenetico: b) Marcadores utilizados para describir la variabilidad
+        marcadorGenetico: Marcadores utilizados para describir la variabilidad
         secuencias: Secuencias publicadas para la especie
         mexbol: MEXBOL/Código de barras
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
-        ImportanciaBiologica: a) Importancia biológica
-        funcionEcologica: b) Función ecológica
+        ImportanciaBiologica: mportancia biológica
+        funcionEcologica: Función ecológica
         importanciaEconomica: Importancia económica
-        comercioNal: Comercio a) Comercio nacional
+        comercioNal: Comercio nacional
         origenComNal: Origen de los especímenes
         propositoComNal: Propósito del comercio
-        comInternacional: b) Comercio internacional
+        comInternacional: Comercio internacional
         origenInternacional: Origen de los especímenes
         propositoInternacional: Propósito del comercio
-        comercioIlicitoNa: i. ¿La especie se ve afectada por el comercio ilícito nacional?
-        comercioIlicitoInter: ii. ¿La especie se ve afectada por el comercio ilícito internacional?
-        descComIlicito: iii. Efectos reales o potenciales del comercio en el manejo y conservación de la especie
+        comercioIlicitoNa: ¿La especie se ve afectada por el comercio ilícito nacional?
+        comercioIlicitoInter: ¿La especie se ve afectada por el comercio ilícito internacional?
+        descComIlicito: Efectos reales o potenciales del comercio en el manejo y conservación de la especie
         descUsos: Información adicional
       conservacion:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
@@ -322,79 +333,79 @@ es:
         descrpcion: Geoforma
       reproduccionVegetal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        descripcion: a) Generalidades
-        arregloEspacial: b) Tipos de expresión sexual
-        cambiar1: i. Flores
-        cambiar2: ii. Individuos
-        cambiar3: iii. Poblaciones
+        descripcion: Generalidades
+        arregloEspacial: Tipos de expresión sexual
+        cambiar1: Flores
+        cambiar2: Individuos
+        cambiar3: Poblaciones
         descripcionArregloespacial:  Información adicional
-        aislamientoOrganos: c) Aislamiento temporal o espacial de los órganos reproductores
+        aislamientoOrganos: Aislamiento temporal o espacial de los órganos reproductores
         descAislaOrganos:  Información adicional
-        sistReproAsexuales: d) Sistemas reproductivos asexuales
+        sistReproAsexuales: Sistemas reproductivos asexuales
         DescsistReproAsexuales:  Información adicional
-        fecuandacion: e) Tipo de fecundación
+        fecuandacion: Tipo de fecundación
         descFecundacion:  Información adicional
-        agentesPolinizacion: f) Tipo de polinización
+        agentesPolinizacion: Tipo de polinización
         descAgentesPo:  Información adicional
-        cambiar4: g) Floración
-        aperturaFlor:  i. Horario de apertura de la flor
+        cambiar4: Floración
+        aperturaFlor:  iHorario de apertura de la flor
         descApertura:  Información adicional
-        tiempoFloracion:  ii. Longevidad de la flor
+        tiempoFloracion:  Longevidad de la flor
         addinfolongevidadflor:  Información adicional
-        mesInicio:  iii. Época de floración Mes de inicio
-        mesFinal: iii. Época de floración Mes de término
+        mesInicio:  Época de floración Mes de inicio
+        mesFinal: Época de floración Mes de término
         addinfotiempoflora:  Información adicional
-        cantidadnectarinicial: iv. Cantidad de néctar
-        cantidadnectarfinal:   iv. Cantidad de néctar
+        cantidadnectarinicial: Cantidad de néctar
+        cantidadnectarfinal:   Cantidad de néctar
         addinfocantidadnectar: Información adicional
-        cantidadpolen: v. Cantidad de polen
-        cambiar: h) Frutificación
-        mesInicialFructi:   i. Época de fructificación Mes de inicio
-        mesFinalFructi:   i. Época de fructificación Mes de término
+        cantidadpolen: Cantidad de polen
+        cambiar: Frutificación
+        mesInicialFructi:   Época de fructificación Mes de inicio
+        mesFinalFructi:   Época de fructificación Mes de término
         addinfotiempofructi:  Información adicional
         nofrutosinicial: dffs
-        nofrutosfinal:   ii. Número de frutos
-        caracFruto: iii. Características del fruto
+        nofrutosfinal:   Número de frutos
+        caracFruto: Características del fruto
         descCaracFruto: Información adicional
-        noEventos: i) Número de eventos reproductivos
+        noEventos: Número de eventos reproductivos
         descNoEventos:  Información adicional
-        cambiar: j) Semillas
+        cambiar: Semillas
         nosemillasinicial: 2edsdsffsfs
-        nosemillasfinal:   i. Número de semillas por fruto
-        tamanioSemilla:   ii. Tamaño promedio de las semillas
-        caracToxica:  iii. Características tóxicas
+        nosemillasfinal: Número de semillas por fruto
+        tamanioSemilla: Tamaño promedio de las semillas
+        caracToxica: Características tóxicas
         germinacioninicial: dsd
-        germinacionfinal: iv. Porcentaje de germinación
+        germinacionfinal: Porcentaje de germinación
         infoaddgerminacion: Información adicional
         plantulasinicial: dds
-        plantulasfinal: v. Porcentaje de supervivencia de plántulas
+        plantulasfinal: Porcentaje de supervivencia de plántulas
         infoaddplantulas:  Información adicional
       reproduccionanimal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        descripcion: 41 a) Generalidades
-        dimorfismoSexual: 41 b) Dimorfismo sexual  S/N
-        additionalInfoDimorfiasmo: 41 b) Información adicional
+        descripcion: Generalidades
+        dimorfismoSexual: Dimorfismo sexual  S/N
+        additionalInfoDimorfiasmo: Información adicional
         coloracion: Dimorfismo sexual en coloración
         ornamentacion: Dimorfismo sexual en ornamentación
-        sistemaApareamiento: c) Sistemas de apareamiento
-        descripcionSistema: c) i Información adicional
-        noEventos: d) Número de eventos reproductivos
+        sistemaApareamiento: Sistemas de apareamiento
+        descripcionSistema: Información adicional
+        noEventos: Número de eventos reproductivos
         descripcionNoEventos: Información adicional
-        cambiar: e) Tiempo entre eventos reproductivos (meses)
-        tipoFecundacion: f) Tipo de fecundación
+        cambiar: Tiempo entre eventos reproductivos (meses)
+        tipoFecundacion: Tipo de fecundación
         descripcionTipoFec: Información adicional
-        edadPrimeraRepro: g) Edad o talla a la primera reproducción
-        duracionVidaRepro: h) Duración de vida reproductiva
-        frecuenciaApareamineto: i) Epoca del año y frecuencia de apareamiento
-        sitioAnidacion: j) Sitios de anidación o de crianza
+        edadPrimeraRepro: Edad o talla a la primera reproducción
+        duracionVidaRepro: Duración de vida reproductiva
+        frecuenciaApareamineto: Epoca del año y frecuencia de apareamiento
+        sitioAnidacion: Sitios de anidación o de crianza
         descripcionSitioAnidacion: Información adicional
-        noHuevosCrias: k) Número de huevos o crias
-        cuidadoParental: l) Cuidado parental
+        noHuevosCrias: Número de huevos o crias
+        cuidadoParental: Cuidado parental
         desCuidadoParental: Información adicional
-        tiempoCuidadoParental: m) Tiempo del cuidado parental
+        tiempoCuidadoParental: Tiempo del cuidado parental
       interaccion:
         #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
-        interacciones: i Interacciones
+        interacciones: Interacciones
       amenazaDirecta:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         presionesAmenazas: Presiones o amenazas sobre la especie
