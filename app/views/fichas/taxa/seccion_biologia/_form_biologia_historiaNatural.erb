@@ -128,21 +128,23 @@
   %>
   <%= f.input :infoaddmecdefensa %>
 
-
-  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline' %>
-
-
   <hr class="espacio_ficha">
-  HistoriaNatural > reproduccionAnimal
-  <%= f.simple_fields_for :reproduccionAnimal do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
-  <% end %>
-
+  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideSegunTipoReproduccion()', name: 'opcion-TipoReproduccion'} %>
   <hr class="espacio_ficha">
-  HistoriaNatural > reproduccionVegetal
-  <%= f.simple_fields_for :reproduccionVegetal do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
-  <% end %>
+
+  <div id="opcion-reprodAnimal">
+    Animal:
+    <%= f.simple_fields_for :reproduccionAnimal do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
+    <% end %>
+  </div>
+
+  <div id="opcion-reprodVegetal">
+    Vegetal:
+    <%= f.simple_fields_for :reproduccionVegetal do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
+    <% end %>
+  </div>
 
   <%= f.input :tipoDispersion %>
   <%= f.input :descTipoDispersion %>

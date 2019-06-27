@@ -1,37 +1,32 @@
 <div class='nested-fields'>
-
   <%= f.input :habitatId, :as => :hidden%>
-  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline' %>
+  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()', name: 'opcion-AmbienteDesarrolloEspecie'} %>
   <hr>
 
-
-  <div class="ambiente-solo-terrestre">
-    <div class="ambiente-solo-acuatico">
-      <fieldset class="apartados">
-        <legend class="text-primary"> Ecorregiones </legend>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-        <hr />
-        <% # OCUPA: ecorregion de  * habitat %>
-        <div id="ambiente_ecorregion">
-          <%= f.simple_fields_for :ecorregion do |info| %>
-            <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
-          <% end %>
-        </div>
-      </fieldset>
-
-      <fieldset class="apartados">
-        <legend class="text-primary"> Ecosistemas </legend>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-        <hr />
-        <div id="ambiente_ecosistema">
-          <%= f.simple_fields_for :ecosistema do |info| %>
-            <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
-          <% end %>
-        </div>
-      </fieldset>
+  <fieldset class="apartados">
+    <legend class="text-primary"> Ecorregiones </legend>
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+    <hr />
+    <% # OCUPA: ecorregion de  * habitat %>
+    <div id="ambiente_ecorregion">
+      <%= f.simple_fields_for :ecorregion do |info| %>
+        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
+      <% end %>
     </div>
+  </fieldset>
 
+  <fieldset class="apartados">
+    <legend class="text-primary"> Ecosistemas </legend>
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
+    <hr />
+    <div id="ambiente_ecosistema">
+      <%= f.simple_fields_for :ecosistema do |info| %>
+        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
+      <% end %>
+    </div>
+  </fieldset>
 
+  <div id="ambiente-solo-terrestre">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
     <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
     <%= f.input :tipoVegetacion, :as => :grouped_select,
@@ -134,9 +129,11 @@
     # Hasta aquí llega la parte terrestre
   %>
 
-
-  <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
-
-
+  <%
+    # Aquí inicia la parte marina
+  %>
+  <div id="ambiente-solo-marino">
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
+  </div>
 
 </div>

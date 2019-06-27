@@ -1,39 +1,19 @@
 $( document ).ready(function() {
 
-    /* PARA LA PARTE DE LEGISLACIONES */
-
-
-
-
-
-    // Ocultar todas las opciones de las legislaciones (Se ocultará el div padre que contiene el select de la legislación)
-    // $(".fichas_taxon_legislaciones_estatusLegalProteccion").hide();
-
-    // Iterar las legislaciones existentes
-    $(".tipo-legislacion").each(function(){
-        var legislacion = $(this);
-        console.log($(legislacion))
-    });
-
-
-
-
-
-    // Para mostrar sólo las legislaciones relacionadas: (Si es UICN, ostrar sólo sus opciones)
-
-
-
-
-
-    // Mostrar u ocultar contenido cuando se cargue la  página
+    // Mostrar u ocultar contenido SEGUN SI / NO cuando se cargue la  página
     casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria'];
-
     for(var i = 0; i < casos.length; i++) {
         var elID = casos[i];
         var selector = "input[name='opcion-" + casos[i] + "']:checked";
         if ($(selector).val() !== undefined)
             showOrHideByName($(selector).val(), elID);
     }
+
+    // Para mostrar correctamente el formulario de la sección Ambiente
+    showOrHideAmbienteDesarrolloEspecie();
+    //  Para mostrar correctamente el formulario de la sección Biologia
+    showOrHideSegunTipoReproduccion();
+
 });
 
 
@@ -57,5 +37,44 @@ function showOrHideByName(name, iDIV) {
         $('#' + iDIV).fadeIn();
 }
 
+// Función para mostrar las preguntas correspondientes al ambiente de desarrollo de la especie (sección ambiente)
+function showOrHideAmbienteDesarrolloEspecie() {
+    var selector = "input[name='" + 'opcion-AmbienteDesarrolloEspecie' + "']:checked";
+    var theValue = $(selector).val();
+    var ambienteTerrestre = '#ambiente-solo-terrestre';
+    var ambienteMarino = '#ambiente-solo-marino';
+    if (theValue !== undefined) {
+        switch (theValue) {
+            case 'terrestre':
+                $(ambienteTerrestre).fadeIn();
+                $(ambienteMarino).fadeOut();
+                break;
+            case 'acuático':
+                $(ambienteTerrestre).fadeOut();
+                $(ambienteMarino).fadeIn();
+                break;
+            default:
+                $(ambienteTerrestre).fadeIn();
+                $(ambienteMarino).fadeIn();
+                break;
+        }
+    }
+}
 
+// Función para mostrar las preguntas correspondientes al tipo de reproducción de la especie (sección biologia)
+function showOrHideSegunTipoReproduccion() {
+    var selector = "input[name='" + 'opcion-TipoReproduccion' + "']:checked";
+    var theValue = $(selector).val();
+    var reprodAnimal = '#opcion-reprodAnimal';
+    var reprodVegetal = '#opcion-reprodVegetal';
+    if (theValue !== undefined) {
+        if (theValue === 'animal') {
+            $(reprodAnimal).fadeIn();
+            $(reprodVegetal).fadeOut();
+        } else {
+            $(reprodAnimal).fadeOut();
+            $(reprodVegetal).fadeIn();
+        }
+    }
 
+}
