@@ -27,6 +27,7 @@ class Fichas::Taxon < Ficha
   accepts_nested_attributes_for :conservacion, allow_destroy: true
   accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :endemicas, allow_destroy: true
+	accepts_nested_attributes_for :metadatos, allow_destroy: true
 
 	# Sección I: Clasificacion
 	ORIGEN_MEXICO = [

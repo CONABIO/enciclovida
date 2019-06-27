@@ -1,6 +1,6 @@
 <div class='nested-fields'>
   <h4 class="titulo_subseccion"><%= t('secciones.s_distribuciones.endemismo') %></h4>
-  <%= f.input :endemicaMexico, :as => :select, collection: Fichas::Endemica::ENDEMICA_MEXICO, include_blank: false, input_html: {id: 'endemicaMexico', class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%= f.input :endemicaMexico, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "endemicaSI")', name: 'opcion-endemicaSI'} %>
   <div id="endemicaSI">
     <%=  f.input :endemicaA %>
     <%=  f.input :infoAdicionalEndemica %>

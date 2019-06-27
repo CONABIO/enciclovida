@@ -10,6 +10,7 @@ class Fichas::TaxaController < Fichas::FichasController
   # GET /taxa/1
   # GET /taxa/1.json
   def show
+    redirect_to "http://#{IP}:#{PORT}fichas/front/#{params[:id]}"
   end
 
   # GET /taxa/new
@@ -41,6 +42,8 @@ class Fichas::TaxaController < Fichas::FichasController
   # PATCH/PUT /taxa/1
   # PATCH/PUT /taxa/1.json
   def update
+
+    puts "\n\n\n\n - - - - - - - - -  - - - - -- - \n\n\n\n\n\n"
     respond_to do |format|
       if @taxon.update(taxon_params)
         format.html { redirect_to @taxon, notice: 'Taxon was successfully updated.' }
@@ -65,11 +68,16 @@ class Fichas::TaxaController < Fichas::FichasController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_taxon
-      @taxon = Fichas::Taxon.where(IdCat: params[:id]).first
+      begin
+        @taxon = Fichas::Taxon.where(IdCat: params[:id]).first
+      rescue
+        render :_error and return
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
+      puts "\n\n\n\n - - - - - - - - -  - - - - -- - \n\n\n\n\n\n"
       params.fetch(:taxon, {})
     end
 end

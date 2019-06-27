@@ -24,63 +24,38 @@ $( document ).ready(function() {
 
 
 
-    /* ENDEMICA */
-    // Checar el estado de endemica
-    var endemicaChecker = $("#endemicaMexico");
-    checkEndemica(endemicaChecker.val());
-    endemicaChecker.change(function() {
-        checkEndemica($(this).val());
-    });
 
-    /* ENDEMICA */
-    // Checar el estado de endemica
-    var vegetacionSecundariaChecker = $("#vegetacion-secundaria");
-    checkVegetacionSecundaria(vegetacionSecundariaChecker.val());
-    vegetacionSecundariaChecker.click(function() {
-        checkVegetacionSecundaria($(this).val());
-    });
+    // Mostrar u ocultar contenido cuando se cargue la  página
+    casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria'];
+
+    for(var i = 0; i < casos.length; i++) {
+        var elID = casos[i];
+        var selector = "input[name='opcion-" + casos[i] + "']:checked";
+        if ($(selector).val() !== undefined)
+            showOrHideByName($(selector).val(), elID);
+    }
 });
 
 
-
-
-
-
-
+/*
+* Oculta el contenido: recibe el elemento y el div a ocultar
+* */
+function showOrHide(elem, iDIV) {
+    if (elem.value === 'no')
+        $('#' + iDIV).fadeOut();
+    else
+        $('#' + iDIV).fadeIn();
+}
 
 /*
-* Oculta el contenido de endemica
+* Oculta el contenido: recibe el valor y el div a ocultar
 * */
-function checkEndemica(value){
-    if (value === 'no')
-        $('#endemicaSI').hide();
+function showOrHideByName(name, iDIV) {
+    if (name === 'no')
+        $('#' + iDIV).fadeOut();
     else
-        $('#endemicaSI').show();
-}
-
-
-function checkVegetacionSecundaria(value){
-
-    if (value === 'no')
-        $('#si-vegetacion-secundaria').hide();
-    else
-        $('#si-vegetacion-secundaria').show();
+        $('#' + iDIV).fadeIn();
 }
 
 
 
-
-
-function hideContent(idContent, value) {
-
-    var cValue = value.val();
-    switch (cValue) {
-        case 'no':
-            $('#' + idContent).hide();
-            break;
-        default:
-            $('#' + idContent).show();
-            break;
-    }
-    console.log(cValue);
-}

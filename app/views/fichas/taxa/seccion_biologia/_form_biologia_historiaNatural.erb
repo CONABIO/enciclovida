@@ -72,11 +72,37 @@
               }
   %>
   <%= f.input :habito %>
-  <%= f.input :habito %>
 
 
 
+  <%= f.input :estrategiaTrofica,
+              collection: Fichas::Cat_Estrategiatrofica.all.map { |r| [r.descripcion, r.IdEstrategia] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
 
+  caracteristicasespecie
+
+  $Uhabito[] = "";
+  $sql = "SELECT c.idopcion FROM caracteristicasespecie c inner join cat_preguntas p on c.idopcion = p.idopcion WHERE c.idpregunta=12 and especieId=$IdResev;";
+  $resultUpdate = mysql_query($sql);
+  $i = 0;
+  while($registro = mysql_fetch_array($resultUpdate))
+  {
+  $Uhabito[$i] = $registro["idopcion"];
+  $i ++;
+  }
+  //infoadicional
+  $sql = "SELECT * FROM observacionescarac WHERE especieId=$IdResev and idpregunta = 12";
+  $resultUpdate = mysql_query($sql);
+  if ($row = mysql_fetch_array($resultUpdate))
+  {
+  $Uinfoaddhabito = $row["infoadicional"];
+  }
 
 
 

@@ -60,9 +60,9 @@
     %>
     <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
-    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: {id: 'vegetacion-secundaria'}  %>
-    <div id="si-vegetacion-secundaria">
-      <%= f.input :tipoVegetacionSecundaria %>
+
+    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")', name: 'opcion-vegetacion-secundaria'} %>
+    <div id="vegetacion-secundaria">
       <%= f.input :tipoVegetacionSecundaria,
                   collection: Fichas::Habitat::VEGETACION_SEC,
                   :as => :select,

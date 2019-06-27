@@ -199,6 +199,16 @@
       </div>
 
       <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
+        <hr />
+        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.metadatos')%></h3>
+        <% # OCUPA: taxon  %>
+        <%= f.simple_fields_for :metadatos do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos', locals: {f: info } %>
+        <% end %>
+      </div>
+
+      <div id='referencias' role="tabpanel" class="tab-pane fade panel-body">
+        <hr />
         <%= f.simple_fields_for :meta do |info| %>
           <%= info.input :gender, as: :radio_buttons, collection: [['0', ' Female'], ['1', ' Male']], label_method: :second, value_method: :first, input_html: {class: 'form-control'} %>
           <%= info.input :username, label: 'Your username please', error: 'Username is mandatory, please specify one' %>
@@ -222,11 +232,6 @@
           <%= f.association :sinonimos, input_html: { } %>
           <%= info.input :ethnicity, :label => "Ethnicity", :collection => ["Asian","Black", "Hispanic/Latino", "Indian", "Middle Eastern", "Native American", "Pacific Islander", "White", "Other"], :include_blank => "Anything", wrapper_html: { class: 'form-group' }, :as => :check_boxes, include_hidden: false, :input_html => {:name => "search[ethnicity][]", :multiple => true} %>
         <% end %>
-      </div>
-
-      <div id='referencias' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        Hola
       </div>
 
     </div>
