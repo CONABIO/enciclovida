@@ -17,6 +17,7 @@ es:
       prioritarias_conservacion: IX. Especies prioritarias para la conservación
       necesidades: X. Necesidades de información
       metadatos: XI. Metadatos
+      referencias: XII. Referencias bibliográficas
   secciones:
     #  * *  S E C C I Ó N   C L A S I F I C A C I O N * *  #
     s_clasificacion:
@@ -37,16 +38,19 @@ es:
       geoforma: Geoforma
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     s_ecologia:
-      tamaño_poblacional: 43. Tamaño poblacional
-      parametros_poblacionales: 44. Parámetros poblacionales
-      interacciones: 45. Interacciones
+      tamanio_poblacional: Tamaño poblacional
+      parametros_poblacionales: Parámetros poblacionales
+      interacciones: Interacciones
     #  * *  S E C C I Ó N   G E N É T I C A  * *  #
     s_genetica:
-      descripcion_de_la_variabilidad_genetica: a) Descripción de la variabilidad genética
+      variabilidad_genetica: Variabilidad genética
+      secuencias_para_especie: Secuencias publicadas para la especie
     #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
     s_importancia:
-      País de importación: País de importación
-      afectaciones_de_la_actividad_comercial: c) Afectaciones de la actividad comercial
+      importancia_biologica: Importancia biológica
+      importancia_economica: Importancia económica
+      comercio: Comercio
+      importancia_cultural: Importancia cultural y usos
     #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
     s_conservacion:
       manejo_aprov_acciones_conserv: Manejo, aprovechamiento y acciones de conservación
@@ -192,8 +196,8 @@ es:
         infoadicionalnombre: Origen en relación con México Información adicional
         #  * *  S E C C I Ó N   P R I O R I T A R I A S  * *  #
         prioritaria: ¿Se encuentra enlistada como especie prioritaria?
-        publicadaEn: ¿En qué listado se encuentra?
-        nivelPrioridad: Prioridad resultante del proceso
+        publicadaEn: a) ¿En qué listado se encuentra?
+        nivelPrioridad: b) Prioridad resultante del proceso
         justificacionPrioritaria: Justificación del estatus de especie prioritaria
         #  * *  S E C C I Ó N   N E C E S I D A D E S   I N F O  * *  #
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie
@@ -242,13 +246,13 @@ es:
         organizacionSocial: Organización social
         infoaddorgsocial: Información adicional
         #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
-        tamanioPoblacional: Descripción del tamaño poblacional reportado en distintos lugares
-        abundancia: Abundancia de individuos por región
-        densidad: Densidad (número de individuos por área)
-        patronOcupacion: Descripción del patrón de ocupación
+        tamanioPoblacional: a) Descripción del tamaño poblacional reportado en distintos lugares
+        abundancia: b) Abundancia de individuos por región
+        densidad: c) Densidad (número de individuos por área)
+        patronOcupacion: d) Descripción del patrón de ocupación
         descripcionPatron: Información adicional
-        parametrosPoblacionales: Parámetros poblacionales
-        poblacionminviableinicial: Población mínima viable
+        parametrosPoblacionales: a) Parámetros poblacionales
+        poblacionminviableinicial: b) Población mínima viable
         infoAdicionalInteraccion: Información adicional
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         descPresionesAmenazas: Información adicional
@@ -286,13 +290,13 @@ es:
         distanciadispercioninicial: sas
         distanciadispercionfinal: Distancia de dispersión
         #  * *  S E C C I Ó N   G E N É T I C A  * *  #
-        variabilidadGenetica: Variabilidad genética
-        marcadorGenetico: Marcadores utilizados para describir la variabilidad
+        variabilidadGenetica: a) Variabilidad genética
+        marcadorGenetico: b) Marcadores utilizados para describir la variabilidad
         secuencias: Secuencias publicadas para la especie
         mexbol: MEXBOL/Código de barras
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
-        ImportanciaBiologica: Importancia biológica
-        funcionEcologica: Función ecológica
+        ImportanciaBiologica: a) Importancia biológica
+        funcionEcologica: b) Función ecológica
         importanciaEconomica: Importancia económica
         comercioNal: Comercio nacional
         origenComNal: Origen de los especímenes
@@ -308,11 +312,11 @@ es:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         estadoConser: Estado de conservación
         manejoAprov: Manejo, aprovechamiento y acciones de conservación
-        descManejoAprov: Describir acciones de manejo y conservación de la especie
-        tipoAprovEsp: Indicar el tipo de aprovechamiento de la especie
+        descManejoAprov: a) Describir acciones de manejo y conservación de la especie
+        tipoAprovEsp: b) Indicar el tipo de aprovechamiento de la especie
         # Esquema de manejo en el cual la especie es aprovechada o gestionada
-        marcolegal: Regulaciones aplicables a la especie
-        tipoVeda: Tipo de veda
+        marcolegal: a) Regulaciones aplicables a la especie
+        tipoVeda: b) Tipo de veda
       endemicas:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         endemismo: Endemismo

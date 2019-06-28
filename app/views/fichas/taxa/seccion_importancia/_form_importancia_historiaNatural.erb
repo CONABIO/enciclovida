@@ -1,7 +1,10 @@
 <div class='nested-fields'>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_biologica') %></h3>
   <%= f.input :ImportanciaBiologica %>
   <%= f.input :funcionEcologica,  :as => :select, :collection => Fichas::Historianatural::FUNCIONES_ECOLOGICAS, prompt: :seleccionar,  input_html: {class: 'form-control tipo-legislacion'} %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_economica') %></h3>
   <%= f.input :importanciaEconomica %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.comercio') %></h3>
   <%= f.input :comercioNal %>
   <%= f.input :origenComNal %>
   <%= f.input :propositoComNal%>
@@ -13,5 +16,6 @@
   <%= f.input :descComIlicito %>
   <% # f.input :descripcion
   %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_cultural') %></h3>
   <%= f.input :descUsos%>
 </div>

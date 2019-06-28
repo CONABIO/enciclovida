@@ -1,20 +1,14 @@
 <div class='nested-fields'>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.tamanio_poblacional') %></h3>
   <%= f.input :tamanioPoblacional %>
   <%= f.input :abundancia %>
   <%= f.input :densidad %>
   <%= f.input :patronOcupacion %>
   <%= f.input :descripcionPatron %>
-
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.parametros_poblacionales') %></h3>
   <%= f.input :parametrosPoblacionales %>
   <%= f.input :poblacionminviableinicial %>
-
-  <%= # f.input :interacciones
-  %>
-  <%= f.input :infoAdicionalInteraccion %>
-
-  <hr class="espacio_ficha">
-  demografiaAmenazas > interaccion:
-  <br>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
   <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una interaccion'.html_safe, f, :interaccion, partial: 'fichas/taxa/seccion_ecologia/form_ecologia_interaccion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ecologia', 'data-association-insertion-node' => '#ecologia_interaccion', 'data-association-insertion-method' => 'append', href: '#ecologia' %>
   <hr />
   <div id="ecologia_interaccion">
@@ -22,5 +16,6 @@
       <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_interaccion', locals: {f: info }  %>
     <% end %>
   </div>
+  <%= f.input :infoAdicionalInteraccion %>
 
 </div>
