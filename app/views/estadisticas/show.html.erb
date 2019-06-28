@@ -1,80 +1,62 @@
-<!-- FORMULARIO DE BÚSQUEDA -->
-
 <div id="resultados-container" class="col-xs-12 state-one">
-  <button id="toggleFiltros" class="btn btn-link" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
-    <span class="glyphicon"></span>
-  </button>
+
   <div class="row">
-      <div class="col-md-3">
-        <h5 class="filtrosUsados"><b>La presente consulta utilizó los siguientes filtros: </b></h5>
-        <h4 class="filtrosUsados"><small>(especies en orden decreciente de recomendación)</small></h4>
-      </div>
-      <div class="col-md-9">
-        <h3 class="filtrosUsados"></h3>
-      </div>
+    <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button">
+      <span class="glyphicon"></span>
+    </button>
   </div>
+
   <hr/>
 
-  <div id="busqueda_avanzada" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <%= render :file => 'estadisticas/filtros' %>
 
-    <div class="col-xs-12 <%= 'col-sm-7 col-md-5 col-lg-4' if(params[:action] != 'resultados') %>">
-      <fieldset>
-        <legend>
-          <h5 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h5>
-          <h5 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h5>
-        </legend>
-        <div class="form-group radio" id="por_gi">
-          <%= radioGruposIconicos.html_safe %>
-        </div>
+  <div id="pestañas" class="panel">
+    <ul class="nav nav-tabs" data-tabs="tabs">
 
-        <div class="form-group" id="por_nombre" style="display: none;">
-          <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
-        </div>
-        <%= hidden_field_tag :busqueda, :avanzada %>
-        <%= hidden_field_tag :id, nil %>
-      </fieldset>
+      <li class="active">
+        <a href="#resultados-g" data-toggle="tab" class="tab_grafica" url="<%= request.url %>" categoria_taxonomica_id="0">Gráfica</a>
+      </li>
 
-      <div id="panelCategoriaTaxonomicaPt" style="display: none;">
-        <fieldset>
-          <legend><h5 class="text-primary"><strong>Categoria taxonómica</strong></h5></legend>
-        </fieldset>
-        <div id="datos_cat"></div>
-      </div>
+      <li class="">
+        <a href="#resultados-0" data-toggle="tab" class="tab_por_categoria" url="<%= request.url %>" categoria_taxonomica_id="0">Todos (<%= @totales if @totales.present? %>)</a>
+      </li>
 
-      <div class="form-group">
-        <fieldset>
-          <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
-          <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
-        </fieldset>
-      </div>
+      <% @por_categoria.each do |cat| %>
+        <li>
+          <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
+            <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="tab-pane panel-body panel-resultados" id="resultados-g">
+      <%= render :partial => 'busquedas/resultados' %>
     </div>
 
-    <div class="col-xs-12 <%= 'col-sm-5 col-md-4 col-lg-5' if(params[:action] !='resultados') %>">
-      <fieldset>
-        <legend><h5 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
-        <div class="checkbox">
-          <%= checkboxEstadoConservacion.html_safe %>
-        </div>
-      </fieldset>
-
-      <input type="button" value="texto del botón" id="buscar" class="buscar">
-
+    <div class="tab-pane panel-body panel-resultados" id="resultados-0">
+      <%= render :partial => 'busquedas/resultados' %>
     </div>
 
-
-
+    <% @por_categoria.each do |cat| %>
+      <div class="tab-pane panel-body panel-resultados" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
+    <% end %>
   </div>
+
+  <input type="button" value="texto del botón" id="buscar" class="buscar">
 
   <div id="pestañas" class="panel">
     <ul class="nav nav-tabs" data-tabs="tabs">
       <li class="active">
+        <a href="#grp" data-toggle="tab" id="nivel_" id_div="grafica-estd"><b></b> Gráfica</a>
+      </li>
+      <li>
         <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos"><b></b> Resultados</a>
       </li>
     </ul>
 
-    <div class="tab-pane panel-body resultados-peces" id="todos">
-      <div id="resultados">
-
+    <div class="tab-pane panel-body grafica-estadisticas" id="grafica-estd">
+      <div id="grp">
         <div id="sequence"></div>
         <div id="chart">
           <div id="explanation" style="visibility: hidden;">
@@ -84,10 +66,14 @@
         </div>
 
         <script type="text/javascript" charset="utf-8">
-          start();
+            start();
         </script>
       </div>
+
+      <div id="resultados">
+      </div>
     </div>
+
   </div>
 
 </div>

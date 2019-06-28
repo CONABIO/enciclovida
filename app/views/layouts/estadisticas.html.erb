@@ -14,6 +14,7 @@
   </script>
 
   <script src='https://d3js.org/d3.v4.min.js'></script>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
 
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'estadisticas/estadisticas', 'data-turbolinks-track' => true %>
@@ -26,8 +27,6 @@
 
   <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
   <%= stylesheet_link_tag 'estadisticas/estadisticas', 'data-turbolinks-track' => true %>
-  <%= # Pendiente: extraer estilos en común de peces %>
-  <%= stylesheet_link_tag 'peces/peces', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extracss %>
@@ -42,8 +41,8 @@
 </header>
 
 <header class="container-fluid">
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: "", titulo: "<a href='/estadisticas' class='text-info' data-turbolinks='false'>Estadísticas</a>"} %>
- </header>
+  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: '', titulo: "<a href='/estadisticas' class='text-info' data-turbolinks='false'>Estadísticas</a>"} %>
+</header>
 
 <section id="content" class="container-fluid">
   <div class="row main">

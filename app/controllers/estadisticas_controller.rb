@@ -3,23 +3,161 @@ class EstadisticasController < ApplicationController
   layout 'estadisticas'
   before_action :get_statistics, :filtros_iniciales, only: [:show]
 
-  def show
+  # Estadisticas que no se incluirán
+  ESTADISTICAS_QUE_NO = [8, 9, 10, 12, 1, 2, 3, 22, 23, 18]
 
+
+
+
+  def show
+    # Por si no coincidio nada
+    @taxones = Especie.none
+    # El tipo de filtro que se va a utilizar
+    resultados_avanzada
   end
 
   def busqueda
+
   end
 
-  def filtros_estadisticas()
+  def filtros_estadisticas
     @resultados = {}
-    puts "Paràmetros: #{params}"
     @resultados = get_statistics
     render json: build_json_to_statics(@resultados)
   end
 
+  # Obtiene las estadisticas en general
+  def get_statistics
+    @estadisticas = {}
+    #Extraer el nombre e id de todas las estadisticas existentes para buscar el total de todas las especies
+    Estadistica.all.each do |estadistica|
+      # Saltar estadísticas 8, 9 10 y 12 porque ya no se usan
+      next if ESTADISTICAS_QUE_NO.index(estadistica.id)
+      @estadisticas[estadistica.id] = {
+          'nombre_estadistica': estadistica.descripcion_estadistica,
+          'conteo': EspecieEstadistica.all.where("estadistica_id = #{estadistica.id}").size
+      }
+    end
+    @estadisticas
+  end
+
+  private
+
+  # Los filtros de la busqueda avanzada y de los resultados
+  def filtros_iniciales
+    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+  end
+
+  def resultados_avanzada
+    pagina = (params[:pagina] || 1).to_i
+
+    busqueda = BusquedaAvanzada.new
+    busqueda.params = params
+    puts "\n\n\n\n ---  Los filtros que se utilizarán son: #{params} \n\n\n---"
+    busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
+    busqueda.original_url = request.original_url
+    #   puts "\n\n\n\n ---  EL atributo busqueda.original_url que no se que sea es: #{busqueda.original_url} \n\n\n---"
+
+    busqueda.formato = request.format.symbol.to_s
+#    puts "\n\n\n\n ---  EL atributo busqueda.formato que no se que sea es: #{busqueda.formato} \n\n\n---"
+
+    busqueda.resultados_avanzada
+#    puts "\n\n\n\n ---  EL atributo busqueda.resultados_avanzada es: #{busqueda.resultados_avanzada} \n\n\n---"
+
+
+    @totales = busqueda.totales
+    @por_categoria = busqueda.por_categoria || []
+    @taxones = busqueda.taxones
+
+
+    @c = @taxones.first
+    puts " -> #{@c.inspect}"
+
+
+#    total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo > 0").count
+
+    #    total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo >= 0").group(EspecieEstadistica.attribute_alias(:estadistica_id)).order(EspecieEstadistica.attribute_alias(:estadistica_id))
+
+
+
+    puts "Los totales de resultados obtenidos son: #{@totales.class}"
+    puts "Las categorías encontradas son #{@por_categoria.class}"
+    puts "los taxones encontrados son: #{@taxones.class}"
+
+    response.headers['x-total-entries'] = @totales.to_s if @totales > 0
+
+    respond_to do |format|
+      if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
+        format.html { render :partial => 'busquedas/resultados' }
+        format.json { render json: {taxa: @taxones} }
+        format.xlsx { descargar_taxa_excel }
+      elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
+        format.html { render :partial => 'busquedas/_resultados' }
+        format.json { render json: {taxa: @taxones} }
+      elsif (@taxones.length == 0 || @totales == 0) && pagina > 1  # Cuando no hay resultados en la busqueda o el scrolling
+        format.html { render plain: '' }
+        format.json { render json: {taxa: []} }
+      elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
+        format.html { render 'busquedas/checklists' }
+        format.pdf do  #Para imprimir el listado en PDF
+          ruta = Rails.root.join('public', 'pdfs').to_s
+          fecha = Time.now.strftime("%Y%m%d%H%M%S")
+          pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+          FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+
+          render :pdf => 'listado_de_especies',
+                 :save_to_file => pdf,
+                 #:save_only => true,
+                 :template => 'busquedas/checklists.pdf.erb',
+                 :encoding => 'UTF-8',
+                 :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
+                 :orientation => 'Landscape'
+        end
+        format.xlsx do  # Falta implementar el excel de salida
+          @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
+        end
+      else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
+        filtros_iniciales
+        set_filtros
+
+        format.html { render action: 'show' }
+        format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
+        format.xlsx { descargar_taxa_excel }
+      end
+
+    end  # end respond_to
+  end
+
+
+  def set_filtros
+    @setParams = {}
+
+    params.each do |k,v|
+      # Evitamos valores vacios
+      next unless v.present?
+
+      case k
+        when 'id', 'nombre', 'por_pagina'
+          @setParams[k] = v
+        when 'edo_cons', 'dist', 'prior', 'estatus'
+          if @setParams[k].present?
+            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
+          else
+            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+          end
+        else
+          next
+      end
+    end
+  end
+
+  # Método para construir un JSON que pueda interpretar el generador de gráficas estadisticas.js
   def build_json_to_statics(datos)
 
-    # Si contiene '-', crear un hijo
     # Árbol de estadísticas
     estadisticas = []
 
@@ -69,31 +207,7 @@ class EstadisticasController < ApplicationController
     root_est.to_json
   end
 
-  # Obtiene las estadisticas en general
-  def get_statistics
-    @estadisticas = {}
-    #Extraer el nombre e id de todas las estadisticas existentes para buscar el total de todas las especies
-    Estadistica.all.each do |estadistica|
-      # Saltar estadísticas 8, 9 10 y 12 porque ya no se usan
-      next if [8, 9, 10, 12, 1, 2, 3, 22, 23].index(estadistica.id)
-      @estadisticas[estadistica.id] = {
-          'nombre_estadistica': estadistica.descripcion_estadistica,
-          'conteo': EspecieEstadistica.all.where("estadistica_id = #{estadistica.id}").size
-      }
-    end
-    @estadisticas
-  end
-
-  private
-  # Los filtros de la busqueda avanzada y de los resultados
-  def filtros_iniciales
-    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
-    @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-  end
-
-  # Método para construir un json aceptable para el generador de gráficas
+  # Método para construir un json aceptable para el generador de gráficas: Agrega subcomponentes a componente
   def agrega_hijo(padre, name)
     # Si ya existe, solo devolverlo
     if pdre = padre.find {|x| x[:name] == name}
@@ -106,7 +220,7 @@ class EstadisticasController < ApplicationController
     hijo
   end
 
-  # Método para construir un json aceptable para el generador de gráficas
+  # Método para construir un json aceptable para el generador de gráficas: Agrega el valor de cada componente
   def agrega_valor(padre, dato)
     # Si el nombre del dato, contiene un '-', dividirlo
     if dato[:nombre_estadistica].include?('-')
