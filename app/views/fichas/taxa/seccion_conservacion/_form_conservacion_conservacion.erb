@@ -1,16 +1,10 @@
 <div class='nested-fields'>
-
   <%= f.input :estadoConser %>
-
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.manejo_aprov_acciones_conserv') %></h3>
-
   <%= f.input :manejoAprov %>
   <%= f.input :descManejoAprov %>
-
   <%= f.input :tipoAprovEsp, :as => :select, collection: Fichas::Conservacion::TIPO_APROVECHAMIENTO, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opciones')} %>
-
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.marco_legal_nacional_e_internacional') %></h3>
   <%= f.input :marcolegal %>
   <%= f.input :tipoVeda, :as => :select, collection: Fichas::Conservacion::TIPO_VEDA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
-
 </div>
