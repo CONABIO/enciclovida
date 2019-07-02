@@ -3,12 +3,6 @@ class EstadisticasController < ApplicationController
   layout 'estadisticas'
   before_action :get_statistics, :filtros_iniciales, only: [:show]
 
-  # Estadisticas que no se incluirán
-  ESTADISTICAS_QUE_NO = [8, 9, 10, 12, 1, 2, 3, 22, 23, 18]
-
-
-
-
   def show
     # Por si no coincidio nada
     @taxones = Especie.none
@@ -16,29 +10,26 @@ class EstadisticasController < ApplicationController
     resultados_avanzada
   end
 
-  def busqueda
-
+  # Obtiene todas las estadisticas existentes > 0
+  def get_statistics
+    @estadisticas = {}
+    #Extraer el nombre e id de todas las estadisticas existentes para buscar el total de todas las especies
+    Estadistica.all.each do |estadistica|
+      # Saltar estadísticas que ya no se usan
+      next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
+      @estadisticas[estadistica.id] = {
+          'nombre_estadistica': estadistica.descripcion_estadistica,
+          'conteo': EspecieEstadistica.all.where("estadistica_id = #{estadistica.id} AND conteo > 0").size
+      }
+    end
+    @totales_estadisticas = build_json_to_statics(@estadisticas)
+    @estadisticas
   end
 
   def filtros_estadisticas
     @resultados = {}
     @resultados = get_statistics
     render json: build_json_to_statics(@resultados)
-  end
-
-  # Obtiene las estadisticas en general
-  def get_statistics
-    @estadisticas = {}
-    #Extraer el nombre e id de todas las estadisticas existentes para buscar el total de todas las especies
-    Estadistica.all.each do |estadistica|
-      # Saltar estadísticas 8, 9 10 y 12 porque ya no se usan
-      next if ESTADISTICAS_QUE_NO.index(estadistica.id)
-      @estadisticas[estadistica.id] = {
-          'nombre_estadistica': estadistica.descripcion_estadistica,
-          'conteo': EspecieEstadistica.all.where("estadistica_id = #{estadistica.id}").size
-      }
-    end
-    @estadisticas
   end
 
   private
@@ -53,20 +44,33 @@ class EstadisticasController < ApplicationController
   end
 
   def resultados_avanzada
+
+    # Crear el objeto búsqueda
+   # busqueda = BusquedaAvanzada.new
+    # ASignarle los parametros
+    #busqueda.params = params
+
+
+
+
+
+
+
+
+
+
+
+
+    # - - - - - - - - - - - - - - - - - - - -
     pagina = (params[:pagina] || 1).to_i
 
     busqueda = BusquedaAvanzada.new
     busqueda.params = params
-    puts "\n\n\n\n ---  Los filtros que se utilizarán son: #{params} \n\n\n---"
     busqueda.es_cientifico = I18n.locale.to_s == 'es-cientifico' ? true : false
     busqueda.original_url = request.original_url
-    #   puts "\n\n\n\n ---  EL atributo busqueda.original_url que no se que sea es: #{busqueda.original_url} \n\n\n---"
-
     busqueda.formato = request.format.symbol.to_s
-#    puts "\n\n\n\n ---  EL atributo busqueda.formato que no se que sea es: #{busqueda.formato} \n\n\n---"
-
     busqueda.resultados_avanzada
-#    puts "\n\n\n\n ---  EL atributo busqueda.resultados_avanzada es: #{busqueda.resultados_avanzada} \n\n\n---"
+
 
 
     @totales = busqueda.totales
@@ -74,25 +78,31 @@ class EstadisticasController < ApplicationController
     @taxones = busqueda.taxones
 
 
+    busqueda.busca_estadisticas
+
+    @totales_estadisticas = build_json_to_statics(busqueda.estadisticas)
+
+
     @c = @taxones.first
     puts " -> #{@c.inspect}"
 
+    puts " -> #{@taxones.size}"
 
-#    total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo > 0").count
 
-    #    total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo >= 0").group(EspecieEstadistica.attribute_alias(:estadistica_id)).order(EspecieEstadistica.attribute_alias(:estadistica_id))
+    #  total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo > 0").count
+    #  total.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = 13 AND enciclovida.especies_estadistica.conteo > 0").group(EspecieEstadistica.attribute_alias(:estadistica_id)).order(EspecieEstadistica.attribute_alias(:estadistica_id))
 
 
 
     puts "Los totales de resultados obtenidos son: #{@totales.class}"
     puts "Las categorías encontradas son #{@por_categoria.class}"
-    puts "los taxones encontrados son: #{@taxones.class}"
+    puts "los taxones encontrados son: #{@taxones.size}"
 
     response.headers['x-total-entries'] = @totales.to_s if @totales > 0
 
     respond_to do |format|
       if params[:solo_categoria].present? && @taxones.length > 0 && pagina == 1  # Imprime el inicio de un TAB
-        format.html { render :partial => 'busquedas/resultados' }
+        format.html { render :partial => 'estadisticas/resultados' }
         format.json { render json: {taxa: @taxones} }
         format.xlsx { descargar_taxa_excel }
       elsif pagina > 1 && @taxones.length > 0  # Imprime un set de resultados con el scrolling
@@ -143,7 +153,7 @@ class EstadisticasController < ApplicationController
       case k
         when 'id', 'nombre', 'por_pagina'
           @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus'
+        when 'edo_cons', 'dist', 'prior', 'estatus', 'showEstadisticas'
           if @setParams[k].present?
             @setParams[k] << v.map{ |x| x.parameterize if x.present?}
           else
@@ -157,6 +167,15 @@ class EstadisticasController < ApplicationController
 
   # Método para construir un JSON que pueda interpretar el generador de gráficas estadisticas.js
   def build_json_to_statics(datos)
+
+    # Verificar los filtros:
+
+    if params.key?("showEstadisticas")
+
+      # ESTADISTICAS_QUE_NO << params["show-estadisticas"]
+      puts params["showEstadisticas"]
+    end
+
 
     # Árbol de estadísticas
     estadisticas = []

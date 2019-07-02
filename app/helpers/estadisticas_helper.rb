@@ -1,17 +1,21 @@
 module EstadisticasHelper
 
-  ESTADISTICAS_QUE_NO = [8, 9, 10, 12, 1, 2, 3, 22, 23, 18]
-
   # Función uqe devolverá una lista de estadísticas para seleccionar
   def selectEstadisticas
-
-  a = '<select name="cars">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="fiat">Fiat</option>
-  <option value="audi">Audi</option>
-</select>'
-    a
+    el_select = '<select class="selectpicker form-control" id="showEstadisticas" data-live-search="true" title="Selecciona las estadísticas a mostrar (ninguno para mostrar todas)" multiple data-selected-text-format="count > 0" name="showEstadisticas[]" multiple>'
+    Estadistica::SECCIONES_ESTADISTICAS.each do |seccion|
+      el_select += "<optgroup label='#{seccion}'>"
+      Estadistica.all.each do |estadistica|
+        # Saltar estadísticas que no se usarán
+        next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
+        if estadistica.descripcion_estadistica.include?(seccion)
+          nombre = estadistica.descripcion_estadistica.gsub("#{seccion} "," * ")
+          el_select << "<option value='#{estadistica.id}'>#{nombre}</option>"
+        end
+      end
+      el_select += "</optgroup>"
+    end
+    el_select << '</select>'
+    el_select
   end
-
 end

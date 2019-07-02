@@ -1,8 +1,8 @@
 class Busqueda
   attr_accessor :params, :taxones, :totales, :por_categoria, :es_cientifico, :original_url, :formato,
-                :pagina, :por_pagina, :offset, :taxon
+                :pagina, :por_pagina, :offset, :taxon, :estadisticas
 
-  POR_PAGINA = [50, 100, 200]
+  POR_PAGINA = [5000000, 100, 200]
   POR_PAGINA_PREDETERMINADO = POR_PAGINA.first
 
   NIVEL_CATEGORIAS = [
@@ -28,6 +28,34 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   def tipo_distribucion
     if params[:dist].present? && params[:dist].any?
       self.taxones = taxones.where("#{TipoDistribucion.table_name}.#{TipoDistribucion.attribute_alias(:id)} IN (?)", params[:dist]).left_joins(:tipos_distribuciones)
+    end
+  end
+
+  def busca_estadisticas
+
+    if params["showEstadisticas"].present?
+      estadisticas_a_mostrar = params["showEstadisticas"]
+      if estadisticas_a_mostrar.count > 0
+        self.estadisticas = {}
+        estadisticas_a_mostrar.each do |estadistica|
+          nombre = Estadistica.where("id = #{estadistica}").first.descripcion_estadistica
+          self.estadisticas[estadistica] = {
+              'nombre_estadistica': nombre,
+              'conteo': taxones.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = #{estadistica} AND enciclovida.especies_estadistica.conteo > 0").group(EspecieEstadistica.attribute_alias(:estadistica_id)).order(EspecieEstadistica.attribute_alias(:estadistica_id)).size
+          }
+        end
+      end
+    else
+      self.estadisticas = {}
+      Estadistica.all.each do |estadistica|
+        # Saltar estadísticas que ya no se usan
+        next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
+        self.estadisticas[estadistica.id] = {
+            'nombre_estadistica': estadistica.descripcion_estadistica,
+            'conteo': taxones.joins(:especie_estadisticas).distinct.where("enciclovida.especies_estadistica.estadistica_id = #{estadistica.id} AND enciclovida.especies_estadistica.conteo > 0").group(EspecieEstadistica.attribute_alias(:estadistica_id)).order(EspecieEstadistica.attribute_alias(:estadistica_id)).size
+
+        }
+        end
     end
   end
 
