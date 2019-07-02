@@ -60,6 +60,8 @@
                     $("#showEstadisticas option[value='" + valor + "']").prop('selected', true);
                 });
             }
+            if (SET_PARAMS.tipoResultado != undefined)
+                $('#rb_' + SET_PARAMS.tipoResultado).prop('checked', true);
 
             <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');

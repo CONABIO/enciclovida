@@ -2,7 +2,8 @@ module EstadisticasHelper
 
   # Función uqe devolverá una lista de estadísticas para seleccionar
   def selectEstadisticas
-    el_select = '<select class="selectpicker form-control" id="showEstadisticas" data-live-search="true" title="Selecciona las estadísticas a mostrar (ninguno para mostrar todas)" multiple data-selected-text-format="count > 0" name="showEstadisticas[]" multiple>'
+    el_select = '<h6><strong>Estadísticas a mostrar</strong></h6>'
+    el_select << '<select class="selectpicker form-control" id="showEstadisticas" data-live-search="true" title="Selecciona las estadísticas a mostrar (ninguno para mostrar todas)" multiple data-selected-text-format="count > 0" name="showEstadisticas[]" multiple>'
     Estadistica::SECCIONES_ESTADISTICAS.each do |seccion|
       el_select += "<optgroup label='#{seccion}'>"
       Estadistica.all.each do |estadistica|
@@ -13,9 +14,17 @@ module EstadisticasHelper
           el_select << "<option value='#{estadistica.id}'>#{nombre}</option>"
         end
       end
-      el_select += "</optgroup>"
+      el_select << "</optgroup>"
     end
     el_select << '</select>'
     el_select
+  end
+
+  def valorResultado
+    el_radioB = '<h6><strong>Resultados</strong></h6>'
+    el_radioB << "
+      <input type='radio' name='tipoResultado' value='mayorCero' id='rb_mayorCero'> Mayor a 0
+      <input type='radio' name='tipoResultado' value='cero' id='rb_cero'> Igual a 0"
+    el_radioB
   end
 end

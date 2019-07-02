@@ -151,7 +151,7 @@ class EstadisticasController < ApplicationController
       next unless v.present?
 
       case k
-        when 'id', 'nombre', 'por_pagina'
+        when 'id', 'nombre', 'por_pagina', 'tipoResultado'
           @setParams[k] = v
         when 'edo_cons', 'dist', 'prior', 'estatus', 'showEstadisticas'
           if @setParams[k].present?
