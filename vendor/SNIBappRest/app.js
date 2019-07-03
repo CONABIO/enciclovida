@@ -234,6 +234,25 @@ server.register([
     });
 
     server.route({
+        path: '/especies/busqueda/basica/{q}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Busca un nombre cómun o científico, puede contener el nombre o tener un error de ortografía',
+            notes: '---',
+            validate: {
+                params: {
+                    q: Joi.string().required().description('Nombre común o científico')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/busquedas/resultados.json?busqueda=basica&nombre=" + request.params.q;
+                query.ajaxRequest(url, reply);
+            }
+        }
+    });
+
+    server.route({
         path: '/especies/busqueda/avanzada',
         method: 'GET',
         config: {
