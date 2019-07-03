@@ -234,6 +234,67 @@ server.register([
     });
 
     server.route({
+        path: '/especies/busqueda/avanzada',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Búsqueda avanzada de especies con diversos filtros',
+            notes: '---',
+            validate: {
+                query: {
+                    nombre: Joi.string().description('Nombre común o científico'),
+                    id: Joi.number().integer().description('El identificador de la especie'),
+                    cat: Joi.string().default('7100').valid(['1100','2100','3100','4100','5100','6100','7100']).description('Solo taxones con la categoria taxonómica ...'),
+                    nivel: Joi.string().default('=').valid(['=','>=','>','<=','<']).description('Operador relacionado al campo cat'),
+                    edo_cons: Joi.array().description('La categoría de riesgo,<br />NOM: 17,15,14,16<br />IUCN: 29,28,27,26,25<br />CITES: 22,23,24'),
+                    dist: Joi.array().description('El tipo de distribución: 3,7,10,6'),
+                    prior: Joi.array().description('Valor de la especie, proiritaria para la conservación: 1033,1034,1035'),
+                    pagina: Joi.number().integer().default(1).description('El número de pagina'),
+                    por_pagina: Joi.string().default(50).valid(['50','100','200','500','1000']).description('Los resultados por pagina')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/busquedas/resultados.json?busqueda=avanzada&por_pagina=50&commit=Buscar";
+                var req = request.query;
+
+                if (req.id !== undefined)
+                {
+                    url+= "&id=" + req.id;
+                    if (req.cat !== undefined && req.nivel !== undefined) url+= "&cat=" + req.cat + "&nivel=" + req.nivel;
+                } else {
+                    if (req.nombre !== undefined) url+= "&nombre=" + req.nombre;
+                }
+
+                if (req.edo_cons !== undefined)
+                {
+                    _.forEach(req.edo_cons, function (value) {
+                        url+= "&edo_cons[]=" + value;
+                    });
+                }
+
+                if (req.dist !== undefined)
+                {
+                    _.forEach(req.dist, function (value) {
+                        url+= "&dist[]=" + value;
+                    });
+                }
+
+                if (req.prior !== undefined)
+                {
+                    _.forEach(req.prior, function (value) {
+                        url+= "&prior[]=" + value;
+                    });
+                }
+
+                if (req.pagina !== undefined) url+= "&pagina=" + req.pagina;
+                if (req.por_pagina !== undefined) url+= "&por_pagina=" + req.por_pagina;
+
+                query.ajaxRequest(url, reply);
+            }
+        }
+    });
+
+    server.route({
         path: '/especie/ejemplares',
         method: 'GET',
         config: {
