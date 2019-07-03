@@ -16,6 +16,7 @@ class Fichas::Taxon < Ficha
 	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
 	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
 	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
+	has_many :observacionescaracs,class_name: 'Fichas::Observacionescarac', :foreign_key =>'especieId'
 
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
