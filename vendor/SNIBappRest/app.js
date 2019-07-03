@@ -3,6 +3,7 @@ const Joi = require('joi');
 _ = require('lodash');
 const query = require('./controller/query.js');
 
+
 var server = new Hapi.Server({
     connections: {
         routes: {
@@ -277,6 +278,25 @@ server.register([
                     .then(dato => {
                     reply(dato)
                 })
+            }
+        }
+    });
+
+    server.route({
+        path: '/especie/show/{especie_id}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Consulta la información más relevante asociada de la especie',
+            notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
+            validate: {
+                params: {
+                    especie_id: Joi.number().description('ID de la especie')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/especies/" + request.params.especie_id + '.json';
+                query.ajaxRequest(url, reply);
             }
         }
     });

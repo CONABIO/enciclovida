@@ -1,6 +1,7 @@
 "use strict";
 
 require('./config.js');
+const http = require('http');
 
 /**
  * Regresa la lista de estados
@@ -87,7 +88,7 @@ function dameEspeciesPorEstado(req) {
             .from('total')
             .orderByRaw('nregistros DESC')
             .then(dato => {
-    resolve(dato);
+            resolve(dato);
 })
 })
 }
@@ -328,6 +329,27 @@ let armaQueryEjemplares = function(req, query)
     return query;
 };
 
+/**
+ * Hace una petición ajax
+ * @param url
+ */
+let ajaxRequest = function(url, reply)
+{
+    var resultado = '';
+
+    http.get(url, (res) => {
+
+        res.on('data', (d) => {
+            resultado+= d;
+});
+
+}).on('error', (e) => {
+    console.error(e);
+}).on('close', (d) =>{
+    reply(JSON.parse(resultado))
+});
+};
+
 module.exports = {
     dameEstados,
     dameMunicipios,
@@ -338,5 +360,6 @@ module.exports = {
     dameEspeciesConFiltros,
     dameEspeciesConFiltrosConteo,
     dameEspecieEjemplares,
-    dameEspecieEjemplaresConteo
+    dameEspecieEjemplaresConteo,
+    ajaxRequest
 };
