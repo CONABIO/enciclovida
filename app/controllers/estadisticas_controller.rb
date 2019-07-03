@@ -93,15 +93,6 @@ class EstadisticasController < ApplicationController
   # Método para construir un JSON que pueda interpretar el generador de gráficas estadisticas.js
   def build_json_to_statics(datos)
 
-    # Verificar los filtros:
-
-    if params.key?("showEstadisticas")
-
-      # ESTADISTICAS_QUE_NO << params["show-estadisticas"]
-      puts params["showEstadisticas"]
-    end
-
-
     # Árbol de estadísticas
     estadisticas = []
 

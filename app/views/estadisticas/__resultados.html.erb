@@ -9,10 +9,10 @@
 
   <script type="text/javascript" charset="utf-8">
       var totalesEstadisticas = <%=raw @totales_estadisticas.to_json %>;
-      console.log(totalesEstadisticas);
       start(totalesEstadisticas);
   </script>
 </div>
 
-<div id="resultados">
+<div id="resultados" class="text-left">
+  <h4>El total de taxónes es: <%= @totales %> </h4>
 </div>
