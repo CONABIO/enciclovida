@@ -288,7 +288,7 @@ server.register([
         config: {
             tags: ['api'],
             description: 'Consulta la información más relevante asociada de la especie',
-            notes: 'Opciones como la region y el tipo de region son opcionales (default a nivel nacional)',
+            notes: '---',
             validate: {
                 params: {
                     especie_id: Joi.number().description('ID de la especie')
@@ -296,6 +296,25 @@ server.register([
             },
             handler: function (request, reply) {
                 var url = "http://enciclovida.mx/especies/" + request.params.especie_id + '.json';
+                query.ajaxRequest(url, reply);
+            }
+        }
+    });
+
+    server.route({
+        path: '/autocompleta/especies/{q}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Autocompleta por el nombre común o científico',
+            notes: '---',
+            validate: {
+                params: {
+                    q: Joi.string().required().description('Nombre común o científico')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/sm/search?term=" + request.params.q + "&types%5B%5D=especie&types%5B%5D=subespecie&types%5B%5D=variedad&types%5B%5D=subvariedad&types%5B%5D=forma&types%5B%5D=subforma&types%5B%5D=Reino&types%5B%5D=subreino&types%5B%5D=superphylum&types%5B%5D=division&types%5B%5D=subdivision&types%5B%5D=phylum&types%5B%5D=subphylum&types%5B%5D=superclase&types%5B%5D=grado&types%5B%5D=clase&types%5B%5D=subclase&types%5B%5D=infraclase&types%5B%5D=superorden&types%5B%5D=orden&types%5B%5D=suborden&types%5B%5D=infraorden&types%5B%5D=superfamilia&types%5B%5D=familia&types%5B%5D=subfamilia&types%5B%5D=supertribu&types%5B%5D=tribu&types%5B%5D=subtribu&types%5B%5D=genero&types%5B%5D=subgenero&types%5B%5D=seccion&types%5B%5D=subseccion&types%5B%5D=serie&types%5B%5D=subserie&limit=5";
                 query.ajaxRequest(url, reply);
             }
         }
