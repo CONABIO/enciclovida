@@ -16,7 +16,7 @@
 <% end %>
 
 <div id="busqueda_avanzada" class="">
-  <%= form_tag estadisticas_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+  <%= form_tag estadisticas_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada, :onsubmit => "cargaEstadisticas()" do %>
     <div class="" id="panelFiltrosPt">
       <div class="text-left" id="panelFiltros">
         <%= render :partial => 'estadisticas/filtros_busqueda_avanzada' %>

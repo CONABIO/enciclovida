@@ -1,3 +1,15 @@
+$(window).load(function() {
+    // Animate loader off screen
+    $("#cargando-estadistica").fadeOut();
+    $("#estadistica-listo").fadeIn();
+});
+
+
+function cargaEstadisticas() {
+    $("#cargando-estadistica").fadeIn();
+    $("#estadistica-listo").fadeOut();
+}
+
 // Medidas para mostrar la gráfica
 var width;
 var height;
