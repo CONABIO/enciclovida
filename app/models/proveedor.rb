@@ -113,7 +113,7 @@ class Proveedor < ActiveRecord::Base
     resp = ejemplares_snib('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
@@ -140,7 +140,7 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
