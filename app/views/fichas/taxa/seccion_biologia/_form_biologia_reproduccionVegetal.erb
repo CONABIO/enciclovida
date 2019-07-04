@@ -1,43 +1,75 @@
 <div class='nested-fields'>
-  <%= f.input :descripcion %>
-  <%= f.input :arregloEspacial %>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_vegetal') %></h3>
 
+  <%= f.input :descripcion %>
+
+  <%= f.input :arregloEspacial %>
   <%= f.input :descripcionArregloespacial %>
+
+
   <%= f.input :aislamientoOrganos %>
   <%= f.input :descAislaOrganos %>
+
   <%= f.input :sistReproAsexuales %>
   <%= f.input :DescsistReproAsexuales %>
+
   <%= f.input :fecuandacion %>
   <%= f.input :descFecundacion %>
+
+  Tipo de polinización:
+  - -- - -
   <%= f.input :agentesPolinizacion %>
   <%= f.input :descAgentesPol %>
 
   <%= f.input :aperturaFlor %>
   <%= f.input :descApertura %>
+
   <%= f.input :tiempoFloracion %>
   <%= f.input :addinfolongevidadflor %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.epoca_floracion') %></h4>
   <%= f.input :mesInicio %>
   <%= f.input :mesFinal %>
   <%= f.input :addinfotiempoflora %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.cantidad_nectar') %></h4>
   <%= f.input :cantidadnectarinicial %>
+  <%= f.input :cantidadnectarfinal %>
   <%= f.input :addinfocantidadnectar %>
+
   <%= f.input :cantidadpolen %>
 
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.epoca_fructificacion') %></h4>
   <%= f.input :mesInicialFructi %>
   <%= f.input :mesFinalFructi %>
   <%= f.input :addinfotiempofructi %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.numero_frutos') %></h4>
   <%= f.input :nofrutosinicial %>
+  <%= f.input :nofrutosfinal %>
+
   <%= f.input :caracFruto %>
   <%= f.input :descCaracFruto %>
+
   <%= f.input :noEventos %>
   <%= f.input :descNoEventos %>
 
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.semillas_fruto') %></h4>
   <%= f.input :nosemillasinicial %>
+  <%= f.input :nosemillasfinal %>
+
   <%= f.input :tamanioSemilla %>
   <%= f.input :caracToxica %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.porcentaje_germinacion') %></h4>
   <%= f.input :germinacioninicial %>
+  <%= f.input :germinacionfinal %>
   <%= f.input :infoaddgerminacion %>
+
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.porcentaje_plantulas') %></h4>
   <%= f.input :plantulasinicial %>
+  <%= f.input :plantulasfinal %>
   <%= f.input :infoaddplantulas %>
 
 </div>

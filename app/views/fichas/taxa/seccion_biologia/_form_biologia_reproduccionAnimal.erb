@@ -1,22 +1,41 @@
 <div class='nested-fields'>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_animal') %></h3>
+
   <%= f.input :descripcion %>
-  <%= f.input :dimorfismoSexual %>
-  <%= f.input :additionalInfoDimorfiasmo %>
-  <%= f.input :coloracion %>
-  <%= f.input :ornamentacion %>
+  <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")', name: 'opcion-dimorfismoSexualAnimal'} %>
+  <div id="dimorfismoSexualAnimal">
+    <%= f.input :additionalInfoDimorfiasmo %>
+  </div>
+  <%= f.input :coloracion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+  <%= f.input :ornamentacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+
+  <% # OPCIÓN MULTIPLE:
+  %>
   <%= f.input :sistemaApareamiento %>
   <%= f.input :descripcionSistema %>
+
   <%= f.input :noEventos %>
   <%= f.input :descripcionNoEventos %>
+
+  e) Tiempo entre eventos reproductivos (meses):
+
+
   <%= f.input :tipoFecundacion %>
   <%= f.input :descripcionTipoFec %>
+
   <%= f.input :edadPrimeraRepro %>
   <%= f.input :duracionVidaRepro %>
   <%= f.input :frecuenciaApareamineto %>
+
   <%= f.input :sitioAnidacion %>
   <%= f.input :descripcionSitioAnidacion %>
+
   <%= f.input :noHuevosCrias %>
-  <%= f.input :cuidadoParental %>
-  <%= f.input :desCuidadoParental %>
+
+  <%= f.input :cuidadoParental, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "cuidadoParentalAnimal")', name: 'opcion-cuidadoParentalAnimal'} %>
+  <div id="cuidadoParentalAnimal">
+    <%= f.input :desCuidadoParental %>
+  </div>
   <%= f.input :tiempoCuidadoParental %>
+
 </div>

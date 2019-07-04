@@ -133,23 +133,27 @@
   <hr class="espacio_ficha">
 
   <div id="opcion-reprodAnimal">
-    Animal:
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
     <% end %>
   </div>
 
   <div id="opcion-reprodVegetal">
-    Vegetal:
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
     <% end %>
   </div>
 
+  <hr class="espacio_ficha">
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
   <%= f.input :tipoDispersion %>
   <%= f.input :descTipoDispersion %>
   <%= f.input :estructuraDispersora %>
   <%= f.input :descEstDispersora %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
   <%= f.input :distanciadispercionfinal %>
+
 </div>

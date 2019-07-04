@@ -67,8 +67,20 @@ es:
       uso: Hábitat
       alimentacion: Alimentación
       estrategia_trofica: Estrategia trófica
+      organizacion: Organización
       forrajeo: Forrajeo
       conducta: Conducta
+      reprod_animal: Reproducción animal
+      reprod_vegetal: Reproducción vegetal
+      epoca_floracion: Época de floración
+      cantidad_nectar: Cantidad de néctar
+      epoca_fructificacion: Época de fructificación
+      numero_frutos: Número de frutos
+      semillas_fruto: Número de semillas por fruto
+      porcentaje_germinacion: Porcentaje de germinación
+      porcentaje_plantulas: Porcentaje de supervivencia de plántulas
+      dispersion: Dispersión
+      distancia_dispersion: Distancia de dispersión
 
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
@@ -94,6 +106,9 @@ es:
         tiempoedadmacho:
       habitats:
         estadoHabitat: habitat
+      reproduccionVegetal:
+        cantidadnectarinicial: (µl)
+        cantidadnectarfinal: (µl)
     hints:
       fichas_taxon:
         resumenEspecie: Breve descripci&oacute;n coloquial que incluya las caracter&iacute;sticas distintivas de la especie, incluyendo en la medida de lo posible, informaci&oacute;n sobre la morfolog&iacute;a,distribuci&oacute;n, biolog&iacute;a, ecolog&iacute;a, importancia y estado de conservaci&oacute;n. Incluir impactos principales en caso de especies invasoras.
@@ -106,6 +121,15 @@ es:
       habitats:
         intervaloaltitudinalinicial: En msnm
         intervaloaltitudinalfinal: En msnm
+        temperaturainicial: En grados celsius​ (ºC)
+        temperaturafinal: En grados celsius​ (ºC)
+        precipitacioninicial: En milímetros (mm)
+        precipitacionfinal: En milímetros (mm)
+        humedadinicial: En porcentaje (%)
+        humedadfinal: En porcentaje (%)
+      reproduccionVegetal:
+        cantidadnectarinicial: En µl
+        cantidadnectarfinal: En µl
     options:
       fichas_taxon:
         origen:
@@ -188,7 +212,6 @@ es:
           largototal: Largo en centímetros
           pesototal: Peso en gramos
           longevidadhtotal: Longevidad
-
         especiesSmilares: Especies similares
         infoAdicional: Categoría de riesgo según la NOM-059-SEMARNAT I nformación adicional
         descripcionOrigen: Descrición del orígen
@@ -226,16 +249,20 @@ es:
         VegetacionSecundaria: Se encuentra en vegetación secundaria?
         tipoVegetacionSecundaria: Tipo de vegetación secundaria
         cambiar: Mencionar las especies asociadas
-        intervaloaltitudinalinicial: Intervalo altitudinal
+        intervaloaltitudinalinicial: 'De:'
+        intervaloaltitudinalfinal: 'A:'
         infoAddintervaloaltitudinal: Información adicional
         tipoClimaId: Clima  Tipo de clima
         # Indicar el tipo de clima (solo si está reportado en la bibliografía)
         climaAdicional: Información adicional
-        temperaturainicial: Rango de temperatura
+        temperaturainicial: 'De:'
+        temperaturafinal: 'A:'
         infoaddtemperatura: Información adicional
-        precipitacioninicial: Rango de precipitación
+        precipitacioninicial: 'De:'
+        precipitacionfinal: 'A:'
         infoaddprecipitacion: Información adicional
-        humedadinicial: Rango de humedad relativa
+        humedadinicial: 'De:'
+        humedadfinal: 'A:'
         infoaddhumedad: Información adicional
         descripcionSuelo: Tipo de suelo Indicar el tipo de suelo en el que se desarrolla la especie
         descripcionGeoforma: Información adicional
@@ -276,8 +303,8 @@ es:
         cambiar: Información adicional
         hibernacion: Hibernación
         infoaddhibernacion: Información adicional
-        territorialidad: f) Territorialidad
-        Infoaddterritorialidad: Información adicional
+        territorialidad: Territorialidad
+        infoaddterritorialidad: Información adicional
         ambitoHogareno: Ámbito hogareño (animales)
         mecanismosDefensa: Mecanismos de defensa
         infoaddmecdefensa: Información adicional
@@ -287,8 +314,8 @@ es:
         descTipoDispersion: Información adicional
         estructuraDispersora: Estructura o individuo dispersado
         descEstDispersora: Información adicional
-        distanciadispercioninicial: sas
-        distanciadispercionfinal: Distancia de dispersión
+        distanciadispercioninicial: 'De:'
+        distanciadispercionfinal: 'A:'
         #  * *  S E C C I Ó N   G E N É T I C A  * *  #
         variabilidadGenetica: a) Variabilidad genética
         marcadorGenetico: b) Marcadores utilizados para describir la variabilidad
@@ -322,7 +349,7 @@ es:
         endemismo: Endemismo
         endemicaMexico: ¿Endémica en México?
         endemicaA: Endémica a
-        infoAdicionalEndemica:  Información adicional
+        infoAdicionalEndemica: Información adicional
       ecorregion:
         #  * *  S E C C I Ó N   A M B I E N T E * *  #
         descripcion: Descripción
@@ -345,52 +372,51 @@ es:
         cambiar1: Flores
         cambiar2: Individuos
         cambiar3: Poblaciones
-        descripcionArregloespacial:  Información adicional
+        descripcionArregloespacial: Información adicional
         aislamientoOrganos: Aislamiento temporal o espacial de los órganos reproductores
-        descAislaOrganos:  Información adicional
+        descAislaOrganos: Información adicional
         sistReproAsexuales: Sistemas reproductivos asexuales
-        DescsistReproAsexuales:  Información adicional
+        DescsistReproAsexuales: Información adicional
         fecuandacion: Tipo de fecundación
-        descFecundacion:  Información adicional
+        descFecundacion: Información adicional
         agentesPolinizacion: Tipo de polinización
-        descAgentesPo:  Información adicional
-        cambiar4: Floración
-        aperturaFlor:  iHorario de apertura de la flor
-        descApertura:  Información adicional
-        tiempoFloracion:  Longevidad de la flor
-        addinfolongevidadflor:  Información adicional
-        mesInicio:  Época de floración Mes de inicio
-        mesFinal: Época de floración Mes de término
+        descAgentesPo: Información adicional
+        aperturaFlor: Horario de apertura de la flor
+        descApertura: Información adicional
+        tiempoFloracion: Longevidad de la flor
+        addinfolongevidadflor: Información adicional
+        mesInicio: Mes de inicio
+        mesFinal: Mes de término
         addinfotiempoflora:  Información adicional
-        cantidadnectarinicial: Cantidad de néctar
-        cantidadnectarfinal:   Cantidad de néctar
+        cantidadnectarinicial: 'De:'
+        cantidadnectarfinal: 'A:'
         addinfocantidadnectar: Información adicional
         cantidadpolen: Cantidad de polen
         cambiar: Frutificación
-        mesInicialFructi:   Época de fructificación Mes de inicio
-        mesFinalFructi:   Época de fructificación Mes de término
+        mesInicialFructi: Mes de inicio
+        mesFinalFructi: Mes de término
         addinfotiempofructi:  Información adicional
-        nofrutosinicial: dffs
-        nofrutosfinal:   Número de frutos
+        nofrutosinicial: 'De:'
+        nofrutosfinal: 'A:'
         caracFruto: Características del fruto
         descCaracFruto: Información adicional
         noEventos: Número de eventos reproductivos
-        descNoEventos:  Información adicional
+        descNoEventos: Información adicional
         cambiar: Semillas
-        nosemillasinicial: 2edsdsffsfs
-        nosemillasfinal: Número de semillas por fruto
+        nosemillasinicial: 'De:'
+        nosemillasfinal: 'A:'
         tamanioSemilla: Tamaño promedio de las semillas
         caracToxica: Características tóxicas
-        germinacioninicial: dsd
-        germinacionfinal: Porcentaje de germinación
+        germinacioninicial: 'De:'
+        germinacionfinal: 'A:'
         infoaddgerminacion: Información adicional
-        plantulasinicial: dds
-        plantulasfinal: Porcentaje de supervivencia de plántulas
-        infoaddplantulas:  Información adicional
-      reproduccionanimal:
+        plantulasinicial: 'De:'
+        plantulasfinal: 'A:'
+        infoaddplantulas: Información adicional
+      reproduccionAnimal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         descripcion: Generalidades
-        dimorfismoSexual: Dimorfismo sexual  S/N
+        dimorfismoSexual: Dimorfismo sexual
         additionalInfoDimorfiasmo: Información adicional
         coloracion: Dimorfismo sexual en coloración
         ornamentacion: Dimorfismo sexual en ornamentación
