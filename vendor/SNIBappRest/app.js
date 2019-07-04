@@ -17,7 +17,7 @@ var server = new Hapi.Server({
 });
 
 server.connection({
-    port: 8001,
+    port: 9002,
     labels: ['api'],
 });
 
@@ -114,7 +114,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/estado/{entid}',
+        path: '/especies/region/estado/{entid}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -136,7 +136,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/municipio/{munid}',
+        path: '/especies/region/municipio/{munid}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -158,7 +158,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/anp/{anpid}',
+        path: '/especies/region/anp/{anpid}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -180,7 +180,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/filtros',
+        path: '/especies/region/filtros',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -208,7 +208,7 @@ server.register([
     });
 
     server.route({
-        path: '/especies/filtros/conteo',
+        path: '/especies/region/filtros/conteo',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -314,7 +314,7 @@ server.register([
     });
 
     server.route({
-        path: '/especie/ejemplares',
+        path: '/especie/snib/ejemplares',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -339,7 +339,7 @@ server.register([
     });
 
     server.route({
-        path: '/especie/ejemplares/conteo',
+        path: '/especie/snib/ejemplares/conteo',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -363,7 +363,7 @@ server.register([
     });
 
     server.route({
-        path: '/especie/show/{especie_id}',
+        path: '/especie/{id}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -371,11 +371,11 @@ server.register([
             notes: '---',
             validate: {
                 params: {
-                    especie_id: Joi.number().description('ID de la especie')
+                    id: Joi.number().description('ID de la especie')
                 }
             },
             handler: function (request, reply) {
-                var url = "http://enciclovida.mx/especies/" + request.params.especie_id + '.json';
+                var url = "http://enciclovida.mx/especies/" + request.params.id + '.json';
                 query.ajaxRequest(url, reply);
             }
         }
