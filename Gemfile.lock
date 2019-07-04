@@ -323,6 +323,8 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.8)
+    tinymce-rails (5.0.10)
+      railties (>= 3.1.1)
     trollop (2.1.2)
     turbolinks (5.1.0)
       turbolinks-source (~> 5.1)
@@ -417,6 +419,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   therubyracer
+  tinymce-rails
   trollop
   turbolinks (~> 5)
   uglifier

@@ -1,34 +1,7 @@
-<!-- Opción 1 -- >
-<script type="text/javascript" src="http://js.nicedit.com/nicEdit.js"></script> <script type="text/javascript">
-    //<![CDATA[
-    bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
-    //]]>
-</script>
-<style>
-  textarea.form-control {
-    min-height: 200px;
-  }
-</style>
-<!-- -->
-
-<!-- Opción 2 -- >
-<script src="https://cloud.tinymce.com/4/tinymce.min.js"></script>
-<script type="text/javascript">
-    tinymce.init({
-        selector: "textarea",
-        plugins: [
-            "fullscreen"
-        ],
-        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-    });
-</script>
-<!-- -->
-
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
-
 
 
 <%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
@@ -222,78 +195,3 @@
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
 
 <% end %>
-
-<style>
-
-  .radio-b-inline{
-    color: red;
-    margin-right: 20px;
-    display: inline-block;
-  }
-
-    .dropdown-menu {
-        width: 500px;
-    }
-    .dropdown-menu li a span.text {
-      word-wrap: break-word;
-      white-space: normal;
-    }
-
-
-
-  .fichas-apartado {
-    padding: 10px;
-    background-color: #6aa6ed;
-    box-shadow: lightgrey;
-    border-radius: 25px;
-  }
-
-  .titulo-seccion {
-    padding-bottom: 20px;
-  }
-
-  .titulo_subseccion {
-    font-weight: 100;
-    font-size: 1.5em;
-    padding: 20px 0 20px 0;
-    color: grey;
-  }
-
-  .titulo_sub_subseccion {
-    font-weight: 600;
-    font-size: 1.1em;
-    padding: 20px 0 10px 0;
-  }
-
-  textarea.form-control {
-    min-height: 200px;
-  }
-
- .espacio_ficha {
-   border: lightgrey;
-   border-style: dashed;
-   border-width: 1px;
- }
-
-</style>
-<style>
-  .apartados {
-    /* border: 3px solid rgb(169, 207, 171); */
-    border: 1px solid lightgrey;
-    width: 95%;
-    padding: 10px;
-    margin:  10px auto;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-  }
-
-  .apartados legend {
-    width: auto;
-    padding: 0 10px 0 10px;
-    font-size: large;
-    text-decoration: none;
-    border: none;
-  }
-
-</style>

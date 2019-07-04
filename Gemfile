@@ -47,6 +47,7 @@ gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
+gem 'tinymce-rails'
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier'

@@ -1,5 +1,10 @@
 $( document ).ready(function() {
 
+    // Inicializar el editor de texto TINYMCE
+    tinyMCE.init({
+        selector: 'textarea.form-control'
+    });
+
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
     casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria', 'dimorfismoSexualAnimal'];
     for(var i = 0; i < casos.length; i++) {
