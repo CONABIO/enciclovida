@@ -1,6 +1,29 @@
 class Metamares::MetamaresController < ApplicationController
-
   layout 'metamares'
+
+  #la pagina de flopez
+  def index
+    #render layout: false
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#project')
+    @doc.css('#pagetitle').remove
+    @doc.css('#sectionmenu').remove
+    @doc.css('#pageima').remove
+    @doc.xpath('//comment()').remove
+
+    @doc.each do |el|
+      el.traverse do |n|
+        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
+        n.remove_attribute('id')
+        n.remove_class('contenidoGRALima')
+        n.remove_class('project')
+        if n.matches?('img')
+          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+        end
+      end
+    end
+
+    @doc = @doc.to_html.encode("utf-8")
+  end
 
   # La visualizacion por medio de D3
   def graficas

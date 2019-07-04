@@ -3,16 +3,33 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
-  namespace :metamares do
-    resources :admin
-    resources :proyectos
-    resources :directorio
-    get 'graficas' => 'metamares#graficas'
-    get 'grafica1' => 'metamares#grafica1'
-    get 'grafica2' => 'metamares#grafica2'
-    get 'dame-institucion' => 'metamares#dame_institucion'
-    get 'dame-keyword' => 'metamares#dame_keyword'
-    get '' => 'proyectos#index'
+  if Rails.env.development?
+    namespace :metamares do
+      root 'metamares#index'
+      resources :admin
+      resources :proyectos
+      resources :directorio
+      get 'graficas' => 'metamares#graficas'
+      get 'grafica1' => 'metamares#grafica1'
+      get 'grafica2' => 'metamares#grafica2'
+      get 'dame-institucion' => 'metamares#dame_institucion'
+      get 'dame-keyword' => 'metamares#dame_keyword'
+    end
+  else
+    constraints host: 'infoceanos.conabio.gob.mx' do
+      root 'metamares/metamares#index'
+      namespace :metamares do
+        root 'metamares#index'
+        resources :admin
+        resources :proyectos
+        resources :directorio
+        get 'graficas' => 'metamares#graficas'
+        get 'grafica1' => 'metamares#grafica1'
+        get 'grafica2' => 'metamares#grafica2'
+        get 'dame-institucion' => 'metamares#dame_institucion'
+        get 'dame-keyword' => 'metamares#dame_keyword'
+      end
+    end
   end
 
   namespace :pmc do
@@ -30,7 +47,7 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
-    resources :taxa
+    #resources :taxa
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie
@@ -66,6 +83,8 @@ Buscador::Application.routes.draw do
     end
   end
 
+  get 'estadisticas' => 'estadisticas#show'
+  get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
 

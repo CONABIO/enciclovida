@@ -302,7 +302,7 @@
     },
     {
       "uid": "ff0dc71338f66ff88cf0df40f700e0dd",
-      "css": "pteridophyta",
+      "css": "polypodiidae",
       "code": 59412,
       "src": "custom_icons",
       "selected": true,
@@ -316,7 +316,7 @@
     },
     {
       "uid": "b4986b7da99b6a99ea7621a9e68e4380",
-      "css": "cycadophyta",
+      "css": "cycadidae",
       "code": 59413,
       "src": "custom_icons",
       "selected": true,
@@ -330,7 +330,7 @@
     },
     {
       "uid": "f7cd20e53446fe2b2976e6983dd3d469",
-      "css": "gnetophyta",
+      "css": "anthocerotophyta",
       "code": 59414,
       "src": "custom_icons",
       "selected": true,
@@ -344,7 +344,7 @@
     },
     {
       "uid": "005db636b5143458e2fa47e8f4a4a84b",
-      "css": "liliopsida",
+      "css": "lilianae",
       "code": 59415,
       "src": "custom_icons",
       "selected": true,
@@ -358,7 +358,7 @@
     },
     {
       "uid": "efb869f5bcec80b82941c4216c5286ea",
-      "css": "coniferophyta",
+      "css": "pinidae",
       "code": 59416,
       "src": "custom_icons",
       "selected": true,
@@ -372,7 +372,7 @@
     },
     {
       "uid": "666d2be33b1378fb4e2c92b0d1accc50",
-      "css": "magnoliopsida",
+      "css": "magnoliidae",
       "code": 59417,
       "src": "custom_icons",
       "selected": true,

@@ -13,10 +13,10 @@ var quitaParametros = function(sParam)
 
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] != sParam) {
-            url = url + sParameterName[0] + '=' + sParameterName[1] + '&'
-        }
+        if (sParameterName[0] != '')
+            url = url + sParameterName[0] + '=' + sParameterName[1] + '&';
     }
+
     return url.substring(0,url.length-1);
 };
 
