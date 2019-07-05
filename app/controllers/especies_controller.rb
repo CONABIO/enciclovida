@@ -931,12 +931,16 @@ class EspeciesController < ApplicationController
       if id_millon = Adicional.where(idMillon: params[:id]).first
         @especie = Especie.find(id_millon.especie_id)
       else  # Tampoco era el ID de millon
-        render :_error and return
+        if params[:action] == 'show' && params[:format] == 'json'
+          render json: {} and return
+        else
+          render :_error and return
+        end
       end
     end
 
     # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-    @especie.servicios if params[:action] == 'show'
+    @especie.servicios if params[:action] == 'show' && params[:format].blank?
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
@@ -946,7 +950,7 @@ class EspeciesController < ApplicationController
         if estatus.length == 1  # Nos aseguramos que solo haya un valido
           begin
             @especie = Especie.find(estatus.first.especie_id2)
-            redirect_to especie_path(@especie)
+            #redirect_to especie_path(@especie)
           rescue
             render :_error and return
           end
