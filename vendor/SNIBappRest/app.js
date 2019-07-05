@@ -382,6 +382,25 @@ server.register([
     });
 
     server.route({
+        path: '/especie/{id}/ancestry',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Consulta todas las categorías ascendentes del taxon',
+            notes: '---',
+            validate: {
+                params: {
+                    id: Joi.number().description('ID de la especie')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/especies/" + request.params.id + '/arbol_nodo_inicial';
+                query.ajaxRequest(url, reply);
+            }
+        }
+    });
+
+    server.route({
         path: '/autocompleta/especies/{q}',
         method: 'GET',
         config: {
