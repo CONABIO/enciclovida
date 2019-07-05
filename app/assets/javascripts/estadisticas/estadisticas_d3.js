@@ -2,13 +2,20 @@ $(window).load(function() {
     // Animate loader off screen
     $("#cargando-estadistica").fadeOut();
     $("#estadistica-listo").fadeIn();
-});
 
+    $("#limpiar-de-estd").on('click', function(){
+        window.location.href = "/estadisticas";
+    });
+    pestaniAncho = $("#resultados-g").width();
+});
 
 function cargaEstadisticas() {
     $("#cargando-estadistica").fadeIn();
     $("#estadistica-listo").fadeOut();
 }
+
+// Almacenará el ancho de la pestaña
+var pestaniAncho;
 
 // Medidas para mostrar la gráfica
 var width;
@@ -20,7 +27,6 @@ var b;
 var formatNumber;
 // La escala de colores a utilizar
 var color;
-//const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, json.children.length + 1));
 var x;
 var y;
 var partition;
@@ -37,15 +43,23 @@ var textFits;
 // Seleccionar el div con id = chart para mostrar la gráfica
 var svg; // Reset zoom on canvas click
 
+// Clics que se le dan a un segmento de la gráfica
+var clicsGrafica = 0;
+var ultimoClic = "";
 
 // - - - - -  - - - - - - - - - -
 
 // Función para comenzár a dibujar la gráfica
 function config() {
 
+    // Calcular la medida de la gráfica: ocupará el 80% de la pestaña y no medirá más de 1000px
+    var medidaG = (pestaniAncho - (pestaniAncho * 0.2));
+    if (medidaG > 1000)
+        medidaG = 1000;
+
     // Medidas para mostrar la gráfica
-    width = 1000;
-    height = 800;
+    width = medidaG;
+    height = medidaG;
     maxRadius = (Math.min(width, height) / 2) - 5;
     // b para mostrar la navegación de la gráfica > > >
     b = { w: 75, h: 30, s: 3, t: 10 };
@@ -53,7 +67,6 @@ function config() {
     formatNumber = d3.format(',d');
     // La escala de colores a utilizar
     color = d3.scaleOrdinal(d3.schemeCategory20);
-    //const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, json.children.length + 1));
 
     x = d3.scaleLinear()
         .range([0, 2 * Math.PI])
@@ -110,7 +123,7 @@ function config() {
         .attr("width", width)
         .attr("height", height)
         .append("svg:g")
-        .attr("id", "container")
+        .attr("id", "g_container")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
         .on('click', () => focusOn()); // Reset zoom on canvas click
 
@@ -121,13 +134,15 @@ function start(el_json) {
     // Pasar a JSON
     var json = JSON.parse(el_json);
     // Inicializar la gráfica
-    config();
-    // LLamar a la función que general la gráfica
-    createVisualization(json);
+    $( window ).on( "load", function() {
+        config();
+        // LLamar a la función que general la gráfica
+        createVisualization(json);
+    });
 }
 
 function createVisualization(root) {
-
+    //color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, root.children.length + 1));
     root = d3.hierarchy(root);
     root.sum(d => d.size);
 
@@ -138,6 +153,7 @@ function createVisualization(root) {
 
     slice.exit().remove();
 
+
     // Por cada componente a mostrar, pegarle la función: focusOn
     const newSlice = slice.enter()
         .append('g').attr('class', 'slice')
@@ -146,8 +162,9 @@ function createVisualization(root) {
             focusOn(d);
         });
 
+    var navegacion = (d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${formatNumber(d.value)}`);
     // Pegar el titulo a cada componente de la estadistica (se mostrará cuando el puntero se encuentra sobre el componente)
-    newSlice.append('title').text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${formatNumber(d.value)}`);
+    newSlice.append('title').text(navegacion);
 
     // Muestra el componente que representará la estadística
     newSlice.append('path')
@@ -178,6 +195,14 @@ function createVisualization(root) {
         })
         .style("opacity", 1)
         .on("mouseover", mouseover) // pegarle a los componentes la función mouseover
+        .on('click', function (d) {
+            if(ultimoClic === d.data.name) {
+                clicsGrafica = 1
+            } else {
+                clicsGrafica = 0;
+            }
+            ultimoClic = d.data.name;
+        })
         .attr('d', arc);
 
     // A cada componenete pegarle clases y la etiqueta que contiene el nombre de la estadistica:
@@ -187,7 +212,7 @@ function createVisualization(root) {
         .attr('d', middleArcLine);
 
     // Cuándo el puntrero no se encuentra dentro de la gráfica
-    d3.select("#container").on("mouseleave", mouseleave);
+    d3.select("#g_container").on("mouseleave", mouseleave);
 
     // Para el texto
     var text = newSlice.append("text")
@@ -296,6 +321,7 @@ function updateBreadcrumbs(nodeArray) {
 
 // Acercamiento a una parte específica de la tabla
 function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
+
     // Reset to top-level if no data point specified
     const transition = svg.transition()
         .duration(1000)
@@ -313,6 +339,7 @@ function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
 
     transition.selectAll('text')
         .attrTween('display', d => () => textFits(d) ? null : 'none');
+
     transition.selectAll("text")
         .delay(400)
         .attrTween("opacity", function (n) {
@@ -382,21 +409,25 @@ function mouseover(d) {
 
 // Cuándo el puntero esta fuera del área de la estadistica:
 function mouseleave(d) {
-    // Ocultar la barra de navegacioón
-    d3.select("#trail").style("visibility", "hidden");
 
-    // Desactivar el mouseover
-    d3.selectAll("path").on("mouseover", null);
+    if(clicsGrafica === 0) {
+// Ocultar la barra de navegacioón
+        d3.select("#trail").style("visibility", "hidden");
 
-    // Regresar a la normalidad todos los segmentos existentes
-    d3.selectAll("path")
-        .transition()
-        .duration(400)
-        .style("opacity", 1)
-        .on("end", function () {
-            d3.select(this).on("mouseover", mouseover);
-        });
-    // Ocultar el div que describe a los sem¡gmentos seleccionados
-    d3.select("#explanation")
-        .style("visibility", "hidden");
+        // Desactivar el mouseover
+        d3.selectAll("path").on("mouseover", null);
+
+        // Regresar a la normalidad todos los segmentos existentes
+        d3.selectAll("path")
+            .transition()
+            .duration(400)
+            .style("opacity", 1)
+            .on("end", function () {
+                d3.select(this).on("mouseover", mouseover);
+            });
+        // Ocultar el div que describe a los sem¡gmentos seleccionados
+        d3.select("#explanation")
+            .style("visibility", "hidden");
+    }
+
 }

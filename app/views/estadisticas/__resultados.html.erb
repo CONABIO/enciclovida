@@ -10,20 +10,22 @@
   <div id="grp">
     <div id="sequence"></div>
     <div id="chart">
+      <a id="botonRegresaEstadistica"><span class="glyphicon glyphicon-arrow-left"></span></a>
       <div id="explanation" style="visibility: hidden;">
         <span id="percentage"></span><br/>
         <p id="estadistica"></p>
       </div>
     </div>
-
     <script type="text/javascript" charset="utf-8">
-        var totalesEstadisticas = <%=raw @totales_estadisticas.to_json %>;
-        start(totalesEstadisticas);
+        // START: Función que comenzará a dibujar la gráfica en la vista, recibe las estadisticas en un formato generado por Rails
+        start(<%=raw @totales_estadisticas.to_json %>);
     </script>
   </div>
 
   <div id="resultados" class="text-left">
-    <h4>El total de taxónes es: <%= @totales %> </h4>
+    <h4>
+      El total de taxónes es: <%= @totales.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse %>
+    </h4>
   </div>
 </div>
 

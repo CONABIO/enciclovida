@@ -98,11 +98,11 @@ class EstadisticasController < ApplicationController
 
     multimedia = agrega_hijo(estadisticas, "Multimedia")
     fichas = agrega_hijo(estadisticas, "Fichas")
-    nombres_c = agrega_hijo(estadisticas, "Nombres_comunes")
+    nombres_c = agrega_hijo(estadisticas, "Nombres comunes")
     obser = agrega_hijo(estadisticas, "Observaciones")
     ejemp = agrega_hijo(estadisticas, "Ejemplares")
     mapas = agrega_hijo(estadisticas, "Mapas")
-    n_espe = agrega_hijo(estadisticas, "Número_especies")
+    n_espe = agrega_hijo(estadisticas, "Número especies")
     visit = agrega_hijo(estadisticas, "Visitas")
     otros = agrega_hijo(estadisticas, "Otros")
 
@@ -163,7 +163,7 @@ class EstadisticasController < ApplicationController
       valor = agrega_hijo(padre[:children], nombres[0])
       valor[:children].append("name": nombres[1], "size": dato[:conteo])
     else
-      padre[:children].append("name": dato[:nombre_estadistica], "size": dato[:conteo])
+      padre[:children].append("name": (dato[:nombre_estadistica].gsub("#{padre[:name]} ","").gsub("de ","").gsub("en ","").gsub("el ","")), "size": dato[:conteo])
     end
     padre
   end
