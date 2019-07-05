@@ -578,6 +578,7 @@ module CacheServices
 
     # LLamada al servicio para obtener los resultados SNIB
     resultados_snib = recupera_ejemplares_snib(self.scat.catalogo_id)
+
     # Verificar el estatus de la llamada al servicio
     # En teorìa, se puede acceder al arreglo de 'resultados'
     if resultados_snib.first.include?('nregistros')
@@ -619,6 +620,7 @@ module CacheServices
 
   def itera_estadisticas_restantes
     Especie.all.each do |especie_x|
+      next unless especie_x.especie_o_inferior?
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
       especie_x.genera_estadisticas_directo
       puts "\n* * * * * * * * * * * * * * * * "
@@ -631,7 +633,6 @@ module CacheServices
 
     especies_todas.each do |especie_x|
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
-
       # Eliminar el caché si tiene
       especie_x.borra_cache('estadisticas_naturalista')
       especie_x.borra_cache('estadisticas_conabio')
@@ -643,19 +644,13 @@ module CacheServices
       especie_x.borra_cache('estadisticas_mapas_distribucion')
       especie_x.genera_estadisticas
       puts "\n* * * * * * * * * * * * * * * * "
-
     end
   end
 
   def genera_estadisticas_directo
     # Invocar las estadisticas de naturalista
-    borra_cache('estadisticas_naturalista')
     borra_cache('estadisticas_SNIB')
-    borra_cache('estadisticas_mapas_distribucion')
-
-    puts "\nestadisticas_naturalista: #{estadisticas_naturalista}"
     puts "\nestadisticas_SNIB: #{estadisticas_SNIB}"
-    puts "\nestadisticas_mapas_distribucion: #{estadisticas_mapas_distribucion}"
   end
 
   def genera_estadisticas
@@ -721,7 +716,7 @@ module CacheServices
     resultados = {}
     begin
       # LLamada al servicio de enciclovida para obtener el JSON
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.enciclovida_api}/especie/ejemplares/conteo?idnombrecatvalido=#{especie_id}", timeout: 20)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.enciclovida_api}/especie/snib/ejemplares/conteo?idnombrecatvalido=#{especie_id}", timeout: 20)
       resultados = JSON.parse(rest_client)
     rescue
       resultados['estatus'] = "error"
@@ -738,7 +733,6 @@ module CacheServices
       if i > 1 && %w(photo audio video).include?(tipo) && total < (total_por_pagina * (i - 1))
         break # No tiene caso buscar cuando ya no hay mas resultadose  en las demàs pàginas
       end
-      puts "Llamo al servicio #{i}"
       archivo = servicio.dameMedia_nc(nombre_especie, tipo, i, total_por_pagina)
       if archivo == nil && i == 1
         total = 0
