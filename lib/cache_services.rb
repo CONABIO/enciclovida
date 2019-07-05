@@ -620,6 +620,7 @@ module CacheServices
 
   def itera_estadisticas_restantes
     Especie.all.each do |especie_x|
+      next unless especie_x.especie_o_inferior?
       puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
       especie_x.genera_estadisticas_directo
       puts "\n* * * * * * * * * * * * * * * * "
