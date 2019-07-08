@@ -10,13 +10,11 @@ buscar = Array.new
 p = ""
 respuestas = Array.new
 
-# Se inicializa  el objeto doc el cual contiene el archivo .dcox
-# en la función open se  proporciona la dirección del archivo
-# doc = Docx::Document.open('Documents/Fichas/Plantas/Pueraria montana lobata.docx')
 doc = Docx::Document.open('/home/sergiocg/test.docx')
-doc = Dir.glob('/home/sergiocg/Documents/Fichas/**/*.docx')
+doc = Dir.glob('/home/sergiocg/Documents/Fichas/Aves/*.docx')
 doc.each do |d|
   puts d
+  doc = Docx::Document.open(d)
   # Se insertan los parrafos del archivo docx en un Array llamado parrafos
   doc.paragraphs.each do |p|
     parrafos.append(p.to_s)
@@ -112,20 +110,27 @@ doc.each do |d|
     else
       f1 = Fichas::Taxon.new
       # Base Fespecies tabla taxon
+      puts f1.inspect
       f1.IdCAT = e.scat[:IDCAT]
       f1.resumenEspecie = parrafosSinEspacio[3]
       f1.descEspecie = buscar[0]
       # fespecies tabla distribuciones
-      d = f1.distribuciones.new
-      d.comoExoticaMundial = buscar.last
+      di = f1.distribuciones.new
+      di.comoExoticaMundial = buscar.last
+
       # ciclo que busca los ide de los paises
       paises.each do |i|
         p = Fichas::Pais.select(:paisId).where('nombrepais  = ?', i.strip).to_a
-        paisesFinal.append(p[0][:paisId])
+        puts "error algo pasa"
+        puts p[0].inspect
+        if p[0].nil?
+          puts 'aqui ay un nil'
+        else
+          paisesFinal.append(p[0][:paisId])
+        end
       end
-      # d1 = d.relDistribucionesPaises.new([{:paisId => paisesFinal[0]},{:paisId => paisesFinal[1]}])
-      d1 = d.relDistribucionesPaises.new(paisesFinal.map {|pais| {'paisId'=>pais,'tipopais' =>0} })
-      puts d1.inspect
+
+      d1 = di.relDistribucionesPaises.new(paisesFinal.map {|pais| {'paisId'=>pais,'tipopais' =>0} })
       # seccionde preguntas id = 59,42,62 [65,66],64,63
       # pregunta 1
       p1 = f1.observacionescaracs.new
@@ -155,7 +160,7 @@ doc.each do |d|
       p6 = f1.observacionescaracs.new
       p6.idpregunta = 63
       p6.infoadicional = respuestas[6]
-      #f1.save
+      f1.save
     end
   end
 end
