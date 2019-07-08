@@ -9,4 +9,5 @@ peces/peces.js peces/propiedades_extra.js peces/peces.css peces/propiedades_extr
 especies/mapa/mapa.js especies/mapa/mapa.css especies/mapa/mapa_delayed.js
 comentarios/comentarios.js
 metamares/metamares.js metamares/metamares.css metamares/graficas.js metamares/graficas.css
+fichas/fichas.js fichas.css estadisticas/estadisticas.js estadisticas/estadisticas.css
 )
