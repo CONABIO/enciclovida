@@ -6,7 +6,7 @@ class Fichas::Taxon < Ficha
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
 	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
 	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
-	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId'
+	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
   has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
 	has_many :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId'
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
