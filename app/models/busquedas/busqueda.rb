@@ -81,6 +81,14 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       el_where << " AND enciclovida.especies_estadistica.conteo #{conteo} "
 
       # EJECUTAR QUERY con el WHERE CONSTRUIDO
+
+      ## OPCIÔN 1: OBTENER LOS TAXONES Y DESPUÊS LOS TOTALES
+      # Obtener los taxones:
+      # self.taxones = taxones.joins(:especie_estadisticas).distinct.where(el_where)
+      # Obtener los totales de cada estadìstica
+      # resultados = taxones.group(:estadistica_id).size
+
+      ## OPCIÔN 2: OBTENER SÔLO LOS TOTALES
       resultados = taxones.joins(:especie_estadisticas).distinct.where(el_where).group(:estadistica_id).size
 
       # Iteramos los resultados y guardamos
@@ -89,6 +97,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
         # CONSIDERANDO QUE EL ID DE LA ESTADÎSTICA SEA IGUAL AL DE SU POSICION EN LA BASE DE DATOS:
         id_estd = (clave.to_i - 1)
         nombre_estd = las_estadisticas[id_estd].descripcion_estadistica
+        # SI NO, BUCARLA SEGÛN SU ID ESTADÎSTICA
         # nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
         conteo_estd = valor
         self.estadisticas[clave] = {
