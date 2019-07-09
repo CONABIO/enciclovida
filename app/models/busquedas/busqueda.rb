@@ -50,6 +50,9 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
         end
       end
 
+      # Extraer las estadìsticas existentes:
+      las_estadisticas = Estadistica.all
+
       # Construir la clausula WHERE a partir de los parámetros
       estadisticas_a_mostrar = []
       # Si se definieron las estadísticas
@@ -57,7 +60,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
         estadisticas_a_mostrar = params["showEstadisticas"]
       else
         # Si no, mostrar todas
-        Estadistica.all.each do |estadistica|
+        las_estadisticas.each do |estadistica|
           next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
           estadisticas_a_mostrar << estadistica.id
         end
@@ -83,7 +86,10 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       # Iteramos los resultados y guardamos
       self.estadisticas = {}
       resultados.each do |clave, valor|
-        nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
+        # CONSIDERANDO QUE EL ID DE LA ESTADÎSTICA SEA IGUAL AL DE SU POSICION EN LA BASE DE DATOS:
+        id_estd = (clave.to_i - 1)
+        nombre_estd = las_estadisticas[id_estd].descripcion_estadistica
+        # nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
         conteo_estd = valor
         self.estadisticas[clave] = {
             'nombre_estadistica': nombre_estd,
