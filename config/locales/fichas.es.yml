@@ -23,6 +23,12 @@ es:
     s_clasificacion:
       resumen: Resumen de la especie
       descr_especie: Descripción de la especie
+      macho: Macho
+      hembra: Hembra
+      largo: Largo total
+      peso: Peso
+      edad: Edad
+      tiempoedad: Medida
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
       descripcion: Ambiente
@@ -118,7 +124,15 @@ es:
         descripcionOrigen: Indicar si la especie es nativa, ex&oacute;tica, o si no hay informaci&oacute;n sobre su origen.
       endemicas:
         endemicaA: Si es end&eacute;mica, especificar regi&oacute;n (ej. mesoam&eacute;rica, ej. Neovolc&aacute;nico, etc.).
+      distribuciones:
+        infoAdicionalMun: Informaci&oacute;n adicional sobre la distribuci&oacute;n de la especie en las regiones mencionadas
+        distribucion: Distribuci&oacute;n original reportada para la especie o distribuci&oacute;n potencial de acuerdo con modelos de nicho.
+        comoExoticaMundial: Distribuci&oacute;n reportada para la especie como ex&oacute;tica en el mundo.
+        comoExoticaMex: Distribuci&oacute;n reportada para la especie como ex&oacute;tica en M&eacute;xico.
+        distribucionOriginal: Distribuci&oacute;n reportada para la especie en su &aacute;rea de distribuci&oacute;n original.
       habitats:
+        estadoHabitat: Siguiendo los lineamientos del criterio B del M&eacute;todo de Evaluaci&oacute;n de riesgo de extinci&oacute;n(MER)de la NOM-059-SEMARNAT-2010. Otros datos Pueden agregarse en informacion adicional
+        addinfoestadoHabitat: Informaci&oacute;n adicional sobre el estado del h&aacute;bitat con respecto al desarrollo natural del tax&oacute;n.
         intervaloaltitudinalinicial: En msnm
         intervaloaltitudinalfinal: En msnm
         temperaturainicial: En grados celsius​ (ºC)
@@ -128,8 +142,14 @@ es:
         humedadinicial: En porcentaje (%)
         humedadfinal: En porcentaje (%)
       reproduccionVegetal:
-        cantidadnectarinicial: En µl
-        cantidadnectarfinal: En µl
+        nofrutosinicial: Frutos
+        nofrutosfinal: Frutos
+        nosemillasinicial: Semillas
+        nosemillasfinal: Semillas
+        germinacioninicial: '%'
+        germinacionfinal: '%'
+        plantulasinicial: '%'
+        plantulasfinal: '%'
     options:
       fichas_taxon:
         origen:
@@ -183,6 +203,11 @@ es:
           Restringida: Incluye especies cuyo ámbito de distribución en México se encuentra entre el 5 y el 15% del Territorio Nacional.
           Medianamente restringida o amplia: Incluye aquellas especies cuyo ámbito de distribución es mayor que el 15%, pero menor que el 40% del Territorio Nacional.
           Ampliamente distribuidas o muy amplias: Incluye aquellas especies cuyo ámbito de distribución es igual o mayor que el 40% del Territorio Nacional.
+        tipoDistribucion:
+          Amplia: Se encuentra en la mayor parte de la localidad de referencia
+          Localizada: Se encuentra en algunos sitios de la localidad de referencia
+          Moderada: Se encuentra en algunos, pero no en todos, los sitios de la localidad de referencia
+          Se desconoce: Se desconoce
       historiaNatural:
         funcionEcologica:
           Productores: Productores
@@ -205,13 +230,20 @@ es:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
-        tabla_descripcion:
-          descEspecie: Descripción de la especie
-          macho: Machos
-          hembra: Hembras
-          largototal: Largo en centímetros
-          pesototal: Peso en gramos
-          longevidadhtotal: Longevidad
+        largoinicialhembras: 'De:'
+        largofinalhembras: 'A:'
+        largoinicialmachos: 'De:'
+        largofinalmachos: 'A:'
+        pesoinicialhembras: 'De:'
+        pesofinalhembras: 'A:'
+        pesoinicialmachos: 'De:'
+        pesofinalmachos: 'A:'
+        edadinicialhembras: 'De:'
+        edadfinalhembras: 'A:'
+        edadinicialmachos: 'De:'
+        edadfinalmachos: 'A:'
+        tiempoedadhembra: 'Intervalo de tiempo'
+        tiempoedadmacho: 'Intervalo de tiempo'
         especiesSmilares: Especies similares
         infoAdicional: Categoría de riesgo según la NOM-059-SEMARNAT I nformación adicional
         descripcionOrigen: Descrición del orígen
@@ -237,12 +269,19 @@ es:
         infoAdicionalMun: Información adicional
         alcanceDistribucion: Distribución amplia o restringida
         infoAdicionalAlcance: Información adicional
+        distribucion: Distribución
+        comoExoticaMundial: Distribución como especie exótica en el mundo
+        comoExoticaMex: Distribución como especie exótica en México
+        distribucionOriginal: Distribución de la especie en su área de distribución original
+        tipoDistribucion: Tipo de distribución como especie invasora
       habitats:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         estadoHabitat: Estado del hábitat con respecto al desarrollo natural del taxón
+        addinfoestadoHabitat: Información adicional
         #  * *  S E C C I Ó N   A M B I E N T E * *  #
         tipoAmbiente: Ambiente en donde se desarrolla la especie
-        tipoVegetacion: Indicar el o los tipos de vegetación en los que se desarrolla la especie
+        tipoVegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
+        tipoVegetacion: Informaciónn adicional sobre los tipos de vegetación en los que se desarrolla la especie
         # B) Hábitats antrópicos
         habitatAgropecuario: ¿Se encuentra en hábitat agropecuario?
         zonaUrbana: ¿Se encuentra en zonas urbanas?
@@ -369,9 +408,6 @@ es:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         descripcion: Generalidades
         arregloEspacial: Tipos de expresión sexual
-        cambiar1: Flores
-        cambiar2: Individuos
-        cambiar3: Poblaciones
         descripcionArregloespacial: Información adicional
         aislamientoOrganos: Aislamiento temporal o espacial de los órganos reproductores
         descAislaOrganos: Información adicional

@@ -20,14 +20,16 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
+	accepts_nested_attributes_for :conservacion, allow_destroy: true
+	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :distribuciones, allow_destroy: true
+	accepts_nested_attributes_for :endemicas, allow_destroy: true
 	accepts_nested_attributes_for :habitats, allow_destroy: true
-  accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
-  accepts_nested_attributes_for :conservacion, allow_destroy: true
   accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :endemicas, allow_destroy: true
 	accepts_nested_attributes_for :metadatos, allow_destroy: true
+	accepts_nested_attributes_for :productoComercios, allow_destroy: true
 	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
 
 	# Sección I: Clasificacion
@@ -47,10 +49,6 @@ class Fichas::Taxon < Ficha
 	ESPECIE_ENLISTADA = [:yes, :no]
 	LISTADOS = [:DOF, :CONABIO]
 	PRIORIDADS = [:alta, :media, :baja]
-
-
-
-
 
   # Devuelve las secciones que tienen información
 	def dame_edad_peso_largo
@@ -74,26 +72,5 @@ class Fichas::Taxon < Ficha
 
 		datos
 	end
-
-end
-
-class Numerador
-
-	include Singleton
-
-	def initialize
-    @pregunta = 0
-    @nivel = 1
-    @tipo_r = "A"
-	end
-
-  def x_pregunta (nivel = 1, tipo_r = "A")
-
-		if nivel == 1
-			@pregunta += 1
-		end
-
-    "#{@pregunta}. "
-  end
 
 end

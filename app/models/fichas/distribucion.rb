@@ -15,4 +15,11 @@ class Fichas::Distribucion < Ficha
 			'Ampliamente distribuidas o muy amplias'.to_sym
 	]
 
+	TIPO_DISTRIBUCION = [
+			'Amplia'.to_sym,
+			'Localizada'.to_sym,
+			'Moderada'.to_sym,
+			'Se desconoce'.to_sym
+	]
+
 end

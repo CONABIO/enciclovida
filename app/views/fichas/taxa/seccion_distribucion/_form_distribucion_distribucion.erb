@@ -2,13 +2,44 @@
 
   <fieldset class="apartados">
     <legend class="text-primary"> <%=t('secciones.s_distribucion.region')%> </legend>
-    Distribución mundial:
+
+    a). Distribuci&oacuteón mundial:
+    <%= f.input :alcanceDistribucion,
+                collection: Fichas::Pais.all.all.map { |r| ["#{r.iso3} (#{r.nombrepais})", r.paisId] },
+                :as => :select,
+                input_html: {
+                    class: 'form-control selectpicker',
+                    'data-live-search': 'true',
+                    multiple: true,
+                    'title': t('general.seleccionar_opciones'),
+                }
+    %>
+
+    b). En México/Estado:
+    <%= f.input :alcanceDistribucion,
+                collection: Fichas::Estado_F.all.map { |r| ["#{r.claveEstado} (#{r.nombreEstado})", r.estadoId] },
+                :as => :select,
+                input_html: {
+                    class: 'form-control selectpicker',
+                    'data-live-search': 'true',
+                    multiple: true,
+                    'title': t('general.seleccionar_opciones'),
+                }
+    %>
+    c). México/Municipio
+    <br><br>
+    <%= f.input :infoAdicionalMun %>
   </fieldset>
   <hr>
-
   <%= f.input :historicaPotencial %>
-  <hr class="espacio_ficha">
-  <%= f.input :infoAdicionalMun %>
+  <div style="display:none;">
+    <!-- Estas preguntas aparecen como ocultas en el formulario -->
+    <%= f.input :distribucion %>
+    <%= f.input :comoExoticaMundial %>
+    <%= f.input :comoExoticaMex %>
+    <%= f.input :distribucionOriginal %>
+  </div>
   <%= f.input :alcanceDistribucion, :as => :select, collection: Fichas::Distribucion::DISTRIBUCINES, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
   <%= f.input :infoAdicionalAlcance %>
+  <%= f.input :tipoDistribucion, :as => :select, collection: Fichas::Distribucion::TIPO_DISTRIBUCION, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
 </div>

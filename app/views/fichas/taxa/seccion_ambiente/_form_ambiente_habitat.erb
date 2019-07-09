@@ -3,6 +3,72 @@
   <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()', name: 'opcion-AmbienteDesarrolloEspecie'} %>
   <hr>
 
+
+
+  Si es terrestre:
+  tipoEcorregionwwf
+  ecowwf1
+  ecowwf2
+  ecowwf3
+  tipoVegetacion
+  tipoVegetacionexo
+  habitatAntropico
+  habitatAgropecuario
+  zonaUrbana
+  VegetacionSecundaria
+  vegMundialInvasora
+  intervaloaltitudinalinicial
+  intervaloaltitudinalfinal
+  infoAddintervaloaltitudinal
+  climaInvasora
+  temperaturainicial
+  temperaturafinal
+  infoaddtemperatura
+  precipitacioninicial
+  precipitacionfinal
+  infoaddprecipitacion
+  humedadinicial
+  humedadfinal
+  infoaddhumedad
+  temperaturainicialexo
+  temperaturafinalexo
+  infoaddtemperaturaexo
+  precipitacioninicialexo
+  precipitacionfinalexo
+  infoaddprecipitacionexo
+  humedadinicialexo
+  humedadfinalexo
+  infoaddhumedadexo
+
+
+  acuatico
+  tipoHabitat
+  biotipos
+  salinidadinicial
+  salinidadfinal
+  unidadsalinidad
+  oxigenoinicial
+  oxigenofinal
+  phinicial
+  phfinal
+  temeperaturainicial
+  temeperaturafinal
+  corrientes
+  infoaddcaracagua
+  intervaloaltitudinalacuainicial
+  intervaloaltitudinalacuafinal
+  infoAddintervaloaltitudinalacua
+  interbatimetricoinicial
+  interbatimetricofinal
+  infoaddinterbatimetrico
+  amplitudmareasinicial
+  amplitudmareasfinal
+  infoaddamplitudmareas
+
+
+
+
+
   <fieldset class="apartados">
     <legend class="text-primary"> Ecorregiones </legend>
     <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
@@ -13,6 +79,8 @@
         <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
       <% end %>
     </div>
+    <% # Se accede así: Fichas::Observacionescarac.where('especieId= ID and idpregunta = 52') pero no sé cómo se guarda
+    %>
   </fieldset>
 
   <fieldset class="apartados">
@@ -42,6 +110,32 @@
                 }
     %>
     <%= f.input :tipoVegetacion %>
+    <div>
+      <!-- Oculta -->
+      Tipos de vegetaci&oacute;n especie ex&oacute;tica:<br/><br/></b><b> Indicar el o los tipos de vegetaci&oacute;n en los que se desarrolla la especie ex&oacute;tica:</b></td>
+      <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
+      <%= f.input :tipoVegetacion, :as => :grouped_select,
+                  collection: collections,
+                  :group_method => :last,
+                  group_label_method: :first,
+                  :label_method => :descripcionSubVegetacion,
+                  input_html: {
+                      class: 'form-control selectpicker',
+                      multiple: true,
+                      'data-live-search': 'true',
+                      'title': t('general.seleccionar_opcion')
+                  }
+      %>
+      Informaci&oacute;n adicional sobre los tipos de vegetaci&oacute;n en los que se desarrolla la especie
+      <%= f.input :tipoVegetacionexo %>
+
+      >Indicar si se encuentra en h&aacute;bitats antr&oacute;picos:
+      habitatAntropico
+
+    </div>
+
+
+
     <%= f.input :tipoVegetacion,
                 collection: Fichas::Habitatantropico.all.map { |r| [r.descripcion, r.habitatAntropicoId] },
                 :as => :select,
