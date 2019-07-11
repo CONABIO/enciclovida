@@ -45,6 +45,21 @@ class Fichas::Taxon < Ficha
 			"Dias".to_sym
 	]
 
+  TIPOS_FICHA = [
+      "prioritaria".to_sym,
+      "invasora".to_sym,
+      "cites".to_sym,
+      "ps".to_sym
+  ]
+
+  PRESENCIA = [
+      "Ausencia/Ausente".to_sym,
+      "Presente".to_sym,
+      "Presentes por confirmar (casual)".to_sym,
+      "Presente confinado".to_sym,
+      "Se desconoce".to_sym
+  ]
+
 	# Para sección de especies prioritarias
 	ESPECIE_ENLISTADA = [:yes, :no]
 	LISTADOS = [:DOF, :CONABIO]

@@ -18,8 +18,45 @@ $( document ).ready(function() {
     showOrHideAmbienteDesarrolloEspecie();
     //  Para mostrar correctamente el formulario de la sección Biologia
     showOrHideSegunTipoReproduccion();
-
 });
+
+$(window).load(function(){
+    showOrHideInfoFicha(document.getElementById('selectorDeFicha'));
+});
+
+
+/*
+* Ocultar el contenido relacionado a fichas específicas:
+* */
+function showOrHideInfoFicha(elem) {
+    var tipoFicha = elem.value;
+    switch (tipoFicha) {
+        case 'invasora':
+            $('.fichaINVASORA').fadeIn();
+            $('.fichaPS').fadeOut();
+            $('.fichaPRIORITRIA').fadeOut();
+            $('.fichaCITES').fadeOut();
+            break;
+        case 'prioritaria':
+            $('.fichaINVASORA').fadeOut();
+            $('.fichaPS').fadeOut();
+            $('.fichaPRIORITRIA').fadeIn();
+            $('.fichaCITES').fadeOut();
+            break;
+        case 'ps':
+            $('.fichaINVASORA').fadeOut();
+            $('.fichaPS').fadeIn();
+            $('.fichaPRIORITRIA').fadeOut();
+            $('.fichaCITES').fadeOut();
+            break;
+        case 'cites':
+            $('.fichaINVASORA').fadeOut();
+            $('.fichaPS').fadeOut();
+            $('.fichaPRIORITRIA').fadeOut();
+            $('.fichaCITES').fadeIn();
+            break;
+    }
+}
 
 
 /*

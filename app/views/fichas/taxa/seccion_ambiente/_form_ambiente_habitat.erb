@@ -1,4 +1,25 @@
 <div class='nested-fields'>
+
+
+  <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
+  <%= f.input :relEcorregionesHabitats, :as => :grouped_select,
+              collection: Fichas::Ficha_Ecorregion.all.map { |r| [r.descripcion, r.ecorregionId] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  multiple: true,
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opciones'),
+                  'data-selected-text-format': 'count > 3'
+              }
+  %>
+
+
+  <%=
+    f.object.relEcorregionesHabitats.inspect
+  %>
+
+
   <%= f.input :habitatId, :as => :hidden%>
   <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()', name: 'opcion-AmbienteDesarrolloEspecie'} %>
   <hr>

@@ -4,7 +4,7 @@ class Fichas::TaxaController < Fichas::FichasController
   # GET /taxa
   # GET /taxa.json
   def index
-    @taxa = Taxon.all
+    @taxa = Fichas::Taxon.all
   end
 
   # GET /taxa/1
@@ -15,13 +15,15 @@ class Fichas::TaxaController < Fichas::FichasController
 
   # GET /taxa/new
   def new
-    @taxon = Taxon.new
+    @form_params = { url: '/fichas/taxa', method: 'post' }
+    @taxon = Fichas::Taxon.new
   end
 
   # GET /taxa/1/edit
   def edit
     @form_params = { url: '/fichas/taxa', method: 'post' }
   end
+
 
   # POST /taxa
   # POST /taxa.json
@@ -79,5 +81,6 @@ class Fichas::TaxaController < Fichas::FichasController
     def taxon_params
       puts "\n\n\n\n - - - - - - - - -  - - - - -- - \n\n\n\n\n\n"
       params.fetch(:taxon, {})
+      #params.require(:taxon).permit(:resumenEspecie)
     end
 end

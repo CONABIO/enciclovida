@@ -11,6 +11,14 @@
     #select:        :floating_labels_select
 } do |f| %>
 
+  <div class="row">
+    <div class="col-sm-6"><h3> <%= t('general.informacion_de_ficha') %> </h3></div>
+    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {id: 'selectorDeFicha', onclick: 'showOrHideInfoFicha(this)' } %></div>
+    <% unless params[:tipoFicha].blank? %>
+      <script> var tipoFichaInicial = '<%=params[:tipoFicha]%>'; </script>
+    <% end %>
+  </div>
+
   <div id="pestañas" class="panel row">
     <ul class="nav nav-tabs links" role="tablist">
       <li role="presentation" class="active">
@@ -55,7 +63,6 @@
     </ul>
 
     <div class="tab-content">
-
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
@@ -63,6 +70,7 @@
         <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_taxon', locals: {f: f } %>
         <hr class="espacio_ficha">
         <hr />
+        <h3 class="titulo_subseccion"><%=t('secciones.s_clasificacion.legislaciones')%></h3>
         <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
@@ -187,5 +195,6 @@
   </div>
   <hr />
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+  <%= link_to t('helpers.submit.proy_b.cancel'), @taxon.new_record? ? fichas_taxon_path : fichas_taxon_path(@taxon), { :class=>"btn btn-lg btn-block btn-default" } %>
 
 <% end %>

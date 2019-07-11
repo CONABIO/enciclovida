@@ -44,8 +44,17 @@
     </div>
   </div>
 
+  <br><br>
   <%= f.input :especiesSmilares %>
   <%= f.input :origen, :as => :select, :collection => Fichas::Taxon::ORIGEN_MEXICO, prompt: :seleccionar,  input_html: {class: 'form-control selectpicker'}, 'title': t('general.seleccionar_opcion') %>
   <%= f.input :descripcionOrigen %>
+
+  <div class="fichaINVASORA">
+    <%= f.input :presencia, :as => :select, :collection => Fichas::Taxon::PRESENCIA, prompt: :seleccionar,  input_html: {class: 'form-control selectpicker'}, 'title': t('general.seleccionar_opcion') %>
+    <%= f.input :adicinalPresencia %>
+    <%= f.input :invasora, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+    <%= f.input :adicionalInvasora %>
+  </div>
+
 </div>
 

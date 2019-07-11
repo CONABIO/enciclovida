@@ -29,6 +29,7 @@ es:
       peso: Peso
       edad: Edad
       tiempoedad: Medida
+      legislaciones: Legislaciones
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
       descripcion: Ambiente
@@ -122,6 +123,9 @@ es:
         especiesSmilares: Si existen especies morfol&oacute;gicamente similares y hacer una breve descripci&oacute;n de las diferencias  que las distinguen.
         origen: Indicar si la especie es nativa, ex&oacute;tica, o si no hay informaci&oacute;n sobre su origen.
         descripcionOrigen: Indicar si la especie es nativa, ex&oacute;tica, o si no hay informaci&oacute;n sobre su origen.
+        presencia: Indicar si la especie est&aacute; presente o no en territorio mexicano.
+        adicinalPresencia: Informaci&oacute;n adicional sobre la presencia de la especie
+        adicionalInvasora: Informaci&oacute;n adicional sobre el estatus invasor de la especie
       endemicas:
         endemicaA: Si es end&eacute;mica, especificar regi&oacute;n (ej. mesoam&eacute;rica, ej. Neovolc&aacute;nico, etc.).
       distribuciones:
@@ -152,6 +156,11 @@ es:
         plantulasfinal: '%'
     options:
       fichas_taxon:
+        tipoficha:
+          prioritaria: Prioritaria
+          invasora: Invasora
+          cites: CITES
+          ps: Parientes silvestres
         origen:
           Exótica/No nativa: Exótica/No nativa
           Nativa: Nativa
@@ -228,6 +237,7 @@ es:
         no: No
       fichas_taxon:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
+        tipoficha: Tipo de ficha
         resumenEspecie: Resumen de la especie
         descEspecie: Descripción de la especie
         largoinicialhembras: 'De:'
@@ -249,6 +259,10 @@ es:
         descripcionOrigen: Descrición del orígen
         origen: Origen en relación con México
         infoadicionalnombre: Origen en relación con México Información adicional
+        presencia: Presente
+        adicinalPresencia: Información adicional
+        invasora: ¿La especie es invasora para México?
+        adicionalInvasora: Información adicional
         #  * *  S E C C I Ó N   P R I O R I T A R I A S  * *  #
         prioritaria: ¿Se encuentra enlistada como especie prioritaria?
         publicadaEn: a) ¿En qué listado se encuentra?
