@@ -4,9 +4,15 @@ class Fichas::Distribucion < Ficha
 	self.primary_keys = :distribucionId,  :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
+
 	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado'
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
-	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais'
+
+
+	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId"
+	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
+
+	accepts_nested_attributes_for :relDistribucionesPaises, allow_destroy: true
 
 	DISTRIBUCINES = [
 			'Muy restringida'.to_sym,
