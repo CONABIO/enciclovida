@@ -19,12 +19,13 @@ class Fichas::Habitat < Ficha
 	has_many :vegetacion, class_name: 'Fichas::Vegetacion', through: :relHabitatsVegetaciones
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
 
+	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
+	has_many :clima,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Tipoclima', through: :caracteristicasEspecies, :foreign_key => 'especieId'
+
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true
 	accepts_nested_attributes_for :suelo, allow_destroy: true
 	accepts_nested_attributes_for :geoforma, allow_destroy: true
-
-	accepts_nested_attributes_for :relEcorregionesHabitats, allow_destroy: true
 
 
 	ESTADOS_HABITAT = [

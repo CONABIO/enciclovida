@@ -5,14 +5,13 @@ class Fichas::Distribucion < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado'
-	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
-
-
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId"
-	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
+	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado', :foreign_key => "distribucionId"
+	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio', :foreign_key => "distribucionId"
 
-	accepts_nested_attributes_for :relDistribucionesPaises, allow_destroy: true
+	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
+	has_many :estado, class_name: 'Fichas::Estado_F', :through => :relDistribucionesEstados
+	has_many :municipio, class_name: 'Fichas::Municipio_F', :through => :relDistribucionesMunicipios
 
 	DISTRIBUCINES = [
 			'Muy restringida'.to_sym,

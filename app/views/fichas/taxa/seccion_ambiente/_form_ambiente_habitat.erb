@@ -5,43 +5,53 @@
 
   <fieldset class="apartados">
     <legend class="text-primary"> Ecorregiones </legend>
-    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ecorregion'.html_safe, f, :ecorregion, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecorregion', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-    <hr />
-    <% # OCUPA: ecorregion de  * habitat %>
-    <div id="ambiente_ecorregion">
-      <%= f.simple_fields_for :ecorregion do |info| %>
-        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
-      <% end %>
-    </div>
-    <% # Se accede así: Fichas::Observacionescarac.where('especieId= ID and idpregunta = 52') pero no sé cómo se guarda
-    %>
+    <%= f.association :ecorregion,
+                      label_method: :descripcion,
+                      value_method: :ecorregionId,
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      } %>
   </fieldset>
 
   <fieldset class="apartados">
     <legend class="text-primary"> Ecosistemas </legend>
-    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe, f, :ecosistema, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_ecosistema', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
-    <hr />
-    <div id="ambiente_ecosistema">
-      <%= f.simple_fields_for :ecosistema do |info| %>
-        <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
-      <% end %>
-    </div>
+    <%= f.association :ecosistema,
+                      label_method: :tipoecosistema,
+                      value_method: :ecosistemaid,
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      } %>
   </fieldset>
 
   <div id="ambiente-solo-terrestre">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
-    <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
-    <%= f.input :tipoVegetacion, :as => :grouped_select,
-                collection: collections,
-                :group_method => :last,
-                group_label_method: :first,
-                :label_method => :descripcionSubVegetacion,
-                input_html: {
-                    class: 'form-control selectpicker',
-                    multiple: true,
-                    'data-live-search': 'true',
-                    'title': t('general.seleccionar_opcion')
-                }
+
+
+    <%= f.association :vegetacion,
+                      label_method: :descripcionSubVegetacion,
+                      value_method: :vegetacionId,
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      } %>
+
+    <% #collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion)
+    %>
+    <%= # f.input :tipoVegetacion, :as => :grouped_select, collection: collections, :group_method => :last, group_label_method: :first, :label_method => :descripcionSubVegetacion, input_html: {class: 'form-control selectpicker', multiple: true, 'data-live-search': 'true', 'title': t('general.seleccionar_opcion')}
     %>
     <%= f.input :tipoVegetacion %>
     <div>
@@ -69,7 +79,8 @@
     </div>
 
 
-
+    <% #Habitatantropico NO APARECE EN DONDE SE GUARDA
+    %>
     <%= f.input :tipoVegetacion,
                 collection: Fichas::Habitatantropico.all.map { |r| [r.descripcion, r.habitatAntropicoId] },
                 :as => :select,

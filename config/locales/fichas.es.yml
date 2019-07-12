@@ -294,6 +294,10 @@ es:
         estadoHabitat: Estado del hábitat con respecto al desarrollo natural del taxón
         addinfoestadoHabitat: Información adicional
         #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        ecorregion: Selecciona las ecorregiones
+        ecosistema: Selecciona los ecosistemas
+        vegetacion: Tipos de vegetación especie
+        vegetacion_acuatica: Tipos de vegetación acuática especie
         tipoAmbiente: Ambiente en donde se desarrolla la especie
         tipoVegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
         tipoVegetacion: Informaciónn adicional sobre los tipos de vegetación en los que se desarrolla la especie
