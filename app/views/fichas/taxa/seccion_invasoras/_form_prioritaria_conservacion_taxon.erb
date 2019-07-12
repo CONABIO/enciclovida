@@ -1,0 +1,31 @@
+<div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
+  <hr />
+  <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.prioritarias_conservacion')%></h3>
+  <% # OCUPA:  taxon %>
+  <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+</div>
+
+
+<div class="apartadoFicha ficha-prioritaria ficha-cites">
+  Manejo, aprovechamiento  y acciones de conservaci&oacute;n:
+  a. Indicar el Esquema de Manejo  en el cual la especie es aprovechada o gestionada:
+  b. Informaci&oacute;n adicional:
+  <%= #f.input :infoadicional de observacionescarac
+  %>
+  c. Indicar el tipo de aprovechamiento de la especie:
+  Tipo de aprovechamiento en pesca y acuacultura.
+  Tipo de pesca:
+  Regi&oacute;n de captura:
+  Grupos de especies:
+  <%= #f.input :grupoEspecies de conservacion
+  %>
+  Tallas de captura:
+  tallacapturainicial
+  tallacapturafinal
+
+  tipoCaptura
+
+  Tipo de arte de pesca:
+  Acuacultura:
+
+</div>

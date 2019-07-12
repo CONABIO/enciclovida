@@ -3,6 +3,19 @@
   <fieldset class="apartados">
     <legend class="text-primary"> <%=t('secciones.s_distribucion.region')%> </legend>
 
+    <%= f.object.pais.inspect %>
+
+
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar un país'.html_safe, f, :pais, partial: 'fichas/taxa/seccion_distribucion/form_distribucion_pais', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'distribucion', 'data-association-insertion-node' => '#distribucion-pais', 'data-association-insertion-method' => 'append', href: '#distribucion' %>
+    <hr />
+    <% # OCUPA: ecorregion de  * habitat %>
+    <div id="distribucion-pais">
+      <%= f.simple_fields_for :pais do |info| %>
+        <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_pais', locals: {f: info} %>
+      <% end %>
+    </div>
+
+
     a). Distribuci&oacuteón mundial:
     <%= f.input :alcanceDistribucion,
                 collection: Fichas::Pais.all.all.map { |r| ["#{r.iso3} (#{r.nombrepais})", r.paisId] },
@@ -31,15 +44,31 @@
     <%= f.input :infoAdicionalMun %>
   </fieldset>
   <hr>
-  <%= f.input :historicaPotencial %>
-  <div style="display:none;">
-    <!-- Estas preguntas aparecen como ocultas en el formulario -->
-    <%= f.input :distribucion %>
-    <%= f.input :comoExoticaMundial %>
-    <%= f.input :comoExoticaMex %>
-    <%= f.input :distribucionOriginal %>
+
+  <div class="apartadoFicha ficha-prioritaria ficha-PS ficha-invasora">
+    <%= f.input :historicaPotencial %>
   </div>
-  <%= f.input :alcanceDistribucion, :as => :select, collection: Fichas::Distribucion::DISTRIBUCINES, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
-  <%= f.input :infoAdicionalAlcance %>
-  <%= f.input :tipoDistribucion, :as => :select, collection: Fichas::Distribucion::TIPO_DISTRIBUCION, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+
+  <div class="apartadoFicha ficha-cites">
+    Distribución histórica: AGREGAR
+  </div>
+
+  <div class="apartadoFicha ficha-prioritaria ficha-PS ficha-cites">
+    <%= f.input :alcanceDistribucion, :as => :select, collection: Fichas::Distribucion::DISTRIBUCINES, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <%= f.input :infoAdicionalAlcance %>
+  </div>
+
+  <div class="apartadoFicha ficha-invasora">
+    <%= # f.input :distribucion -- OCULTA
+    %>
+    <%= #f.input :comoExoticaMex -- OCULTA
+    %>
+    20. Distribuci&oacute;n como especie ex&oacute;tica en el mundo:
+    Información adicional: Distribuci&oacute;n reportada para la especie como ex&oacute;tica en el mundo
+    <%= f.input :comoExoticaMundial %>
+    21. Distribuci&oacute;n de la especie en su &aacute;rea de distribuci&oacute;n original:
+    <%= f.input :distribucionOriginal %>
+    <%= f.input :tipoDistribucion, :as => :select, collection: Fichas::Distribucion::TIPO_DISTRIBUCION, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <%= f.input :infoAdicionalTipo %>
+  </div>
 </div>

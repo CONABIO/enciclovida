@@ -1,13 +1,15 @@
 <div class='nested-fields'>
-  <h4 class="titulo_subseccion"></h4><br>
-  <%= f.input :estadoHabitat, :as => :select, collection: Fichas::Habitat::ESTADOS_HABITAT,
-              input_html: {
-                  class: 'form-control selectpicker',
-                  multiple: true,
-                  'data-live-search': 'true',
-                  'title': 'Por favor, selecciona una opción',
-                  'data-selected-text-format': 'count > 3'
-              }
-  %>
-  <%= f.input :addinfoestadoHabitat %>
+  <div class="apartadoFicha prioritaria ficha-PS ficha-cites">
+    <h4 class="titulo_subseccion"></h4><br>
+    <%= f.input :estadoHabitat, :as => :select, collection: Fichas::Habitat::ESTADOS_HABITAT,
+                input_html: {
+                    class: 'form-control selectpicker',
+                    multiple: true,
+                    'data-live-search': 'true',
+                    'title': 'Por favor, selecciona una opción',
+                    'data-selected-text-format': 'count > 3'
+                }
+    %>
+    <%= f.input :addinfoestadoHabitat %>
+  </div>
 </div>

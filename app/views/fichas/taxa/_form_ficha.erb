@@ -13,10 +13,7 @@
 
   <div class="row">
     <div class="col-sm-6"><h3> <%= t('general.informacion_de_ficha') %> </h3></div>
-    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {id: 'selectorDeFicha', onclick: 'showOrHideInfoFicha(this)' } %></div>
-    <% unless params[:tipoFicha].blank? %>
-      <script> var tipoFichaInicial = '<%=params[:tipoFicha]%>'; </script>
-    <% end %>
+    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {name: 'selectorDeFicha', onclick: 'showOrHideInfoFicha()' } %></div>
   </div>
 
   <div id="pestañas" class="panel row">

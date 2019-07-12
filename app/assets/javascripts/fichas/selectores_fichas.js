@@ -21,40 +21,23 @@ $( document ).ready(function() {
 });
 
 $(window).load(function(){
-    showOrHideInfoFicha(document.getElementById('selectorDeFicha'));
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
 });
 
 
 /*
 * Ocultar el contenido relacionado a fichas específicas:
 * */
-function showOrHideInfoFicha(elem) {
-    var tipoFicha = elem.value;
-    switch (tipoFicha) {
-        case 'invasora':
-            $('.fichaINVASORA').fadeIn();
-            $('.fichaPS').fadeOut();
-            $('.fichaPRIORITRIA').fadeOut();
-            $('.fichaCITES').fadeOut();
-            break;
-        case 'prioritaria':
-            $('.fichaINVASORA').fadeOut();
-            $('.fichaPS').fadeOut();
-            $('.fichaPRIORITRIA').fadeIn();
-            $('.fichaCITES').fadeOut();
-            break;
-        case 'ps':
-            $('.fichaINVASORA').fadeOut();
-            $('.fichaPS').fadeIn();
-            $('.fichaPRIORITRIA').fadeOut();
-            $('.fichaCITES').fadeOut();
-            break;
-        case 'cites':
-            $('.fichaINVASORA').fadeOut();
-            $('.fichaPS').fadeOut();
-            $('.fichaPRIORITRIA').fadeOut();
-            $('.fichaCITES').fadeIn();
-            break;
+function showOrHideInfoFicha() {
+    var tipoFicha = $("input[name='selectorDeFicha']:checked").val();
+    if(tipoFicha !== undefined) {
+        // Ocultar todos los apartadosFicha
+        $(".apartadoFicha").fadeOut();
+        // Construir la clase según el tipo de ficha
+        var claseFicha = 'ficha-' + tipoFicha;
+        // Mostrar el ID según la clase generada
+        $('.' + claseFicha).fadeIn();
     }
 }
 

@@ -1,13 +1,11 @@
 <div class='nested-fields'>
   <hr>
-
   <%= f.input :prioritaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "especie-prioritaria")', name: 'opcion-especie-prioritaria'} %>
-
-  <div id="especie-prioritaria">
-    <%= f.input :publicadaEn,  as: :radio_buttons, collection: Fichas::Taxon::LISTADOS, item_wrapper_class: 'radio-inline'  %>
-    <%= f.input :nivelPrioridad, as: :radio_buttons, collection: Fichas::Taxon::PRIORIDADS, item_wrapper_class: 'radio-inline'  %>
+  <div class="apartadoFicha ficha-prioritaria ficha-cites ficha-ps">
+    <div id="especie-prioritaria">
+      <%= f.input :publicadaEn,  as: :radio_buttons, collection: Fichas::Taxon::LISTADOS, item_wrapper_class: 'radio-inline'  %>
+      <%= f.input :nivelPrioridad, as: :radio_buttons, collection: Fichas::Taxon::PRIORIDADS, item_wrapper_class: 'radio-inline'  %>
+    </div>
   </div>
-
   <%= f.input :justificacionPrioritaria %>
-
 </div>

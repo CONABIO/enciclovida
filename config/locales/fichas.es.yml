@@ -284,10 +284,11 @@ es:
         alcanceDistribucion: Distribución amplia o restringida
         infoAdicionalAlcance: Información adicional
         distribucion: Distribución
-        comoExoticaMundial: Distribución como especie exótica en el mundo
+        comoExoticaMundial: Información adicional
         comoExoticaMex: Distribución como especie exótica en México
-        distribucionOriginal: Distribución de la especie en su área de distribución original
+        distribucionOriginal: Información adicional
         tipoDistribucion: Tipo de distribución como especie invasora
+        infoAdicionalTipo: Información adicional
       habitats:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         estadoHabitat: Estado del hábitat con respecto al desarrollo natural del taxón
@@ -495,3 +496,32 @@ es:
       culturausos:
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
         descripcion: Importancia cultural y usos
+
+        #  * *  S E C C I Ó N   M E T A D A T O S  * *  #
+      metadatos:
+        uriIcono: Uri Icono
+        nombre: Nombre metadato
+        Uri: Uri
+        titulo: Título
+        fechaPublicacion: Fecha de publicación
+      responsable:
+        nombre: Nombre del responsable
+        apellido: Apellido del responsable
+      puesto:
+        nombrePuesto: Nombre del puesto
+      organizacion:
+        nombre: Nombre de la organización
+      asiciado:
+        rol: Capturista
+        tipoAsociacion: Tipo de asociación
+      pais:
+        nombrepais: Nombre del país
+      ciudad:
+        nombreCiudad: Nombre de la ciudad
+      contacto:
+        puntoEntrega: Punto de entrega
+        areaAdmin: Area admin
+        codigoPostal: Código Postal
+        telefono: Teléfono
+        correoElectronico: Correo Electrónico
+        paginaWeb: Página Web
