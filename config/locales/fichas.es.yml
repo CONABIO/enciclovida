@@ -32,6 +32,15 @@ es:
       legislaciones: Legislaciones
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
+      int_altitudinal: Intervalo altitudinal
+      int_batimetrico: Intervalo batimétrico
+      amp_mareas: Amplitud de mareas
+      caracteristicas_agua: Características del agua
+      salinidad: a) Salinidad
+      oxigeno: b) Oxígeno disuelto
+      ph: c) pH
+      temperatura: d) Temperatura
+      corrientes: e) Corrientes
       descripcion: Ambiente
       t_ecorregion_ecosistemas: Tipo de ecorregión y ecosistema
       t_vegetacion:  Tipo de vegetación
@@ -145,6 +154,21 @@ es:
         precipitacionfinal: En milímetros (mm)
         humedadinicial: En porcentaje (%)
         humedadfinal: En porcentaje (%)
+        corrientes: Indicar cu&aacute;l es el sistema general de circulaci&oacute;n horizontal del agua en el mar que est&aacute; relacionado con el h&aacute;bitat de la especie.
+        salinidadinicial: ...
+        salinidadfinal: ...
+        oxigenoinicial: Miligramos por litro (mg/L)
+        oxigenofinal: Miligramos por litro (mg/L)
+        phinicial: ...
+        phfinal: ...
+        temeperaturainicial: Grados centígrados (°C)
+        temeperaturafinal: Grados centígrados (°C)
+        intervaloaltitudinalacuainicial: En msnm
+        intervaloaltitudinalacuafinal: En msnm
+        interbatimetricoinicial: En metros (m)
+        interbatimetricofinal: En metros (m)
+        amplitudmareasinicial: En metros (m)
+        amplitudmareasfinal: En metros (m)
       reproduccionVegetal:
         nofrutosinicial: Frutos
         nofrutosfinal: Frutos
@@ -301,6 +325,26 @@ es:
         tipoAmbiente: Ambiente en donde se desarrolla la especie
         tipoVegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
         tipoVegetacion: Informaciónn adicional sobre los tipos de vegetación en los que se desarrolla la especie
+        infoaddcaracagua: Información adicional
+        salinidadinicial: 'De:'
+        salinidadfinal: 'A:'
+        oxigenoinicial: 'De:'
+        oxigenofinal: 'A:'
+        phinicial: 'De:'
+        phfinal: 'A:'
+        temeperaturainicial: 'De:'
+        temeperaturafinal: 'A:'
+        unidadsalinidad: Tipo de medición
+        corrienntes: e) Corrientes
+        intervaloaltitudinalacuainicial: 'De:'
+        intervaloaltitudinalacuafinal: 'A:'
+        infoAddintervaloaltitudinalacua: Información adicional
+        interbatimetricoinicial: 'De:'
+        interbatimetricofinal: 'A:'
+        infoaddinterbatimetrico: Información adicional
+        amplitudmareasinicial: 'De:'
+        amplitudmareasfinal: 'A:'
+        infoaddamplitudmareas: Información adicional
         # B) Hábitats antrópicos
         habitatAgropecuario: ¿Se encuentra en hábitat agropecuario?
         zonaUrbana: ¿Se encuentra en zonas urbanas?

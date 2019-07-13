@@ -3,6 +3,42 @@
   <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()', name: 'opcion-AmbienteDesarrolloEspecie'} %>
   <hr>
 
+  Si es terrestre:
+  tipoEcorregionwwf
+  ecowwf1
+  ecowwf2
+  ecowwf3
+  tipoVegetacion
+  tipoVegetacionexo
+  habitatAntropico
+  habitatAgropecuario
+  zonaUrbana
+  VegetacionSecundaria
+  vegMundialInvasora
+  intervaloaltitudinalinicial
+  intervaloaltitudinalfinal
+  infoAddintervaloaltitudinal
+  climaInvasora
+  temperaturainicial
+  temperaturafinal
+  infoaddtemperatura
+  precipitacioninicial
+  precipitacionfinal
+  infoaddprecipitacion
+  humedadinicial
+  humedadfinal
+  infoaddhumedad
+  temperaturainicialexo
+  temperaturafinalexo
+  infoaddtemperaturaexo
+  precipitacioninicialexo
+  precipitacionfinalexo
+  infoaddprecipitacionexo
+  humedadinicialexo
+  humedadfinalexo
+  infoaddhumedadexo
+
+
   <fieldset class="apartados">
     <legend class="text-primary"> Ecorregiones </legend>
     <%= f.association :ecorregion,
@@ -35,19 +71,23 @@
 
   <div id="ambiente-solo-terrestre">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
-
-
+    <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
     <%= f.association :vegetacion,
-                      label_method: :descripcionSubVegetacion,
-                      value_method: :vegetacionId,
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      } %>
+          :as => :grouped_select,
+          collection: collections,
+          :group_method => :last,
+          group_label_method: :first,
+          label_method: :descripcionSubVegetacion,
+          value_method: :vegetacionId,
+          input_html: {
+              :multiple => true,
+              class: 'form-control selectpicker',
+              'data-live-search': 'true',
+              'title': t('general.seleccionar_opciones'),
+              'data-selected-text-format': 'count > 3'
+          }
+    %>
+
 
     <% #collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion)
     %>
@@ -57,14 +97,16 @@
     <div>
       <!-- Oculta -->
       Tipos de vegetaci&oacute;n especie ex&oacute;tica:<br/><br/></b><b> Indicar el o los tipos de vegetaci&oacute;n en los que se desarrolla la especie ex&oacute;tica:</b></td>
-      <% collections = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
-      <%= f.input :tipoVegetacion, :as => :grouped_select,
+
+      <%= f.input :tipoVegetacion,
+                  :as => :grouped_select,
                   collection: collections,
                   :group_method => :last,
                   group_label_method: :first,
-                  :label_method => :descripcionSubVegetacion,
+                  label_method: :descripcionSubVegetacion,
+                  value_method: :vegetacionId,
                   input_html: {
-                      class: 'form-control selectpicker',
+                      class: 'form-control ',
                       multiple: true,
                       'data-live-search': 'true',
                       'title': t('general.seleccionar_opcion')
@@ -147,6 +189,9 @@
     <%= f.input :infoaddhumedad %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
+
+
+
     <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un suelo'.html_safe, f, :suelo, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente_suelo', 'data-association-insertion-method' => 'append', href: '#ambiente' %>
     <div id="ambiente_suelo">
       <%= f.simple_fields_for :suelo do |info| %>
@@ -173,70 +218,42 @@
   %>
   <div id="ambiente-solo-marino">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
+
+    acuatico
+    tipoHabitat
+    biotipos
+
+
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.caracteristicas_agua') %></h3>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.salinidad') %></h4>
+    <%= f.input :salinidadinicial %>
+    <%= f.input :salinidadfinal %>
+    <%= f.input :unidadsalinidad, collection: Fichas::Habitat::UNIDAD_SALINIDAD, :as => :select, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.oxigeno') %></h4>
+    <%= f.input :oxigenoinicial %>
+    <%= f.input :oxigenofinal %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ph') %></h4>
+    <%= f.input :phinicial %>
+    <%= f.input :phfinal %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.temperatura') %></h4>
+    <%= f.input :temeperaturainicial %>
+    <%= f.input :temeperaturafinal %>
+    <%= f.input :corrientes %>
+    <%= f.input :infoaddcaracagua %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
+    <%= f.input :intervaloaltitudinalacuainicial %>
+    <%= f.input :intervaloaltitudinalacuafinal %>
+    <%= f.input :infoAddintervaloaltitudinalacua %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_batimetrico') %></h3>
+    <%= f.input :interbatimetricoinicial %>
+    <%= f.input :interbatimetricofinal %>
+    <%= f.input :infoaddinterbatimetrico %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.amp_mareas') %></h3>
+    <%= f.input :amplitudmareasinicial %>
+    <%= f.input :amplitudmareasfinal %>
+    <%= f.input :infoaddamplitudmareas %>
   </div>
 
 </div>
-
-
-
-
-Si es terrestre:
-tipoEcorregionwwf
-ecowwf1
-ecowwf2
-ecowwf3
-tipoVegetacion
-tipoVegetacionexo
-habitatAntropico
-habitatAgropecuario
-zonaUrbana
-VegetacionSecundaria
-vegMundialInvasora
-intervaloaltitudinalinicial
-intervaloaltitudinalfinal
-infoAddintervaloaltitudinal
-climaInvasora
-temperaturainicial
-temperaturafinal
-infoaddtemperatura
-precipitacioninicial
-precipitacionfinal
-infoaddprecipitacion
-humedadinicial
-humedadfinal
-infoaddhumedad
-temperaturainicialexo
-temperaturafinalexo
-infoaddtemperaturaexo
-precipitacioninicialexo
-precipitacionfinalexo
-infoaddprecipitacionexo
-humedadinicialexo
-humedadfinalexo
-infoaddhumedadexo
-
-
-acuatico
-tipoHabitat
-biotipos
-salinidadinicial
-salinidadfinal
-unidadsalinidad
-oxigenoinicial
-oxigenofinal
-phinicial
-phfinal
-temeperaturainicial
-temeperaturafinal
-corrientes
-infoaddcaracagua
-intervaloaltitudinalacuainicial
-intervaloaltitudinalacuafinal
-infoAddintervaloaltitudinalacua
-interbatimetricoinicial
-interbatimetricofinal
-infoaddinterbatimetrico
-amplitudmareasinicial
-amplitudmareasfinal
-infoaddamplitudmareas
-

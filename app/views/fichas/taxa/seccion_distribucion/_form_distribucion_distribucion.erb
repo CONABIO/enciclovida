@@ -27,13 +27,17 @@
                           'data-selected-text-format': 'count > 3'
                       } %>
 
+    <% collectionEstados = Fichas::Municipio_F.all.group_by(&:nombreEstado) %>
     <%= f.association :municipio,
+                      :as => :grouped_select,
+                      collection: collectionEstados,
+                      :group_method => :last,
+                      group_label_method: :first,
                       label_method: :nombreMunicipio,
                       value_method: :municipioId,
-                      :as => :select,
                       input_html: {
                           class: 'form-control selectpicker',
-                          multiple: true,
+                          :multiple => true,
                           'data-live-search': 'true',
                           'title': t('general.seleccionar_opciones'),
                           'data-selected-text-format': 'count > 3'
@@ -43,20 +47,20 @@
   </fieldset>
   <hr>
 
-  <div class="apartadoFicha ficha-prioritaria ficha-PS ficha-invasora">
+  <div class="apartadoFicha ficha-Prioritaria ficha-Silvestre ficha-Invasora">
     <%= f.input :historicaPotencial %>
   </div>
 
-  <div class="apartadoFicha ficha-cites">
+  <div class="apartadoFicha ficha-CITES">
     Distribución histórica: AGREGAR
   </div>
 
-  <div class="apartadoFicha ficha-prioritaria ficha-PS ficha-cites">
+  <div class="apartadoFicha ficha-Prioritaria ficha-Silvestre ficha-CITES">
     <%= f.input :alcanceDistribucion, :as => :select, collection: Fichas::Distribucion::DISTRIBUCINES, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
     <%= f.input :infoAdicionalAlcance %>
   </div>
 
-  <div class="apartadoFicha ficha-invasora">
+  <div class="apartadoFicha ficha-Invasora">
     <%= # f.input :distribucion -- OCULTA
     %>
     <%= #f.input :comoExoticaMex -- OCULTA

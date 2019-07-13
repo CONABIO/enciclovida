@@ -20,8 +20,6 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
-  has_many :clima,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Tipoclima', through: :caracteristicasEspecies, :foreign_key => 'especieId'
-
 	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
@@ -48,10 +46,10 @@ class Fichas::Taxon < Ficha
 	]
 
   TIPOS_FICHA = [
-      "prioritaria".to_sym,
-      "invasora".to_sym,
-      "cites".to_sym,
-      "ps".to_sym
+		"CITES".to_sym,
+		"Invasora".to_sym,
+		"Silvestre".to_sym,
+		"Prioritaria".to_sym
   ]
 
   PRESENCIA = [
