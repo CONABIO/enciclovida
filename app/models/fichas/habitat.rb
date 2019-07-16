@@ -21,12 +21,12 @@ class Fichas::Habitat < Ficha
 
 	# PARA ACCEDER A LA TABLA CARACTERISTICAESPECIE
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => [:especieId], :primary_key => :especieId
-	has_many :clima,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Tipoclima', through: :caracteristicasEspecies
-	has_many :suelo,-> {where('caracteristicasespecie.idpregunta' => 6)}, class_name: 'Fichas::Suelo', through: :caracteristicasEspecies
-	has_many :geoforma,-> {where('caracteristicasespecie.idpregunta' => 7)},:class_name => 'Fichas::Geoforma', through: :caracteristicasEspecies
+	#has_many :clima,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Tipoclima', through: :caracteristicasEspecies
+  #has_many :suelo,-> {where('caracteristicasespecie.idpregunta' => 6)}, class_name: 'Fichas::Suelo', through: :caracteristicasEspecies
+  #has_many :geoforma,-> {where('caracteristicasespecie.idpregunta' => 7)},:class_name => 'Fichas::Geoforma', through: :caracteristicasEspecies
 
-	# Cat_preguntas:
-	has_many :elClima,-> {where('caracteristicasespecie.idpregunta = ?', 4)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
+
 
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true
