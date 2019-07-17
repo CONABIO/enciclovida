@@ -355,10 +355,8 @@ module CacheServices
       sleep(3.seconds)
 
       # Obtener los nombres comunes y fotos de naturalista
-      puts "\n\nAntes"
       respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista
       if respuesta_naturalista[:estatus]
-        puts "\n\nDespués"
         # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
         if respuesta_naturalista[:msg][:nc].present?
           resp = respuesta_naturalista[:msg][:nc]

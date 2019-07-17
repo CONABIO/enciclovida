@@ -3,76 +3,55 @@ class Proveedor < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.ev}.proveedores"
 
   belongs_to :especie
-  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
+  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa, :jres
 
   # REVISADO: Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
-    ficha = ficha_naturalista_api_nodejs
-    return ficha unless ficha[:estatus]
+    ficha_naturalista_api_nodejs
+    return unless jres[:estatus]
 
-    resultado = ficha[:ficha]['results'].first
-    fotos = resultado['taxon_photos']
-    {estatus: true, fotos: fotos}
-  end
-
-  def nombres_comunes_Y_fotos_naturalista
-    ficha = ficha_naturalista_api # Se utilizará la versión sin nodejs, ya que esta no regresa los nombres comuúes
-    return ficha unless ficha[:estatus]
-
-    fotos = ficha[:ficha]['taxon_photos']
-    nombres_comunes = ficha[:ficha]['taxon_names']
-    # Pone en la primera posicion el deafult_name
-    nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: true, msg: {nc: nombres_comunes, ft: fotos}}
+    fotos = jres[:ficha]['taxon_photos']
+    self.jres = jres.merge({ fotos: fotos })
   end
 
   # REVISADO: Todos los nombres comunes de la ficha de naturalista
   def nombres_comunes_naturalista
-    ficha = ficha_naturalista_api
-    return ficha unless ficha[:estatus]
+    ficha_naturalista_api_nodejs
+    return unless jres[:estatus]
 
-    nombres_comunes = ficha[:ficha]['taxon_names']
-    # Pone en la primera posicion el deafult_name
-    nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: true, nombres_comunes: nombres_comunes}
+    nombres_comunes = jres[:ficha]['names']
+    self.jres = jres.merge({ nombres_comunes: nombres_comunes })
   end
 
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
   def ficha_naturalista_api_nodejs
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
-    if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus]
-    end
+    self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
 
-    begin
-      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: false, msg: e}
-    end
+      if naturalista_id.blank?
+        t = especie
+        t.ficha_naturalista_por_nombre
+        self.jres = t.jres
+      end
 
-    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: true, ficha: ficha}
-  end
+      if naturalista_id.blank?
+        jres
+      else
+        begin
+          resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}?all_names=true"
+          ficha = JSON.parse(resp)
 
-  # REVISADO: Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
-  def ficha_naturalista_api
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
-    if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus]
-    end
+          if ficha['total_results'] == 1
+            { estatus: true, ficha: ficha['results'][0] }
+          else
+            { estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha' }
+          end
 
-    begin
-      resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: false, msg: e}
-    end
+        rescue => e
+          { estatus: false, msg: e }
+        end
+      end
 
-    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
-    return {estatus: true, ficha: ficha}
+    end  # End cache.fetch
   end
 
   # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
