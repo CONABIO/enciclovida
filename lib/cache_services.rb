@@ -2,11 +2,12 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
+    guarda_redis_servicio
     if Rails.env.production?
       guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio
-      guarda_redis_servicio
+      #guarda_redis_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
@@ -81,52 +82,47 @@ module CacheServices
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
-    return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
+    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
+    return if existe_cache?('ficha_naturalista')
     escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
 
     begin
-      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
+      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
       resultados = JSON.parse(respuesta)
     rescue => e
-      return {estatus: false, msg: e}
+      self.jres = jres.merge({msg: e})
+      return
     end
 
     # Nos aseguramos que coincide el nombre
-    return {estatus: false, msg: 'No hay resultados'} if resultados.count == 0
+    return if resultados['total_results'].blank? || resultados['total_results'] == 0
 
-    resultados.each do |t|
-      next unless t['ancestry'].present?
+    resultados['results'].each do |t|
+      next unless t['ancestor_ids'].present?
+      next unless t['name'].downcase == nombre_cientifico.limpia_ws.downcase
 
-      if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
-        array_ancestros = t['ancestry'].split('/')
+      # Es un reino
+      reino_naturalista = t['ancestor_ids'][1]
+      next unless reino_naturalista.present?
+      reino_enciclovida = root_id
 
-        if array_ancestros.count > 1
-          reino_naturalista = t['ancestry'].split('/')[1].to_i
+      # Me aseguro que el reino coincida
+      next if !((reino_naturalista == reino_enciclovida) || # Reino animalia
+          (reino_naturalista == 47126 && reino_enciclovida == 2) || # Reino plantae
+          (reino_naturalista == 47170 && reino_enciclovida == 4) || # Reino fungi
+          ([48222, 47686].include?(reino_naturalista) && reino_enciclovida == 5)) # Reino protoctista o chromista en naturalista
 
-          # Es un reino
-          next unless reino_naturalista.present?
-          reino_enciclovida = root_id
+      if p = proveedor
+        p.naturalista_id = t['id']
+        p.save if p.changed?
+      else
+        self.proveedor = Proveedor.create({ naturalista_id: t['id'], especie_id: id })
+      end
 
-          # Me aseguro que el reino coincida
-          next if !((reino_naturalista == reino_enciclovida) || # Reino animalia
-              (reino_naturalista == 47126 && reino_enciclovida == 2) || # Reino plantae
-              (reino_naturalista == 47170 && reino_enciclovida == 4) || # Reino fungi
-              ([48222, 47686].include?(reino_naturalista) && reino_enciclovida == 5)) # Reino protoctista o chromista en naturalista
-        end
+      self.jres = jres.merge({ estatus: true, ficha: t, msg: nil })
+      return
 
-        if p = proveedor
-          p.naturalista_id = t['id']
-          p.save
-        else
-          self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
-        end
-
-        return {estatus: true, ficha: t}
-
-      end  # End nombre cientifico
     end  # End resultados
-
-    return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
   # REVISADO: Escribe un cache
@@ -559,7 +555,7 @@ module CacheServices
       end
 
     rescue
-        borra_cache("estadisticas_maccaulay")
+      borra_cache("estadisticas_maccaulay")
     end
 
     res
@@ -585,15 +581,15 @@ module CacheServices
       res[:ejemplares_snib] = resultados_snib.first['nregistros']
     end
 
-      # Ahora, buscar los de eBird
-      # buscar = ['eBird eBird', 'aVerAves aVerAves']
-      # res[:ejemplares_snib_averaves] = 0
-      # Itera todos los ejemplares y busca los de aVerAves
-      # resultados_snib['resultados'].each do |ejemplar|
-      #   if buscar.include? (ejemplar['coleccion'])
-      #     res[:ejemplares_snib_averaves] += 1
-      #   end
-      # end
+    # Ahora, buscar los de eBird
+    # buscar = ['eBird eBird', 'aVerAves aVerAves']
+    # res[:ejemplares_snib_averaves] = 0
+    # Itera todos los ejemplares y busca los de aVerAves
+    # resultados_snib['resultados'].each do |ejemplar|
+    #   if buscar.include? (ejemplar['coleccion'])
+    #     res[:ejemplares_snib_averaves] += 1
+    #   end
+    # end
 
     if guardar
       estd = especie_estadisticas
