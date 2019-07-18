@@ -15,6 +15,17 @@ class Proveedor < ActiveRecord::Base
     {estatus: true, fotos: fotos}
   end
 
+  def nombres_comunes_Y_fotos_naturalista
+    ficha = ficha_naturalista_api # Se utilizará la versión sin nodejs, ya que esta no regresa los nombres comuúes
+    return ficha unless ficha[:estatus]
+
+    fotos = ficha[:ficha]['taxon_photos']
+    nombres_comunes = ficha[:ficha]['taxon_names']
+    # Pone en la primera posicion el deafult_name
+    nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
+    {estatus: true, msg: {nc: nombres_comunes, ft: fotos}}
+  end
+
   # REVISADO: Todos los nombres comunes de la ficha de naturalista
   def nombres_comunes_naturalista
     ficha = ficha_naturalista_api
@@ -102,7 +113,7 @@ class Proveedor < ActiveRecord::Base
     resp = ejemplares_snib('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
@@ -129,7 +140,7 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq

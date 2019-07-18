@@ -58,6 +58,7 @@ base: &base
 
   # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
   enciclovida_url: http://enciclovida.mx
+  enciclovida_api: http://api.enciclovida.mx
 
   # Servicio de busquedas por region y por especie
   enciclovida_api: http://enciclovida.mx:8000
