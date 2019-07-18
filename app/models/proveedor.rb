@@ -336,6 +336,7 @@ class Proveedor < ActiveRecord::Base
     numero_observs
   end
 
+
   private
 
   # REVISADO: Crea o devuleve la capreta de los geodatos

@@ -350,28 +350,26 @@ module CacheServices
 
     # Acceder a tabla proveedor
     if proveedor_n = proveedor
+      sleep(3.seconds)  # Esperar X segundo(s) antes de llamar al servicio
 
-      # Esperar X segundo(s) antes de llamar al servicio
-      sleep(3.seconds)
+      # Para los nombres comunes de naturalista
+      proveedor_n.nombres_comunes_naturalista
+      self.resp = proveedor_n.resp
 
-      # Obtener los nombres comunes y fotos de naturalista
-      respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista
-      if respuesta_naturalista[:estatus]
-        # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
-        if respuesta_naturalista[:msg][:nc].present?
-          resp = respuesta_naturalista[:msg][:nc]
-          if resp.kind_of?(Array) && resp.any?
-            resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
-            res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
-          end
-        end
+      if resp[:estatus]
+        resp_nombres = resp[:nombres_comunes]
+        resp_nombres = resp_nombres.delete_if { |h| h["lexicon"] == "Scientific Names" }
+        res[:total_nombres_comunes] = resp_nombres.length
+      end
 
-        # Verificar que existan fotos y # ID: 6 Obtener el total de fotos en NaturaLista
-        if respuesta_naturalista[:msg][:ft].present?
-          if respuesta_naturalista[:msg][:ft].kind_of?(Array)  && respuesta_naturalista[:msg][:ft].any?
-            res[:total_fotos] = respuesta_naturalista[:msg][:ft].count
-          end
-        end
+      # Para las fotos de naturalista
+      proveedor_n.fotos_naturalista
+      self.resp = proveedor_n.resp
+
+      if resp[:estatus]
+        resp_fotos = resp[:fotos]
+        resp_fotos = resp_fotos.delete_if { |h| h["lexicon"] == "Scientific Names" }
+        res[:total_fotos] = resp_fotos.length
       end
 
       if especie_o_inferior?
@@ -389,6 +387,7 @@ module CacheServices
           if los_geodatos.key?(:naturalista_mapa_json) && !los_geodatos[:naturalista_mapa_json].blank? # verificar que contenga la llave naturalista_mapa_json
             url_geodatos = los_geodatos[:naturalista_mapa_json]
             consulta = invoca_url_geodatos(url_geodatos)
+
             if consulta['estatus'] # buscar el total y tipos de observaciones existentes en un archivo JSON
               json = consulta['msg']
               observaciones = json.map { |x| x[3]}
