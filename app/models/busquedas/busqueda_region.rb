@@ -48,7 +48,7 @@ class BusquedaRegion < Busqueda
   # Consulta los querys guardados en cache o los consulta al vuelo
   def dame_especies_regiones
     self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
-      url = "#{CONFIG.enciclovida_api}/especies/#{params[:tipo_region]}/#{params[:region_id]}"
+      url = "#{CONFIG.enciclovida_api}/especies/region/#{params[:tipo_region]}/#{params[:region_id]}"
       respuesta_especies_regiones(url)
     end
   end
@@ -120,13 +120,13 @@ class BusquedaRegion < Busqueda
     end
   end
 
-  # Regresa las especies del servicio de /especies/filtros
+  # Regresa las especies del servicio de /especies/region/filtros
   def respuesta_especies_filtros
     # El paginado
     self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
     self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
 
-    url_especies = "#{CONFIG.enciclovida_api}/especies/filtros?#{query.join('&')}"
+    url_especies = "#{CONFIG.enciclovida_api}/especies/region/filtros?#{query.join('&')}"
 
     begin
       rest = RestClient.get(url_especies)
@@ -138,9 +138,9 @@ class BusquedaRegion < Busqueda
     self.resp = { estatus: true, resultados: resultados, totales: resp[:totales] }
   end
 
-  # Regresa el conteo de especies del servicio de /especies/filtros
+  # Regresa el conteo de especies del servicio de /especies/region/filtros
   def respuesta_especies_filtros_conteo
-    url_conteo = "#{CONFIG.enciclovida_api}/especies/filtros/conteo?#{query.join('&')}"
+    url_conteo = "#{CONFIG.enciclovida_api}/especies/region/filtros/conteo?#{query.join('&')}"
 
     begin
       rest = RestClient.get(url_conteo)
@@ -206,37 +206,6 @@ class BusquedaRegion < Busqueda
 
       resp[:taxones] = taxones
     end
-  end
-
-  # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
-  def icono_grupo(grupos)
-    grupos.each do |g|
-
-      case g['grupo']
-      when 'Anfibios'
-        g.merge!({'icono' => 'amphibia-ev-icon', 'reino' => 'animalia'})
-      when 'Aves'
-        g.merge!({'icono' => 'aves-ev-icon', 'reino' => 'animalia'})
-      when 'Bacterias'
-        g.merge!({'icono' => 'prokaryotae-ev-icon', 'reino' => 'prokaryotae'})
-      when 'Hongos'
-        g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
-      when 'Invertebrados'
-        g.merge!({'icono' => 'invertebrados-ev-icon', 'reino' => 'animalia'})
-      when 'Mamíferos'
-        g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
-      when 'Peces'
-        g.merge!({'icono' => 'actinopterygii-ev-icon', 'reino' => 'animalia'})
-      when 'Plantas'
-        g.merge!({'icono' => 'plantae-ev-icon', 'reino' => 'plantae'})
-      when 'Protoctistas'
-        g.merge!({'icono' => 'protoctista-ev-icon', 'reino' => 'protoctista'})
-      when 'Reptiles'
-        g.merge!({'icono' => 'reptilia-ev-icon', 'reino' => 'animalia'})
-      end
-    end
-
-    grupos
   end
 
 end
