@@ -32,6 +32,7 @@ es:
       legislaciones: Legislaciones
     #  * *  S E C C I Ó N   A M B I E N T E * *  #
     s_ambiente:
+      ecosistemas: b) Ecosistemas
       int_altitudinal: Intervalo altitudinal
       int_batimetrico: Intervalo batimétrico
       amp_mareas: Amplitud de mareas
@@ -320,11 +321,17 @@ es:
         #  * *  S E C C I Ó N   A M B I E N T E * *  #
         ecorregion: Selecciona las ecorregiones
         ecosistema: Selecciona los ecosistemas
-        vegetacion: Tipos de vegetación especie
+        vegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
+        habitatAntropico: b) Hábitats antrópicos
         vegetacion_acuatica: Tipos de vegetación acuática especie
+        t_clima: Indicar el tipo de clima (solo si está reportado en la bibliografía)
+        t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
+        t_geoforma: Geoforma
+        t_habitatAntropico: b) Hábitats antrópicos
+        t_tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
         tipoAmbiente: Ambiente en donde se desarrolla la especie
         tipoVegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
-        tipoVegetacion: Informaciónn adicional sobre los tipos de vegetación en los que se desarrolla la especie
+        tipoVegetacion: Informaciónn adicional
         infoaddcaracagua: Información adicional
         salinidadinicial: 'De:'
         salinidadfinal: 'A:'
@@ -344,18 +351,17 @@ es:
         infoaddinterbatimetrico: Información adicional
         amplitudmareasinicial: 'De:'
         amplitudmareasfinal: 'A:'
+        vegetacion_acuatica: c) Hábitat acuático
         infoaddamplitudmareas: Información adicional
-        # B) Hábitats antrópicos
         habitatAgropecuario: ¿Se encuentra en hábitat agropecuario?
         zonaUrbana: ¿Se encuentra en zonas urbanas?
         VegetacionSecundaria: Se encuentra en vegetación secundaria?
-        tipoVegetacionSecundaria: Tipo de vegetación secundaria
+        tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
         cambiar: Mencionar las especies asociadas
         intervaloaltitudinalinicial: 'De:'
         intervaloaltitudinalfinal: 'A:'
         infoAddintervaloaltitudinal: Información adicional
         tipoClimaId: Clima  Tipo de clima
-        # Indicar el tipo de clima (solo si está reportado en la bibliografía)
         climaAdicional: Información adicional
         temperaturainicial: 'De:'
         temperaturafinal: 'A:'
@@ -366,7 +372,10 @@ es:
         humedadinicial: 'De:'
         humedadfinal: 'A:'
         infoaddhumedad: Información adicional
-        descripcionSuelo: Tipo de suelo Indicar el tipo de suelo en el que se desarrolla la especie
+        t_ecorregionMarinaN1: a) Ecorregiones
+        t_zonaVida: i. Zona de vida
+        biotipos: ii. Biotopos
+        descripcionSuelo: Información adicional
         descripcionGeoforma: Información adicional
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         uso: Uso del hábitat

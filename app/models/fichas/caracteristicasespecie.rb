@@ -4,79 +4,32 @@ class Fichas::Caracteristicasespecie < Ficha
 	self.primary_keys = :especieId,  :idpregunta,  :idopcion
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
-	#belongs_to :clima, :class_name => 'Fichas::Tipoclima', :foreign_key => 'idopcion'
-	#belongs_to :suelo, :class_name => 'Fichas::Suelo', :foreign_key => 'idopcion'
-	#belongs_to :geoforma, :class_name => 'Fichas::Geoforma', :foreign_key => 'idopcion'
 
-	belongs_to :clima, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :suelo, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :geoforma, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :tipoVegetacionSecundaria, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :tipoVegetacionMundial, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :ecorregionMarinaN1, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :zonaVida, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :habitoPlantas, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :forrajeo, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :migracion, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :tipoMigracion, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :habito, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :sistapareamiento, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :sitioanidacion, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :arregloespacialflores, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :arregloespacialindividuos, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :arregloespacialpoblaciones, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :vectorespolinizacion, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :agentespolinizacion, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :structdisp, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :dispersionsei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :interacciones, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :comnalsel, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :esquemamanejo, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :tipopesca, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :regioncaptura, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :artepesca, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :acuacultura, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :mecanismos, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :efectoimpactosei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :intensidadimpactosei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :naturalizacionsei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :especiesasociadassei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :plasticidadsei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :platenciasei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :seguridadsei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :enfermedadessei, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_tipoVegetacionSecundaria,-> {where('caracteristicasespecie.idpregunta = ?', 2)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_clima,-> {where('caracteristicasespecie.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_suelo,-> {where('caracteristicasespecie.idpregunta = ?', 6)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_geoforma,-> {where('caracteristicasespecie.idpregunta = ?', 7)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_habitatAntropico,-> {where('caracteristicasespecie.idpregunta = ?', 1)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_ecorregionMarinaN1,-> {where('caracteristicasespecie.idpregunta = ?', 44)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_zonaVida,-> {where('caracteristicasespecie.idpregunta = ?', 43)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+
+	OPCIONES = {
+			:habitatAntropico => 1,
+			:vegetacionSecundaria => 2,
+			:clima => 4,
+			:suelo => 6,
+			:geoforma => 7,
+			:zonaVida => 43,
+			:ecorregionMarinaN1 => 44
+	}
+
 
 end
 
 
 
 =begin
-
-SECCION AMBIENTE
-a) Indicar el o los tipos de vegetación
-en los que se desarrolla la especie:
- SELECT descripcionVegetacion FROM vegetacion GROUP BY descripcionVegetacion
-a) Indicar el o los tipos de vegetación
-en los que se desarrolla la especie: EXO:
-SELECT descripcionVegetacion FROM vegetacion GROUP BY descripcionVegetacion;
-b) Hábitats antrópicos:
-$sql = "SELECT idopcion, descn1 FROM cat_preguntas WHERE idpregunta = '1';";
-
-has_many :tipoVegetacionSecundaria,-> {where('caracteristicasespecie.idpregunta = ?', 2)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :tipoVegetacionMundial,-> {where('caracteristicasespecie.idpregunta = ?', 3)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :clima,-> {where('caracteristicasespecie.idpregunta = ?', 4)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :climaExo,-> {where('caracteristicasespecie.idpregunta = ?', 5)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :suelo,-> {where('caracteristicasespecie.idpregunta = ?', 6)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :geoforma,-> {where('caracteristicasespecie.idpregunta = ?', 7)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :ecorregionMarinaN1,-> {where('caracteristicasespecie.idpregunta = ?', 44)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :zonaVida,-> {where('caracteristicasespecie.idpregunta = ?', 43)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-c) Hábitat acuático:
-"SELECT vegetacion FROM vegetacionacuatica GROUP BY vegetacion;";
-
-
-
-
 
 IV. Biología de la especie
 
@@ -147,7 +100,6 @@ has_many :arregloespacialindividuos,-> {where('caracteristicasespecie.idpregunta
 has_many :arregloespacialpoblaciones,-> {where('caracteristicasespecie.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
 
-
 c) Aislamiento temporal o espacial de los órganos reproductores:
 "Dicogamia"
 "Protandria"
@@ -186,6 +138,19 @@ has_many :structdisp,-> {where('caracteristicasespecie.idpregunta = ?', 16)}, cl
 
 Riesgo de dispersi&oacute;n
 has_many :dispersionsei,-> {where('caracteristicasespecie.idpregunta = ?', 39)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

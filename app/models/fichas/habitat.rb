@@ -13,25 +13,21 @@ class Fichas::Habitat < Ficha
 	has_many :relEcosistemasHabitats, class_name: 'Fichas::Relecosistemahabitat', :foreign_key => 'habitatId'
 	has_many :relHabitatsVegetaciones , class_name: 'Fichas::Relhabitatvegetacion', :foreign_key => 'habitatId'
 	has_many :relVegetacionesAcuaticasHabitats , class_name: 'Fichas::Relvegetacionacuaticahabitat', :foreign_key => 'habitatId'
+	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', :primary_key => :especieId
 
 	has_many :ecorregion, class_name: 'Fichas::Ficha_Ecorregion', through: :relEcorregionesHabitats
   has_many :ecosistema, class_name: 'Fichas::Ecosistema', through: :relEcosistemasHabitats
 	has_many :vegetacion, class_name: 'Fichas::Vegetacion', through: :relHabitatsVegetaciones
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
 
-	# PARA ACCEDER A LA TABLA CARACTERISTICAESPECIE
-	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => [:especieId], :primary_key => :especieId
-	#has_many :clima,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Tipoclima', through: :caracteristicasEspecies
-  #has_many :suelo,-> {where('caracteristicasespecie.idpregunta' => 6)}, class_name: 'Fichas::Suelo', through: :caracteristicasEspecies
-  #has_many :geoforma,-> {where('caracteristicasespecie.idpregunta' => 7)},:class_name => 'Fichas::Geoforma', through: :caracteristicasEspecies
-
 	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
-
-
-	accepts_nested_attributes_for :ecorregion, allow_destroy: true
-	accepts_nested_attributes_for :ecosistema, allow_destroy: true
-	accepts_nested_attributes_for :suelo, allow_destroy: true
-	accepts_nested_attributes_for :geoforma, allow_destroy: true
+	has_many :t_clima, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_tipoVegetacionSecundaria, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_suelo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_geoforma, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_habitatAntropico, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_ecorregionMarinaN1, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_zonaVida, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
 
 	ESTADOS_HABITAT = [
@@ -46,12 +42,6 @@ class Fichas::Habitat < Ficha
 			'terrestre-acuático'.to_sym
 	]
 
-	VEGETACION_SEC = [
-			'Arbórea'.to_sym,
-			'Arbustiva'.to_sym,
-			'Herbácea'.to_sym
-	]
-
   UNIDAD_SALINIDAD = [
       'Porcentaje(%)'.to_sym,
       'Partes por mil(ppt)'.to_sym,
@@ -59,6 +49,15 @@ class Fichas::Habitat < Ficha
       'Unidades prácticas de salinidad(ups, psu)'.to_sym
   ]
 
-
-	#attr_accessor :ecorregion
 end
+
+
+
+=begin
+
+	a) Indicar el o los tipos de vegetación
+	en los que se desarrolla la especie: EXO:
+			SELECT descripcionVegetacion FROM vegetacion GROUP BY descripcionVegetacion;
+	has_many :tipoVegetacionMundial,-> {where('caracteristicasespecie.idpregunta = ?', 3)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :climaExo,-> {where('caracteristicasespecie.idpregunta = ?', 5)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+=end
