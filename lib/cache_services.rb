@@ -367,9 +367,7 @@ module CacheServices
       self.resp = proveedor_n.resp
 
       if resp[:estatus]
-        resp_fotos = resp[:fotos]
-        resp_fotos = resp_fotos.delete_if { |h| h["lexicon"] == "Scientific Names" }
-        res[:total_fotos] = resp_fotos.length
+        res[:total_fotos] = resp[:fotos].length
       end
 
       if especie_o_inferior?
