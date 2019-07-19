@@ -94,7 +94,7 @@ class Especie < ActiveRecord::Base
   OR LOWER(#{:nombres_comunes}) LIKE LOWER('%#{nombre}%')") }
 
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).left_joins(:categoria_taxonomica, :adicional, :scat) }
   #Select para el Checklist (por_arbol)
   scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
