@@ -5,12 +5,13 @@ var cargaMapaYoverlays = function ()
 {
     divisionEstadoOverlay = cargaDivision({tipo_region: 'estado'});
     divisionANPOverlay = cargaDivision({tipo_region: 'anp'});
-    divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
+    //divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
 
-    cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay}, {pantalla_comp : false});
+    //cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay}, {pantalla_comp : false});
+    cargaMapa('map', {"División estatal": divisionEstadoOverlay}, {pantalla_comp : false});
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
-    divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
-    map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
+    //divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
+    //map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
 };
 
 /**
@@ -48,7 +49,7 @@ var cargaDivision = function(opc)
                     opciones.datos[opc.tipo_region][d.properties.region_id] = {};
                     opciones.datos[opc.tipo_region][d.properties.region_id].properties = d.properties;
 
-                    var bounds = d3.geo.bounds(d);
+                    var bounds = d3.geo.bounds(d.geometry);
                     opciones.datos[opc.tipo_region][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
                 });
 

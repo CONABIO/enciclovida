@@ -5,7 +5,8 @@ class Geoportal::Estado < GeoportalAbs
   scope :campos_min, -> { select('entid, nom_ent').order(nom_ent: :asc) }
   scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
   scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
-  scope :campos_geom, -> { centroide.geojson_select }
+  scope :bbox, -> { select('ST_Extent(geom) AS bbox') }
+  scope :campos_geom, -> { centroide.geojson_select.bbox }
   scope :geojson, ->(region_id) { geojson_select.where(region_id: region_id) }
 
   def nombre_publico

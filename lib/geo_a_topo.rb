@@ -15,6 +15,7 @@ class GeoAtopo
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
       feature[:properties][:nombre_region] = reg.nombre_publico
+      #feature[:properties][:bbox] = reg.bbox
       feature[:properties][:tipo] = reg.tipo
       feature[:properties][:tipo_region] = reg.try(:tipo_region)
       geojson[:features] << feature
@@ -30,8 +31,8 @@ class GeoAtopo
     File.write(archivo_geo_todos, geojson_todos.to_json)
 
     # Convierte a topojson
-    topojson_todos = dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
-    File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
+    topojson_todos = dame_topojson_system({q: '1e4', p: '.005', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
+    #File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
     Rails.logger.debug "[DEBUG] - Hubo un error al generar la region: #{archivo_topo_todos}" unless topojson_todos
 
   end
