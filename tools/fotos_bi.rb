@@ -22,7 +22,7 @@ def busca_fotos
   # Empiezo por MetadatoEspecie para no correr todos los taxones
   MetadatoEspecie.find_each do |me|
   #MetadatoEspecie.limit(100).each do |me|
-    puts "#{me.especie_id}-#{me.metadato_id}" if OPTS[:debug]
+    Rails.logger.debug "#{me.especie_id}-#{me.metadato_id}" if OPTS[:debug]
     me.fotos_bi(@usuario.id)
   end
 end
@@ -35,7 +35,7 @@ def truncate_tables
 end
 
 def system_call(cmd)
-  puts "Ejecutando: #{cmd}" if OPTS[:debug]
+  Rails.logger.debug "Ejecutando: #{cmd}" if OPTS[:debug]
   system cmd
 end
 
@@ -43,15 +43,15 @@ end
 start_time = Time.now
 
 if ARGV.length == 1 && ARGV.first.present? && ARGV.first.downcase == 'truncate'
-  puts "Con comando: #{ARGV.first}" if OPTS[:debug]
+  Rails.logger.debug "Con comando: #{ARGV.first}" if OPTS[:debug]
   truncate_tables
   system_call('rake tmp:cache:clear')
 elsif ARGV.blank?
-  puts 'Con comando default para crear: ' if OPTS[:debug]
+  Rails.logger.debug 'Con comando default para crear: ' if OPTS[:debug]
   exit(0) unless @usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first
   busca_fotos
 else
   exit(0)
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

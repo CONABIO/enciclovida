@@ -23,7 +23,7 @@ def leeCSV
   borra_relaciones
 
   CSV.foreach(Rails.root.join('db', 'peces', 'procedencia.csv'), :col_sep => "@") do |row|
-    puts "Fila con especie_id: #{row[2]}" if OPTS[:debug]
+    Rails.logger.debug "Fila con especie_id: #{row[2]}" if OPTS[:debug]
     next unless row[2].present?
     pez = comprueba_pez(row[2].to_i)
     guarda_relacion(pez, row)
@@ -39,7 +39,7 @@ def comprueba_pez(especie_id)
 end
 
 def guarda_pez(especie_id)
-  puts "\tEl pez no existia **************" if OPTS[:debug]
+  Rails.logger.debug "\tEl pez no existia **************" if OPTS[:debug]
   pez = Pez.new
   pez.especie_id = especie_id
   pez.save
@@ -47,18 +47,18 @@ def guarda_pez(especie_id)
 end
 
 def borra_relaciones
-  puts "\tBorra relaciones anteriores" if OPTS[:debug]
+  Rails.logger.debug "\tBorra relaciones anteriores" if OPTS[:debug]
   PezCriterio.where(criterio_id: @criterio.values).delete_all
 end
 
 def guarda_relacion(pez, row)
   pc = pez.peces_criterios.new
   pc.criterio_id = @criterio[row[0].strip]
-  puts "\tGuarda la relacion" if OPTS[:debug] if pc.save
+  Rails.logger.debug "\tGuarda la relacion" if OPTS[:debug] if pc.save
 end
 
 start_time = Time.now
 
 leeCSV
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

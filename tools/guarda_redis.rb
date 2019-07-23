@@ -20,7 +20,7 @@ end
 
 
 def guarda_redis
-  puts 'Procesando los nombres cientificos...' if OPTS[:debug]
+  Rails.logger.debug 'Procesando los nombres cientificos...' if OPTS[:debug]
   ultima_corrida = false
 
   Especie.find_each do |t|
@@ -29,7 +29,7 @@ def guarda_redis
     next unless ultima_corrida
 
     #Especie.limit(100).each do |t|
-    puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
+    Rails.logger.debug "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
     t.guarda_redis
   end
 end
@@ -39,4 +39,4 @@ start_time = Time.now
 
 guarda_redis
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

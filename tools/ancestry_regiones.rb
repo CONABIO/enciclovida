@@ -20,7 +20,7 @@ end
 
 def completa
   RegionBio.find_each do |r|
-    puts "#{r.id}-#{r.nombre_region}" if OPTS[:debug]
+    Rails.logger.debug "#{r.id}-#{r.nombre_region}" if OPTS[:debug]
     r.completa_ancestry
     r.avoid_ancestry = true           # evita la gema ancestry
     r.save
@@ -34,16 +34,16 @@ if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
       Bases.conecta_a base
-      puts "Conectando a: #{base}" if OPTS[:debug]
+      Rails.logger.debug "Conectando a: #{base}" if OPTS[:debug]
       completa
     end
   end
 else
   CONFIG.bases.each do |base|
     Bases.conecta_a base
-    puts "Conectando a: #{base}" if OPTS[:debug]
+    Rails.logger.debug "Conectando a: #{base}" if OPTS[:debug]
     completa
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

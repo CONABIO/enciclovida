@@ -19,18 +19,18 @@ end
 def search
   Proveedor.where('naturalista_id IS NOT NULL AND especie_id BETWEEN 8000000 AND 9000000').order(:especie_id).find_each do |proveedor|
     next unless t = proveedor.especie
-    puts "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
+    Rails.logger.debug "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
     next unless t.especie_o_inferior?
     proveedor.obs_naturalista
 
     if proveedor.changed?
       if proveedor.save
-        puts "\t\tGuardo la informacion" if OPTS[:debug]
+        Rails.logger.debug "\t\tGuardo la informacion" if OPTS[:debug]
       else
-        puts "\t\tNo pudo guardar la informacion" if OPTS[:debug]
+        Rails.logger.debug "\t\tNo pudo guardar la informacion" if OPTS[:debug]
       end
     else
-      puts "\t\tNo hubo cambios" if OPTS[:debug]
+      Rails.logger.debug "\t\tNo hubo cambios" if OPTS[:debug]
     end
   end
 end
@@ -40,4 +40,4 @@ start_time = Time.now
 
 search
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

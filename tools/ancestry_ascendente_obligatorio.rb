@@ -20,7 +20,7 @@ end
 
 def completa
   EspecieBio.order('Nombre ASC').find_each do |e|
-    puts "#{e.id}-#{e.nombre}" if OPTS[:debug]
+    Rails.logger.debug "#{e.id}-#{e.nombre}" if OPTS[:debug]
     e.ancestry_obligatorio            # no es necesario evitar el ancestry ya que este campo no lo tiene
     e.evita_before_save = true        # evita el metodo before_save
     e.save
@@ -33,7 +33,7 @@ if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
       Bases.conecta_a base
-      puts "Conectando a: #{base}" if OPTS[:debug]
+      Rails.logger.debug "Conectando a: #{base}" if OPTS[:debug]
       completa
     end
   end
@@ -44,4 +44,4 @@ else
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

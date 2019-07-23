@@ -30,7 +30,7 @@ class ConabioService
         raise Timeout::Error, "Conabio didn't respond within #{@timeout} seconds."
       end
     rescue Savon::SOAPFault => e
-      puts e.message
+      Rails.logger.debug e.message
     end
     @response.body[:data_taxon_response][:return].encode('iso-8859-1').force_encoding('UTF-8').gsub(/\n/,'<br>') if
         @response.body[:data_taxon_response][:return].present?

@@ -23,7 +23,7 @@ def observaciones
 
   observaciones_id.each do |id|
     url = "http://naturalista.conabio.gob.mx/observations/#{id}.json"
-    puts "Ruta:  \"#{url}\" ..." if OPTS[:debug]
+    Rails.logger.debug "Ruta:  \"#{url}\" ..." if OPTS[:debug]
 
     begin
       response = RestClient.get "#{url}"
@@ -62,12 +62,12 @@ def observaciones
 end
 
 def creando_carpeta(path)
-  puts "Creando carpeta \"#{path}\" si es que no existe..." if OPTS[:debug]
+  Rails.logger.debug "Creando carpeta \"#{path}\" si es que no existe..." if OPTS[:debug]
   FileUtils.mkpath(path, :mode => 0755) unless File.exists?(path)
 end
 
 def bitacora(file)
-  puts 'Iniciando bitacoras ...' if OPTS[:debug]
+  Rails.logger.debug 'Iniciando bitacoras ...' if OPTS[:debug]
   if !File.exists?(file)
     @bitacora = File.new(file, 'w')
   end
@@ -81,4 +81,4 @@ creando_carpeta(log_path)
 bitacora("#{log_path}/#{Time.now.strftime("%Y%m%d%H%M%S")}.js")
 observaciones
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

@@ -170,7 +170,6 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
     html = ''
 
     def creaContenedor(taxon, opc={})
-      puts opc[:attr].inspect
       valor = taxon.send(opc[:attr])
 
       if valor.present?
@@ -437,26 +436,6 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
             "data-caption" => item['Caption'],
             "data-descripcion" => item['ShortDescription']
             )
-
-    # Información útil de servicio trópicos
-    # Name: NameText || Caption
-    # Specimen: SpecimenText
-    # Short Description: ShortDescription
-    # Image Kind: ImageKindText
-    # Copyright: Copyright
-    # Photographer: Photographer
-    # Location: PhotoLocation
-    # Date: PhotoDate
-    #
-    #  - - - Más comunes
-    # 'NameText'
-    # 'SpecimenText'
-    # 'Caption'
-    # 'ImageKindText'
-    # 'Copyright'
-    # 'LicenseUrl'
-    # 'LicenseName'
-    # 'Photographer'
   end
 
   # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto

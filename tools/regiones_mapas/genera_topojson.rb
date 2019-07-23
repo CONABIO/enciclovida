@@ -15,7 +15,7 @@ end
 
 # Guarda el topo json de cada region y las divisiones politicas
 def topojson_por_region
-  puts 'Generando los topojson por region' if OPTS[:debug]
+  Rails.logger.debug 'Generando los topojson por region' if OPTS[:debug]
 
   #regiones = %w(estado municipio anp ecorregion)
   regiones = %w(anp)
@@ -23,12 +23,12 @@ def topojson_por_region
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
   regiones.each do |region|  # Itera sobre los 4 tipos de region, para generar cada uno
-    puts "\tGenerando con el tipo de región: #{region}" if OPTS[:debug]
+    Rails.logger.debug "\tGenerando con el tipo de región: #{region}" if OPTS[:debug]
     topo = GeoATopo.new
     geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
     region.camelize.constantize.campos_min.campos_geom.all.each do |reg|
-      puts "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
+      Rails.logger.debug "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
 
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
@@ -68,7 +68,7 @@ def topojson_por_region
 
       # Convierte a topojson
       #topojson = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo, o: archivo_topo, tmp: archivo_tmp})
-      #puts "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
+      #Rails.logger.debug "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
     end  # End cada region each
 
     archivo_topo_todos = ruta.join("#{region}.json")
@@ -81,7 +81,7 @@ def topojson_por_region
     if %w(estado anp).include?(region)
       # Convierte a topojson
       topojson_todos = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
-      puts "Hubo un error al generar la region: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
+      Rails.logger.debug "Hubo un error al generar la region: #{archivo_topo_todos}" if OPTS[:debug] && !topojson_todos
     end
 
   end  # End tipos regiones each
@@ -89,19 +89,19 @@ end
 
 # Carga una division municipal por estado
 def topojson_municipios_por_estado
-  puts 'Generando los municipios por estado' if OPTS[:debug]
+  Rails.logger.debug 'Generando los municipios por estado' if OPTS[:debug]
   topo = GeoATopo.new
   ruta = Rails.root.join('public', 'topojson')
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
   Estado.campos_min.all.each do |e|
-    puts "Generando con estado: #{e.nombre_region}" if OPTS[:debug]
+    Rails.logger.debug "Generando con estado: #{e.nombre_region}" if OPTS[:debug]
     geojson = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
     estado_id = Estado::CORRESPONDENCIA[e.region_id]
     estado_nombre = I18n.t("estados.#{e.nombre_region.estandariza}")
 
     Municipio.campos_min.campos_geom.where(cve_ent: estado_id).each do |m|
-      puts "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
+      Rails.logger.debug "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
       feature = {type: 'Feature', properties:{}}
       feature[:properties][:region_id] = m.region_id
       feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}"
@@ -121,7 +121,7 @@ def topojson_municipios_por_estado
 
     # Convierte a topojson
     topojson = topo.dame_topojson_system({q: '1e4', p: '7e-8', i: archivo_geo, o: archivo_topo, tmp: archivo_tmp})
-    puts "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
+    Rails.logger.debug "Hubo un error al generar el municipio: #{archivo_topo}" if OPTS[:debug] && !topojson
   end
 end
 
@@ -130,4 +130,4 @@ start_time = Time.now
 topojson_por_region
 topojson_municipios_por_estado
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

@@ -23,4 +23,4 @@ start_time = Time.now
 
 Busqueda.asigna_grupo_iconico
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

@@ -20,7 +20,7 @@ end
 
 def conteo
   Especie.find_each do |taxon|
-    puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
 
     ancestry = taxon.is_root? ? "#{taxon.id}/%" : "#{taxon.ancestry_ascendente_directo}/#{taxon.id}%"
     conteo = Especie.where("ancestry_ascendente_directo LIKE '#{ancestry}'").
@@ -39,13 +39,13 @@ def conteo
       categoria_conteo = CategoriaConteo.new(especie_id: taxon.id, conteo: conteo, categoria: ARGV.join(''))
 
     else
-      puts "\tError: existe más de un conteo para ese taxón" if OPTS[:debug]
+      Rails.logger.debug "\tError: existe más de un conteo para ese taxón" if OPTS[:debug]
       next
     end
 
     if categoria_conteo.changed?
       categoria_conteo.save
-      puts "\tConteo: #{conteo} de los niveles: #{ARGV.join('')} " if OPTS[:debug]
+      Rails.logger.debug "\tConteo: #{conteo} de los niveles: #{ARGV.join('')} " if OPTS[:debug]
     end
 
   end
@@ -61,7 +61,7 @@ if ARGV.count == 4
     regexp = nivel =~ /^[0-7]$|^_$/
 
     if regexp.nil?
-      puts 'Los parámetros son incorrectos, favor de revisar la documentación' if OPTS[:debug]
+      Rails.logger.debug 'Los parámetros son incorrectos, favor de revisar la documentación' if OPTS[:debug]
       exit
     else
       next if nivel == '_'
@@ -71,7 +71,7 @@ if ARGV.count == 4
 
   conteo
 else
-  puts 'Los parámetros son incorrectos, favor de revisar la documentación' if OPTS[:debug]
+  Rails.logger.debug 'Los parámetros son incorrectos, favor de revisar la documentación' if OPTS[:debug]
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

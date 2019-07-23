@@ -60,7 +60,7 @@ class MetaService
   end
 
   def method_missing(method, *args)
-    # puts "DEBUG: You tried to call '#{method}'" # test
+    # Rails.logger.debug "DEBUG: You tried to call '#{method}'" # test
     params = *args
     params = params.first if params.is_a?(Array) && params.size == 1
     unless params.nil? || (params.is_a?(Hash) and not params.empty?)

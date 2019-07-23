@@ -7,18 +7,18 @@
 # rails r tools/quitaFotos.rb
 
 start_time = Time.now
-puts "Inicie en #{start_time} " 
+Rails.logger.debug "Inicie en #{start_time} "
 
 
 Metadato.all.each do |m|
   next if File.file?(m.path)
   print "\nMetadato.id = #{m.id.to_s} "
   print m.path.inspect
-  puts " <----- Este lo borro"
+  Rails.logger.debug " <----- Este lo borro"
   p = Photo.find_by_native_photo_id(m.id.to_s)
   p.destroy if p
   m.destroy
 end
 
-puts "Termino en #{Time.now - start_time} seg"
+Rails.logger.debug "Termino en #{Time.now - start_time} seg"
 

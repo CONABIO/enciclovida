@@ -113,10 +113,10 @@ start_time = Time.now
 
 #Se corre como SQL directo para saltarse las validaciones de los modelos.
 actualiza_ancestry.each do |query|
-  puts "Ejecutando: #{query}" if OPTS[:debug]
+  Rails.logger.debug "Ejecutando: #{query}" if OPTS[:debug]
   Bases.ejecuta query
 end
-puts 'Quitando los reinos vacios' if OPTS[:debug]
+Rails.logger.debug 'Quitando los reinos vacios' if OPTS[:debug]
 Bases.ejecuta quita_reinos_vacios
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
