@@ -401,6 +401,28 @@ server.register([
     });
 
     server.route({
+        path: '/especie/descripcion/{id}/resumen-wikipedia',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Consulta el resumen de wikipedia en español o inglés',
+            notes: '---',
+            validate: {
+                params: {
+                    id: Joi.number().description('ID de la especie')
+                },
+                query: {
+                    from: Joi.string().valid(['WikipediaEs','Wikipedia']).description('El lenguaje del resumen, si se deja vacio trata de encontrar el que tenga información en ese orden')
+                }
+            },
+            handler: function (request, reply) {
+                var url = "http://enciclovida.mx/especies/" + request.params.id + '/wikipedia-summary?from=' + request.query.from;
+                query.ajaxRequest(url, reply);
+            }
+        }
+    });
+
+    server.route({
         path: '/autocompleta/especies/{q}',
         method: 'GET',
         config: {
