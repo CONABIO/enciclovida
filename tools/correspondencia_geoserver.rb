@@ -27,7 +27,7 @@ def write_file(line)
   styles = l[9]
   bbox = l[10]
 
-  puts "Busqueda: ^#{genero} #{especie} #{subespecie}$" if OPTS[:debug]
+  Rails.logger.debug "Busqueda: ^#{genero} #{especie} #{subespecie}$" if OPTS[:debug]
   # Para guardar la informacion en json
   info = info_a_json(layers, styles, bbox)
 
@@ -35,7 +35,7 @@ def write_file(line)
   taxon = Especie.where(:nombre_cientifico => subespecie.present? ? "#{genero} #{especie} #{subespecie}" : "#{genero} #{especie}")
 
   if taxon.first && taxon.count == 1
-    puts "\tEncontro" if OPTS[:debug]
+    Rails.logger.debug "\tEncontro" if OPTS[:debug]
     if proveedor = taxon.first.proveedor
       proveedor.geoserver_info = info
     else
@@ -43,21 +43,21 @@ def write_file(line)
     end
 
     if proveedor.changed?
-      @bitacora.puts "#{genero},#{especie},#{subespecie},#{layers},#{taxon.first.id}" if proveedor.save
+      @bitacora.Rails.logger.debug "#{genero},#{especie},#{subespecie},#{layers},#{taxon.first.id}" if proveedor.save
     end
   else
-    puts "\tNO encontro" if OPTS[:debug]
+    Rails.logger.debug "\tNO encontro" if OPTS[:debug]
     @bitacora_no_encontro.puts "#{genero},#{especie},#{subespecie}#{layers}"
   end
 end
 
 def creando_carpeta(path)
-  puts "Creando carpeta \"#{path}\" si es que no existe..." if OPTS[:debug]
+  Rails.logger.debug "Creando carpeta \"#{path}\" si es que no existe..." if OPTS[:debug]
   FileUtils.mkpath(path, :mode => 0755) unless File.exists?(path)
 end
 
 def bitacoras(file, no_encontro)
-  puts 'Iniciando bitacoras ...' if OPTS[:debug]
+  Rails.logger.debug 'Iniciando bitacoras ...' if OPTS[:debug]
   if !File.exists?(file)
     @bitacora = File.new(file, 'w')
     @bitacora.puts 'genero,especie,subespecie,layers,id'
@@ -102,11 +102,11 @@ no_encontro = "#{log_path}no_encontro.csv"
 Dir["#{path}/*.csv"].map{ |arch| arch.split('/').last }.each do |csv|
   @csv = csv
   @file = log_path + csv
-  puts "Ruta archivo: #{path}/#{csv}" if OPTS[:debug]
-  puts "Ruta bitacora: #{@file}" if OPTS[:debug]
+  Rails.logger.debug "Ruta archivo: #{path}/#{csv}" if OPTS[:debug]
+  Rails.logger.debug "Ruta bitacora: #{@file}" if OPTS[:debug]
   creando_carpeta log_path
   bitacoras @file, no_encontro
   read_file "#{path}/#{csv}"
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

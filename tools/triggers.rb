@@ -18,7 +18,7 @@ where [options] are:
 end
 
 def argumento_a_trigger(arg, base)
-  puts "Argumento con: #{arg}" if OPTS[:debug]
+  Rails.logger.debug "Argumento con: #{arg}" if OPTS[:debug]
 
   Bases::EQUIVALENCIA.each do |tabla,tabla_bio|
     trigger = ''
@@ -95,11 +95,11 @@ def argumento_a_trigger(arg, base)
       trigger+= "END\n"
 
       Bases.ejecuta trigger
-      puts "Creo para: #{tabla}" if OPTS[:debug]
+      Rails.logger.debug "Creo para: #{tabla}" if OPTS[:debug]
     else
       trigger+= "DROP TRIGGER [dbo].[validaciones_#{tabla}]"
       Bases.ejecuta trigger
-      puts "Borro para: #{tabla}" if OPTS[:debug]
+      Rails.logger.debug "Borro para: #{tabla}" if OPTS[:debug]
     end
   end
 end
@@ -114,17 +114,17 @@ if ARGV.any? && acciones.include?(ARGV[0].downcase)
       next if index == 0
       if CONFIG.bases.include?(base)
         Bases.conecta_a base
-        puts "Con base: #{base}" if OPTS[:debug]
+        Rails.logger.debug "Con base: #{base}" if OPTS[:debug]
         argumento_a_trigger(ARGV[0].downcase, base)
       end
     end
   elsif ARGV.count == 1
     CONFIG.bases.each do |base|
       Bases.conecta_a base
-      puts "Con base: #{base}" if OPTS[:debug]
+      Rails.logger.debug "Con base: #{base}" if OPTS[:debug]
       argumento_a_trigger(ARGV[0].downcase, base)
     end
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

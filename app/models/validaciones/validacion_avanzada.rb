@@ -60,7 +60,7 @@ class ValidacionAvanzada < Validacion
 
   # Valida en genero, familia u orden
   def valida_mas_arriba
-    puts "\n\nValida mas arriba de especie ..."
+    Rails.logger.debug "Valida mas arriba de especie ..."
     # Las interseccion de categorias validas entre el excel y las permitidas
     categorias = (CategoriaTaxonomica::CATEGORIAS & fila.keys).reverse
     asegurar_categoria = %w(genero familia orden)  # Solo estas categorias se sube a validar
@@ -68,7 +68,7 @@ class ValidacionAvanzada < Validacion
     categorias.each do |categoria|
       next unless fila[categoria].present?
       next unless asegurar_categoria.include?(categoria)
-      puts "\n Tratando de encontrar mas arriba con: #{categoria}"
+      Rails.logger.debug "Tratando de encontrar mas arriba con: #{categoria}"
 
       # Asigna una categoria mas arriba a nombre cientifico
       self.nombre_cientifico = fila[categoria]
@@ -113,7 +113,7 @@ class ValidacionAvanzada < Validacion
 
   # Busca recursivamente el indicado, si entro aqui es porque hay mas de un resultado
   def busca_recursivamente
-    puts "\n\nBusca recursivamente ..."
+    Rails.logger.debug "Busca recursivamente ..."
     validacion[:taxones].each do |taxon|
 
       taxon.asigna_categorias  # Completa la informacion del taxon
@@ -128,7 +128,7 @@ class ValidacionAvanzada < Validacion
 
   # Asocia la respuesta para armar el contenido del excel
   def asocia_respuesta
-    puts "\n\nAsocia la respuesta con el excel"
+    Rails.logger.debug "Asocia la respuesta con el excel"
     if validacion[:estatus] && validacion[:valido_hasta].blank?
       taxon_estatus
     end
@@ -143,7 +143,7 @@ class ValidacionAvanzada < Validacion
   end
 
   def escribe_excel
-    puts "\n\nEscribe el excel ..."
+    Rails.logger.debug "Escribe el excel ..."
     fila = 1  # Empezamos por la cabecera
     xlsx = RubyXL::Parser.parse(archivo_copia)  # El excel con su primera sheet
     sheet_p = xlsx[0]
@@ -160,8 +160,8 @@ class ValidacionAvanzada < Validacion
           if dato.class == String
             begin  # Revisar posteriormente esta linea, por si no tiene nombre cientifico
               sheet_p.add_cell(fila,columna,dato)
-            rescue
-              puts "@@@#{dato.inspect}"
+            rescue => e
+              Rails.logger.debug "#{dato.inspect} \n #{e.message}"
             end
           elsif dato.class == Hash  # Es la cabecera
             sheet_p.add_cell(fila,columna,dato[:valor]).change_fill(dato[:color])
@@ -235,7 +235,7 @@ class ValidacionAvanzada < Validacion
 
   # Parte azul del excel
   def correcciones
-    puts "\n\nGenerando informacion de correcciones ..."
+    Rails.logger.debug "Generando informacion de correcciones ..."
     correcciones_hash = {}
     taxon = validacion[:taxon]
 

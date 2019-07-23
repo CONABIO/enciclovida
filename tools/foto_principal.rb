@@ -18,11 +18,11 @@ end
 
 def foto_principal
   Especie.find_each do |taxon|
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     adicional = taxon.asigna_foto
 
     if adicional[:cambio]
-      puts "CAMBIO: \t#{adicional[:adicional].foto_principal}"
+      Rails.logger.debug "CAMBIO: \t#{adicional[:adicional].foto_principal}"
       adicional[:adicional].save
     end
   end
@@ -33,4 +33,4 @@ start_time = Time.now
 
 foto_principal
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
