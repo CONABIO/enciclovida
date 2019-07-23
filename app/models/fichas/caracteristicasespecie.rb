@@ -32,9 +32,13 @@ class Fichas::Caracteristicasespecie < Ficha
   belongs_to :t_vectorespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
   belongs_to :t_agentespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
-	# DESDE REPRODUCCION VEGETAL
-	has_many :t_sistapareamiento,-> {where('caracteristicasespecie.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	has_many :t_sitioanidacion,-> {where('caracteristicasespecie.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	# DESDE REPRODUCCION ANIMAL
+	belongs_to :t_sistapareamiento,-> {where('caracteristicasespecie.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_sitioanidacion,-> {where('caracteristicasespecie.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE DEMOGRAFIA AMENAZAS
+	belongs_to :t_interacciones,-> {where('caracteristicasespecie.idpregunta = ?', 17)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
 
 	OPCIONES = {
 			:habitatAntropico => 1,
@@ -51,6 +55,7 @@ class Fichas::Caracteristicasespecie < Ficha
 			:sitioanidacion => 14,
       :tipodispersion => 15,
       :structdisp => 16,
+			:interacciones => 17,
       :dispersionsei => 39,
 			:zonaVida => 43,
 			:ecorregionMarinaN1 => 44,

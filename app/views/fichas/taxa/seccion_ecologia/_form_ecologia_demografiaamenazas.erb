@@ -3,19 +3,37 @@
   <%= f.input :tamanioPoblacional %>
   <%= f.input :abundancia %>
   <%= f.input :densidad %>
-  <%= f.input :patronOcupacion %>
+  <%= f.input :patronOcupacion,
+              collection: Fichas::Demografiaamenazas::PATRON_OCUPACION,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :descripcionPatron %>
+
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.parametros_poblacionales') %></h3>
   <%= f.input :parametrosPoblacionales %>
+  <h3 class="titulo_sub_subseccion"><%= t('secciones.s_ecologia.poblacion_minima') %></h3>
   <%= f.input :poblacionminviableinicial %>
+  <%= f.input :poblacionminviablefinal %>
+
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
-  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una interaccion'.html_safe, f, :interaccion, partial: 'fichas/taxa/seccion_ecologia/form_ecologia_interaccion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ecologia', 'data-association-insertion-node' => '#ecologia_interaccion', 'data-association-insertion-method' => 'append', href: '#ecologia' %>
-  <hr />
-  <div id="ecologia_interaccion">
-    <%= f.simple_fields_for :interaccion do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_interaccion', locals: {f: info }  %>
-    <% end %>
-  </div>
+  <%= f.association :t_interacciones,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:interacciones]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
   <%= f.input :infoAdicionalInteraccion %>
 
 </div>

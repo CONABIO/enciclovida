@@ -57,6 +57,7 @@ es:
     s_ecologia:
       tamanio_poblacional: Tamaño poblacional
       parametros_poblacionales: Parámetros poblacionales
+      poblacion_minima: b) Población mínima viable
       interacciones: Interacciones
     #  * *  S E C C I Ó N   G E N É T I C A  * *  #
     s_genetica:
@@ -131,6 +132,10 @@ es:
       reproduccionVegetal:
         cantidadnectarinicial: (µl)
         cantidadnectarfinal: (µl)
+      demografiaAmenazas:
+        infoAdicionalInteraccion: Redactar en un p&aacute;rrafo la naturaleza de las interacciones intraespec&iacute;ficas y/o interespec&iacute;ficas
+        poblacionminviableinicial: Número mínimo de individuos para que la población persista
+        poblacionminviablefinal: Número mínimo de individuos para que la población persista
     hints:
       fichas_taxon:
         resumenEspecie: Breve descripci&oacute;n coloquial que incluya las caracter&iacute;sticas distintivas de la especie, incluyendo en la medida de lo posible, informaci&oacute;n sobre la morfolog&iacute;a,distribuci&oacute;n, biolog&iacute;a, ecolog&iacute;a, importancia y estado de conservaci&oacute;n. Incluir impactos principales en caso de especies invasoras.
@@ -197,6 +202,8 @@ es:
         edadPrimeraRepro: Indicar el par&aacute;metro y la unidad para especificar la edad o la talla (p. ej., 7 meses; 180 mm longitud patr&oacute;n)
         duracionVidaRepro: Indicar el per&iacute;odo en lapsos de d&iacute;as, meses o a&ntilde;os, seg&uacute;n sea el caso.
         frecuenciaApareamineto: Indicar la &eacute;poca con el nombre del o los meses en los que ocurra. Se&ntilde;alar la frecuencia indicando las veces que ocurre en un per&iacute;odo de tiempo espec&iacute;fico.
+      demografiaAmenazas:
+        infoAdicionalInteraccion: Redactar en un p&aacute;rrafo la naturaleza de las interacciones intraespec&iacute;ficas y/o interespec&iacute;ficas
     options:
       fichas_taxon:
         tipoficha:
@@ -410,6 +417,9 @@ es:
         parametrosPoblacionales: a) Parámetros poblacionales
         poblacionminviableinicial: b) Población mínima viable
         infoAdicionalInteraccion: Información adicional
+        t_interacciones: Interacciones
+        poblacionminviableinicial: 'De:'
+        poblacionminviablefinal: 'A:'
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         descPresionesAmenazas: Información adicional
         tendenciaPoblacional: Tendencia poblacional

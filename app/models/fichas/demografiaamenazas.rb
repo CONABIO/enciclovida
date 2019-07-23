@@ -6,14 +6,22 @@ class Fichas::Demografiaamenazas < Ficha
 	belongs_to :interaccion, :class_name => 'Fichas::Interaccion', :foreign_key => 'interaccionId'
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
+	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', :primary_key => :especieId
 	has_many :relDemografiasAmenazas, class_name: 'Fichas::Reldemografiaamenazas', :foreign_key => 'demografiaAmenazasId'
-	has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
 
+	has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
+	has_many :t_interacciones, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
 	accepts_nested_attributes_for :interaccion, allow_destroy: true
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true
 
-	TENDENCIA_POBLACIONAL = [
+	PATRON_OCUPACION = [
+			"Agregada".to_sym,
+			"Uniforme".to_sym,
+			"Al azar".to_sym
+  ]
+
+  TENDENCIA_POBLACIONAL = [
 			'Estable'.to_sym,
 			'Aumenta'.to_sym,
 			'Decrece'.to_sym,
