@@ -23,10 +23,10 @@ Comentario.find_each do |c|
   c.id = c.id.to_i.to_s(32)
 
   if c.save
-    puts "Guardo ID: #{c.id}" if OPTS[:debug]
+    Rails.logger.debug "Guardo ID: #{c.id}" if OPTS[:debug]
   else
-    puts "No guardo ID: #{c.id}" if OPTS[:debug]
+    Rails.logger.debug "No guardo ID: #{c.id}" if OPTS[:debug]
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

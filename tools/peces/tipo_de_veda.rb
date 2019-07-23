@@ -23,7 +23,7 @@ def leeCSV
   borra_relaciones
 
   CSV.foreach(Rails.root.join('db', 'peces', 'tipo_de_veda.csv'), :col_sep => "@") do |row|
-    puts "Fila con especie_id: #{row[4]}" if OPTS[:debug]
+    Rails.logger.debug "Fila con especie_id: #{row[4]}" if OPTS[:debug]
     next unless row[4].present?
     pez = comprueba_pez(row[4].to_i)
     guarda_relacion(pez, row)
@@ -40,7 +40,7 @@ def comprueba_pez(especie_id)
 end
 
 def guarda_pez(especie_id)
-  puts "\tEl pez no existia **************" if OPTS[:debug]
+  Rails.logger.debug "\tEl pez no existia **************" if OPTS[:debug]
   pez = Pez.new
   pez.especie_id = especie_id
   pez.save
@@ -48,7 +48,7 @@ def guarda_pez(especie_id)
 end
 
 def borra_relaciones
-  puts "\tBorra relaciones anteriores" if OPTS[:debug]
+  Rails.logger.debug "\tBorra relaciones anteriores" if OPTS[:debug]
   ids = @criterio.values
   PezCriterio.where(criterio_id: ids).delete_all
 end
@@ -56,7 +56,7 @@ end
 def guarda_relacion(pez, row)
   pc = pez.peces_criterios.new
   pc.criterio_id = @criterio[row[0].strip]
-  puts "\tGuarda la relacion" if OPTS[:debug] if pc.save
+  Rails.logger.debug "\tGuarda la relacion" if OPTS[:debug] if pc.save
 end
 
 def guarda_valores_adicionales(pez, row)
@@ -68,11 +68,11 @@ def guarda_valores_adicionales(pez, row)
   end
 
   pez.guardar_manual = true
-  puts "\tGuarda el valor adicional de veda_fechas" if OPTS[:debug] if pez.save
+  Rails.logger.debug "\tGuarda el valor adicional de veda_fechas" if OPTS[:debug] if pez.save
 end
 
 start_time = Time.now
 
 leeCSV
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

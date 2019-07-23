@@ -115,9 +115,9 @@ if ARGV.any?
   @most_identifications = most_identifications(options)
 
 else
-  puts 'The site_id is required' if OPTS[:debug]
+  Rails.logger.debug 'The site_id is required' if OPTS[:debug]
 end
 
-puts @most_observations_year.inspect if OPTS[:debug]
-puts @most_species_year.inspect if OPTS[:debug]
-puts @most_identifications_year.inspect if OPTS[:debug]
+Rails.logger.debug @most_observations_year.inspect if OPTS[:debug]
+Rails.logger.debug @most_species_year.inspect if OPTS[:debug]
+Rails.logger.debug @most_identifications_year.inspect if OPTS[:debug]
