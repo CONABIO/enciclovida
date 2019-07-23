@@ -15,7 +15,7 @@ class Validacion
 
   # Encuentra el mas parecido
   def encuentra_por_nombre
-    puts "\n Encuentra record por nombre cientifico: #{nombre_cientifico}"
+    Rails.logger.debug "Encuentra record por nombre cientifico: #{nombre_cientifico}"
     # Evita que el nombre cientifico este vacio
     if nombre_cientifico.blank?
       self.validacion = {estatus: false, msg: 'El nombre cientifico está vacío'}
@@ -25,17 +25,17 @@ class Validacion
     taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
-      puts "\n\nCoincidio busqueda exacta"
+      Rails.logger.debug "Coincidio busqueda exacta"
       self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
       return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
-      puts "\n\nCoincidio mas de uno directo en la base"
+      Rails.logger.debug "Coincidio mas de uno directo en la base"
       self.validacion = {taxones: taxones, msg: 'Existe más de una coincidencia'}
       return
 
     else
-      puts "\n\nTratando de encontrar concidencias con la base, separando el nombre"
+      Rails.logger.debug "ratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
       nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
@@ -56,7 +56,7 @@ class Validacion
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
-        puts "\n\nTratando de encontrar concidencias con el fuzzy match"
+        Rails.logger.debug "Tratando de encontrar concidencias con el fuzzy match"
 
         if Rails.env.development_mac?
           ids = []
@@ -77,13 +77,13 @@ class Validacion
           end
 
           if taxones_con_distancia.empty?
-            puts "\n\nSin coincidencia"
+            Rails.logger.debug "Sin coincidencia"
             self.validacion = {estatus: false, msg: 'Sin coincidencias'}
             return
           else
             if taxones_con_distancia.length == 1
               if nombre_cientifico.downcase == taxones_con_distancia.first.nombre_cientifico.limpiar(true).downcase  # Era el mismo, solo que tenia ssp. en vez de subsp.
-                puts "-#{nombre_cientifico.limpiar.estandariza}-#{taxones_con_distancia.first.nombre_cientifico.limpiar.estandariza}-"
+                Rails.logger.debug "-#{nombre_cientifico.limpiar.estandariza}-#{taxones_con_distancia.first.nombre_cientifico.limpiar.estandariza}-"
                 self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda exacta'}
               else
                 self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
@@ -96,7 +96,7 @@ class Validacion
           end
 
         else  # No hubo coincidencias con su nombre cientifico
-          puts "\n\nSin coincidencia"
+          Rails.logger.debug "Sin coincidencia"
           self.validacion = {estatus: false, msg: 'Sin coincidencias'}
           return
         end
@@ -106,7 +106,7 @@ class Validacion
   end
 
   def dame_sheet
-    puts "\n Validando el archivo ..."
+    Rails.logger.debug "Validando el archivo ..."
 
     xlsx = Roo::Excelx.new(archivo_copia, packed: nil, file_warning: :ignore)
     self.sheet = xlsx.sheet(0)  # toma la primera hoja por default

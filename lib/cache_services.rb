@@ -206,44 +206,6 @@ module CacheServices
     end
   end
 
-=begin
-  RESPUESTAS DE LOS METODOS
-
-  estadisticas_naturalista
-    nombres_comunes
-    fotos
-    total_observaciones_investigacion
-    observaciones_casual
-
-  estadisticas_conabio
-    total_nombres_comune
-    total_fotos
-    total_fichas
-
-  estadisticas_wikipedia
-    ficha_espaniol
-    ficha_ingles
-
-  estadisticas_eol
-    ficha_espaniol
-    ficha_ingles
-
-  estadisticas_tropicos_service
-    total_fotos
-
-  estadisticas_maccaulay
-    total_fotos
-    total_videos
-    total_audios
-
-  estadisticas_SNIB
-    ejemplares_snib
-    ejemplares_snib_averaves
-
-  estadisticas_mapas_distribucion
-    mapas_distribucion
-=end
-
   def estadisticas_naturalista_servicio
     # No hacer nada si aún es vigente el caché
     return if existe_cache?('estadisticas_naturalista')
@@ -359,10 +321,8 @@ module CacheServices
       sleep(3.seconds)
 
       # Obtener los nombres comunes y fotos de naturalista
-      puts "\n\nAntes"
       respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista
       if respuesta_naturalista[:estatus]
-        puts "\n\nDespués"
         # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
         if respuesta_naturalista[:msg][:nc].present?
           resp = respuesta_naturalista[:msg][:nc]
@@ -469,7 +429,7 @@ module CacheServices
       end
 
     rescue StandardError => msg
-      puts msg
+      Rails.logger.debug msg
       borra_cache('estadisticas_wikipedia')
     end
 
@@ -497,7 +457,7 @@ module CacheServices
       end
 
     rescue StandardError => msg
-      puts msg
+      Rails.logger.debug msg
       borra_cache('estadisticas_eol')
     end
 
@@ -529,8 +489,9 @@ module CacheServices
       estd = especie_estadisticas
       escribe_estadistica(estd, 24, res[:total_fotos]) if guardar
 
-    rescue
-      puts "ERROR: ID #{id}"
+    rescue => e
+      Rails.logger.debug e.message
+      Rails.logger.debug "ERROR: ID #{id}"
       borra_cache('estadisticas_tropicos_service')
     end
 
@@ -544,11 +505,8 @@ module CacheServices
 
     begin
       taxonNC = nombre_cientifico
-      puts "Buscando fotos..."
       res[:total_fotos] = itera_servicio_maccaulay(taxonNC, "photo")
-      puts "Buscando videos..."
       res[:total_videos] = itera_servicio_maccaulay(taxonNC, "video")
-      puts "Buscando audios..."
       res[:total_audios] = itera_servicio_maccaulay(taxonNC, "audio")
 
       if guardar
@@ -621,9 +579,7 @@ module CacheServices
   def itera_estadisticas_restantes
     Especie.all.each do |especie_x|
       next unless especie_x.especie_o_inferior?
-      puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
       especie_x.genera_estadisticas_directo
-      puts "\n* * * * * * * * * * * * * * * * "
     end
   end
 
@@ -632,7 +588,6 @@ module CacheServices
     especies_todas = Especie.all
 
     especies_todas.each do |especie_x|
-      puts "\n\n\n* * * * * * Especie ID: ", especie_x.id
       # Eliminar el caché si tiene
       especie_x.borra_cache('estadisticas_naturalista')
       especie_x.borra_cache('estadisticas_conabio')
@@ -643,26 +598,24 @@ module CacheServices
       especie_x.borra_cache('estadisticas_SNIB')
       especie_x.borra_cache('estadisticas_mapas_distribucion')
       especie_x.genera_estadisticas
-      puts "\n* * * * * * * * * * * * * * * * "
     end
   end
 
   def genera_estadisticas_directo
     # Invocar las estadisticas de naturalista
     borra_cache('estadisticas_SNIB')
-    puts "\nestadisticas_SNIB: #{estadisticas_SNIB}"
   end
 
   def genera_estadisticas
     # Invocar las estadisticas de naturalista
-    puts estadisticas_naturalista_servicio
-    puts estadisticas_conabio_servicio
-    puts estadisticas_wikipedia_servicio
-    puts estadisticas_eol_servicio
-    puts estadisticas_tropicos_service_servicio
-    puts estadisticas_maccaulay_servicio
-    puts estadisticas_SNIB_servicio
-    puts estadisticas_mapas_distribucion_servicio
+    estadisticas_naturalista_servicio
+    estadisticas_conabio_servicio
+    estadisticas_wikipedia_servicio
+    estadisticas_eol_servicio
+    estadisticas_tropicos_service_servicio
+    estadisticas_maccaulay_servicio
+    estadisticas_SNIB_servicio
+    estadisticas_mapas_distribucion_servicio
   end
 
   private
@@ -741,7 +694,6 @@ module CacheServices
 
         # Si se regresó un mensaje, es porque por alguna razón no existieron fotos
         if archivo[0][:msg].present?
-          # puts "XP #{archivo[0][:msg].present?}"
           break
         else
           if archivo.count == 0
@@ -751,7 +703,7 @@ module CacheServices
           end
         end
       end
-      puts "hasta ahora hay: #{total}"
+      Rails.logger.debug "Hasta ahora hay: #{total}"
     end
     total
   end
@@ -933,7 +885,7 @@ module CacheServices
   # REVISADO: Pone el conteo de las especies o inferiores de un taxon en la tabla estadisticas
   def cuantas_especies_inferiores(opc = {})
     return unless opc[:estadistica_id].present?
-    puts "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
+    Rails.logger.debug "\n\nGuardo estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]} - #{id} ..."
     escribe_cache("estadisticas_cuantas_especies_inferiores_#{opc[:estadistica_id]}", CONFIG.cache.estadisticas.cuantas_especies_inferiores) if Rails.env.production?
 
     conteo = case opc[:estadistica_id]
@@ -962,7 +914,7 @@ module CacheServices
 
   # REVISADO: Suma la visita de una ficha en la tabla estadisticas
   def suma_visita
-    puts "\n\nGuardo conteo de visitas #{id} ..."
+    Rails.logger.debug "\n\nGuardo conteo de visitas #{id} ..."
 
     if estadistica = especie_estadisticas.where(estadistica_id: 1).first
       estadistica.conteo+= 1

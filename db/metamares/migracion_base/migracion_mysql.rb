@@ -18,12 +18,12 @@ where [options] are:
 end
 
 def itera_metadata
-  puts 'Iniciando la funcion itera_metadata ...' if OPTS[:debug]
+  Rails.logger.debug 'Iniciando la funcion itera_metadata ...' if OPTS[:debug]
   Metamares::Metadata.all.each do |meta|
-    puts "\tRecord: #{meta.mmid}  ..." if OPTS[:debug]
+    Rails.logger.debug "\tRecord: #{meta.mmid}  ..." if OPTS[:debug]
 
     if Metamares::Proyecto.where(id: meta.mmid).present?
-      puts "\t\tYa estaba en la base" if OPTS[:debug]
+      Rails.logger.debug "\t\tYa estaba en la base" if OPTS[:debug]
       next
     end
 
@@ -59,7 +59,7 @@ def itera_metadata
       if institucion.save
         proyecto.institucion_id = institucion.id
       else
-        puts "La institucion no se guardo ... #{institucion.errors.inspect}-#{institucion.inspect}" if OPTS[:debug]
+        Rails.logger.debug "La institucion no se guardo ... #{institucion.errors.inspect}-#{institucion.inspect}" if OPTS[:debug]
       end
     end
 
@@ -139,7 +139,7 @@ def itera_metadata
       end
 
     else
-      puts "El proyecto no se guardo ... #{proyecto.errors.inspect}-#{proyecto.inspect}" if OPTS[:debug]
+      Rails.logger.debug "El proyecto no se guardo ... #{proyecto.errors.inspect}-#{proyecto.inspect}" if OPTS[:debug]
     end  # End proyecto.save
   end  # End each do meta
 end
@@ -149,4 +149,4 @@ start_time = Time.now
 
 itera_metadata
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

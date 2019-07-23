@@ -1,9 +1,9 @@
 module TaxonDescribers
   
   class Wikipedia < Base
+
     def describe(taxon)
-      #title = taxon.wikipedia_title
-      title = taxon.nombre_cientifico.limpiar.limpia# if title.blank?
+      title = taxon.nombre_cientifico.limpiar.limpia
       decoded = ''
 
       begin
@@ -14,7 +14,13 @@ module TaxonDescribers
       rescue Timeout::Error => e
         Rails.logger.info "[INFO] Wikipedia API call failed: #{e.message}"
       end
+
       decoded
+    end
+
+    def get_summary(taxon)
+      title = taxon.nombre_cientifico.limpiar.limpia
+      wikipedia.summary(title)
     end
 
     def clean_html(html, options = {})
@@ -25,10 +31,12 @@ module TaxonDescribers
       decoded.gsub!('src="//', 'src="http://')
       decoded.gsub!('href="/', 'href="http://en.wikipedia.org/')
       decoded.gsub!('src="/', 'src="http://en.wikipedia.org/')
+
       if options[:strip_references]
         decoded.gsub!(/<sup .*?class=.*?reference.*?>.+?<\/sup>/, '')
         decoded.gsub!(/<strong .*?class=.*?error.*?>.+?<\/strong>/, '')
       end
+
       decoded
     end
 
@@ -37,7 +45,6 @@ module TaxonDescribers
     end
 
     def page_url(taxon)
-      #wname = taxon.wikipedia_title
       wname = taxon.nombre_cientifico.limpiar.limpia.to_s.gsub(/\s+/, '_') if wname.blank?
       URI.encode("http://en.wikipedia.org/wiki/#{wname.limpiar.limpia}")
     end
@@ -45,6 +52,7 @@ module TaxonDescribers
     def self.describer_name
       "Wikipedia (inglés)"
     end
+
   end
 
 end

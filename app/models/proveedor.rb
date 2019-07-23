@@ -251,7 +251,7 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo observaciones de naturalista #{especie_id}"
+    Rails.logger.debug "Guardo observaciones de naturalista #{especie_id}"
   end
 
   # REVISADO: Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
@@ -325,7 +325,7 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo ejemplares del snib #{especie_id}"
+    Rails.logger.debug "Guardo ejemplares del snib #{especie_id}"
   end
 
   # Recupera sólo la cantidad de observaciones de Naturalista sobre una especie
