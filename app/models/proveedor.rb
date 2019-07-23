@@ -143,6 +143,11 @@ class Proveedor < ActiveRecord::Base
       geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
+    ruta_registros = carpeta_geodatos.join("registros_#{especie_id}_todos.json")
+    if File.exist?(ruta_registros)
+      geodatos[:registros_todos] = "#{CONFIG.site_url}geodatos/#{especie_id}/registros_#{especie_id}_todos.json"
+    end
+
     geodatos[:cuales] = geodatos[:cuales].uniq
     geodatos
   end
