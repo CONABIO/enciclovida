@@ -201,6 +201,10 @@ class Proveedor < ActiveRecord::Base
       archivo_registros = File.new(ruta_registros,'w+')
       archivo_registros.puts registros.to_json
       archivo_registros.close
+
+      { estatus: true }
+    else
+      { estatus: false }
     end
   end
 
