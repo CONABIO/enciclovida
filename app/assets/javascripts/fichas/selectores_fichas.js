@@ -6,7 +6,7 @@ $( document ).ready(function() {
     });
 
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
-    casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria', 'dimorfismoSexualAnimal'];
+    casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria', 'dimorfismoSexualAnimal', 'hibernacionSI', 'territorialidadSI'];
     for(var i = 0; i < casos.length; i++) {
         var elID = casos[i];
         var selector = "input[name='opcion-" + casos[i] + "']:checked";

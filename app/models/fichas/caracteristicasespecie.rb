@@ -5,6 +5,7 @@ class Fichas::Caracteristicasespecie < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
+  # DESDE HABITAT
 	belongs_to :t_tipoVegetacionSecundaria,-> {where('caracteristicasespecie.idpregunta = ?', 2)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_clima,-> {where('caracteristicasespecie.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_suelo,-> {where('caracteristicasespecie.idpregunta = ?', 6)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
@@ -13,6 +14,27 @@ class Fichas::Caracteristicasespecie < Ficha
 	belongs_to :t_ecorregionMarinaN1,-> {where('caracteristicasespecie.idpregunta = ?', 44)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_zonaVida,-> {where('caracteristicasespecie.idpregunta = ?', 43)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
+  # DESDE HISTORIA NATURAL
+  belongs_to :t_habitoPlantas,-> {where('caracteristicasespecie.idpregunta = ?', 45)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_alimentacion,-> {where('caracteristicasespecie.idpregunta = ?', 9)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_forrajeo,-> {where('caracteristicasespecie.idpregunta = ?', 8)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_migracion,-> {where('caracteristicasespecie.idpregunta = ?', 10)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipo_migracion,-> {where('caracteristicasespecie.idpregunta = ?', 11)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_habito,-> {where('caracteristicasespecie.idpregunta = ?', 12)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipodispersion,-> {where('caracteristicasespecie.idpregunta = ?', 15)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_structdisp,-> {where('caracteristicasespecie.idpregunta = ?', 16)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_dispersionsei,-> {where('caracteristicasespecie.idpregunta = ?', 39)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE REPRODUCCION VEGETAL
+  belongs_to :t_arregloespacialflores,-> {where('caracteristicasespecie.idpregunta = ?', 49)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_arregloespacialindividuos,-> {where('caracteristicasespecie.idpregunta = ?', 50)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_arregloespacialpoblaciones,-> {where('caracteristicasespecie.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_vectorespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_agentespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE REPRODUCCION VEGETAL
+	has_many :t_sistapareamiento,-> {where('caracteristicasespecie.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	has_many :t_sitioanidacion,-> {where('caracteristicasespecie.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
 	OPCIONES = {
 			:habitatAntropico => 1,
@@ -20,138 +42,31 @@ class Fichas::Caracteristicasespecie < Ficha
 			:clima => 4,
 			:suelo => 6,
 			:geoforma => 7,
+      :forrajeo => 8,
+      :alimentacion => 9,
+      :migracion => 10,
+      :tipo_migracion => 11,
+      :habito => 12,
+			:sistapareamiento => 13,
+			:sitioanidacion => 14,
+      :tipodispersion => 15,
+      :structdisp => 16,
+      :dispersionsei => 39,
 			:zonaVida => 43,
-			:ecorregionMarinaN1 => 44
+			:ecorregionMarinaN1 => 44,
+      :habitoPlantas => 45,
+      :agentespolinizacion => 48,
+      :arregloespacialflores => 49,
+      :arregloespacialindividuos => 50,
+      :arregloespacialpoblaciones => 51,
+      :vectorespolinizacion => 53
 	}
-
 
 end
 
 
 
 =begin
-
-IV. Biología de la especie
-
-has_many :habitoPlantas,-> {where('caracteristicasespecie.idpregunta = ?', 45)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :tipoAlimentacion,-> {where('caracteristicasespecie.idpregunta = ?', 9)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-Estrategia trófica
-SELECT * FROM cat_estrategiatrofica;
-
-has_many :forrajeo,-> {where('caracteristicasespecie.idpregunta = ?', 8)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-has_many :migracion,-> {where('caracteristicasespecie.idpregunta = ?', 10)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :tipoMigracion,-> {where('caracteristicasespecie.idpregunta = ?', 11)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :habito,-> {where('caracteristicasespecie.idpregunta = ?', 12)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-
-h) Mecanismos de defensa
-"Alelopatía"
-"Coloración"
-"Defensa química"
-"Espinas"
-"Mimetismo"
-"Veneno"
-
-i) Organización social:
-"Colonias"
-"Familia"
-"Grupo"
-"Manadas"
-"Solitarios"
-"Card&uacute;menes"
-"Eusocial"
-"Filopatría-machos"
-"Filopatría-hembras"
-"Quasisocial"
-"Semisocial"
-
-
-
-
----------- A N I M A L
-
-has_many :sistapareamiento,-> {where('caracteristicasespecie.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-d) Número de eventos reproductivos:
-"Iteróparos"
-"Semélparos"
-
-
-f) Tipo de fecundación:
-"Interna"
-"Externa"
-
-has_many :sitioanidacion,-> {where('caracteristicasespecie.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-l) Cuidado parental:
-"hembra"
-"macho"
-"ambos"
-
-
-
-
---------- V E G E T A L
-
-has_many :arregloespacialflores,-> {where('caracteristicasespecie.idpregunta = ?', 49)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :arregloespacialindividuos,-> {where('caracteristicasespecie.idpregunta = ?', 50)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :arregloespacialpoblaciones,-> {where('caracteristicasespecie.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-
-c) Aislamiento temporal o espacial de los órganos reproductores:
-"Dicogamia"
-"Protandria"
-"Protoginia"
-"Hercogamia"
-
-
-d) Sistemas reproductivos asexuales
-"Multiplicaci&oacute;n vegetativa"
-"Esporulaci&oacute;n"
-"Apomixis"
-
-e) Tipo de fecundación:
-"Alogamia"
-"Autogamia"
-"Cleistogamia "
-
-f) Tipo de polinización:
-has_many :vectorespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-i. Vectores de polinización:
-has_many :agentespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-
-i. Horario de apertura de la flor:
-"Diurno"
-"Crepuscular"
-"Nocturno"
-
-
-iii. Características del fruto:
-"SELECT * FROM cat_caracfruto;"
-
-
-has_many :tipodispersion,-> {where('caracteristicasespecie.idpregunta = ?', 15)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :structdisp,-> {where('caracteristicasespecie.idpregunta = ?', 16)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-Riesgo de dispersi&oacute;n
-has_many :dispersionsei,-> {where('caracteristicasespecie.idpregunta = ?', 39)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 V. Ecología y demografía de la especie

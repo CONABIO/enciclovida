@@ -89,15 +89,20 @@ es:
       conducta: Conducta
       reprod_animal: Reproducción animal
       reprod_vegetal: Reproducción vegetal
-      epoca_floracion: Época de floración
-      cantidad_nectar: Cantidad de néctar
-      epoca_fructificacion: Época de fructificación
-      numero_frutos: Número de frutos
-      semillas_fruto: Número de semillas por fruto
-      porcentaje_germinacion: Porcentaje de germinación
-      porcentaje_plantulas: Porcentaje de supervivencia de plántulas
+      epoca_floracion: iii. Época de floración
+      cantidad_nectar: iv. Cantidad de néctar
+      fructificacion: h) Frutificación
+      exp_sexual: b) Tipos de expresión sexual
+      floracion: g) Floración
+      epoca_fructificacion: i. Época de fructificación
+      numero_frutos: ii. Número de frutos
+      semillas: j) Semillas
+      semillas_fruto: i) Número de semillas por fruto
+      porcentaje_germinacion: iv. Porcentaje de germinación
+      porcentaje_plantulas: v. Porcentaje de supervivencia de plántulas
       dispersion: Dispersión
       distancia_dispersion: Distancia de dispersión
+      tiempo_eventos_rep: e) Tiempo entre eventos reproductivos (meses)
 
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
@@ -145,6 +150,7 @@ es:
         comoExoticaMex: Distribuci&oacute;n reportada para la especie como ex&oacute;tica en M&eacute;xico.
         distribucionOriginal: Distribuci&oacute;n reportada para la especie en su &aacute;rea de distribuci&oacute;n original.
       habitats:
+        uso: Hacer una breve descripci&oacute;n del uso de los recursos f&iacute;sicos y biol&oacute;gicos del h&aacute;bitat, indicando las &aacute;reas que seleccionan para alimentarse, resguardarse, cortejar, etc.
         estadoHabitat: Siguiendo los lineamientos del criterio B del M&eacute;todo de Evaluaci&oacute;n de riesgo de extinci&oacute;n(MER)de la NOM-059-SEMARNAT-2010. Otros datos Pueden agregarse en informacion adicional
         addinfoestadoHabitat: Informaci&oacute;n adicional sobre el estado del h&aacute;bitat con respecto al desarrollo natural del tax&oacute;n.
         intervaloaltitudinalinicial: En msnm
@@ -170,6 +176,9 @@ es:
         interbatimetricofinal: En metros (m)
         amplitudmareasinicial: En metros (m)
         amplitudmareasfinal: En metros (m)
+      historiaNatural:
+        distanciadispercioninicial: (m)
+        distanciadispercionfinal: (m)
       reproduccionVegetal:
         nofrutosinicial: Frutos
         nofrutosfinal: Frutos
@@ -179,6 +188,15 @@ es:
         germinacionfinal: '%'
         plantulasinicial: '%'
         plantulasfinal: '%'
+        cantidadnectarinicial: Cantidad de n&eacute;ctar producido por las flores (µl)
+        cantidadnectarfinal: Cantidad de n&eacute;ctar producido por las flores (µl)
+        tiempoFloracion: Se&ntilde;alar el tiempo en que las flores permanecen abiertas (horas o d&iacute;as)
+      reproduccionAnimal:
+        tiempoentrecriasinicial: Meses
+        tiempoentrecriasfinal: Meses
+        edadPrimeraRepro: Indicar el par&aacute;metro y la unidad para especificar la edad o la talla (p. ej., 7 meses; 180 mm longitud patr&oacute;n)
+        duracionVidaRepro: Indicar el per&iacute;odo en lapsos de d&iacute;as, meses o a&ntilde;os, seg&uacute;n sea el caso.
+        frecuenciaApareamineto: Indicar la &eacute;poca con el nombre del o los meses en los que ocurra. Se&ntilde;alar la frecuencia indicando las veces que ocurre en un per&iacute;odo de tiempo espec&iacute;fico.
     options:
       fichas_taxon:
         tipoficha:
@@ -398,29 +416,32 @@ es:
         descTendenciaPoblacional: Información adicional
       historiaNatural:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        habitoPlantas: Hábito en caso de plantas
-        alimentacion: Alimentación
+        t_habitoPlantas: Hábito en caso de plantas
+        t_alimentacion: Alimentación
         descripcionAlimentacion: Información adicional
         estrategiaTrofica: Estrategia trófica
         descripcionEstrofica: Información adicional
-        forrajeo: Técnica de forrajeo
+        t_forrajeo: Técnica de forrajeo
         cambiar: Información adicional
-        conducta: Características conductuales
-        migracion: Estatus migratorio
-        tipoMigracion: Tipo de migración que realiza la especie
-        Habito: Hábito
+        conducta: a) Características conductuales
+        t_migracion: b) Estatus migratorio
+        t_tipo_migracion: Tipo de migración que realiza la especie
+        t_habito: c) Hábito
         cambiar: Información adicional
-        tipopHabito: Periodo de actividad
+        tipopHabito: d) Periodo de actividad
         cambiar: Información adicional
-        hibernacion: Hibernación
+        hibernacion: e) Hibernación
+        Infoaddperiodoactividad: Información adicional
         infoaddhibernacion: Información adicional
-        territorialidad: Territorialidad
+        territorialidad: f) Territorialidad
         infoaddterritorialidad: Información adicional
-        ambitoHogareno: Ámbito hogareño (animales)
-        mecanismosDefensa: Mecanismos de defensa
+        ambitoHogareno: g) Ámbito hogareño (animales)
+        mecanismosDefensa: h) Mecanismos de defensa
         infoaddmecdefensa: Información adicional
         tipoReproduccion: Tipo de reproducción
-        cambiar: Dispersión
+        t_tipodispersion: Tipo de dispersión
+        t_structdisp: Estructura o individuo dispersado
+        infoaddperiodoactividad: Información adicional
         tipoDispersion: Tipo de dispersión
         descTipoDispersion: Información adicional
         estructuraDispersora: Estructura o individuo dispersado
@@ -478,20 +499,25 @@ es:
         descrpcion: Geoforma
       reproduccionVegetal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        descripcion: Generalidades
+        descripcion: a) Generalidades
+        t_arregloespacialflores: i. Flores
+        t_arregloespacialindividuos: ii. Individuos
+        t_arregloespacialpoblaciones: iii. Poblaciones
+        t_vectorespolinizacion: f) Tipo de polinización
+        t_agentespolinizacion:  i. Vectores de polinización
         arregloEspacial: Tipos de expresión sexual
         descripcionArregloespacial: Información adicional
-        aislamientoOrganos: Aislamiento temporal o espacial de los órganos reproductores
+        aislamientoOrganos: c) Aislamiento temporal o espacial de los órganos reproductores
         descAislaOrganos: Información adicional
-        sistReproAsexuales: Sistemas reproductivos asexuales
+        sistReproAsexuales: d) Sistemas reproductivos asexuales
         DescsistReproAsexuales: Información adicional
-        fecuandacion: Tipo de fecundación
+        fecuandacion: e) Tipo de fecundación
         descFecundacion: Información adicional
         agentesPolinizacion: Tipo de polinización
         descAgentesPo: Información adicional
-        aperturaFlor: Horario de apertura de la flor
+        aperturaFlor: i. Horario de apertura de la flor
         descApertura: Información adicional
-        tiempoFloracion: Longevidad de la flor
+        tiempoFloracion: ii. Longevidad de la flor
         addinfolongevidadflor: Información adicional
         mesInicio: Mes de inicio
         mesFinal: Mes de término
@@ -499,22 +525,21 @@ es:
         cantidadnectarinicial: 'De:'
         cantidadnectarfinal: 'A:'
         addinfocantidadnectar: Información adicional
-        cantidadpolen: Cantidad de polen
-        cambiar: Frutificación
+        cantidadpolen: v. Cantidad de polen
         mesInicialFructi: Mes de inicio
         mesFinalFructi: Mes de término
         addinfotiempofructi:  Información adicional
         nofrutosinicial: 'De:'
         nofrutosfinal: 'A:'
-        caracFruto: Características del fruto
+        caracFruto: iii. Características del fruto
         descCaracFruto: Información adicional
-        noEventos: Número de eventos reproductivos
+        noEventos: i) Número de eventos reproductivos
         descNoEventos: Información adicional
         cambiar: Semillas
         nosemillasinicial: 'De:'
         nosemillasfinal: 'A:'
-        tamanioSemilla: Tamaño promedio de las semillas
-        caracToxica: Características tóxicas
+        tamanioSemilla: ii. Tamaño promedio de las semillas
+        caracToxica: iii. Características tóxicas
         germinacioninicial: 'De:'
         germinacionfinal: 'A:'
         infoaddgerminacion: Información adicional
@@ -523,27 +548,30 @@ es:
         infoaddplantulas: Información adicional
       reproduccionAnimal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        descripcion: Generalidades
-        dimorfismoSexual: Dimorfismo sexual
+        descripcion: a) Generalidades
+        dimorfismoSexual: b) Dimorfismo sexual (Indicar sí o no)
         additionalInfoDimorfiasmo: Información adicional
         coloracion: Dimorfismo sexual en coloración
         ornamentacion: Dimorfismo sexual en ornamentación
-        sistemaApareamiento: Sistemas de apareamiento
+        t_sistapareamiento: c) Sistemas de apareamiento
+        sistemaApareamiento: c) Sistemas de apareamiento
         descripcionSistema: Información adicional
-        noEventos: Número de eventos reproductivos
+        noEventos: d) Número de eventos reproductivos
         descripcionNoEventos: Información adicional
-        cambiar: Tiempo entre eventos reproductivos (meses)
-        tipoFecundacion: Tipo de fecundación
+        tipoFecundacion: f) Tipo de fecundación
         descripcionTipoFec: Información adicional
-        edadPrimeraRepro: Edad o talla a la primera reproducción
-        duracionVidaRepro: Duración de vida reproductiva
-        frecuenciaApareamineto: Epoca del año y frecuencia de apareamiento
-        sitioAnidacion: Sitios de anidación o de crianza
+        edadPrimeraRepro: g) Edad o talla a la primera reproducción
+        duracionVidaRepro: h) Duración de vida reproductiva
+        frecuenciaApareamineto: i) Epoca del año y frecuencia de apareamiento
+        sitioAnidacion: j) Sitios de anidación o de crianza
+        t_sitioanidacion: j) Sitios de anidación o de crianza
         descripcionSitioAnidacion: Información adicional
-        noHuevosCrias: Número de huevos o crias
-        cuidadoParental: Cuidado parental
+        noHuevosCrias: k) Número de huevos o crias
+        cuidadoParental: l) Cuidado parental
         desCuidadoParental: Información adicional
-        tiempoCuidadoParental: Tiempo del cuidado parental
+        tiempoCuidadoParental: m) Tiempo del cuidado parental
+        tiempoentrecriasinicial: 'De:'
+        tiempoentrecriasfinal: 'A:'
       interaccion:
         #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
         interacciones: Interacciones

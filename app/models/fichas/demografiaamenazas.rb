@@ -9,6 +9,7 @@ class Fichas::Demografiaamenazas < Ficha
 	has_many :relDemografiasAmenazas, class_name: 'Fichas::Reldemografiaamenazas', :foreign_key => 'demografiaAmenazasId'
 	has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
 
+
 	accepts_nested_attributes_for :interaccion, allow_destroy: true
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true
 
@@ -19,5 +20,19 @@ class Fichas::Demografiaamenazas < Ficha
 			'ND'.to_sym,
 			'NA'.to_sym
 	]
+
+  ORGANIZACION_SOCIAL = [
+			"Colonias".to_sym,
+			"Familia".to_sym,
+			"Grupo".to_sym,
+			"Manadas".to_sym,
+			"Solitarios".to_sym,
+			"Cardúmenes".to_sym,
+			"Eusocial".to_sym,
+			"Filopatría-machos".to_sym,
+			"Filopatría-hembras".to_sym,
+			"Quasisocial".to_sym,
+			"Semisocial".to_sym
+  ]
 
 end
