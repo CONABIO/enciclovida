@@ -259,19 +259,22 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
 
     def creaCaracteristica(valores)
       html = ''
-      biblio = "<ul>#{valores[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-      biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>"
-      obs_html = valores[:observaciones].any? ? "<p>Observaciones: #{valores[:observaciones].join('<hr />')}</p>" : ''
 
-      valores[:descripciones].each do |l|
-        html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
+      valores[:datos].each do |dato|
+        biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
+        biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.present?
+        obs_html = dato[:observaciones].any? ? "<p>Observaciones: #{dato[:observaciones].join('<hr />')}</p>" : ''
+
+        dato[:descripciones].each do |l|
+          html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
+        end
       end
 
       "<p><strong>#{valores[:nombre_catalogo]}</strong><ul>#{html}</ul></p>"
     end
 
-    caracteristicas.each do |key, valores|
+    caracteristicas.each do |catalogo, valores|
       html << creaCaracteristica(valores)
     end
 
