@@ -286,8 +286,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio = esp_cat.bibliografias.where(catalogo_id: cat.id).map(&:bibliografia_id)
-      biblio_cita_completa = biblio.any? ? Bibliografia.find(biblio).map(&:cita_completa) : []
+      biblio_cita_completa = esp_cat.especies_catalogos_bibliografias.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
 
       if resp[nombre_catalogo.estandariza.to_sym].present?
         resp[nombre_catalogo.estandariza.to_sym][:descripciones] << cat.descripcion
