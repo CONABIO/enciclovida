@@ -5,7 +5,7 @@
     <% if @comentario.especie.present? && respuesta_externa %>
         <p>
           A continuación se muestran los comentarios que has realizado para: <br />
-          <strong><%= tituloNombreCientifico(@comentario.especie, :show => true).gsub(' )',')').html_safe %></strong>
+          <strong><%= tituloNombreCientifico(@comentario.especie).html_safe %></strong>
         </p>
         <hr>
     <% end %>

@@ -1,5 +1,5 @@
 <% if @especie.present? %>
-    <h3><%= tituloNombreCientifico(@especie, :show => true).gsub(' )',')').html_safe %></h3>
+    <h3><%= tituloNombreCientifico(@especie).html_safe %></h3>
 <% end %>
 
 <%= render 'form' %>

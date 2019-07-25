@@ -30,7 +30,7 @@ module EspeciesHelper
       when 'title'
         nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
       when 'link'
-        "<b>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</b> #{taxon.nombre_autoridad} #{estatus}".html_safe
+        "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
         "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
       when 'inline'
@@ -38,34 +38,6 @@ module EspeciesHelper
       else
         "#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}".html_safe
       end
-
-=begin
-      if taxon.especie_o_inferior?   # Las especies llevan otro tipo de formato en nombre
-        if params[:title]
-          "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
-        elsif params[:link]
-          if taxon.x_nombre_comun_principal.present?
-            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]} ----------> #{taxon.x_nombre_comun_principal.capitalize}".html_safe
-          else
-            "#{ponItalicas(taxon,true)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
-          end
-        elsif params[:show]
-          "#{ponItalicas(taxon)} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
-        else
-          'Ocurrio un error en el nombre'.html_safe
-        end
-      else
-        if params[:title]
-          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
-        elsif params[:link]
-          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
-        elsif params[:show]
-          "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}".html_safe
-        else
-          'Ocurrio un error en el nombre'.html_safe
-        end
-      end
-=end
 
     else   #vista general
 
@@ -75,7 +47,7 @@ module EspeciesHelper
       when 'title'
         "#{nombre_comun} (#{nombre_cientifico})".sanitize.gsub(/[<b><\/b>]/,'').html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</i></b>".html_safe
       when 'header'
         "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
       when 'inline'
@@ -125,7 +97,7 @@ module EspeciesHelper
     def creaLista(taxon, lista=nil)
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, :link => true)
+      nombre = tituloNombreCientifico(taxon, render: 'link')
       "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
     end
 
@@ -147,7 +119,7 @@ module EspeciesHelper
     taxones.each do |taxon|
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, :link => true)
+      nombre = tituloNombreCientifico(taxon, render: 'link')
       html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
     end
 
