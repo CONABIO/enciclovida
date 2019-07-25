@@ -16,7 +16,30 @@ module EspeciesHelper
                   end
                 end.try(:capitalize)
 
+    nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
+
+    unless taxon.especie_o_inferior?
+      cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+      cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
+    end
+
     if I18n.locale.to_s == 'es-cientifico'
+      estatus = Especie::ESTATUS_VALOR[taxon.estatus]
+
+      case params[:render]
+      when 'title'
+        nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
+      when 'link'
+        "<b>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</b> #{taxon.nombre_autoridad} #{estatus}".html_safe
+      when 'header'
+        "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
+      when 'inline'
+        "#{nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
+      else
+        "#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}".html_safe
+      end
+
+=begin
       if taxon.especie_o_inferior?   # Las especies llevan otro tipo de formato en nombre
         if params[:title]
           "#{taxon.nombre_cientifico} #{taxon.nombre_autoridad} #{Especie::ESTATUS_VALOR[taxon.estatus]}"
@@ -42,16 +65,11 @@ module EspeciesHelper
           'Ocurrio un error en el nombre'.html_safe
         end
       end
+=end
 
     else   #vista general
 
-      unless taxon.especie_o_inferior?
-        cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
-        cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
-      end
-
       nombre_comun = "<b>#{nom_comun}</b>" if nom_comun.present?
-      nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
 
       case params[:render]
       when 'title'
@@ -219,7 +237,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
       html = ''
 
       taxones.each do |taxon|
-        html << "<li>#{tituloNombreCientifico(taxon, show: true)}</li>"
+        html << "<li>#{tituloNombreCientifico(taxon, render: 'inline')}</li>"
 
         bibliografias = taxon.bibliografias.map(&:cita_completa)
 
