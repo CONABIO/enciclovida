@@ -27,6 +27,4 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
     });
-
-    window.history.pushState("", "", opciones.slug_url);
 });

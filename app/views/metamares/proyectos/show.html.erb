@@ -144,7 +144,7 @@
     <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
       <ul class="list-group">
         <% @proyecto.especies.each do |e| %>
-          <li class="list-group-item"><%= e.especie ? tituloNombreCientifico(e.especie, link: true).html_safe : e.nombre_cientifico %></li>
+          <li class="list-group-item"><%= e.especie ? tituloNombreCientifico(e.especie, render: 'link').html_safe : e.nombre_cientifico %></li>
         <% end %>
       </ul>
     </div>

@@ -1,12 +1,12 @@
 <% content_for(:title) do %>
-    <%= "Editando :#{tituloNombreCientifico(@especie, :title=>true)}".html_safe %>
+    <%= "Editando :#{tituloNombreCientifico(@especie, render: 'tittle')}".html_safe %>
 <% end %>
 
 <p id="notice"><%= notice %></p>
 
 <div class="titulo">
   <p><%= enlacesDeTaxonomia(@especie) %></p>
-  <h1><%= "Editando :<br><br>#{tituloNombreCientifico(@especie, :link=>true)}".html_safe %></h1>
+  <h1><%= "Editando :<br><br>#{tituloNombreCientifico(@especie, render: 'link')}".html_safe %></h1>
 </div>
 
 <%= render 'form' %>
