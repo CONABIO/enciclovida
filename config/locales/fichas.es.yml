@@ -67,7 +67,10 @@ es:
     s_importancia:
       importancia_biologica: Importancia biológica
       importancia_economica: Importancia económica
+      comercio_nal: a) Comercio nacional >>>
+      comercio_int_nal: b) Comercio internacional >>>
       comercio: Comercio
+      afectaciones_act_com: c) Afectaciones de la actividad comercial
       importancia_cultural: Importancia cultural y usos
     #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
     s_conservacion:
@@ -437,6 +440,9 @@ es:
         t_migracion: b) Estatus migratorio
         t_tipo_migracion: Tipo de migración que realiza la especie
         t_habito: c) Hábito
+        t_comintersel: Origen de los especímenes
+        t_proposito_com_int: Propósito del comercio
+        pais_importacion: País de importación
         cambiar: Información adicional
         tipopHabito: d) Periodo de actividad
         cambiar: Información adicional
@@ -466,6 +472,8 @@ es:
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
         ImportanciaBiologica: a) Importancia biológica
         funcionEcologica: b) Función ecológica
+        t_comnalsel: Origen de los especímenes
+        t_proposito_com: Propósito del comercio
         importanciaEconomica: Importancia económica
         comercioNal: Comercio nacional
         origenComNal: Origen de los especímenes
@@ -473,8 +481,9 @@ es:
         comInternacional: Comercio internacional
         origenInternacional: Origen de los especímenes
         propositoInternacional: Propósito del comercio
-        comercioIlicitoNa: ¿La especie se ve afectada por el comercio ilícito nacional?
+        comercioIlicitoNal: ¿La especie se ve afectada por el comercio ilícito nacional?
         comercioIlicitoInter: ¿La especie se ve afectada por el comercio ilícito internacional?
+        culturaUsos: Importancia cultural y usos
         descComIlicito: Efectos reales o potenciales del comercio en el manejo y conservación de la especie
         descUsos: Información adicional
       conservacion:

@@ -8,10 +8,11 @@ class Fichas::Historianatural < Ficha
 	belongs_to :reproduccionVegetal, :class_name => 'Fichas::Reproduccionvegetal', :foreign_key => 'reproduccionVegetalId'
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	has_many :relHistoriasNaturalesPais, class_name: 'Fichas::Relhistorianaturalpais'
+	has_many :relHistoriasNaturalesPais, class_name: 'Fichas::Relhistorianaturalpais', :foreign_key => 'historiaNaturalId'
 	has_many :relHistoriasNaturalesUsos, class_name: 'Fichas::Relhistorianaturalusos', :foreign_key => 'historiaNaturalId'
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', :primary_key => :especieId
 
+  has_many :pais_importacion, class_name: 'Fichas::Pais', through: :relHistoriasNaturalesPais
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
 
 	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
@@ -24,11 +25,16 @@ class Fichas::Historianatural < Ficha
 	has_many :t_tipodispersion, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_structdisp, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_dispersionsei, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_comnalsel, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_proposito_com, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_comintersel, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_proposito_com_int, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
-	# T ANIMAL
+  # Para T ANIMAL
 	has_many :t_sistapareamiento, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_sitioanidacion, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	# T VEGETAL
+
+  # Para T VEGETAL
 	has_many :t_arregloespacialflores, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_arregloespacialindividuos, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_arregloespacialpoblaciones, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies

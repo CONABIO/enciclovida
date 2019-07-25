@@ -5,17 +5,103 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_economica') %></h3>
   <%= f.input :importanciaEconomica %>
   <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.comercio') %></h3>
-  <%= f.input :comercioNal %>
-  <%= f.input :origenComNal %>
-  <%= f.input :propositoComNal%>
-  <%= f.input :comInternacional %>
-  <%= f.input :origenInternacional %>
-  <%= f.input :propositoInternacional %>
-  <%= f.input :comercioIlicitoNal %>
-  <%= f.input :comercioIlicitoInter  %>
-  <%= f.input :descComIlicito %>
-  <% # f.input :descripcion
+
+  <h3 class="titulo_sub_subseccion"><%= t('secciones.s_importancia.comercio_nal') %></h3>
+  <%= f.association :t_comnalsel,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:comnalsel]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
   %>
+
+  <%= f.association :t_proposito_com,
+                    label_method: ->(obj){
+                      obj.descn2.blank? ? detalle = obj.descn1 : detalle = "#{obj.descn1} -> #{obj.descn2}"
+                      detalle
+                    },
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:proposito_com]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+
+  <h3 class="titulo_sub_subseccion"><%= t('secciones.s_importancia.comercio_int_nal') %></h3>
+  <%= f.association :t_comintersel,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:comintersel]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+
+  <%= f.association :t_proposito_com_int,
+                    label_method: ->(obj){
+                      obj.descn2.blank? ? detalle = obj.descn1 : detalle = "#{obj.descn1} -> #{obj.descn2}"
+                      detalle
+                    },
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:proposito_com_int]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+
+  <%= f.association :pais_importacion,
+                    label_method: :nombrepais,
+                    value_method: :paisId,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    } %>
+
+  <h3 class="titulo_sub_subseccion"><%= t('secciones.s_importancia.afectaciones_act_com') %></h3>
+  <%= f.input :comercioIlicitoNal, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'], ['ND', 'ND'] ], item_wrapper_class: 'radio-inline' %>
+  <%= f.input :comercioIlicitoInter, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'], ['ND', 'ND'] ], item_wrapper_class: 'radio-inline' %>
+  <%= f.input :descComIlicito %>
+
   <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_cultural') %></h3>
+  <%= f.association :culturaUsos,
+                    :as => :grouped_select,
+                    collection:Fichas:: Culturausos.all.group_by(&:descripcion),
+                    :group_method => :last,
+                    group_label_method: :first,
+                    label_method: :subdescription,
+                    value_method: :culturaUsosId,
+                    input_html: {
+                        :multiple => true,
+                        class: 'form-control selectpicker',
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
   <%= f.input :descUsos%>
 </div>
