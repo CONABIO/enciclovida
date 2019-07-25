@@ -7,11 +7,8 @@ var cargaMapaYoverlays = function ()
     divisionANPOverlay = cargaDivision({tipo_region: 'anp'});
     //divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
 
-    //cargaMapa('map', {"División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay}, {pantalla_comp : false});
-    cargaMapa('map', {"División estatal": divisionEstadoOverlay}, {pantalla_comp : false});
+    cargaMapa('map', { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay }, { pantalla_comp : false });
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
-    //divisionANPOverlay.addTo(map);  // carga de inicio de ANP, para llenar el array
-    //map.removeLayer(divisionANPOverlay);  //sin embargo la quito cuando se despliega de un inicio
 };
 
 /**
