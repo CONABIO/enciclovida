@@ -5,6 +5,7 @@ class Geoportal::Municipio < GeoportalAbs
   scope :campos_min, -> { select('munid, nom_mun, nom_ent').order(nom_mun: :asc) }
   scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
   scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
+  scope :bounds, -> { select('ST_Extent(geom) AS bounds') }
   scope :campos_geom, -> { centroide.geojson_select }
   scope :geojson, ->(region_id) { geojson_select.where(region_id: region_id) }
 
@@ -22,7 +23,7 @@ class Geoportal::Municipio < GeoportalAbs
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
-    self.redis[:term] = I18n.transliterate(municipio.limpia.downcase)
+    self.redis[:term] = I18n.transliterate(nom_mun.limpia.downcase)
     self.redis[:score] = 100
     self.redis[:data][:id] = region_id
     self.redis[:data][:nombre] = nombre_publico
