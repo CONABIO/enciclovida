@@ -48,9 +48,6 @@ var cargaDivision = function(opc)
                     if (opciones.datos[opc.tipo_region] === undefined) opciones.datos[opc.tipo_region] = {};
                     opciones.datos[opc.tipo_region][d.properties.region_id] = {};
                     opciones.datos[opc.tipo_region][d.properties.region_id].properties = d.properties;
-
-                    var bounds = d3.geo.bounds(d.geometry);
-                    opciones.datos[opc.tipo_region][d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
                 });
 
             map.on('zoomend', reinicia);

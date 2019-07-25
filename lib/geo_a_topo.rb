@@ -12,10 +12,17 @@ class GeoAtopo
     "Geoportal::#{region.camelize}".constantize.campos_min.campos_geom.all.each do |reg|
       Rails.logger.debug "[DEBUG] - Generando la región: #{reg.nombre_publico}"
 
+      # El query con bbox, no se hizo en el anterior query porque automaticamente trata de agrupar bbox
+      reg_bounds = "Geoportal::#{region.camelize}".constantize.bounds.find(reg.region_id)
+      bounds_split = reg_bounds.bounds.gsub(/[BOX()]/,'').split(',')
+      bounds_limite1 = bounds_split[0].split(' ')
+      bounds_limite2 = bounds_split[1].split(' ')
+      bounds = [bounds_limite1.reverse, bounds_limite2.reverse]
+
       geojson = {type: 'FeatureCollection', features: []}
       feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
       feature[:properties][:nombre_region] = reg.nombre_publico
-      #feature[:properties][:bbox] = reg.bbox
+      feature[:properties][:bounds] = bounds
       feature[:properties][:tipo] = reg.tipo
       feature[:properties][:tipo_region] = reg.try(:tipo_region)
       geojson[:features] << feature
