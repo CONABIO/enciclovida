@@ -243,3 +243,16 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 #contenedor_mapa .naturalista-4-ev-icon {margin-right: 7px;}
 #contenedor_mapa .naturalista-3-ev-icon {margin-left: 0em;}
+
+// Formato general para el nombre cientifico, no importa la vista
+.f-nom-cientifico
+{
+  font-size: 1em;
+  font-style: italic;
+  color: #555555;
+}
+
+.f-fuentes
+{
+  font-size: 1.8em;
+}
