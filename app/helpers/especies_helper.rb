@@ -2,19 +2,19 @@ module EspeciesHelper
 
   def tituloNombreCientifico(taxon, params={})
 
-    nombre = if taxon.x_nombre_comun_principal.present?
-               taxon.x_nombre_comun_principal
-             else
-               begin  # Es con un try porque no toda consulta le hace un join a adicionales
-                 taxon.nombre_comun_principal
-               rescue  # hacemos el join a adicionales
-                 if a = taxon.adicional
-                   a.nombre_comun_principal
-                 else
-                   ''
-                 end
-               end
-             end.try(:capitalize)
+    nom_comun = if taxon.x_nombre_comun_principal.present?
+                  taxon.x_nombre_comun_principal
+                else
+                  begin  # Es con un try porque no toda consulta le hace un join a adicionales
+                    taxon.nombre_comun_principal
+                  rescue  # hacemos el join a adicionales
+                    if a = taxon.adicional
+                      a.nombre_comun_principal
+                    else
+                      ''
+                    end
+                  end
+                end.try(:capitalize)
 
     if I18n.locale.to_s == 'es-cientifico'
       if taxon.especie_o_inferior?   # Las especies llevan otro tipo de formato en nombre
@@ -45,29 +45,27 @@ module EspeciesHelper
 
     else   #vista general
 
-      if taxon.especie_o_inferior?  # Las especies llevan otro tipo de formato en nombre
-        if params[:title]
-          nombre.present? ? "#{nombre} (#{taxon.nombre_cientifico})".html_safe : taxon.nombre_cientifico
-        elsif params[:link]
-          nombre.present? ? "<h5>#{nombre}</h5><h5>#{link_to(ponItalicas(taxon).html_safe, especie_path(taxon))}</h5>" : "<h5>#{ponItalicas(taxon,true)}</h5>"
-        elsif params[:show]
-          nombre.present? ? "#{nombre} (#{ponItalicas(taxon)})".html_safe : ponItalicas(taxon).html_safe
-        else
-          'Ocurrio un error en el nombre'.html_safe
-        end
-      else
-        if params[:title]
-          nombre.present? ? "#{nombre} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
-              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
-        elsif params[:link]
-          nombre.present? ? "<h5>#{nombre}</h5><h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to("#{taxon.nombre_cientifico}", especie_path(taxon))}</h5>".html_safe : "<h5>#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{link_to(taxon.nombre_cientifico, especie_path(taxon))}</h5>".html_safe
-        elsif params[:show]
-          nombre.present? ? "#{nombre} (#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico})".html_safe :
-              "#{taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica} #{taxon.nombre_cientifico}".html_safe
-        else
-          'Ocurrio un error en el nombre'.html_safe
-        end
+      unless taxon.especie_o_inferior?
+        cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+        cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
       end
+
+      nombre_comun = "<b>#{nom_comun}</b>" if nom_comun.present?
+      nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
+
+      case params[:render]
+      when 'title'
+        "#{nombre_comun} (#{nombre_cientifico})".sanitize.gsub(/[<b><\/b>]/,'').html_safe
+      when 'link'
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</b>".html_safe
+      when 'header'
+        "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
+      when 'inline'
+        "#{nombre_comun} #{nombre_cientifico}".html_safe
+      else
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe
+      end
+
     end
   end
 
@@ -214,7 +212,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
   # REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
-      "<strong>#{opciones[:tipo_recurso]}: </strong><small>#{recurso.join(', ')}</small>"
+      "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(', ')}"
     end
 
     def creaLista(taxones, opciones={})
@@ -242,7 +240,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
     if opciones[:tab_catalogos]
       creaLista(taxones, opciones).html_safe
     else
-      recurso = taxones.map{ |t| tituloNombreCientifico(t, show: true) }
+      recurso = taxones.map{ |t| tituloNombreCientifico(t, render: 'inline') }
       creaContenedor(recurso, opciones).html_safe
     end
   end
@@ -374,26 +372,26 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
   def imprime_media_bdi(item, type)
     copyright = "BDI - CONABIO"
     case type
-      when 'photo'
-        link_to("<img src='#{item.medium_url}' />".html_safe, '',
-                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
-                "data-type" => 'photo',
-                "data-copyright" => copyright,
-                "data-url" => item.medium_url,
-                "data-author" => item.native_realname,
-                "data-locality" =>  "No disponible",
-                "data-observation"=> item.native_page_url
-                )
-      when 'video' # Datos fasos por ahora
-        link_to("<img src='#{item.preview_img}' />".html_safe, '',
-                "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
-                "data-type" => 'video',
-                "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
-                "data-observation"=> item.href_info,
-                "data-url" => item.url_acces,
-                "data-author" => item.autor,
-                "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
-                "data-state" =>  item.municipio.present? ? item.municipio : nil)
+    when 'photo'
+      link_to("<img src='#{item.medium_url}' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-type" => 'photo',
+              "data-copyright" => copyright,
+              "data-url" => item.medium_url,
+              "data-author" => item.native_realname,
+              "data-locality" =>  "No disponible",
+              "data-observation"=> item.native_page_url
+      )
+    when 'video' # Datos fasos por ahora
+      link_to("<img src='#{item.preview_img}' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-type" => 'video',
+              "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
+              "data-observation"=> item.href_info,
+              "data-url" => item.url_acces,
+              "data-author" => item.autor,
+              "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
+              "data-state" =>  item.municipio.present? ? item.municipio : nil)
     end
   end
 
@@ -438,7 +436,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
             "data-tipodeimagen" => item['ImageKindText'],
             "data-caption" => item['Caption'],
             "data-descripcion" => item['ShortDescription']
-            )
+    )
   end
 
   # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
@@ -446,7 +444,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     begin
       url = URI.parse(text.to_s)
       url.kind_of?(URI::HTTP) || url.kind_of?(URI::HTTPS) ? resultado = "<a target='_blank' href='#{text}'>#{text}</a>".html_safe : resultado = text
-     rescue
+    rescue
       resultado = text
     end
     resultado
