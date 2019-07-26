@@ -77,6 +77,7 @@ es:
       manejo_aprov_acciones_conserv: Manejo, aprovechamiento y acciones de conservación
       marco_legal_nacional_e_internacional: Marco legal nacional e internacional
       presiones: Presiones o amenazas sobre la especie
+      acciones_manejo: a) Describir acciones de manejo y conservación de la especie
       tendencia_p: Tendencia poblacional
       estado_conservacion: Estado de conservación
     #  * *  S E C C I Ó N   D I S T R I B U C I Ó N  * *  #
@@ -427,6 +428,7 @@ es:
         descPresionesAmenazas: Información adicional
         tendenciaPoblacional: Tendencia poblacional
         descTendenciaPoblacional: Información adicional
+        amenazaDirecta: Presiones o amenazas sobre la especie
       historiaNatural:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         t_habitoPlantas: Hábito en caso de plantas
@@ -492,7 +494,8 @@ es:
         manejoAprov: Manejo, aprovechamiento y acciones de conservación
         descManejoAprov: a) Describir acciones de manejo y conservación de la especie
         tipoAprovEsp: b) Indicar el tipo de aprovechamiento de la especie
-        # Esquema de manejo en el cual la especie es aprovechada o gestionada
+        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
         marcolegal: a) Regulaciones aplicables a la especie
         tipoVeda: b) Tipo de veda
       endemicas:

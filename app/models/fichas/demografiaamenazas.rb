@@ -9,10 +9,13 @@ class Fichas::Demografiaamenazas < Ficha
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', :primary_key => :especieId
 	has_many :relDemografiasAmenazas, class_name: 'Fichas::Reldemografiaamenazas', :foreign_key => 'demografiaAmenazasId'
 
-	has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
-	has_many :t_interacciones, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
 
-	accepts_nested_attributes_for :interaccion, allow_destroy: true
+  # Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
+  has_many :t_interacciones, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
+
+  accepts_nested_attributes_for :interaccion, allow_destroy: true
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true
 
 	PATRON_OCUPACION = [

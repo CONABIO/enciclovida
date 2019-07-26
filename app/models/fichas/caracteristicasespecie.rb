@@ -29,6 +29,10 @@ class Fichas::Caracteristicasespecie < Ficha
   belongs_to :t_comintersel,-> {where('caracteristicasespecie.idpregunta = ?', 22)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
   belongs_to :t_proposito_com_int,-> {where('caracteristicasespecie.idpregunta = ?', 24)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
+  # DESDE Conservacion
+  belongs_to :t_esquemamanejo,-> {where('caracteristicasespecie.idpregunta = ?', 26)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipopesca,-> {where('caracteristicasespecie.idpregunta = ?', 28)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_regioncaptura,-> {where('caracteristicasespecie.idpregunta = ?', 29)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
   # DESDE REPRODUCCION VEGETAL
   belongs_to :t_arregloespacialflores,-> {where('caracteristicasespecie.idpregunta = ?', 49)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
@@ -64,6 +68,9 @@ class Fichas::Caracteristicasespecie < Ficha
       :proposito_com => 20,
       :comintersel => 22,
       :proposito_com_int => 24,
+      :esquemamanejo => 26,
+      :tipopesca => 28,
+      :regioncaptura => 29,
       :dispersionsei => 39,
 			:zonaVida => 43,
 			:ecorregionMarinaN1 => 44,
@@ -82,9 +89,7 @@ end
 =begin
 
 
-has_many :esquemamanejo,-> {where('caracteristicasespecie.idpregunta = ?', 26)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :tipopesca,-> {where('caracteristicasespecie.idpregunta = ?', 28)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :regioncaptura,-> {where('caracteristicasespecie.idpregunta = ?', 29)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
 has_many :artepesca,-> {where('caracteristicasespecie.idpregunta = ?', 30)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :acuacultura,-> {where('caracteristicasespecie.idpregunta = ?', 31)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :mecanismos,-> {where('caracteristicasespecie.idpregunta = ?', 33)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
