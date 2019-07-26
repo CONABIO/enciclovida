@@ -17,8 +17,8 @@ namespace :snib do
       Rails.logger.debug "[DEBUG] - Generando cache de especies con municipio: #{estado.region_id}"
       br = BusquedaRegion.new
       br.params = { region_id: municipio.region_id, tipo_region: 'municipio' }
-      br.borra_cache_especies
-      br.guarda_cache_especies
+      br.borra_cache_especies_regiones
+      br.dame_especies_regiones
     end
   end
 
@@ -28,8 +28,8 @@ namespace :snib do
       Rails.logger.debug "[DEBUG] - Generando cache de especies con ANP: #{anp.region_id}"
       br = BusquedaRegion.new
       br.params = { region_id: anp.region_id, tipo_region: 'anp' }
-      br.borra_cache_especies
-      br.guarda_cache_especies
+      br.borra_cache_especies_regiones
+      br.dame_especies_regiones
     end
   end
 
@@ -42,8 +42,8 @@ namespace :snib do
         Rails.logger.debug "[DEBUG] - Generando cache de especies con #{region.camelize}: #{reg.region_id}"
         br = BusquedaRegion.new
         br.params = { region_id: reg.region_id, tipo_region: region }
-        br.borra_cache_especies
-        br.guarda_cache_especies
+        br.borra_cache_especies_regiones
+        br.dame_especies_regiones
       end
     end
   end
