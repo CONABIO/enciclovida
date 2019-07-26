@@ -50,6 +50,9 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
         end
       end
 
+      # Extraer las estadìsticas existentes:
+      las_estadisticas = Estadistica.all
+
       # Construir la clausula WHERE a partir de los parámetros
       estadisticas_a_mostrar = []
       # Si se definieron las estadísticas
@@ -57,7 +60,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
         estadisticas_a_mostrar = params["showEstadisticas"]
       else
         # Si no, mostrar todas
-        Estadistica.all.each do |estadistica|
+        las_estadisticas.each do |estadistica|
           next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
           estadisticas_a_mostrar << estadistica.id
         end
@@ -78,17 +81,44 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       el_where << " AND enciclovida.especies_estadistica.conteo #{conteo} "
 
       # EJECUTAR QUERY con el WHERE CONSTRUIDO
+
+      ## OPCIÔN 1: OBTENER LOS TAXONES Y DESPUÊS LOS TOTALES
+      # Obtener los taxones:
+      # self.taxones = taxones.joins(:especie_estadisticas).distinct.where(el_where)
+      # Obtener los totales de cada estadìstica
+      # resultados = taxones.group(:estadistica_id).size
+
+      ## OPCIÔN 2: OBTENER SÔLO LOS TOTALES
       resultados = taxones.joins(:especie_estadisticas).distinct.where(el_where).group(:estadistica_id).size
 
-      # Iteramos los resultados y guardamos
       self.estadisticas = {}
-      resultados.each do |clave, valor|
-        nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
-        conteo_estd = valor
-        self.estadisticas[clave] = {
-            'nombre_estadistica': nombre_estd,
-            'conteo': conteo_estd
-        }
+
+      ## En el caso en el que el resultado sea un sòlo taxòn, extraer sus conteos
+      if taxones.count == 1
+        el_taxon = taxones[0]
+        el_taxon.especie_estadisticas.each do |estd|
+          next if Estadistica::ESTADISTICAS_QUE_NO.index(estd.estadistica_id)
+          nombre_estd = Estadistica.where("id = #{estd.estadistica_id}").first.descripcion_estadistica
+          conteo_estd = estd.conteo
+          self.estadisticas[estd.estadistica_id] = {
+              'nombre_estadistica': nombre_estd,
+              'conteo': conteo_estd
+          }
+        end
+      else
+        # Iteramos los resultados y guardamos
+        resultados.each do |clave, valor|
+          # CONSIDERANDO QUE EL ID DE LA ESTADÎSTICA SEA IGUAL AL DE SU POSICION EN LA BASE DE DATOS:
+          id_estd = (clave.to_i - 1)
+          nombre_estd = las_estadisticas[id_estd].descripcion_estadistica
+          # SI NO, BUCARLA SEGÛN SU ID ESTADÎSTICA
+          # nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
+          conteo_estd = valor
+          self.estadisticas[clave] = {
+              'nombre_estadistica': nombre_estd,
+              'conteo': conteo_estd
+          }
+        end
       end
     end
 
