@@ -57,13 +57,13 @@ class EstadisticasController < ApplicationController
     # No se requiere
     @taxones = busqueda.taxones
 
-    response.headers['x-total-entries'] = @totales.to_s if @totales > 0
+    response.headers['x-total-entries'] = @totales.to_s
     @totales_estadisticas = build_json_to_statics(busqueda.estadisticas)
 
     respond_to do |format|
-        filtros_iniciales
-        set_filtros
-        format.html { render action: 'show' }
+      filtros_iniciales
+      set_filtros
+      format.html { render action: 'show' }
     end
   end
 
@@ -76,16 +76,16 @@ class EstadisticasController < ApplicationController
       next unless v.present?
 
       case k
-        when 'id', 'nombre', 'por_pagina', 'tipoResultado'
-          @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus', 'showEstadisticas'
-          if @setParams[k].present?
-            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-          else
-            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-          end
+      when 'id', 'nombre', 'por_pagina', 'tipoResultado'
+        @setParams[k] = v
+      when 'edo_cons', 'dist', 'prior', 'estatus', 'showEstadisticas'
+        if @setParams[k].present?
+          @setParams[k] << v.map{ |x| x.parameterize if x.present?}
         else
-          next
+          @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+        end
+      else
+        next
       end
     end
   end
@@ -106,35 +106,37 @@ class EstadisticasController < ApplicationController
     visit = agrega_hijo(estadisticas, "Visitas")
     otros = agrega_hijo(estadisticas, "Otros")
 
-    datos.each do |dato|
-      estd = dato[1][:nombre_estadistica]
+    datos.each do |d|
+      dato = d.values.first
+      estd = dato[:nombre_estadistica]
+
       if estd.include?('Fotos') || estd.include?('Audio') || estd.include?('Videos')
         if estd.include?('Fotos')
           foto = agrega_hijo(multimedia[:children], "Fotos")
-          agrega_valor(foto, dato[1])
+          agrega_valor(foto, dato)
         elsif estd.include?('Audio')
           audio = agrega_hijo(multimedia[:children], "Audios")
-          agrega_valor(audio, dato[1])
+          agrega_valor(audio, dato)
         elsif estd.include?('Videos')
           video = agrega_hijo(multimedia[:children], "Videos")
-          agrega_valor(video, dato[1])
+          agrega_valor(video, dato)
         end
       elsif estd.include?('Fichas')
-        agrega_valor(fichas, dato[1])
+        agrega_valor(fichas, dato)
       elsif estd.include?('Nombres comunes')
-        agrega_valor(nombres_c, dato[1])
+        agrega_valor(nombres_c, dato)
       elsif estd.include?('Observaciones')
-        agrega_valor(obser, dato[1])
+        agrega_valor(obser, dato)
       elsif estd.include?('Ejemplares')
-        agrega_valor(ejemp, dato[1])
+        agrega_valor(ejemp, dato)
       elsif estd.include?('Mapas')
-        agrega_valor(mapas, dato[1])
+        agrega_valor(mapas, dato)
       elsif estd.include?('Número')
-        agrega_valor(n_espe, dato[1])
+        agrega_valor(n_espe, dato)
       elsif estd.include?('Visitas')
-        agrega_valor(visit, dato[1])
+        agrega_valor(visit, dato)
       else
-        agrega_valor(otros, dato[1])
+        agrega_valor(otros, dato)
       end
     end
 

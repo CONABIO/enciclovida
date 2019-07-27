@@ -32,96 +32,32 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   end
 
   def busca_estadisticas
+    return unless params[:controller]=='estadisticas'
 
-    if params[:controller]=='estadisticas'
-
-      # Si se definió condición para conteo de valores:
-      conteo = '> 0'
-      if params["tipoResultado"].present?
-        case params["tipoResultado"]
-          when 'mayorCero'
-            conteo = '> 0'
-          when 'cero'
-            conteo = '= 0'
-          when 'mayorIgualCero'
-            conteo = '>= 0'
-          else
-            conteo = '> 0'
-        end
-      end
-
-      # Extraer las estadìsticas existentes:
-      las_estadisticas = Estadistica.all
-
-      # Construir la clausula WHERE a partir de los parámetros
-      estadisticas_a_mostrar = []
-      # Si se definieron las estadísticas
-      if params["showEstadisticas"].present?
-        estadisticas_a_mostrar = params["showEstadisticas"]
-      else
-        # Si no, mostrar todas
-        las_estadisticas.each do |estadistica|
-          next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
-          estadisticas_a_mostrar << estadistica.id
-        end
-      end
-
-      el_where = "("
-      flag = false
-      estadisticas_a_mostrar.each do |estadistica|
-        unless flag
-          el_where << "enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-          flag = true
-        else
-          el_where << " OR enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-        end
-      end
-      el_where << ")"
-      # Agregarle el filtro de conteo
-      el_where << " AND enciclovida.especies_estadistica.conteo #{conteo} "
-
-      # EJECUTAR QUERY con el WHERE CONSTRUIDO
-
-      ## OPCIÔN 1: OBTENER LOS TAXONES Y DESPUÊS LOS TOTALES
-      # Obtener los taxones:
-      # self.taxones = taxones.joins(:especie_estadisticas).distinct.where(el_where)
-      # Obtener los totales de cada estadìstica
-      # resultados = taxones.group(:estadistica_id).size
-
-      ## OPCIÔN 2: OBTENER SÔLO LOS TOTALES
-      resultados = taxones.joins(:especie_estadisticas).distinct.where(el_where).group(:estadistica_id).size
-
-      self.estadisticas = {}
-
-      ## En el caso en el que el resultado sea un sòlo taxòn, extraer sus conteos
-      if taxones.count == 1
-        el_taxon = taxones[0]
-        el_taxon.especie_estadisticas.each do |estd|
-          next if Estadistica::ESTADISTICAS_QUE_NO.index(estd.estadistica_id)
-          nombre_estd = Estadistica.where("id = #{estd.estadistica_id}").first.descripcion_estadistica
-          conteo_estd = estd.conteo
-          self.estadisticas[estd.estadistica_id] = {
-              'nombre_estadistica': nombre_estd,
-              'conteo': conteo_estd
-          }
-        end
-      else
-        # Iteramos los resultados y guardamos
-        resultados.each do |clave, valor|
-          # CONSIDERANDO QUE EL ID DE LA ESTADÎSTICA SEA IGUAL AL DE SU POSICION EN LA BASE DE DATOS:
-          id_estd = (clave.to_i - 1)
-          nombre_estd = las_estadisticas[id_estd].descripcion_estadistica
-          # SI NO, BUCARLA SEGÛN SU ID ESTADÎSTICA
-          # nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
-          conteo_estd = valor
-          self.estadisticas[clave] = {
-              'nombre_estadistica': nombre_estd,
-              'conteo': conteo_estd
-          }
-        end
-      end
+    case params["tipoResultado"]
+    when 'mayorCero'
+      conteo = '>'
+    when 'cero'
+      conteo = '='
+    when 'mayorIgualCero'
+      conteo = '>='
+    else
+      conteo = '>'
     end
 
+    # Si se definieron las estadísticas
+    estadisticas_a_mostrar = if params["showEstadisticas"].present?
+                               params["showEstadisticas"]
+                             else
+                               Estadistica::ESTADISTICAS_A_MOSTRAR
+                             end
+
+    # Extraer los taxones en hash
+    self.taxones = taxones.conteo_estadisticas(estadisticas_a_mostrar.join(','), conteo)
+    resultados = taxones.select('estadistica_id, descripcion_estadistica, COUNT(estadistica_id) AS conteo').group(:estadistica_id, :descripcion_estadistica)
+
+    self.estadisticas = resultados.map{ |e| { e.estadistica_id => { nombre_estadistica: e.descripcion_estadistica, conteo: e.conteo }}}
+    self.totales = taxones.count
   end
 
   # REVISADO: filtros de categorias de riesgo, nivel de prioridad
