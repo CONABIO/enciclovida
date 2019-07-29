@@ -56,7 +56,35 @@ function dameANP() {
  * @param req
  * @returns {boolean}
  */
-function dameEspeciesPorEstado(req) {
+var dameEspeciesPorEstado = function (req)
+{
+    let entid = req.params['entid'];
+
+    return new Promise((resolve, reject) => {
+        knex
+        .select(knex.raw('idnombrecatvalido, COUNT(*) AS nregistros'))
+            .from('snib')
+            .where({entid: entid})
+            .whereRaw("idnombrecatvalido <> ''")
+            .whereRaw("especievalidabusqueda <> ''")
+            .whereRaw("comentarioscatvalido LIKE '%Validado completamente con CAT.%'")
+            .groupBy('idnombrecatvalido')
+            .orderByRaw('nregistros DESC')
+            .then(dato => {
+            resolve(dato)
+        })
+    })
+};
+
+
+
+
+/**
+ * Regresa la lista de especies por estado
+ * @param req
+ * @returns {boolean}
+ */
+function dameEspeciesPorEstado2(req) {
     let entid = req.params['entid'];
 
     return new Promise((resolve, reject) => {
@@ -229,6 +257,17 @@ let dameEspeciesConFiltrosConteo = function(req)
 };
 
 let formatoEjemplaresMapa = function (dato)
+{
+    var res = [];
+
+    _.forEach(dato, function(row) {
+        res.push(_.toArray(row));
+    });
+
+    return res;
+};
+
+let formatoEjemplares = function (dato)
 {
     var res = [];
 
