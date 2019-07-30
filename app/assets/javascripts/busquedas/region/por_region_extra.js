@@ -24,7 +24,7 @@ var cargaEspecies = function()
         data: $('#busqueda_region').serialize()
     }).done(function(html) {
         if (opciones.filtros.pagina == 1)
-            $('#contenedor_especies').html(html);
+            $('#contenedor_especies').empty().html(html);
         else
             $('#contenedor_especies_itera').empty().html(html);
 
@@ -46,6 +46,9 @@ var seleccionaRegion = function(prop)
     $('#tipo_region').val(prop.tipo.toLowerCase());
 
     //$('#svg-division-municipal').remove();
+
+    opciones.filtros.pagina = 1;
+    $('#pagina').val(opciones.filtros.pagina);
 
     cargaEspecies();
     cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
@@ -119,7 +122,8 @@ $(document).ready(function(){
      */
     $('#busqueda_region').on('change', "input", function()
     {
-        opciones.pagina_especies = 1;
+        opciones.filtros.pagina = 1;
+        $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();
     });
 
@@ -196,6 +200,6 @@ $(document).ready(function(){
     });
 
     // Inicializa la carga inicial de las especies
-    opciones.pagina = 1;
+    opciones.filtros.pagina = 1;
     cargaEspecies();
 });
