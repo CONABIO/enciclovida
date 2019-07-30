@@ -9,6 +9,10 @@ var cargaMapaYoverlays = function ()
 
     cargaMapa('map', { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay }, { pantalla_comp : false });
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
+
+    // Esto se tiene que solucionar de no cargarla desde un inicio
+    divisionANPOverlay.addTo(map);
+    map.removeLayer(divisionANPOverlay);
 };
 
 /**
@@ -41,6 +45,7 @@ var cargaDivision = function(opc)
                     seleccionaRegion(d.properties);
                 })
                 .each(function(d){
+                    console.log('cargo capa');
                     // Asigna los valores la primera y unica vez que carga los estados
                     if (opciones.datos[opc.tipo_region] === undefined) opciones.datos[opc.tipo_region] = {};
                     opciones.datos[opc.tipo_region][d.properties.region_id] = {};
@@ -140,30 +145,42 @@ var cargaDivisionMunicipal = function()
 };
 
 /**
- * Carga una sola region en especifico, municipios o estado; reutilizando esta funcion
- se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
- * @param prop
+ * Habilita o deshabilitas las regiones para posteriormente cargar la indicada, viene del soulmate
  */
-var cargaRegion = function(prop)
+var administraRegiones = function (tipo, region_id)
 {
-    switch(prop.tipo)
+    switch(tipo)
     {
-        case 'Estado':
+        case 'estado':
             if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            if (!map.hasLayer(divisionEstadoOverlay)) map.addLayer(divisionEstadoOverlay);
+
+            cargaEspecies();
+            cargaRegion(opciones.datos[tipo][region_id].properties);
+
             //cargaDivisionMunicipal();
             break;
         case 'Municipio':
             if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
             if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
             break;
-        case 'ANP':
+        case 'anp':
             if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
+            if (!map.hasLayer(divisionANPOverlay)) map.addLayer(divisionANPOverlay);
+
+            cargaEspecies();
+            cargaRegion(opciones.datos[tipo][region_id].properties);
             break;
     }
+};
 
-    if (!map.hasLayer(eval('division'+prop.tipo+'Overlay')))
-        map.addLayer(eval('division'+prop.tipo+'Overlay'));
-
+/**
+ * Carga una sola region en especifico, municipios o estado; reutilizando esta funcion
+ se necesita un obj con prop: region_id, centroide, tipo_region, parent_id
+ * @param prop
+ */
+var cargaRegion = function(prop)
+{
     quitaSeleccionRegion();
     map.flyToBounds(prop.bounds);
     //borraEjemplaresAnterioresSnib();

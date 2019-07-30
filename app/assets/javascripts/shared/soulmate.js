@@ -119,11 +119,8 @@ var soulmateRegionAsigna = function(elem)
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
         $('#region_id').attr('value', data.id);
         $('#tipo_region').val(type);
-        cargaEspecies();
-        cargaRegion(opciones.datos[type][data.id].properties);
+        administraRegiones(type, data.id);
         colapsaBarra();
-
-        //$('#svg-division-municipal').remove();
     };
 
     $('#' + elemento).soulmate({
