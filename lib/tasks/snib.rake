@@ -14,7 +14,7 @@ namespace :snib do
   desc "Genera/actualiza las especies por municipio de la base del SNIB y lo guarda en cache"
   task municipios: :environment do
     Geoportal::Municipio.all.each do |municipio|
-      Rails.logger.debug "[DEBUG] - Generando cache de especies con municipio: #{estado.region_id}"
+      Rails.logger.debug "[DEBUG] - Generando cache de especies con municipio: #{municipio.region_id}"
       br = BusquedaRegion.new
       br.params = { region_id: municipio.region_id, tipo_region: 'municipio' }
       br.borra_cache_especies_regiones
