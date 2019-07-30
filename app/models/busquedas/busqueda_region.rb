@@ -132,7 +132,11 @@ class BusquedaRegion < Busqueda
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    self.resp = { estatus: true, resultados: resultados, totales: resp[:totales] }
+    self.resp = if resp.present?
+                  resp.merge({ estatus: true, resultados: resultados })
+                else
+                  { estatus: true, resultados: resultados }
+                end
   end
 
   # Regresa el conteo de especies del servicio de /especies/region/filtros

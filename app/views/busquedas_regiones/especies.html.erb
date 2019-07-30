@@ -1,23 +1,26 @@
 <% if @resp[:estatus] %>
 
   <% if @resp[:totales].present? %>
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <h3><strong><%= @resp[:totales] %></strong> especies</h3>
-  </div>
-    <% end %>
-
-  <% @resp[:taxones].each do |t| %>
-    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-      <div class="thumbnail img-responsive">
-        <img src="<%= t[:foto_principal] %>" alt="<%= t[:nombre_cientifico] %>" height="200px;">
-        <div class="caption">
-          <h4><strong><%= t[:nombre_comun] %></strong></h4>
-          <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}", target: :_blank %></h5>
-          <p><a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t[:especie_id] %>" role="button" snib_registros="<%= t[:snib_registros] %>" nombre_comun="<%= t[:nombre_comun] %>" nombre_cientifico="<%= t[:nombre_cientifico] %>">Ver <%= t[:nregistros] %> registro(s)</a></p>
-        </div>
-      </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h3><strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies</h3>
+      <div class="pull-right glyphicon glyphicon-arrow-right" id="carga-mas-especies"></div>
     </div>
   <% end %>
+
+  <div class="row" id="contenedor_especies_itera" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <% @resp[:taxones].each do |t| %>
+      <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+        <div class="thumbnail img-responsive">
+          <img src="<%= t[:foto_principal] %>" alt="<%= t[:nombre_cientifico] %>" height="200px;">
+          <div class="caption">
+            <h4><strong><%= t[:nombre_comun] %></strong></h4>
+            <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}", target: :_blank %></h5>
+            <p><a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t[:especie_id] %>" role="button" snib_registros="<%= t[:snib_registros] %>" nombre_comun="<%= t[:nombre_comun] %>" nombre_cientifico="<%= t[:nombre_cientifico] %>">Ver <%= t[:nregistros] %> registro(s)</a></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
 <% else %>
   <p><%= @resp[:msg] %></p>

@@ -5,7 +5,7 @@
  */
 var parametros = function(prop)
 {
-    var params_generales = { region_id: $('#region_id').val(), pagina: opciones.filtro.pagina_especies, especie_id: $('#espcie_id').val() };
+    var params_generales = { region_id: $('#region_id').val(), pagina: opciones.filtro.pagina, especie_id: $('#espcie_id').val() };
 
     if (prop != undefined)
         params_generales = Object.assign({},params_generales, prop);
@@ -23,7 +23,12 @@ var cargaEspecies = function()
         method: 'GET',
         data: $('#busqueda_region').serialize()
     }).done(function(html) {
-        $('#contenedor_especies').empty().html(html);
+        if (opciones.filtros.pagina == 1)
+            $('#contenedor_especies').html(html);
+        else
+            $('#contenedor_especies_itera').empty().html(html);
+
+
     }).fail(function() {
         console.log('Hubo un fallo al cargar la lista de especies');
     });
@@ -170,8 +175,9 @@ $(document).ready(function(){
     /**
      * Esta funcion se sustituirá por el scrolling
      */
-    $('#carga_mas_especies').on('click', function(){
-        opciones.pagina_especies++;
+    $('#contenedor_especies').on('click', '#carga-mas-especies', function(){
+        opciones.filtros.pagina++;
+        $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();
         return false;
     });
@@ -190,6 +196,6 @@ $(document).ready(function(){
     });
 
     // Inicializa la carga inicial de las especies
-    opciones.pagina_especies = 1;
+    opciones.pagina = 1;
     cargaEspecies();
 });
