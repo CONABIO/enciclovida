@@ -141,7 +141,7 @@ let formatoEjemplares = function (dato)
     var res = {};
 
     _.forEach(dato, function(row) {
-        res[row.idnombrecatvalido] = row.nregistros
+        res[row.idnombrecatvalido] = parseInt(row.nregistros);
     });
 
     return res;
