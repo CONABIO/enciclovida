@@ -8,14 +8,15 @@
   <% end %>
 
   <div class="row" id="contenedor_especies_itera" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <% @resp[:taxones].each do |t| %>
+    <% @resp[:taxones].each do |taxon| %>
+      <% t = taxon[:especie] %>
       <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
         <div class="thumbnail img-responsive">
-          <img src="<%= t[:foto_principal] %>" alt="<%= t[:nombre_cientifico] %>" height="200px;">
+          <img src="<%= t.foto_principal %>" alt="<%= t.nombre_cientifico %>">
           <div class="caption">
-            <h4><strong><%= t[:nombre_comun] %></strong></h4>
-            <h5><%= link_to t[:nombre_cientifico], "/especies/#{t[:especie_id]}", target: :_blank %></h5>
-            <p><a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t[:especie_id] %>" role="button" snib_registros="<%= t[:snib_registros] %>" nombre_comun="<%= t[:nombre_comun] %>" nombre_cientifico="<%= t[:nombre_cientifico] %>">Ver <%= t[:nregistros] %> registro(s)</a></p>
+            <%= tituloNombreCientifico(t, render: 'link') %>
+            <hr />
+            <a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t.id %>" role="button" snib_registros="<%= taxon[:snib_registros] %>" nombre_comun="<%= t.nombre_comun_principal %>" nombre_cientifico="<%= t.nombre_cientifico %>">Ver <%= taxon[:nregistros] %> registro(s)</a>
           </div>
         </div>
       </div>

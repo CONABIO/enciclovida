@@ -27,7 +27,7 @@ class BusquedaRegion < Busqueda
 
         # Itera el que tengas menos registros, para más eficiencia
         if resp[:resultados].length <= resultados_region.length
-          self.resp[:resultados] = resp[:resultados].delete_if{ |k,v| self.resp[:resultados][k] =resultados_region[k] if resultados_region.has_key?(k); !resultados_region.has_key?(k) }.sort_by { |k,v| v }.reverse.to_h
+          self.resp[:resultados] = resp[:resultados].delete_if{ |k,v| self.resp[:resultados][k] = resultados_region[k] if resultados_region.has_key?(k); !resultados_region.has_key?(k) }.sort_by { |k,v| v }.reverse.to_h
         else
           self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
         end
@@ -182,9 +182,7 @@ class BusquedaRegion < Busqueda
     especies = Especie.datos_basicos(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     especies.each do |especie|
-      self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
-                        nombre_comun: especie.nombre_comun_principal, nregistros: resp[:resultados][especie.catalogo_id],
-                        foto_principal: especie.foto_principal, catalogo_id: especie.catalogo_id }
+      self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
 
       if params[:region_id].present? && params[:tipo_region].present?
         self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/snib/ejemplares?idnombrecatvalido=#{especie.catalogo_id}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}&mapa=true" })
