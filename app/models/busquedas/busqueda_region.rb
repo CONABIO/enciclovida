@@ -15,31 +15,44 @@ class BusquedaRegion < Busqueda
     if params[:region_id].present?
       dame_especies_regiones
       return unless resp[:estatus]
+
       resultados_region = resp[:resultados]  # Los resultados de los caules saldra la respuesta (cache)
 
       if tiene_filtros?
-        self.params[:por_pagina] = 100000
+        pagina_original = params[:pagina]
+        self.params[:por_pagina] = 100000  # Para sacar todos los resultados de los filtros
+        self.params[:pagina] = 1
         dame_especies_filtros
+        return unless resp[:estatus]
 
-        if resp[:estatus]
-          self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
-          self.resp[:totales] = resp[:resultados].length
-          dame_especies_por_pagina
-          self.resp[:resultados] = nil
-        end
+        self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
+        self.resp[:totales] = resp[:resultados].length
+        self.params[:pagina] = pagina_original
+        self.params[:por_pagina] = ESPECIES_POR_PAGINA
+
+        dame_especies_por_pagina
+        return unless resp[:estatus]
+
+        self.totales = resp[:resultados].length
+        self.resp[:resultados] = nil
+
       else
         dame_especies_por_pagina
+        return unless resp[:estatus]
+
+        self.totales = resp[:totales]
         self.resp[:resultados] = nil
       end
 
     else
       dame_especies_filtros
+      return unless resp[:estatus]
 
-      if resp[:estatus]
-        asocia_informacion_taxon
-        resp[:taxones] = taxones
-        self.resp[:resultados] = nil
-      end
+      asocia_informacion_taxon
+      return unless resp[:estatus]
+
+      self.resp[:taxones] = taxones
+      self.resp[:resultados] = nil
     end
   end
 
@@ -192,9 +205,8 @@ class BusquedaRegion < Busqueda
   def dame_especies_por_pagina
     self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
     self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    self.totales = resp[:totales]
 
-    return unless (resp[:estatus] && resp[:totales] > 0)
+    return unless resp[:estatus]
 
     if keys = resp[:resultados].keys[(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
       especies = {}
