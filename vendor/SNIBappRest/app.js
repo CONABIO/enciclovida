@@ -151,8 +151,11 @@ server.register([
                 }
             },
             handler: function (request, reply) {
+                let region_id = request.params['munid'];
+                let nombre_id = 'munid';
+
                 query
-                    .dameEspeciesPorMunicipio(request)
+                    .dameEspeciesPorRegion(region_id, nombre_id)
                     .then(dato => {
                     reply(dato)
                 })
@@ -173,8 +176,11 @@ server.register([
                 }
             },
             handler: function (request, reply) {
+                let region_id = request.params['anpid'];
+                let nombre_id = 'anpid';
+
                 query
-                    .dameEspeciesPorANP(request)
+                    .dameEspeciesPorRegion(region_id, nombre_id)
                     .then(dato => {
                     reply(dato)
                 })
