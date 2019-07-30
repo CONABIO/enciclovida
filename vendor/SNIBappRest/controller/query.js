@@ -56,15 +56,13 @@ function dameANP() {
  * @param req
  * @returns {boolean}
  */
-var dameEspeciesPorEstado = function (req)
+var dameEspeciesPorRegion = function (region_id, nombre_id)
 {
-    let entid = req.params['entid'];
-
     return new Promise((resolve, reject) => {
         knex
         .select(knex.raw('idnombrecatvalido, COUNT(*) AS nregistros'))
             .from('snib')
-            .where({entid: entid})
+            .whereRaw(nombre_id + "=" + region_id)
             .whereRaw("idnombrecatvalido <> ''")
             .whereRaw("especievalidabusqueda <> ''")
             .whereRaw("comentarioscatvalido LIKE '%Validado completamente con CAT.%'")
@@ -75,9 +73,6 @@ var dameEspeciesPorEstado = function (req)
         })
     })
 };
-
-
-
 
 /**
  * Regresa la lista de especies por estado
@@ -393,7 +388,8 @@ module.exports = {
     dameEstados,
     dameMunicipios,
     dameANP,
-    dameEspeciesPorEstado,
+    dameEspeciesPorRegion,
+    //dameEspeciesPorEstado,
     dameEspeciesPorMunicipio,
     dameEspeciesPorANP,
     dameEspeciesConFiltros,

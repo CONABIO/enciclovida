@@ -126,8 +126,11 @@ server.register([
                 }
             },
             handler: function (request, reply) {
+                let region_id = request.params['entid'];
+                let nombre_id = 'entid';
+
                 query
-                    .dameEspeciesPorEstado(request)
+                    .dameEspeciesPorRegion(region_id, nombre_id)
                     .then(dato => {
                     reply(dato)
                 })
