@@ -71,7 +71,7 @@ var dameEspeciesPorEstado = function (req)
             .groupBy('idnombrecatvalido')
             .orderByRaw('nregistros DESC')
             .then(dato => {
-            resolve(dato)
+            resolve(formatoEjemplares(dato))
         })
     })
 };
@@ -231,7 +231,7 @@ let dameEspeciesConFiltros = function(req)
     query.limit(por_pagina);
 
     query.then(dato => {
-        resolve(dato);
+        resolve(formatoEjemplares(dato));
 })
 })
 };
@@ -269,10 +269,10 @@ let formatoEjemplaresMapa = function (dato)
 
 let formatoEjemplares = function (dato)
 {
-    var res = [];
+    var res = {};
 
     _.forEach(dato, function(row) {
-        res.push(_.toArray(row));
+        res[row.idnombrecatvalido] = row.nregistros
     });
 
     return res;
