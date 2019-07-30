@@ -1,6 +1,6 @@
 module ApplicationHelper
 
-  def tituloNombreCientifico(taxon, params={})
+  def tituloNombreCientifico(taxon, params={}, link_params={})
 
     nom_comun = if taxon.x_nombre_comun_principal.present?
                   taxon.x_nombre_comun_principal
@@ -30,7 +30,7 @@ module ApplicationHelper
       when 'title'
         nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
       when 'link'
-        "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
+        "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
         "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
       when 'inline'
@@ -41,13 +41,13 @@ module ApplicationHelper
 
     else   #vista general
 
-      nombre_comun = "<b>#{nom_comun}</b>" if nom_comun.present?
+      nombre_comun = "<text class='f-nom-comun'>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]
       when 'title'
-        "#{nombre_comun} (#{nombre_cientifico})".sanitize.gsub(/[<b><\/b>]/,'').html_safe
+        "#{nombre_comun} (#{nombre_cientifico})".sanitize.html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon)}</i></b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b>".html_safe
       when 'header'
         "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
       when 'inline'
