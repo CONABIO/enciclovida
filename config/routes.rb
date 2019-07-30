@@ -83,8 +83,8 @@ Buscador::Application.routes.draw do
     end
   end
 
-  #get 'estadisticas' => 'estadisticas#show'
-  #get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
+  get 'estadisticas' => 'estadisticas#show'
+  get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
   #get '' => ''
 
   get 'peces' => 'pmc/peces#index'

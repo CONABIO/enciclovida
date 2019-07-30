@@ -142,6 +142,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Query que saca los ancestros, nombres cientificos y sus categorias taxonomicas correspondientes
   scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }
 
+  # Scopes de estadisticas
+  scope :conteo_estadisticas, ->(estadisticas, conteo) { left_joins(:estadisticas).where("estadistica_id IN (#{estadisticas})").where("conteo #{conteo} 0") }
+
   CON_REGION = [19, 50]
 
   ESTATUS = [
