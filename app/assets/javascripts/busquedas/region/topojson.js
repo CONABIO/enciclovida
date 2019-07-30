@@ -5,14 +5,16 @@ var cargaMapaYoverlays = function ()
 {
     divisionEstadoOverlay = cargaDivision({tipo_region: 'estado'});
     divisionANPOverlay = cargaDivision({tipo_region: 'anp'});
-    //divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
+    divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
 
-    cargaMapa('map', { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay }, { pantalla_comp : false });
+    cargaMapa('map', { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay }, { pantalla_comp : false });
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
 
     // Esto se tiene que solucionar de no cargarla desde un inicio
     divisionANPOverlay.addTo(map);
     map.removeLayer(divisionANPOverlay);
+    divisionMunicipioOverlay.addTo(map);
+    map.removeLayer(divisionMunicipioOverlay);
 };
 
 /**
@@ -45,7 +47,6 @@ var cargaDivision = function(opc)
                     seleccionaRegion(d.properties);
                 })
                 .each(function(d){
-                    console.log('cargo capa');
                     // Asigna los valores la primera y unica vez que carga los estados
                     if (opciones.datos[opc.tipo_region] === undefined) opciones.datos[opc.tipo_region] = {};
                     opciones.datos[opc.tipo_region][d.properties.region_id] = {};
@@ -149,29 +150,30 @@ var cargaDivisionMunicipal = function()
  */
 var administraRegiones = function (tipo, region_id)
 {
+    $('#region_id').attr('value', region_id);
+    $('#tipo_region').val(tipo);
+
     switch(tipo)
     {
         case 'estado':
             if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
             if (!map.hasLayer(divisionEstadoOverlay)) map.addLayer(divisionEstadoOverlay);
-
-            cargaEspecies();
-            cargaRegion(opciones.datos[tipo][region_id].properties);
-
-            //cargaDivisionMunicipal();
             break;
-        case 'Municipio':
+        case 'municipio':
             if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
             if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
+            if (!map.hasLayer(divisionMunicipioOverlay)) map.addLayer(divisionMunicipioOverlay);
             break;
         case 'anp':
             if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
+            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
             if (!map.hasLayer(divisionANPOverlay)) map.addLayer(divisionANPOverlay);
-
-            cargaEspecies();
-            cargaRegion(opciones.datos[tipo][region_id].properties);
             break;
     }
+
+    cargaEspecies();
+    cargaRegion(opciones.datos[tipo][region_id].properties);
 };
 
 /**
