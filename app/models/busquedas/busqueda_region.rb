@@ -25,7 +25,13 @@ class BusquedaRegion < Busqueda
         dame_especies_filtros
         return unless resp[:estatus]
 
-        self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
+        # Itera el que tengas menos registros, para más eficiencia
+        if resp[:resultados].length <= resultados_region.length
+          self.resp[:resultados] = resp[:resultados].delete_if{ |k,v| self.resp[:resultados][k] =resultados_region[k] if resultados_region.has_key?(k); !resultados_region.has_key?(k) }.sort_by { |k,v| v }.reverse.to_h
+        else
+          self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
+        end
+
         self.resp[:totales] = resp[:resultados].length
         self.params[:pagina] = pagina_original
         self.params[:por_pagina] = ESPECIES_POR_PAGINA
