@@ -188,19 +188,26 @@ class BusquedaRegion < Busqueda
 
   # Las especies por pagina cuando escogio una region
   def dame_especies_por_pagina
-    self.por_pagina = ESPECIES_POR_PAGINA
+    self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
     self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     self.totales = resp[:totales]
 
-    if resp[:estatus] && resp[:totales] > 0
-      if especies = resp[:resultados][(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
-        self.resp[:resultados] = especies
-        asocia_informacion_taxon
-      else
-        resp[:msg] = 'No hay más especies'
+    return unless (resp[:estatus] && resp[:totales] > 0)
+
+    if keys = resp[:resultados].keys[(por_pagina*pagina-por_pagina)..por_pagina*pagina-1]
+      especies = {}
+
+      keys.each do |k|
+        especies[k] = resp[:resultados][k]
       end
 
-      resp[:taxones] = taxones
+      self.resp[:resultados] = especies
+      asocia_informacion_taxon
+      self.resp[:taxones] = taxones
+
+    else
+      self.resp[:estatus] = false
+      self.resp[:msg] = 'No hay más especies'
     end
   end
 
