@@ -111,21 +111,20 @@ class BusquedaRegion < Busqueda
     end
 
     # Por si es la primera pagina con o sin filtros
-    respuesta_especies_filtros_conteo if params[:pagina].to_i == 1
-
-    if resp[:estatus]
-      respuesta_especies_filtros
-    else
-      self.resp = { estatus: false }
+    if params[:pagina].to_i == 1
+      respuesta_especies_filtros_conteo
+      return self.resp = { estatus: false } unless resp[:estatus]
     end
+
+    # El paginado
+    self.query << "pagina=#{params[:pagina] || 1}"
+    self.query << "por_pagina=#{params[:por_pagina] || ESPECIES_POR_PAGINA}"
+
+    respuesta_especies_filtros
   end
 
   # Regresa las especies del servicio de /especies/region/filtros
   def respuesta_especies_filtros
-    # El paginado
-    self.query << "pagina=#{params[:pagina]}" if params[:pagina].present?
-    self.query << "por_pagina=#{params[:por_pagina]}" if params[:por_pagina].present?
-
     url_especies = "#{CONFIG.enciclovida_api}/especies/region/filtros?#{query.join('&')}"
 
     begin
@@ -159,20 +158,15 @@ class BusquedaRegion < Busqueda
   # Asocia la información a desplegar en la vista, iterando los resultados
   def asocia_informacion_taxon
     return unless (resp[:resultados].present? && resp[:resultados].any?)
-
-    especies = Especie.datos_basicos(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].map{|r| r['idnombrecatvalido']})
+    especies = Especie.datos_basicos(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     especies.each do |especie|
-      # Linea mortal: recorre el hash de elementos en busca del hash que contiene el idnombrecatvalido en cuestion,
-      # esto para no hacer 3 queries por especie
-      e = resp[:resultados].map{ |r| r.key(especie.catalogo_id).present? ? r : nil }.compact.first
-
       self.taxones << { especie_id: especie.id, nombre_cientifico: especie.nombre_cientifico,
-                        nombre_comun: especie.nombre_comun_principal, nregistros: e['nregistros'],
-                        foto_principal: especie.foto_principal, catalogo_id: e['idnombrecatvalido'] }
+                        nombre_comun: especie.nombre_comun_principal, nregistros: resp[:resultados][especie.catalogo_id],
+                        foto_principal: especie.foto_principal, catalogo_id: especie.catalogo_id }
 
       if params[:region_id].present? && params[:tipo_region].present?
-        self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/snib/ejemplares?idnombrecatvalido=#{e['idnombrecatvalido']}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}&mapa=true" })
+        self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/snib/ejemplares?idnombrecatvalido=#{especie.catalogo_id}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}&mapa=true" })
       else
         carpeta = Rails.root.join('public', 'geodatos', especie.id.to_s)
         nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
