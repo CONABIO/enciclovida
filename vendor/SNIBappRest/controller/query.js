@@ -120,7 +120,7 @@ let dameEspeciesConFiltrosConteo = function(req)
     query = armaQueryFiltros(req, query);
 
     query.then(dato => {
-        resolve(dato);
+        resolve({nespecies: parseInt(dato[0].nespecies)});
 })
 })
 };

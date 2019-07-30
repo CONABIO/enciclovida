@@ -164,13 +164,13 @@ class BusquedaRegion < Busqueda
 
     begin
       rest = RestClient.get(url_conteo)
-      resultados = JSON.parse(rest).first
+      resultados = JSON.parse(rest)
     rescue => e
       return self.resp = { estatus: false, msg: e.message }
     end
 
-    if resultados['nespecies'].to_i > 0
-      self.resp = { estatus: true, totales: resultados['nespecies'].to_i }
+    if resultados['nespecies'] > 0
+      self.resp = { estatus: true, totales: resultados['nespecies'] }
     else
       self.resp = { estatus: false, msg: 'No existe ningun resultado con esos filtros. Intenta cambiando los filtros.' }
     end
