@@ -22,10 +22,8 @@ class BusquedaRegion < Busqueda
         dame_especies_filtros
 
         if resp[:estatus]
-          resultados_filtros = resp[:resultados].map { |k,v| k['idnombrecatvalido'] }
-          self.resp[:resultados] = resultados_region.map { |k,v| { 'idnombrecatvalido' => k['idnombrecatvalido'], 'nregistros' => k['nregistros'] } if resultados_filtros.include?(k['idnombrecatvalido']) }.compact
+          self.resp[:resultados] = resultados_region.delete_if{ |k,v| !resp[:resultados].has_key?(k) }
           self.resp[:totales] = resp[:resultados].length
-
           dame_especies_por_pagina
           self.resp[:resultados] = nil
         end
