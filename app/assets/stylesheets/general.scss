@@ -366,3 +366,15 @@ sub{
   font-size: .8em;
   font-weight: bold;
 }
+// Formato general para el nombre cientifico y comun, no importa la vista
+.f-nom-cientifico
+{
+  font-size: 1em;
+  font-style: italic;
+  color: #555555;
+}
+.f-nom-comun
+{
+  font-size: 1.2em;
+  font-weight: bold;
+}
