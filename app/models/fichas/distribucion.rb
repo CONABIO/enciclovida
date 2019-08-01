@@ -10,8 +10,14 @@ class Fichas::Distribucion < Ficha
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio', :foreign_key => "distribucionId"
 
 	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
+	has_many :pais_inv, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
+	has_many :pais_inv2, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
 	has_many :estado, class_name: 'Fichas::Estado_F', :through => :relDistribucionesEstados
 	has_many :municipio, class_name: 'Fichas::Municipio_F', :through => :relDistribucionesMunicipios
+
+	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", :primary_key => "especieId"
+
+	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
 
 	DISTRIBUCINES = [
 			'Muy restringida'.to_sym,

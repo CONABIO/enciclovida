@@ -82,6 +82,7 @@ es:
       estado_conservacion: Estado de conservación
     #  * *  S E C C I Ó N   D I S T R I B U C I Ó N  * *  #
     s_distribucion:
+      distribucion_mexico: a. Distribución en México
       endemismo: Endemismo
       region: Región
     #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
@@ -332,6 +333,9 @@ es:
       distribuciones:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         region: Región
+        pais: a) Distribución mundial
+        estado: b) Estado
+        municipio: c) Municipio
         exoticaMundial: Región - Distribución mundial
         historicaPotencial: Distribución histórica o potencial
         infoAdicionalMun: Información adicional
@@ -343,6 +347,17 @@ es:
         distribucionOriginal: Información adicional
         tipoDistribucion: Tipo de distribución como especie invasora
         infoAdicionalTipo: Información adicional
+        infoadicionalmexedo: Información adicional
+        pais_inv: Distribución como especie exótica en el mundo
+        comoExoticaMundial: Información adicional
+        pais_inv2: Distribución de la especie en su área de distribución original
+      distribucion_historica:
+        #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
+        regLoc: Región / Localidad
+        anioinicial: Año inicial
+        mesinicial: Mes inicial
+        aniofinal: Año final
+        mesfinal: Mes final
       habitats:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         estadoHabitat: Estado del hábitat con respecto al desarrollo natural del taxón
