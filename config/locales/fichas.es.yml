@@ -15,6 +15,7 @@ es:
       importancia: VII. Importancia de la especie
       estado_de_conservacion: VIII. Estado de conservación de la especie
       prioritarias_conservacion: IX. Especies prioritarias para la conservación
+      especies_invasoras: IX. Especies invasoras
       necesidades: X. Necesidades de información
       metadatos: XI. Metadatos
       referencias: XII. Referencias bibliográficas
@@ -82,6 +83,7 @@ es:
       estado_conservacion: Estado de conservación
     #  * *  S E C C I Ó N   D I S T R I B U C I Ó N  * *  #
     s_distribucion:
+      distribucion_historica: Distribución histórica
       distribucion_mexico: a. Distribución en México
       endemismo: Endemismo
       region: Región

@@ -34,6 +34,14 @@ function showOrHideInfoFicha() {
     if(tipoFicha !== undefined) {
         // Ocultar todos los apartadosFicha
         $(".apartadoFicha").fadeOut();
+
+        // Mostar el título correspondiente para la pestaña IX:
+        if(tipoFicha === 'Invasora') {
+            $('#pestania-IX').html('Especies invasoras');
+        } else {
+            $('#pestania-IX').html('Especies prioritarias');
+        }
+
         // Construir la clase según el tipo de ficha
         var claseFicha = 'ficha-' + tipoFicha;
         // Mostrar el ID según la clase generada

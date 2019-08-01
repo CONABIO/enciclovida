@@ -43,7 +43,7 @@
         <%= link_to 'Conservación', '#conservacion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Especies prioritarias', '#prioritaria-conservacion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especie_prioritaria' %>
+        <%= link_to 'Especies prioritarias', '#prioritaria-conservacion', :id => 'pestania-IX', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especie_prioritaria' %>
       </li>
       <li role="presentation" >
         <%= link_to 'Necesidades de información', '#necesidad-informacion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'necesidad_informacion' %>
@@ -158,9 +158,16 @@
 
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.prioritarias_conservacion')%></h3>
-        <% # OCUPA:  taxon %>
-        <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+        <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.prioritarias_conservacion')%></h3>
+          <% # OCUPA:  taxon %>
+          <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+        </div>
+        <div class="apartadoFicha ficha-Invasora">
+          <hr />
+          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
+          <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+        </div>
       </div>
 
       <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
