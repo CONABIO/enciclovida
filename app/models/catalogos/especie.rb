@@ -174,15 +174,13 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Regresa el taxon valido o el mismo en caso de serlo
   def dame_taxon_valido
     return self if estatus == 2  # el valido era el mismo
-    est = especies_estatus
+    est = especies_estatus.where(estatus_id: [1,2])
+    return nil unless est.first
 
-    if est.first  # Encontro el valido
-      begin
-        Especie.find(est.first.especie_id2)
-      rescue
-        nil
-      end
-    else  # Puede que no haya encontrado su valido o exista mas de uno
+    begin
+      t = Especie.find(est.first.especie_id2)
+      t.estatus == 2 ? t : nil
+    rescue
       nil
     end
   end
