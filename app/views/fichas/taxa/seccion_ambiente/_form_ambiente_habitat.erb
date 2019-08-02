@@ -21,6 +21,7 @@
        link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f, :info_ecorregiones,
                                partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x',
                                render_options: {locals: { titulo: "Información adicional", id_pregunta: 45 }},
+                               force_non_association_create: true,
                                :class => 'btn btn-info btn-sm',
                                role: 'tab',
                                "data-toggle" => 'tab',

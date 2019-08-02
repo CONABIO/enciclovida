@@ -1,7 +1,7 @@
 class Fichas::Habitat < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.habitat"
-	self.primary_keys = :habitatId,  :especieId
+	self.primary_key = :habitatId
 
 	belongs_to :geoforma, :class_name => 'Fichas::Geoforma', :foreign_key => 'geoformaId'
 	belongs_to :suelo, :class_name => 'Fichas::Suelo', :foreign_key => 'sueloId'
@@ -28,9 +28,10 @@ class Fichas::Habitat < Ficha
 	has_many :t_habitatAntropico, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_ecorregionMarinaN1, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_zonaVida, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	belongs_to :taxa, class_name: 'Fichas::Taxon', :foreign_key => 'especieId'
 
 	# Extraer las observaciones de la especie a partir de: observacionescarac
-	has_one :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId
+	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId, inverse_of: :habitats
 
 	accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true
 
