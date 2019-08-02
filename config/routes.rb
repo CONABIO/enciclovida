@@ -83,8 +83,10 @@ Buscador::Application.routes.draw do
     end
   end
 
-  get 'estadisticas' => 'estadisticas#show'
-  get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
+  #get 'estadisticas' => 'estadisticas#show'
+  #get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
+  #get '' => ''
+
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
 
@@ -196,6 +198,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
+      get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
     end
   end
 

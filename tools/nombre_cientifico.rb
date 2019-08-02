@@ -20,13 +20,13 @@ end
 
 def completa
   EspecieBio.find_each do |taxon|
-    puts "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre}" if OPTS[:debug]
     taxon.evita_before_save = true
     taxon.pon_nombre_cientifico
 
     if taxon.nombre_cientifico_changed?
       if taxon.save
-        puts "\t#{taxon.nombre_cientifico}" if OPTS[:debug]
+        Rails.logger.debug "\t#{taxon.nombre_cientifico}" if OPTS[:debug]
       end
     end
   end
@@ -39,16 +39,16 @@ if ARGV.any?
   ARGV.each do |base|
     if CONFIG.bases.include?(base)
       Bases.conecta_a base
-      puts "Conectando a: #{base}" if OPTS[:debug]
+      Rails.logger.debug "Conectando a: #{base}" if OPTS[:debug]
       completa
     end
   end
 else
   CONFIG.bases.each do |base|
     Bases.conecta_a base
-    puts "Conectando a: #{base}" if OPTS[:debug]
+    Rails.logger.debug "Conectando a: #{base}" if OPTS[:debug]
     completa
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

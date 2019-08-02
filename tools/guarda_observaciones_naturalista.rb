@@ -18,7 +18,7 @@ def guarda_observaciones(lim_inf = nil, lim_sup = nil)
     next if lim_inf.present? && taxon.id < lim_inf
     next if lim_sup.present? && taxon.id > lim_sup
     #next unless taxon.especie_o_inferior?
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
 
     if p = taxon.proveedor
       p.guarda_observaciones_naturalista
@@ -31,4 +31,4 @@ start_time = Time.now
 
 guarda_observaciones(ARGV[0].to_i, ARGV[1].to_i)
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

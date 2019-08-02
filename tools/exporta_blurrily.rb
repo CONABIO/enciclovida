@@ -15,29 +15,29 @@ where [options] are:
 end
 
 def exporta_a_blurrilly
-  puts 'Exportando nombres cientificos ... ' if OPTS[:debug]
+  Rails.logger.debug 'Exportando nombres cientificos ... ' if OPTS[:debug]
   client_cientifico = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
   client_comun = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
 
   Especie.find_each do |taxon|
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}"
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre_cientifico}"
     client_cientifico.put(taxon.nombre_cientifico, taxon.id)
   end
 
-  puts 'Exportando nombres comunes ... ' if OPTS[:debug]
+  Rails.logger.debug 'Exportando nombres comunes ... ' if OPTS[:debug]
   NombreComun.find_each do |nom|
-    puts "#{nom.id}-#{nom.nombre_comun}"
+    Rails.logger.debug "#{nom.id}-#{nom.nombre_comun}"
     client_comun.put(nom.nombre_comun, nom.id)
   end
 end
 
 def creando_carpeta
-  puts "Creando carpeta \"#{@path}\" si es que no existe..." if OPTS[:debug]
+  Rails.logger.debug "Creando carpeta \"#{@path}\" si es que no existe..." if OPTS[:debug]
   Dir.mkdir(@path, 0755) unless File.exists?(@path)
 end
 
 def delete_files
-  puts 'Eliminando archivos anteriores...' if OPTS[:debug]
+  Rails.logger.debug 'Eliminando archivos anteriores...' if OPTS[:debug]
   f_cien="#{@path}/nombres_cientificos.trigrams"
   f_com="#{@path}/nombres_comunes.trigrams"
 
@@ -53,4 +53,4 @@ creando_carpeta
 delete_files
 exporta_a_blurrilly
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

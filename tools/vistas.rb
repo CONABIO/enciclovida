@@ -268,7 +268,7 @@ end
 start_time = Time.now
 
 @id = ''
-puts ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: DROP' : 'Ejecutando con argumento: CREATE (default)' if OPTS[:debug]
+Rails.logger.debug ARGV.any? { |e| e.downcase.include?('drop') } ? 'Ejecutando con argumento: DROP' : 'Ejecutando con argumento: CREATE (default)' if OPTS[:debug]
 
 # Arma las vistas
 CONFIG.bases.each do |base|
@@ -287,7 +287,7 @@ end
 
 # Genera las vistas y el volcado
 queriesVistas.each do |key,value|
-  puts "Query: #{value}" if OPTS[:debug]
+  Rails.logger.debug "Query: #{value}" if OPTS[:debug]
   Bases.ejecuta value
 
   query = ''
@@ -298,13 +298,13 @@ queriesVistas.each do |key,value|
   end
 
   Bases.ejecuta query   #para las tablas del volcado
-  puts "Query: #{query}" if OPTS[:debug]
+  Rails.logger.debug "Query: #{query}" if OPTS[:debug]
 end
 
 # Para agregar los nonclustered index, quitar los NULL de las pk y agregar pk
 pone_index_pk.each do |query|
-  puts "Query: #{query}" if OPTS[:debug]
+  Rails.logger.debug "Query: #{query}" if OPTS[:debug]
   Bases.ejecuta query
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

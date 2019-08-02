@@ -113,7 +113,7 @@ class Proveedor < ActiveRecord::Base
     resp = ejemplares_snib('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
     end
 
     # Para las descargas de naturalista
@@ -140,7 +140,12 @@ class Proveedor < ActiveRecord::Base
     resp = observaciones_naturalista('.json', true)
     if resp[:estatus]
       geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "/geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
+    end
+
+    ruta_registros = carpeta_geodatos.join("registros_#{especie_id}_todos.json")
+    if File.exist?(ruta_registros)
+      geodatos[:registros_todos] = "#{CONFIG.site_url}geodatos/#{especie_id}/registros_#{especie_id}_todos.json"
     end
 
     geodatos[:cuales] = geodatos[:cuales].uniq
@@ -160,6 +165,46 @@ class Proveedor < ActiveRecord::Base
       resp.merge({observacion: JSON.parse(obs)})
     rescue
       {estatus: false, msg: 'Error al parsear el json'}
+    end
+  end
+
+  # Junta los registros del snib y las observaciones de naturalista en un mismo archivo para el mapa, lo ocupa la app de enciclovida
+  def guarda_registros_todos
+    carpeta = carpeta_geodatos
+
+    # Junto los registros
+    g = geodatos
+
+    if g[:naturalista_mapa_json].present?
+      archivo_nat = carpeta.join(g[:naturalista_mapa_json].split('/').last)
+      json = JSON.parse(File.read(archivo_nat))
+      registros = json.map{ |r| [r[0],r[1],1] }
+    end
+
+    if g[:snib_mapa_json].present?
+      archivo_snib = carpeta.join(g[:snib_mapa_json].split('/').last)
+      json = JSON.parse(File.read(archivo_snib))
+
+      if registros.present?  # Hubo de naturalista, los añadimos
+        json.each do |j|
+          registros << [j[0],j[1],2]
+        end
+      else  # Se crea solo el del SNIB
+        registros = json.map{ |r| [r[0],r[1],2] }
+      end
+    end
+
+    if registros.present?
+      ruta_registros = carpeta.join("registros_#{especie_id}_todos.json")
+      File.delete(ruta_registros) if File.exist?(ruta_registros)
+
+      archivo_registros = File.new(ruta_registros,'w+')
+      archivo_registros.puts registros.to_json
+      archivo_registros.close
+
+      { estatus: true }
+    else
+      { estatus: false }
     end
   end
 
@@ -251,7 +296,10 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo observaciones de naturalista #{especie_id}"
+    # Guardo el archivo que contiene todos los registros
+    guarda_registros_todos
+
+    Rails.logger.debug "Guardo observaciones de naturalista #{especie_id}"
   end
 
   # REVISADO: Devuelve la informacion de un solo ejemplar,  de acuerdo al archivo previamente guardado del json
@@ -325,7 +373,10 @@ class Proveedor < ActiveRecord::Base
     # Guarda el archivo en kmz
     kmz(nombre)
 
-    puts "\n\nGuardo ejemplares del snib #{especie_id}"
+    # Guardo el archivo que contiene todos los registros
+    guarda_registros_todos
+
+    Rails.logger.debug "Guardo ejemplares del snib #{especie_id}"
   end
 
   # Recupera sólo la cantidad de observaciones de Naturalista sobre una especie

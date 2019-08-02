@@ -24,7 +24,7 @@ end
 def hace_magia
   n=1
   relacion = dame_relacion_naturalista
-  puts "Jalando cosos de la BD: "+(Time.now-@start).to_s+ " =S: "
+  Rails.logger.debug "Jalando cosos de la BD: "+(Time.now-@start).to_s+ " =S: "
 
   File.open('eval_eco_optimo_vertebrados_observaciones.txt', "a+") do |f|
 
@@ -52,9 +52,7 @@ def hace_magia
         #print "--- #{h.length}"
         #h = h.length==1 ? h.first : h
 
-
-
-        f.puts (h["taxon"] ? h["taxon"]["name"] : (h["species_guess"] ? h["species_guess"] : p.nombre_cientifico)).inspect+"\t"+
+        f.puts(h["taxon"] ? h["taxon"]["name"] : (h["species_guess"] ? h["species_guess"] : p.nombre_cientifico)).inspect+"\t"+
                    p.nombre_cientifico.inspect+"\t"+
                    p.catalogo_id.inspect+"\t"+
                    h["latitude"].inspect+"\t"+
@@ -68,27 +66,14 @@ def hace_magia
         m=m+1
       end
       print "observaciones totales."
-      # f.puts eval(p.naturalista_obs).flatten[0]["taxon"]["name"].inspect+"\t"+
-      #            p.nombre_cientifico.inspect+"\t"+
-      #            p.catalogo_id.inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["latitude"].inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["longitude"].inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["quality_grade"].inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["num_identification_agreements"].inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["num_identification_disagreements"].inspect+"\t"+
-      #            eval(p.naturalista_obs).flatten[0]["captive"].inspect+"\t"+
-      #            x[0]["nombre_cientifico"].inspect+"\t"+
-      #            x[1]["nombre_cientifico"].inspect
-
-      puts "  done :D"
       n=n+1
     end
   end
 end
 
 @start = Time.now
-puts "Empezando en: " + (@start).to_s
+Rails.logger.debug "Empezando en: " + (@start).to_s
 
 hace_magia
-puts "Terminamos en: "+(Time.now).to_s
-puts"Total: "+(Time.now-@start).to_s+" segundos =S: "
+Rails.logger.debug "Terminamos en: "+(Time.now).to_s
+Rails.logger.debug"Total: "+(Time.now-@start).to_s+" segundos =S: "

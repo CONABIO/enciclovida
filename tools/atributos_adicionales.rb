@@ -39,14 +39,14 @@ def accion_a_campos(accion)
     query = ''
 
     if accion == 'create'
-      puts 'Ejecutando con argumento: create' if OPTS[:debug]
+      Rails.logger.debug 'Ejecutando con argumento: create' if OPTS[:debug]
       query+= "ALTER TABLE #{Bases::EQUIVALENCIA[tabla]} ADD "
 
       campos.each do |campo, valor|
         query+= "#{campo} #{valor}"
       end
     else
-      puts 'Ejecutando con argumento: drop' if OPTS[:debug]
+      Rails.logger.debug 'Ejecutando con argumento: drop' if OPTS[:debug]
       query+= "ALTER TABLE #{Bases::EQUIVALENCIA[tabla]} DROP COLUMN "
 
       campos.each do |campo, valor|
@@ -55,7 +55,7 @@ def accion_a_campos(accion)
     end
 
     Bases.ejecuta query[0..-2]
-    puts "Query: #{query[0..-2]}" if OPTS[:debug]
+    Rails.logger.debug "Query: #{query[0..-2]}" if OPTS[:debug]
   end
 end
 
@@ -68,17 +68,17 @@ if ARGV.any? && acciones.include?(ARGV[0].downcase)
       next if index == 0
       if CONFIG.bases.include?(base)
         Bases.conecta_a base
-        puts "Con base: #{base}" if OPTS[:debug]
+        Rails.logger.debug "Con base: #{base}" if OPTS[:debug]
         accion_a_campos(ARGV[0].downcase)
       end
     end
   elsif ARGV.count == 1
     CONFIG.bases.each do |base|
       Bases.conecta_a base
-      puts "Con base: #{base}" if OPTS[:debug]
+      Rails.logger.debug "Con base: #{base}" if OPTS[:debug]
       accion_a_campos(ARGV[0].downcase)
     end
   end
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

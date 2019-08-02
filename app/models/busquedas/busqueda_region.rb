@@ -145,7 +145,6 @@ class BusquedaRegion < Busqueda
   def filtro_con_nombre
     if params[:nombre].present?
       if resp[:estatus]
-        puts resp[:resultados].inspect
         self.resp[:resultados] = resp[:resultados].map{|t| t if (/#{params[:nombre].sin_acentos}/.match(t[:nombre_cientifico].sin_acentos) || /#{params[:nombre].sin_acentos}/.match(t[:nombre_comun].try(:sin_acentos)))}.compact
       end
     end

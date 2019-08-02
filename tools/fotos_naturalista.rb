@@ -21,7 +21,7 @@ end
 def busca_fotos
   # Empeizo por proveedores para no correr todos los taxones
   Proveedor.where("naturalista_info IS NOT NULL OR naturalista_info != ''").find_each do |proveedor|
-    puts proveedor.id if OPTS[:debug]
+    Rails.logger.debug proveedor.id if OPTS[:debug]
     proveedor.fotos(@usuario.id)
   end
 end
@@ -34,7 +34,7 @@ def truncate_tables
 end
 
 def system_call(cmd)
-  puts "Ejecutando: #{cmd}" if OPTS[:debug]
+  Rails.logger.debug "Ejecutando: #{cmd}" if OPTS[:debug]
   system cmd
 end
 
@@ -42,15 +42,15 @@ end
 start_time = Time.now
 
 if ARGV.length == 1 && ARGV.first.present? && ARGV.first.downcase == 'truncate'
-  puts "Con comando: #{ARGV.first}" if OPTS[:debug]
+  Rails.logger.debug "Con comando: #{ARGV.first}" if OPTS[:debug]
   truncate_tables
   system_call('rake tmp:cache:clear')
 elsif ARGV.blank?
-  puts "Con comando default para crear: #{ARGV.first}" if OPTS[:debug]
+  Rails.logger.debug "Con comando default para crear: #{ARGV.first}" if OPTS[:debug]
   exit(0) unless @usuario = Usuario.where(:usuario => CONFIG.usuario.to_s).first
   busca_fotos
 else
   exit(0)
 end
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

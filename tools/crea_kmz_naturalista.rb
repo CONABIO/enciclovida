@@ -19,14 +19,14 @@ end
 def kml
   Proveedor.where('naturalista_obs IS NOT NULL').find_each do |proveedor|
     next unless taxon = proveedor.especie  # Por los IDS que borraron
-    puts "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
+    Rails.logger.debug "#{taxon.id}-#{taxon.nombre_cientifico}" if OPTS[:debug]
     next unless taxon.especie_o_inferior?
     proveedor.kml_naturalista
 
     if proveedor.naturalista_kml.present?
-      puts "\tCon KML" if OPTS[:debug]
+      Rails.logger.debug "\tCon KML" if OPTS[:debug]
       if proveedor.kmz_naturalista
-        puts "\t\tGuardo KMZ" if OPTS[:debug]
+        Rails.logger.debug "\t\tGuardo KMZ" if OPTS[:debug]
       end
     end
   end
@@ -37,4 +37,4 @@ start_time = Time.now
 
 kml
 
-puts "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
+Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]

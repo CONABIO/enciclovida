@@ -1,9 +1,10 @@
 class ComentariosController < ApplicationController
+
   before_action do
-    #render 'shared/en_mantenimiento'
     @no_render_busqueda_basica = true
   end
-  skip_before_action :set_locale, only: [:show, :respuesta_externa, :new, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
+
+  skip_before_action :set_locale, only: [:respuesta_externa, :create, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :set_comentario, only: [:show, :respuesta_externa, :edit, :update, :destroy, :update_admin, :ultimo_id_comentario]
   before_action :authenticate_usuario!, :except => [:new, :create, :respuesta_externa, :show, :extrae_comentarios_generales]
   before_action :only => [:index, :update, :edit, :destroy, :admin, :update_admin, :show_correo, :ultimo_id_comentario] do
@@ -415,17 +416,17 @@ class ComentariosController < ApplicationController
 
 
       #NO HACERSE BOLAS CON all ESTO, ESCRIBIRLO BONITO
-      #puts "\ncomment.ancestry: "+comment.ancestry
+      #Rails.logger.debug "\ncomment.ancestry: "+comment.ancestry
       papa_inmediato = comment.ancestry.split('/').last
-      #puts "\npapa_inmediato: "+papa_inmediato
+      #Rails.logger.debug "\npapa_inmediato: "+papa_inmediato
       correo_nuevo = dame_textos(Nokogiri::HTML(correo.html_part.decoded.gsub("html>", "jtml>")))
-      #puts "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
+      #Rails.logger.debug "\ncorreo_nuevo.to_s: "+correo_nuevo.to_s
       correo_nuevo2 = correo_nuevo.join('|').gsub("\r","")
-      #puts "\ncorreo_nuevo2: "+correo_nuevo2
+      #Rails.logger.debug "\ncorreo_nuevo2: "+correo_nuevo2
       historial_correos = eval(Comentario.find(papa_inmediato).general.commentArray).join('|').gsub("\r","")
-      #puts "\nhistorial_correos: "+historial_correos
+      #Rails.logger.debug "\nhistorial_correos: "+historial_correos
       correo_nuevo2.slice!(historial_correos)
-      #puts "\ncorreo_nuevo2: "+correo_nuevo2
+      #Rails.logger.debug "\ncorreo_nuevo2: "+correo_nuevo2
       comment.comentario = correo_nuevo2.gsub("|","\n")
 
     else
@@ -536,7 +537,7 @@ class ComentariosController < ApplicationController
     #En tal caso, usuarios_categorias no se ocuparía
     #usuarios_envio = Usuario.join_userRolEspeciesCategoriasContenido.where('categorias_contenido.id' => categorias_responsables).where.not("especies.id NOT IN (?) AND especies.id IS NOT NULL", path_especie).map(&:email).uniq
 
-    #puts '------------------UE-----------------------'+usuarios_envio.inspect
+    #Rails.logger.debug '------------------UE-----------------------'+usuarios_envio.inspect
     (usuarios_especie + usuarios_metiches).uniq
   end
 
