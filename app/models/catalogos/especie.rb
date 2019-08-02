@@ -171,6 +171,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  # Sobre escribiendo este metodo para las rutas mas legibles
+  def to_param
+    [id, nombre_cientifico.parameterize].join("-")
+  end
+
   # Regresa el taxon valido o el mismo en caso de serlo
   def dame_taxon_valido
     return self if estatus == 2  # el valido era el mismo
