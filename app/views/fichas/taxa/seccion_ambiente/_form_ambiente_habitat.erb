@@ -17,10 +17,21 @@
           'data-selected-text-format': 'count > 3'
       }
     %>
-    <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f, :info_ecorregiones, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: "Información adicional" }}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'info_ecorregiones', 'data-association-insertion-node' => '#info_ecorregiones', 'data-association-insertion-method' => 'append', href: '#info_ecorregiones') %>
+    <%=
+       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f, :info_ecorregiones,
+                               partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x',
+                               render_options: {locals: { titulo: "Información adicional", id_pregunta: 45 }},
+                               :class => 'btn btn-info btn-sm',
+                               role: 'tab',
+                               "data-toggle" => 'tab',
+                               "aria-controls" => 'info_ecorregiones',
+                               'data-association-insertion-node' => '#info_ecorregiones',
+                               'data-association-insertion-method' => 'append',
+                               href: '#info_ecorregiones')
+    %>
     <div id="info_ecorregiones">
       <%= f.simple_fields_for :info_ecorregiones do |info| %>
-        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: 'Información adicional'} %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: 'Información adicional', id_pregunta: 45} %>
       <% end %>
     </div>
   </fieldset>

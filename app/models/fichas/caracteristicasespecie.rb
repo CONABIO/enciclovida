@@ -87,9 +87,7 @@ end
 
 
 =begin
-
-
-
+TIPOS DE SELECT:
 has_many :artepesca,-> {where('caracteristicasespecie.idpregunta = ?', 30)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :acuacultura,-> {where('caracteristicasespecie.idpregunta = ?', 31)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :mecanismos,-> {where('caracteristicasespecie.idpregunta = ?', 33)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
@@ -102,21 +100,13 @@ has_many :platenciasei,-> {where('caracteristicasespecie.idpregunta = ?', 40)}, 
 has_many :seguridadsei,-> {where('caracteristicasespecie.idpregunta = ?', 41)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :enfermedadessei,-> {where('caracteristicasespecie.idpregunta = ?', 42)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
-
 generamultiselectn2($varupdate, $controlname, $pregunta, $texto)
-USA OPTGROUP
-$sql = "SELECT descn1 FROM cat_preguntas where idpregunta = '".$pregunta."' GROUP BY descn1;";
 $Uclima, "clima", "4", "tipo clima "); ?>
 $Uclimaexo, "climaexo", "5", "tipo clima "); ?>
 $Urutasei, "rutasei", "32","ruta ");?>
 
-
-
-
-
 generamultiselectn3($varupdate, $controlname, $pregunta, $texto)
 $sql2 = "SELECT idopcion, descn1, descn2, descn3 FROM cat_preguntas WHERE descn1='$registro[0]' and idpregunta = ".$pregunta.";";
 generamultiselectn3($Ualimentacion, "alimenta", "9", "alimentaci�n "); ?>
-
 
 =end

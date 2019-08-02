@@ -44,8 +44,6 @@ class Fichas::TaxaController < Fichas::FichasController
   # PATCH/PUT /taxa/1
   # PATCH/PUT /taxa/1.json
   def update
-
-    puts "\n\n\n\n - - - - - - - - -  - - - - -- - \n\n\n\n\n\n"
     respond_to do |format|
       if @taxon.update(taxon_params)
         format.html { redirect_to @taxon, notice: 'Taxon was successfully updated.' }
@@ -79,8 +77,7 @@ class Fichas::TaxaController < Fichas::FichasController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
-      puts "\n\n\n\n - - - - - - - - -  - - - - -- - \n\n\n\n\n\n"
-      params.fetch(:taxon, {})
-      #params.require(:taxon).permit(:resumenEspecie)
+      #params.fetch(:taxon, {resumenEspecie})
+      params.require(:taxon).permit(:resumenEspecie)
     end
 end
