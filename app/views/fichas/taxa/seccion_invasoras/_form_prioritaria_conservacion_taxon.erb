@@ -1,0 +1,321 @@
+invasividad i WHERE especieId = $IdResev
+
+
+61. Estado de la poblaci&oacute;n:
+Upoblacionsei: estadoPoblaciones
+Poblaci&oacute;n en expansi&oacute;n
+Poblaci&oacute;n estable
+Poblaci&oacute;n en declive
+Se desconoce
+---
+INFO AD
+SELECT * FROM observacionescarac WHERE especieId=$IdResev and idpregunta = 52";
+Indicar si la poblaci&oacute;n se encuentra en expansi&oacute;n, estable en declive o se desconoce. Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
+
+
+
+62. Persistencia de la poblaci&oacute;n:
+Upersistenciapobsel: persistenciaPob
+Se extingui&oacute;
+Pasajera
+Persistente
+Se desconoce
+Temporal
+----
+INFO
+Indicar si la poblaci&oacute;n persiste (en qu&eacute; estado). Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
+observacionescarac WHERE especieId=$IdResev and idpregunta = 53";
+
+
+
+
+63. Abundancia de la poblaci&oacute;n
+Uabundanciapobsel: abundanciaPob
+"Dominante"
+"Com&uacute;n"
+"Rara"
+"Nula"
+Se desconoce"
+"Monocultivo"
+---
+Indicar que tan abundante es la poblaci&oacute;n. Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
+observacionescarac WHERE especieId=$IdResev and idpregunta = 54";
+
+
+
+Información sobre poblaciones exóticas
+
+64. Historia de la introducción:
+Describir la historia/antecedentes de la invasi&oacute;n con fechas y referencias de ser posible
+observacionescarac WHERE especieId=$IdResev and idpregunta = 55";
+
+
+
+
+65. Invasora en otros sitios:
+Se&ntilde;alar cualquier antecedente de la especie como invasora en otros sitios
+observacionescarac WHERE especieId=$IdResev and idpregunta = 56";
+
+
+66. Adaptabilidad a hábitats
+Indicar si existe informaci&oacute;n acerca de la adaptabilidad de la especie a otros h&aacute;bitats"
+observacionescarac WHERE especieId=$IdResev and idpregunta = 57";
+
+
+
+67. Adaptabilidad clim&aacute;tica:
+Indicar si existe informaci&oacute;n acerca de la adaptabilidad de la especie a otros climas
+observacionescarac WHERE especieId=$IdResev and idpregunta = 58";
+
+
+
+
+
+68. Cong&eacute;neres/subespecies/razas/variedades invasoras:
+"Indicar si la especie tiene cong&eacute;neres, subespecies, razas, variedades, etc. Reportados como invasores"
+observacionescarac WHERE especieId=$IdResev and idpregunta = 59";
+
+
+
+69. Naturalizaci&oacute;n:
+generamultiselectn1($Unaturalizacionsei, "naturalizacionsei", "36","naturalizaci�n ")
+---
+Se&ntilde;alar si la especie tiene  potencial  para naturalizarse en nuevos sitios (con datos y referencias)
+observacionescarac WHERE especieId=$IdResev and idpregunta = 36";
+
+
+
+Rutas de introducci&oacute;n
+
+70. Rutas
+generaselectn1($Ucatruta[$r], "catruta", "47","categor�a de ruta");
+generaselectn2($Urutasei[$r], "rutasei", "32","ruta");
+SELECT c.infoaddrutainvasora FROM rutas c WHERE especieId=$IdResev;";
+
+
+
+
+71 Frecuencia de introducci&oacute;n:
+"Informaci&oacute;n acerca de los eventos de introducci&oacute;n de la especie (importaciones, accidentes, etc.) se&ntilde;alar &eacute;pocas del a&ntilde;o, cantidades, frecuencia, y origen y procedencia en caso de ser posible.">
+observacionescarac WHERE especieId=$IdResev and idpregunta = 61"
+
+
+
+-
+Impactos, manejo y mitigaci&oacute;n
+-
+
+
+72. Impacto a Salud (humana, plantas animales)
+"Describir los impactos a la salud humana, animal y/o vegetal causados directamente por la especie. Por ejemplo aqu&iacute; se marca si la especie es venenosa, t&oacute;xica, causante de alergias, especie parasitoide o la especie en s&iacute; es el factor causal de una enfermedad (la especie evaluada es un virus, bacteria, etc)*."
+observacionescarac WHERE especieId=$IdResev and idpregunta = 62";
+
+
+73. Impacto a biodiversidad
+"Describe los impactos a las comunidades y especies; por ejemplo, mediante herbivor&iacute;a, competencia, depredaci&oacute;n e hibridaci&oacute;n."
+Uimpactobio
+observacionescarac WHERE especieId=$IdResev and idpregunta = 63";
+
+
+
+
+74. Impacto a ecosistemas
+"Describe los impactos al ambiente; se refiere a cambios f&iacute;sicos y qu&iacute;micos en agua, suelo, aire y luz."
+Uimpactoeco
+observacionescarac WHERE especieId=$IdResev and idpregunta = 64";
+
+
+75. Impacto a econom�a/infraestructura
+"Describe los impactos a la econom&iacute;a. Considera el incremento de costos de actividades productivas, da&ntilde;os a la infraestructura, p&eacute;rdidas econ&oacute;micas por da&ntilde;os o compensaci�n de da&ntilde;os"
+Uimpactoinfra
+observacionescarac WHERE especieId=$IdResev and idpregunta = 65";
+
+
+
+76. Impactos sociales o culturales
+"Describe los impactos al tejido social p&eacute;rdida de usos y costumbres, desintegraci&oacute;n social, etc"
+Uimpactosocial
+observacionescarac WHERE especieId=$IdResev and idpregunta = 66";
+
+
+
+
+
+77. Otros Impactos
+"Describe otros impactos que pudiera tener la especie y que no est&aacute;n considerados en las categor&iacute;as anteriores"
+Uimpactootros
+bservacionescarac WHERE especieId=$IdResev and idpregunta = 67";
+
+
+78. Mecanismos de impacto
+generamultiselectn1($Umecanismos, "mecanismos", "33","mecanismo ")
+observacionescarac WHERE especieId=$IdResev and idpregunta = 33";
+
+79. Efectos del impacto
+generamultiselectn1($Uefectoimpactosei, "efectoimpactosei", "34","efecto ")
+Indicar los efectos del impacto causados por la especie
+
+
+
+80. Intensidad del impacto:
+generamultiselectn1($Uintensidadimpactosei, "intensidadimpactosei", "35","intensidad ")
+Indicar la intensidad del impacto
+observacionescarac WHERE especieId=$IdResev and idpregunta = 35";
+
+
+81. Prevenci&oacute;n y detecci&oacute;n temprana:
+Indicar si hay medidas de detecci&oacute;n temprana o prevenci&oacute;n para la especie y cuales son"
+Uprevencion 71
+
+
+
+
+82. Manejo y control
+"Indicar si hay medidas de manejo y control para la especie y cuales son"
+72
+Umanejocontrol
+
+
+
+83. Erradicaci&oacute;n
+"Indicar si hay medidas de erradicaci&oacute;n para la especie y cuales son, se&ntilde;alar casos de &eacute;xito pero tambi&eacute;n intentos fallidos (y por qu&eacute;) y en d&oacute;nde."
+73
+Uerradicacion
+
+
+84. Cuarentena / Bioseguridad
+"Indicar si hay medidas de cuarentena/bioseguridad para la especie y cuales son"
+74
+Ucuarentena
+
+
+85. Susceptibilidad a qu&iacute;micos
+"Indicar si la especie tiene susceptibilidad a qu&iacute;micos"
+75
+Ususceptibilidad
+
+
+86. Control biol&oacute;gico
+"Indicar si hay medidas de control biol&oacute;gicos  para la especie y cuales son"
+76
+Ucontrolbiol
+
+
+
+87. Regulaci&oacute;n
+"Se desconoce"
+"No considerado"
+"Restringido"
+"Prohibida"
+
+"Se&ntilde;ala si la especie se encuentra bajo alg&uacute;n tipo de regulaci&oacute;n como plaga o invasora"
+77
+Uregulacion
+
+
+
+78
+Ubenecologicos
+
+
+
+79
+Ubeneconomicos
+
+
+
+80
+Ubensociales
+
+
+81
+Uconclimatica
+
+
+
+82
+Uconecologica
+
+
+
+85
+Uplasconductual
+
+
+
+86
+Uplasrepro
+
+
+
+87
+Uhibridacion
+
+
+
+
+90
+Ucrecimientosei
+
+
+
+92
+Uspequivalentes
+
+
+
+93
+Ucca
+
+
+
+
+94
+Ufisk
+
+
+
+
+95
+Ufiisk
+
+
+
+96
+Umfisk
+
+
+
+97
+Umiisk
+
+
+
+
+98
+Uaisk
+
+
+
+99
+Utiisk
+
+
+
+100
+Upier
+
+
+
+101
+Umeri
+
+
+102
+Uotroar
+
+
+
+has_one :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId
+
+accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true

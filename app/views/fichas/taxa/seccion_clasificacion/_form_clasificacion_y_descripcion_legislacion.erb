@@ -1,5 +1,19 @@
 <div class='nested-fields'>
+  <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, input_html: {class: 'form-control tipo-legislacion selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%= f.input :estatusLegalProteccion, :as => :grouped_select,
+          collection: [
+              ["SEMARNAT", Fichas::Legislacion::L_SEMARNAT.map { |x| x.to_s }],
+              ["CITES", Fichas::Legislacion::L_CITES.map { |x| x.to_s }],
+              ["UICN", Fichas::Legislacion::L_UICN.map { |x| x.to_s }],
+          ],
+          :group_method => :last,
+          input_html: {
+              class: 'form-control selectpicker',
+              'data-live-search': 'true',
+              'title': t('general.seleccionar_opcion')
+          }
+  %>
 
-  <%= f.input :nombreLegislacion %>
-  <%= link_to_remove_association 'Borrar legislación', f, :class => 'btn btn-danger btn-sm' %>
+  <%=  f.input :infoAdicional %>
+  <%= link_to_remove_association 'Borrar legislación', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>

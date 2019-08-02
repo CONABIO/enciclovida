@@ -1,44 +1,206 @@
 <div class='nested-fields'>
 
-  <%= f.input :habitoPlantas %>
-  <%= f.input :alimentacion %>
+  <%= f.association :t_habitoPlantas,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitoPlantas]),
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
+  <% c_alimentacion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:alimentacion]).group_by(&:descn1) %>
+  <%= f.association :t_alimentacion,
+                    :as => :grouped_select,
+                    collection: c_alimentacion,
+                    :group_method => :last,
+                    group_label_method: :first,
+                    label_method: ->(obj){
+                      obj.descn3.blank? ? detalle = obj.descn2 : detalle = "#{obj.descn2} (#{obj.descn3})"
+                      detalle
+                    },
+                    value_method: :idopcion,
+                    input_html: {
+                        :multiple => true,
+                        class: 'form-control selectpicker',
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
   <%= f.input :descripcionAlimentacion %>
-  <%= f.input :estrategiaTrofica %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.estrategia_trofica') %></h3>
+  <%= f.input :estrategiaTrofica,
+              collection: Fichas::Cat_Estrategiatrofica.all.map { |r| [r.descripcion, r.IdEstrategia] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :descripcionEstrofica %>
-  <%= f.input :forrajeo %>
 
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
+
+  <% c_forrajeo = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:forrajeo]) %>
+  <%= f.association :t_forrajeo,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_forrajeo,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+
+  <% # FALTA INFO ADICIONAL PARA FORRAGEO
+  %>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
+  <% c_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:migracion]) %>
+  <%= f.association :t_migracion,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_migracion,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+  <% c_tipo_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipo_migracion]) %>
+  <%= f.association :t_tipo_migracion,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_tipo_migracion,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
 
-  <%= f.input :migracion %>
-  <%= f.input :tipoMigracion %>
-  <%= f.input :habito %>
+  <% c_habito = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habito]) %>
+  <%= f.association :t_habito,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_habito,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
+  <% # FALTA INFO ADICIONAL PARA HABITO
+  %>
+  <%= f.input :tipopHabito, as: :radio_buttons, :collection => Fichas::Historianatural::PERIODO_ACTIVIDAD, item_wrapper_class: 'radio-inline' %>
+  <%= f.input :infoaddperiodoactividad %>
 
-  <%= f.input :tipopHabito %>
+  <%= f.input :hibernacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "hibernacionSI")', name: 'opcion-hibernacionSI'} %>
+  <div id="hibernacionSI">
+    <%= f.input :infoaddhibernacion %>
+  </div>
 
-  <%= f.input :hibernacion %>
-  <%= f.input :infoaddhibernacion %>
-  <%= f.input :territorialidad %>
-  <%= f.input :infoaddterritorialidad %>
+  <%= f.input :territorialidad, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "territorialidadSI")', name: 'opcion-territorialidadSI'} %>
+  <div id="territorialidadSI">
+    <%= f.input :infoaddterritorialidad %>
+  </div>
+
   <%= f.input :ambitoHogareno %>
-  <%= f.input :mecanismosDefensa %>
+  <%= f.input :mecanismosDefensa,
+              collection: Fichas::Historianatural::MECANISMO_DEFENSA,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :infoaddmecdefensa %>
 
-  <%= f.input :tipoReproduccion %>
+  <hr class="espacio_ficha">
+  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideSegunTipoReproduccion()', name: 'opcion-TipoReproduccion'} %>
+  <hr class="espacio_ficha">
 
-  <%= f.input :tipoDispersion %>
+  <div id="opcion-reprodAnimal">
+    <%=
+      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar reproduccionAnimal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal',
+                              style: 'display: inline;')
+    %>
+    <%= f.simple_fields_for :reproduccionAnimal do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
+    <% end %>
+  </div>
+
+  <div id="opcion-reprodVegetal">
+    <%= f.simple_fields_for :reproduccionVegetal do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
+    <% end %>
+  </div>
+
+  <hr class="espacio_ficha">
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
+  <% c_tipodispersion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipodispersion]) %>
+  <%= f.association :t_tipodispersion,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_tipodispersion,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
   <%= f.input :descTipoDispersion %>
-  <%= f.input :estructuraDispersora %>
+  <% c_structdisp = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:structdisp]) %>
+  <%= f.association :t_structdisp,
+                    label_method: :descn1,
+                    value_method: :idopcion,
+                    collection: c_structdisp,
+                    :as => :select,
+                    input_html: {
+                        class: 'form-control selectpicker',
+                        multiple: true,
+                        'data-live-search': 'true',
+                        'title': t('general.seleccionar_opciones'),
+                        'data-selected-text-format': 'count > 3'
+                    }
+  %>
   <%= f.input :descEstDispersora %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
+  <%= f.input :distanciadispercionfinal %>
 
-  <hr class="espacio_ficha">
-  <%= f.simple_fields_for :reproduccionAnimal do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
-  <% end %>
-
-  <hr class="espacio_ficha">
-  <%= f.simple_fields_for :reproduccionVegetal do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
-  <% end %>
-
+  <div class="apartadoFicha ficha-Invasora">
+    Riesgo de dispersión
+    generamultiselectn1($Udispersionsei, "dispersionsei", "39","dispersion ")
+    observacionescarac WHERE especieId=$IdResev and idpregunta = 39";
+  </div>
 </div>

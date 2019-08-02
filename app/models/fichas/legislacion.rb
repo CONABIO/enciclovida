@@ -1,15 +1,44 @@
 class Fichas::Legislacion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.legislacion"
-	self.primary_keys = :legislacionId,  :especieId
+	self.primary_key = :legislacionId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	ESTATUS_LEGAL_PROTECCION = [:Amenazadas, :SujetasProteccionEspecial, :PreocupacionMenor]
 	# Legislaciones existentes
-	TIPOS_LEGISLACIONES = ["NOM-059-SEMARNAT-2001", "NOM-059-SEMARNAT", "UICN", "CITES"]
+  TIPOS_LEGISLACIONES = [
+      "NOM-059-SEMARNAT-2001".to_sym,
+      "NOM-059-SEMARNAT".to_sym,
+      "UICN".to_sym,
+      "CITES".to_sym,
+  ]
 
-	attr_accessor :SEMARNAT_2001
+  L_SEMARNAT = [
+      'Probablemente extinta en medio silvestre (E)'.to_sym,
+      'En peligro de extinción (P)'.to_sym,
+      'Amenazadas (A)'.to_sym,
+      'Sujetas a protección especial (Pr)'.to_sym,
+      'No evaluada (NE)'.to_sym
+  ]
+
+  L_UICN = [
+      'Extinto (EX extinct)'.to_sym,
+      'Extinto en estado silvestre (EW extinct in the wild)'.to_sym,
+      'En peligro crítico (CR critically endangered)'.to_sym,
+      'En peligro (EN endangered)'.to_sym,
+      'Vulnerable (VU vulnerable)'.to_sym,
+      'Casi amenazado (NT near threatened)'.to_sym,
+      'Preocupación menor (LC least concern)'.to_sym,
+      'Datos insuficientes (DD data deficient)'.to_sym,
+      'No evaluado (NE not evaluated)'.to_sym
+  ]
+
+  L_CITES = [
+      'Apéndice I'.to_sym,
+      'Apéndice II'.to_sym,
+      'Apéndice III'.to_sym,
+      'No listada'.to_sym
+  ]
 
 	def existe_legislacion(lista, num)
 		lista.each do |a|
@@ -17,7 +46,6 @@ class Fichas::Legislacion < Ficha
 				return a
 			end
 		end
-	end
-
+  end
 
 end

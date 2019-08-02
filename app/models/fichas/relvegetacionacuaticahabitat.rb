@@ -4,6 +4,6 @@ class Fichas::Relvegetacionacuaticahabitat < Ficha
 	self.primary_keys = :habitatId,  :vegetacionAcuaticaid
 
 	belongs_to :habitat, :class_name => 'Fichas::Habitat', :foreign_key => 'habitatId'
-	belongs_to :vegetacionAcuatica, :class_name => 'Fichas::Vegetacionacuatica', :foreign_key => 'vegetacionAcuaticaid'
+	belongs_to :vegetacion_acuatica, :class_name => 'Fichas::Vegetacionacuatica', :foreign_key => 'vegetacionAcuaticaid'
 
 end
