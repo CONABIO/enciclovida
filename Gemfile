@@ -47,6 +47,7 @@ gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'therubyracer', platforms: :ruby
+gem 'tinymce-rails'
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier'
@@ -61,7 +62,7 @@ group :doc do
 end
 
 group :development, :test, :production do
-  gem 'blurrily', git: 'https://github.com/calonsot/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
+  # gem 'blurrily', git: 'https://github.com/calonsot/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
 end
 
 group :development, :development_mac, :test do

@@ -4,23 +4,26 @@ class Fichas::TaxaController < Fichas::FichasController
   # GET /taxa
   # GET /taxa.json
   def index
-    @taxa = Taxon.all
+    @taxa = Fichas::Taxon.all
   end
 
   # GET /taxa/1
   # GET /taxa/1.json
   def show
+    redirect_to "http://#{IP}:#{PORT}fichas/front/#{params[:id]}"
   end
 
   # GET /taxa/new
   def new
-    @taxon = Taxon.new
+    @form_params = { url: '/fichas/taxa', method: 'post' }
+    @taxon = Fichas::Taxon.new
   end
 
   # GET /taxa/1/edit
   def edit
     @form_params = { url: '/fichas/taxa', method: 'post' }
   end
+
 
   # POST /taxa
   # POST /taxa.json
@@ -65,11 +68,16 @@ class Fichas::TaxaController < Fichas::FichasController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_taxon
-      @taxon = Fichas::Taxon.where(IdCat: params[:id]).first
+      begin
+        @taxon = Fichas::Taxon.where(IdCat: params[:id]).first
+      rescue
+        render :_error and return
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
-      params.fetch(:taxon, {})
+      #params.fetch(:taxon, {resumenEspecie})
+      params.require(:taxon).permit(:resumenEspecie)
     end
 end

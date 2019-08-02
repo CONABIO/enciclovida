@@ -20,13 +20,45 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
+	accepts_nested_attributes_for :conservacion, allow_destroy: true
+	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :distribuciones, allow_destroy: true
+	accepts_nested_attributes_for :endemicas, allow_destroy: true
 	accepts_nested_attributes_for :habitats, allow_destroy: true
-  accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
 	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
-  accepts_nested_attributes_for :conservacion, allow_destroy: true
   accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :endemicas, allow_destroy: true
+	accepts_nested_attributes_for :metadatos, allow_destroy: true
+	accepts_nested_attributes_for :productoComercios, allow_destroy: true
+	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
+
+	# Sección I: Clasificacion
+	ORIGEN_MEXICO = [
+			'Exótica/No nativa'.to_sym,
+			'Nativa'.to_sym,
+			'Criptogénica'.to_sym
+	]
+
+	MEDIDA_LONGEVIDAD = [
+			"Años".to_sym,
+			"Meses".to_sym,
+			"Dias".to_sym
+	]
+
+  TIPOS_FICHA = [
+		"CITES".to_sym,
+		"Invasora".to_sym,
+		"Silvestre".to_sym,
+		"Prioritaria".to_sym
+  ]
+
+  PRESENCIA = [
+      "Ausencia/Ausente".to_sym,
+      "Presente".to_sym,
+      "Presentes por confirmar (casual)".to_sym,
+      "Presente confinado".to_sym,
+      "Se desconoce".to_sym
+  ]
 
 	# Para sección de especies prioritarias
 	ESPECIE_ENLISTADA = [:yes, :no]
@@ -55,26 +87,5 @@ class Fichas::Taxon < Ficha
 
 		datos
 	end
-
-end
-
-class Numerador
-
-	include Singleton
-
-	def initialize
-    @pregunta = 0
-    @nivel = 1
-    @tipo_r = "A"
-	end
-
-  def x_pregunta (nivel = 1, tipo_r = "A")
-
-		if nivel == 1
-			@pregunta += 1
-		end
-
-    "#{@pregunta}. "
-  end
 
 end

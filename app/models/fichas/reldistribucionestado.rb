@@ -4,6 +4,6 @@ class Fichas::Reldistribucionestado < Ficha
 	self.primary_keys = :distribucionId,  :estadoId
 
 	belongs_to :distribucion, :class_name => 'Fichas::Distribucion', :foreign_key => 'distribucionId'
-	belongs_to :estado, :class_name => 'Fichas::EstadoF', :foreign_key => 'estadoId'
+	belongs_to :estado, :class_name => 'Fichas::Estado_F', :foreign_key => 'estadoId'
 
 end

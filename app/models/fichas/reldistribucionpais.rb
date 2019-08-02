@@ -5,5 +5,6 @@ class Fichas::Reldistribucionpais < Ficha
 
 	belongs_to :distribucion, :class_name => 'Fichas::Distribucion', :foreign_key => 'distribucionId'
 	belongs_to :pais, :class_name => 'Fichas::Pais', :foreign_key => 'paisId'
-
+	belongs_to :pais_inv,->{where('tipopais = ?', 1)}, :class_name => 'Fichas::Pais', :foreign_key => 'paisId'
+	belongs_to :pais_inv2,->{where('tipopais = ?', 2)}, :class_name => 'Fichas::Pais', :foreign_key => 'paisId'
 end
