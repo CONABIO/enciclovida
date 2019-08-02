@@ -50,10 +50,14 @@ es:
       clima: Clima
       r_temperatura: Rango de temperatura
       r_precipitacion: Rango de precipitación
-      humedad: Humedad
+      humedad: Rango de humedad relativa
       tipo_suelo: Tipo de suelo
       tipo_habitat: Tipo de hábitat
       geoforma: Geoforma
+      clima_exo: Clima (exótica)
+      vegetacion_mundial: Vegetación mundial
+      rango_temp_exo: Rango de temperatura (exótica)
+      rango_hum_exo: Rango de humedad relativa (exótica)
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     s_ecologia:
       tamanio_poblacional: Tamaño poblacional
@@ -423,6 +427,7 @@ es:
         biotipos: ii. Biotopos
         descripcionSuelo: Información adicional
         descripcionGeoforma: Información adicional
+
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         uso: Uso del hábitat
       demografiaAmenazas:

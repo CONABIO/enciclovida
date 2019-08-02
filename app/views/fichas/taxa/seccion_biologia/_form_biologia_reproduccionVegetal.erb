@@ -2,50 +2,61 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_vegetal') %></h3>
 
   <%= f.input :descripcion %>
-  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
-  <%= f.association :t_arregloespacialflores,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-  <%= f.association :t_arregloespacialindividuos,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-  <%= f.association :t_arregloespacialpoblaciones,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
 
-  <%
-  # INFO ADICIONAL observacionescarac 46
-  %>
+  <div class="apartadoFicha ficha-Invasora">
+    b. Arreglo espacial de los órganos reproductores
+    generamultiselectn1($Uarregloespacial, "arregloespacial", "46","arreglo espacial ");?>
+
+    observacionescarac WHERE especieId=$IdResev and idpregunta = 46
+  </div>
+
+  <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
+    <%= f.association :t_arregloespacialflores,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
+    <%= f.association :t_arregloespacialindividuos,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
+    <%= f.association :t_arregloespacialpoblaciones,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
+    <%
+      # INFO ADICIONAL observacionescarac 46
+    %>
+  </div>
+
 
   <%= f.input :aislamientoOrganos,
               collection: Fichas::Reproduccionvegetal::AISLAMIENTO_ORGANOS_REPROD,
@@ -145,6 +156,11 @@
   %>
   <%= f.input :addinfotiempoflora %>
 
+  <div class="apartadoFicha ficha-Invasora">
+    Cambios en los patrones de floración
+    patronesFloracion
+  </div>
+
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.cantidad_nectar') %></h4>
   <%= f.input :cantidadnectarinicial %>
   <%= f.input :cantidadnectarfinal %>
@@ -172,6 +188,11 @@
               }
   %>
   <%= f.input :addinfotiempofructi %>
+
+  <div class="apartadoFicha ficha-Invasora">
+    b) Cambios en los patrones de fructificaci&oacute;n:
+    patronesFructificacion
+  </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.numero_frutos') %></h4>
   <%= f.input :nofrutosinicial %>
@@ -218,10 +239,12 @@
     <!-- Preguntas ocultas -->
     <%= f.input :arregloEspacial %>
     <%= f.input :descripcionArregloespacial %>
-    Tipo de polinización:
-    - -- - -
     <%= f.input :agentesPolinizacion %>
     <%= f.input :descAgentesPol %>
   </div>
+
+
+
+
 
 </div>

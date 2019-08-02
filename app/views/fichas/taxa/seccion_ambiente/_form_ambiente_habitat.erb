@@ -17,6 +17,12 @@
           'data-selected-text-format': 'count > 3'
       }
     %>
+    <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f, :info_ecorregiones, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: "Información adicional" }}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'info_ecorregiones', 'data-association-insertion-node' => '#info_ecorregiones', 'data-association-insertion-method' => 'append', href: '#info_ecorregiones') %>
+    <div id="info_ecorregiones">
+      <%= f.simple_fields_for :info_ecorregiones do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: 'Información adicional'} %>
+      <% end %>
+    </div>
   </fieldset>
 
   <fieldset class="apartados">
@@ -74,7 +80,6 @@
     <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")', name: 'opcion-vegetacion-secundaria'} %>
-
     <div id="vegetacion-secundaria">
       <% c_veget_secu = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vegetacionSecundaria]) %>
       <%= f.association :t_tipoVegetacionSecundaria,
@@ -90,6 +95,24 @@
                             'data-selected-text-format': 'count > 3'
                         }
       %>
+    </div>
+
+    <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+      d) Mencionar las especies asociadas
+      observacionescarac WHERE especieId=$IdResev and idpregunta = 2";
+    </div>
+
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
+
+      Vegetaci&oacute;n mundial
+      Tipos de vegetaci&oacute;n en los que se desarrolla la especie en el mundo
+      tipovegetmundial 3
+
+      Info AD:
+      observacionescarac WHERE especieId=$IdResev and idpregunta = 3
+
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
@@ -116,15 +139,38 @@
     %>
     <%= f.input :climaAdicional %>
 
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
+      generamultiselectn2($Uclimaexo, "climaexo", "5", "tipo clima ")
+
+      info Adicional:
+      observacionescarac WHERE especieId=$IdResev and idpregunta = 5";
+
+    </div>
+
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_temperatura') %></h3>
     <%= f.input :temperaturainicial %>
     <%= f.input :temperaturafinal %>
     <%= f.input :infoaddtemperatura %>
 
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_temp_exo') %></h3>
+      <%= f.input :temperaturainicialexo%>
+      <%= f.input :temperaturafinalexo %>
+      <%= f.input :infoaddtemperaturaexo %>
+    </div>
+
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_precipitacion') %></h3>
     <%= f.input :precipitacioninicial %>
     <%= f.input :precipitacionfinal %>
     <%= f.input :infoaddprecipitacion %>
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_hum_exo') %></h3>
+      <%= f.input :precipitacioninicialexo %>
+      <%= f.input :precipitacionfinalexo %>
+      <%= f.input :infoaddprecipitacionexo %>
+    </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.humedad') %></h3>
     <%= f.input :humedadinicial %>
