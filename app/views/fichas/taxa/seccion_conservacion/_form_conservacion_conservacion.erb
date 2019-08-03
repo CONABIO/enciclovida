@@ -6,7 +6,7 @@
   %>
   <div id="info-acciones-manejo-c">
     <%= f.simple_fields_for :info_acciones_manejo_c do |info| %>
-      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: t('secciones.s_conservacion.acciones_manejo')} %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: t('secciones.s_conservacion.acciones_manejo'), id_pregunta: 30} %>
     <% end %>
   </div>
 

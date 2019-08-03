@@ -22,7 +22,7 @@ class Fichas::FrontController < Fichas::FichasController
   def distribucione_de_la_especie # especieId
     @distribucion = @taxon.distribuciones.first
     @endemica = @taxon.endemicas.first
-    @habitat = @taxon.habitats.first
+    @habitat = @taxon.habitats
 
     render json: {
         taxon: @taxon,
@@ -35,7 +35,7 @@ class Fichas::FrontController < Fichas::FichasController
   # Tipo de ambiente en donde se desarrolla la especie
   def ambiente_de_desarrollo_de_especie
 
-    @habitat = @taxon.habitats.first
+    @habitat = @taxon.habitats
     @tipoClima = @habitat.tipoclima
     @suelo = @habitat.suelo
     @geoforma = @habitat.geoforma
@@ -59,7 +59,7 @@ class Fichas::FrontController < Fichas::FichasController
   # IV. Biología de la especie
   def biologia_de_la_especie
     # Obtener el id de especie
-    @habitat = @taxon.habitats.first
+    @habitat = @taxon.habitats
     @historiaNatural = @taxon.historiaNatural
     @demografiaAmenazas = @taxon.demografiaAmenazas.first
     @infoReproduccion = @historiaNatural.get_info_reproduccion
@@ -147,7 +147,7 @@ class Fichas::FrontController < Fichas::FichasController
     @distribucion = @taxon.distribuciones.first || Fichas::Distribucion.new
     @endemica = @taxon.endemicas.first || Fichas::Endemica.new
 
-    @habitat = @taxon.habitats.first || Fichas::Habitat.new
+    @habitat = @taxon.habitats || Fichas::Habitat.new
     # III. Tipo de ambiente en donde se desarrolla la especie
     @tipoClima = @habitat.tipoclima
     @suelo = @habitat.suelo

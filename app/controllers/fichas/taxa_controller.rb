@@ -10,7 +10,6 @@ class Fichas::TaxaController < Fichas::FichasController
   # GET /taxa/1
   # GET /taxa/1.json
   def show
-    redirect_to "http://#{IP}:#{PORT}fichas/front/#{params[:id]}"
   end
 
   # GET /taxa/new
@@ -21,7 +20,7 @@ class Fichas::TaxaController < Fichas::FichasController
 
   # GET /taxa/1/edit
   def edit
-    @form_params = { url: '/fichas/taxa', method: 'post' }
+    @form_params = { url: "/fichas/taxa/#{@taxon.IdCAT}", method: 'put' }
   end
 
 
@@ -46,7 +45,7 @@ class Fichas::TaxaController < Fichas::FichasController
   def update
     respond_to do |format|
       if @taxon.update(taxon_params)
-        format.html { redirect_to @taxon, notice: 'Taxon was successfully updated.' }
+        format.html { redirect_to fichas_front_path(@taxon.IdCAT), notice: 'Taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @taxon }
       else
         format.html { render :edit }
@@ -77,7 +76,11 @@ class Fichas::TaxaController < Fichas::FichasController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
-      #params.fetch(:taxon, {resumenEspecie})
-      params.require(:taxon).permit(:resumenEspecie)
+      params.require(:fichas_taxon).permit(:resumenEspecie,
+                                           habitats_attributes: {
+                                           info_ecorregiones_attributes:
+                                               [:habitatId, :especieId, :idpregunta, :infoadicional, :_destroy]
+                                           }
+      )
     end
 end
