@@ -131,7 +131,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
   # REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
-      "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(', ')}"
+      "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(' <b>;</b> ')}"
     end
 
     def creaLista(taxones, opciones={})
