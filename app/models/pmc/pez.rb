@@ -18,7 +18,7 @@ class Pmc::Pez < ActiveRecord::Base
 
   scope :select_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
       select("peces.especie_id").select_especie.select_categoria_taxonomica }
-  scope :select_especie, -> { select("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_autoridad)} AS nombre_autoridad, #{Especie.table_name}.#{Especie.attribute_alias(:id)} AS id") }
+  scope :select_especie, -> { select("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_autoridad)} AS nombre_autoridad, #{Especie.table_name}.#{Especie.attribute_alias(:id)} AS id, #{Especie.table_name}.#{Especie.attribute_alias(:estatus)} AS estatus") }
   scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica") }
 
   scope :filtros_peces, -> { select_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional, :categoria_taxonomica).
