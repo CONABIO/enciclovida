@@ -1,17 +1,5 @@
 module EspeciesHelper
 
-  # Para separar SÓLO las italicas EN el nombre cientifico y la categoria taxonomica
-  def ponItalicas(taxon, con_link = false)
-    italicas = taxon.nombre_cientifico.gsub('subsp.','</i>subsp.<i>').gsub('var.','</i>var.<i>').gsub('f.','</i>f.<i>').
-        gsub('subvar.','</i>subvar.<i>').gsub('subf.','</i>subf.<i>')
-
-    if con_link
-      "<a href=\"/especies/#{taxon.id}\"><i>#{italicas}</i></a>"
-    else
-      "<i>#{italicas}</i>"
-    end
-  end
-
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 

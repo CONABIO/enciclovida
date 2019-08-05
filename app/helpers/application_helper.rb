@@ -18,7 +18,7 @@ module ApplicationHelper
 
     nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
 
-    unless taxon.especie_o_inferior?
+    if params[:solo_especies] || !taxon.especie_o_inferior?
       cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
       cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
     end
