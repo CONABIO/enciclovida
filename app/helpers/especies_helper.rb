@@ -143,7 +143,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
         bibliografias = taxon.bibliografias.map(&:cita_completa)
 
         if bibliografias.any?
-          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
           html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         end
