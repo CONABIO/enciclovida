@@ -962,27 +962,11 @@ class EspeciesController < ApplicationController
 
     # Por si no viene del arbol, ya que no necesito encontrar el valido
     if !arbol
-      if @especie.estatus == 1  # Si es un sinonimo lo redireccciona al valido
-        estatus = @especie.especies_estatus
+      @especie = @especie.dame_taxon_valido
+      render :_error and return unless @especie
 
-        if estatus.length == 1  # Nos aseguramos que solo haya un valido
-          begin
-            @especie = Especie.find(estatus.first.especie_id2)
-            #redirect_to especie_path(@especie)
-          rescue
-            render :_error and return
-          end
-        elsif estatus.length > 1  # Tienes muchos validos, tampoco deberia pasar
-          render :_error and return
-        else  # Es sinonimo pero no tiene un valido asociado >.>!
-          if params[:action] == 'resultados'  # Por si viene de resultados, ya que sin esa condicon entrariamos a un loop
-            redirect_to especie_path(@especie) and return
-          end
-        end
-      else
-        if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
-          redirect_to especie_path(@especie) and return
-        end
+      if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+        redirect_to especie_path(@especie) and return
       end
     end
   end

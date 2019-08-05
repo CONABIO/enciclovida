@@ -18,7 +18,7 @@ module ApplicationHelper
 
     nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
 
-    unless taxon.especie_o_inferior?
+    if params[:solo_especies] || !taxon.especie_o_inferior?
       cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
       cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
     end
@@ -51,7 +51,7 @@ module ApplicationHelper
       when 'header'
         "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
       when 'inline'
-        "#{nombre_comun} #{nombre_cientifico}".html_safe
+        nombre_cientifico.html_safe
       else
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe
       end
