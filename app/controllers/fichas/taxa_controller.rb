@@ -91,10 +91,13 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           habitats_attributes: [
-              :ecorregion_ids,
+              { ecorregion_ids: [] },
+              :tipoAmbiente,
               :id,
               :_destroy
           ],
+          info_ecorregiones_attributes:
+              [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
 
           distribuciones_attributes: [
               :pai_ids,

@@ -29,10 +29,8 @@ class Fichas::Habitat < Ficha
 	has_many :t_ecorregionMarinaN1, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_zonaVida, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
-	# Extraer las observaciones de la especie a partir de: observacionescarac
-	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId
-
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true
+	accepts_nested_attributes_for :relEcorregionesHabitats, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true
 	accepts_nested_attributes_for :vegetacion, allow_destroy: true
 	accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true
@@ -43,8 +41,6 @@ class Fichas::Habitat < Ficha
 	accepts_nested_attributes_for :t_habitatAntropico, allow_destroy: true
 	accepts_nested_attributes_for :t_ecorregionMarinaN1, allow_destroy: true
 	accepts_nested_attributes_for :t_zonaVida, allow_destroy: true
-
-	accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true
 
 	ESTADOS_HABITAT = [
       'Hostil o muy limitante'.to_sym,

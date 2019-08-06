@@ -95,7 +95,7 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ambiente')%></h3>
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: { f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -201,6 +201,9 @@
   </div>
   <hr />
   <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-  <%= link_to t('helpers.submit.proy_b.cancel'), @taxon.new_record? ? fichas_taxon_path : fichas_taxon_path(@taxon), { :class=>"btn btn-lg btn-block btn-default" } %>
+
+  <% unless @taxon.new_record? %>
+    <%= link_to t('helpers.submit.proy_b.cancel'), fichas_front_path(@taxon.IdCAT), { :class=>"btn btn-lg btn-block btn-default" } %>
+  <% end %>
 
 <% end %>

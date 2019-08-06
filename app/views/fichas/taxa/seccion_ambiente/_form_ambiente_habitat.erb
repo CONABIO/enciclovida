@@ -1,7 +1,7 @@
 <div class='nested-fields'>
   <%= f.input :habitatId, :as => :hidden%>
   <%= f.input :especieId, :as => :hidden%>
-  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()', name: 'opcion-AmbienteDesarrolloEspecie'} %>
+  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie($(this))' } %>
   <hr>
 
   <fieldset class="apartados">
@@ -19,10 +19,9 @@
       }
     %>
     <%=
-       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f, :info_ecorregiones,
+       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f_taxon, :info_ecorregiones,
                                partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x',
                                render_options: {locals: { titulo: "Información adicional", id_pregunta: Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones] }},
-                               force_non_association_create: true,
                                :class => 'btn btn-info btn-sm',
                                role: 'tab',
                                "data-toggle" => 'tab',
@@ -32,7 +31,7 @@
                                href: '#info_ecorregiones')
     %>
     <div id="info_ecorregiones">
-      <%= f.simple_fields_for :info_ecorregiones do |info| %>
+      <%= f_taxon.simple_fields_for :info_ecorregiones do |info| %>
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: 'Información adicional', id_pregunta: Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]} %>
       <% end %>
     </div>

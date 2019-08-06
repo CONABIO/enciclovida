@@ -24,6 +24,9 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+	# Extraer las observaciones de la especie a partir de: observacionescarac
+	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+
 	# reject_if: proc { |attributes| attributes['name'].blank? }
 
   accepts_nested_attributes_for :invasividad, allow_destroy: true
@@ -38,6 +41,7 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :metadatos, allow_destroy: true
 	accepts_nested_attributes_for :productoComercios, allow_destroy: true
 	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
+	accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true, reject_if: :all_blank
 
 	# Sección I: Clasificacion
 	ORIGEN_MEXICO = [
