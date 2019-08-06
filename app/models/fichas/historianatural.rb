@@ -44,6 +44,22 @@ class Fichas::Historianatural < Ficha
 	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
+	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true
+	accepts_nested_attributes_for :pais_importacion, allow_destroy: true
+	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
+	accepts_nested_attributes_for :t_habitoPlantas, allow_destroy: true
+	accepts_nested_attributes_for :t_alimentacion, allow_destroy: true
+	accepts_nested_attributes_for :t_forrajeo, allow_destroy: true
+	accepts_nested_attributes_for :t_migracion, allow_destroy: true
+	accepts_nested_attributes_for :t_tipo_migracion, allow_destroy: true
+	accepts_nested_attributes_for :t_habito, allow_destroy: true
+	accepts_nested_attributes_for :t_tipodispersion, allow_destroy: true
+	accepts_nested_attributes_for :t_structdisp, allow_destroy: true
+	accepts_nested_attributes_for :t_dispersionsei, allow_destroy: true
+	accepts_nested_attributes_for :t_comnalsel, allow_destroy: true
+	accepts_nested_attributes_for :t_proposito_com, allow_destroy: true
+	accepts_nested_attributes_for :t_comintersel, allow_destroy: true
+	accepts_nested_attributes_for :t_proposito_com_int, allow_destroy: true
 
 	FUNCIONES_ECOLOGICAS = [
     'Productores'.to_sym,

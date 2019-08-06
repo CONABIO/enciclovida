@@ -18,6 +18,11 @@ class Fichas::Conservacion < Ficha
 
   accepts_nested_attributes_for :info_acciones_manejo_c, allow_destroy: true
 
+	accepts_nested_attributes_for :t_esquemamanejo, allow_destroy: true
+	accepts_nested_attributes_for :t_tipopesca, allow_destroy: true
+	accepts_nested_attributes_for :t_regioncaptura, allow_destroy: true
+
+
 	TIPO_VEDA = [
 			'Permanente'.to_sym,
 			'Permanente solo para pesca deportiva'.to_sym,

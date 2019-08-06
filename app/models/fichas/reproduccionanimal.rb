@@ -8,6 +8,9 @@ class Fichas::Reproduccionanimal < Ficha
 	has_many :t_sistapareamiento, through: :historiaNatural
 	has_many :t_sitioanidacion, through: :historiaNatural
 
+  accepts_nested_attributes_for :t_sistapareamiento, allow_destroy: true
+  accepts_nested_attributes_for :t_sitioanidacion, allow_destroy: true
+
   EVENTOS_REPROD = [
       'Iteróparo'.to_sym,
       'Semélparo'.to_sym

@@ -12,6 +12,12 @@ class Fichas::Reproduccionvegetal < Ficha
 	has_many :t_vectorespolinizacion, through: :historiaNatural
 	has_many :t_agentespolinizacion, through: :historiaNatural
 
+	accepts_nested_attributes_for :t_arregloespacialflores, allow_destroy: true
+	accepts_nested_attributes_for :t_arregloespacialindividuos, allow_destroy: true
+	accepts_nested_attributes_for :t_arregloespacialpoblaciones, allow_destroy: true
+	accepts_nested_attributes_for :t_vectorespolinizacion, allow_destroy: true
+	accepts_nested_attributes_for :t_agentespolinizacion, allow_destroy: true
+
 	AISLAMIENTO_ORGANOS_REPROD = [
 		'Dicogamia'.to_sym,
 		'Protandria'.to_sym,

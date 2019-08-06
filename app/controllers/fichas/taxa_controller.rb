@@ -76,11 +76,259 @@ class Fichas::TaxaController < Fichas::FichasController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
-      params.require(:fichas_taxon).permit(:resumenEspecie,
-                                           habitats_attributes: {
-                                           info_ecorregiones_attributes:
-                                               [:habitatId, :especieId, :idpregunta, :infoadicional, :_destroy]
-                                           }
+      params.require(:fichas_taxon).permit(
+          # Parámetros desde taxón:
+          :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
+
+          legislaciones_attributes: [
+              :legislacionId,
+              :especieId,
+              :nombreLegislacion,
+              :estatusLegalProteccion,
+              :infoAdicional,
+              :id,
+              :_destroy
+          ],
+
+          habitats_attributes: [
+              :ecorregion_ids,
+              :id,
+              :_destroy
+          ],
+
+          distribuciones_attributes: [
+              :pai_ids,
+              :estado_ids,
+              :pais_inv_ids,
+              :pais_inv2_ids,
+              :municipio_ids,
+              :distribucion_historica,
+              :infoadicionalmexedo,
+              :infoAdicionalMun,
+              :historicaPotencial,
+              :alcanceDistribucion,
+              :infoAdicionalAlcance,
+              :comoExoticaMundial,
+              :distribucionOriginal,
+              :tipoDistribucion,
+              :infoAdicionalTipo,
+              :id,
+              :_destroy
+          ],
+
+          distribucion_historica_attributes: [
+              :especieId,
+              :regLoc,
+              :anioinicial,
+              :mesinicial,
+              :aniofinal,
+              :mesfinal,
+              :id,
+              :_destroy
+          ]
       )
     end
 end
+
+
+
+=begin
+habitats_attributes: {
+    info_ecorregiones_attributes:
+        [:habitatId, :especieId, :idpregunta, :infoadicional, :_destroy]
+}
+
+
+
+habitats_attributes: [
+  :t_habitatAntropico_ids,
+  :t_tipoVegetacionSecundarium_ids,
+  :t_clima_ids,
+  :t_suelo_ids,
+  :t_geoforma_ids,
+  :t_ecorregionMarinaN1_ids,
+  :t_zonaVida_ids,
+  :vegetacion_acuatica_ids,
+  :ecosistema_ids,
+  :vegetacion_ids,
+  :tipoVegetacion,
+  :estadoHabitat,
+  :addinfoestadoHabitat,
+  :habitatAgropecuario,
+  :zonaUrbana,
+  :temperaturainicial,
+  :temperaturafinal,
+  :intervaloaltitudinalinicial,
+  :intervaloaltitudinalfinal,
+  :infoAddintervaloaltitudinal,
+  :climaAdicional,
+  :infoaddtemperatura,
+  :temperaturainicialexo,
+  :temperaturafinalexo,
+  :infoaddtemperaturaexo,
+  :precipitacioninicial,
+  :precipitacionfinal,
+  :infoaddprecipitacion,
+  :precipitacioninicialexo,
+  :precipitacionfinalexo,
+  :infoaddprecipitacionexo,
+  :humedadinicial,
+  :humedadfinal,
+  :infoaddhumedad,
+  :descripcionSuelo,
+  :descripcionGeoforma,
+  :biotipos,
+  :salinidadinicial,
+  :salinidadfinal,
+  :unidadsalinidad,
+  :oxigenoinicial,
+  :oxigenofinal,
+  :phinicial,
+  :phfinal,
+  :temeperaturainicial,
+  :temeperaturafinal,
+  :corrientes,
+  :infoaddcaracagua,
+  :intervaloaltitudinalacuainicial,
+  :intervaloaltitudinalacuafinal,
+  :infoAddintervaloaltitudinalacua,
+  :interbatimetricoinicial,
+  :interbatimetricofinal,
+  :infoaddinterbatimetrico,
+  :amplitudmareasinicial,
+  :amplitudmareasfinal,
+  :infoaddamplitudmareas,
+  :tipoVegetacionexo,
+  :uso,
+  :id,
+  :_destroy
+]
+
+
+endemicas_attributes: [
+  :endemicaA,
+  :infoAdicionalEndemica,
+  :id,
+  :_destroy
+]
+
+
+historiaNatural_attributes: [
+  :t_habitoPlanta_ids,
+  :t_alimentacion_ids,
+  :t_forrajeo_ids,
+  :t_migracion_ids,
+  :t_tipo_migracion_ids,
+  :t_habito_ids,
+  :t_tipodispersion_ids,
+  :t_structdisp_ids,
+  :t_comnalsel_ids,
+  :t_proposito_com_ids,
+  :t_comintersel_ids,
+  :t_proposito_com_int_ids,
+  :culturaUso_ids,
+  :pais_importacion_ids,
+  :descripcionAlimentacion,
+  :estrategiaTrofica,
+  :descripcionEstrofica,
+  :conducta,
+  :tipopHabito,
+  :infoaddperiodoactividad,
+  :infoaddhibernacion,
+  :infoaddterritorialidad,
+  :ambitoHogareno,
+  :mecanismosDefensa,
+  :infoaddmecdefensa,
+  :descTipoDispersion,
+  :descEstDispersora,
+  :distanciadispercioninicial,
+  :distanciadispercionfinal,
+  :variabilidadGenetica,
+  :marcadorGenetico,
+  :secuencias,
+  :mexbol,
+  :ImportanciaBiologica,
+  :funcionEcologica,
+  :importanciaEconomica,
+  :comercioIlicitoNal,
+  :comercioIlicitoInter,
+  :descComIlicito,
+  :descUsos,
+  :id,
+  :_destroy
+]
+
+
+reproduccionAnimal_attributes: [
+  :t_sistapareamiento_ids,
+  :t_sitioanidacion_ids,
+  :descripcion,
+  :additionalInfoDimorfiasmo,
+  :coloracion,
+  :ornamentacion,
+  :descripcionSistema,
+  :noEventos,
+  :descripcionNoEventos,
+  :tiempoentrecriasinicial,
+  :tiempoentrecriasfinal,
+  :tipoFecundacion,
+  :descripcionTipoFec,
+  :edadPrimeraRepro,
+  :duracionVidaRepro,
+  :frecuenciaApareamineto,
+  :noHuevosCrias,
+  :cuidadoParentalPor,
+  :desCuidadoParental,
+  :tiempoCuidadoParental,
+]
+
+reproduccionVegetal_attributes: [
+  :t_arregloespacialflore_ids,
+  :t_arregloespacialindividuo_ids,
+  :t_arregloespacialpoblacione_ids,
+  :t_vectorespolinizacion_ids,
+  :t_agentespolinizacion_ids,
+  :descripcion,
+  :aislamientoOrganos,
+  :descAislaOrganos,
+  :sistReproAsexuales,
+  :DescsistReproAsexuales,
+  :fecuandacion,
+  :descFecundacion,
+  :aperturaFlor,
+  :descApertura,
+  :tiempoFloracion,
+  :addinfolongevidadflor,
+  :mesInicio,
+  :mesFinal,
+  :addinfotiempoflora,
+  :cantidadnectarinicial,
+  :cantidadnectarfinal,
+  :addinfocantidadnectar,
+  :cantidadpolen,
+  :mesInicialFructi,
+  :mesFinalFructi,
+  :addinfotiempofructi,
+  :nofrutosinicial,
+  :nofrutosfinal,
+  :caracFruto,
+  :descCaracFruto,
+  :noEventos,
+  :descNoEventos,
+  :nosemillasinicial,
+  :nosemillasfinal,
+  :tamanioSemilla,
+  :caracToxica,
+  :germinacioninicial,
+  :germinacionfinal,
+  :infoaddgerminacion,
+  :plantulasinicial,
+  :plantulasfinal,
+  :infoaddplantulas,
+  :arregloEspacial,
+  :descripcionArregloespacial,
+  :agentesPolinizacion,
+  :descAgentesPol
+]
+
+=end

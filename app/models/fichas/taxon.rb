@@ -3,13 +3,17 @@ class Fichas::Taxon < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.taxon"
 	self.primary_key = 'especieId'
 
+	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
+
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
 	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
 	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
-	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId'
+
   has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
-	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
+
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
+  has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
 	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
 	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId'
 	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId'
@@ -20,6 +24,9 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+	# reject_if: proc { |attributes| attributes['name'].blank? }
+
+  accepts_nested_attributes_for :invasividad, allow_destroy: true
 	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
@@ -34,9 +41,9 @@ class Fichas::Taxon < Ficha
 
 	# Sección I: Clasificacion
 	ORIGEN_MEXICO = [
-			'Exótica/No nativa'.to_sym,
-			'Nativa'.to_sym,
-			'Criptogénica'.to_sym
+			"Exótica/No nativa".to_sym,
+			"Nativa".to_sym,
+			"Criptogénica".to_sym
 	]
 
 	MEDIDA_LONGEVIDAD = [

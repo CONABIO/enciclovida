@@ -6,4 +6,5 @@ class Fichas::Geoforma < Ficha
 	has_many :habitat, class_name: 'Fichas::Habitat'
 
 	has_many :caracteristicaEespecie,-> {where('caracteristicasespecie.idpregunta' => 7)}, class_name: 'Fichas::Caracteristicasespecie', :foreign_key => "especieId"
+
 end
