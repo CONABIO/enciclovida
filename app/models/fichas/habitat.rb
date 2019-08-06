@@ -32,6 +32,18 @@ class Fichas::Habitat < Ficha
 	# Extraer las observaciones de la especie a partir de: observacionescarac
 	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId
 
+	accepts_nested_attributes_for :ecorregion, allow_destroy: true
+	accepts_nested_attributes_for :ecosistema, allow_destroy: true
+	accepts_nested_attributes_for :vegetacion, allow_destroy: true
+	accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true
+	accepts_nested_attributes_for :t_clima, allow_destroy: true
+	accepts_nested_attributes_for :t_tipoVegetacionSecundaria, allow_destroy: true
+	accepts_nested_attributes_for :t_suelo, allow_destroy: true
+	accepts_nested_attributes_for :t_geoforma, allow_destroy: true
+	accepts_nested_attributes_for :t_habitatAntropico, allow_destroy: true
+	accepts_nested_attributes_for :t_ecorregionMarinaN1, allow_destroy: true
+	accepts_nested_attributes_for :t_zonaVida, allow_destroy: true
+
 	accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true
 
 	ESTADOS_HABITAT = [
@@ -54,14 +66,3 @@ class Fichas::Habitat < Ficha
   ]
 
 end
-
-
-
-=begin
-
-	a) Indicar el o los tipos de vegetación
-	en los que se desarrolla la especie: EXO:
-			SELECT descripcionVegetacion FROM vegetacion GROUP BY descripcionVegetacion;
-	has_many :tipoVegetacionMundial,-> {where('caracteristicasespecie.idpregunta = ?', 3)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	has_many :climaExo,-> {where('caracteristicasespecie.idpregunta = ?', 5)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-=end

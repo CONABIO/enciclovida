@@ -1,7 +1,7 @@
 class Fichas::Distribucion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.distribucion"
-	self.primary_keys = :distribucionId,  :especieId
+	self.primary_keys = :distribucionId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
@@ -15,7 +15,7 @@ class Fichas::Distribucion < Ficha
 	has_many :estado, class_name: 'Fichas::Estado_F', :through => :relDistribucionesEstados
 	has_many :municipio, class_name: 'Fichas::Municipio_F', :through => :relDistribucionesMunicipios
 
-	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", :primary_key => "especieId"
+	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", :primary_key => :especieId
 
 	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
 
