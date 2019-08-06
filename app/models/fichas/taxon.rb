@@ -13,6 +13,7 @@ class Fichas::Taxon < Ficha
   has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
 
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
+  has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
 	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
 	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId'
 	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId'
@@ -25,6 +26,7 @@ class Fichas::Taxon < Ficha
 
 	# reject_if: proc { |attributes| attributes['name'].blank? }
 
+  accepts_nested_attributes_for :invasividad, allow_destroy: true
 	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true

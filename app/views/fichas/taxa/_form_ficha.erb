@@ -166,7 +166,9 @@
         <div class="apartadoFicha ficha-Invasora">
           <hr />
           <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
-          <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+          <%= f.simple_fields_for :invasividad do |info| %>
+            <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: info } %>
+          <% end %>
         </div>
       </div>
 

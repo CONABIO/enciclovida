@@ -2,12 +2,10 @@ invasividad i WHERE especieId = $IdResev
 
 
 61. Estado de la poblaci&oacute;n:
-Upoblacionsei: estadoPoblaciones
-Poblaci&oacute;n en expansi&oacute;n
-Poblaci&oacute;n estable
-Poblaci&oacute;n en declive
-Se desconoce
+<%= f.input :estadoPoblaciones %>
+Fichas::Invasividad::ESTADO_POBLACION
 ---
+Upoblacionmasinfo
 INFO AD
 SELECT * FROM observacionescarac WHERE especieId=$IdResev and idpregunta = 52";
 Indicar si la poblaci&oacute;n se encuentra en expansi&oacute;n, estable en declive o se desconoce. Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
@@ -15,12 +13,8 @@ Indicar si la poblaci&oacute;n se encuentra en expansi&oacute;n, estable en decl
 
 
 62. Persistencia de la poblaci&oacute;n:
-Upersistenciapobsel: persistenciaPob
-Se extingui&oacute;
-Pasajera
-Persistente
-Se desconoce
-Temporal
+Fichas::Invasividad::PERSISTENCIQ_POBLACION
+
 ----
 INFO
 Indicar si la poblaci&oacute;n persiste (en qu&eacute; estado). Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
@@ -31,12 +25,7 @@ observacionescarac WHERE especieId=$IdResev and idpregunta = 53";
 
 63. Abundancia de la poblaci&oacute;n
 Uabundanciapobsel: abundanciaPob
-"Dominante"
-"Com&uacute;n"
-"Rara"
-"Nula"
-Se desconoce"
-"Monocultivo"
+Fichas::Invasividad::ABUNDANCIA_POBLACION
 ---
 Indicar que tan abundante es la poblaci&oacute;n. Incluyendo, de ser posible, los datos que respaldan esta informaci&oacute;n
 observacionescarac WHERE especieId=$IdResev and idpregunta = 54";
@@ -203,10 +192,8 @@ Ucontrolbiol
 
 
 87. Regulaci&oacute;n
-"Se desconoce"
-"No considerado"
-"Restringido"
-"Prohibida"
+Fichas::Invasividad::REGULACIONES
+
 
 "Se&ntilde;ala si la especie se encuentra bajo alg&uacute;n tipo de regulaci&oacute;n como plaga o invasora"
 77
