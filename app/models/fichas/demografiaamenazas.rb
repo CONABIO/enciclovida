@@ -14,8 +14,8 @@ class Fichas::Demografiaamenazas < Ficha
   # Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
   has_many :t_interacciones, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
-
   accepts_nested_attributes_for :interaccion, allow_destroy: true
+	accepts_nested_attributes_for :t_interacciones, allow_destroy: true
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true
 
 	PATRON_OCUPACION = [

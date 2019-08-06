@@ -80,9 +80,21 @@ class Fichas::TaxaController < Fichas::FichasController
           # Parámetros desde taxón:
           :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
 
-          legislaciones_attributes: [:legislacionId, :especieId, :nombreLegislacion, :estatusLegalProteccion, :infoAdicional, :id, :_destroy],
+          legislaciones_attributes: [
+              :legislacionId,
+              :especieId,
+              :nombreLegislacion,
+              :estatusLegalProteccion,
+              :infoAdicional,
+              :id,
+              :_destroy
+          ],
 
-          habitats_attributes: [:ecorregion_ids, :id, :_destroy],
+          habitats_attributes: [
+              :ecorregion_ids,
+              :id,
+              :_destroy
+          ],
 
           distribuciones_attributes: [
               :pai_ids,
@@ -101,8 +113,19 @@ class Fichas::TaxaController < Fichas::FichasController
               :tipoDistribucion,
               :infoAdicionalTipo,
               :id,
-              :_destroy],
-              distribucion_historica_attributes: [:especieId, :regLoc, :anioinicial, :mesinicial, :aniofinal, :mesfinal, :id, :_destroy ]
+              :_destroy
+          ],
+
+          distribucion_historica_attributes: [
+              :especieId,
+              :regLoc,
+              :anioinicial,
+              :mesinicial,
+              :aniofinal,
+              :mesfinal,
+              :id,
+              :_destroy
+          ]
       )
     end
 end
@@ -117,197 +140,195 @@ habitats_attributes: {
 
 
 
-habitats_attributes
-:temperaturainicial, :temperaturafinal,
- :ecosistema_ids, :vegetacion_ids, :tipoVegetacion,
+habitats_attributes: [
+  :t_habitatAntropico_ids,
+  :t_tipoVegetacionSecundarium_ids,
+  :t_clima_ids,
+  :t_suelo_ids,
+  :t_geoforma_ids,
+  :t_ecorregionMarinaN1_ids,
+  :t_zonaVida_ids,
+  :vegetacion_acuatica_ids,
+  :ecosistema_ids,
+  :vegetacion_ids,
+  :tipoVegetacion,
+  :estadoHabitat,
+  :addinfoestadoHabitat,
+  :habitatAgropecuario,
+  :zonaUrbana,
+  :temperaturainicial,
+  :temperaturafinal,
+  :intervaloaltitudinalinicial,
+  :intervaloaltitudinalfinal,
+  :infoAddintervaloaltitudinal,
+  :climaAdicional,
+  :infoaddtemperatura,
+  :temperaturainicialexo,
+  :temperaturafinalexo,
+  :infoaddtemperaturaexo,
+  :precipitacioninicial,
+  :precipitacionfinal,
+  :infoaddprecipitacion,
+  :precipitacioninicialexo,
+  :precipitacionfinalexo,
+  :infoaddprecipitacionexo,
+  :humedadinicial,
+  :humedadfinal,
+  :infoaddhumedad,
+  :descripcionSuelo,
+  :descripcionGeoforma,
+  :biotipos,
+  :salinidadinicial,
+  :salinidadfinal,
+  :unidadsalinidad,
+  :oxigenoinicial,
+  :oxigenofinal,
+  :phinicial,
+  :phfinal,
+  :temeperaturainicial,
+  :temeperaturafinal,
+  :corrientes,
+  :infoaddcaracagua,
+  :intervaloaltitudinalacuainicial,
+  :intervaloaltitudinalacuafinal,
+  :infoAddintervaloaltitudinalacua,
+  :interbatimetricoinicial,
+  :interbatimetricofinal,
+  :infoaddinterbatimetrico,
+  :amplitudmareasinicial,
+  :amplitudmareasfinal,
+  :infoaddamplitudmareas,
+  :tipoVegetacionexo,
+  :uso,
+  :id,
+  :_destroy
+]
 
 
-:estadoHabitat,
-:addinfoestadoHabitat,
-:t_habitatAntropico_ids,
-:habitatAgropecuario,
-:zonaUrbana,
-:t_tipoVegetacionSecundarium_ids,
-:intervaloaltitudinalinicial,
-:intervaloaltitudinalfinal,
-:infoAddintervaloaltitudinal,
-:t_clima_ids,
-:climaAdicional,
-
-:infoaddtemperatura,
-:temperaturainicialexo,
-:temperaturafinalexo,
-:infoaddtemperaturaexo,
-:precipitacioninicial,
-:precipitacionfinal,
-:infoaddprecipitacion,
-:precipitacioninicialexo,
-:precipitacionfinalexo,
-:infoaddprecipitacionexo,
-:humedadinicial,
-:humedadfinal,
-:infoaddhumedad,
-:t_suelo_ids,
-:descripcionSuelo,
-:t_geoforma_ids,
-:descripcionGeoforma,
-:t_ecorregionMarinaN1_ids,
-:t_zonaVida_ids,
-:biotipos,
-:vegetacion_acuatica_ids,
-:salinidadinicial,
-:salinidadfinal,
-:unidadsalinidad,
-:oxigenoinicial,
-:oxigenofinal,
-:phinicial,
-:phfinal,
-:temeperaturainicial,
-:temeperaturafinal,
-:corrientes,
-:infoaddcaracagua,
-:intervaloaltitudinalacuainicial,
-:intervaloaltitudinalacuafinal,
-:infoAddintervaloaltitudinalacua,
-:interbatimetricoinicial,
-:interbatimetricofinal,
-:infoaddinterbatimetrico,
-:amplitudmareasinicial,
-:amplitudmareasfinal,
-:infoaddamplitudmareas,
-:tipoVegetacionexo,
-:uso,
+endemicas_attributes: [
+  :endemicaA,
+  :infoAdicionalEndemica,
+  :id,
+  :_destroy
+]
 
 
+historiaNatural_attributes: [
+  :t_habitoPlanta_ids,
+  :t_alimentacion_ids,
+  :t_forrajeo_ids,
+  :t_migracion_ids,
+  :t_tipo_migracion_ids,
+  :t_habito_ids,
+  :t_tipodispersion_ids,
+  :t_structdisp_ids,
+  :t_comnalsel_ids,
+  :t_proposito_com_ids,
+  :t_comintersel_ids,
+  :t_proposito_com_int_ids,
+  :culturaUso_ids,
+  :pais_importacion_ids,
+  :descripcionAlimentacion,
+  :estrategiaTrofica,
+  :descripcionEstrofica,
+  :conducta,
+  :tipopHabito,
+  :infoaddperiodoactividad,
+  :infoaddhibernacion,
+  :infoaddterritorialidad,
+  :ambitoHogareno,
+  :mecanismosDefensa,
+  :infoaddmecdefensa,
+  :descTipoDispersion,
+  :descEstDispersora,
+  :distanciadispercioninicial,
+  :distanciadispercionfinal,
+  :variabilidadGenetica,
+  :marcadorGenetico,
+  :secuencias,
+  :mexbol,
+  :ImportanciaBiologica,
+  :funcionEcologica,
+  :importanciaEconomica,
+  :comercioIlicitoNal,
+  :comercioIlicitoInter,
+  :descComIlicito,
+  :descUsos,
+  :id,
+  :_destroy
+]
 
 
+reproduccionAnimal_attributes: [
+  :t_sistapareamiento_ids,
+  :t_sitioanidacion_ids,
+  :descripcion,
+  :additionalInfoDimorfiasmo,
+  :coloracion,
+  :ornamentacion,
+  :descripcionSistema,
+  :noEventos,
+  :descripcionNoEventos,
+  :tiempoentrecriasinicial,
+  :tiempoentrecriasfinal,
+  :tipoFecundacion,
+  :descripcionTipoFec,
+  :edadPrimeraRepro,
+  :duracionVidaRepro,
+  :frecuenciaApareamineto,
+  :noHuevosCrias,
+  :cuidadoParentalPor,
+  :desCuidadoParental,
+  :tiempoCuidadoParental,
+]
 
+reproduccionVegetal_attributes: [
+  :t_arregloespacialflore_ids,
+  :t_arregloespacialindividuo_ids,
+  :t_arregloespacialpoblacione_ids,
+  :t_vectorespolinizacion_ids,
+  :t_agentespolinizacion_ids,
+  :descripcion,
+  :aislamientoOrganos,
+  :descAislaOrganos,
+  :sistReproAsexuales,
+  :DescsistReproAsexuales,
+  :fecuandacion,
+  :descFecundacion,
+  :aperturaFlor,
+  :descApertura,
+  :tiempoFloracion,
+  :addinfolongevidadflor,
+  :mesInicio,
+  :mesFinal,
+  :addinfotiempoflora,
+  :cantidadnectarinicial,
+  :cantidadnectarfinal,
+  :addinfocantidadnectar,
+  :cantidadpolen,
+  :mesInicialFructi,
+  :mesFinalFructi,
+  :addinfotiempofructi,
+  :nofrutosinicial,
+  :nofrutosfinal,
+  :caracFruto,
+  :descCaracFruto,
+  :noEventos,
+  :descNoEventos,
+  :nosemillasinicial,
+  :nosemillasfinal,
+  :tamanioSemilla,
+  :caracToxica,
+  :germinacioninicial,
+  :germinacionfinal,
+  :infoaddgerminacion,
+  :plantulasinicial,
+  :plantulasfinal,
+  :infoaddplantulas,
+  :arregloEspacial,
+  :descripcionArregloespacial,
+  :agentesPolinizacion,
+  :descAgentesPol
+]
 
-
-endemicas_attributes
-endemicaA
-infoAdicionalEndemica
-id
-
-
-
-historiaNatural_attributes
-t_habitoPlanta_ids
-t_alimentacion_ids
-descripcionAlimentacion
-estrategiaTrofica
-descripcionEstrofica
-t_forrajeo_ids
-conducta
-t_migracion_ids
-t_tipo_migracion_ids
-t_habito_ids
-tipopHabito
-infoaddperiodoactividad
-infoaddhibernacion
-infoaddterritorialidad
-ambitoHogareno
-mecanismosDefensa
-infoaddmecdefensa
-t_tipodispersion_ids
-descTipoDispersion
-t_structdisp_ids
-descEstDispersora
-distanciadispercioninicial
-distanciadispercionfinal
-variabilidadGenetica
-marcadorGenetico
-secuencias
-mexbol
-ImportanciaBiologica
-funcionEcologica
-importanciaEconomica
-t_comnalsel_ids
-t_proposito_com_ids
-t_comintersel_ids
-t_proposito_com_int_ids
-pais_importacion_ids
-comercioIlicitoNal
-comercioIlicitoInter
-descComIlicito
-culturaUso_ids
-descUsos
-
-
-reproduccionAnimal_attributes
-descripcion
-additionalInfoDimorfiasmo
-coloracion
-ornamentacion
-t_sistapareamiento_ids
-descripcionSistema
-noEventos
-descripcionNoEventos
-tiempoentrecriasinicial
-tiempoentrecriasfinal
-tipoFecundacion
-descripcionTipoFec
-edadPrimeraRepro
-duracionVidaRepro
-frecuenciaApareamineto
-t_sitioanidacion_ids
-noHuevosCrias
-cuidadoParentalPor
-desCuidadoParental
-tiempoCuidadoParental
-
-
-reproduccionVegetal_attributes
-descripcion
-t_arregloespacialflore_ids
-t_arregloespacialindividuo_ids
-t_arregloespacialpoblacione_ids
-aislamientoOrganos
-descAislaOrganos
-sistReproAsexuales
-DescsistReproAsexuales
-fecuandacion
-descFecundacion
-t_vectorespolinizacion_ids
-t_agentespolinizacion_ids
-aperturaFlor
-descApertura
-tiempoFloracion
-addinfolongevidadflor
-mesInicio
-mesFinal
-addinfotiempoflora
-cantidadnectarinicial
-cantidadnectarfinal
-addinfocantidadnectar
-cantidadpolen
-mesInicialFructi
-mesFinalFructi
-addinfotiempofructi
-nofrutosinicial
-nofrutosfinal
-caracFruto
-descCaracFruto
-noEventos
-descNoEventos
-nosemillasinicial
-nosemillasfinal
-tamanioSemilla
-caracToxica
-germinacioninicial
-germinacionfinal
-infoaddgerminacion
-plantulasinicial
-plantulasfinal
-infoaddplantulas
-arregloEspacial
-descripcionArregloespacial
-agentesPolinizacion
-descAgentesPol
-
-
-
-demografiaAmenazas_attributes
-
-conservacion_attributes
 =end

@@ -18,6 +18,11 @@ class Fichas::Distribucion < Ficha
 	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", :primary_key => :especieId
 
 	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
+	accepts_nested_attributes_for :pais, allow_destroy: true
+	accepts_nested_attributes_for :pais_inv, allow_destroy: true
+	accepts_nested_attributes_for :pais_inv2, allow_destroy: true
+	accepts_nested_attributes_for :estado, allow_destroy: true
+	accepts_nested_attributes_for :municipio, allow_destroy: true
 
 	DISTRIBUCINES = [
 			'Muy restringida'.to_sym,

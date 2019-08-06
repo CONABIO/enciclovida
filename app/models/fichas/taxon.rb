@@ -23,6 +23,8 @@ class Fichas::Taxon < Ficha
   has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   has_one :especie, through: :scat, source: :especie
 
+	# reject_if: proc { |attributes| attributes['name'].blank? }
+
 	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
@@ -37,9 +39,9 @@ class Fichas::Taxon < Ficha
 
 	# Sección I: Clasificacion
 	ORIGEN_MEXICO = [
-			'Exótica/No nativa'.to_sym,
-			'Nativa'.to_sym,
-			'Criptogénica'.to_sym
+			"Exótica/No nativa".to_sym,
+			"Nativa".to_sym,
+			"Criptogénica".to_sym
 	]
 
 	MEDIDA_LONGEVIDAD = [
