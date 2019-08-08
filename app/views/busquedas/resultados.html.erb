@@ -193,12 +193,9 @@
                     $('#dist_' + valor).prop('checked', true);
                 });
             }
-            if (SET_PARAMS.edo_cons != undefined)
-            {
-                SET_PARAMS.edo_cons.forEach(function(valor){
-                    $('#edo_cons_' + valor).prop('checked', true);
-                });
-            }
+
+            if (SET_PARAMS.edo_cons != undefined) $('#edo_cons').val(SET_PARAMS.edo_cons);
+
             if (SET_PARAMS.prior != undefined)
             {
                 SET_PARAMS.prior.forEach(function(valor){
