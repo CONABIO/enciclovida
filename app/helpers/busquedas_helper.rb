@@ -25,27 +25,10 @@ module BusquedasHelper
     "<div>#{radios}</div>"
   end
 
-  # REVISADO: Filtros para Categorías de riesgo y comercio internacional en la busqueda avanzada
+  # REVISADO: Filtros para categorías de riesgo y comercio internacional
   def checkboxEstadoConservacion(explora_por=false)
-    checkBoxes=''
-
-    @nom_cites_iucn_todos.each do |k, valores|
-      checkBoxes << "<div class='explora_por'>" if explora_por
-      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" unless explora_por
-
-      valores.each do |edo|
-        checkBoxes << "<label>"
-        checkBoxes << check_box_tag('edo_cons[]', edo.id, false, :id => "edo_cons_#{edo.id}")
-        checkBoxes << "<span title = '#{edo.descripcion}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{edo.descripcion.estandariza}-ev-icon'></i>"
-        checkBoxes << "</span>"
-        checkBoxes << "</label>"
-      end
-      checkBoxes << "<h6><strong>#{t(k)}</strong></h6>" if explora_por
-      checkBoxes << "</div>" if explora_por
-    end
-
-    checkBoxes
+    options = @nom_cites_iucn_todos.map{ |k,v| [t(k), v.map{ |val| [val.descripcion, val.id, { class: "#{val.descripcion.estandariza}-ev-icon f-fuentes" }] }] }
+    select_tag('edo_cons', grouped_options_for_select(options), { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count > 1', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, title: '- - Selecciona - -', multiple: true })
   end
 
   # REVISADO: Filtros para Tipos de distribuciónes en la busqueda avanzada
@@ -95,8 +78,8 @@ module BusquedasHelper
 
     Especie::ESTATUS_BUSQUEDA.each do |e|
       checkBoxes += case busqueda
-                      when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                      else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
+                    when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
+                    else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
                     end
     end
     checkBoxes
