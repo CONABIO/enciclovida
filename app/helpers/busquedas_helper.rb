@@ -1,5 +1,8 @@
 module BusquedasHelper
 
+  # Opciones default para el bootstrap-select plugin
+  @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count > 1', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, title: '- - Selecciona - -', multiple: true }
+
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos
     def arma_span(taxon)
@@ -26,50 +29,24 @@ module BusquedasHelper
   end
 
   # REVISADO: Filtros para categorías de riesgo y comercio internacional
-  def checkboxEstadoConservacion(explora_por=false)
+  def checkboxEstadoConservacion(opciones={})
+    opc = @@opciones.merge(opciones)
     options = @nom_cites_iucn_todos.map{ |k,v| [t(k), v.map{ |val| [val.descripcion, val.id, { class: "#{val.descripcion.estandariza}-ev-icon f-fuentes" }] }] }
-    select_tag('edo_cons', grouped_options_for_select(options), { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count > 1', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, title: '- - Selecciona - -', multiple: true })
+    select_tag('edo_cons', grouped_options_for_select(options), opc)
   end
 
-  # REVISADO: Filtros para Tipos de distribuciónes en la busqueda avanzada
-  def checkboxTipoDistribucion
-    checkBoxes = ''
-
-    if I18n.locale.to_s == 'es-cientifico'
-      @distribuciones.each do |tipoDist|
-        checkBoxes << "<label>"
-        checkBoxes << check_box_tag('dist[]', tipoDist.id, false, id: "dist_#{tipoDist.id}")
-        checkBoxes << "<span title = '#{t('distribucion.' << tipoDist.descripcion.estandariza)}' class='btn btn-xs btn-basica '>#{tipoDist.descripcion}</span>"
-        checkBoxes << "</label>"
-      end
-    else
-      @distribuciones.each do |tipoDist|
-        checkBoxes << "<label>"
-        checkBoxes << check_box_tag('dist[]', tipoDist.id, false, id: "dist_#{tipoDist.id}")
-        checkBoxes << "<span title = '#{tipoDist.descripcion}' class = 'btn btn-xs btn-basica btn-title'>"
-        checkBoxes << "<i class = '#{tipoDist.descripcion.estandariza}-ev-icon'></i>"
-        checkBoxes << "</span>"
-        checkBoxes << "</label>"
-      end
-    end
-
-    checkBoxes
+  # REVISADO: Filtros para Tipos de distribuciónes
+  def checkboxTipoDistribucion(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @distribuciones.map{ |d| [d.descripcion, d.id, { class: "#{d.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('dist', options_for_select(options), opc)
   end
 
-  # REVISADO: Filtros para Especies prioritarias para la conservación en la busqueda avanzada
-  def checkboxPrioritaria
-    checkBoxes = ''
-
-    @prioritarias.each do |prior|
-      checkBoxes << '<label>'
-      checkBoxes << check_box_tag('prior[]', prior.id, false, :id => "prior_#{prior.id}")
-      checkBoxes << "<span title = 'Prioritaria con grado #{prior.descripcion.estandariza}' class = 'btn btn-xs btn-basica btn-title' >"
-      checkBoxes << "<i class = '#{prior.descripcion.estandariza}-ev-icon'></i>"
-      checkBoxes << '</span>'
-      checkBoxes << '</label>'
-    end
-
-    checkBoxes
+  # REVISADO: Filtros para Especies prioritarias para la conservación
+  def checkboxPrioritaria(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @prioritarias.map{ |p| [p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('prior', options_for_select(options), opc)
   end
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada

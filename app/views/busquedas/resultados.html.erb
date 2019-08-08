@@ -187,21 +187,11 @@
 
             if (SET_PARAMS.por_pagina != undefined)
                 $('#por_pagina').val(SET_PARAMS.por_pagina);
-            if (SET_PARAMS.dist != undefined)
-            {
-                SET_PARAMS.dist.forEach(function(valor){
-                    $('#dist_' + valor).prop('checked', true);
-                });
-            }
 
             if (SET_PARAMS.edo_cons != undefined) $('#edo_cons').val(SET_PARAMS.edo_cons);
+            if (SET_PARAMS.dist != undefined) $('#dist').val(SET_PARAMS.dist);
+            if (SET_PARAMS.prior != undefined) $('#prior').val(SET_PARAMS.prior);
 
-            if (SET_PARAMS.prior != undefined)
-            {
-                SET_PARAMS.prior.forEach(function(valor){
-                    $('#prior_' + valor).prop('checked', true);
-                });
-            }
             if (SET_PARAMS.estatus != undefined)
             {
                 SET_PARAMS.estatus.forEach(function(valor){
