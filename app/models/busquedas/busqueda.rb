@@ -31,8 +31,15 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
-  def busca_estadisticas
+  # Para el select de usos
+  def uso
+    if params[:uso].present? && params[:uso].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:uso]).left_joins(:catalogos)
+    end
+  end
 
+  # Para las estadisticas dinamicas
+  def busca_estadisticas
     if params[:controller]=='estadisticas'
 
       # Si se definió condición para conteo de valores:
@@ -152,7 +159,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Condicion para regresar solo los taxones publicos
   def solo_publicos
-    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1")
   end
 
   # REVISADO: ALgunos valores como el offset, pagina y por pagina

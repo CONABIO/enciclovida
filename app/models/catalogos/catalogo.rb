@@ -16,9 +16,11 @@ class Catalogo < ActiveRecord::Base
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
-  scope :ambientes, -> { where(:nivel1 => 2, :nivel2 => 6).where('nivel3 > 0').where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
+  scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where('nivel3 > 0').where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
+  scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
+  USOS = ['Medicinal', 'Ornamental']
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?

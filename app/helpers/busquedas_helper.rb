@@ -62,6 +62,12 @@ module BusquedasHelper
     checkBoxes
   end
 
+  def selectUsos(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @usos.map{ |d| [d.descripcion, d.id, { class: "f-fuentes" }] }
+    select_tag('uso', options_for_select(options), opc)
+  end
+
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual
   def checklist(datos)
     if datos[:totales] > 0
