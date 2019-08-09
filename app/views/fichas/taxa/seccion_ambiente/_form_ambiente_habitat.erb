@@ -28,7 +28,8 @@
                                "aria-controls" => 'info_ecorregiones',
                                'data-association-insertion-node' => '#info_ecorregiones',
                                'data-association-insertion-method' => 'append',
-                               href: '#info_ecorregiones')
+                               href: '#info_ecorregiones',
+                               style: 'display: none') if @taxon.new_record? || (!@taxon.new_record? && @taxon.info_ecorregiones.empty?)
     %>
     <div id="info_ecorregiones">
       <%= f_taxon.simple_fields_for :info_ecorregiones do |info| %>
