@@ -22,25 +22,37 @@ class Fichas::Habitat < Ficha
 
 	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
 	has_many :t_clima, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	has_many :t_tipoVegetacionSecundaria, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
+  has_many :t_climaexo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_tipoVegetacionSecundaria, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_tipovegetmundial, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_suelo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	has_many :t_geoforma, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+  has_many :t_geoforma, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_habitatAntropico, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_ecorregionMarinaN1, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_zonaVida, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
+  # Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true
-	accepts_nested_attributes_for :relEcorregionesHabitats, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true
-	accepts_nested_attributes_for :vegetacion, allow_destroy: true
-	accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true
-	accepts_nested_attributes_for :t_clima, allow_destroy: true
+  accepts_nested_attributes_for :vegetacion, allow_destroy: true
+  accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true
+
+	accepts_nested_attributes_for :relEcosistemasHabitats, allow_destroy: true
+	accepts_nested_attributes_for :relHabitatsVegetaciones, allow_destroy: true
+	accepts_nested_attributes_for :relEcorregionesHabitats, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :relVegetacionesAcuaticasHabitats, allow_destroy: true
+
+  # Acceso a las opciones multiples del catálogo grande:
+  accepts_nested_attributes_for :t_clima, allow_destroy: true
 	accepts_nested_attributes_for :t_tipoVegetacionSecundaria, allow_destroy: true
 	accepts_nested_attributes_for :t_suelo, allow_destroy: true
-	accepts_nested_attributes_for :t_geoforma, allow_destroy: true
 	accepts_nested_attributes_for :t_habitatAntropico, allow_destroy: true
 	accepts_nested_attributes_for :t_ecorregionMarinaN1, allow_destroy: true
 	accepts_nested_attributes_for :t_zonaVida, allow_destroy: true
+	accepts_nested_attributes_for :t_geoforma, allow_destroy: true
+
+	#accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 
 	ESTADOS_HABITAT = [
       'Hostil o muy limitante'.to_sym,

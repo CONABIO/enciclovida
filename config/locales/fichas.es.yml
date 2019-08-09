@@ -375,6 +375,8 @@ es:
         habitatAntropico: b) Hábitats antrópicos
         vegetacion_acuatica: Tipos de vegetación acuática especie
         t_clima: Indicar el tipo de clima (solo si está reportado en la bibliografía)
+        t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
+        t_climaexo: Clima
         t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
         t_geoforma: Geoforma
         t_habitatAntropico: b) Hábitats antrópicos

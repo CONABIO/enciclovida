@@ -54,9 +54,6 @@
       <li role="presentation" >
         <%= link_to 'Referencias', '#referencias', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias' %>
       </li>
-      <li role="presentation" >
-
-      </li>
     </ul>
 
     <div class="tab-content">
@@ -74,21 +71,7 @@
         <% end %>
       </div>
 
-      <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.distribucion')%></h3>
 
-        <% # OCUPA: habitat, distribucion, endemica  %>
-        <%= f.simple_fields_for :distribuciones do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
-        <% end %>
-        <%= f.simple_fields_for :habitats  do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
-        <% end %>
-        <%= f.simple_fields_for :endemicas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
-        <% end %>
-      </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
@@ -96,104 +79,6 @@
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
           <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: { f: info, f_taxon: f } %>
-        <% end %>
-      </div>
-
-      <div id='biologia' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.biologia')%></h3>
-
-        <% # OCUPA: habitad, historianatural, demografiaamenazas, * * reproduccionanimal, * * reproduccionvegetal %>
-        <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
-        <% end %>
-
-        <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
-        <% end %>
-
-        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
-        <% end %>
-      </div>
-
-      <div id='ecologia' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ecologia')%></h3>
-        <% # OCUPA: demografiaamenazas, * * interaccion  %>
-        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
-        <% end %>
-      </div>
-
-      <div id='genetica' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.genetica')%></h3>
-        <% # OCUPA: historianatural %>
-        <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
-        <% end %>
-      </div>
-
-      <div id='importancia' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.importancia')%></h3>
-        <% # OCUPA: historianatural %>
-        <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
-        <% end %>
-      </div>
-
-      <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.estado_de_conservacion')%></h3>
-        <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
-        <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
-        <% end %>
-        <%= f.simple_fields_for :conservacion do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
-        <% end %>
-      </div>
-
-      <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
-          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.prioritarias_conservacion')%></h3>
-          <% # OCUPA:  taxon %>
-          <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
-        </div>
-        <div class="apartadoFicha ficha-Invasora">
-          <hr />
-          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
-          <%= f.simple_fields_for :invasividad do |info| %>
-            <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: info } %>
-          <% end %>
-        </div>
-      </div>
-
-      <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.necesidades')%></h3>
-        <% # OCUPA: taxon  %>
-        <%= render partial: 'fichas/taxa/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
-      </div>
-
-      <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.metadatos')%></h3>
-        <% # OCUPA: taxon  %>
-        <%= f.simple_fields_for :metadatos do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos', locals: {f: info } %>
-        <% end %>
-      </div>
-
-      <div id='referencias' role="tabpanel" class="tab-pane fade panel-body">
-        <hr />
-        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.referencias')%></h3>
-        <% # OCUPA: taxon  %>
-        <%= f.simple_fields_for :referenciasBibliograficas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_referencias/form_referencias', locals: {f: info } %>
         <% end %>
       </div>
 

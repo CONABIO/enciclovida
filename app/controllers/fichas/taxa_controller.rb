@@ -96,8 +96,40 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-          info_ecorregiones_attributes:
-              [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+
+          t_clima_ids: [],
+
+          info_ecorregiones_attributes: [
+              :id,
+              :especieId,
+              :idpregunta,
+              :infoadicional,
+              :_destroy
+          ],
+
+          ambi_especies_asociadas_attributes: [
+              :id,
+              :especieId,
+              :idpregunta,
+              :infoadicional,
+              :_destroy
+          ],
+
+          ambi_vegetacion_esp_mundo_attributes: [
+              :id,
+              :especieId,
+              :idpregunta,
+              :infoadicional,
+              :_destroy
+          ],
+
+          ambi_info_clima_exotico_attributes: [
+              :id,
+              :especieId,
+              :idpregunta,
+              :infoadicional,
+              :_destroy
+          ],
 
           distribuciones_attributes: [
               :pai_ids,

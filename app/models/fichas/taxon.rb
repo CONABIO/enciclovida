@@ -3,15 +3,20 @@ class Fichas::Taxon < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.taxon"
 	self.primary_key = 'especieId'
 
+	has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
+	has_one :especie, through: :scat, source: :especie
+
 	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
+
 	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
+
+
+
 
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
 	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
 	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
-
   has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
-
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
   has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
 	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
@@ -21,15 +26,25 @@ class Fichas::Taxon < Ficha
 	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
 	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
 
-  has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
-  has_one :especie, through: :scat, source: :especie
 
-	# Extraer las observaciones de la especie a partir de: observacionescarac
-	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :caracteristicasEspecies2, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', inverse_of: :taxon
 
-	# reject_if: proc { |attributes| attributes['name'].blank? }
+	has_many :t_clima, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies2
 
-  accepts_nested_attributes_for :invasividad, allow_destroy: true
+
+	# Preguntas de información adicional y observaciones en la tabla Observacionescarac
+	has_many :info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac',
+					 before_add: [:aft], foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_especies_asociadas,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_vegetacion_esp_mundo,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+  has_many :ambi_info_clima_exotico,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+
+
+
+	accepts_nested_attributes_for :caracteristicasEspecies2, allow_destroy: true, reject_if: :all_blank
+
+
+	accepts_nested_attributes_for :invasividad, allow_destroy: true
 	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
@@ -41,7 +56,22 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :metadatos, allow_destroy: true
 	accepts_nested_attributes_for :productoComercios, allow_destroy: true
 	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
+
+	# Preguntas de información adicional y observaciones en la tabla Observacionescarac
 	accepts_nested_attributes_for :info_ecorregiones, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_especies_asociadas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_vegetacion_esp_mundo, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_info_clima_exotico, allow_destroy: true, reject_if: :all_blank
+
+	def aft(o)
+		o.idpregunta = 52
+		puts "\n\n\n\n\n\n #{o.inspect}"
+		o
+	end
+
+
+	# reject_if: proc { |attributes| attributes['name'].blank? }
+
 
 	# Sección I: Clasificacion
 	ORIGEN_MEXICO = [

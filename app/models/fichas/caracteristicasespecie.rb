@@ -3,55 +3,20 @@ class Fichas::Caracteristicasespecie < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.caracteristicasespecie"
 	self.primary_keys = :especieId,  :idpregunta,  :idopcion
 
+	# validates_uniqueness_of :especieId, :scope => :idpregunta
+
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
   # DESDE HABITAT
-	belongs_to :t_tipoVegetacionSecundaria,-> {where('caracteristicasespecie.idpregunta = ?', 2)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_clima,-> {where('caracteristicasespecie.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_suelo,-> {where('caracteristicasespecie.idpregunta = ?', 6)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_geoforma,-> {where('caracteristicasespecie.idpregunta = ?', 7)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_habitatAntropico,-> {where('caracteristicasespecie.idpregunta = ?', 1)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_ecorregionMarinaN1,-> {where('caracteristicasespecie.idpregunta = ?', 44)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_zonaVida,-> {where('caracteristicasespecie.idpregunta = ?', 43)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_clima,-> {where('cat_preguntas.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
 
-  # DESDE HISTORIA NATURAL
-  belongs_to :t_habitoPlantas,-> {where('caracteristicasespecie.idpregunta = ?', 45)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_alimentacion,-> {where('caracteristicasespecie.idpregunta = ?', 9)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_forrajeo,-> {where('caracteristicasespecie.idpregunta = ?', 8)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_migracion,-> {where('caracteristicasespecie.idpregunta = ?', 10)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_tipo_migracion,-> {where('caracteristicasespecie.idpregunta = ?', 11)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_habito,-> {where('caracteristicasespecie.idpregunta = ?', 12)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_tipodispersion,-> {where('caracteristicasespecie.idpregunta = ?', 15)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_structdisp,-> {where('caracteristicasespecie.idpregunta = ?', 16)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_dispersionsei,-> {where('caracteristicasespecie.idpregunta = ?', 39)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_comnalsel,-> {where('caracteristicasespecie.idpregunta = ?', 18)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_proposito_com,-> {where('caracteristicasespecie.idpregunta = ?', 20)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_comintersel,-> {where('caracteristicasespecie.idpregunta = ?', 22)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_proposito_com_int,-> {where('caracteristicasespecie.idpregunta = ?', 24)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-
-  # DESDE Conservacion
-  belongs_to :t_esquemamanejo,-> {where('caracteristicasespecie.idpregunta = ?', 26)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_tipopesca,-> {where('caracteristicasespecie.idpregunta = ?', 28)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_regioncaptura,-> {where('caracteristicasespecie.idpregunta = ?', 29)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-
-  # DESDE REPRODUCCION VEGETAL
-  belongs_to :t_arregloespacialflores,-> {where('caracteristicasespecie.idpregunta = ?', 49)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_arregloespacialindividuos,-> {where('caracteristicasespecie.idpregunta = ?', 50)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_arregloespacialpoblaciones,-> {where('caracteristicasespecie.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_vectorespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-  belongs_to :t_agentespolinizacion,-> {where('caracteristicasespecie.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-
-	# DESDE REPRODUCCION ANIMAL
-	belongs_to :t_sistapareamiento,-> {where('caracteristicasespecie.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-	belongs_to :t_sitioanidacion,-> {where('caracteristicasespecie.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
-
-	# DESDE DEMOGRAFIA AMENAZAS
-	belongs_to :t_interacciones,-> {where('caracteristicasespecie.idpregunta = ?', 17)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
 	OPCIONES = {
 			:habitatAntropico => 1,
 			:vegetacionSecundaria => 2,
+			:tipovegetmundial => 3,
 			:clima => 4,
+			:climaexo => 5,
 			:suelo => 6,
 			:geoforma => 7,
       :forrajeo => 8,
@@ -87,6 +52,52 @@ end
 
 
 =begin
+
+
+	belongs_to :t_geoforma,-> {where('cat_preguntas.idpregunta = ?', 7)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
+	belongs_to :t_tipoVegetacionSecundaria,-> {where('cat_preguntas.idpregunta = ?', 2)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
+	belongs_to :t_tipovegetmundial,-> {where('cat_preguntas.idpregunta = ?', 3)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
+	belongs_to :t_climaexo,-> {where('cat_preguntas.idpregunta = ?', 5)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
+	belongs_to :t_suelo,-> {where('cat_preguntas.idpregunta = ?', 6)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_habitatAntropico,-> {where('cat_preguntas.idpregunta = ?', 1)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_ecorregionMarinaN1,-> {where('cat_preguntas.idpregunta = ?', 44)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_zonaVida,-> {where('cat_preguntas.idpregunta = ?', 43)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+  # DESDE HISTORIA NATURAL
+  belongs_to :t_habitoPlantas,-> {where('cat_preguntas.idpregunta = ?', 45)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_alimentacion,-> {where('cat_preguntas.idpregunta = ?', 9)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_forrajeo,-> {where('cat_preguntas.idpregunta = ?', 8)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_migracion,-> {where('cat_preguntas.idpregunta = ?', 10)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipo_migracion,-> {where('cat_preguntas.idpregunta = ?', 11)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_habito,-> {where('cat_preguntas.idpregunta = ?', 12)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipodispersion,-> {where('cat_preguntas.idpregunta = ?', 15)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_structdisp,-> {where('cat_preguntas.idpregunta = ?', 16)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_dispersionsei,-> {where('cat_preguntas.idpregunta = ?', 39)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_comnalsel,-> {where('cat_preguntas.idpregunta = ?', 18)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_proposito_com,-> {where('cat_preguntas.idpregunta = ?', 20)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_comintersel,-> {where('cat_preguntas.idpregunta = ?', 22)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_proposito_com_int,-> {where('cat_preguntas.idpregunta = ?', 24)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+  # DESDE Conservacion
+  belongs_to :t_esquemamanejo,-> {where('cat_preguntas.idpregunta = ?', 26)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_tipopesca,-> {where('cat_preguntas.idpregunta = ?', 28)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_regioncaptura,-> {where('cat_preguntas.idpregunta = ?', 29)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+  # DESDE REPRODUCCION VEGETAL
+  belongs_to :t_arregloespacialflores,-> {where('cat_preguntas.idpregunta = ?', 49)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_arregloespacialindividuos,-> {where('cat_preguntas.idpregunta = ?', 50)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_arregloespacialpoblaciones,-> {where('cat_preguntas.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_vectorespolinizacion,-> {where('cat_preguntas.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+  belongs_to :t_agentespolinizacion,-> {where('cat_preguntas.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE REPRODUCCION ANIMAL
+	belongs_to :t_sistapareamiento,-> {where('cat_preguntas.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_sitioanidacion,-> {where('cat_preguntas.idpregunta = ?', 14)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE DEMOGRAFIA AMENAZAS
+	belongs_to :t_interacciones,-> {where('cat_preguntas.idpregunta = ?', 17)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+
 TIPOS DE SELECT:
 has_many :artepesca,-> {where('caracteristicasespecie.idpregunta = ?', 30)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :acuacultura,-> {where('caracteristicasespecie.idpregunta = ?', 31)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies

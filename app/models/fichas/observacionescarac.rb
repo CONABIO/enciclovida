@@ -7,6 +7,9 @@ class Fichas::Observacionescarac < Ficha
 	validates_uniqueness_of :especieId, :scope => :idpregunta
 
 	PREGUNTAS = {
+			:ambi_especies_asociadas => 2,
+      :ambi_vegetacion_esp_mundo => 3,
+      :ambi_info_clima_exotico => 5,
 			:info_ecorregiones => 52
 	}
 
