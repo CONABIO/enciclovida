@@ -1,17 +1,5 @@
 module EspeciesHelper
 
-  # Para separar SÓLO las italicas EN el nombre cientifico y la categoria taxonomica
-  def ponItalicas(taxon, con_link = false)
-    italicas = taxon.nombre_cientifico.gsub('subsp.','</i>subsp.<i>').gsub('var.','</i>var.<i>').gsub('f.','</i>f.<i>').
-        gsub('subvar.','</i>subvar.<i>').gsub('subf.','</i>subf.<i>')
-
-    if con_link
-      "<a href=\"/especies/#{taxon.id}\"><i>#{italicas}</i></a>"
-    else
-      "<i>#{italicas}</i>"
-    end
-  end
-
   def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
     enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
 
@@ -143,7 +131,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
   # REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
-      "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(', ')}"
+      "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(' <b>;</b> ')}"
     end
 
     def creaLista(taxones, opciones={})
@@ -155,7 +143,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
         bibliografias = taxon.bibliografias.map(&:cita_completa)
 
         if bibliografias.any?
-          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
           html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         end
