@@ -135,10 +135,10 @@ class BusquedasController < ApplicationController
     end
 
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-
     @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-
     @prioritarias = Catalogo.prioritarias
+    @usos = Catalogo.usos
+    @ambientes = Catalogo.ambientes
   end
 
   # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
@@ -310,7 +310,7 @@ class BusquedasController < ApplicationController
       case k
         when 'id', 'nombre', 'por_pagina'
           @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus'
+        when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente'
           if @setParams[k].present?
             @setParams[k] << v.map{ |x| x.parameterize if x.present?}
           else
