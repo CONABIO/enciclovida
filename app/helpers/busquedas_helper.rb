@@ -64,8 +64,14 @@ module BusquedasHelper
 
   def selectUsos(opciones={})
     opc = @@opciones.merge(opciones)
-    options = @usos.map{ |d| [d.descripcion, d.id, { class: "f-fuentes" }] }
+    options = @usos.map{ |u| [u.descripcion, u.id, { class: "f-fuentes" }] }
     select_tag('uso', options_for_select(options), opc)
+  end
+
+  def selectAmbiente(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @ambientes.map{ |a| [a.descripcion, a.id, { class: "#{a.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('ambiente', options_for_select(options), opc)
   end
 
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual

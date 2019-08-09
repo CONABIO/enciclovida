@@ -7,6 +7,7 @@ class BusquedaAvanzada < Busqueda
     estado_conservacion
     tipo_distribucion
     uso
+    ambiente
     solo_categoria
 
     return unless por_id_o_nombre

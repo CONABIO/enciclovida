@@ -38,6 +38,13 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
+  # Para el select de ambiente
+  def ambiente
+    if params[:ambiente].present? && params[:ambiente].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:ambiente]).left_joins(:catalogos)
+    end
+  end
+
   # Para las estadisticas dinamicas
   def busca_estadisticas
     if params[:controller]=='estadisticas'
