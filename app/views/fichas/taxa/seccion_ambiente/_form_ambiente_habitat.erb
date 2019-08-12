@@ -20,11 +20,19 @@
     %>
 
     <%=
-      ambi_titulo = "Información adicional"
-      ambi_pregunta = Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]
-      ambi_id_div = 'info_ecorregiones'
-      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f_taxon, :info_ecorregiones, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: ambi_titulo, id_pregunta: ambi_pregunta}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => ambi_id_div, 'data-association-insertion-node' => '#' + ambi_id_div, 'data-association-insertion-method' => 'append', href: '#' + ambi_id_div)
+       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f_taxon, :info_ecorregiones,
+                               partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x',
+                               render_options: {locals: { titulo: "Información adicional", id_pregunta: Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones] }},
+                               :class => 'btn btn-info btn-sm',
+                               role: 'tab',
+                               "data-toggle" => 'tab',
+                               "aria-controls" => 'info_ecorregiones',
+                               'data-association-insertion-node' => '#info_ecorregiones',
+                               'data-association-insertion-method' => 'append',
+                               href: '#info_ecorregiones',
+                               style: 'display: none') if @taxon.new_record? || (!@taxon.new_record? && @taxon.info_ecorregiones.empty?)
     %>
+
     <div id="<%= ambi_id_div %>">
       <%= f_taxon.simple_fields_for :info_ecorregiones do |info| %>
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: ambi_titulo, id_pregunta: ambi_pregunta} %>

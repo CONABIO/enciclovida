@@ -76,7 +76,7 @@ class Fichas::TaxaController < Fichas::FichasController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def taxon_params
-      params.require(:fichas_taxon).permit(
+      p = params.require(:fichas_taxon).permit(
           # Parámetros desde taxón:
           :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
 
@@ -162,6 +162,14 @@ class Fichas::TaxaController < Fichas::FichasController
               :_destroy
           ]
       )
+
+      p[:info_ecorregiones_attributes].each do |k,v|
+        break unless v["id"].present?
+        ids = v["id"].split(' ')
+        v["id"] = ids
+      end
+
+      p
     end
 end
 
